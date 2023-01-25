@@ -1,1 +1,25 @@
-/* You can add global styles to this file, and also import other style files */
+@import "node_modules/govuk-frontend/govuk/all";
+
+.govuk-header__logotype-text {
+    margin-left: 10px;
+}
+
+.hljs {
+    background-color: transparent;
+}
+
+.govuk-checkboxes__item {
+    margin-bottom: 10px !important;
+}
+
+.govuk-fieldset__legend--xl {
+    margin-bottom: 50px;
+}
+
+.govuk-summary-list__row, .govuk-summary-list__key, .govuk-summary-list__value, .govuk-summary-list__actions {
+    display: block;
+}
+
+.govuk-summary-list:first-child {
+    border-top: 1px solid #b1b4b6;
+}
