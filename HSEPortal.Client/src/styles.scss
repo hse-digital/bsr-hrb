@@ -23,3 +23,13 @@
 .govuk-summary-list:first-child {
     border-top: 1px solid #b1b4b6;
 }
+
+// GOVUK-RADIO
+.govuk-radio-no-margin-bottom > .govuk-radios__item {
+  margin-bottom: 0px !important;
+}
+
+// GOVUK-BUTTON
+.govuk-button a {
+  margin-bottom: 32px !important;
+}

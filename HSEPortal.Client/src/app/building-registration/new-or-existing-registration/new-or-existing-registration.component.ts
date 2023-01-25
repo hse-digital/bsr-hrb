@@ -5,5 +5,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./new-or-existing-registration.component.scss']
 })
 export class NewOrExistingRegistrationComponent {
-
+  continueLink?: string;
 }

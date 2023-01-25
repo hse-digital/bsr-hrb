@@ -1,1 +1,24 @@
-<p>new-or-existing-registration works!</p>
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-fieldset title="Your application" [isPageHeading]=true titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-1' class='govuk-!-margin-bottom-3'>
+
+          <govuk-radio-group [(model)]="continueLink">
+            <govuk-radio name="application-group" id="application-new" value="/questions/building/building-name" label="Start a new application">
+            </govuk-radio>
+            <govuk-radio name="application-group" id="application-return" value="/returning-code" label="Continue a saved application"
+                         class="govuk-radio-no-margin-bottom">
+            </govuk-radio>
+          </govuk-radio-group>
+
+
+        </govuk-fieldset>
+      </div>
+      <govuk-button [link]="continueLink">Continue</govuk-button>
+    </div>
+  </div>
+</div>
+
