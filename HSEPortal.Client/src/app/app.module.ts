@@ -13,7 +13,8 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HseAngularModule
   ],
   providers: [],
   bootstrap: [AppComponent]
