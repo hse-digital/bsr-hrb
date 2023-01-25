@@ -1,16 +1,10 @@
-import { Component, OnInit } from "@angular/core";
-import { HeaderTitleService } from "src/app/services/headertitle.service";
+import { Component } from "@angular/core";
 
 @Component({
-    selector: 'hse-registration',
-    templateUrl: './registration.component.html',
-    styleUrls: ['./registration.component.scss']
+    templateUrl: './registration-status.component.html',
+    styleUrls: ['./registration-status.component.scss']
 })
-export class RegistrationComponent {
-
-    constructor(private headerTitleService: HeaderTitleService) {
-        this.headerTitleService.headerTitle = 'Register a high-rise building';
-    }
+export class RegistrationStatusComponent {
 
     tasks = [
         {
