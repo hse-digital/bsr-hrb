@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33209.295
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "HSEPortal.Client", "HSEPortal.Client\HSEPortal.Client.esproj", "{67A47F56-E494-457C-B46F-3BD6A23429CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.API", "HSEPortal.API\HSEPortal.API.csproj", "{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67A47F56-E494-457C-B46F-3BD6A23429CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67A47F56-E494-457C-B46F-3BD6A23429CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67A47F56-E494-457C-B46F-3BD6A23429CD}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{67A47F56-E494-457C-B46F-3BD6A23429CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67A47F56-E494-457C-B46F-3BD6A23429CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67A47F56-E494-457C-B46F-3BD6A23429CD}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A64ECE29-6CEF-432E-BA10-B0B10904311F}
+	EndGlobalSection
+EndGlobal
