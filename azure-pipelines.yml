@@ -10,8 +10,8 @@ variables:
 steps:
 - task: AzureStaticWebApp@0
   inputs:
-    app_location: '/HSEPortal.Client'
+    app_location: 'HSEPortal.Client'
     app_build_command: 'npm run prerender'
-    output_location: '/HSEPortal.Client/dist/hseportalclient/browser'
-    api_location: '/HSEPortal.API'
+    output_location: 'dist/hseportalclient/browser'
+    api_location: 'HSEPortal.API'
     azure_static_web_apps_api_token: $(swatoken)
