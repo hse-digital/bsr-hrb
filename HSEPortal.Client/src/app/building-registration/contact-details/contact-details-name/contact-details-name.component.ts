@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'hse-contact-details',
-  templateUrl: './contact-details.component.html'
+  templateUrl: './contact-details-name.component.html'
 })
-export class ContactDetailsComponent {
+export class ContactDetailsNameComponent {
 
   contactDetails: { firstName?: string, lastName?: string } = {};
   showError: boolean = false;
@@ -15,7 +14,7 @@ export class ContactDetailsComponent {
 
   getContinueLink(): string | undefined {
     return !this.showError && this.contactDetails.firstName && this.contactDetails.lastName
-      ? '/building-registration'
+      ? '/building-registration/contact-details/phone'
       : undefined;
   }
 
