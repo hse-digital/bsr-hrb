@@ -5,26 +5,30 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="showError && (!hasFirstName || !hasLastName)" title="There is a problem">
-          <govuk-error-link *ngIf="!hasFirstName" anchorId="input-first-name" message="Enter your first name" />
-          <govuk-error-link *ngIf="!hasLastName" anchorId="input-last-name" message="Enter your last name" />
+        <govuk-error-summary *ngIf="showError" title="There is a problem">
+          <govuk-error-link *ngIf="!firstName.model" anchorId="input-first-name" message="Enter your first name" />
+          <govuk-error-link *ngIf="!lastName.model" anchorId="input-last-name" message="Enter your last name" />
         </govuk-error-summary>
 
         <span class="govuk-caption-xl">Your contact details</span>
-        <govuk-fieldset title="Enter your name" [isPageHeading]=true id="application"
-                        titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+        <govuk-fieldset title="Enter your name" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
 
           <govuk-body>We will use this if we need to contact you about your application</govuk-body>
 
-          <govuk-input id="first-name" label="First name" (modelChange)="firstNameModelChange($event)"
-                       [errorText]="showError && !hasFirstName ? 'Enter your first name': undefined" class="govuk-!-margin-bottom-5"></govuk-input>
-          <govuk-input id="last-name" label="Last name" (modelChange)="lastNameModelChange($event)"
-                       [errorText]="showError && !hasLastName ? 'Enter your last name': undefined"></govuk-input>
+          <govuk-input id="first-name" label="First name" 
+                       [(model)]="contactDetails.firstName" #firstName 
+                       (modelChange)="updateErrorStatus()" 
+                       [errorText]="getErrorText(firstName.model, 'Enter your first name')"
+                       class="govuk-!-margin-bottom-5" />
 
+          <govuk-input id="last-name" label="Last name" 
+                       [(model)]="contactDetails.lastName" #lastName 
+                       (modelChange)="updateErrorStatus()" 
+                       [errorText]="getErrorText(lastName.model, 'Enter your last name')" />
         </govuk-fieldset>
       </div>
-      <govuk-button [link]="!showError && hasFirstName && hasLastName ? '/building-registration' : undefined"
-                    (onClick)="updateErrorStatus()">Save and continue</govuk-button>
+
+      <govuk-button [link]="getContinueLink()" (onClick)="updateErrorStatus()">Save and continue</govuk-button>
     </div>
   </div>
 </div>
