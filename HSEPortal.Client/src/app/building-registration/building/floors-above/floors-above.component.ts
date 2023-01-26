@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 @Component({
     templateUrl: './floors-above.component.html'
 })
-export class FloorsAboveComponent {
+export class BuildingFloorsAboveComponent {
 
     building: { floorsAbove?: number } = {};
     showError = false;

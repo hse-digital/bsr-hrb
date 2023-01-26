@@ -3,4 +3,4 @@ import { Component } from "@angular/core";
 @Component({
     templateUrl: './blocks-intro.component.html'
 })
-export class BlocksIntroComponent {}
+export class BuildingBlocksIntroComponent {}
