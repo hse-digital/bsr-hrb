@@ -12,10 +12,6 @@
     margin-bottom: 10px !important;
 }
 
-.govuk-fieldset__legend--xl {
-    margin-bottom: 50px;
-}
-
 .govuk-summary-list__row, .govuk-summary-list__key, .govuk-summary-list__value, .govuk-summary-list__actions {
     display: block;
 }
@@ -32,4 +28,9 @@
 // GOVUK-BUTTON
 .govuk-button a {
   margin-bottom: 32px !important;
+}
+
+.govuk-error-summary__list a {
+    color: #d4351c;
+    cursor: pointer;
 }
