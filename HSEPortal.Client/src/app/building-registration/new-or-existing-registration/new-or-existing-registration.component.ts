@@ -6,4 +6,11 @@ import { Component } from '@angular/core';
 })
 export class NewOrExistingRegistrationComponent {
   continueLink?: string;
+
+  showError: boolean = false;
+
+  updateErrorStatus() {
+    this.showError = !this.continueLink;
+  }
+
 }
