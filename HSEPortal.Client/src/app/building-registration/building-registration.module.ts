@@ -2,17 +2,18 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { RouterModule, Routes } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
-import { RegistrationStatusComponent } from "./registration-status/registration-status.component";
 import { NewOrExistingRegistrationComponent } from './new-or-existing-registration/new-or-existing-registration.component';
 import { CommonModule } from "@angular/common";
 import { BuildingRegistrationComponent } from "./building-registration.component";
+import { RegistrationSectionsComponent } from "./registration-sections/registration-sections.component";
 
 const routes: Routes = [
   {
     path: '', component: BuildingRegistrationComponent, children: [
       { path: '', component: NewOrExistingRegistrationComponent },
-      { path: 'status', component: RegistrationStatusComponent },
+      { path: 'sections', component: RegistrationSectionsComponent },
       { path: 'contact-details', loadChildren: () => import('./contact-details/contact-details.module').then(m => m.ContactDetailsModule) },
+      { path: 'building', loadChildren: () => import('./building/building.module').then(m => m.BuildingModule) },
     ]
   },
 ];
@@ -20,7 +21,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     BuildingRegistrationComponent,
-    RegistrationStatusComponent,
+    RegistrationSectionsComponent,
     NewOrExistingRegistrationComponent,
   ],
   imports: [

@@ -1,10 +1,9 @@
 import { Component } from "@angular/core";
 
 @Component({
-    templateUrl: './registration-status.component.html',
-    styleUrls: ['./registration-status.component.scss']
+    templateUrl: './registration-sections.component.html'
 })
-export class RegistrationStatusComponent {
+export class RegistrationSectionsComponent {
 
     tasks = [
         {
