@@ -44,7 +44,7 @@
                 </govuk-fieldset>
             </div>
 
-            <govuk-button (onClick)="updateErrorStatus()">Save and continue</govuk-button>
+            <govuk-button [link]="getContinueLink()" (onClick)="updateErrorStatus()">Save and continue</govuk-button>
         </div>
     </div>
 </div>

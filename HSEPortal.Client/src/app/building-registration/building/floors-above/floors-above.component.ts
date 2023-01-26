@@ -17,4 +17,10 @@ export class FloorsAboveComponent {
             ? 'Enter the number of floors above ground level for this block'
             : undefined;
     }
+
+    getContinueLink() {
+        return !this.showError && this.building.floorsAbove
+          ? '/building-registration/building/height'
+          : undefined;
+    }
 }
