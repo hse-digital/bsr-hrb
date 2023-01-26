@@ -1,0 +1,29 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="showError" title="There is a problem">
+          <govuk-error-link anchorId="input-phone-number" message="You must enter a UK telephone number. For example, 01632 960 001, 07700 900 982 or +44 808 157 0192" /> 
+        </govuk-error-summary>
+
+        <span class="govuk-caption-xl">Your contact details</span>
+        <govuk-fieldset title="Your telephone number" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-2' class='govuk-!-margin-bottom-4'
+                        [errorText]="getErrorText(' ')">
+
+          <govuk-body>You must enter a UK telephone number. We will only use this if we need to contact you about your application.</govuk-body>
+
+          <govuk-input id="phone-number"
+                       [(model)]="contactDetails.phoneNumber"
+                       (modelChange)="evaluateInput()"
+                       [errorText]="getErrorText('Enter a UK telephone number')"
+                       class="govuk-!-margin-bottom-1" />
+        </govuk-fieldset>
+      </div>
+
+      <govuk-button [link]="getContinueLink()" (onClick)="updateErrorStatus()">Save and continue</govuk-button>
+    </div>
+  </div>
+</div>
