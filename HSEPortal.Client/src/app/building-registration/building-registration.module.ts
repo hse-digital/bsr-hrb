@@ -6,31 +6,34 @@ import { RegistrationStatusComponent } from "./registration-status/registration-
 import { NewOrExistingRegistrationComponent } from './new-or-existing-registration/new-or-existing-registration.component';
 import { CommonModule } from "@angular/common";
 import { BuildingRegistrationComponent } from "./building-registration.component";
+import { ContactDetailsComponent } from './contact-details/contact-details.component';
 
 const routes: Routes = [
-    {
-        path: '', component: BuildingRegistrationComponent, children: [
-            { path: '', component: NewOrExistingRegistrationComponent },
-            { path: 'status', component: RegistrationStatusComponent },
-        ]
-    },
+  {
+    path: '', component: BuildingRegistrationComponent, children: [
+      { path: '', component: NewOrExistingRegistrationComponent },
+      { path: 'status', component: RegistrationStatusComponent },
+      { path: 'contact-details', component: ContactDetailsComponent },
+    ]
+  },
 ];
 
 @NgModule({
-    declarations: [
-        BuildingRegistrationComponent,
-        RegistrationStatusComponent,
-        NewOrExistingRegistrationComponent
-    ],
-    imports: [
-        RouterModule.forChild(routes),
-        FormsModule,
-        CommonModule,
-        HseAngularModule
-    ],
-    exports: [
-        RouterModule
-    ]
+  declarations: [
+    BuildingRegistrationComponent,
+    RegistrationStatusComponent,
+    NewOrExistingRegistrationComponent,
+    ContactDetailsComponent
+  ],
+  imports: [
+    RouterModule.forChild(routes),
+    FormsModule,
+    CommonModule,
+    HseAngularModule
+  ],
+  exports: [
+    RouterModule
+  ]
 })
 export class BuildingRegistrationModule {
 
