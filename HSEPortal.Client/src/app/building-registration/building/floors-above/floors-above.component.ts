@@ -1,26 +1,40 @@
 import { Component } from "@angular/core";
+import { Router } from "@angular/router";
+import { BaseFormComponent } from "src/app/helpers/base-form.component";
 
 @Component({
     templateUrl: './floors-above.component.html'
 })
-export class BuildingFloorsAboveComponent {
+export class BuildingFloorsAboveComponent extends BaseFormComponent {
 
+    constructor(router: Router) {
+        super(router);
+    }
+
+    nextScreenRoute: string = '/building-registration/building/height';
     building: { floorsAbove?: number } = {};
-    showError = false;
+    floorsHasError = false;
 
-    updateErrorStatus() {
-        this.showError = !this.building.floorsAbove;
-    }
+    errorSummaryMessage: string = 'You must enter the number of floors above ground level for this block';
+    errorMessage: string = 'Enter the number of floors above ground level for this block';
 
-    getErrorText() {
-        return this.showError && !this.building.floorsAbove
-            ? 'Enter the number of floors above ground level for this block'
-            : undefined;
-    }
+    canContinue(): boolean {
+        this.floorsHasError = true;
 
-    getContinueLink() {
-        return !this.showError && this.building.floorsAbove
-          ? '/building-registration/building/height'
-          : undefined;
+        if (!this.building.floorsAbove) {
+            this.errorMessage = 'Enter the number of floors above ground level for this block';
+            this.errorSummaryMessage = 'You must enter the number of floors above ground level for this block';
+        } else if (this.building.floorsAbove >= 1000) {
+            this.errorSummaryMessage = 'Number of floors must be 999 or less';
+            this.errorMessage = 'Enter a whole number below 999';
+        } else if (this.building.floorsAbove < 1) {
+            this.errorSummaryMessage = 'A block must have at least 1 floor including the ground floor';
+            this.errorMessage = 'Enter a whole number above 0';
+        } else {
+            this.floorsHasError = false;
+            this.errorMessage = '';
+        }
+
+        return !this.floorsHasError;
     }
 }

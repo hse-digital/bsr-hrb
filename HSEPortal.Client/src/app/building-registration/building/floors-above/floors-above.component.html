@@ -5,8 +5,8 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
 
-                <govuk-error-summary *ngIf="showError" title="There is a problem">
-                  <govuk-error-link *ngIf="!floorsAbove.model" anchorId="input-floors-above" message="You must enter the number of floors above ground level for this block" />
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                  <govuk-error-link anchorId="input-floors-above" [message]="errorSummaryMessage" />
                 </govuk-error-summary>
 
                 <span class="govuk-caption-xl">First block in the building</span>
@@ -36,15 +36,14 @@
                     <govuk-input label="Number of floors above ground level for this block"
                                  labelClass="govuk-label--s" id="floors-above"
                                  [(model)]="building.floorsAbove"
-                                 (modelChange)="updateErrorStatus()"
-                                 [errorText]="getErrorText()"
-                                 class="govuk-input--width-3" #floorsAbove
+                                 [errorText]="getErrorDescription(floorsHasError, errorMessage)"
+                                 class="govuk-input--width-3"
                     />
 
                 </govuk-fieldset>
             </div>
 
-            <govuk-button [link]="getContinueLink()" (onClick)="updateErrorStatus()">Save and continue</govuk-button>
+            <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
         </div>
     </div>
 </div>
