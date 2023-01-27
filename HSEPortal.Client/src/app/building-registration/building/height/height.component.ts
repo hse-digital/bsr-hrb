@@ -20,7 +20,7 @@ export class BuildingHeightComponent {
 
     getContinueLink() {
         return !this.showError && this.building.height
-          ? '/building-registration/building/height'
+          ? '/building-registration/building/residential-units'
           : undefined;
     }
 }
