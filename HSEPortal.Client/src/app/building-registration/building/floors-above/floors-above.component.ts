@@ -21,7 +21,7 @@ export class BuildingFloorsAboveComponent extends BaseFormComponent {
     canContinue(): boolean {
         this.floorsHasError = true;
 
-        if (!this.building.floorsAbove) {
+        if (!this.building.floorsAbove || !Number(this.building.floorsAbove) || this.building.floorsAbove % 1 != 0) {
             this.errorMessage = 'Enter the number of floors above ground level for this block';
             this.errorSummaryMessage = 'You must enter the number of floors above ground level for this block';
         } else if (this.building.floorsAbove >= 1000) {

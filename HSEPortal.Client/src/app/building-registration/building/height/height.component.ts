@@ -22,7 +22,7 @@ export class BuildingHeightComponent extends BaseFormComponent {
     canContinue(): boolean {
         this.heightHasErrors = true;
 
-        if (!this.building.height) {
+        if (!this.building.height || !Number(this.building.height)) {
             this.errorMessage = 'Enter the block height in metres';
             this.errorSummaryMessage = 'You must enter the height of this block from ground level to the top floor in metres';
         } else if (this.building.height >= 1000) {
