@@ -32,7 +32,6 @@ export class BuildingFloorsAboveComponent extends BaseFormComponent {
             this.errorMessage = 'Enter a whole number above 0';
         } else {
             this.floorsHasError = false;
-            this.errorMessage = '';
         }
 
         return !this.floorsHasError;

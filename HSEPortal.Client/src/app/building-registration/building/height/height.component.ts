@@ -31,7 +31,6 @@ export class BuildingHeightComponent extends BaseFormComponent {
             this.errorSummaryMessage = this.errorMessage = 'Block height in metres must be more than 2';
         } else {
             this.heightHasErrors = false;
-            this.errorMessage = '';
         }
 
         return !this.heightHasErrors;

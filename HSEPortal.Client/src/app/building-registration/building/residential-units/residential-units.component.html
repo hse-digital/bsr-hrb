@@ -5,8 +5,8 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
 
-                <govuk-error-summary *ngIf="showError" title="There is a problem">
-                  <govuk-error-link *ngIf="!height.model" anchorId="input-height" message="You must enter the number of residential units in this block" />
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                  <govuk-error-link  anchorId="input-height" [message]="errorSummaryMessage" />
                 </govuk-error-summary>
 
                 <span class="govuk-caption-xl">First block in the building</span>
@@ -17,13 +17,12 @@
                     <govuk-input label="Number of residential units"
                                  labelClass="govuk-label--s" id="height"
                                  [(model)]="building.residentialUnits"
-                                 (modelChange)="updateErrorStatus()"
-                                 [errorText]="getErrorText()"
+                                 [errorText]="getErrorDescription(residentialUnitsHasErrors, errorMessage)"
                                  class="govuk-input--width-4" #height />
                 </govuk-fieldset>
             </div>
 
-            <govuk-button [link]="getContinueLink()" (onClick)="updateErrorStatus()">Save and continue</govuk-button>
+            <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
         </div>
     </div>
 </div>
