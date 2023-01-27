@@ -5,14 +5,17 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
 
-                <govuk-error-summary *ngIf="showError" title="There is a problem">
-                    <govuk-error-link *ngIf="!peopleGroup.model" anchorId="fieldset-peopleLivingInBuilding" message="Select if people are living in the block or not" />
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                    <govuk-error-link anchorId="fieldset-peopleLivingInBuilding" message="Select if people are living in the block or not" />
                 </govuk-error-summary>
 
                 <span class="govuk-caption-xl">First block in the building</span>
-                <govuk-fieldset [errorText]="getErrorText()" title="Are people living in the block?" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl' class='govuk-!-margin-bottom-4'>
+                <govuk-fieldset [errorText]="getErrorDescription(peopleLivingHasErrors, 'Select if people are living in the block or not')" 
+                                title="Are people living in the block?" 
+                                [isPageHeading]=true id="application" 
+                                titleClass='govuk-fieldset__legend--xl' class='govuk-!-margin-bottom-4'>
 
-                    <govuk-radio-group id="peopleLivingInBuilding" #peopleGroup [(model)]="building.peopleLivingInBuilding" (onRadioSelected)="updateErrorStatus()">
+                    <govuk-radio-group id="peopleLivingInBuilding" [(model)]="building.peopleLivingInBuilding">
                         <govuk-radio name="people-living" id="yes" value="yes" label="Yes" />
                         <govuk-radio name="people-living" id="no_block_ready" value="no_block_ready" label="No, but the block is ready for people to move in" hint="This could be if the block has been refurbished or is new." />
                         <govuk-radio name="people-living" id="no_wont_move" value="no_wont_move" label="No and people will not be moving in" hint="This would be because everyone has moved out while it is being refurbished or because it is going to be demolished." />
@@ -20,7 +23,7 @@
                 </govuk-fieldset>
             </div>
 
-            <govuk-button [link]="getContinueLink()" (onClick)="updateErrorStatus()">Save and continue</govuk-button>
+            <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
         </div>
     </div>
 </div>
