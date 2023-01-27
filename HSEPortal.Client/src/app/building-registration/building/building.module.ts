@@ -5,6 +5,7 @@ import { HseAngularModule } from "hse-angular";
 import { BuildingBlocksIntroComponent } from "./blocks-intro/blocks-intro.component";
 import { BuildingFloorsAboveComponent } from "./floors-above/floors-above.component";
 import { BuildingHeightComponent } from "./height/height.component";
+import { PeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
 import { ResidentialUnitsComponent } from "./residential-units/residential-units.component";
 
 const routes: Routes = [
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'floors-above', component: BuildingFloorsAboveComponent },
   { path: 'height', component: BuildingHeightComponent },
   { path: 'residential-units', component: ResidentialUnitsComponent },
+  { path: 'people-living-in-building', component: PeopleLivingInBuildingComponent },
 ];
 
 @NgModule({
@@ -19,7 +21,8 @@ const routes: Routes = [
       BuildingBlocksIntroComponent,
       BuildingFloorsAboveComponent,
       BuildingHeightComponent,
-      ResidentialUnitsComponent
+      ResidentialUnitsComponent,
+      PeopleLivingInBuildingComponent
     ],
     imports: [
         RouterModule.forChild(routes),

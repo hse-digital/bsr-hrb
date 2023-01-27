@@ -20,7 +20,7 @@ export class ResidentialUnitsComponent {
 
     getContinueLink() {
         return !this.showError && this.building.residentialUnits
-          ? '/building-registration/building/residential-units'
+          ? '/building-registration/building/people-living-in-building'
           : undefined;
     }
 }

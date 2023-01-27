@@ -1,24 +1,26 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { BaseFormComponent } from 'src/app/helpers/base-form.component';
 
 @Component({
   templateUrl: './contact-details-name.component.html'
 })
-export class ContactDetailsNameComponent {
+export class ContactDetailsNameComponent extends BaseFormComponent {
 
+  constructor(router: Router) {
+    super(router);
+  }
+
+  nextScreenRoute: string = '/building-registration/contact-details/phone';
   contactDetails: { firstName?: string, lastName?: string } = {};
-  showError: boolean = false;
+  
+  firstNameInError: boolean = false;
+  lastNameInError: boolean = false;
 
-  updateErrorStatus() {
-    this.showError = !this.contactDetails.firstName || !this.contactDetails.lastName;
-  }
+  canContinue() {
+    this.firstNameInError = !this.contactDetails.firstName;
+    this.lastNameInError = !this.contactDetails.lastName;
 
-  getContinueLink(): string | undefined {
-    return !this.showError && this.contactDetails.firstName && this.contactDetails.lastName
-      ? '/building-registration/contact-details/phone'
-      : undefined;
-  }
-
-  getErrorText(value: any, errorText: string): string | undefined {
-    return this.showError && !value ? errorText : undefined;
+    return !this.firstNameInError && !this.lastNameInError;
   }
 }
