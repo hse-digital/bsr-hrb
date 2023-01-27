@@ -45,7 +45,6 @@ describe('PeopleLivingInBuildingComponent showError', () => {
 
 });
 
-
 describe('PeopleLivingInBuildingComponent getErrorDescription(hasError, errorText)', () => {
 
   beforeEach(async () => {

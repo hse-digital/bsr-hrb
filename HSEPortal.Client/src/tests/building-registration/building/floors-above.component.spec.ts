@@ -57,7 +57,6 @@ describe('BuildingFloorsAboveComponent showError', () => {
 
 });
 
-
 describe('BuildingFloorsAboveComponent getErrorDescription(hasError, errorText)', () => {
 
   beforeEach(async () => {

@@ -57,7 +57,6 @@ describe('ResidentialUnitsComponent showError', () => {
 
 });
 
-
 describe('ResidentialUnitsComponent getErrorDescription(hasError, errorText)', () => {
 
   beforeEach(async () => {
