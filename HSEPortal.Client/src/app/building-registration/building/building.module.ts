@@ -7,9 +7,11 @@ import { BuildingFloorsAboveComponent } from "./floors-above/floors-above.compon
 import { BuildingHeightComponent } from "./height/height.component";
 import { PeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
 import { ResidentialUnitsComponent } from "./residential-units/residential-units.component";
+import { BuildingNameComponent } from './building-name/building-name.component';
 
 const routes: Routes = [
   { path: 'intro', component: BuildingBlocksIntroComponent },
+  { path: 'name', component: BuildingNameComponent },
   { path: 'floors-above', component: BuildingFloorsAboveComponent },
   { path: 'height', component: BuildingHeightComponent },
   { path: 'residential-units', component: ResidentialUnitsComponent },
@@ -22,7 +24,8 @@ const routes: Routes = [
       BuildingFloorsAboveComponent,
       BuildingHeightComponent,
       ResidentialUnitsComponent,
-      PeopleLivingInBuildingComponent
+      PeopleLivingInBuildingComponent,
+      BuildingNameComponent
     ],
     imports: [
         RouterModule.forChild(routes),

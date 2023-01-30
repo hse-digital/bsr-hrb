@@ -1,0 +1,30 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link *ngIf="nameHasErrors" anchorId="input-building-name" message="You must enter a name for the building" />
+        </govuk-error-summary>
+
+        <govuk-fieldset title="Provide a name for the building" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+
+          <govuk-body>This will help you to keep track of your application.</govuk-body>
+
+          <govuk-body>It will also help us to identify the building when we are talking to you about it.</govuk-body>
+
+          <govuk-input id="building-name" label="Your building name" labelClass="govuk-label--s"
+                       [(model)]="building.name"
+                       [errorText]="getErrorDescription(nameHasErrors, 'Enter a name for the building')"
+                       hint="For example 'The Gherkin', 'The Gherkin at 30 Mary Axe', or '30 Mary Axe'. Or tell us your internal reference number."
+                       hintClass="no-margin-top" />
+
+        </govuk-fieldset>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+    </div>
+  </div>
+</div>
