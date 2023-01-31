@@ -1,68 +1,41 @@
-using Azure;
-using Flurl.Http;
-using Flurl.Http.Testing;
-using Microsoft.Azure.Functions.Worker.Http;
 using NUnit.Framework;
-using System.Net;
+using HSEPortal.API.Models;
 
 namespace HSEPortal.API.UnitTests;
 
-[TestFixture]
-public class WhenSavingContactDetails
+public class WhenSavingContactDetails : UnitTestBase
 {
-    private HttpTest httpTest;
-    private ContactFunctions contactFunctions;
+    private ContactFunctions contactFunctions = null!;
 
-    [SetUp]
-    public void Setup()
+    protected override void AdditionalSetup()
     {
-        httpTest = new HttpTest();
         contactFunctions = new ContactFunctions();
     }
 
     [Test]
-    [Category("ContactDetailsName")]
-    public async Task ShouldCallDynamicsWithContactDetailsName()
+    public async Task ShouldCallDynamicsWithContactDetails()
     {
-        HttpRequestMessage request = new HttpRequestMessage();
-        request.Headers.Add("firstName", "First Name");
-        request.Headers.Add("lastName", "Last Name");
+        var contactDetails = GivenContactDetails();
+        await WhenCallingContactFunction(contactDetails);
 
-        IFlurlResponse response = await contactFunctions.SaveContactDetailsName(request);
-
-        httpTest.ShouldHaveCalled("https://dynamicsapi")
-                .WithRequestJson(new { firstName = "First Name", lastName = "Last Name" });
-
-        Assert.AreEqual(200, response.StatusCode);
+        HttpTest.ShouldHaveCalled("https://dynamicsapi")
+            .WithRequestJson(contactDetails);
     }
 
-    [Test]
-    [Category("ContactDetailsPhoneNumber")]
-    public async Task ShouldCallDynamicsWithContactDetailsPhoneNumber()
+    private static ContactDetails GivenContactDetails()
     {
-        HttpRequestMessage request = new HttpRequestMessage();
-        request.Headers.Add("phoneNumber", "+441234567890");
-
-        IFlurlResponse response = await contactFunctions.SaveContactDetailsPhoneNumber(request);
-
-        httpTest.ShouldHaveCalled("https://dynamicsapi")
-                .WithRequestJson(new { phoneNumber = "+441234567890" });
-
-        Assert.AreEqual(200, response.StatusCode);
+        return new ContactDetails
+        {
+            FirstName = "First Name",
+            LastName = "Last Name",
+            PhoneNumber = "+441234567890",
+            Email = "email@email.com"
+        };
     }
 
-    [Test]
-    [Category("ContactDetailsEmail")]
-    public async Task ShouldCallDynamicsWithContactDetailsEmail()
+    private async Task WhenCallingContactFunction(ContactDetails contactDetails)
     {
-        HttpRequestMessage request = new HttpRequestMessage();
-        request.Headers.Add("email", "email@email.com");
-
-        IFlurlResponse response = await contactFunctions.SaveContactDetailsEmail(request);
-
-        httpTest.ShouldHaveCalled("https://dynamicsapi")
-                .WithRequestJson(new { email = "email@email.com" });
-
-        Assert.AreEqual(200, response.StatusCode);
+        var requestData = BuildHttpRequestData(contactDetails);
+        await contactFunctions.SaveContactDetailsName(requestData);
     }
 }
