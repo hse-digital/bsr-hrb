@@ -5,9 +5,9 @@ VisualStudioVersion = 17.5.33209.295
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "HSEPortal.Client", "HSEPortal.Client\HSEPortal.Client.esproj", "{67A47F56-E494-457C-B46F-3BD6A23429CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.API", "HSEPortal.API\HSEPortal.API.csproj", "{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HSEPortal.API", "HSEPortal.API\HSEPortal.API.csproj", "{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.API.UnitTests", "HSEPortal.API.UnitTests\HSEPortal.API.UnitTests.csproj", "{836365A3-602D-41B7-9FC6-C2257E95ED8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HSEPortal.API.UnitTests", "HSEPortal.API.UnitTests\HSEPortal.API.UnitTests.csproj", "{836365A3-602D-41B7-9FC6-C2257E95ED8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
