@@ -21,11 +21,15 @@ stages:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: | 
-                    az group create --name $(resourceGroupName) --location 'UK South'
+                    az group create \
+                      --name $(resourceGroupName) \
+                      --location uksouth
                     az deployment group create \
                       --name $(Build.BuildNumber) \
                       --resource-group $(resourceGroupName) \
-                      --template-file $(Build.SourcesDirectory)/infraestructure/main.bicep
+                      --template-file $(Build.SourcesDirectory)/infraestructure/main.bicep \
+                      --parameters swaName='$(swaName)'
+
 
 - stage: DEV
   variables: 
