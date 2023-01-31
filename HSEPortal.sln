@@ -7,6 +7,8 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "HSEPortal.Client", "HSEPort
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.API", "HSEPortal.API\HSEPortal.API.csproj", "{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.API.UnitTests", "HSEPortal.API.UnitTests\HSEPortal.API.UnitTests.csproj", "{836365A3-602D-41B7-9FC6-C2257E95ED8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5ACD4B7-32AC-464E-94B2-13B43EB7FEF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{836365A3-602D-41B7-9FC6-C2257E95ED8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{836365A3-602D-41B7-9FC6-C2257E95ED8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{836365A3-602D-41B7-9FC6-C2257E95ED8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{836365A3-602D-41B7-9FC6-C2257E95ED8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
