@@ -21,7 +21,7 @@ stages:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: | 
-                    az group create --name $(resourceGroupName) --location westeurope
+                    az group create --name $(resourceGroupName) --location 'UK South'
                     az deployment group create \
                       --name $(Build.BuildNumber) \
                       --resource-group $(resourceGroupName) \
