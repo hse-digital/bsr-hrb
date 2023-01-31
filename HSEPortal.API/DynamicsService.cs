@@ -1,5 +1,6 @@
 using Flurl;
 using Flurl.Http;
+using HSEPortal.API.Dynamics;
 using HSEPortal.API.Models;
 using Microsoft.Extensions.Configuration;
 
@@ -7,21 +8,21 @@ namespace HSEPortal.API;
 
 public class DynamicsService
 {
+    private readonly DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory;
     public const string EnvironmentUrlSettingName = "DynamicsEnvironmentUrl";
     private readonly string environmentUrl;
 
-    public DynamicsService(IConfiguration configuration)
+    public DynamicsService(DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory, IConfiguration configuration)
     {
+        this.dynamicsModelDefinitionFactory = dynamicsModelDefinitionFactory;
         environmentUrl = configuration[EnvironmentUrlSettingName];
     }
 
-    public async Task SaveContactRecord(ContactDetails contactDetails)
+    public async Task SaveRecord<T>(T record) where T : DynamicsEntity
     {
-        await environmentUrl.AppendPathSegment("contacts").PostJsonAsync(contactDetails);
-    }
-
-    public async Task SaveBuildingDetailsRecord(BuildingDetails buildingDetails)
-    {
-        await environmentUrl.AppendPathSegment("bsr_blocks").PostJsonAsync(buildingDetails);
+        var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<T>();
+        var data = modelDefinition.BuildDynamicsModel(record);
+        
+        await environmentUrl.AppendPathSegment(modelDefinition.Endpoint).PostJsonAsync(data);
     }
 }

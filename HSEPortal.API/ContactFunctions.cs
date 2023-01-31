@@ -19,6 +19,7 @@ public class ContactFunctions
     {
         var contactDetails = JsonSerializer.Deserialize<ContactDetails>(request.Body)!;
 
-        await dynamicsService.SaveContactRecord(contactDetails);
+        
+        await dynamicsService.SaveRecord(contactDetails);
     }
 }

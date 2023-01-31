@@ -1,6 +1,6 @@
 namespace HSEPortal.API.Models;
 
-public class ContactDetails
+public class ContactDetails : DynamicsEntity
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

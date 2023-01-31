@@ -19,13 +19,21 @@ public class WhenSavingContactDetails : UnitTestBase
         await WhenCallingContactFunction(contactDetails);
 
         HttpTest.ShouldHaveCalled($"{DynamicsEnvironmentUrl}/contacts")
-            .WithRequestJson(contactDetails);
+            .WithRequestJson(new
+            {
+                contactid = contactDetails.Id,
+                firstname = contactDetails.FirstName,
+                lastname = contactDetails.LastName,
+                emailaddress1 = contactDetails.Email,
+                telephone1 = contactDetails.PhoneNumber
+            });
     }
 
     private static ContactDetails GivenContactDetails()
     {
         return new ContactDetails
         {
+            Id = Guid.NewGuid().ToString(),
             FirstName = "First Name",
             LastName = "Last Name",
             PhoneNumber = "+441234567890",

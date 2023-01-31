@@ -19,6 +19,6 @@ public class BuildingFunctions
     {
         var buildingDetails = JsonSerializer.Deserialize<BuildingDetails>(request.Body)!;
 
-        await dynamicsService.SaveBuildingDetailsRecord(buildingDetails);
+        await dynamicsService.SaveRecord(buildingDetails);
     }
 }

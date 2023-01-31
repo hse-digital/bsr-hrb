@@ -19,18 +19,26 @@ public class WhenSavingBuildingDetails : UnitTestBase
         await WhenCallingBuildingFunction(buildingDetails);
 
         HttpTest.ShouldHaveCalled($"{DynamicsEnvironmentUrl}/bsr_blocks")
-                .WithRequestJson(buildingDetails);
+            .WithRequestJson(new
+            {
+                bsr_blockid = buildingDetails.Id,
+                bsr_numberofresidentialunits = buildingDetails.ResidentialUnits,
+                bsr_arepeoplelivingintheblock = buildingDetails.PeopleLivingInBlock,
+                bsr_blockheightinmetres = buildingDetails.Height,
+                bsr_nooffloorsabovegroundlevel = buildingDetails.FloorsAbove
+            });
     }
 
     private static BuildingDetails GivenBuildingDetails()
     {
         return new BuildingDetails
         {
+            Id = Guid.NewGuid().ToString(),
             BuildingName = "BuildingName",
             Height = 12.5,
             FloorsAbove = 500,
             ResidentialUnits = 10,
-            PeopleLivingInBuilding = PeopleLivingInBuilding.Yes
+            PeopleLivingInBlock = PeopleLivingInBuilding.Yes
         };
     }
 

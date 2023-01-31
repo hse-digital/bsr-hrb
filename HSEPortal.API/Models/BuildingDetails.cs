@@ -1,11 +1,11 @@
 namespace HSEPortal.API.Models;
 
-public class BuildingDetails
+public class BuildingDetails : DynamicsEntity
 {
     public string BuildingName { get; set; }
     public int FloorsAbove { get; set; }
     public double Height { get; set; }
-    public PeopleLivingInBuilding? PeopleLivingInBuilding { get; set; }
+    public PeopleLivingInBuilding? PeopleLivingInBlock { get; set; }
     public int ResidentialUnits { get; set; }
 }
 

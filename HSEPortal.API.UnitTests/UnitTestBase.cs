@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Flurl.Http.Testing;
+using HSEPortal.API.Dynamics;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +23,7 @@ public abstract class UnitTestBase
         configuration.SetupGet(x => x[DynamicsService.EnvironmentUrlSettingName]).Returns(DynamicsEnvironmentUrl);
 
         HttpTest = new HttpTest();
-        DynamicsService = new DynamicsService(configuration.Object);
+        DynamicsService = new DynamicsService(new DynamicsModelDefinitionFactory(), configuration.Object);
         AdditionalSetup();
     }
 
