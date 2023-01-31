@@ -18,7 +18,7 @@ public class WhenSavingContactDetails : UnitTestBase
         var contactDetails = GivenContactDetails();
         await WhenCallingContactFunction(contactDetails);
 
-        HttpTest.ShouldHaveCalled("https://dynamicsapi")
+        HttpTest.ShouldHaveCalled($"{DynamicsEnvironmentUrl}/contacts")
             .WithRequestJson(contactDetails);
     }
 

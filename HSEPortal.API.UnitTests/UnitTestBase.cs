@@ -2,6 +2,7 @@ using System.Text.Json;
 using Flurl.Http.Testing;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
 
@@ -10,14 +11,18 @@ namespace HSEPortal.API.UnitTests;
 [TestFixture]
 public abstract class UnitTestBase
 {
+    protected readonly string DynamicsEnvironmentUrl = "http://dynamics.api/v9.2";
     protected HttpTest HttpTest { get; private set; } = null!;
     protected DynamicsService DynamicsService { get; private set; } = null!;
 
     [SetUp]
     public void Setup()
     {
+        var configuration = new Mock<IConfiguration>();
+        configuration.SetupGet(x => x[DynamicsService.EnvironmentUrlSettingName]).Returns(DynamicsEnvironmentUrl);
+
         HttpTest = new HttpTest();
-        DynamicsService = new DynamicsService();
+        DynamicsService = new DynamicsService(configuration.Object);
         AdditionalSetup();
     }
 

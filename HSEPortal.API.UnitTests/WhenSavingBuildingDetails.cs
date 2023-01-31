@@ -18,8 +18,8 @@ public class WhenSavingBuildingDetails : UnitTestBase
         var buildingDetails = GivenBuildingDetails();
         await WhenCallingBuildingFunction(buildingDetails);
 
-        HttpTest.ShouldHaveCalled("https://dynamicsapi")
-            .WithRequestJson(buildingDetails);
+        HttpTest.ShouldHaveCalled($"{DynamicsEnvironmentUrl}/bsr_blocks")
+                .WithRequestJson(buildingDetails);
     }
 
     private static BuildingDetails GivenBuildingDetails()
