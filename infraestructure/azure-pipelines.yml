@@ -7,11 +7,33 @@ pool:
 variables:
 - group: HSEPORTAL
 
-steps:
-- task: AzureStaticWebApp@0
-  inputs:
-    app_location: 'HSEPortal.Client'
-    app_build_command: 'npm run prerender'
-    output_location: 'dist/hseportalclient/browser'
-    api_location: 'HSEPortal.API'
-    azure_static_web_apps_api_token: $(swatoken)
+stages:
+- stage: Infraestructure
+  jobs:
+  - job: 
+    steps:
+    - task: AzureCLI@2
+      displayName: Deploy Bicep template
+      inputs:
+        azureSubscription: 's118-dev-bsr-acs-services'
+        scriptType: 'ps'
+        scriptLocation: 'inlineScript'
+        inlineScript: | 
+                    az group create --name s118-dev-itf-acs-portal-rg --location westeurope
+                    az deployment group create \
+                      --name $(Build.BuildNumber) \
+                      --resource-group s118-dev-itf-acs-portal-rg \
+                      --template-file $(Build.SourcesDirectory)/infraestructure/main.bicep
+
+- stage: DEV
+  jobs:
+  - job:
+    steps:
+    - task: AzureStaticWebApp@0
+      displayName: Deploy SWA to DEV
+      inputs:
+        app_location: 'HSEPortal.Client'
+        app_build_command: 'npm run prerender'
+        output_location: 'dist/hseportalclient/browser'
+        api_location: 'HSEPortal.API'
+        azure_static_web_apps_api_token: $(swatoken)
