@@ -9,6 +9,8 @@ variables:
 
 stages:
 - stage: Infraestructure
+  variables: 
+  - group: HSEPortal-DEV
   jobs:
   - job: 
     steps:
@@ -16,16 +18,18 @@ stages:
       displayName: Deploy Bicep template
       inputs:
         azureSubscription: 's118-dev-bsr-acs-services'
-        scriptType: 'ps'
+        scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: | 
-                    az group create --name s118-dev-itf-acs-portal-rg --location westeurope
+                    az group create --name $(resourceGroupName) --location westeurope
                     az deployment group create \
                       --name $(Build.BuildNumber) \
-                      --resource-group s118-dev-itf-acs-portal-rg \
+                      --resource-group $(resourceGroupName) \
                       --template-file $(Build.SourcesDirectory)/infraestructure/main.bicep
 
 - stage: DEV
+  variables: 
+  - group: HSEPortal-DEV
   jobs:
   - job:
     steps:
