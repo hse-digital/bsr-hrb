@@ -1,12 +1,11 @@
 param swaName string
-param swaLocation string
 
 @allowed([ 'Free', 'Standard' ])
 param sku string = 'Standard'
 
 resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     name: swaName
-    location: swaLocation
+    location: 'global'
     tags: null
     properties: {}
     sku: {
