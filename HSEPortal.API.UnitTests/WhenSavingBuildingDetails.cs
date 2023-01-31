@@ -9,7 +9,7 @@ public class WhenSavingBuildingDetails : UnitTestBase
 
     protected override void AdditionalSetup()
     {
-        buildingFunctions = new BuildingFunctions();
+        buildingFunctions = new BuildingFunctions(DynamicsService);
     }
 
     [Test]

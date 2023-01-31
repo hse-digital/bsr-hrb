@@ -9,7 +9,7 @@ public class WhenSavingContactDetails : UnitTestBase
 
     protected override void AdditionalSetup()
     {
-        contactFunctions = new ContactFunctions();
+        contactFunctions = new ContactFunctions(DynamicsService);
     }
 
     [Test]

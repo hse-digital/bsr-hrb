@@ -1,4 +1,3 @@
-using Flurl.Http;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using System.Text.Json;
@@ -8,12 +7,18 @@ namespace HSEPortal.API;
 
 public class ContactFunctions
 {
+    private readonly DynamicsService dynamicsService;
+
+    public ContactFunctions(DynamicsService dynamicsService)
+    {
+        this.dynamicsService = dynamicsService;
+    }
+
     [Function(nameof(SaveContactDetailsName))]
     public async Task SaveContactDetailsName([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData request)
     {
-        var contactDetails = JsonSerializer.Deserialize<ContactDetails>(request.Body);
+        var contactDetails = JsonSerializer.Deserialize<ContactDetails>(request.Body)!;
 
-        await "https://dynamicsapi"
-            .PostJsonAsync(contactDetails);
+        await dynamicsService.SaveContactRecord(contactDetails);
     }
 }

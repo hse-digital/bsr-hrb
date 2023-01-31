@@ -1,10 +1,9 @@
+using System.Text.Json;
 using Flurl.Http.Testing;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Moq;
-using Newtonsoft.Json;
 using NUnit.Framework;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace HSEPortal.API.UnitTests;
 
@@ -12,11 +11,13 @@ namespace HSEPortal.API.UnitTests;
 public abstract class UnitTestBase
 {
     protected HttpTest HttpTest { get; private set; } = null!;
+    protected DynamicsService DynamicsService { get; private set; } = null!;
 
     [SetUp]
     public void Setup()
     {
         HttpTest = new HttpTest();
+        DynamicsService = new DynamicsService();
         AdditionalSetup();
     }
 
