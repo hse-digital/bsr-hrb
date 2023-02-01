@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseFormComponent } from 'src/app/helpers/base-form.component';
+import { BuildingRegistrationService } from '../../building-registration.service';
 
 @Component({
   selector: 'hse-building-name',
@@ -8,7 +9,7 @@ import { BaseFormComponent } from 'src/app/helpers/base-form.component';
 })
 export class BuildingNameComponent extends BaseFormComponent {
 
-  constructor(router: Router) {
+  constructor(router: Router, private buildingRegistrationService: BuildingRegistrationService) {
     super(router);
   }
 
@@ -19,5 +20,9 @@ export class BuildingNameComponent extends BaseFormComponent {
   canContinue(): boolean {
     this.nameHasErrors = !this.building.name;
     return !this.nameHasErrors;
+  }
+
+  updateBuildingName(buildingName: string) {
+    this.buildingRegistrationService.setBuildingName(buildingName);
   }
 }

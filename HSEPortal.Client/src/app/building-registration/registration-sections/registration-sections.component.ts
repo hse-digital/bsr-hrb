@@ -1,9 +1,16 @@
 import { Component } from "@angular/core";
+import { BuildingRegistrationService } from "../building-registration.service";
 
 @Component({
     templateUrl: './registration-sections.component.html'
 })
 export class RegistrationSectionsComponent {
+
+    constructor(private buildingRegistrationService: BuildingRegistrationService){}
+
+    getBuildingName() {
+        return this.buildingRegistrationService.buildingRegistrationModel.BuildingName;
+    }
 
     tasks = [
         {

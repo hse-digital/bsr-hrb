@@ -17,11 +17,13 @@
 
           <govuk-input id="first-name" label="First name" 
                        [(model)]="contactDetails.firstName"
+                       (modelChange)="updateContactFirstName($event)"
                        [errorText]="getErrorDescription(firstNameInError, 'Enter your first name')"
                        class="govuk-!-margin-bottom-5" />
 
           <govuk-input id="last-name" label="Last name" 
                        [(model)]="contactDetails.lastName"
+                       (modelChange)="updateContactLastName($event)"
                        [errorText]="getErrorDescription(lastNameInError, 'Enter your last name')" />
         </govuk-fieldset>
       </div>

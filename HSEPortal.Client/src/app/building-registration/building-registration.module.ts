@@ -7,6 +7,8 @@ import { CommonModule } from "@angular/common";
 import { BuildingRegistrationComponent } from "./building-registration.component";
 import { RegistrationSectionsComponent } from "./registration-sections/registration-sections.component";
 import { StartComponent } from './start/start.component';
+import { BuildingRegistrationService } from "./building-registration.service";
+import { HttpClientModule } from "@angular/common/http";
 
 const routes: Routes = [
   {
@@ -30,10 +32,14 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     FormsModule,
     CommonModule,
-    HseAngularModule
+    HseAngularModule,
+    HttpClientModule
   ],
   exports: [
     RouterModule
+  ],
+  providers: [
+    BuildingRegistrationService
   ]
 })
 export class BuildingRegistrationModule {

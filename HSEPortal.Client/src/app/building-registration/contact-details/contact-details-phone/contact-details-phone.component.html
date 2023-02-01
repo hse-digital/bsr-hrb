@@ -16,6 +16,7 @@
 
           <govuk-input id="phone-number"
                        [(model)]="contactDetails.phoneNumber"
+                       (modelChange)="updateContactPhoneNumber($event)"
                        [errorText]="getErrorDescription(phoneNumberHasErrors, 'Enter a UK telephone number')"
                        class="govuk-!-margin-bottom-1" />
         </govuk-fieldset>

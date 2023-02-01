@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseFormComponent } from 'src/app/helpers/base-form.component';
+import { BuildingRegistrationService } from '../../building-registration.service';
 
 @Component({
   templateUrl: './contact-details-phone.component.html'
 })
 export class ContactDetailsPhoneComponent extends BaseFormComponent {
 
-  constructor(router: Router) {
+  constructor(router: Router, private buildingRegistrationService: BuildingRegistrationService) {
     super(router);
   }
 
@@ -18,6 +19,10 @@ export class ContactDetailsPhoneComponent extends BaseFormComponent {
   canContinue(): boolean {
     this.phoneNumberHasErrors = !this.isPhoneNumberValid();
     return !this.phoneNumberHasErrors;
+  }
+
+  updateContactPhoneNumber(contactPhoneNumber: string) {
+    this.buildingRegistrationService.setContactPhoneNumber(contactPhoneNumber);
   }
 
   private _expectedPhonePatterns = [

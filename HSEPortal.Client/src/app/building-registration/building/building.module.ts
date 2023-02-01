@@ -8,6 +8,7 @@ import { BuildingHeightComponent } from "./height/height.component";
 import { PeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
 import { ResidentialUnitsComponent } from "./residential-units/residential-units.component";
 import { BuildingNameComponent } from './building-name/building-name.component';
+import { HttpClientModule } from "@angular/common/http";
 
 const routes: Routes = [
   { path: 'intro', component: BuildingBlocksIntroComponent },
@@ -30,7 +31,8 @@ const routes: Routes = [
     imports: [
         RouterModule.forChild(routes),
         HseAngularModule,
-        CommonModule
+        CommonModule,
+        HttpClientModule
     ]
 })
 export class BuildingModule {
