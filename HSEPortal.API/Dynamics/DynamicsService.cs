@@ -1,10 +1,9 @@
 using Flurl;
 using Flurl.Http;
-using HSEPortal.API.Dynamics;
 using HSEPortal.API.Models;
 using Microsoft.Extensions.Configuration;
 
-namespace HSEPortal.API;
+namespace HSEPortal.API.Dynamics;
 
 public class DynamicsService
 {

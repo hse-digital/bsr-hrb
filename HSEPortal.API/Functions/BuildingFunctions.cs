@@ -1,9 +1,10 @@
 using System.Text.Json;
+using HSEPortal.API.Dynamics;
 using HSEPortal.API.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 
-namespace HSEPortal.API;
+namespace HSEPortal.API.Functions;
 
 public class BuildingFunctions
 {

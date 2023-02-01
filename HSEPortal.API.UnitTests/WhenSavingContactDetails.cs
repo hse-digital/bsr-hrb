@@ -1,3 +1,4 @@
+using HSEPortal.API.Functions;
 using NUnit.Framework;
 using HSEPortal.API.Models;
 

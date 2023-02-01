@@ -1,4 +1,5 @@
-﻿using HSEPortal.API.Models;
+﻿using HSEPortal.API.Functions;
+using HSEPortal.API.Models;
 using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests;
