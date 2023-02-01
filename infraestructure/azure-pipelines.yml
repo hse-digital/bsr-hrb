@@ -18,12 +18,12 @@ stages:
       displayName: Deploy Bicep template
       inputs:
         azureSubscription: 's118-dev-bsr-acs-services'
-        scriptType: 'bash'
+        scriptType: pscore
         scriptLocation: 'inlineScript'
         inlineScript: | 
                     az group create --name $(resourceGroupName) --location uksouth
-                    az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' \
-                      --parameters swaName='$(swaName)' swaLocation='westeurope \
+                    az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' `
+                      --parameters swaName='$(swaName)' swaLocation='westeurope `
                       | Tee-Object -Variable deployment
                       $AzDeployment = $deployment | ConvertFrom-Json
                       ##vso[task.setvariable variable=swaToken]$($AzDeployment.properties.outputs.swaToken)
