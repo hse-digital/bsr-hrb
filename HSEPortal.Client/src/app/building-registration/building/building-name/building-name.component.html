@@ -6,19 +6,18 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
-          <govuk-error-link *ngIf="nameHasErrors" anchorId="input-building-name" message="You must enter a name for the building" />
+          <govuk-error-link *ngIf="nameHasErrors" anchorId="input-building-name" message="Enter this building's name" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Provide a name for the building" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+        <govuk-fieldset title="What is this building's name?" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-5' class='govuk-!-margin-bottom-4'>
 
-          <govuk-body>This will help you to keep track of your application.</govuk-body>
+          <govuk-body>When your building is registered, this is the name that will appear on the public register of high-rise buildings in England.</govuk-body>
 
-          <govuk-body>It will also help us to identify the building when we are talking to you about it.</govuk-body>
 
-          <govuk-input id="building-name" label="Your building name" labelClass="govuk-label--s"
+          <govuk-input id="building-name" label="Building name" labelClass="govuk-label--s"
                        [(model)]="building.name"
-                       [errorText]="getErrorDescription(nameHasErrors, 'Enter a name for the building')"
-                       hint="For example 'The Gherkin', 'The Gherkin at 30 Mary Axe', or '30 Mary Axe'. Or tell us your internal reference number."
+                       [errorText]="getErrorDescription(nameHasErrors, 'Enter this building\'s name')"
+                       hint="For example 'The Gherkin'."
                        hintClass="no-margin-top" />
 
         </govuk-fieldset>
