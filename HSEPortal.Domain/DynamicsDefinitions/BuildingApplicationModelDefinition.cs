@@ -1,18 +1,18 @@
-using HSEPortal.API.Models;
+using HSEPortal.Domain.Entities;
 
-namespace HSEPortal.API.Dynamics;
+namespace HSEPortal.Domain.DynamicsDefinitions;
 
 public class BuildingApplicationModelDefinition : DynamicsModelDefinition<BuildingApplication, DynamicsBuildingApplication>
 {
     public override string Endpoint => "bsr_buildingapplications";
-    
+
     public override DynamicsBuildingApplication BuildDynamicsEntity(BuildingApplication entity)
     {
-        throw new NotImplementedException();
+        return new DynamicsBuildingApplication(entity.Name, entity.Id);
     }
 
     public override BuildingApplication BuildEntity(DynamicsBuildingApplication dynamicsEntity)
     {
-        throw new NotImplementedException();
+        return new BuildingApplication(dynamicsEntity.bsr_name, dynamicsEntity.bsr_buildingapplicationid);
     }
 }

@@ -1,6 +1,6 @@
 using FluentAssertions;
-using HSEPortal.API.Dynamics;
-using HSEPortal.API.Models;
+using HSEPortal.Domain.DynamicsDefinitions;
+using HSEPortal.Domain.Entities;
 using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.ModelDefinitions;

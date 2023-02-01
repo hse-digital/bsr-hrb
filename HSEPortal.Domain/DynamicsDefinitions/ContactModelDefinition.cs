@@ -1,6 +1,6 @@
-using HSEPortal.API.Models;
+using HSEPortal.Domain.Entities;
 
-namespace HSEPortal.API.Dynamics;
+namespace HSEPortal.Domain.DynamicsDefinitions;
 
 public class ContactModelDefinition : DynamicsModelDefinition<Contact, DynamicsContact>
 {
@@ -8,14 +8,7 @@ public class ContactModelDefinition : DynamicsModelDefinition<Contact, DynamicsC
 
     public override DynamicsContact BuildDynamicsEntity(Contact entity)
     {
-        return new DynamicsContact
-        {
-            contactid = entity.Id,
-            firstname = entity.FirstName,
-            lastname = entity.LastName,
-            telephone1 = entity.PhoneNumber,
-            emailaddress1 = entity.Email
-        };
+        return new DynamicsContact(entity.FirstName, entity.LastName, entity.PhoneNumber, entity.Email, contactid: entity.Id, odataReferenceId: $"/bsr_buildings({entity.BuildingId})");
     }
 
     public override Contact BuildEntity(DynamicsContact dynamicsEntity)

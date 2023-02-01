@@ -1,6 +1,6 @@
-using HSEPortal.API.Models;
+using HSEPortal.Domain.Entities;
 
-namespace HSEPortal.API.Dynamics;
+namespace HSEPortal.Domain.DynamicsDefinitions;
 
 public class BlockModelDefinition : DynamicsModelDefinition<Block, DynamicsBlock>
 {

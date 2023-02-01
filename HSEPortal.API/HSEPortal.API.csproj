@@ -23,4 +23,7 @@
     <ItemGroup>
         <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\HSEPortal.Domain\HSEPortal.Domain.csproj" />
+    </ItemGroup>
 </Project>

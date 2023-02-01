@@ -1,13 +1,13 @@
-using HSEPortal.API.Models;
+using HSEPortal.Domain.Entities;
 
-namespace HSEPortal.API.Dynamics;
+namespace HSEPortal.Domain.DynamicsDefinitions;
 
 public abstract class DynamicsModelDefinition<TEntity, TDynamicsEntity> : IDynamicsModelDefinition where TEntity : Entity
     where TDynamicsEntity : DynamicsEntity<TEntity>
 {
     public abstract string Endpoint { get; }
 
-    public abstract DynamicsEntity<TEntity> BuildDynamicsEntity(TEntity entity);
+    public abstract TDynamicsEntity BuildDynamicsEntity(TEntity entity);
 
     public abstract TEntity BuildEntity(TDynamicsEntity dynamicsEntity);
 }

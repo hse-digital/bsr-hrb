@@ -28,8 +28,10 @@ stages:
                       --name $(Build.BuildNumber) \
                       --resource-group $(resourceGroupName) \
                       --template-file $(Build.SourcesDirectory)/infraestructure/main.bicep \
-                      --parameters swaName='$(swaName)' swaLocation='westeurope'
-
+                      --parameters swaName='$(swaName)' swaLocation='westeurope' `
+                      | Tee-Object -Variable deployment
+                      $AzDeployment = $deployment | ConvertFrom-Json
+                      ##vso[task.setvariable variable=swaToken]$($AzDeployment.properties.outputs.swaToken)
 
 # - stage: DEV
 #   variables: 
@@ -44,4 +46,4 @@ stages:
 #         app_build_command: 'npm run prerender'
 #         output_location: 'dist/hseportalclient/browser'
 #         api_location: 'HSEPortal.API'
-#         azure_static_web_apps_api_token: $(swatoken)
+#         azure_static_web_apps_api_token: $(swaToken)

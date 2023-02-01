@@ -1,4 +1,4 @@
-using HSEPortal.API.Models;
+using HSEPortal.Domain.Entities;
 
 namespace HSEPortal.API.UnitTests.ModelDefinitions;
 
