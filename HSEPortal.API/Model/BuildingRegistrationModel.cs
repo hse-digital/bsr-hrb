@@ -1,6 +1,6 @@
 namespace HSEPortal.API.Model;
 
-public class BuildingApplicationModel
+public class BuildingRegistrationModel
 {
     public string BuildingName { get; set; }
     public string ContactFirstName { get; set; }

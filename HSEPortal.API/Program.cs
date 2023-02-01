@@ -20,7 +20,7 @@ host.Run();
 static void ConfigureServices(HostBuilderContext builderContext, IServiceCollection serviceCollection)
 {
     serviceCollection.Configure<DynamicsOptions>(builderContext.Configuration.GetSection(DynamicsOptions.Dynamics));
-    
+
     serviceCollection.AddTransient<DynamicsService>();
     serviceCollection.AddTransient<DynamicsModelDefinitionFactory>();
 }
@@ -29,7 +29,11 @@ namespace HSEPortal.API
 {
     public class SystemTextJsonSerializer : ISerializer
     {
-        private readonly JsonSerializerOptions serializerOptions = new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+        private readonly JsonSerializerOptions serializerOptions = new()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNameCaseInsensitive = true
+        };
 
         public string Serialize(object obj)
         {

@@ -75,9 +75,9 @@ public class WhenCreatingABuildingApplication : UnitTestBase
             .WithRequestJson(new DynamicsContact(buildingApplicationModel.ContactFirstName, buildingApplicationModel.ContactLastName, buildingApplicationModel.ContactPhoneNumber, buildingApplicationModel.ContactEmailAddress, odataReferenceId: $"/bsr_buildings({buildingReturnId})"));
     }
 
-    private BuildingApplicationModel GivenABuildingApplicationModel()
+    private BuildingRegistrationModel GivenABuildingApplicationModel()
     {
-        return new BuildingApplicationModel
+        return new BuildingRegistrationModel
         {
             BuildingName = "BuildingName",
             ContactFirstName = "Diego",
@@ -87,9 +87,9 @@ public class WhenCreatingABuildingApplication : UnitTestBase
         };
     }
 
-    private async Task WhenSendingANewBuildingApplication(BuildingApplicationModel buildingApplicationModel)
+    private async Task WhenSendingANewBuildingApplication(BuildingRegistrationModel buildingRegistrationModel)
     {
-        var requestData = BuildHttpRequestData(buildingApplicationModel);
+        var requestData = BuildHttpRequestData(buildingRegistrationModel);
         await buildingApplicationFunctions.NewBuildingApplication(requestData);
     }
 }

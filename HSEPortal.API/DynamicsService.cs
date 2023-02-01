@@ -22,15 +22,15 @@ public class DynamicsService
         this.dynamicsOptions = dynamicsOptions.Value;
     }
 
-    public async Task RegisterNewBuildingApplication(BuildingApplicationModel buildingApplicationModel)
+    public async Task RegisterNewBuildingApplication(BuildingRegistrationModel buildingRegistrationModel)
     {
         var authenticationToken = await GetAuthenticationToken();
-        var buildingApplication = await CreateBuildingApplication(buildingApplicationModel, authenticationToken);
-        var building = await CreateBuilding(buildingApplicationModel, buildingApplication, authenticationToken);
-        await CreateContact(buildingApplicationModel, building, authenticationToken);
+        var buildingApplication = await CreateBuildingApplication(buildingRegistrationModel, authenticationToken);
+        var building = await CreateBuilding(buildingRegistrationModel, buildingApplication, authenticationToken);
+        await CreateContact(buildingRegistrationModel, building, authenticationToken);
     }
 
-    private async Task<BuildingApplication> CreateBuildingApplication(BuildingApplicationModel model, string authenticationToken)
+    private async Task<BuildingApplication> CreateBuildingApplication(BuildingRegistrationModel model, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<BuildingApplication, DynamicsBuildingApplication>();
         var buildingApplication = new BuildingApplication(model.BuildingName);
@@ -45,7 +45,7 @@ public class DynamicsService
         return buildingApplication with { Id = buildingApplicationId };
     }
 
-    private async Task<Building> CreateBuilding(BuildingApplicationModel model, BuildingApplication buildingApplication, string authenticationToken)
+    private async Task<Building> CreateBuilding(BuildingRegistrationModel model, BuildingApplication buildingApplication, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<Building, DynamicsBuilding>();
         var building = new Building(model.BuildingName, BuildingApplicationId: buildingApplication.Id);
@@ -60,7 +60,7 @@ public class DynamicsService
         return building with { Id = buildingId };
     }
 
-    private async Task CreateContact(BuildingApplicationModel model, Building building, string authenticationToken)
+    private async Task CreateContact(BuildingRegistrationModel model, Building building, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<Contact, DynamicsContact>();
         var contact = new Contact(model.ContactFirstName, model.ContactLastName, model.ContactPhoneNumber, model.ContactEmailAddress, BuildingId: building.Id);
