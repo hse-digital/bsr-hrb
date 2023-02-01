@@ -1,70 +1,109 @@
-﻿using Flurl.Http;
-using Flurl.Http.Testing;
-using Grpc.Core;
+﻿using FluentAssertions;
+using Flurl;
+using Flurl.Http;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
-using NUnit.Framework;
+using Microsoft.Extensions.Options;
+using Xunit;
 
 namespace HSEPortal.API.IntegrationTests;
 
-public class WhenCreatingABuildingApplication : UnitTestBase
+public class WhenCreatingABuildingApplication : IntegrationTestBase, IDisposable
 {
-    private BuildingApplicationFunctions buildingApplicationFunctions = null!;
-    private const string dynamicsAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkd";
-    private const string buildingApplicationReturnId = "EC6B32C8-0188-4CCE-B58C-D6F05FEEF79B";
-    private const string buildingReturnId = "06F8C7E4-F41A-4EB4-B8E2-3501701A4A53";
+    private readonly IOptions<DynamicsOptions> dynamicsOptions;
+    private readonly IOptions<SwaOptions> swaOptions;
+    private readonly DynamicsService dynamicsService;
 
-    protected override void AdditionalSetup()
+    public WhenCreatingABuildingApplication(IOptions<DynamicsOptions> dynamicsOptions, IOptions<SwaOptions> swaOptions, DynamicsService dynamicsService)
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService);
-        HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = dynamicsAuthToken });
-        HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(buildingApplicationReturnId));
-        HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(buildingReturnId));
+        this.dynamicsOptions = dynamicsOptions;
+        this.swaOptions = swaOptions;
+        this.dynamicsService = dynamicsService;
     }
 
-    [Test]
-    public async Task ShouldAcquireAuthenticationTokenForDynamics()
+    [Fact]
+    public async Task ShouldCreateRelatedEntitiesInDynamics()
     {
         var buildingApplicationModel = GivenABuildingApplicationModel();
-        await WhenSendingANewBuildingApplication(buildingApplicationModel);
+        await GivenAnAuthenticationToken();
+        await WhenSendingTheRequestToCreateABuildingApplication(buildingApplicationModel);
 
-        HttpTest.ShouldHaveCalled($"https://login.microsoftonline.com/{DynamicsOptions.TenantId}/oauth2/token")
-            .WithRequestUrlEncoded(new
-            {
-                grant_type = "client_credentials",
-                client_id = DynamicsOptions.ClientId,
-                client_secret = DynamicsOptions.ClientSecret,
-                resource = DynamicsOptions.EnvironmentUrl
-            });
+        await ThenShouldCreateBuildingApplicationRecord(buildingApplicationModel);
+        await ThenShouldCreateBuildingRecord(buildingApplicationModel);
+        await ThenShouldCreateContactRecord(buildingApplicationModel);
     }
 
-    [Test]
-    public async Task ShouldCreateRelatedEntities()
-    {
-        var buildingApplicationModel = GivenABuildingApplicationModel();
-        await WhenSendingANewBuildingApplication(buildingApplicationModel);
-
-        // HttpTest
-        
-    }
-
-    private BuildingApplicationModel GivenABuildingApplicationModel()
+    private static BuildingApplicationModel GivenABuildingApplicationModel()
     {
         return new BuildingApplicationModel
         {
-            BuildingName = "BuildingName",
-            ContactFirstName = "Diego",
-            ContactLastName = "Santin",
-            ContactPhoneNumber = "+44 808 157 0192",
-            ContactEmailAddress = "dsantin@codec.ie"
+            BuildingName = "IntegrationTestBuildingName",
+            ContactFirstName = "IntegrationTestFirstName",
+            ContactLastName = "IntegrationTestLastName",
+            ContactEmailAddress = "IntegrationTestEmailAddress",
+            ContactPhoneNumber = "IntegrationTestPhoneNumber"
         };
     }
 
-    private async Task WhenSendingANewBuildingApplication(BuildingApplicationModel buildingApplicationModel)
+    private string token = null!;
+    private async Task GivenAnAuthenticationToken()
     {
-        var requestData = BuildHttpRequestData(buildingApplicationModel);
-        await buildingApplicationFunctions.NewBuildingApplication(requestData);
+        token = await dynamicsService.GetAuthenticationToken();
+    }
+
+    private async Task WhenSendingTheRequestToCreateABuildingApplication(BuildingApplicationModel buildingApplicationModel)
+    {
+        await swaOptions.Value.Url.AppendPathSegments("api", nameof(BuildingApplicationFunctions.NewBuildingApplication))
+            .PostJsonAsync(buildingApplicationModel);
+    }
+
+    private DynamicsBuildingApplication newBuildingApplication = null!;
+
+    private async Task ThenShouldCreateBuildingApplicationRecord(BuildingApplicationModel buildingApplicationModel)
+    {
+        var buildApplications = await dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", "bsr_buildingapplications")
+            .SetQueryParam("$filter", $"bsr_name eq '{buildingApplicationModel.BuildingName}'")
+            .WithOAuthBearerToken(token)
+            .GetJsonAsync<DynamicsResponse<DynamicsBuildingApplication>>();
+
+        newBuildingApplication = buildApplications.Value.Single();
+        newBuildingApplication.bsr_name.Should().Be(buildingApplicationModel.BuildingName);
+    }
+
+    private DynamicsBuilding newBuilding = null!;
+
+    private async Task ThenShouldCreateBuildingRecord(BuildingApplicationModel buildingApplicationModel)
+    {
+        var buildings = await dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", "bsr_buildings")
+            .SetQueryParam("$filter", $"bsr_name eq '{buildingApplicationModel.BuildingName}'")
+            .WithOAuthBearerToken(token)
+            .GetJsonAsync<DynamicsResponse<DynamicsBuilding>>();
+
+        newBuilding = buildings.Value.Single();
+        newBuilding.bsr_name.Should().Be(buildingApplicationModel.BuildingName);
+    }
+
+    private DynamicsContact newContact = null!;
+
+    private async Task ThenShouldCreateContactRecord(BuildingApplicationModel buildingApplicationModel)
+    {
+        var contacts = await dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", "contacts")
+            .SetQueryParam("$filter", $"firstname eq '{buildingApplicationModel.ContactFirstName}' and lastname eq '{buildingApplicationModel.ContactLastName}' and telephone1 eq '{buildingApplicationModel.ContactPhoneNumber}' and emailaddress1 eq '{buildingApplicationModel.ContactEmailAddress}'")
+            .WithOAuthBearerToken(token)
+            .GetJsonAsync<DynamicsResponse<DynamicsContact>>();
+
+        newContact = contacts.Value.Single();
+        newContact.firstname.Should().Be(buildingApplicationModel.ContactFirstName);
+        newContact.lastname.Should().Be(buildingApplicationModel.ContactLastName);
+        newContact.telephone1.Should().Be(buildingApplicationModel.ContactPhoneNumber);
+        newContact.emailaddress1.Should().Be(buildingApplicationModel.ContactEmailAddress);
+    }
+
+    public void Dispose()
+    {
+        dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", $"bsr_buildingapplications({newBuildingApplication.bsr_buildingapplicationid})").WithOAuthBearerToken(token).DeleteAsync().GetAwaiter().GetResult();
+        dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", $"bsr_buildings({newBuilding.bsr_buildingid})").WithOAuthBearerToken(token).DeleteAsync().GetAwaiter().GetResult();
+        dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", $"contacts({newContact.contactid})").WithOAuthBearerToken(token).DeleteAsync().GetAwaiter().GetResult();
     }
 }
-

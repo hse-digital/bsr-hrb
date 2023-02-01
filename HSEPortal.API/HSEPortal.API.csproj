@@ -6,10 +6,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Flurl.Http" Version="3.2.4" />
-        <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.8.0" />
-        <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.0.13" />
-        <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.7.0" />
+        <PackageReference Include="Flurl.Http" Version="3.2.4"/>
+        <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.8.0"/>
+        <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.0.13"/>
+        <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.7.0"/>
     </ItemGroup>
     <ItemGroup>
         <None Update="host.json">
@@ -21,9 +21,9 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext" />
+        <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\HSEPortal.Domain\HSEPortal.Domain.csproj" />
+        <ProjectReference Include="..\HSEPortal.Domain\HSEPortal.Domain.csproj"/>
     </ItemGroup>
 </Project>

@@ -22,14 +22,6 @@ public class DynamicsService
         this.dynamicsOptions = dynamicsOptions.Value;
     }
 
-    public async Task SaveRecord<TEntity, TDynamicsEntity>(TEntity record) where TEntity : Entity
-        where TDynamicsEntity : DynamicsEntity<TEntity>
-    {
-        var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<TEntity, TDynamicsEntity>();
-        var dynamicsEntity = modelDefinition.BuildDynamicsEntity(record);
-        await dynamicsOptions.EnvironmentUrl.AppendPathSegment(modelDefinition.Endpoint).PostJsonAsync(dynamicsEntity);
-    }
-
     public async Task RegisterNewBuildingApplication(BuildingApplicationModel buildingApplicationModel)
     {
         var authenticationToken = await GetAuthenticationToken();
@@ -80,7 +72,7 @@ public class DynamicsService
             .PostJsonAsync(dynamicsContact);
     }
 
-    private async Task<string> GetAuthenticationToken()
+    internal async Task<string> GetAuthenticationToken()
     {
         var response = await $"https://login.microsoftonline.com/{dynamicsOptions.TenantId}/oauth2/token"
             .PostUrlEncodedAsync(new
