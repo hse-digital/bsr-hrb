@@ -27,8 +27,14 @@ stages:
                       | Tee-Object -Variable deployment
                       $AzDeployment = $deployment | ConvertFrom-Json
                       ##vso[task.setvariable variable=swaToken]$($AzDeployment.properties.outputs.swaToken)
+    - task: DotNetCoreCLI@2
+      displayName: "Run Unit Tests"
+      inputs:
+        command: 'test'
+        projects: '**/HSEPortal.API.UnitTests.csproj'
 
 - stage: DEV
+  dependsOn: Infraestructure
   variables: 
   - group: HSEPortal-DEV
   jobs:
