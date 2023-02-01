@@ -27,6 +27,10 @@ stages:
                       | Tee-Object -Variable deployment
                       $AzDeployment = $deployment | ConvertFrom-Json
                       ##vso[task.setvariable variable=swaToken]$($AzDeployment.properties.outputs.swaToken)
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: '"$(swaToken)"'
 
 # - stage: DEV
 #   variables: 
