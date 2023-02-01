@@ -23,7 +23,7 @@ stages:
         inlineScript: | 
                     az group create --name $(resourceGroupName) --location uksouth
                     az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' `
-                      --parameters swaName='$(swaName)' swaLocation='westeurope `
+                      --parameters swaName='$(swaName)' swaLocation='westeurope' `
                       | Tee-Object -Variable deployment
                       $AzDeployment = $deployment | ConvertFrom-Json
                       ##vso[task.setvariable variable=swaToken]$($AzDeployment.properties.outputs.swaToken)
