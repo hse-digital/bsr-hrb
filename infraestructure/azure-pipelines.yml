@@ -27,17 +27,19 @@ stages:
                       | Tee-Object -Variable deployment
                       $AzDeployment = $deployment | ConvertFrom-Json
                       ##vso[task.setvariable variable=swaToken]$($AzDeployment.properties.outputs.swaToken)
+
+- stage: DEV
+  variables: 
+  - group: HSEPortal-DEV
+  jobs:
+  - job:
+    steps:
     - task: PowerShell@2
       inputs:
         targetType: 'inline'
         script: '"$(swaToken)"'
 
-# - stage: DEV
-#   variables: 
-#   - group: HSEPortal-DEV
-#   jobs:
-#   - job:
-#     steps:
+
 #     - task: AzureStaticWebApp@0
 #       displayName: Deploy SWA to DEV
 #       inputs:
