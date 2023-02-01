@@ -4,7 +4,7 @@ using HSEPortal.API.Models;
 
 namespace HSEPortal.API.UnitTests;
 
-public class WhenSavingContactDetails : UnitTestBase
+public class WhenSavingContact : UnitTestBase
 {
     private ContactFunctions contactFunctions = null!;
 
@@ -14,25 +14,25 @@ public class WhenSavingContactDetails : UnitTestBase
     }
 
     [Test]
-    public async Task ShouldCallDynamicsWithContactDetails()
+    public async Task ShouldCallDynamicsWithContactData()
     {
-        var contactDetails = GivenContactDetails();
+        var contactDetails = GivenAContact();
         await WhenCallingContactFunction(contactDetails);
 
         HttpTest.ShouldHaveCalled($"{DynamicsEnvironmentUrl}/contacts")
-            .WithRequestJson(new
+            .WithRequestJson(new DynamicsContact
             {
                 contactid = contactDetails.Id,
                 firstname = contactDetails.FirstName,
                 lastname = contactDetails.LastName,
-                emailaddress1 = contactDetails.Email,
-                telephone1 = contactDetails.PhoneNumber
+                telephone1 = contactDetails.PhoneNumber,
+                emailaddress1 = contactDetails.Email
             });
     }
 
-    private static ContactDetails GivenContactDetails()
+    private static Contact GivenAContact()
     {
-        return new ContactDetails
+        return new Contact
         {
             Id = Guid.NewGuid().ToString(),
             FirstName = "First Name",
@@ -42,9 +42,9 @@ public class WhenSavingContactDetails : UnitTestBase
         };
     }
 
-    private async Task WhenCallingContactFunction(ContactDetails contactDetails)
+    private async Task WhenCallingContactFunction(Contact contact)
     {
-        var requestData = BuildHttpRequestData(contactDetails);
+        var requestData = BuildHttpRequestData(contact);
         await contactFunctions.SaveContactDetailsName(requestData);
     }
 }

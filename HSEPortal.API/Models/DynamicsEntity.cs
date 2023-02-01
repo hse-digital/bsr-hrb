@@ -1,6 +1,5 @@
 namespace HSEPortal.API.Models;
 
-public class DynamicsEntity
+public abstract class DynamicsEntity<TEntity> where TEntity : Entity
 {
-    public string Id { get; set; }
 }

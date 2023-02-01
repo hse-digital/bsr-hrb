@@ -18,8 +18,7 @@ public class BuildingFunctions
     [Function(nameof(SaveBuildingDetails))]
     public async Task SaveBuildingDetails([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData request)
     {
-        var buildingDetails = JsonSerializer.Deserialize<BuildingDetails>(request.Body)!;
-
-        await dynamicsService.SaveRecord(buildingDetails);
+        var buildingDetails = await JsonSerializer.DeserializeAsync<Building>(request.Body);
+        await dynamicsService.SaveRecord<Building, DynamicsBuilding>(buildingDetails!);
     }
 }

@@ -2,11 +2,14 @@ using HSEPortal.API.Models;
 
 namespace HSEPortal.API.Dynamics;
 
-public abstract class DynamicsModelDefinition<T> : IDynamicsModelDefinition where T : DynamicsEntity
+public abstract class DynamicsModelDefinition<TEntity, TDynamicsEntity> : IDynamicsModelDefinition where TEntity : Entity
+    where TDynamicsEntity : DynamicsEntity<TEntity>
 {
     public abstract string Endpoint { get; }
-    public abstract object BuildDynamicsModel(T data);
-    public abstract T BuildModelFromDynamics(dynamic model);
+
+    public abstract DynamicsEntity<TEntity> BuildDynamicsEntity(TEntity entity);
+
+    public abstract TEntity BuildEntity(TDynamicsEntity dynamicsEntity);
 }
 
 public interface IDynamicsModelDefinition

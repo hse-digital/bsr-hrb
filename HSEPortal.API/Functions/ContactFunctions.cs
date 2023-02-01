@@ -18,9 +18,7 @@ public class ContactFunctions
     [Function(nameof(SaveContactDetailsName))]
     public async Task SaveContactDetailsName([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData request)
     {
-        var contactDetails = JsonSerializer.Deserialize<ContactDetails>(request.Body)!;
-
-        
-        await dynamicsService.SaveRecord(contactDetails);
+        var contactDetails = JsonSerializer.Deserialize<Contact>(request.Body);
+        await dynamicsService.SaveRecord<Contact, DynamicsContact>(contactDetails!);
     }
 }

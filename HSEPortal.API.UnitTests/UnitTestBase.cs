@@ -1,4 +1,4 @@
-using System.Text.Json;
+using Flurl.Http;
 using Flurl.Http.Testing;
 using HSEPortal.API.Dynamics;
 using Microsoft.Azure.Functions.Worker;
@@ -6,6 +6,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace HSEPortal.API.UnitTests;
 
@@ -19,6 +20,8 @@ public abstract class UnitTestBase
     [SetUp]
     public void Setup()
     {
+        FlurlHttp.Configure(settings => { settings.JsonSerializer = new SystemTextJsonSerializer(); });
+
         var configuration = new Mock<IConfiguration>();
         configuration.SetupGet(x => x[DynamicsService.EnvironmentUrlSettingName]).Returns(DynamicsEnvironmentUrl);
 
