@@ -50,7 +50,8 @@ stages:
                     az staticwebapp secrets list --name $(swaName)
                     | Tee-Object -Variable swa
                     $swaObject = $swa | ConvertFrom-Json
-                    ##vso[task.setvariable variable=swaToken]$($swaObject.properties.apiKey)
+                    Write-Host "##vso[task.setvariable variable=swaToken;]$swaObject.properties.apiKey"
+
     - task: AzureStaticWebApp@0
       displayName: Deploy SWA to DEV
       inputs:
