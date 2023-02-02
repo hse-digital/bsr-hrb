@@ -47,10 +47,8 @@ stages:
         scriptType: pscore
         scriptLocation: 'inlineScript'
         inlineScript: | 
-                    az staticwebapp secrets list --name $(swaName)
-                    | Tee-Object -Variable swa
-                    $swaObject = $swa | ConvertFrom-Json
-                    Write-Host "##vso[task.setvariable variable=swaToken;]$swaObject.properties.apiKey"
+                    $swa = az staticwebapp secrets list --name $(swaName) | ConvertFrom-Json
+                    Write-Host "##vso[task.setvariable variable=swaToken;]$swa.properties.apiKey"
 
     - task: AzureStaticWebApp@0
       displayName: Deploy SWA to DEV
