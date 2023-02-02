@@ -8,7 +8,18 @@ variables:
 - group: HSEPORTAL
 
 stages:
+- stage: UnitTest
+  jobs:
+  - job:
+    steps:
+      - task: DotNetCoreCLI@2
+        displayName: "Run Unit Tests"
+        inputs:
+          command: 'test'
+          projects: '**/HSEPortal.API.UnitTests.csproj'
+
 - stage: Infraestructure
+  dependsOn: UnitTest
   variables: 
   - group: HSEPortal-DEV
   jobs:
@@ -23,15 +34,7 @@ stages:
         inlineScript: | 
                     az group create --name $(resourceGroupName) --location uksouth
                     az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' `
-                      --parameters swaName='$(swaName)' swaLocation='westeurope' `
-                      | Tee-Object -Variable deployment
-                      $AzDeployment = $deployment | ConvertFrom-Json
-                      ##vso[task.setvariable variable=swaToken]$($AzDeployment.properties.outputs.swaToken)
-    - task: DotNetCoreCLI@2
-      displayName: "Run Unit Tests"
-      inputs:
-        command: 'test'
-        projects: '**/HSEPortal.API.UnitTests.csproj'
+                      --parameters swaName='$(swaName)' swaLocation='westeurope'
 
 - stage: DEV
   dependsOn: Infraestructure
@@ -40,6 +43,17 @@ stages:
   jobs:
   - job:
     steps:
+    - task: AzureCLI@2
+      displayName: Get SWA Secret
+      inputs:
+        azureSubscription: 's118-dev-bsr-acs-services'
+        scriptType: pscore
+        scriptLocation: 'inlineScript'
+        inlineScript: | 
+                    az staticwebapp secrets list --name $(swaName)
+                    | Tee-Object -Variable swa
+                    $swaObject = swa | Convert-FromJson
+                    ##vso[task.setvariable variable=swaToken]$($swaObject.properties.apiKey)
     - task: AzureStaticWebApp@0
       displayName: Deploy SWA to DEV
       inputs:

@@ -14,5 +14,3 @@ resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
         size: sku
     }
 }
-
-output swaToken string = swa.properties.repositoryToken
