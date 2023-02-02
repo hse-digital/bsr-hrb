@@ -15,9 +15,11 @@ public class BuildingApplicationFunctions
     }
     
     [Function(nameof(NewBuildingApplication))]
-    public async Task NewBuildingApplication([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData request)
+    public async Task<HttpResponseData> NewBuildingApplication([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData request)
     {
-        var buildingApplicationModel = await JsonSerializer.DeserializeAsync<BuildingRegistrationModel>(request.Body);
-        await dynamicsService.RegisterNewBuildingApplication(buildingApplicationModel);
+        var buildingRegistrationModel = await JsonSerializer.DeserializeAsync<BuildingRegistrationModel>(request.Body);
+        await dynamicsService.RegisterNewBuildingApplication(buildingRegistrationModel);
+
+        return request.CreateResponse();
     }
 }

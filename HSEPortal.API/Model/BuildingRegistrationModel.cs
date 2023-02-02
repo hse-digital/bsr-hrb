@@ -1,10 +1,51 @@
+using System.Text.RegularExpressions;
+
 namespace HSEPortal.API.Model;
 
-public class BuildingRegistrationModel
+public record BuildingRegistrationModel(string BuildingName = null,
+    string ContactFirstName = null,
+    string ContactLastName = null,
+    string ContactPhoneNumber = null,
+    string ContactEmailAddress = null) : IValidatableModel
 {
-    public string BuildingName { get; set; }
-    public string ContactFirstName { get; set; }
-    public string ContactLastName { get; set; }
-    public string ContactPhoneNumber { get; set; }
-    public string ContactEmailAddress { get; set; }
+    public ValidationSummary Validate()
+    {
+        var errors = new List<string>();
+        if (string.IsNullOrWhiteSpace(BuildingName))
+        {
+            errors.Add("Building name is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(ContactFirstName))
+        {
+            errors.Add("Contact first name is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(ContactLastName))
+        {
+            errors.Add("Contact last name is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(ContactPhoneNumber))
+        {
+            errors.Add("Contact phone number is required");
+        }
+        else if (!PhoneNumberIsValid())
+        {
+            errors.Add("You must enter a UK telephone number. For example, 01632 960 001, 07700 900 982 or +44 808 157 0192");
+        }
+
+        if (string.IsNullOrWhiteSpace(ContactEmailAddress))
+        {
+            errors.Add("Contact email address is required");
+        }
+
+        return new ValidationSummary(!errors.Any(), errors.ToArray());
+    }
+
+    private bool PhoneNumberIsValid()
+    {
+        var noSpacesPhoneNumber = ContactPhoneNumber.Replace(" ", string.Empty);
+        return Regex.IsMatch(noSpacesPhoneNumber, @"^\+44\d{10}$") || Regex.IsMatch(noSpacesPhoneNumber, @"^0\d{10}$");
+    }
 }

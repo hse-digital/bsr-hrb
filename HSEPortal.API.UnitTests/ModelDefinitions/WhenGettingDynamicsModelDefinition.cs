@@ -1,31 +1,30 @@
 using FluentAssertions;
 using HSEPortal.Domain.DynamicsDefinitions;
 using HSEPortal.Domain.Entities;
-using NUnit.Framework;
+using Xunit;
 
 namespace HSEPortal.API.UnitTests.ModelDefinitions;
 
-[TestFixture]
-public abstract class WhenGettingDynamicsModelDefinition<TEntity, TDynamicsEntity> where TEntity : Entity 
+public abstract class WhenGettingDynamicsModelDefinition<TEntity, TDynamicsEntity> where TEntity : Entity
     where TDynamicsEntity : DynamicsEntity<TEntity>
 {
-    private DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory = null!;
+    private readonly DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory;
     protected abstract string Endpoint { get; }
 
-    [SetUp]
-    public void Setup()
+
+    protected WhenGettingDynamicsModelDefinition()
     {
         dynamicsModelDefinitionFactory = new DynamicsModelDefinitionFactory();
     }
 
-    [Test]
+    [Fact]
     public void ShouldReturnModelDefinition()
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<TEntity, TDynamicsEntity>();
         modelDefinition.Should().NotBeNull();
     }
 
-    [Test]
+    [Fact]
     public void ShouldReturnEndpoint()
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<TEntity, TDynamicsEntity>();

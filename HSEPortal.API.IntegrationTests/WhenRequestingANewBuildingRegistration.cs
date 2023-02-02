@@ -9,13 +9,13 @@ using Xunit;
 
 namespace HSEPortal.API.IntegrationTests;
 
-public class WhenCreatingABuildingApplication : IntegrationTestBase, IDisposable
+public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisposable
 {
     private readonly IOptions<DynamicsOptions> dynamicsOptions;
     private readonly IOptions<SwaOptions> swaOptions;
     private readonly DynamicsService dynamicsService;
 
-    public WhenCreatingABuildingApplication(IOptions<DynamicsOptions> dynamicsOptions, IOptions<SwaOptions> swaOptions, DynamicsService dynamicsService)
+    public WhenRequestingANewBuildingRegistration(IOptions<DynamicsOptions> dynamicsOptions, IOptions<SwaOptions> swaOptions, DynamicsService dynamicsService)
     {
         this.dynamicsOptions = dynamicsOptions;
         this.swaOptions = swaOptions;
@@ -25,34 +25,28 @@ public class WhenCreatingABuildingApplication : IntegrationTestBase, IDisposable
     [Fact]
     public async Task ShouldCreateRelatedEntitiesInDynamics()
     {
-        var buildingApplicationModel = GivenABuildingApplicationModel();
+        var buildingRegistrationModel = GivenABuildingRegistrationModel();
         await GivenAnAuthenticationToken();
-        await WhenSendingTheRequestToCreateABuildingApplication(buildingApplicationModel);
+        await WhenSendingTheRequestForANewBuildingRegistration(buildingRegistrationModel);
 
-        await ThenShouldCreateBuildingApplicationRecord(buildingApplicationModel);
-        await ThenShouldCreateBuildingRecord(buildingApplicationModel);
-        await ThenShouldCreateContactRecord(buildingApplicationModel);
+        await ThenShouldCreateBuildingApplicationRecord(buildingRegistrationModel);
+        await ThenShouldCreateBuildingRecord(buildingRegistrationModel);
+        await ThenShouldCreateContactRecord(buildingRegistrationModel);
     }
 
-    private static BuildingRegistrationModel GivenABuildingApplicationModel()
+    private static BuildingRegistrationModel GivenABuildingRegistrationModel()
     {
-        return new BuildingRegistrationModel
-        {
-            BuildingName = "IntegrationTestBuildingName",
-            ContactFirstName = "IntegrationTestFirstName",
-            ContactLastName = "IntegrationTestLastName",
-            ContactEmailAddress = "IntegrationTestEmailAddress",
-            ContactPhoneNumber = "IntegrationTestPhoneNumber"
-        };
+        return new BuildingRegistrationModel("IntegrationTestBuildingName", "IntegrationTestFirstName", "IntegrationTestLastName", "IntegrationTestEmailAddress", "IntegrationTestPhoneNumber");
     }
 
     private string token = null!;
+
     private async Task GivenAnAuthenticationToken()
     {
         token = await dynamicsService.GetAuthenticationToken();
     }
 
-    private async Task WhenSendingTheRequestToCreateABuildingApplication(BuildingRegistrationModel buildingRegistrationModel)
+    private async Task WhenSendingTheRequestForANewBuildingRegistration(BuildingRegistrationModel buildingRegistrationModel)
     {
         await swaOptions.Value.Url.AppendPathSegments("api", nameof(BuildingApplicationFunctions.NewBuildingApplication))
             .PostJsonAsync(buildingRegistrationModel);

@@ -6,26 +6,15 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Options;
 using Moq;
-using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests;
 
-[TestFixture]
 public abstract class UnitTestBase
 {
-    protected readonly DynamicsOptions DynamicsOptions = new()
-    {
-        EnvironmentUrl = "http://dynamics.api",
-        TenantId = "1AEA2273-3130-4432-ABB5-9E45BED87E26",
-        ClientId = "77C07F1C-2FB1-4C9F-9C99-82C468AF8299",
-        ClientSecret = "BA8787F6-C52B-49F8-B1D1-F9E54754EEF7"
-    };
-
-    protected HttpTest HttpTest { get; private set; } = null!;
-    protected DynamicsService DynamicsService { get; private set; } = null!;
-
-    [SetUp]
-    public void Setup()
+    protected HttpTest HttpTest { get; }
+    protected DynamicsService DynamicsService { get; }
+    
+    protected UnitTestBase()
     {
         FlurlHttp.Configure(settings => { settings.JsonSerializer = new SystemTextJsonSerializer(); });
 
@@ -34,12 +23,15 @@ public abstract class UnitTestBase
 
         HttpTest = new HttpTest();
         DynamicsService = new DynamicsService(new DynamicsModelDefinitionFactory(), options.Object);
-        AdditionalSetup();
     }
 
-    protected virtual void AdditionalSetup()
+    protected readonly DynamicsOptions DynamicsOptions = new()
     {
-    }
+        EnvironmentUrl = "http://dynamics.api",
+        TenantId = "1AEA2273-3130-4432-ABB5-9E45BED87E26",
+        ClientId = "77C07F1C-2FB1-4C9F-9C99-82C468AF8299",
+        ClientSecret = "BA8787F6-C52B-49F8-B1D1-F9E54754EEF7"
+    };
 
     protected HttpRequestData BuildHttpRequestData<T>(T data)
     {
