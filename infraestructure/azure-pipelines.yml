@@ -4,9 +4,6 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-variables:
-- group: HSEPORTAL
-
 stages:
 - stage: UnitTest
   jobs:
