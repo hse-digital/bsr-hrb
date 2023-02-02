@@ -48,7 +48,7 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: | 
                     $swa = az staticwebapp secrets list --name $(swaName) | ConvertFrom-Json
-                    Write-Host "##vso[task.setvariable variable=swaToken;]$swa.properties.apiKey"
+                    Write-Host "##vso[task.setvariable variable=swaToken;issecret=true]$($swa.properties.apiKey)"
 
     - task: AzureStaticWebApp@0
       displayName: Deploy SWA to DEV
