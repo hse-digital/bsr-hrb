@@ -1,6 +1,6 @@
 using FluentAssertions;
 using HSEPortal.API.Model;
-using HSEPortal.API.UnitTests.Builders;
+using HSEPortal.TestingComming.Builders;
 using Xunit;
 
 namespace HSEPortal.API.UnitTests;
@@ -64,31 +64,31 @@ public class WhenValidatingBuildingRegistrationModel
         }
     }
 
-    public static IEnumerable<object?[]> ValidationTestCases()
+    public static IEnumerable<object[]> ValidationTestCases()
     {
         // building name
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithBuildingName("").Build(), "Building name is required" };
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithBuildingName(" ").Build(), "Building name is required" };
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithBuildingName(default).Build(), "Building name is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithBuildingName("").Build(), "Building name is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithBuildingName(" ").Build(), "Building name is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithBuildingName(default).Build(), "Building name is required" };
         
         // first name
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactFirstName("").Build(), "Contact first name is required" };
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactFirstName(" ").Build(), "Contact first name is required" };
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactFirstName(default).Build(), "Contact first name is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactFirstName("").Build(), "Contact first name is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactFirstName(" ").Build(), "Contact first name is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactFirstName(default).Build(), "Contact first name is required" };
         
         // last name
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactLastName("").Build(), "Contact last name is required" };
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactLastName(" ").Build(), "Contact last name is required" };
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactLastName(default).Build(), "Contact last name is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactLastName("").Build(), "Contact last name is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactLastName(" ").Build(), "Contact last name is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactLastName(default).Build(), "Contact last name is required" };
         
         // phone number
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactPhoneNumber("").Build(), "Contact phone number is required" };
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactPhoneNumber(" ").Build(), "Contact phone number is required" };
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactPhoneNumber(default).Build(), "Contact phone number is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactPhoneNumber("").Build(), "Contact phone number is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactPhoneNumber(" ").Build(), "Contact phone number is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactPhoneNumber(default).Build(), "Contact phone number is required" };
         
         // email address
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactEmailAddress("").Build(), "Contact email address is required" };
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactEmailAddress(" ").Build(), "Contact email address is required" };
-        yield return new object?[] { new BuildingRegistrationModelBuilder().WithContactEmailAddress(default).Build(), "Contact email address is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactEmailAddress("").Build(), "Contact email address is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactEmailAddress(" ").Build(), "Contact email address is required" };
+        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactEmailAddress(default).Build(), "Contact email address is required" };
     }
 }

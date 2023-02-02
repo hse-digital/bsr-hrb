@@ -49,6 +49,8 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
     {
         var buildingRegistrationModel = new BuildingRegistrationModel(buildingName, contactFirstName, contactLastName, contactPhone, contactEmail);
         var response = await WhenSendingANewBuildingRegistration(buildingRegistrationModel);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]

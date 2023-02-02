@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Flurl.Http;
 using Flurl.Http.Testing;
+using HSEPortal.API.UnitTests.Helpers;
 using HSEPortal.Domain.DynamicsDefinitions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -13,7 +14,7 @@ public abstract class UnitTestBase
 {
     protected HttpTest HttpTest { get; }
     protected DynamicsService DynamicsService { get; }
-    
+
     protected UnitTestBase()
     {
         FlurlHttp.Configure(settings => { settings.JsonSerializer = new SystemTextJsonSerializer(); });
@@ -36,7 +37,6 @@ public abstract class UnitTestBase
     protected HttpRequestData BuildHttpRequestData<T>(T data)
     {
         var functionContext = new Mock<FunctionContext>();
-        var requestData = new Mock<HttpRequestData>(functionContext.Object);
 
         var memoryStream = new MemoryStream();
         JsonSerializer.Serialize(memoryStream, data);
@@ -44,9 +44,7 @@ public abstract class UnitTestBase
         memoryStream.Flush();
         memoryStream.Seek(0, SeekOrigin.Begin);
 
-        requestData.SetupGet(x => x.Body).Returns(memoryStream);
-
-        return requestData.Object;
+        return new TestableHttpRequestData(functionContext.Object, new Uri(DynamicsOptions.EnvironmentUrl), memoryStream);
     }
 
     protected object BuildODataEntityHeader(string id)

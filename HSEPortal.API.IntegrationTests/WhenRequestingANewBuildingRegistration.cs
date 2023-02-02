@@ -4,6 +4,7 @@ using Flurl.Http;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
+using HSEPortal.TestingComming.Builders;
 using Microsoft.Extensions.Options;
 using Xunit;
 
@@ -36,14 +37,14 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
 
     private static BuildingRegistrationModel GivenABuildingRegistrationModel()
     {
-        return new BuildingRegistrationModel("IntegrationTestBuildingName", "IntegrationTestFirstName", "IntegrationTestLastName", "IntegrationTestEmailAddress", "IntegrationTestPhoneNumber");
+        return new BuildingRegistrationModelBuilder().Build();
     }
 
     private string token = null!;
 
     private async Task GivenAnAuthenticationToken()
     {
-        token = await dynamicsService.GetAuthenticationToken();
+        token = await dynamicsService.GetAuthenticationTokenAsync();
     }
 
     private async Task WhenSendingTheRequestForANewBuildingRegistration(BuildingRegistrationModel buildingRegistrationModel)
