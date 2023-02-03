@@ -6,7 +6,6 @@ import { HeaderTitleService } from "../services/headertitle.service";
 })
 export class BuildingRegistrationComponent {
     constructor(private headerTitleService: HeaderTitleService) {
-        console.log('test');
         this.headerTitleService.headerTitle = 'Register a high-rise building';
     }
 
