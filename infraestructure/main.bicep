@@ -79,8 +79,8 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
             minTlsVersion: '1.2'
             appSettings: [
                 {
-                    value: 'AzureWebJobsStorage'
-                    name: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${az.environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+                    name: 'AzureWebJobsStorage'
+                    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${az.environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
                 }
                 {
                     name: 'FUNCTIONS_WORKER_RUNTIME'
