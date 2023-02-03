@@ -61,7 +61,6 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
     }
     properties: {}
 }
-
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
     name: 's118-${environment}-itf-acs-portal-fa'
     location: location
@@ -80,12 +79,32 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
             minTlsVersion: '1.2'
             appSettings: [
                 {
-                    name: 'AzureWebJobsStorage'
-                    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${az.environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+                    value: 'AzureWebJobsStorage'
+                    name: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${az.environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
                 }
                 {
                     name: 'FUNCTIONS_WORKER_RUNTIME'
                     value: 'dotnet-isolated'
+                }
+                {
+                    name: 'FUNCTIONS_EXTENSION_VERSION'
+                    value: '~4'
+                }
+                {
+                    name: 'Dynamics__EnvironmentUrl'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--EnvironmentUrl)'
+                }
+                {
+                    name: 'Dynamics__TenantId'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--TenantId)'
+                }
+                {
+                    name: 'Dynamics__ClientId'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--ClientId)'
+                }
+                {
+                    name: 'Dynamics__ClientSecret'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--ClientSecret)'
                 }
             ]
         }
@@ -116,17 +135,5 @@ resource swaFunctionAppLink 'Microsoft.Web/staticSites/userProvidedFunctionApps@
     properties: {
         functionAppRegion: functionApp.location
         functionAppResourceId: functionApp.id
-    }
-}
-
-resource swaAppSettings 'Microsoft.Web/staticSites/config@2022-03-01' = {
-    name: 'functionappsettings'
-    kind: 'string'
-    parent: swa
-    properties: {
-        Dynamics__EnvironmentUrl: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--EnvironmentUrl)'
-        Dynamics__TenantId: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--TenantId)'
-        Dynamics__ClientId: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--ClientId)'
-        Dynamics__ClientSecret: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--ClientSecret)'
     }
 }
