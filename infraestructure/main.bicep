@@ -1,5 +1,6 @@
 param environment string
 param location string = resourceGroup().location
+param swaLocation string = 'westeurope'
 
 @allowed([ 'Free', 'Standard' ])
 param sku string = 'Standard'
@@ -39,7 +40,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-prev
 
 resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     name: 's118-${environment}-itf-acs-portal-swa'
-    location: location
+    location: swaLocation
     tags: null
     properties: {}
     identity: {
