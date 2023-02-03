@@ -15,12 +15,12 @@ stages:
           command: 'test'
           projects: '**/HSEPortal.API.UnitTests.csproj'
 
-- stage: Infraestructure
-  dependsOn: UnitTest
+- stage: DEV
+  dependsOn: Infraestructure
   variables: 
   - group: HSEPortal-DEV
   jobs:
-  - job: 
+  - job:
     steps:
     - task: AzureCLI@2
       displayName: Deploy Bicep template
@@ -31,15 +31,8 @@ stages:
         inlineScript: | 
                     az group create --name $(resourceGroupName) --location uksouth
                     az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' `
-                      --parameters swaName='$(swaName)' swaLocation='westeurope'
+                      --parameters environment='$(env)'
 
-- stage: DEV
-  dependsOn: Infraestructure
-  variables: 
-  - group: HSEPortal-DEV
-  jobs:
-  - job:
-    steps:
     - task: AzureCLI@2
       displayName: Get SWA Secret
       inputs:
