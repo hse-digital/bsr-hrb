@@ -7,7 +7,7 @@ pool:
 stages:
 - stage: UnitTest
   jobs:
-  - job: UnitTests
+  - job: 
     steps:
       - task: DotNetCoreCLI@2
         displayName: 'Run Unit Tests'
@@ -30,7 +30,6 @@ stages:
         displayName: 'Publish API artifact'
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)/HSEPortalAPI.zip'
-          ArtifactName: HSEPortalAPI
 
 - stage: DEV
   dependsOn: UnitTest
@@ -55,7 +54,7 @@ stages:
         azureSubscription: 's118-dev-bsr-acs-services'
         appType: 'functionAppLinux'
         appName: 's118-$(env)-itf-acs-portal-fa'
-        package: '$(System.ArtifactsDirectory)/**/HSEPortalAPI.zip'
+        package: '$(System.ArtifactsDirectory)/HSEPortalAPI.zip'
 
     - task: AzureCLI@2
       displayName: Get SWA Secret
