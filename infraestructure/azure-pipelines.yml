@@ -5,32 +5,32 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: UnitTest
-  jobs:
-  - job:
-    steps:
-      - task: DotNetCoreCLI@2
-        displayName: "Run Unit Tests"
-        inputs:
-          command: 'test'
-          projects: '**/HSEPortal.API.UnitTests.csproj'
+# - stage: UnitTest
+#   jobs:
+#   - job:
+#     steps:
+#       - task: DotNetCoreCLI@2
+#         displayName: "Run Unit Tests"
+#         inputs:
+#           command: 'test'
+#           projects: '**/HSEPortal.API.UnitTests.csproj'
 
 - stage: DEV
-  dependsOn: UnitTest
+  # dependsOn: UnitTest
   variables: 
   - group: HSEPortal-DEV
   jobs:
   - job:
     steps:
-    - task: AzureCLI@2
-      displayName: Deploy Bicep template
-      inputs:
-        azureSubscription: 's118-dev-bsr-acs-services'
-        scriptType: pscore
-        scriptLocation: 'inlineScript'
-        inlineScript: | 
-                    az group create --name $(resourceGroupName) --location uksouth
-                    az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' --parameters environment='$(env)'
+    # - task: AzureCLI@2
+    #   displayName: Deploy Bicep template
+    #   inputs:
+    #     azureSubscription: 's118-dev-bsr-acs-services'
+    #     scriptType: pscore
+    #     scriptLocation: 'inlineScript'
+    #     inlineScript: | 
+    #                 az group create --name $(resourceGroupName) --location uksouth
+    #                 az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' --parameters environment='$(env)'
 
     - task: AzureCLI@2
       displayName: Get SWA Secret

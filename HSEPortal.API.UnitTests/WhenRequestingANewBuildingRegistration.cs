@@ -17,7 +17,7 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
 
     public WhenRequestingANewBuildingRegistration()
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService);
+        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, null);
         HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = dynamicsAuthToken });
         HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(buildingApplicationReturnId));
         HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(buildingReturnId));
