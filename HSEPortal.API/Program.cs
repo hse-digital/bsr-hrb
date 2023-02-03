@@ -1,15 +1,18 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Azure.Identity;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using HSEPortal.API;
 using HSEPortal.Domain.DynamicsDefinitions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
-    .ConfigureServices((builder, collection) => ConfigureServices(builder, collection))
+    .ConfigureServices(ConfigureServices)
+    .ConfigureAppConfiguration(ConfigureAppConfiguration)
     .Build();
 
 FlurlHttp.Configure(settings => { settings.JsonSerializer = new SystemTextJsonSerializer(); });
@@ -23,6 +26,15 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
 
     serviceCollection.AddTransient<DynamicsService>();
     serviceCollection.AddTransient<DynamicsModelDefinitionFactory>();
+}
+
+static void ConfigureAppConfiguration(HostBuilderContext builderContext, IConfigurationBuilder builder)
+{
+    var configuration = builder.Build();
+    if (builderContext.HostingEnvironment.IsProduction())
+    {
+        builder.AddAzureKeyVault(new Uri(configuration["KeyVaultEndpointUri"]), new DefaultAzureCredential());
+    }
 }
 
 namespace HSEPortal.API

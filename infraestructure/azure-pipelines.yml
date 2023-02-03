@@ -30,8 +30,10 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: | 
                     az group create --name $(resourceGroupName) --location uksouth
-                    az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' `
-                      --parameters environment='$(env)'
+                    az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' --parameters environment='$(env)' `
+                    | Tee-Object -Variable deployment
+                    $AzDeployment = $deployment | ConvertFrom-Json
+                    Write-Host "##vso[task.setvariable variable=keyVaultUri;issecret=true]$($AzDeployment.properties.outputs.keyVaultUri)"
 
     - task: AzureCLI@2
       displayName: Get SWA Secret
@@ -51,3 +53,12 @@ stages:
         output_location: 'dist/hseportalclient/browser'
         api_location: 'HSEPortal.API'
         azure_static_web_apps_api_token: $(swaToken)
+
+    - task: AzureCLI@2
+      displayName: Add Key Vault Endpoint to SWA
+      inputs:
+        azureSubscription: 's118-dev-bsr-acs-services'
+        scriptType: pscore
+        scriptLocation: 'inlineScript'
+        inlineScript: | 
+                    az staticwebapp appsettings set --name 's118-$(env)-itf-acs-portal-swa' --setting-names KeyVaultEndpointUri=$(keyVaultUri)
