@@ -52,4 +52,14 @@ resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     }
 }
 
-output keyVaultUri string = keyVault.properties.vaultUri
+resource swaAppSettings 'Microsoft.Web/staticSites/config@2022-03-01' = {
+    name: 'appsettings'
+    kind: 'string'
+    parent: swa
+    properties: {
+        'Dynamics:EnvironmentUrl': '@Microsoft.KeyVault(SecretUri=${keyVault.properties.vaultUri}Dynamics--ClientId)'
+        'Dynamics:TenantId': '@Microsoft.KeyVault(SecretUri=${keyVault.properties.vaultUri}Dynamics--TenantId)'
+        'Dynamics:ClientId': '@Microsoft.KeyVault(SecretUri=${keyVault.properties.vaultUri}Dynamics--ClientId)'
+        'Dynamics:ClientSecret': '@Microsoft.KeyVault(SecretUri=${keyVault.properties.vaultUri}Dynamics--ClientSecret)'
+    }
+}
