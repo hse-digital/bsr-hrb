@@ -10,6 +10,13 @@ param keyVaultSku object = {
     family: 'A'
 }
 
+@allowed([
+    'Standard_LRS'
+    'Standard_GRS'
+    'Standard_RAGRS'
+])
+param storageAccountType string = 'Standard_LRS'
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
     name: 's118-${environment}-itf-acs-portal-identity'
     location: location
@@ -35,6 +42,45 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     }
 }
 
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
+    name: 's118${environment}itfacssa'
+    location: location
+    sku: {
+        name: storageAccountType
+    }
+    kind: 'Storage'
+}
+
+resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
+    name: 's118-${environment}-itf-acs-fa'
+    location: location
+    sku: {
+        name: 'Y1'
+        tier: 'Dynamic'
+    }
+    properties: {}
+}
+
+resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
+    name: 's118-${environment}-itf-acs-fa'
+    location: location
+    kind: 'functionapp'
+    identity: {
+        type: 'UserAssigned'
+        userAssignedIdentities: {
+            '${managedIdentity.id}': {}
+        }
+    }
+    properties: {
+        serverFarmId: hostingPlan.id
+        siteConfig: {
+            ftpsState: 'FtpsOnly'
+            minTlsVersion: '1.2'
+        }
+        httpsOnly: true
+    }
+}
+
 resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     name: 's118-${environment}-itf-acs-portal-swa'
     location: swaLocation
@@ -52,8 +98,17 @@ resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     }
 }
 
+resource swaFunctionAppLink 'Microsoft.Web/staticSites/userProvidedFunctionApps@2022-03-01' = {
+    name: 's118-${environment}-itf-acs-portal-swa-fa'
+    parent: swa
+    properties: {
+        functionAppRegion: functionApp.location
+        functionAppResourceId: functionApp.id
+    }
+}
+
 resource swaAppSettings 'Microsoft.Web/staticSites/config@2022-03-01' = {
-    name: 'appsettings'
+    name: 'functionappsettings'
     kind: 'string'
     parent: swa
     properties: {
