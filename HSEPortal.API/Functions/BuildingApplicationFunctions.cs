@@ -15,7 +15,7 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(NewBuildingApplication))]
-    public async Task<HttpResponseData> NewBuildingApplication([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData request)
+    public async Task<HttpResponseData> NewBuildingApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
     {
         var buildingRegistrationModel = await request.ReadAsJsonAsync<BuildingRegistrationModel>();
         var validation = buildingRegistrationModel.Validate();
