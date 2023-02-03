@@ -1,8 +1,10 @@
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ContactDetailsNameComponent } from '../../../app/building-registration/contact-details/contact-details-name/contact-details-name.component';
+import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
 
 
 describe('ContactDetailsNameComponent showError', () => {
@@ -12,7 +14,8 @@ describe('ContactDetailsNameComponent showError', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ContactDetailsNameComponent],
-      imports: [RouterTestingModule, HseAngularModule]
+      imports: [RouterTestingModule, HseAngularModule],
+      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactDetailsNameComponent);
@@ -60,7 +63,8 @@ describe('ContactDetailsNameComponent getErrorDescription(value, errorText)', ()
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ContactDetailsNameComponent],
-      imports: [RouterTestingModule, HseAngularModule]
+      imports: [RouterTestingModule, HseAngularModule],
+      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactDetailsNameComponent);

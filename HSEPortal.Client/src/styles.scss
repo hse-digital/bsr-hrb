@@ -21,3 +21,8 @@
     color: #d4351c;
     cursor: pointer;
 }
+
+a.govuk-link, a.govuk-back-link {
+  text-decoration-thickness: max(1px, .0625rem);
+  text-underline-offset: 0.1em;
+}

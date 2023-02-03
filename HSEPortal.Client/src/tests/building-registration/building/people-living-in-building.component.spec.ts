@@ -1,8 +1,12 @@
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
+import { CaptionService } from '../../../app/building-registration/building/caption.service';
 import { PeopleLivingInBuildingComponent } from '../../../app/building-registration/building/people-living-in-building/people-living-in-building.component';
+import { BlockRegistrationService } from '../../../app/services/building-registration/block-registration.service';
+import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
 
 let component: PeopleLivingInBuildingComponent;
 let fixture: ComponentFixture<PeopleLivingInBuildingComponent>;
@@ -12,7 +16,8 @@ describe('PeopleLivingInBuildingComponent showError', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [PeopleLivingInBuildingComponent],
-      imports: [RouterTestingModule, HseAngularModule]
+      imports: [RouterTestingModule, HseAngularModule],
+      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PeopleLivingInBuildingComponent);
@@ -51,6 +56,7 @@ describe('PeopleLivingInBuildingComponent getErrorDescription(hasError, errorTex
     await TestBed.configureTestingModule({
       declarations: [PeopleLivingInBuildingComponent],
       imports: [RouterTestingModule, HseAngularModule],
+      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
     fixture = TestBed.createComponent(PeopleLivingInBuildingComponent);
     component = fixture.componentInstance;

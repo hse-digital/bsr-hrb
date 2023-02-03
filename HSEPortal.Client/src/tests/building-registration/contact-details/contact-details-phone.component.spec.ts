@@ -1,8 +1,10 @@
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ContactDetailsPhoneComponent } from '../../../app/building-registration/contact-details/contact-details-phone/contact-details-phone.component';
+import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
 
 let component: ContactDetailsPhoneComponent;
 let fixture: ComponentFixture<ContactDetailsPhoneComponent>;
@@ -13,6 +15,7 @@ describe('ContactDetailsPhoneComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [ContactDetailsPhoneComponent],
       imports: [RouterTestingModule, HseAngularModule],
+      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
     fixture = TestBed.createComponent(ContactDetailsPhoneComponent);
     component = fixture.componentInstance;
@@ -70,6 +73,7 @@ describe('ContactDetailsPhoneComponent getErrorDescription(hasError, errorText)'
     await TestBed.configureTestingModule({
       declarations: [ContactDetailsPhoneComponent],
       imports: [RouterTestingModule, HseAngularModule],
+      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
     fixture = TestBed.createComponent(ContactDetailsPhoneComponent);
     component = fixture.componentInstance;

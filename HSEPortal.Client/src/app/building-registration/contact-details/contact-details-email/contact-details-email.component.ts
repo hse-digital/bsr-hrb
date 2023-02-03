@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseFormComponent } from 'src/app/helpers/base-form.component';
-import { BuildingRegistrationService } from '../../building-registration.service';
+import { BuildingRegistrationService } from '../../../services/building-registration/building-registration.service';
 
 @Component({
   templateUrl: './contact-details-email.component.html'
