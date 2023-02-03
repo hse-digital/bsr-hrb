@@ -43,7 +43,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
-    name: 's118${environment}itfacssa'
+    name: 's118${environment}itfacsportalsa'
     location: location
     sku: {
         name: storageAccountType
@@ -52,7 +52,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
 }
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
-    name: 's118-${environment}-itf-acs-fa'
+    name: 's118-${environment}-itf-acs-portal-fa'
     location: location
     sku: {
         name: 'Y1'
@@ -62,7 +62,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
 }
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
-    name: 's118-${environment}-itf-acs-fa'
+    name: 's118-${environment}-itf-acs-portal-fa'
     location: location
     kind: 'functionapp'
     identity: {
@@ -76,6 +76,16 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         siteConfig: {
             ftpsState: 'FtpsOnly'
             minTlsVersion: '1.2'
+            appSettings: [
+                {
+                    name: 'AzureWebJobsStorage'
+                    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${az.environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+                }
+                {
+                    name: 'FUNCTIONS_WORKER_RUNTIME'
+                    value: 'dotnet-isolated'
+                }
+            ]
         }
         httpsOnly: true
     }

@@ -7,13 +7,30 @@ pool:
 stages:
 - stage: UnitTest
   jobs:
-  - job: UnitTests
+  - job: 
     steps:
       - task: DotNetCoreCLI@2
-        displayName: "Run Unit Tests"
+        displayName: 'Run Unit Tests'
         inputs:
           command: 'test'
           projects: '**/HSEPortal.API.UnitTests.csproj'
+      - task: DotNetCoreCLI@2
+        displayName: 'Build API'
+        inputs:
+          command: 'build'
+          projects: 'HSEPortal.API/HSEPortal.API.csproj'
+          arguments: '--output publish_output --configuration Release'
+      - task: ArchiveFiles@2
+        displayName: 'Archive API files'
+        inputs:
+          rootFolderOrFile: 'publish_output/'
+          includeRootFolder: false 
+          archiveFile: '$(Build.ArtifactStagingDirectory)/HSEPortalAPI.zip'
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish API artifact'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/HSEPortalAPI.zip'
+          ArtifactName: HSEPortalAPI
 
 - stage: DEV
   dependsOn: UnitTest
@@ -22,6 +39,8 @@ stages:
   jobs:
   - job: DevDeploy
     steps:
+    - download: current
+      artifact: HSEPortalAPI
     - task: AzureCLI@2
       displayName: Deploy Bicep template
       inputs:
@@ -38,7 +57,7 @@ stages:
         azureSubscription: 's118-dev-bsr-acs-services'
         appType: 'functionAppLinux'
         appName: 's118-$(env)-itf-acs-portal-fa'
-        package: 'HSEPortal.API'
+        package: '$(Pipeline.Workspace)/HSEPortalAPI/HSEPortalAPI.zip'
 
     - task: AzureCLI@2
       displayName: Get SWA Secret
