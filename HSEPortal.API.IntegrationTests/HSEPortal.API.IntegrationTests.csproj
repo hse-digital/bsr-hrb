@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HSEPortal.API\HSEPortal.API.csproj" />
-    <ProjectReference Include="..\HSEPortal.TestingComming\HSEPortal.TestingComming.csproj" />
+    <ProjectReference Include="..\HSEPortal.TestingCommon\HSEPortal.TestingCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>

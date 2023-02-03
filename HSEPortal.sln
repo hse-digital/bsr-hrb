@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.Domain", "HSEPort
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.API.IntegrationTests", "HSEPortal.API.IntegrationTests\HSEPortal.API.IntegrationTests.csproj", "{15067904-3FE9-45BC-B8FE-2DBE3A8446DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.TestingComming", "HSEPortal.TestingComming\HSEPortal.TestingComming.csproj", "{F71C2E1B-ED61-4F22-A906-34F13B1E3EB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.TestingCommon", "HSEPortal.TestingCommon\HSEPortal.TestingCommon.csproj", "{F71C2E1B-ED61-4F22-A906-34F13B1E3EB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

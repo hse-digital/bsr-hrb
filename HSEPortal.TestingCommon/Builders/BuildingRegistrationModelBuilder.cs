@@ -1,6 +1,6 @@
 using HSEPortal.API.Model;
 
-namespace HSEPortal.TestingComming.Builders;
+namespace HSEPortal.TestingCommon.Builders;
 
 public class BuildingRegistrationModelBuilder
 {
