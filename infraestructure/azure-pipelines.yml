@@ -30,6 +30,7 @@ stages:
         displayName: 'Publish API artifact'
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)/HSEPortalAPI.zip'
+          ArtifactName: HSEPortalAPI
 
 - stage: DEV
   dependsOn: UnitTest
@@ -38,6 +39,8 @@ stages:
   jobs:
   - job: DevDeploy
     steps:
+    - download: current
+      artifact: HSEPortalAPI
     - task: AzureCLI@2
       displayName: Deploy Bicep template
       inputs:
@@ -54,7 +57,7 @@ stages:
         azureSubscription: 's118-dev-bsr-acs-services'
         appType: 'functionAppLinux'
         appName: 's118-$(env)-itf-acs-portal-fa'
-        package: '$(System.ArtifactsDirectory)/HSEPortalAPI.zip'
+        package: '$(System.ArtifactsDirectory)/HSEPortalAPI/HSEPortalAPI.zip'
 
     - task: AzureCLI@2
       displayName: Get SWA Secret
