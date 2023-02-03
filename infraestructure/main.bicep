@@ -57,7 +57,7 @@ resource swaAppSettings 'Microsoft.Web/staticSites/config@2022-03-01' = {
     kind: 'string'
     parent: swa
     properties: {
-        Dynamics__EnvironmentUrl: '@Microsoft.KeyVault(SecretUri=${keyVault.properties.vaultUri}Dynamics--ClientId)'
+        Dynamics__EnvironmentUrl: '@Microsoft.KeyVault(SecretUri=${keyVault.properties.vaultUri}Dynamics--EnvironmentUrl)'
         Dynamics__TenantId: '@Microsoft.KeyVault(SecretUri=${keyVault.properties.vaultUri}Dynamics--TenantId)'
         Dynamics__ClientId: '@Microsoft.KeyVault(SecretUri=${keyVault.properties.vaultUri}Dynamics--ClientId)'
         Dynamics__ClientSecret: '@Microsoft.KeyVault(SecretUri=${keyVault.properties.vaultUri}Dynamics--ClientSecret)'
