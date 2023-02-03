@@ -38,6 +38,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     name: 's118-${environment}-itf-acs-portal-swa'
     location: swaLocation
+    tags: null
+    properties: {}
     identity: {
         type: 'UserAssigned'
         userAssignedIdentities: {
