@@ -28,14 +28,13 @@ resource keyVaultAdministratorRoleDefinition 'Microsoft.Authorization/roleDefini
     name: 'a6a49ec2-d19d-4bbc-aa86-384b6e00d2c0'
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
-    name: 'role-assignment'
-    scope: keyVault
-    properties: {
-        roleDefinitionId: guid(keyVault.id, managedIdentity.properties.principalId, keyVaultAdministratorRoleDefinition.id)
-        principalId: managedIdentity.id
-        principalType: 'ServicePrincipal'
-    }
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(keyVault.name, managedIdentity.id, keyVaultAdministratorRoleDefinition.id, keyVault.id)
+  scope: keyVault
+  properties: {
+    roleDefinitionId: guid(keyVault.id, managedIdentity.properties.principalId, keyVaultAdministratorRoleDefinition.id)
+    principalId: managedIdentity.properties.principalId
+  }
 }
 
 resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
@@ -43,7 +42,12 @@ resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     location: location
     tags: null
     properties: {}
-    identity: managedIdentity
+    identity: {
+        type: 'UserAssigned'
+        userAssignedIdentities: {
+            '${managedIdentity.id}': {}
+        }
+    }
     sku: {
         name: sku
         size: sku
