@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+
 namespace HSEPortal.API;
 
 public class DynamicsOptions

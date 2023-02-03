@@ -1,5 +1,5 @@
 trigger:
-- main
+  - main
 
 pool:
   vmImage: ubuntu-latest
@@ -7,7 +7,7 @@ pool:
 stages:
 - stage: UnitTest
   jobs:
-  - job:
+  - job: UnitTests
     steps:
       - task: DotNetCoreCLI@2
         displayName: "Run Unit Tests"
@@ -20,7 +20,7 @@ stages:
   variables: 
   - group: HSEPortal-DEV
   jobs:
-  - job:
+  - job: DevDeploy
     steps:
     - task: AzureCLI@2
       displayName: Deploy Bicep template
@@ -30,10 +30,15 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: | 
                     az group create --name $(resourceGroupName) --location uksouth
-                    az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' --parameters environment='$(env)' `
-                    | Tee-Object -Variable deployment
-                    $AzDeployment = $deployment | ConvertFrom-Json
-                    Write-Host "##vso[task.setvariable variable=keyVaultUri;issecret=true]$($AzDeployment.properties.outputs.keyVaultUri.value)"
+                    az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' --parameters environment='$(env)'
+
+    - task: AzureFunctionApp@1
+      displayName: Deploy Function App
+      inputs:
+        azureSubscription: 's118-dev-bsr-acs-services'
+        appType: 'functionAppLinux'
+        appName: 's118-$(env)-itf-acs-portal-fa'
+        package: 'HSEPortal.API'
 
     - task: AzureCLI@2
       displayName: Get SWA Secret
@@ -51,14 +56,4 @@ stages:
         app_location: 'HSEPortal.Client'
         app_build_command: 'npm run prerender'
         output_location: 'dist/hseportalclient/browser'
-        api_location: 'HSEPortal.API'
         azure_static_web_apps_api_token: $(swaToken)
-
-    - task: AzureCLI@2
-      displayName: Add Key Vault Endpoint to SWA
-      inputs:
-        azureSubscription: 's118-dev-bsr-acs-services'
-        scriptType: pscore
-        scriptLocation: 'inlineScript'
-        inlineScript: | 
-                    az staticwebapp appsettings set --name 's118-$(env)-itf-acs-portal-swa' --setting-names KeyVaultEndpointUri=$(keyVaultUri)
