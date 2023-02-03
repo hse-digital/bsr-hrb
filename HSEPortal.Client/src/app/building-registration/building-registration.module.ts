@@ -7,8 +7,9 @@ import { CommonModule } from "@angular/common";
 import { BuildingRegistrationComponent } from "./building-registration.component";
 import { RegistrationSectionsComponent } from "./registration-sections/registration-sections.component";
 import { StartComponent } from './start/start.component';
-import { BuildingRegistrationService } from "./building-registration.service";
 import { HttpClientModule } from "@angular/common/http";
+import { BlockRegistrationService } from "../services/building-registration/block-registration.service";
+import { BuildingRegistrationService } from "../services/building-registration/building-registration.service";
 
 const routes: Routes = [
   {
@@ -39,7 +40,8 @@ const routes: Routes = [
     RouterModule
   ],
   providers: [
-    BuildingRegistrationService
+    BuildingRegistrationService,
+    BlockRegistrationService
   ]
 })
 export class BuildingRegistrationModule {

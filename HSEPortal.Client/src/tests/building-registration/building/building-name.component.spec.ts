@@ -1,9 +1,11 @@
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
 import { BuildingNameComponent } from '../../../app/building-registration/building/building-name/building-name.component';
+import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
 
 describe('BuildingNameComponent showError', () => {
   let component: BuildingNameComponent;
@@ -12,7 +14,8 @@ describe('BuildingNameComponent showError', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [BuildingNameComponent],
-      imports: [RouterTestingModule, HseAngularModule]
+      imports: [RouterTestingModule, HseAngularModule],
+      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BuildingNameComponent);
@@ -57,7 +60,8 @@ describe('BuildingNameComponent getErrorDescription(value, errorText)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [BuildingNameComponent],
-      imports: [RouterTestingModule, HseAngularModule]
+      imports: [RouterTestingModule, HseAngularModule],
+      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BuildingNameComponent);

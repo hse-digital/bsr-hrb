@@ -1,0 +1,23 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                <govuk-error-link anchorId="fieldset-numberBlocksBuilding" message="Select how many blocks are in this building" />
+            </govuk-error-summary>
+
+            <govuk-radio-group [errorText]="getErrorDescription(numberBlocksHasErrors, 'Select how many blocks are in this building')"
+                               title="How many blocks are in this building?" [isPageHeading]=true
+                               fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'
+                               id="numberBlocksBuilding" [(model)]="building.numberBlocksBuilding"
+                               (modelChange)="updateNumberBlocksBuilding($event)">
+                <govuk-radio name="number-blocks" id="one" value="one" label="One" />
+                <govuk-radio name="number-blocks" id="two-or-more" value="two-or-more" label="Two or more" />
+            </govuk-radio-group>
+            <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+            <govuk-body><a class="govuk-link" href="/start">Save and exit this application</a></govuk-body>
+        </div>
+    </div>
+</div>

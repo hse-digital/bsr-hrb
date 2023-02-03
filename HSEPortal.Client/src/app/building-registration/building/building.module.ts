@@ -9,6 +9,8 @@ import { PeopleLivingInBuildingComponent } from "./people-living-in-building/peo
 import { ResidentialUnitsComponent } from "./residential-units/residential-units.component";
 import { BuildingNameComponent } from './building-name/building-name.component';
 import { HttpClientModule } from "@angular/common/http";
+import { NumberBlocksBuildingComponent } from './number-blocks-building/number-blocks-building.component';
+import { CaptionService } from "./caption.service";
 
 const routes: Routes = [
   { path: 'intro', component: BuildingBlocksIntroComponent },
@@ -17,23 +19,26 @@ const routes: Routes = [
   { path: 'height', component: BuildingHeightComponent },
   { path: 'residential-units', component: ResidentialUnitsComponent },
   { path: 'people-living-in-building', component: PeopleLivingInBuildingComponent },
+  { path: 'number-blocks-building', component: NumberBlocksBuildingComponent },
 ];
 
 @NgModule({
-    declarations: [
-      BuildingBlocksIntroComponent,
-      BuildingFloorsAboveComponent,
-      BuildingHeightComponent,
-      ResidentialUnitsComponent,
-      PeopleLivingInBuildingComponent,
-      BuildingNameComponent
-    ],
-    imports: [
-        RouterModule.forChild(routes),
-        HseAngularModule,
-        CommonModule,
-        HttpClientModule
-    ]
+  declarations: [
+    BuildingBlocksIntroComponent,
+    BuildingFloorsAboveComponent,
+    BuildingHeightComponent,
+    ResidentialUnitsComponent,
+    PeopleLivingInBuildingComponent,
+    BuildingNameComponent,
+    NumberBlocksBuildingComponent
+  ],
+  imports: [
+    RouterModule.forChild(routes),
+    HseAngularModule,
+    CommonModule,
+    HttpClientModule
+  ],
+  providers: [CaptionService]
 })
 export class BuildingModule {
 

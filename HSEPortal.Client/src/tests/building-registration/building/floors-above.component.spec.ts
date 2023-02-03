@@ -1,8 +1,12 @@
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
+import { CaptionService } from '../../../app/building-registration/building/caption.service';
 import { BuildingFloorsAboveComponent } from '../../../app/building-registration/building/floors-above/floors-above.component';
+import { BlockRegistrationService } from '../../../app/services/building-registration/block-registration.service';
+import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
 
 let component: BuildingFloorsAboveComponent;
 let fixture: ComponentFixture<BuildingFloorsAboveComponent>;
@@ -12,7 +16,8 @@ describe('BuildingFloorsAboveComponent showError', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [BuildingFloorsAboveComponent],
-      imports: [RouterTestingModule, HseAngularModule]
+      imports: [RouterTestingModule, HseAngularModule],
+      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BuildingFloorsAboveComponent);
@@ -63,6 +68,7 @@ describe('BuildingFloorsAboveComponent getErrorDescription(hasError, errorText)'
     await TestBed.configureTestingModule({
       declarations: [BuildingFloorsAboveComponent],
       imports: [RouterTestingModule, HseAngularModule],
+      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
     fixture = TestBed.createComponent(BuildingFloorsAboveComponent);
     component = fixture.componentInstance;

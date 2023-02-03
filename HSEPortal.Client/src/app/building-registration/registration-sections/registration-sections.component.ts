@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { BuildingRegistrationService } from "../building-registration.service";
+import { BuildingRegistrationService } from "../../services/building-registration/building-registration.service";
 
 @Component({
     templateUrl: './registration-sections.component.html'
@@ -16,10 +16,6 @@ export class RegistrationSectionsComponent {
         {
             title: "Prepare your application",
             items: [
-                {
-                    title: "Blocks in the building",
-                    status: 0
-                },
                 {
                     title: "Principal accountable person",
                     status: 0
