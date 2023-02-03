@@ -16,27 +16,25 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-    name: 's118-${environment}-itf-acs-portal-kv'
+    name: 's118-${environment}-itf-acs-kv'
     location: location
     properties: {
         tenantId: tenant().tenantId
         sku: keyVaultSku
+        accessPolicies: [
+            {
+                objectId: managedIdentity.properties.principalId
+                tenantId: tenant().tenantId
+                permissions: {
+                    secrets: [
+                        'all'
+                    ]
+                }
+            }
+        ]
     }
+
 }
-
-// resource keyVaultAdministratorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
-//     scope: subscription()
-//     name: 'a6a49ec2-d19d-4bbc-aa86-384b6e00d2c0'
-// }
-
-// resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-//   name: guid(keyVault.name, managedIdentity.id, keyVaultAdministratorRoleDefinition.id, keyVault.id)
-//   scope: keyVault
-//   properties: {
-//     roleDefinitionId: guid(keyVault.id, managedIdentity.properties.principalId, keyVaultAdministratorRoleDefinition.id)
-//     principalId: managedIdentity.properties.principalId
-//   }
-// }
 
 resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     name: 's118-${environment}-itf-acs-portal-swa'
