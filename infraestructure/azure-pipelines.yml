@@ -16,7 +16,7 @@ stages:
           projects: '**/HSEPortal.API.UnitTests.csproj'
 
 - stage: DEV
-  dependsOn: Infraestructure
+  dependsOn: UnitTest
   variables: 
   - group: HSEPortal-DEV
   jobs:
