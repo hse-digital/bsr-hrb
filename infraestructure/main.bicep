@@ -74,6 +74,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
     }
     properties: {
         serverFarmId: hostingPlan.id
+        keyVaultReferenceIdentity: managedIdentity.id
         siteConfig: {
             ftpsState: 'FtpsOnly'
             minTlsVersion: '1.2'
