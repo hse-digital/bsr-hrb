@@ -10,17 +10,27 @@ stages:
   - job: UnitTests
     steps:
       - task: DotNetCoreCLI@2
-        displayName: "Run Unit Tests"
+        displayName: 'Run Unit Tests'
         inputs:
           command: 'test'
           projects: '**/HSEPortal.API.UnitTests.csproj'
       - task: DotNetCoreCLI@2
-        displayName: "Build API"
+        displayName: 'Build API'
         inputs:
           command: 'build'
           projects: 'HSEPortal.API/HSEPortal.API.csproj'
           arguments: '--output publish_output --configuration Release'
-          zipAfterPublish: true
+      - task: ArchiveFiles@2
+        displayName: 'Archive API files'
+        inputs:
+          rootFolderOrFile: 'publish_output/'
+          includeRootFolder: false 
+          archiveFile: '$(Build.ArtifactStagingDirectory)/HSEPortalAPI.zip'
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish API artifact'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/HSEPortalAPI.zip'
+          ArtifactName: HSEPortalAPI
 
 # - stage: DEV
 #   dependsOn: UnitTest
