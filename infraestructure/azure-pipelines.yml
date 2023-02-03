@@ -33,7 +33,7 @@ stages:
                     az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' --parameters environment='$(env)' `
                     | Tee-Object -Variable deployment
                     $AzDeployment = $deployment | ConvertFrom-Json
-                    Write-Host "##vso[task.setvariable variable=keyVaultUri;issecret=true]$($AzDeployment.properties.outputs.keyVaultUri)"
+                    Write-Host "##vso[task.setvariable variable=keyVaultUri;issecret=true]$($AzDeployment.properties.outputs.keyVaultUri.value)"
 
     - task: AzureCLI@2
       displayName: Get SWA Secret
