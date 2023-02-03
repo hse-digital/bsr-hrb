@@ -57,7 +57,7 @@ stages:
         azureSubscription: 's118-dev-bsr-acs-services'
         appType: 'functionAppLinux'
         appName: 's118-$(env)-itf-acs-portal-fa'
-        package: 'HSEPortalAPI/HSEPortalAPI.zip'
+        package: '$(Pipeline.Workspace)/HSEPortalAPI/HSEPortalAPI.zip'
 
     - task: AzureCLI@2
       displayName: Get SWA Secret
