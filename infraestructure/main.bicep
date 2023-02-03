@@ -26,6 +26,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     name: 's118-${environment}-itf-acs-kv'
     location: location
     properties: {
+        enableRbacAuthorization: false
         tenantId: tenant().tenantId
         sku: keyVaultSku
         accessPolicies: [
