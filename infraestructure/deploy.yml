@@ -1,11 +1,8 @@
 parameters:
-  - name: environment
-    type: string
-  
   - name: subscription
 
 jobs:
-  - job: DevDeploy
+  - job: Deploy
     steps:
     - download: current
       artifact: HSEPortalAPI
@@ -25,7 +22,7 @@ jobs:
       inputs:
         azureSubscription: '${{parameters.subscription}}'
         appType: 'functionAppLinux'
-        appName: 's118-${{parameters.environment}}-itf-acs-portal-fa'
+        appName: 's118-$(env)-itf-acs-portal-fa'
         package: '$(Pipeline.Workspace)/HSEPortalAPI/HSEPortalAPI.zip'
 
     - task: AzureCLI@2
@@ -35,11 +32,11 @@ jobs:
         scriptType: pscore
         scriptLocation: 'inlineScript'
         inlineScript: | 
-                    $swa = az staticwebapp secrets list --name 's118-${{parameters.environment}}-itf-acs-portal-swa' | ConvertFrom-Json
+                    $swa = az staticwebapp secrets list --name 's118-$(env)-itf-acs-portal-swa' | ConvertFrom-Json
                     Write-Host "##vso[task.setvariable variable=swaToken;issecret=true]$($swa.properties.apiKey)"
 
     - task: AzureStaticWebApp@0
-      displayName: Deploy SWA to ${{parameters.environment}}
+      displayName: Deploy SWA to $(env)
       inputs:
         app_location: 'HSEPortal.Client'
         app_build_command: 'npm run prerender'
