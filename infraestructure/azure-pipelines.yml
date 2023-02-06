@@ -40,7 +40,7 @@ stages:
     - template: deploy.yml
       parameters:
         environment: '$(env)'
-        azureSubscription: 's118-dev-bsr-acs-services'
+        subscription: 's118-dev-bsr-acs-services'
         
 - stage: QA
   dependsOn: DEV
@@ -50,4 +50,4 @@ stages:
     - template: deploy.yml
       parameters:
         environment: '$(env)'
-        azureSubscription: 's118-test-bsr-acs-services'
+        subscription: 's118-test-bsr-acs-services'
