@@ -37,7 +37,7 @@ stages:
   variables: 
   - group: HSEPortal-DEV
   jobs:
-    - template: build.yml
+    - template: deploy.yml
       parameters:
         environment: '$(env)'
         azureSubscription: 's118-dev-bsr-acs-services'
@@ -47,7 +47,7 @@ stages:
   variables: 
   - group: HSEPortal-QA
   jobs:
-    - template: build.yml
+    - template: deploy.yml
       parameters:
         environment: '$(env)'
         azureSubscription: 's118-test-bsr-acs-services'
