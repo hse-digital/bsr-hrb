@@ -1,0 +1,47 @@
+parameters:
+  - name: environment
+    type: string
+  
+  - name: subscription
+
+jobs:
+  - job: DevDeploy
+    steps:
+    - download: current
+      artifact: HSEPortalAPI
+
+    - task: AzureCLI@2
+      displayName: Deploy Bicep template
+      inputs:
+        azureSubscription: '${{parameters.subscription}}'
+        scriptType: pscore
+        scriptLocation: 'inlineScript'
+        inlineScript: | 
+                    az group create --name $(resourceGroupName) --location uksouth
+                    az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' --parameters environment='$(env)'
+ 
+    - task: AzureFunctionApp@1
+      displayName: Deploy Function App
+      inputs:
+        azureSubscription: '${{parameters.subscription}}'
+        appType: 'functionAppLinux'
+        appName: 's118-${{parameters.environment}}-itf-acs-portal-fa'
+        package: '$(Pipeline.Workspace)/HSEPortalAPI/HSEPortalAPI.zip'
+
+    - task: AzureCLI@2
+      displayName: Get SWA Secret
+      inputs:
+        azureSubscription: '${{parameters.subscription}}'
+        scriptType: pscore
+        scriptLocation: 'inlineScript'
+        inlineScript: | 
+                    $swa = az staticwebapp secrets list --name 's118-${{parameters.environment}}-itf-acs-portal-swa' | ConvertFrom-Json
+                    Write-Host "##vso[task.setvariable variable=swaToken;issecret=true]$($swa.properties.apiKey)"
+
+    - task: AzureStaticWebApp@0
+      displayName: Deploy SWA to ${{parameters.environment}}
+      inputs:
+        app_location: 'HSEPortal.Client'
+        app_build_command: 'npm run prerender'
+        output_location: 'dist/hseportalclient/browser'
+        azure_static_web_apps_api_token: $(swaToken)
