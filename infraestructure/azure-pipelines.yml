@@ -39,7 +39,6 @@ stages:
   jobs:
     - template: deploy.yml
       parameters:
-        environment: '$(env)'
         subscription: 's118-dev-bsr-acs-services'
         
 - stage: QA
@@ -49,5 +48,4 @@ stages:
   jobs:
     - template: deploy.yml
       parameters:
-        environment: '$(env)'
         subscription: 's118-test-bsr-acs-services'
