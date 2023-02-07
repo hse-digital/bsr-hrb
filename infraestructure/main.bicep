@@ -43,6 +43,38 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     }
 }
 
+resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2021-04-15' = {
+    name: 's118-${environment}-itf-acs-cosmos'
+    location: location
+    kind: 'GlobalDocumentDB'
+    properties: {
+        publicNetworkAccess: 'Disabled'
+        keyVaultKeyUri: keyVault.properties.vaultUri
+        consistencyPolicy: {
+            defaultConsistencyLevel: 'Session'
+        }
+        locations: [
+            {
+                locationName: location
+                failoverPriority: 0
+                isZoneRedundant: false
+            }
+        ]
+        capabilities: [
+            {
+                name: 'EnableServerless'
+            }
+        ]
+        databaseAccountOfferType: 'Standard'
+    }
+}
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+    name: 's118-${environment}-itf-acs-ai'
+    location: location
+    kind: 'web'
+}
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
     name: 's118${environment}itfacsportalsa'
     location: location
@@ -61,6 +93,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
     }
     properties: {}
 }
+
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
     name: 's118-${environment}-itf-acs-portal-fa'
     location: location
@@ -91,6 +124,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                     value: '~4'
                 }
                 {
+                    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+                    value: appInsights.properties.InstrumentationKey
+                }
+                {
                     name: 'Dynamics__EnvironmentUrl'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--EnvironmentUrl)'
                 }
@@ -116,7 +153,8 @@ resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     name: 's118-${environment}-itf-acs-portal-swa'
     location: swaLocation
     tags: null
-    properties: {}
+    properties: {
+    }
     identity: {
         type: 'UserAssigned'
         userAssignedIdentities: {
@@ -126,6 +164,15 @@ resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     sku: {
         name: sku
         size: sku
+    }
+}
+
+resource swaAppSettings 'Microsoft.Web/staticSites/config@2022-03-01' = {
+    name: 'appsettings'
+    kind: 'string'
+    parent: swa
+    properties: {
+        APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.properties.InstrumentationKey
     }
 }
 
