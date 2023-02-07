@@ -49,7 +49,6 @@ resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2021-04-15' = {
     kind: 'GlobalDocumentDB'
     properties: {
         publicNetworkAccess: 'Disabled'
-        keyVaultKeyUri: keyVault.properties.vaultUri
         consistencyPolicy: {
             defaultConsistencyLevel: 'Session'
         }
@@ -73,6 +72,9 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
     name: 's118-${environment}-itf-acs-ai'
     location: location
     kind: 'web'
+    properties: {
+        Application_Type: 'web'
+    }
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
