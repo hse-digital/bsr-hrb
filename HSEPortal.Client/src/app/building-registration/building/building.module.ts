@@ -12,6 +12,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { NumberBlocksBuildingComponent } from './number-blocks-building/number-blocks-building.component';
 import { CaptionService } from "./caption.service";
 import { AnotherBlockComponent } from './another-block/another-block.component';
+import { CheckAnswersComponent } from './check-answers/check-answers.component';
 
 const routes: Routes = [
   { path: 'intro', component: BuildingBlocksIntroComponent },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'people-living-in-building', component: PeopleLivingInBuildingComponent },
   { path: 'number-blocks-building', component: NumberBlocksBuildingComponent },
   { path: 'another-block', component: AnotherBlockComponent },
+  { path: 'check-answers', component: CheckAnswersComponent },
 ];
 
 @NgModule({
@@ -33,7 +35,8 @@ const routes: Routes = [
     PeopleLivingInBuildingComponent,
     BuildingNameComponent,
     NumberBlocksBuildingComponent,
-    AnotherBlockComponent
+    AnotherBlockComponent,
+    CheckAnswersComponent
   ],
   imports: [
     RouterModule.forChild(routes),

@@ -38,11 +38,15 @@ export class BlockRegistrationService {
   }
 }
 
-class BlockRegistrationModel {
+export class BlockRegistrationModel {
   numberBlocksBuilding?: string;
   floorsAbove?: number;
   height?: number;
   peopleLivingInBuilding?: any;
   residentialUnits?: number;
+  yearCompletition?: any;
+  completitionCertificateIssuer?: any;
+  completitionCertificateReference?: any;
+  address?: string;
 }
 

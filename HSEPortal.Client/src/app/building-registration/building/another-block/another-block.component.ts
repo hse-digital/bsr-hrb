@@ -20,7 +20,7 @@ export class AnotherBlockComponent extends BaseFormComponent {
 
   nextScreenRoute: string = "";
   private nextScreenRouteWhenYes: string = "/building-registration/building/floors-above";
-  private nextScreenRouteWhenNo: string = "/building-registration/building/another-block";
+  private nextScreenRouteWhenNo: string = "/building-registration/building/check-answers";
 
   canContinue(): boolean {
     this.anotherBlockHasErrors = !this.building.anotherBlock;

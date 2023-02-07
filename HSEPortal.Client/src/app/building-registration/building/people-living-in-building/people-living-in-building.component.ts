@@ -13,7 +13,7 @@ export class PeopleLivingInBuildingComponent extends BaseFormComponent {
     super(router);
   }
 
-  nextScreenRoute: string = '/building-registration/building/people-living-in-building';
+  nextScreenRoute: string = '/building-registration/building/another-block';
   building: { peopleLivingInBuilding?: any } = {};
   peopleLivingHasErrors = false;
 
