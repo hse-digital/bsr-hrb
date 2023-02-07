@@ -37,6 +37,7 @@
                                  labelClass="govuk-label--s" id="floors-above"
                                  [(model)]="building.floorsAbove"
                                  [errorText]="getErrorDescription(floorsHasError, errorMessage)"
+                                 (modelChange)="updateFloorsAbove($event)"
                                  class="govuk-input--width-3"/>
 
                 </govuk-fieldset>

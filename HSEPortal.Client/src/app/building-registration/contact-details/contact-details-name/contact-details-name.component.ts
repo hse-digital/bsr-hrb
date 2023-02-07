@@ -31,6 +31,5 @@ export class ContactDetailsNameComponent extends BaseFormComponent {
 
   updateContactLastName(contactLastName: string) {
     this.buildingRegistrationService.setContactLastName(contactLastName);
-
   }
 }

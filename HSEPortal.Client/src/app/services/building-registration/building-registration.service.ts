@@ -4,39 +4,39 @@ import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class BuildingRegistrationService {
-    buildingRegistrationModel: BuildingRegistrationModel = {};
+  buildingRegistrationModel: BuildingRegistrationModel = {};
 
-    constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) { }
 
-    setBuildingName(buildingName: string) {
-        this.buildingRegistrationModel.BuildingName = buildingName;
-    }
+  setBuildingName(buildingName: string) {
+    this.buildingRegistrationModel.BuildingName = buildingName;
+  }
 
-    setContactFirstName(contactFirstName: string) {
-        this.buildingRegistrationModel.ContactFirstName = contactFirstName;
-    }
+  setContactFirstName(contactFirstName: string) {
+    this.buildingRegistrationModel.ContactFirstName = contactFirstName;
+  }
 
-    setContactLastName(contactLastName: string) {
-        this.buildingRegistrationModel.ContactLastName = contactLastName;
-    }
+  setContactLastName(contactLastName: string) {
+    this.buildingRegistrationModel.ContactLastName = contactLastName;
+  }
 
-    setContactPhoneNumber(contactPhoneNumber: string) {
-        this.buildingRegistrationModel.ContactPhoneNumber = contactPhoneNumber;
-    }
+  setContactPhoneNumber(contactPhoneNumber: string) {
+    this.buildingRegistrationModel.ContactPhoneNumber = contactPhoneNumber;
+  }
 
-    setContactEmailAddress(contactEmailAddress: string) {
-        this.buildingRegistrationModel.ContactEmailAddress = contactEmailAddress;
-    }
+  setContactEmailAddress(contactEmailAddress: string) {
+    this.buildingRegistrationModel.ContactEmailAddress = contactEmailAddress;
+  }
 
-    async registerNewBuildingApplication(): Promise<void> {
-        await firstValueFrom(this.httpClient.post('api/NewBuildingApplication', this.buildingRegistrationModel));
-    }
+  async registerNewBuildingApplication(): Promise<void> {
+    await firstValueFrom(this.httpClient.post('api/NewBuildingApplication', this.buildingRegistrationModel));
+  }
 }
 
 class BuildingRegistrationModel {
-    BuildingName?: string;
-    ContactFirstName?: string;
-    ContactLastName?: string;
-    ContactPhoneNumber?: string;
-    ContactEmailAddress?: string;
+  BuildingName?: string;
+  ContactFirstName?: string;
+  ContactLastName?: string;
+  ContactPhoneNumber?: string;
+  ContactEmailAddress?: string;
 }

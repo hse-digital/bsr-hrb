@@ -10,6 +10,7 @@ import { StartComponent } from './start/start.component';
 import { HttpClientModule } from "@angular/common/http";
 import { BlockRegistrationService } from "../services/building-registration/block-registration.service";
 import { BuildingRegistrationService } from "../services/building-registration/building-registration.service";
+import { ApplicationCompletedComponent } from "./application-completed/application-completed.component";
 
 const routes: Routes = [
   {
@@ -18,6 +19,7 @@ const routes: Routes = [
       { path: 'sections', component: RegistrationSectionsComponent },
       { path: 'contact-details', loadChildren: () => import('./contact-details/contact-details.module').then(m => m.ContactDetailsModule) },
       { path: 'building', loadChildren: () => import('./building/building.module').then(m => m.BuildingModule) },
+      { path: 'building-completed', component: ApplicationCompletedComponent },
     ]
   },
 ];
@@ -28,6 +30,7 @@ const routes: Routes = [
     RegistrationSectionsComponent,
     NewOrExistingRegistrationComponent,
     StartComponent,
+    ApplicationCompletedComponent,
   ],
   imports: [
     RouterModule.forChild(routes),

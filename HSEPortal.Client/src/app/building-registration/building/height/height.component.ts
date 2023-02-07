@@ -1,15 +1,16 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { BaseFormComponent } from "src/app/helpers/base-form.component";
+import { BlockRegistrationService } from "../../../services/building-registration/block-registration.service";
 import { CaptionService } from "../caption.service";
 
 @Component({
-  templateUrl: './height.component.html'
+  templateUrl: './height.component.html',
 })
 export class BuildingHeightComponent extends BaseFormComponent {
   // 'Enter the block height in metres'
 
-  constructor(router: Router, private captionService: CaptionService) {
+  constructor(router: Router, private captionService: CaptionService, private blockRegistrationService: BlockRegistrationService) {
     super(router);
   }
 
@@ -35,6 +36,10 @@ export class BuildingHeightComponent extends BaseFormComponent {
     }
 
     return !this.heightHasErrors;
+  }
+
+  updateHeight(height: number) {
+    this.blockRegistrationService.setHeight(height);
   }
 
   get captionText(): string | undefined {
