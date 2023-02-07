@@ -94,11 +94,6 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
             }
             defaultTtl: 86400
         }
-        options: {
-            autoscaleSettings: {
-                maxThroughput: 1000
-            }
-        }
     }
 }
 
