@@ -68,6 +68,40 @@ resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2021-04-15' = {
     }
 }
 
+var databaseName = 'hseportal'
+resource cosmosDB 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-05-15' = {
+    parent: cosmos
+    name: databaseName
+    properties: {
+        resource: {
+            id: databaseName
+        }
+    }
+}
+
+var containerName = 'building-registrations'
+resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+    parent: cosmosDB
+    name: containerName
+    properties: {
+        resource: {
+            id: containerName
+            partitionKey: {
+                paths: [
+                    '/id'
+                ]
+                kind: 'Hash'
+            }
+            defaultTtl: 86400
+        }
+        options: {
+            autoscaleSettings: {
+                maxThroughput: 1000
+            }
+        }
+    }
+}
+
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
     name: 's118-${environment}-itf-acs-ai'
     location: location
