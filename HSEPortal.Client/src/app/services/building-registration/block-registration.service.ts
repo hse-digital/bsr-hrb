@@ -9,6 +9,10 @@ export class BlockRegistrationService {
 
   constructor(private httpClient: HttpClient) { }
 
+  setBlockName(blockName: string) {
+    this.blockRegistrationModel.blockName = blockName;
+  }
+
   setNumberBlockBuilding(numberBlocksBuilding: string) {
     this.blockRegistrationModel.numberBlocksBuilding = numberBlocksBuilding;
   }
@@ -39,6 +43,7 @@ export class BlockRegistrationService {
 }
 
 export class BlockRegistrationModel {
+  blockName?: string;
   numberBlocksBuilding?: string;
   floorsAbove?: number;
   height?: number;

@@ -13,10 +13,12 @@ import { NumberBlocksBuildingComponent } from './number-blocks-building/number-b
 import { CaptionService } from "./caption.service";
 import { AnotherBlockComponent } from './another-block/another-block.component';
 import { CheckAnswersComponent } from './check-answers/check-answers.component';
+import { BlockNameComponent } from './block-name/block-name.component';
 
 const routes: Routes = [
   { path: 'intro', component: BuildingBlocksIntroComponent },
   { path: 'name', component: BuildingNameComponent },
+  { path: 'block-name', component: BlockNameComponent },
   { path: 'floors-above', component: BuildingFloorsAboveComponent },
   { path: 'height', component: BuildingHeightComponent },
   { path: 'residential-units', component: ResidentialUnitsComponent },
@@ -36,7 +38,8 @@ const routes: Routes = [
     BuildingNameComponent,
     NumberBlocksBuildingComponent,
     AnotherBlockComponent,
-    CheckAnswersComponent
+    CheckAnswersComponent,
+    BlockNameComponent
   ],
   imports: [
     RouterModule.forChild(routes),

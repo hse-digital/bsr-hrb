@@ -1,0 +1,29 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link *ngIf="blockNameHasErrors" anchorId="input-block-name" message="Enter this block's name" />
+        </govuk-error-summary>
+
+        <span class="govuk-caption-l">{{ captionText ?? "First block in the building" }}</span>
+        <govuk-fieldset title="What is this block's name?" [isPageHeading]=true id="application"
+                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+
+          <govuk-body>This will help you to identify which block we are asking you about later on.</govuk-body>
+
+          <govuk-input id="block-name" label="Block name" labelClass="govuk-label--s"
+                       [(model)]="building.blockName"
+                       (modelChange)="updateBlockName($event)"
+                       [errorText]="getErrorDescription(blockNameHasErrors, 'Enter this block\'s name')" />
+
+        </govuk-fieldset>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+    </div>
+  </div>
+</div>
