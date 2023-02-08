@@ -12,10 +12,10 @@ export class ApplicationCompletedComponent {
   }
 
   get email(): string | undefined {
-    return this.buildingRegistrationService.buildingRegistrationModel.ContactEmailAddress ?? "[email]";
+    return this.buildingRegistrationService.model.ContactEmailAddress ?? "[email]";
   }
 
   get buildingName(): string | undefined {
-    return this.buildingRegistrationService.buildingRegistrationModel.BuildingName ?? "[building name]";
+    return this.buildingRegistrationService.model.BuildingName ?? "[building name]";
   }
 }

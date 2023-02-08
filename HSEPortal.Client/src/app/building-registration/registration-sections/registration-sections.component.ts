@@ -9,7 +9,7 @@ export class RegistrationSectionsComponent {
     constructor(private buildingRegistrationService: BuildingRegistrationService){}
 
     getBuildingName() {
-        return this.buildingRegistrationService.buildingRegistrationModel.BuildingName;
+        return this.buildingRegistrationService.model.BuildingName;
     }
 
     tasks = [

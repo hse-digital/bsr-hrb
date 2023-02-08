@@ -15,8 +15,7 @@
           <govuk-body>You must enter a UK telephone number. We will only use this if we need to contact you about your application.</govuk-body>
 
           <govuk-input id="phone-number"
-                       [(model)]="contactDetails.phoneNumber"
-                       (modelChange)="updateContactPhoneNumber($event)"
+                       [(model)]="registrationService.model.ContactPhoneNumber"
                        [errorText]="getErrorDescription(phoneNumberHasErrors, 'Enter a UK telephone number')"
                        class="govuk-!-margin-bottom-1" />
         </govuk-fieldset>

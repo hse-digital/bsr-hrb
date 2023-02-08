@@ -8,28 +8,18 @@ import { BuildingRegistrationService } from '../../../services/building-registra
 })
 export class ContactDetailsNameComponent extends BaseFormComponent {
 
-  constructor(router: Router, private buildingRegistrationService: BuildingRegistrationService) {
+  constructor(router: Router, public registrationService: BuildingRegistrationService) {
     super(router);
   }
 
   nextScreenRoute: string = '/building-registration/contact-details/phone';
-  contactDetails: { firstName?: string, lastName?: string } = {};
-
   firstNameInError: boolean = false;
   lastNameInError: boolean = false;
 
   canContinue() {
-    this.firstNameInError = !this.contactDetails.firstName;
-    this.lastNameInError = !this.contactDetails.lastName;
+    this.firstNameInError = !this.registrationService.model.ContactFirstName;
+    this.lastNameInError = !this.registrationService.model.ContactLastName;
 
     return !this.firstNameInError && !this.lastNameInError;
-  }
-
-  updateContactFirstName(contactFirstName: string) {
-    this.buildingRegistrationService.setContactFirstName(contactFirstName);
-  }
-
-  updateContactLastName(contactLastName: string) {
-    this.buildingRegistrationService.setContactLastName(contactLastName);
   }
 }

@@ -16,14 +16,12 @@
           <govuk-body>We will use this if we need to contact you about your application</govuk-body>
 
           <govuk-input id="first-name" label="First name" 
-                       [(model)]="contactDetails.firstName"
-                       (modelChange)="updateContactFirstName($event)"
+                       [(model)]="registrationService.model.ContactFirstName"
                        [errorText]="getErrorDescription(firstNameInError, 'Enter your first name')"
                        class="govuk-!-margin-bottom-5" />
 
           <govuk-input id="last-name" label="Last name" 
-                       [(model)]="contactDetails.lastName"
-                       (modelChange)="updateContactLastName($event)"
+                       [(model)]="registrationService.model.ContactLastName"
                        [errorText]="getErrorDescription(lastNameInError, 'Enter your last name')" />
         </govuk-fieldset>
       </div>
