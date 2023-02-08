@@ -48,7 +48,7 @@ resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2021-04-15' = {
     location: location
     kind: 'GlobalDocumentDB'
     properties: {
-        publicNetworkAccess: 'Disabled'
+        publicNetworkAccess: 'Enabled'
         consistencyPolicy: {
             defaultConsistencyLevel: 'Session'
         }
@@ -173,6 +173,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                 {
                     name: 'Dynamics__ClientSecret'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--ClientSecret)'
+                }
+                {
+                    name: 'CosmosConnection'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=CosmosConnection)'
                 }
             ]
         }

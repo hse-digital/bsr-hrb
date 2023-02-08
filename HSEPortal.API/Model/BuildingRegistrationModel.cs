@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace HSEPortal.API.Model;
 
-public record BuildingRegistrationModel(string BuildingName = null,
+public record BuildingRegistrationModel(
+    [property: JsonPropertyName("id")] string Id = "REGISTRATION_ID",
+    string BuildingName = null,
     string ContactFirstName = null,
     string ContactLastName = null,
     string ContactPhoneNumber = null,
@@ -32,7 +35,8 @@ public record BuildingRegistrationModel(string BuildingName = null,
         }
         else if (!PhoneNumberIsValid())
         {
-            errors.Add("You must enter a UK telephone number. For example, 01632 960 001, 07700 900 982 or +44 808 157 0192");
+            errors.Add(
+                "You must enter a UK telephone number. For example, 01632 960 001, 07700 900 982 or +44 808 157 0192");
         }
 
         if (string.IsNullOrWhiteSpace(ContactEmailAddress))

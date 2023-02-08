@@ -3,7 +3,6 @@ using FluentAssertions;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
-using Microsoft.Azure.Functions.Worker.Http;
 using Xunit;
 
 namespace HSEPortal.API.UnitTests;
@@ -11,16 +10,16 @@ namespace HSEPortal.API.UnitTests;
 public class WhenRequestingANewBuildingRegistration : UnitTestBase
 {
     private readonly BuildingApplicationFunctions buildingApplicationFunctions;
-    private const string dynamicsAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkd";
-    private const string buildingApplicationReturnId = "EC6B32C8-0188-4CCE-B58C-D6F05FEEF79B";
-    private const string buildingReturnId = "06F8C7E4-F41A-4EB4-B8E2-3501701A4A53";
+    private const string DynamicsAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkd";
+    private const string BuildingApplicationReturnId = "EC6B32C8-0188-4CCE-B58C-D6F05FEEF79B";
+    private const string BuildingReturnId = "06F8C7E4-F41A-4EB4-B8E2-3501701A4A53";
 
     public WhenRequestingANewBuildingRegistration()
     {
         buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService);
-        HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = dynamicsAuthToken });
-        HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(buildingApplicationReturnId));
-        HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(buildingReturnId));
+        HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken });
+        HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(BuildingApplicationReturnId));
+        HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(BuildingReturnId));
     }
 
     [Fact]
@@ -50,7 +49,7 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
         var buildingRegistrationModel = new BuildingRegistrationModel(buildingName, contactFirstName, contactLastName, contactPhone, contactEmail);
         var response = await WhenSendingANewBuildingRegistration(buildingRegistrationModel);
 
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -60,7 +59,7 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
         await WhenSendingANewBuildingRegistration(buildingRegistrationModel);
 
         HttpTest.ShouldHaveCalled($"{DynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_buildingapplications")
-            .WithOAuthBearerToken(dynamicsAuthToken)
+            .WithOAuthBearerToken(DynamicsAuthToken)
             .WithRequestJson(new DynamicsBuildingApplication(buildingRegistrationModel.BuildingName));
     }
 
@@ -71,8 +70,8 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
         await WhenSendingANewBuildingRegistration(buildingRegistrationModel);
 
         HttpTest.ShouldHaveCalled($"{DynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_buildings")
-            .WithOAuthBearerToken(dynamicsAuthToken)
-            .WithRequestJson(new DynamicsBuilding(buildingRegistrationModel.BuildingName, odataReferenceId: $"/bsr_buildingapplications({buildingApplicationReturnId})"));
+            .WithOAuthBearerToken(DynamicsAuthToken)
+            .WithRequestJson(new DynamicsBuilding(buildingRegistrationModel.BuildingName, odataReferenceId: $"/bsr_buildingapplications({BuildingApplicationReturnId})"));
     }
 
     [Fact]
@@ -82,16 +81,16 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
         await WhenSendingANewBuildingRegistration(buildingRegistrationModel);
 
         HttpTest.ShouldHaveCalled($"{DynamicsOptions.EnvironmentUrl}/api/data/v9.2/contacts")
-            .WithOAuthBearerToken(dynamicsAuthToken)
-            .WithRequestJson(new DynamicsContact(buildingRegistrationModel.ContactFirstName, buildingRegistrationModel.ContactLastName, buildingRegistrationModel.ContactPhoneNumber, buildingRegistrationModel.ContactEmailAddress, odataReferenceId: $"/bsr_buildings({buildingReturnId})"));
+            .WithOAuthBearerToken(DynamicsAuthToken)
+            .WithRequestJson(new DynamicsContact(buildingRegistrationModel.ContactFirstName, buildingRegistrationModel.ContactLastName, buildingRegistrationModel.ContactPhoneNumber, buildingRegistrationModel.ContactEmailAddress, odataReferenceId: $"/bsr_buildings({BuildingReturnId})"));
     }
 
     private BuildingRegistrationModel GivenABuildingRegistrationModel()
     {
-        return new BuildingRegistrationModel("BuildingName", "Diego", "Santin", "+44 808 157 0192", "dsantin@codec.ie");
+        return new BuildingRegistrationModel("Id", "BuildingName", "Diego", "Santin", "+44 808 157 0192", "dsantin@codec.ie");
     }
 
-    private async Task<HttpResponseData> WhenSendingANewBuildingRegistration(BuildingRegistrationModel buildingRegistrationModel)
+    private async Task<HttpResponseDataWithCosmosDocument> WhenSendingANewBuildingRegistration(BuildingRegistrationModel buildingRegistrationModel)
     {
         var requestData = BuildHttpRequestData(buildingRegistrationModel);
         return await buildingApplicationFunctions.NewBuildingApplication(requestData);
