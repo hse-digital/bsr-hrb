@@ -15,7 +15,7 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(NewBuildingApplication))]
-    public async Task<HttpResponseData> NewBuildingApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
+    public async Task<HttpResponseDataWithCosmosDocument> NewBuildingApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
     {
         var buildingRegistrationModel = await request.ReadAsJsonAsync<BuildingRegistrationModel>();
         var validation = buildingRegistrationModel.Validate();
@@ -23,8 +23,20 @@ public class BuildingApplicationFunctions
         {
             return await request.BuildValidationErrorResponseDataAsync(validation);
         }
-
+        
         await dynamicsService.RegisterNewBuildingApplicationAsync(buildingRegistrationModel);
-        return request.CreateResponse();
+        return new HttpResponseDataWithCosmosDocument
+        {
+            CosmosDocument = buildingRegistrationModel,
+            HttpResponse = request.CreateResponse()
+        };
     }
+}
+
+public class HttpResponseDataWithCosmosDocument
+{
+    [CosmosDBOutput("hseportal", "building-registrations", Connection = "CosmosConnection")]
+    public object CosmosDocument { get; set; }
+
+    public HttpResponseData HttpResponse { get; set; }
 }

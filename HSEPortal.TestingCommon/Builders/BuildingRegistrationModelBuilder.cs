@@ -42,6 +42,6 @@ public class BuildingRegistrationModelBuilder
 
     public BuildingRegistrationModel Build()
     {
-        return new BuildingRegistrationModel(modelBuildingName, modelContactFirstName, modelContactLastName, modelContactPhoneNumber, modelContactEmailAddress);
+        return new BuildingRegistrationModel("Id", modelBuildingName, modelContactFirstName, modelContactLastName, modelContactPhoneNumber, modelContactEmailAddress);
     }
 }
