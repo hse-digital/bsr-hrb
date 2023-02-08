@@ -48,7 +48,7 @@ resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2021-04-15' = {
     location: location
     kind: 'GlobalDocumentDB'
     properties: {
-        publicNetworkAccess: 'Disabled'
+        publicNetworkAccess: 'Enabled'
         consistencyPolicy: {
             defaultConsistencyLevel: 'Session'
         }
