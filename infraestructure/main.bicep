@@ -174,6 +174,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                     name: 'Dynamics__ClientSecret'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--ClientSecret)'
                 }
+                {
+                    name: 'CosmosConnection'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=CosmosConnection)'
+                }
             ]
         }
         httpsOnly: true
