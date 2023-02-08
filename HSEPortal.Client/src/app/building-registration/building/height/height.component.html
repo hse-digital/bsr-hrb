@@ -28,6 +28,7 @@
                                  labelClass="govuk-label--s" id="height"
                                  [(model)]="building.height"
                                  [errorText]="getErrorDescription(heightHasErrors, errorMessage)" suffix="m"
+                                 (modelChange)="updateHeight($event)"
                                  class="govuk-input--width-4" #height />
 
                 </govuk-fieldset>

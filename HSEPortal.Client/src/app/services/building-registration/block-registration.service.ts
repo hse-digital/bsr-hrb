@@ -13,12 +13,40 @@ export class BlockRegistrationService {
     this.blockRegistrationModel.numberBlocksBuilding = numberBlocksBuilding;
   }
 
-  async registerNewBuildingApplication(): Promise<void> {
+  setFloorsAbove(floorsAbove: number) {
+    this.blockRegistrationModel.floorsAbove = floorsAbove;
+  }
+
+  setHeight(height: number) {
+    this.blockRegistrationModel.height = height;
+  }
+
+  setPeopleLivingInBuilding(peopleLivingInBuilding: any) {
+    this.blockRegistrationModel.peopleLivingInBuilding = peopleLivingInBuilding;
+  }
+
+  setResidentialUnits(residentialUnits: number) {
+    this.blockRegistrationModel.residentialUnits = residentialUnits;
+  }
+
+  clearBlockRegistrationModel() {
+    this.blockRegistrationModel = {};
+  }
+
+  async registerNewBlock(): Promise<void> {
     // await firstValueFrom(this.httpClient.post('TO-DO', this.blockRegistrationModel));
   }
 }
 
-class BlockRegistrationModel {
-  public numberBlocksBuilding?: string;
+export class BlockRegistrationModel {
+  numberBlocksBuilding?: string;
+  floorsAbove?: number;
+  height?: number;
+  peopleLivingInBuilding?: any;
+  residentialUnits?: number;
+  yearCompletition?: any;
+  completitionCertificateIssuer?: any;
+  completitionCertificateReference?: any;
+  address?: string;
 }
 

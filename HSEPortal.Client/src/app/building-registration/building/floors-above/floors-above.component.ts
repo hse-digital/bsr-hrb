@@ -1,4 +1,4 @@
-import { AfterContentInit, Component } from "@angular/core";
+import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { BaseFormComponent } from "src/app/helpers/base-form.component";
 import { BlockRegistrationService } from "../../../services/building-registration/block-registration.service";
@@ -37,6 +37,10 @@ export class BuildingFloorsAboveComponent extends BaseFormComponent {
     }
 
     return !this.floorsHasError;
+  }
+
+  updateFloorsAbove(floorsAbove: number) {
+    this.blockRegistrationService.setFloorsAbove(floorsAbove);
   }
 
   get captionText(): string | undefined {

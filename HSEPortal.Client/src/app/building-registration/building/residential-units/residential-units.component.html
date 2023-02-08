@@ -18,6 +18,7 @@
                                  labelClass="govuk-label--s" id="height"
                                  [(model)]="building.residentialUnits"
                                  [errorText]="getErrorDescription(residentialUnitsHasErrors, errorMessage)"
+                                 (modelChange)="updateNumberResidentialUnits($event)"
                                  class="govuk-input--width-4" #height />
                 </govuk-fieldset>
             </div>
