@@ -6,7 +6,7 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
-          <govuk-error-link *ngIf="nameHasErrors" anchorId="input-building-name" message="Enter this building's name" />
+          <govuk-error-link *ngIf="nameHasErrors" anchorId="input-building-name" message="You must enter a name for the building" />
         </govuk-error-summary>
 
         <govuk-fieldset title="What is this building's name?" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-5' class='govuk-!-margin-bottom-4'>
@@ -17,7 +17,7 @@
           <govuk-input id="building-name" label="Building name" labelClass="govuk-label--s"
                        [(model)]="building.name"
                        (modelChange)="updateBuildingName($event)"
-                       [errorText]="getErrorDescription(nameHasErrors, 'Enter this building\'s name')"
+                       [errorText]="getErrorDescription(nameHasErrors, 'Enter a name for the building')"
                        hint="For example 'The Gherkin'."
                        hintClass="no-margin-top" />
 
