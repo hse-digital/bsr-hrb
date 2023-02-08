@@ -8,21 +8,16 @@ import { BuildingRegistrationService } from '../../../services/building-registra
 })
 export class ContactDetailsPhoneComponent extends BaseFormComponent {
 
-  constructor(router: Router, private buildingRegistrationService: BuildingRegistrationService) {
+  constructor(router: Router, public registrationService: BuildingRegistrationService) {
     super(router);
   }
 
   nextScreenRoute: string = '/building-registration/contact-details/email';
-  contactDetails: { phoneNumber?: string } = {};
   phoneNumberHasErrors = false;
 
   canContinue(): boolean {
     this.phoneNumberHasErrors = !this.isPhoneNumberValid();
     return !this.phoneNumberHasErrors;
-  }
-
-  updateContactPhoneNumber(contactPhoneNumber: string) {
-    this.buildingRegistrationService.setContactPhoneNumber(contactPhoneNumber);
   }
 
   private _expectedPhonePatterns = [
@@ -38,6 +33,6 @@ export class ContactDetailsPhoneComponent extends BaseFormComponent {
   }
 
   private cleanPhoneNumber(): string {
-    return this.contactDetails.phoneNumber?.replaceAll(' ', '') ?? '';
+    return this.registrationService.model.ContactPhoneNumber?.replaceAll(' ', '') ?? '';
   }
 }

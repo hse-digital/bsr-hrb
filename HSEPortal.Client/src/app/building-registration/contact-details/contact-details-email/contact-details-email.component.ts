@@ -8,30 +8,25 @@ import { BuildingRegistrationService } from '../../../services/building-registra
 })
 export class ContactDetailsEmailComponent extends BaseFormComponent {
 
-  constructor(router: Router, private buildingRegistrationService: BuildingRegistrationService) {
+  constructor(router: Router, public registrationService: BuildingRegistrationService) {
     super(router);
   }
 
   nextScreenRoute: string = '';
-  contactDetails: { email?: string } = {};
   emailHasErrors = false;
 
   sendingRequest = false;
 
   canContinue(): boolean {
-    this.emailHasErrors = !this.contactDetails.email;
+    this.emailHasErrors = !this.registrationService.model.ContactEmailAddress;
     return !this.emailHasErrors;
   }
-
-  updateContactEmailAddress(contactEmailAddress: string) {
-    this.buildingRegistrationService.setContactEmailAddress(contactEmailAddress);
-  }
-
+  
   override async saveAndContinue() {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       this.sendingRequest = true;
-      await this.buildingRegistrationService.registerNewBuildingApplication();
+      await this.registrationService.registerNewBuildingApplication();
       this.router.navigate(['/building-registration/sections']);
     }
   }
