@@ -14,7 +14,7 @@
           <govuk-body>When your building is registered, this is the name that will appear on the public register of high-rise buildings in England.</govuk-body>
 
 
-          <govuk-input id="building-name" label="Your building name" labelClass="govuk-label--s"
+          <govuk-input id="building-name" label="Building name" labelClass="govuk-label--s"
                        [(model)]="building.name"
                        (modelChange)="updateBuildingName($event)"
                        [errorText]="getErrorDescription(nameHasErrors, 'Enter this building\'s name')"
