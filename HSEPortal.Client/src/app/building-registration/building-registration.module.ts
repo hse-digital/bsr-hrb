@@ -12,6 +12,7 @@ import { BlockRegistrationService } from "../services/building-registration/bloc
 import { BuildingRegistrationService } from "../services/building-registration/building-registration.service";
 import { ApplicationCompletedComponent } from "./application-completed/application-completed.component";
 import { ContinueSavedApplicationComponent } from './continue-saved-application/continue-saved-application.component';
+import { ReturnSecurityComponent } from './return-security/return-security.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,7 @@ const routes: Routes = [
       { path: 'building', loadChildren: () => import('./building/building.module').then(m => m.BuildingModule) },
       { path: 'building-completed', component: ApplicationCompletedComponent },
       { path: 'continue-saved-application', component: ContinueSavedApplicationComponent },
+      { path: 'return-security', component: ReturnSecurityComponent },
     ]
   },
 ];
@@ -34,6 +36,7 @@ const routes: Routes = [
     StartComponent,
     ApplicationCompletedComponent,
     ContinueSavedApplicationComponent,
+    ReturnSecurityComponent,
   ],
   imports: [
     RouterModule.forChild(routes),

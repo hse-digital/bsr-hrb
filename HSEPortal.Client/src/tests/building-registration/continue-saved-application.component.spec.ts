@@ -156,7 +156,6 @@ describe('ContinueSavedApplicationComponent getErrorDescription(value, errorText
 
   })));
 
-
   it('should only display the application number error message.', async(inject([Router], (router: any) => {
 
     let emailAndAppNumber: { emailAddress?: string, applicationNumber?: string }[] = [

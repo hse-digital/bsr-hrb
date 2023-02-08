@@ -5,12 +5,11 @@ import { BuildingRegistrationService } from '../../services/building-registratio
 
 @Component({
   selector: 'hse-continue-saved-application',
-  templateUrl: './continue-saved-application.component.html',
-  styleUrls: ['./continue-saved-application.component.scss']
+  templateUrl: './continue-saved-application.component.html'
 })
 export class ContinueSavedApplicationComponent extends BaseFormComponent {
 
-  nextScreenRoute: string = '/building-registration/continue-saved-application';
+  nextScreenRoute: string = '/building-registration/return-security';
 
   building: { emailAddress?: string, applicationNumber?: string } = {}
 
