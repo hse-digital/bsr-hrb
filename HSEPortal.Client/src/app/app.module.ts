@@ -23,6 +23,6 @@ import { IdleTimerService } from './services/idle-timer.service';
 })
 export class AppModule {
   constructor(private router: Router, private idleTimerService: IdleTimerService) {
-    this.idleTimerService.initTimer(10, () => { this.router.navigate(['/building-registration/continue-saved-application']) });
+    this.idleTimerService.initTimer(10, () => { this.router.navigate(['/building-registration/timeout']) });
   }
 }

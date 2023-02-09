@@ -13,6 +13,7 @@ import { BuildingRegistrationService } from "../services/building-registration/b
 import { ApplicationCompletedComponent } from "./application-completed/application-completed.component";
 import { ContinueSavedApplicationComponent } from './continue-saved-application/continue-saved-application.component';
 import { ReturnSecurityComponent } from './return-security/return-security.component';
+import { TimeoutComponent } from './timeout/timeout.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
       { path: 'building-completed', component: ApplicationCompletedComponent },
       { path: 'continue-saved-application', component: ContinueSavedApplicationComponent },
       { path: 'return-security', component: ReturnSecurityComponent },
+      { path: 'timeout', component: TimeoutComponent },
     ]
   },
 ];
@@ -37,6 +39,7 @@ const routes: Routes = [
     ApplicationCompletedComponent,
     ContinueSavedApplicationComponent,
     ReturnSecurityComponent,
+    TimeoutComponent,
   ],
   imports: [
     RouterModule.forChild(routes),
