@@ -11,7 +11,7 @@ export class IdleTimerService {
   private timeoutTracker!: any;
 
   initTimer(timeout: number, onTimeout: any) {
-    if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
       this.timeout = timeout;
       this.onTimeout = onTimeout;
 
