@@ -11,12 +11,14 @@ export class IdleTimerService {
   private timeoutTracker!: any;
 
   initTimer(timeout: number, onTimeout: any) {
-    this.timeout = timeout;
-    this.onTimeout = onTimeout;
+    if (typeof window !== undefined) {
+      this.timeout = timeout;
+      this.onTimeout = onTimeout;
 
-    this.eventHandler = this.updateExpiredTime.bind(this);
-    this.tracker();
-    this.startInterval();
+      this.eventHandler = this.updateExpiredTime.bind(this);
+      this.tracker();
+      this.startInterval();
+    }
   }
 
   private startInterval() {
