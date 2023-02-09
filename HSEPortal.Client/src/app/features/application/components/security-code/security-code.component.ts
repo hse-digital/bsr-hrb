@@ -9,7 +9,7 @@ import { BuildingRegistrationService } from 'src/app/services/building-registrat
 export class SecurityCodeComponent extends BaseFormComponent {
   static route: string = "security-code";
 
-  nextScreenRoute: string = '/application/security-code';
+  nextScreenRoute: string = '/application/123/sections';
   building: { securityCode?: string, email?: string } = {}
 
   errors = {
