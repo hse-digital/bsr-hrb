@@ -13,12 +13,14 @@ import { NumberBlocksBuildingComponent } from "./number-blocks-building/number-b
 import { AnotherBlockComponent } from "./another-block/another-block.component";
 import { CheckAnswersComponent } from "./check-answers/check-answers.component";
 import { BlockNameComponent } from "./block-name/block-name.component";
+import { HeightGuardService } from "../../../../services/route-guard/components/building/height-guard.service";
+import { FloorsAboveGuardService } from "../../../../services/route-guard/components/building/floors-above-guard.service";
 
 const routes: Routes = [
   { path: 'intro', component: BuildingBlocksIntroComponent },
   { path: 'block-name', component: BlockNameComponent },
-  { path: 'floors-above', component: BuildingFloorsAboveComponent },
-  { path: 'height', component: BuildingHeightComponent },
+  { path: 'floors-above', component: BuildingFloorsAboveComponent, canActivate: [FloorsAboveGuardService] },
+  { path: 'height', component: BuildingHeightComponent, canActivate: [HeightGuardService] },
   { path: 'residential-units', component: ResidentialUnitsComponent },
   { path: 'people-living-in-building', component: PeopleLivingInBuildingComponent },
   { path: 'number-blocks-building', component: NumberBlocksBuildingComponent },

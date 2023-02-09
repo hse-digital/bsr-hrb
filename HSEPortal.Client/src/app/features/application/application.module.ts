@@ -9,30 +9,31 @@ import { SecurityCodeComponent } from "./components/security-code/security-code.
 import { BuildingRegistrationService } from "src/app/services/building-registration.service";
 import { NewApplicationModule } from "./new-application/new-application.module";
 import { ApplicationCompletedComponent } from "./components/application-completed/application-completed.component";
+import { BuildingGuardService } from "../../services/route-guard/components/building/building-guard.service";
 
 const routes: Routes = [
-    { path: ApplicationStartComponent.route, component: ApplicationStartComponent },
-    { path: ApplicationContinueComponent.route, component: ApplicationContinueComponent },
-    { path: SecurityCodeComponent.route, component: SecurityCodeComponent },
-    { path: NewApplicationModule.baseRoute, loadChildren: () => import('./new-application/new-application.module').then(m => m.NewApplicationModule) },
-    { path: ':id',  loadChildren: () => import('./continue-application/continue-application.module').then(m => m.ContinueApplicationModule) },
+  { path: ApplicationStartComponent.route, component: ApplicationStartComponent },
+  { path: ApplicationContinueComponent.route, component: ApplicationContinueComponent },
+  { path: SecurityCodeComponent.route, component: SecurityCodeComponent },
+  { path: NewApplicationModule.baseRoute, loadChildren: () => import('./new-application/new-application.module').then(m => m.NewApplicationModule), canActivateChild: [BuildingGuardService] },
+  { path: ':id', loadChildren: () => import('./continue-application/continue-application.module').then(m => m.ContinueApplicationModule) },
 ];
 
 @NgModule({
-    declarations: [
-        ApplicationStartComponent,
-        ApplicationContinueComponent,
-        SecurityCodeComponent,
-        ApplicationCompletedComponent
-    ],
-    imports: [
-        RouterModule.forChild(routes),
-        HseAngularModule,
-        CommonModule,
-        HttpClientModule
-    ],
-    providers: [BuildingRegistrationService]
+  declarations: [
+    ApplicationStartComponent,
+    ApplicationContinueComponent,
+    SecurityCodeComponent,
+    ApplicationCompletedComponent
+  ],
+  imports: [
+    RouterModule.forChild(routes),
+    HseAngularModule,
+    CommonModule,
+    HttpClientModule
+  ],
+  providers: [BuildingRegistrationService]
 })
 export class ApplicationModule {
-    static baseRoute: string = 'application';
+  static baseRoute: string = 'application';
 }
