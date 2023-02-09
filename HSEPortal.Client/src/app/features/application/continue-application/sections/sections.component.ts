@@ -2,41 +2,51 @@ import { Component } from "@angular/core";
 import { BuildingRegistrationService } from "src/app/services/building-registration.service";
 
 @Component({
-    templateUrl: './sections.component.html'
+  templateUrl: './sections.component.html'
 })
 export class ApplicationsSectionsComponent {
-    static route: string = 'sections';
+  static route: string = 'sections';
 
-    constructor(private buildingRegistrationService: BuildingRegistrationService){}
+  constructor(private buildingRegistrationService: BuildingRegistrationService) { }
 
-    getBuildingName() {
-        return this.buildingRegistrationService.model.BuildingName;
-    }
+  getBuildingName() {
+    return this.buildingRegistrationService.model.BuildingName;
+  }
 
-    tasks = [
+  tasks = [
+    {
+      title: "Prepare your application",
+      items: [
         {
-            title: "Prepare your application",
-            items: [
-                {
-                    title: "Principal accountable person",
-                    status: 0
-                },
-                {
-                    title: "Other accountable persons",
-                    status: 0
-                },
-            ]
+          title: "Blocks in the building",
+          tag: "NOT STARTED YET",
+          link: "/building-registration/building/number-blocks-building",
+          status: 0
         },
         {
-            title: "Submit your application",
-            items: [
-                {
-                    title: "Apply and pay the fee",
-                    status: 0
-                }
-            ]
+          title: "Principal accountable person",
+          tag: "CANNOT START YET",
+          link: undefined,
+          status: 0
+        },
+        {
+          title: "Other accountable persons",
+          tag: "CANNOT START YET",
+          link: undefined,
+          status: 0
+        },
+      ]
+    },
+    {
+      title: "Submit your application",
+      items: [
+        {
+          title: "Apply and pay the fee",
+          tag: "CANNOT START YET",
+          link: undefined,
+          status: 0
         }
-    ]
-
-
+      ]
+    }
+  ]
 }

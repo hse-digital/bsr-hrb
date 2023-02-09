@@ -4,23 +4,23 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
-import { ReturnSecurityComponent } from '../../app/features/application/components/security-code/security-code.component';
-import { BuildingRegistrationService } from '../../app/services/building-registration/building-registration.service';
+import { SecurityCodeComponent } from '../../app/features/application/components/security-code/security-code.component';
+import { BuildingRegistrationService } from '../../app/services/building-registration.service';
 
-let component: ReturnSecurityComponent;
-let fixture: ComponentFixture<ReturnSecurityComponent>;
+let component: SecurityCodeComponent;
+let fixture: ComponentFixture<SecurityCodeComponent>;
 
-describe('ReturnSecurityComponent showError', () => {
+describe('SecurityCodeComponent showError', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ReturnSecurityComponent],
+      declarations: [SecurityCodeComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [HttpClient, HttpHandler, BuildingRegistrationService]
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(ReturnSecurityComponent);
+    fixture = TestBed.createComponent(SecurityCodeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -56,16 +56,16 @@ describe('ReturnSecurityComponent showError', () => {
   })));
 });
 
-describe('ReturnSecurityComponent getErrorDescription(value, errorText)', () => {
+describe('SecurityCodeComponent getErrorDescription(value, errorText)', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ReturnSecurityComponent],
+      declarations: [SecurityCodeComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [HttpClient, HttpHandler, BuildingRegistrationService]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ReturnSecurityComponent);
+    fixture = TestBed.createComponent(SecurityCodeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
