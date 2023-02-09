@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { HseAngularModule } from 'hse-angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { IdleTimerService } from './services/idle-timer.service';
 
 @NgModule({
   declarations: [
@@ -19,4 +21,8 @@ import { AppComponent } from './app.component';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private router: Router, private idleTimerService: IdleTimerService) {
+    this.idleTimerService.initTimer(10, () => { this.router.navigate(['/building-registration/continue-saved-application']) });
+  }
+}
