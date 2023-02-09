@@ -6,7 +6,7 @@ import { HseAngularModule } from 'hse-angular';
 import { CaptionService } from '../../../app/building-registration/building/caption.service';
 
 import { NumberBlocksBuildingComponent } from '../../../app/building-registration/building/number-blocks-building/number-blocks-building.component';
-import { BlockRegistrationService } from '../../../app/services/building-registration/block-registration.service';
+import { BlockRegistrationService } from '../../../app/services/block-registration.service';
 import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
 
 let component: NumberBlocksBuildingComponent;

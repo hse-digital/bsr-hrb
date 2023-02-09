@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
-import { ContinueSavedApplicationComponent } from '../../app/building-registration/continue-saved-application/continue-saved-application.component';
+import { ContinueSavedApplicationComponent } from '../../app/features/application/components/application-continue/application-continue.component';
 import { BuildingRegistrationService } from '../../app/services/building-registration/building-registration.service';
 
 let component: ContinueSavedApplicationComponent;

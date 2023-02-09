@@ -3,7 +3,7 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { NewOrExistingRegistrationComponent } from '../../../app/building-registration/new-or-existing-registration/new-or-existing-registration.component';
+import { NewOrExistingRegistrationComponent } from '../../../app/features/application/components/application-start/application-start.component';
 import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
 
 let component: NewOrExistingRegistrationComponent;

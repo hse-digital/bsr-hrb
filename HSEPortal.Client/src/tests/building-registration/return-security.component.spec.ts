@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
-import { ReturnSecurityComponent } from '../../app/building-registration/return-security/return-security.component';
+import { ReturnSecurityComponent } from '../../app/features/application/components/security-code/security-code.component';
 import { BuildingRegistrationService } from '../../app/services/building-registration/building-registration.service';
 
 let component: ReturnSecurityComponent;

@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
 import { CheckAnswersComponent } from '../../../app/building-registration/building/check-answers/check-answers.component';
-import { BlockRegistrationService } from '../../../app/services/building-registration/block-registration.service';
+import { BlockRegistrationService } from '../../../app/services/block-registration.service';
 
 describe('CheckAnswersComponent', () => {
   let component: CheckAnswersComponent;

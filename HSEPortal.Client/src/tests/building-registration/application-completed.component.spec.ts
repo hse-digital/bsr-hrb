@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
-import { ApplicationCompletedComponent } from '../../app/building-registration/application-completed/application-completed.component';
+import { ApplicationCompletedComponent } from '../../app/features/application/components/application-completed/application-completed.component';
 import { BuildingRegistrationService } from '../../app/services/building-registration/building-registration.service';
 
 describe('ApplicationCompleteComponent', () => {

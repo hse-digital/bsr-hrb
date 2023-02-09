@@ -1,0 +1,61 @@
+<govuk-breadcrumb-group>
+    <govuk-breadcrumb text="Home" link="https://www.gov.uk/" [firstChild]=true></govuk-breadcrumb>
+    <govuk-breadcrumb text="Building Safety Regulator" link="#"></govuk-breadcrumb>
+    <govuk-breadcrumb text="Register a high-rise building" link=""></govuk-breadcrumb>
+  </govuk-breadcrumb-group>
+  
+  <div class=" govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <govuk-fieldset title="Register a high-rise building" [isPageHeading]=true titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' />
+  
+        <govuk-body class="govuk-!-margin-bottom-4">
+          Use this service to apply to register a high-rise building in England.
+        </govuk-body>
+        <govuk-body class="govuk-!-margin-bottom-4">
+          If you are the principal accountable person for a building, or the principal accountable person has authorised you to act for them, you can use this service to:
+        </govuk-body>
+  
+        <govuk-list classes='govuk-list--bullet'>
+          <govuk-list-item text="check if you need to register the building" />
+          <govuk-list-item text="apply to the register the building" />
+          <govuk-list-item text="continue an application you started previously" />
+          <govuk-list-item text="give us structural information about the building before the Building Safety Regulator (BSR) has approved the buildings registration" />
+        </govuk-list>
+  
+        <govuk-details summaryText="Help with principal accountable person" id="details_accountable_person">
+          <p>
+            The principal accountable person is the person or organisation who owns or has responsibility for the building.
+          </p>
+          <p>
+            If the building has more than one accountable person, then the accountable person for the external common parts of the building will be the principal accountable person.
+          </p>
+        </govuk-details>
+  
+        <govuk-fieldset title="Before you start" [isPageHeading]=false titleClass='govuk-fieldset__legend--m' />
+  
+        <govuk-body class="govuk-!-margin-bottom-4">
+          Once you have started you'll have until 28 October 2023 to complete your application, and give us all the information we need to know about the building.
+        </govuk-body>
+        <govuk-body class="govuk-!-margin-bottom-4">
+          You can use this service as many times as you need. But you can only give us information about 1 building at a time.
+        </govuk-body>
+        <govuk-body class="govuk-!-margin-bottom-4">
+          This service costs £--- per building. You can pay by credit or debit card.
+        </govuk-body>
+  
+        <govuk-button classes="govuk-button--start govuk-!-margin-bottom-8" link="/application">
+          Start now <arrow-right-icon />
+        </govuk-button>
+  
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <govuk-aside subsectionTitle="Guidance">
+          <govuk-list classes="govuk-!-font-size-16">
+            <govuk-list-item text="Building Safety Act 2022" link="https://legislation.gov.uk" [newTab]=true />
+          </govuk-list>
+        </govuk-aside>
+      </div>
+    </div>
+  </div>
+  

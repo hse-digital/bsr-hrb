@@ -1,0 +1,31 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="showError" title="There is a problem">
+          <govuk-error-link anchorId="fieldset-application"
+                            message="Select if you want to start a new application or continue a saved application" />
+        </govuk-error-summary>
+
+        <govuk-fieldset title="Your application" [isPageHeading]=true id="application"
+                        [errorText]="showError ? 'Select if you want to start a new application or continue a saved application': undefined"
+                        titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-1' class='govuk-!-margin-bottom-3'>
+
+          <govuk-radio-group [(model)]="continueLink" (onRadioSelected)="updateErrorStatus()">
+            <govuk-radio name="application-group" id="application-new" value="/application/new/building-name" label="Start a new application">
+            </govuk-radio>
+            <govuk-radio name="application-group" id="application-return" value="/application/continue" label="Continue a saved application"
+                         class="govuk-radio-no-margin-bottom">
+            </govuk-radio>
+          </govuk-radio-group>
+
+        </govuk-fieldset>
+      </div>
+      <govuk-button [link]="continueLink" (onClick)="updateErrorStatus()">Continue</govuk-button>
+    </div>
+  </div>
+</div>
+

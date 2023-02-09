@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { StartComponent } from './building-registration/start/start.component';
+import { ApplicationModule } from './features/application/application.module';
+import { LandingComponent } from './features/landing/landing.component';
 
 const routes: Routes = [
-  { path: '', component: StartComponent },
-  { path: 'start', component: StartComponent },
-  { path: 'building-registration', loadChildren: () => import('./building-registration/building-registration.module').then(m => m.BuildingRegistrationModule) },
+  { path: '', component: LandingComponent },
+  { path: ApplicationModule.baseRoute, loadChildren: () => import('./features/application/application.module').then(m => m.ApplicationModule) },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
     initialNavigation: 'enabledBlocking'
-})],
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

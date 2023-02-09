@@ -23,7 +23,6 @@ export class IdleTimerService {
     this.updateExpiredTime();
 
     this.interval = setInterval(() => {
-      console.log("interval");
       const expiredTime = parseInt(localStorage.getItem("_expiredTime") ?? '', 10);
       if (expiredTime < Date.now()) {
         if (this.onTimeout) {

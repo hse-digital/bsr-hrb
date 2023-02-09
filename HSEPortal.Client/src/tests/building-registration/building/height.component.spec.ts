@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { CaptionService } from '../../../app/building-registration/building/caption.service';
 import { BuildingHeightComponent } from '../../../app/building-registration/building/height/height.component';
-import { BlockRegistrationService } from '../../../app/services/building-registration/block-registration.service';
+import { BlockRegistrationService } from '../../../app/services/block-registration.service';
 import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
 
 let component: BuildingHeightComponent;

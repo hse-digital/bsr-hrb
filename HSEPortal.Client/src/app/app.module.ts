@@ -6,11 +6,13 @@ import { HseAngularModule } from 'hse-angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { LandingComponent } from './features/landing/landing.component';
 import { IdleTimerService } from './services/idle-timer.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LandingComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

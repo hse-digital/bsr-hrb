@@ -6,7 +6,7 @@ import { HseAngularModule } from 'hse-angular';
 
 import { BlockNameComponent } from '../../../app/building-registration/building/block-name/block-name.component';
 import { CaptionService } from '../../../app/building-registration/building/caption.service';
-import { BlockRegistrationService } from '../../../app/services/building-registration/block-registration.service';
+import { BlockRegistrationService } from '../../../app/services/block-registration.service';
 
 let component: BlockNameComponent;
 let fixture: ComponentFixture<BlockNameComponent>;
