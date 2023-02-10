@@ -4,18 +4,18 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
 import { ApplicationService } from "src/app/services/application.service";
-import { HseRoute } from "src/app/services/hse.route";
+import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { BuildingNameComponent } from "./building-name/building-name.component";
 import { ContactEmailComponent } from "./contact-email/contact-email.component";
 import { ContactNameComponent } from "./contact-name/contact-name.component";
 import { ContactPhoneComponent } from "./contact-phone/contact-phone.component";
 
-const routes: Routes = [
+const routes = new HseRoutes([
   HseRoute.unsafe(BuildingNameComponent.route, BuildingNameComponent),
   HseRoute.protected(ContactNameComponent.route, ContactNameComponent),
   HseRoute.protected(ContactEmailComponent.route, ContactEmailComponent),
   HseRoute.protected(ContactPhoneComponent.route, ContactPhoneComponent),
-];
+]);
 
 @NgModule({
   declarations: [
@@ -25,12 +25,12 @@ const routes: Routes = [
     ContactPhoneComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes.getRoutes()),
     HseAngularModule,
     CommonModule,
     HttpClientModule
   ],
-  providers: [HttpClient, ApplicationService, ContactNameComponent, ContactEmailComponent, ContactPhoneComponent]
+  providers: [HttpClient, ApplicationService, ...routes.getProviders()]
 })
 export class NewApplicationModule {
   static baseRoute: string = 'new';

@@ -12,10 +12,10 @@ import { NumberBlocksBuildingComponent } from "./number-blocks-building/number-b
 import { AnotherBlockComponent } from "./another-block/another-block.component";
 import { CheckAnswersComponent } from "./check-answers/check-answers.component";
 import { BlockNameComponent } from "./block-name/block-name.component";
-import { HseRoute } from "src/app/services/hse.route";
+import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { CaptionService } from "src/app/services/caption.service";
 
-const routes: Routes = [
+const routes = new HseRoutes([
   HseRoute.unsafe('intro', BuildingBlocksIntroComponent),
   HseRoute.unsafe('block-name', BlockNameComponent),
   HseRoute.unsafe('floors-above', BuildingFloorsAboveComponent),
@@ -25,7 +25,7 @@ const routes: Routes = [
   HseRoute.unsafe('number-blocks-building', NumberBlocksBuildingComponent),
   HseRoute.unsafe('another-block', AnotherBlockComponent),
   HseRoute.unsafe('check-answers', CheckAnswersComponent),
-];
+]);
 
 @NgModule({
   declarations: [
@@ -40,7 +40,7 @@ const routes: Routes = [
     BlockNameComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes.getRoutes()),
     HseAngularModule,
     CommonModule,
     HttpClientModule

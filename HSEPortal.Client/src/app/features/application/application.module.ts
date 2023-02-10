@@ -8,13 +8,13 @@ import { ApplicationContinueComponent } from "./components/application-continue/
 import { SecurityCodeComponent } from "./components/security-code/security-code.component";
 import { NewApplicationModule } from "./new-application/new-application.module";
 import { ApplicationCompletedComponent } from "./components/application-completed/application-completed.component";
-import { HseRoute } from "src/app/services/hse.route";
+import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { AccountablePersonComponent } from "./components/accountable-person/accountable-person.component";
 import { OtherAccountablePersonComponent } from "./components/other-accountable-person/other-accountable-person.component";
 import { BlockRegistrationService } from "src/app/services/block-registration.service";
 import { ApplicationService } from "src/app/services/application.service";
 
-const routes: Routes = [
+const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationStartComponent.route, ApplicationStartComponent),
   HseRoute.unsafe(ApplicationContinueComponent.route, ApplicationContinueComponent),
   HseRoute.unsafe(SecurityCodeComponent.route, SecurityCodeComponent),
@@ -22,7 +22,7 @@ const routes: Routes = [
   HseRoute.unsafe(OtherAccountablePersonComponent.route, OtherAccountablePersonComponent),
   HseRoute.forChildren(NewApplicationModule.baseRoute, () => import('./new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forChildren(':id', () => import('./continue-application/continue-application.module').then(m => m.ContinueApplicationModule)),
-];
+]);
 
 @NgModule({
   declarations: [
@@ -34,7 +34,7 @@ const routes: Routes = [
     OtherAccountablePersonComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes.getRoutes()),
     HseAngularModule,
     CommonModule,
     HttpClientModule
