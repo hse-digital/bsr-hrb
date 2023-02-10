@@ -17,7 +17,7 @@
           <govuk-body>If you do not have an email address, contact us to apply to register a high-rise building.</govuk-body>
 
           <govuk-input id="email"
-                       [(model)]="registrationService.model.ContactEmailAddress"
+                       [(model)]="applicationService.model.ContactEmailAddress"
                        label="Enter your email address" labelClass="govuk-label--s"
                        [errorText]="getErrorDescription(emailHasErrors, 'Enter an email address in the correct format')"
                        hint="We will use this to confirm when your application has been submitted and contact you in the future about your applicaton"

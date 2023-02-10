@@ -10,8 +10,8 @@ import { ApplicationService } from 'src/app/services/application.service';
 export class ContactNameComponent extends BaseComponent {
   static route: string = "contact-name";
 
-  constructor(router: Router, public registrationService: ApplicationService) {
-    super(router);
+  constructor(router: Router, applicationService: ApplicationService) {
+    super(router, applicationService);
   }
 
   nextScreenRoute: string = '/application/new/contact-phone';
@@ -19,13 +19,13 @@ export class ContactNameComponent extends BaseComponent {
   lastNameInError: boolean = false;
 
   canContinue() {
-    this.firstNameInError = !this.registrationService.model.ContactFirstName;
-    this.lastNameInError = !this.registrationService.model.ContactLastName;
+    this.firstNameInError = !this.applicationService.model.ContactFirstName;
+    this.lastNameInError = !this.applicationService.model.ContactLastName;
 
     return !this.firstNameInError && !this.lastNameInError;
   }
 
   override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    return !!this.registrationService.model.BuildingName;
+    return !!this.applicationService.model.BuildingName;
   }
 }

@@ -1,10 +1,10 @@
-import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from "rxjs";
+import { ApplicationService } from "../services/application.service";
 
 export abstract class BaseComponent implements CanActivate {
 
-  constructor(protected router: Router) { }
+  constructor(protected router: Router, protected applicationService: ApplicationService) { }
 
   abstract nextScreenRoute: string;
   abstract canContinue(): boolean;
@@ -17,6 +17,7 @@ export abstract class BaseComponent implements CanActivate {
   saveAndContinue(): void {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
+      this.applicationService.updateLocalStorage();
       this.router.navigate([this.nextScreenRoute]);
     }
   }
@@ -24,5 +25,4 @@ export abstract class BaseComponent implements CanActivate {
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
     return this.hasErrors && showError ? errorMessage : undefined;
   }
-
 }

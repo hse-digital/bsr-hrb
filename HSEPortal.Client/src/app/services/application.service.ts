@@ -6,10 +6,24 @@ import { firstValueFrom } from "rxjs";
 export class ApplicationService {
   model: BuildingRegistrationModel = {};
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {
+    var localStorageModel = localStorage.getItem("HSE_MODEL");
+    if (localStorageModel) {
+      this.model = JSON.parse(atob(localStorageModel));
+    }
+  }
+
+  newApplication() {
+    this.model = {};
+    localStorage.removeItem("HSE_MODEL");
+  }
 
   async registerNewBuildingApplication(): Promise<void> {
     await firstValueFrom(this.httpClient.post('api/NewBuildingApplication', this.model));
+  }
+
+  updateLocalStorage() {
+    localStorage.setItem("HSE_MODEL", btoa(JSON.stringify(this.model)));
   }
 }
 

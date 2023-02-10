@@ -13,13 +13,13 @@ export class OtherAccountablePersonComponent extends BaseComponent {
   nextScreenRoute: string = '';
   otherAccountablePersonHasErrors = false;
 
-  constructor(router: Router, public buildingRegistrationService: ApplicationService) {
-    super(router);
+  constructor(router: Router, applicationService: ApplicationService) {
+    super(router, applicationService);
   }
 
   canContinue(): boolean {
-    this.otherAccountablePersonHasErrors = !this.buildingRegistrationService.model.OtherAccountablePerson;
-    if (!this.otherAccountablePersonHasErrors) this.nextScreenRoute = this.buildingRegistrationService.model.OtherAccountablePerson ?? '';
+    this.otherAccountablePersonHasErrors = !this.applicationService.model.OtherAccountablePerson;
+    if (!this.otherAccountablePersonHasErrors) this.nextScreenRoute = this.applicationService.model.OtherAccountablePerson ?? '';
     return !this.otherAccountablePersonHasErrors;
   }
 

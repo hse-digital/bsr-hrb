@@ -13,13 +13,13 @@ export class AccountablePersonComponent extends BaseComponent {
   nextScreenRoute: string = '';
   accountablePersonHasErrors = false;
 
-  constructor(router: Router, public buildingRegistrationService: ApplicationService) {
-    super(router);
+  constructor(router: Router, applicationService: ApplicationService) {
+    super(router, applicationService);
   }
 
   canContinue(): boolean {
-    this.accountablePersonHasErrors = !this.buildingRegistrationService.model.AccountablePerson;
-    if (!this.accountablePersonHasErrors) this.nextScreenRoute = this.buildingRegistrationService.model.AccountablePerson ?? '';
+    this.accountablePersonHasErrors = !this.applicationService.model.AccountablePerson;
+    if (!this.accountablePersonHasErrors) this.nextScreenRoute = this.applicationService.model.AccountablePerson ?? '';
     return !this.accountablePersonHasErrors;
   }
 

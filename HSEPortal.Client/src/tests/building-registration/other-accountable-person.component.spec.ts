@@ -32,7 +32,7 @@ describe('OtherAccountablePersonComponent showError', () => {
   it('should show an error when the OtherAccountablePerson is empty or undefined.', async(inject([Router], (router: any) => {
     spyOn(router, 'navigate');
     [undefined, ''].forEach(pap => {
-      component.buildingRegistrationService.model.OtherAccountablePerson = pap;
+      component.applicationService.model.OtherAccountablePerson = pap;
       component.saveAndContinue();
       expect(component.hasErrors).toBeTrue();
       expect(router.navigate).not.toHaveBeenCalled();
@@ -41,7 +41,7 @@ describe('OtherAccountablePersonComponent showError', () => {
 
   it('should NOT show an error when OtherAccountablePerson exists', async(inject([Router], (router: any) => {
     spyOn(router, 'navigate')
-    component.buildingRegistrationService.model.OtherAccountablePerson = '/'
+    component.applicationService.model.OtherAccountablePerson = '/'
     component.saveAndContinue();
     expect(component.hasErrors).toBeFalse();
     expect(router.navigate).toHaveBeenCalled();
@@ -63,7 +63,7 @@ describe('OtherAccountablePersonComponent getErrorDescription(hasError, errorTex
 
   it('should display an error message when the OtherAccountablePerson is undefined.', async(inject([Router], (router: any) => {
     spyOn(router, 'navigate');
-    component.buildingRegistrationService.model.OtherAccountablePerson = undefined;
+    component.applicationService.model.OtherAccountablePerson = undefined;
     component.saveAndContinue();
     expect(component.getErrorDescription(component.otherAccountablePersonHasErrors, 'Error message')).toBeDefined();
     expect(component.getErrorDescription(component.otherAccountablePersonHasErrors, 'Error message')).toEqual('Error message');
@@ -72,7 +72,7 @@ describe('OtherAccountablePersonComponent getErrorDescription(hasError, errorTex
 
   it('should NOT display an error message when the OtherAccountablePerson is valid.', async(inject([Router], (router: any) => {
     spyOn(router, 'navigate');
-    component.buildingRegistrationService.model.OtherAccountablePerson = '/';
+    component.applicationService.model.OtherAccountablePerson = '/';
     component.saveAndContinue();
     expect(component.getErrorDescription(component.otherAccountablePersonHasErrors, 'Error message')).toBeUndefined();
     expect(router.navigate).toHaveBeenCalled();

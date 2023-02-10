@@ -9,15 +9,15 @@ import { ApplicationService } from 'src/app/services/application.service';
 export class BuildingNameComponent extends BaseComponent {
   static route: string = "building-name";
 
-  constructor(router: Router, public registrationService: ApplicationService) {
-    super(router);
+  constructor(router: Router, applicationService: ApplicationService) {
+    super(router, applicationService);
   }
 
   nextScreenRoute: string = `/application/new/contact-name`;
   nameHasErrors: boolean = false;
 
   canContinue(): boolean {
-    this.nameHasErrors = !this.registrationService.model.BuildingName;
+    this.nameHasErrors = !this.applicationService.model.BuildingName;
     return !this.nameHasErrors;
   }
 }

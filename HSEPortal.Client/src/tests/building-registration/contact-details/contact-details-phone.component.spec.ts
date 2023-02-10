@@ -38,7 +38,7 @@ describe('ContactDetailsPhoneComponent showError', () => {
     it(test.description, async( inject([Router], (router: any) => {
       spyOn(router, 'navigate');
       test.phoneNumbers?.forEach((number) => {
-        component.registrationService.model.ContactPhoneNumber = number;
+        component.applicationService.model.ContactPhoneNumber = number;
         component.saveAndContinue();
         expect(component.hasErrors).toBeTrue();
         expect(router.navigate).not.toHaveBeenCalled();
@@ -57,7 +57,7 @@ describe('ContactDetailsPhoneComponent showError', () => {
     it(test.description, async(inject([Router], (router: any) => {
       spyOn(router, 'navigate');
       test.phoneNumbers?.forEach((number) => {
-        component.registrationService.model.ContactPhoneNumber = number;
+        component.applicationService.model.ContactPhoneNumber = number;
         component.saveAndContinue();
         expect(component.hasErrors).toBeFalse();
         expect(router.navigate).toHaveBeenCalled();
@@ -85,7 +85,7 @@ describe('ContactDetailsPhoneComponent getErrorDescription(hasError, errorText)'
     
     spyOn(router, 'navigate');
     phoneNumbers.forEach(number => {
-      component.registrationService.model.ContactPhoneNumber = number;
+      component.applicationService.model.ContactPhoneNumber = number;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.phoneNumberHasErrors, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.phoneNumberHasErrors, 'Error message')).toEqual('Error message');
@@ -100,7 +100,7 @@ describe('ContactDetailsPhoneComponent getErrorDescription(hasError, errorText)'
 
     spyOn(router, 'navigate');
     phoneNumbers.forEach(number => {
-      component.registrationService.model.ContactPhoneNumber = number;
+      component.applicationService.model.ContactPhoneNumber = number;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.phoneNumberHasErrors, 'Error message')).toBeUndefined();
       expect(router.navigate).toHaveBeenCalled();

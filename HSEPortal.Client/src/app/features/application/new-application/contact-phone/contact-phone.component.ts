@@ -10,8 +10,8 @@ import { ApplicationService } from 'src/app/services/application.service';
 export class ContactPhoneComponent extends BaseComponent {
   static route: string = "contact-phone";
 
-  constructor(router: Router, public registrationService: ApplicationService) {
-    super(router);
+  constructor(router: Router, applicationService: ApplicationService) {
+    super(router, applicationService);
   }
 
   nextScreenRoute: string = '/application/new/contact-email';
@@ -30,17 +30,17 @@ export class ContactPhoneComponent extends BaseComponent {
   private isPhoneNumberValid(): boolean {
     let phoneNumber = this.cleanPhoneNumber();
     if (!Number(phoneNumber)) return false;
-    
+
     return this._expectedPhonePatterns.find((pattern) => phoneNumber.startsWith(pattern.prefix) && phoneNumber.length == pattern.length) != undefined;
   }
 
   private cleanPhoneNumber(): string {
-    return this.registrationService.model.ContactPhoneNumber?.replaceAll(' ', '') ?? '';
+    return this.applicationService.model.ContactPhoneNumber?.replaceAll(' ', '') ?? '';
   }
 
   override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    let hasFirstName: boolean = !!this.registrationService.model.ContactFirstName;
-    let hasLastName: boolean = !!this.registrationService.model.ContactLastName;
+    let hasFirstName: boolean = !!this.applicationService.model.ContactFirstName;
+    let hasLastName: boolean = !!this.applicationService.model.ContactLastName;
 
     return hasFirstName && hasLastName;
   }

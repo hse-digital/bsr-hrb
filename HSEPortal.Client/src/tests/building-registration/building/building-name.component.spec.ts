@@ -35,7 +35,7 @@ describe('BuildingNameComponent showError', () => {
   testCasesShowError.forEach((test) => {
     it(test.description, async(inject([Router], (router: any) => {
       spyOn(router, 'navigate');
-      component.registrationService.model.BuildingName = test.name;
+      component.applicationService.model.BuildingName = test.name;
       component.saveAndContinue()
       expect(component.hasErrors).toBeTrue();
       expect(router.navigate).not.toHaveBeenCalled();
@@ -44,7 +44,7 @@ describe('BuildingNameComponent showError', () => {
 
   it('should NOT show an error when the name is defined and not empty.', async(inject([Router], (router: any) => {
     spyOn(router, 'navigate');
-    component.registrationService.model.BuildingName = 'Building name';
+    component.applicationService.model.BuildingName = 'Building name';
     component.saveAndContinue();
     expect(component.hasErrors).toBeFalse();
     expect(router.navigate).toHaveBeenCalled();
@@ -72,7 +72,7 @@ describe('BuildingNameComponent getErrorDescription(value, errorText)', () => {
   it('should display an error message when the name is undefined or empty.', async(inject([Router], (router: any) => {
     spyOn(router, 'navigate');
     [undefined, ''].forEach(name => {
-      component.registrationService.model.BuildingName = name;
+      component.applicationService.model.BuildingName = name;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.nameHasErrors, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.nameHasErrors, 'Error message')).toEqual('Error message');
@@ -82,7 +82,7 @@ describe('BuildingNameComponent getErrorDescription(value, errorText)', () => {
 
   it('should NOT display an error message when the name is defined and not empty.', async(inject([Router], (router: any) => {
     spyOn(router, 'navigate');
-    component.registrationService.model.BuildingName = 'Building name';
+    component.applicationService.model.BuildingName = 'Building name';
     component.saveAndContinue();
     expect(component.getErrorDescription(component.nameHasErrors, 'Error message')).toBeUndefined();
     expect(router.navigate).toHaveBeenCalled();

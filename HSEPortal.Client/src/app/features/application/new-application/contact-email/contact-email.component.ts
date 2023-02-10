@@ -10,8 +10,8 @@ import { ApplicationService } from 'src/app/services/application.service';
 export class ContactEmailComponent extends BaseComponent {
   static route: string = "contact-email";
 
-  constructor(router: Router, public registrationService: ApplicationService) {
-    super(router);
+  constructor(router: Router, applicationService: ApplicationService) {
+    super(router, applicationService);
   }
 
   nextScreenRoute: string = '';
@@ -20,25 +20,25 @@ export class ContactEmailComponent extends BaseComponent {
   sendingRequest = false;
 
   canContinue(): boolean {
-    this.emailHasErrors = !this.registrationService.model.ContactEmailAddress || !this.isEmailValid();
+    this.emailHasErrors = !this.applicationService.model.ContactEmailAddress || !this.isEmailValid();
     return !this.emailHasErrors;
   }
-  
+
   override async saveAndContinue() {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       this.sendingRequest = true;
-      await this.registrationService.registerNewBuildingApplication();
+      await this.applicationService.registerNewBuildingApplication();
       this.router.navigate(['/building-registration/sections']);
     }
   }
 
   private isEmailValid(): boolean {
     const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, "gm");
-    return emailRegex.test(this.registrationService.model.ContactEmailAddress ?? '');
+    return emailRegex.test(this.applicationService.model.ContactEmailAddress ?? '');
   }
 
   override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    return !!this.registrationService.model.ContactPhoneNumber;
+    return !!this.applicationService.model.ContactPhoneNumber;
   }
 }
