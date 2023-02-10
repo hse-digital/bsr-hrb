@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { BlockRegistrationService, BlockRegistrationModel } from 'src/app/services/block-registration.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ApplicationService, BuildingRegistrationModel } from '../../../../../services/application.service';
 
 @Component({
   selector: 'hse-check-answers',
@@ -8,27 +8,32 @@ import { BlockRegistrationService, BlockRegistrationModel } from 'src/app/servic
 })
 export class CheckAnswersComponent {
 
-  nextScreenRoute: string = '';
+  nextScreenRoute: string = '/application/accountable-person';
 
   URLs = {
-    floorsAbove: "/building-registration/building/floors-above",
-    height: "/building-registration/building/height",
-    residentialUnits: "/building-registration/building/residential-units",
-    peopleLivingInBuilding: "/building-registration/building/people-living-in-building",
-    yearCompletition: "/building-registration/building/check-answers", // TO-DO
-    completitionCertificateIssuer: "/building-registration/building/check-answers", // TO-DO
-    completitionCertificateReference: "/building-registration/building/check-answers", // TO-DO
-    address: "/building-registration/building/check-answers" // TO-DO
+    floorsAbove: "../floors-above",
+    height: "../height",
+    residentialUnits: "../residential-units",
+    peopleLivingInBuilding: "../people-living-in-building",
+    yearCompletition: "../check-answers", // TO-DO
+    completitionCertificateIssuer: "../check-answers", // TO-DO
+    completitionCertificateReference: "../check-answers", // TO-DO
+    address: "../check-answers" // TO-DO
   }
 
-  constructor(private router: Router, private blockRegistrationService: BlockRegistrationService) { }
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private applicationService: ApplicationService) { }
 
-  get block(): BlockRegistrationModel | undefined {
-    return this.blockRegistrationService.blockRegistrationModel;
+  get block(): any | undefined {
+    let blockId = this.activatedRoute.snapshot.params['blockId'];
+    return this.applicationService.model.Blocks?.find(x => x.Id === blockId);
   }
 
   saveAndContinue() {
     this.router.navigate([this.nextScreenRoute]);
+  }
+
+  getLink(child: string) {
+    return this.activatedRoute.parent?.url + child;
   }
 
 }

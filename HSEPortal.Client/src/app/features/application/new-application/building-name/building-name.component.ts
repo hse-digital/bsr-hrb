@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService } from 'src/app/services/application.service';
 
@@ -9,8 +9,9 @@ import { ApplicationService } from 'src/app/services/application.service';
 export class BuildingNameComponent extends BaseComponent {
   static route: string = "building-name";
 
-  constructor(router: Router, applicationService: ApplicationService) {
-    super(router, applicationService);
+  constructor(router: Router, activatedRoute: ActivatedRoute, public registrationService: ApplicationService) {
+    super(router, registrationService, activatedRoute);
+    console.log(super.getURLParam('id'))
   }
 
   nextScreenRoute: string = `/application/new/contact-name`;

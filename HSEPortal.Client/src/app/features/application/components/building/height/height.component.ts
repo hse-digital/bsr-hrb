@@ -1,20 +1,25 @@
 import { Component } from "@angular/core";
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from "rxjs";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { BlockRegistrationService } from "src/app/services/block-registration.service";
+import { ApplicationService } from "../../../../../services/application.service";
 import { CaptionService } from "../../../../../services/caption.service";
 
 @Component({
   templateUrl: './height.component.html',
 })
 export class BuildingHeightComponent extends BaseComponent {
-  constructor(router: Router, private captionService: CaptionService, private blockRegistrationService: BlockRegistrationService) {
-    super(router);
+
+  static route: string = 'height';
+  private blockId?: string;
+
+  constructor(router: Router, activatedRoute: ActivatedRoute, private captionService: CaptionService, private applicationService: ApplicationService) {
+    super(router, activatedRoute);
+    this.blockId = this.getURLParam('blockId');
   }
 
-  nextScreenRoute: string = '/building-registration/building/residential-units';
-  building: { height?: number } = {};
+  nextScreenRoute: string = '';
+  building: { height?: string } = {}
   heightHasErrors = false;
 
   errorSummaryMessage: string = 'You must enter the height of this block from ground level to the top floor in metres';
@@ -22,13 +27,14 @@ export class BuildingHeightComponent extends BaseComponent {
 
   canContinue(): boolean {
     this.heightHasErrors = true;
+    let height = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId)?.Height;
 
-    if (!this.building.height || !Number(this.building.height)) {
+    if (!height || !Number(height)) {
       this.errorMessage = 'Enter the block height in metres';
       this.errorSummaryMessage = 'You must enter the height of this block from ground level to the top floor in metres';
-    } else if (this.building.height >= 1000) {
+    } else if (height >= 1000) {
       this.errorSummaryMessage = this.errorMessage = 'Block height in metres must be 999.9 or less';
-    } else if (this.building.height < 3) {
+    } else if (height < 3) {
       this.errorSummaryMessage = this.errorMessage = 'Block height in metres must be more than 2';
     } else {
       this.heightHasErrors = false;
@@ -37,8 +43,13 @@ export class BuildingHeightComponent extends BaseComponent {
     return !this.heightHasErrors;
   }
 
+  override navigateNextScreenRoute() {
+    this.router.navigate(['../residential-units'], { relativeTo: this.activatedRoute })
+  }
+
   updateHeight(height: number) {
-    this.blockRegistrationService.setHeight(height);
+    let block = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId);
+    if (block) block.Height = height;
   }
 
   get captionText(): string | undefined {
@@ -46,6 +57,6 @@ export class BuildingHeightComponent extends BaseComponent {
   }
 
   override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    return !!this.blockRegistrationService.blockRegistrationModel.floorsAbove;
+    return !!this.applicationService.model.Blocks?.find(x => x.BlockName === '')?.FloorsAbove;
   }
 }

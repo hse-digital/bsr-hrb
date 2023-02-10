@@ -16,6 +16,7 @@ export class ApplicationService {
   newApplication() {
     this.model = {};
     localStorage.removeItem("HSE_MODEL");
+    this.model.Blocks = [];
   }
 
   async registerNewBuildingApplication(): Promise<void> {
@@ -35,4 +36,18 @@ export class BuildingRegistrationModel {
   ContactEmailAddress?: string;
   AccountablePerson?: string;
   OtherAccountablePerson?: string;
+  Blocks?: {
+    Id?: string;
+    BlockName?: string;
+    NumberBlocksBuilding?: string;
+    FloorsAbove?: number;
+    Height?: number;
+    PeopleLivingInBuilding?: any;
+    ResidentialUnits?: number;
+    YearCompletition?: any;
+    CompletitionCertificateIssuer?: any;
+    CompletitionCertificateReference?: any;
+    Address?: string;
+    AnotherBlock?: string;
+  }[];
 }

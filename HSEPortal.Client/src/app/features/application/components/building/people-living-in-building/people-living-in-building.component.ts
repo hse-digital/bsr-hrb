@@ -1,29 +1,38 @@
 import { Component } from "@angular/core";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { BlockRegistrationService } from "src/app/services/block-registration.service";
+import { ApplicationService } from "../../../../../services/application.service";
 import { CaptionService } from "../../../../../services/caption.service";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
 })
 export class PeopleLivingInBuildingComponent extends BaseComponent {
+  static route: string = 'people-living-in-building';
+  private blockId!: string;
 
-  constructor(router: Router, private captionService: CaptionService, private blockRegistrationService: BlockRegistrationService) {
-    super(router);
+  constructor(router: Router, activatedRoute: ActivatedRoute, private captionService: CaptionService, private applicationService: ApplicationService) {
+    super(router, activatedRoute);
+    this.blockId = this.getURLParam('blockId');
   }
 
-  nextScreenRoute: string = '/building-registration/building/another-block';
-  building: { peopleLivingInBuilding?: any } = {};
+  nextScreenRoute: string = '';
+  building: { peopleLivingInBuilding?: string } = {}
   peopleLivingHasErrors = false;
 
   canContinue(): boolean {
-    this.peopleLivingHasErrors = !this.building.peopleLivingInBuilding;
+    let peopleLivingInBuilding = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId)?.PeopleLivingInBuilding;
+    this.peopleLivingHasErrors = !peopleLivingInBuilding;
     return !this.peopleLivingHasErrors;
   }
 
+  override navigateNextScreenRoute() {
+    this.router.navigate(['../another-block'], { relativeTo: this.activatedRoute })
+  }
+
   updatePeopleLivingInBuilding(peopleLivingInBuilding: string) {
-    this.blockRegistrationService.setPeopleLivingInBuilding(peopleLivingInBuilding);
+    let block = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId);
+    if (block) block.PeopleLivingInBuilding = peopleLivingInBuilding;
   }
 
   get captionText(): string | undefined {
