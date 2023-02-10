@@ -21,7 +21,7 @@
           <govuk-body>If the principal accountable person is an individual, we will always contact that individual.</govuk-body>
 
           <govuk-radio-group title="The principal accountable person is" fieldsetClass="govuk-fieldset__legend--m"
-                             [(model)]="building.accountablePerson" id="radios-accountable-person"
+                             [(model)]="this.buildingRegistrationService.model.AccountablePerson" id="radios-accountable-person"
                              [errorText]="getErrorDescription(hasErrors, 'Select if the principal accountable person is an organisation or an individual')">
             <govuk-radio name="application-group" id="organisation" value="/application/accountable-person" label="An organisation">
             </govuk-radio>
