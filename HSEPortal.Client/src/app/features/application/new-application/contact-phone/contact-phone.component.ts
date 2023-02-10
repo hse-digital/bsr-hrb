@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { BaseFormComponent } from 'src/app/helpers/base-form.component';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { BaseComponent } from 'src/app/helpers/base.component';
 import { BuildingRegistrationService } from 'src/app/services/building-registration.service';
 
 @Component({
   templateUrl: './contact-phone.component.html'
 })
-export class ContactPhoneComponent extends BaseFormComponent {
+export class ContactPhoneComponent extends BaseComponent {
   static route: string = "contact-phone";
 
   constructor(router: Router, public registrationService: BuildingRegistrationService) {
@@ -35,5 +36,12 @@ export class ContactPhoneComponent extends BaseFormComponent {
 
   private cleanPhoneNumber(): string {
     return this.registrationService.model.ContactPhoneNumber?.replaceAll(' ', '') ?? '';
+  }
+
+  override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    let hasFirstName: boolean = !!this.registrationService.model.ContactFirstName;
+    let hasLastName: boolean = !!this.registrationService.model.ContactLastName;
+
+    return hasFirstName && hasLastName;
   }
 }

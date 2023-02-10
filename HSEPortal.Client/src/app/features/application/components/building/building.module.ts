@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
 import { HttpClientModule } from "@angular/common/http";
-import { CaptionService } from "../../../../services/caption.service";
 import { BuildingBlocksIntroComponent } from "./blocks-intro/blocks-intro.component";
 import { BuildingFloorsAboveComponent } from "./floors-above/floors-above.component";
 import { BuildingHeightComponent } from "./height/height.component";
@@ -13,19 +12,19 @@ import { NumberBlocksBuildingComponent } from "./number-blocks-building/number-b
 import { AnotherBlockComponent } from "./another-block/another-block.component";
 import { CheckAnswersComponent } from "./check-answers/check-answers.component";
 import { BlockNameComponent } from "./block-name/block-name.component";
-import { HeightGuardService } from "../../../../services/route-guard/components/building/height-guard.service";
-import { FloorsAboveGuardService } from "../../../../services/route-guard/components/building/floors-above-guard.service";
+import { HseRoute } from "src/app/services/hse.route";
+import { CaptionService } from "src/app/services/caption.service";
 
 const routes: Routes = [
-  { path: 'intro', component: BuildingBlocksIntroComponent },
-  { path: 'block-name', component: BlockNameComponent },
-  { path: 'floors-above', component: BuildingFloorsAboveComponent, canActivate: [FloorsAboveGuardService] },
-  { path: 'height', component: BuildingHeightComponent, canActivate: [HeightGuardService] },
-  { path: 'residential-units', component: ResidentialUnitsComponent },
-  { path: 'people-living-in-building', component: PeopleLivingInBuildingComponent },
-  { path: 'number-blocks-building', component: NumberBlocksBuildingComponent },
-  { path: 'another-block', component: AnotherBlockComponent },
-  { path: 'check-answers', component: CheckAnswersComponent },
+  HseRoute.unsafe('intro', BuildingBlocksIntroComponent),
+  HseRoute.unsafe('block-name', BlockNameComponent),
+  HseRoute.unsafe('floors-above', BuildingFloorsAboveComponent),
+  HseRoute.unsafe('height', BuildingHeightComponent),
+  HseRoute.unsafe('residential-units', ResidentialUnitsComponent),
+  HseRoute.unsafe('people-living-in-building', PeopleLivingInBuildingComponent),
+  HseRoute.unsafe('number-blocks-building', NumberBlocksBuildingComponent),
+  HseRoute.unsafe('another-block', AnotherBlockComponent),
+  HseRoute.unsafe('check-answers', CheckAnswersComponent),
 ];
 
 @NgModule({

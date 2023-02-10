@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { BaseFormComponent } from 'src/app/helpers/base-form.component';
+import { BaseComponent } from 'src/app/helpers/base.component';
 import { BlockRegistrationService } from 'src/app/services/block-registration.service';
 import { CaptionService } from '../../../../../services/caption.service';
 
@@ -8,7 +8,7 @@ import { CaptionService } from '../../../../../services/caption.service';
   selector: 'hse-block-name',
   templateUrl: './block-name.component.html'
 })
-export class BlockNameComponent extends BaseFormComponent {
+export class BlockNameComponent extends BaseComponent {
 
   nextScreenRoute: string = '/building-registration/building/floors-above';
   building: { blockName?: string } = {}

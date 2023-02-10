@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { BaseFormComponent } from 'src/app/helpers/base-form.component';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { BaseComponent } from 'src/app/helpers/base.component';
 import { BuildingRegistrationService } from 'src/app/services/building-registration.service';
 
 @Component({
   templateUrl: './application-continue.component.html'
 })
-export class ApplicationContinueComponent extends BaseFormComponent {
+export class ApplicationContinueComponent extends BaseComponent {
   static route: string = "continue";
 
   nextScreenRoute: string = '/application/security-code';
@@ -53,5 +54,4 @@ export class ApplicationContinueComponent extends BaseFormComponent {
   doesApplicationNumberMatchEmail() {
     return true;
   }
-
 }

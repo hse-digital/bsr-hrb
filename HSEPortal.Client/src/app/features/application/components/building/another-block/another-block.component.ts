@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { BaseFormComponent } from 'src/app/helpers/base-form.component';
+import { BaseComponent } from 'src/app/helpers/base.component';
 import { BlockRegistrationService } from 'src/app/services/block-registration.service';
 import { CaptionService } from '../../../../../services/caption.service';
 
@@ -9,7 +9,7 @@ import { CaptionService } from '../../../../../services/caption.service';
   templateUrl: './another-block.component.html',
   styleUrls: ['./another-block.component.scss']
 })
-export class AnotherBlockComponent extends BaseFormComponent {
+export class AnotherBlockComponent extends BaseComponent {
 
   constructor(router: Router, private captionService: CaptionService, private blockRegistrationService: BlockRegistrationService) {
     super(router);

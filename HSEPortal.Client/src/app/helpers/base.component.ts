@@ -1,12 +1,16 @@
-import { Router } from "@angular/router";
-import { IdleTimerService } from "../services/idle-timer.service";
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { Observable } from "rxjs";
 
-export abstract class BaseFormComponent {
+export abstract class BaseComponent implements CanActivate {
 
   constructor(protected router: Router) { }
 
   abstract nextScreenRoute: string;
   abstract canContinue(): boolean;
+  
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    return true;
+  }
 
   hasErrors = false;
   saveAndContinue(): void {

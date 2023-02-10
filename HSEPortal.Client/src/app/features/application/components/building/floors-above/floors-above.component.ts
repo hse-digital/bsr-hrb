@@ -1,13 +1,14 @@
 import { Component } from "@angular/core";
-import { Router } from "@angular/router";
-import { BaseFormComponent } from "src/app/helpers/base-form.component";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { Observable } from "rxjs";
+import { BaseComponent } from "src/app/helpers/base.component";
 import { BlockRegistrationService } from "src/app/services/block-registration.service";
 import { CaptionService } from "../../../../../services/caption.service";
 
 @Component({
   templateUrl: './floors-above.component.html'
 })
-export class BuildingFloorsAboveComponent extends BaseFormComponent {
+export class BuildingFloorsAboveComponent extends BaseComponent {
 
   constructor(router: Router, private blockRegistrationService: BlockRegistrationService, private captionService: CaptionService) {
     super(router);
@@ -46,4 +47,8 @@ export class BuildingFloorsAboveComponent extends BaseFormComponent {
   get captionText(): string | undefined {
     return this.captionService.caption;
   } 
+
+  override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    return !!this.blockRegistrationService.blockRegistrationModel.blockName;
+  }
 }
