@@ -3,10 +3,10 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
+import { BlockNameComponent } from '../../../app/features/application/components/building/block-name/block-name.component';
 
-import { BlockNameComponent } from '../../../app/building-registration/building/block-name/block-name.component';
-import { CaptionService } from '../../../app/building-registration/building/caption.service';
 import { BlockRegistrationService } from '../../../app/services/block-registration.service';
+import { CaptionService } from '../../../app/services/caption.service';
 
 let component: BlockNameComponent;
 let fixture: ComponentFixture<BlockNameComponent>;

@@ -1,0 +1,41 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link anchorId="radios-accountable-person"
+                            message="Select if the principal accountable person is an organisation or an individual" />
+        </govuk-error-summary>
+
+        <span class="govuk-caption-l">Principal accountable person</span>
+        <govuk-fieldset title="Is the principal accountable person an organisation or an individual?" [isPageHeading]=true id="application"
+                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-3'>
+
+          <govuk-body>If we need to talk to someone about building safety issues for , we will contact the principal accountable person.</govuk-body>
+
+          <govuk-body>If they are an organisation, we will ask you to tell us what type of organisation they are. We will also ask you for the name and contact details of someone in the organisation we can contact.</govuk-body>
+
+          <govuk-body>If the principal accountable person is an individual, we will always contact that individual.</govuk-body>
+
+          <govuk-radio-group title="The principal accountable person is" fieldsetClass="govuk-fieldset__legend--m"
+                             [(model)]="this.buildingRegistrationService.model.AccountablePerson" id="radios-accountable-person"
+                             [errorText]="getErrorDescription(hasErrors, 'Select if the principal accountable person is an organisation or an individual')">
+            <govuk-radio name="application-group" id="organisation" value="/application/accountable-person" label="An organisation">
+            </govuk-radio>
+            <govuk-radio name="application-group" id="individual" value="/application/accountable-person" label="An individual"
+                         class="govuk-radio-no-margin-bottom">
+            </govuk-radio>
+          </govuk-radio-group>
+
+        </govuk-fieldset>
+      </div>
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <govuk-body><a href="/" class="govuk-link">Save and come back later</a></govuk-body>
+
+    </div>
+  </div>
+</div>
+

@@ -4,22 +4,22 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
-import { ContinueSavedApplicationComponent } from '../../app/features/application/components/application-continue/application-continue.component';
-import { BuildingRegistrationService } from '../../app/services/building-registration/building-registration.service';
+import { ApplicationContinueComponent } from '../../app/features/application/components/application-continue/application-continue.component';
+import { BuildingRegistrationService } from '../../app/services/building-registration.service';
 
-let component: ContinueSavedApplicationComponent;
-let fixture: ComponentFixture<ContinueSavedApplicationComponent>;
+let component: ApplicationContinueComponent;
+let fixture: ComponentFixture<ApplicationContinueComponent>;
 
-describe('ContinueSavedApplicationComponent showError', () => {
+describe('ApplicationContinueComponent showError', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ContinueSavedApplicationComponent],
+      declarations: [ApplicationContinueComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [HttpClient, HttpHandler, BuildingRegistrationService]
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(ContinueSavedApplicationComponent);
+    fixture = TestBed.createComponent(ApplicationContinueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -88,15 +88,15 @@ describe('ContinueSavedApplicationComponent showError', () => {
   })));
 });
 
-describe('ContinueSavedApplicationComponent getErrorDescription(value, errorText)', () => {
+describe('ApplicationContinueComponent getErrorDescription(value, errorText)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ContinueSavedApplicationComponent],
+      declarations: [ApplicationContinueComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [HttpClient, HttpHandler, BuildingRegistrationService]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ContinueSavedApplicationComponent);
+    fixture = TestBed.createComponent(ApplicationContinueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
