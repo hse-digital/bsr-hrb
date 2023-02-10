@@ -6,7 +6,7 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
-          <govuk-error-link anchorId="input-email" message="Enter your email address" /> 
+          <govuk-error-link anchorId="input-email" message="You must enter an email address in the correct format, like name@example.com" /> 
         </govuk-error-summary>
 
         <span class="govuk-caption-xl">Your contact details</span>
@@ -19,13 +19,13 @@
           <govuk-input id="email"
                        [(model)]="registrationService.model.ContactEmailAddress"
                        label="Enter your email address" labelClass="govuk-label--s"
-                       [errorText]="getErrorDescription(emailHasErrors, 'Enter your email address')"
+                       [errorText]="getErrorDescription(emailHasErrors, 'Enter an email address in the correct format')"
                        hint="We will use this to confirm when your application has been submitted and contact you in the future about your applicaton"
                        class="govuk-!-margin-bottom-1" />
         </govuk-fieldset>
       </div>
 
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="sendingRequest">Save and continue</govuk-button>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="sendingRequest">Send verification email</govuk-button>
     </div>
   </div>
 </div>

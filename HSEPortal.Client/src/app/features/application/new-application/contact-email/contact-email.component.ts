@@ -20,7 +20,7 @@ export class ContactEmailComponent extends BaseComponent {
   sendingRequest = false;
 
   canContinue(): boolean {
-    this.emailHasErrors = !this.registrationService.model.ContactEmailAddress;
+    this.emailHasErrors = !this.registrationService.model.ContactEmailAddress || !this.isEmailValid();
     return !this.emailHasErrors;
   }
   
@@ -31,6 +31,11 @@ export class ContactEmailComponent extends BaseComponent {
       await this.registrationService.registerNewBuildingApplication();
       this.router.navigate(['/building-registration/sections']);
     }
+  }
+
+  private isEmailValid(): boolean {
+    const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, "gm");
+    return emailRegex.test(this.registrationService.model.ContactEmailAddress ?? '');
   }
 
   override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
