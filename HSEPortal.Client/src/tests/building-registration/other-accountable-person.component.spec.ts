@@ -7,9 +7,10 @@ import { HseAngularModule } from 'hse-angular';
 import { OtherAccountablePersonComponent } from '../../app/features/application/components/other-accountable-person/other-accountable-person.component';
 import { BuildingRegistrationService } from '../../app/services/building-registration.service';
 
+let component: OtherAccountablePersonComponent;
+let fixture: ComponentFixture<OtherAccountablePersonComponent>;
+
 describe('OtherAccountablePersonComponent showError', () => {
-  let component: OtherAccountablePersonComponent;
-  let fixture: ComponentFixture<OtherAccountablePersonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -45,4 +46,36 @@ describe('OtherAccountablePersonComponent showError', () => {
     expect(component.hasErrors).toBeFalse();
     expect(router.navigate).toHaveBeenCalled();
   })));
+});
+
+describe('OtherAccountablePersonComponent getErrorDescription(hasError, errorText)', () => {
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [OtherAccountablePersonComponent],
+      imports: [RouterTestingModule, HseAngularModule],
+      providers: [HttpClient, HttpHandler, BuildingRegistrationService]
+    }).compileComponents();
+    fixture = TestBed.createComponent(OtherAccountablePersonComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should display an error message when the OtherAccountablePerson is undefined.', async(inject([Router], (router: any) => {
+    spyOn(router, 'navigate');
+    component.buildingRegistrationService.model.OtherAccountablePerson = undefined;
+    component.saveAndContinue();
+    expect(component.getErrorDescription(component.otherAccountablePersonHasErrors, 'Error message')).toBeDefined();
+    expect(component.getErrorDescription(component.otherAccountablePersonHasErrors, 'Error message')).toEqual('Error message');
+    expect(router.navigate).not.toHaveBeenCalled();
+  })));
+
+  it('should NOT display an error message when the OtherAccountablePerson is valid.', async(inject([Router], (router: any) => {
+    spyOn(router, 'navigate');
+    component.buildingRegistrationService.model.OtherAccountablePerson = '/';
+    component.saveAndContinue();
+    expect(component.getErrorDescription(component.otherAccountablePersonHasErrors, 'Error message')).toBeUndefined();
+    expect(router.navigate).toHaveBeenCalled();
+  })));
+
 });

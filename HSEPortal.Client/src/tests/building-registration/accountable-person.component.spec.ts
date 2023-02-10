@@ -7,10 +7,10 @@ import { HseAngularModule } from 'hse-angular';
 import { AccountablePersonComponent } from '../../app/features/application/components/accountable-person/accountable-person.component';
 import { BuildingRegistrationService } from '../../app/services/building-registration.service';
 
+let component: AccountablePersonComponent;
+let fixture: ComponentFixture<AccountablePersonComponent>;
 
 describe('AccountablePersonComponent showError', () => {
-  let component: AccountablePersonComponent;
-  let fixture: ComponentFixture<AccountablePersonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -18,7 +18,7 @@ describe('AccountablePersonComponent showError', () => {
       imports: [RouterTestingModule, HseAngularModule],
       providers: [HttpClient, HttpHandler, BuildingRegistrationService]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(AccountablePersonComponent);
     component = fixture.componentInstance;
@@ -45,6 +45,38 @@ describe('AccountablePersonComponent showError', () => {
     component.buildingRegistrationService.model.AccountablePerson = '/'
     component.saveAndContinue();
     expect(component.hasErrors).toBeFalse();
+    expect(router.navigate).toHaveBeenCalled();
+  })));
+
+});
+
+describe('AccountablePersonComponent getErrorDescription(hasError, errorText)', () => {
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [AccountablePersonComponent],
+      imports: [RouterTestingModule, HseAngularModule],
+      providers: [HttpClient, HttpHandler, BuildingRegistrationService]
+    }).compileComponents();
+    fixture = TestBed.createComponent(AccountablePersonComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should display an error message when the AccountablePerson is undefined.', async(inject([Router], (router: any) => {
+    spyOn(router, 'navigate');
+    component.buildingRegistrationService.model.AccountablePerson = undefined;
+    component.saveAndContinue();
+    expect(component.getErrorDescription(component.accountablePersonHasErrors, 'Error message')).toBeDefined();
+    expect(component.getErrorDescription(component.accountablePersonHasErrors, 'Error message')).toEqual('Error message');
+    expect(router.navigate).not.toHaveBeenCalled();
+  })));
+
+  it('should NOT display an error message when the AccountablePerson is valid.', async(inject([Router], (router: any) => {
+    spyOn(router, 'navigate');
+    component.buildingRegistrationService.model.AccountablePerson = '/';
+    component.saveAndContinue();
+    expect(component.getErrorDescription(component.accountablePersonHasErrors, 'Error message')).toBeUndefined();
     expect(router.navigate).toHaveBeenCalled();
   })));
 
