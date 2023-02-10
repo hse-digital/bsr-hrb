@@ -20,4 +20,5 @@ export class BuildingRegistrationModel {
   ContactPhoneNumber?: string;
   ContactEmailAddress?: string;
   AccountablePerson?: string;
+  OtherAccountablePerson?: string;
 }

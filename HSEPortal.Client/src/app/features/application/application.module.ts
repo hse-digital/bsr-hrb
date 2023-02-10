@@ -12,12 +12,14 @@ import { ApplicationCompletedComponent } from "./components/application-complete
 import { BuildingGuardService } from "../../services/route-guard/components/building/building-guard.service";
 import { AccountablePersonComponent } from './components/accountable-person/accountable-person.component';
 import { BlockRegistrationService } from "../../services/block-registration.service";
+import { OtherAccountablePersonComponent } from './components/other-accountable-person/other-accountable-person.component';
 
 const routes: Routes = [
   { path: ApplicationStartComponent.route, component: ApplicationStartComponent },
   { path: ApplicationContinueComponent.route, component: ApplicationContinueComponent },
   { path: SecurityCodeComponent.route, component: SecurityCodeComponent },
   { path: AccountablePersonComponent.route, component: AccountablePersonComponent },
+  { path: OtherAccountablePersonComponent.route, component: OtherAccountablePersonComponent },
   { path: NewApplicationModule.baseRoute, loadChildren: () => import('./new-application/new-application.module').then(m => m.NewApplicationModule), canActivateChild: [BuildingGuardService] },
   { path: ':id', loadChildren: () => import('./continue-application/continue-application.module').then(m => m.ContinueApplicationModule) },
 ];
@@ -28,7 +30,8 @@ const routes: Routes = [
     ApplicationContinueComponent,
     SecurityCodeComponent,
     ApplicationCompletedComponent,
-    AccountablePersonComponent
+    AccountablePersonComponent,
+    OtherAccountablePersonComponent
   ],
   imports: [
     RouterModule.forChild(routes),
