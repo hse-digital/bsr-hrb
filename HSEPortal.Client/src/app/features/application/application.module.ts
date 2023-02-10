@@ -1,18 +1,18 @@
 import { CommonModule } from "@angular/common";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
 import { ApplicationStartComponent } from "./components/application-start/application-start.component";
 import { ApplicationContinueComponent } from "./components/application-continue/application-continue.component";
 import { SecurityCodeComponent } from "./components/security-code/security-code.component";
-import { ApplicationService } from "src/app/services/application.service";
 import { NewApplicationModule } from "./new-application/new-application.module";
 import { ApplicationCompletedComponent } from "./components/application-completed/application-completed.component";
 import { HseRoute } from "src/app/services/hse.route";
 import { AccountablePersonComponent } from "./components/accountable-person/accountable-person.component";
 import { OtherAccountablePersonComponent } from "./components/other-accountable-person/other-accountable-person.component";
 import { BlockRegistrationService } from "src/app/services/block-registration.service";
+import { ApplicationService } from "src/app/services/application.service";
 
 const routes: Routes = [
   HseRoute.unsafe(ApplicationStartComponent.route, ApplicationStartComponent),
@@ -39,7 +39,7 @@ const routes: Routes = [
     CommonModule,
     HttpClientModule
   ],
-  providers: [ApplicationService, BlockRegistrationService]
+  providers: [HttpClient, BlockRegistrationService, ApplicationService]
 })
 export class ApplicationModule {
   static baseRoute: string = 'application';

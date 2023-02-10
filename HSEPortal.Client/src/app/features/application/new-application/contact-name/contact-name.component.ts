@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Component, Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService } from 'src/app/services/application.service';

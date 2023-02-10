@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { BuildingBlocksIntroComponent } from "./blocks-intro/blocks-intro.component";
 import { BuildingFloorsAboveComponent } from "./floors-above/floors-above.component";
 import { BuildingHeightComponent } from "./height/height.component";
@@ -45,7 +45,7 @@ const routes: Routes = [
     CommonModule,
     HttpClientModule
   ],
-  providers: [CaptionService]
+  providers: [HttpClient, CaptionService]
 })
 export class BuildingModule {
 
