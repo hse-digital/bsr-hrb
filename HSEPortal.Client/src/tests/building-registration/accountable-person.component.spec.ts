@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
 import { AccountablePersonComponent } from '../../app/features/application/components/accountable-person/accountable-person.component';
-import { BuildingRegistrationService } from '../../app/services/building-registration.service';
+import { ApplicationService } from '../../app/services/application.service';
 
 let component: AccountablePersonComponent;
 let fixture: ComponentFixture<AccountablePersonComponent>;
@@ -16,7 +16,7 @@ describe('AccountablePersonComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [AccountablePersonComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [HttpClient, HttpHandler, BuildingRegistrationService]
+      providers: [HttpClient, HttpHandler, ApplicationService]
     })
       .compileComponents();
 
@@ -56,7 +56,7 @@ describe('AccountablePersonComponent getErrorDescription(hasError, errorText)', 
     await TestBed.configureTestingModule({
       declarations: [AccountablePersonComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [HttpClient, HttpHandler, BuildingRegistrationService]
+      providers: [HttpClient, HttpHandler, ApplicationService]
     }).compileComponents();
     fixture = TestBed.createComponent(AccountablePersonComponent);
     component = fixture.componentInstance;

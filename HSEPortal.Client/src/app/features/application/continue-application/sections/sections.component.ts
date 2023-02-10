@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { BuildingRegistrationService } from "src/app/services/building-registration.service";
+import { ApplicationService } from "src/app/services/application.service";
 
 @Component({
   templateUrl: './sections.component.html'
@@ -7,7 +7,7 @@ import { BuildingRegistrationService } from "src/app/services/building-registrat
 export class ApplicationsSectionsComponent {
   static route: string = 'sections';
 
-  constructor(private buildingRegistrationService: BuildingRegistrationService) { }
+  constructor(private buildingRegistrationService: ApplicationService) { }
 
   getBuildingName() {
     return this.buildingRegistrationService.model.BuildingName;

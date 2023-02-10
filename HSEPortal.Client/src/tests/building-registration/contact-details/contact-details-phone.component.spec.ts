@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ContactPhoneComponent } from '../../../app/features/application/new-application/contact-phone/contact-phone.component';
-import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
+import { ApplicationService } from '../../../app/services/application.service';
 
 let component: ContactPhoneComponent;
 let fixture: ComponentFixture<ContactPhoneComponent>;
@@ -15,7 +15,7 @@ describe('ContactDetailsPhoneComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [ContactPhoneComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
     fixture = TestBed.createComponent(ContactPhoneComponent);
     component = fixture.componentInstance;
@@ -73,7 +73,7 @@ describe('ContactDetailsPhoneComponent getErrorDescription(hasError, errorText)'
     await TestBed.configureTestingModule({
       declarations: [ContactPhoneComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
     fixture = TestBed.createComponent(ContactPhoneComponent);
     component = fixture.componentInstance;

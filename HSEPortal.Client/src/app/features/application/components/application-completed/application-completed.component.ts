@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BuildingRegistrationService } from 'src/app/services/building-registration.service';
+import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
   selector: 'hse-application-completed',
@@ -7,7 +7,7 @@ import { BuildingRegistrationService } from 'src/app/services/building-registrat
 })
 export class ApplicationCompletedComponent {
 
-  constructor(private buildingRegistrationService: BuildingRegistrationService) {
+  constructor(private buildingRegistrationService: ApplicationService) {
     
   }
 

@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 
 @Injectable()
-export class BuildingRegistrationService {
+export class ApplicationService {
   model: BuildingRegistrationModel = {};
 
   constructor(private httpClient: HttpClient) { }

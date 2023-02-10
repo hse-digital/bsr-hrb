@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { BuildingRegistrationService } from 'src/app/services/building-registration.service';
+import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
   templateUrl: './security-code.component.html'
@@ -17,7 +17,7 @@ export class SecurityCodeComponent extends BaseComponent {
     securityCode: { hasError: false, errorText: '' }
   }
 
-  constructor(router: Router, public buildingRegistrationService: BuildingRegistrationService) {
+  constructor(router: Router, public buildingRegistrationService: ApplicationService) {
     super(router);
     this.building.email = this.buildingRegistrationService.model.ContactEmailAddress;
   }

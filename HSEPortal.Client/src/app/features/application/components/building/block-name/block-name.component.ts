@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { BlockRegistrationService } from 'src/app/services/block-registration.service';
-import { CaptionService } from '../../../../../services/caption.service';
+import { CaptionService } from 'src/app/services/caption.service';
 
 @Component({
   selector: 'hse-block-name',

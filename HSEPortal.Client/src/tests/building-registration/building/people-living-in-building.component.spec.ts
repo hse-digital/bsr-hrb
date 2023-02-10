@@ -6,7 +6,7 @@ import { HseAngularModule } from 'hse-angular';
 import { PeopleLivingInBuildingComponent } from '../../../app/features/application/components/building/people-living-in-building/people-living-in-building.component';
 
 import { BlockRegistrationService } from '../../../app/services/block-registration.service';
-import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
+import { ApplicationService } from '../../../app/services/application.service';
 import { CaptionService } from '../../../app/services/caption.service';
 
 
@@ -19,7 +19,7 @@ describe('PeopleLivingInBuildingComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [PeopleLivingInBuildingComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
+      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PeopleLivingInBuildingComponent);
@@ -58,7 +58,7 @@ describe('PeopleLivingInBuildingComponent getErrorDescription(hasError, errorTex
     await TestBed.configureTestingModule({
       declarations: [PeopleLivingInBuildingComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
+      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
     fixture = TestBed.createComponent(PeopleLivingInBuildingComponent);
     component = fixture.componentInstance;

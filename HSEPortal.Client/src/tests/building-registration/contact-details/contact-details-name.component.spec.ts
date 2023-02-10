@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ContactNameComponent } from '../../../app/features/application/new-application/contact-name/contact-name.component';
-import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
+import { ApplicationService } from '../../../app/services/application.service';
 
 
 describe('ContactDetailsNameComponent showError', () => {
@@ -15,7 +15,7 @@ describe('ContactDetailsNameComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [ContactNameComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactNameComponent);
@@ -64,7 +64,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
     await TestBed.configureTestingModule({
       declarations: [ContactNameComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactNameComponent);

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ApplicationStartComponent } from '../../../app/features/application/components/application-start/application-start.component';
-import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
+import { ApplicationService } from '../../../app/services/application.service';
 
 let component: ApplicationStartComponent;
 let fixture: ComponentFixture<ApplicationStartComponent>;
@@ -15,7 +15,7 @@ describe('ApplicationStartComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [ApplicationStartComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ApplicationStartComponent);

@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
 import { BuildingNameComponent } from '../../../app/features/application/new-application/building-name/building-name.component';
-import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
+import { ApplicationService } from '../../../app/services/application.service';
 
 describe('BuildingNameComponent showError', () => {
   let component: BuildingNameComponent;
@@ -15,7 +15,7 @@ describe('BuildingNameComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [BuildingNameComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BuildingNameComponent);
@@ -61,7 +61,7 @@ describe('BuildingNameComponent getErrorDescription(value, errorText)', () => {
     await TestBed.configureTestingModule({
       declarations: [BuildingNameComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler]
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BuildingNameComponent);

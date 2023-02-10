@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ResidentialUnitsComponent } from '../../../app/features/application/components/building/residential-units/residential-units.component';
 import { BlockRegistrationService } from '../../../app/services/block-registration.service';
-import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
+import { ApplicationService } from '../../../app/services/application.service';
 import { CaptionService } from '../../../app/services/caption.service';
 
 let component: ResidentialUnitsComponent;
@@ -17,7 +17,7 @@ describe('ResidentialUnitsComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [ResidentialUnitsComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
+      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ResidentialUnitsComponent);
@@ -68,7 +68,7 @@ describe('ResidentialUnitsComponent getErrorDescription(hasError, errorText)', (
     await TestBed.configureTestingModule({
       declarations: [ResidentialUnitsComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
+      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
     fixture = TestBed.createComponent(ResidentialUnitsComponent);
     component = fixture.componentInstance;

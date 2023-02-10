@@ -6,7 +6,7 @@ import { HseAngularModule } from 'hse-angular';
 import { NumberBlocksBuildingComponent } from '../../../app/features/application/components/building/number-blocks-building/number-blocks-building.component';
 
 import { BlockRegistrationService } from '../../../app/services/block-registration.service';
-import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
+import { ApplicationService } from '../../../app/services/application.service';
 import { CaptionService } from '../../../app/services/caption.service';
 
 let component: NumberBlocksBuildingComponent;
@@ -18,7 +18,7 @@ describe('NumberBlocksBuildingComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [NumberBlocksBuildingComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
+      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(NumberBlocksBuildingComponent);
@@ -56,7 +56,7 @@ describe('NumberBlocksBuildingComponent getErrorDescription(hasError, errorText)
     await TestBed.configureTestingModule({
       declarations: [NumberBlocksBuildingComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
+      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
     fixture = TestBed.createComponent(NumberBlocksBuildingComponent);
     component = fixture.componentInstance;

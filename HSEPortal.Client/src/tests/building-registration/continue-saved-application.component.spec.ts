@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
 import { ApplicationContinueComponent } from '../../app/features/application/components/application-continue/application-continue.component';
-import { BuildingRegistrationService } from '../../app/services/building-registration.service';
+import { ApplicationService } from '../../app/services/application.service';
 
 let component: ApplicationContinueComponent;
 let fixture: ComponentFixture<ApplicationContinueComponent>;
@@ -15,7 +15,7 @@ describe('ApplicationContinueComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [ApplicationContinueComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [HttpClient, HttpHandler, BuildingRegistrationService]
+      providers: [HttpClient, HttpHandler, ApplicationService]
     })
       .compileComponents();
 
@@ -93,7 +93,7 @@ describe('ApplicationContinueComponent getErrorDescription(value, errorText)', (
     await TestBed.configureTestingModule({
       declarations: [ApplicationContinueComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [HttpClient, HttpHandler, BuildingRegistrationService]
+      providers: [HttpClient, HttpHandler, ApplicationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ApplicationContinueComponent);

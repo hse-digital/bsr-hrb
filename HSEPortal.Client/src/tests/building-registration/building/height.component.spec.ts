@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { BuildingHeightComponent } from '../../../app/features/application/components/building/height/height.component';
 import { BlockRegistrationService } from '../../../app/services/block-registration.service';
-import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
+import { ApplicationService } from '../../../app/services/application.service';
 import { CaptionService } from '../../../app/services/caption.service';
 
 let component: BuildingHeightComponent;
@@ -17,7 +17,7 @@ describe('BuildingHeightComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [BuildingHeightComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
+      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BuildingHeightComponent);
@@ -67,7 +67,7 @@ describe('BuildingHeightComponent getErrorDescription(hasError, errorText)', () 
     await TestBed.configureTestingModule({
       declarations: [BuildingHeightComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [BuildingRegistrationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
+      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
     }).compileComponents();
     fixture = TestBed.createComponent(BuildingHeightComponent);
     component = fixture.componentInstance;

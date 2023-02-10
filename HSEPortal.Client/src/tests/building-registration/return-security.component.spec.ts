@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
 import { SecurityCodeComponent } from '../../app/features/application/components/security-code/security-code.component';
-import { BuildingRegistrationService } from '../../app/services/building-registration.service';
+import { ApplicationService } from '../../app/services/application.service';
 
 let component: SecurityCodeComponent;
 let fixture: ComponentFixture<SecurityCodeComponent>;
@@ -16,7 +16,7 @@ describe('SecurityCodeComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [SecurityCodeComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [HttpClient, HttpHandler, BuildingRegistrationService]
+      providers: [HttpClient, HttpHandler, ApplicationService]
     })
       .compileComponents();
 
@@ -62,7 +62,7 @@ describe('SecurityCodeComponent getErrorDescription(value, errorText)', () => {
     await TestBed.configureTestingModule({
       declarations: [SecurityCodeComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [HttpClient, HttpHandler, BuildingRegistrationService]
+      providers: [HttpClient, HttpHandler, ApplicationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SecurityCodeComponent);

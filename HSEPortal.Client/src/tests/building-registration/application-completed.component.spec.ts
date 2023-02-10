@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
 import { ApplicationCompletedComponent } from '../../app/features/application/components/application-completed/application-completed.component';
-import { BuildingRegistrationService } from '../../app/services/building-registration.service';
+import { ApplicationService } from '../../app/services/application.service';
 
 describe('ApplicationCompleteComponent', () => {
   let component: ApplicationCompletedComponent;
@@ -14,7 +14,7 @@ describe('ApplicationCompleteComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ApplicationCompletedComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [HttpClient, HttpHandler, BuildingRegistrationService]
+      providers: [HttpClient, HttpHandler, ApplicationService]
     })
     .compileComponents();
 

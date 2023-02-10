@@ -6,7 +6,7 @@ import { HseAngularModule } from "hse-angular";
 import { ApplicationStartComponent } from "./components/application-start/application-start.component";
 import { ApplicationContinueComponent } from "./components/application-continue/application-continue.component";
 import { SecurityCodeComponent } from "./components/security-code/security-code.component";
-import { BuildingRegistrationService } from "src/app/services/building-registration.service";
+import { ApplicationService } from "src/app/services/application.service";
 import { NewApplicationModule } from "./new-application/new-application.module";
 import { ApplicationCompletedComponent } from "./components/application-completed/application-completed.component";
 import { HseRoute } from "src/app/services/hse.route";
@@ -39,7 +39,7 @@ const routes: Routes = [
     CommonModule,
     HttpClientModule
   ],
-  providers: [BuildingRegistrationService, BlockRegistrationService]
+  providers: [ApplicationService, BlockRegistrationService]
 })
 export class ApplicationModule {
   static baseRoute: string = 'application';

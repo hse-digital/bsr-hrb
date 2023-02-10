@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { BuildingRegistrationService } from 'src/app/services/building-registration.service';
+import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
   templateUrl: './contact-name.component.html'
@@ -10,7 +10,7 @@ import { BuildingRegistrationService } from 'src/app/services/building-registrat
 export class ContactNameComponent extends BaseComponent {
   static route: string = "contact-name";
 
-  constructor(router: Router, public registrationService: BuildingRegistrationService) {
+  constructor(router: Router, public registrationService: ApplicationService) {
     super(router);
   }
 

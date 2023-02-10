@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { BuildingRegistrationService } from 'src/app/services/building-registration.service';
+import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
   selector: 'hse-other-accountable-person',
@@ -13,7 +13,7 @@ export class OtherAccountablePersonComponent extends BaseComponent {
   nextScreenRoute: string = '';
   otherAccountablePersonHasErrors = false;
 
-  constructor(router: Router, public buildingRegistrationService: BuildingRegistrationService) {
+  constructor(router: Router, public buildingRegistrationService: ApplicationService) {
     super(router);
   }
 
