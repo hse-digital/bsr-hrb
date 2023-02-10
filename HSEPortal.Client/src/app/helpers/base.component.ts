@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from "rxjs";
 
 export abstract class BaseComponent implements CanActivate {
 
-  constructor(protected router: Router) { }
+  constructor(protected router: Router, protected activatedRoute?: ActivatedRoute) { }
 
   abstract nextScreenRoute: string;
   abstract canContinue(): boolean;
@@ -17,12 +17,19 @@ export abstract class BaseComponent implements CanActivate {
   saveAndContinue(): void {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
-      this.router.navigate([this.nextScreenRoute]);
+      this.navigateNextScreenRoute();
     }
+  }
+
+  navigateNextScreenRoute() {
+    this.router.navigate([this.nextScreenRoute]);
   }
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
     return this.hasErrors && showError ? errorMessage : undefined;
   }
 
+  getURLParam(parameter: string) {
+    return this.activatedRoute?.snapshot.params[parameter] ?? '';
+  }
 }

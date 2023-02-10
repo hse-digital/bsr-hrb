@@ -48,5 +48,5 @@ const routes = new HseRoutes([
   providers: [HttpClient, CaptionService]
 })
 export class BuildingModule {
-
+  static baseRoute: string = ":id/blocks/:blockId"
 }

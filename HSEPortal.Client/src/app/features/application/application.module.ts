@@ -11,8 +11,8 @@ import { ApplicationCompletedComponent } from "./components/application-complete
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { AccountablePersonComponent } from "./components/accountable-person/accountable-person.component";
 import { OtherAccountablePersonComponent } from "./components/other-accountable-person/other-accountable-person.component";
-import { BlockRegistrationService } from "src/app/services/block-registration.service";
 import { ApplicationService } from "src/app/services/application.service";
+import { BuildingModule } from "./components/building/building.module";
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationStartComponent.route, ApplicationStartComponent),
@@ -22,6 +22,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(OtherAccountablePersonComponent.route, OtherAccountablePersonComponent),
   HseRoute.forChildren(NewApplicationModule.baseRoute, () => import('./new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forChildren(':id', () => import('./continue-application/continue-application.module').then(m => m.ContinueApplicationModule)),
+  HseRoute.forChildren(BuildingModule.baseRoute, () => import('./components/building/building.module').then(m => m.BuildingModule)),
 ]);
 
 @NgModule({
@@ -39,7 +40,7 @@ const routes = new HseRoutes([
     CommonModule,
     HttpClientModule
   ],
-  providers: [HttpClient, BlockRegistrationService, ApplicationService]
+  providers: [HttpClient, ApplicationService]
 })
 export class ApplicationModule {
   static baseRoute: string = 'application';

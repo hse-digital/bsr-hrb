@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { BlockRegistrationService } from 'src/app/services/block-registration.service';
+import { ApplicationService } from '../../../../../services/application.service';
 import { CaptionService } from '../../../../../services/caption.service';
 
 @Component({
@@ -10,27 +10,35 @@ import { CaptionService } from '../../../../../services/caption.service';
   styleUrls: ['./another-block.component.scss']
 })
 export class AnotherBlockComponent extends BaseComponent {
+  static route: string = 'another-block'
+  private blockId!: string;
 
-  constructor(router: Router, private captionService: CaptionService, private blockRegistrationService: BlockRegistrationService) {
-    super(router);
+  constructor(router: Router, activatedRoute: ActivatedRoute, private captionService: CaptionService, private applicationService: ApplicationService) {
+    super(router, activatedRoute);
+    this.blockId = this.getURLParam('blockId');
   }
 
-  building: { anotherBlock?: any } = {};
   anotherBlockHasErrors = false;
-
+  building: { anotherBlock?: string } = {}
   nextScreenRoute: string = "";
-  private nextScreenRouteWhenYes: string = "/building-registration/building/floors-above";
-  private nextScreenRouteWhenNo: string = "/building-registration/building/check-answers";
+  private nextScreenRouteWhenYes: string = "../floors-above";
+  private nextScreenRouteWhenNo: string = "../check-answers";
 
   canContinue(): boolean {
-    this.anotherBlockHasErrors = !this.building.anotherBlock;
-    this.setNextScreenRoute();
+    this.anotherBlockHasErrors = !this.applicationService.model.Blocks?.find(x => x.Id === this.blockId)?.AnotherBlock;
+    this.setNextScreenRoute(this.applicationService.model.Blocks?.find(x => x.Id === this.blockId)?.AnotherBlock ?? '');
+
     return !this.anotherBlockHasErrors;
   }
 
-  setNextScreenRoute() {
+  updateAnotherBlock(anotherBlock: string) {
+    let block = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId);
+    if (block) block.AnotherBlock = anotherBlock;
+  }
+
+  setNextScreenRoute(anotherBlock: string) {
     if (this.anotherBlockHasErrors) return;
-    this.nextScreenRoute = this.building.anotherBlock === "yes"
+    this.nextScreenRoute = anotherBlock === "yes"
       ? this.nextScreenRouteWhenYes
       : this.nextScreenRouteWhenNo;
   }
@@ -38,13 +46,15 @@ export class AnotherBlockComponent extends BaseComponent {
   override async saveAndContinue() {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
-      await this.blockRegistrationService.registerNewBlock();
-      this.router.navigate([this.nextScreenRoute]);
+      await this.applicationService.registerNewBuildingApplication();
+      this.router.navigate([this.nextScreenRoute], { relativeTo: this.activatedRoute })
     }
   }
 
   get blockNames(): string | undefined {
-    return "[block A] and [block B]"
+    let blockNames = this.applicationService.model.Blocks?.map(x => x.BlockName);
+    if (blockNames) return blockNames.reduce((name, current) => current + ", " + name);
+    return undefined;
   }
 
   get captionText(): string | undefined {

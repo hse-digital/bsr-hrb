@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { ApplicationService } from "src/app/services/application.service";
 
 @Component({
@@ -7,7 +8,9 @@ import { ApplicationService } from "src/app/services/application.service";
 export class ApplicationsSectionsComponent {
   static route: string = 'sections';
 
-  constructor(private buildingRegistrationService: ApplicationService) { }
+  constructor(private buildingRegistrationService: ApplicationService, private activatedRouter: ActivatedRoute) {
+    
+  }
 
   getBuildingName() {
     return this.buildingRegistrationService.model.BuildingName;

@@ -18,6 +18,7 @@
           <govuk-body>So far you have told us about {{blockNames}}.</govuk-body>
 
           <govuk-radio-group id="another-block" [(model)]="building.anotherBlock"
+                             (modelChange)="updateAnotherBlock($event)"
                              title="Add another block?" fieldsetClass="govuk-fieldset__legend--s">
             <govuk-radio name="another-block" id="yes" value="yes" label="Yes" />
             <govuk-radio name="another-block" id="no" value="no" label="No" />

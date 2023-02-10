@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { AnotherBlockComponent } from '../../../app/features/application/components/building/another-block/another-block.component';
+import { ApplicationService } from '../../../app/services/application.service';
 
-import { BlockRegistrationService } from '../../../app/services/block-registration.service';
 import { CaptionService } from '../../../app/services/caption.service';
 
 let component: AnotherBlockComponent;
@@ -17,7 +17,7 @@ describe('AnotherBlockComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [AnotherBlockComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [CaptionService, BlockRegistrationService, HttpClient, HttpHandler]
+      providers: [CaptionService, ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AnotherBlockComponent);
@@ -57,7 +57,7 @@ describe('AnotherBlockComponent getErrorDescription(hasError, errorText)', () =>
     await TestBed.configureTestingModule({
       declarations: [AnotherBlockComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [CaptionService, BlockRegistrationService, HttpClient, HttpHandler]
+      providers: [CaptionService, ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AnotherBlockComponent);
