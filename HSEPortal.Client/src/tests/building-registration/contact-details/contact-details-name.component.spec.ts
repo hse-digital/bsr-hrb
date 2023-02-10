@@ -3,22 +3,22 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { ContactDetailsNameComponent } from '../../../app/building-registration/contact-details/contact-details-name/contact-details-name.component';
-import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
+import { ContactNameComponent } from '../../../app/features/application/new-application/contact-name/contact-name.component';
+import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
 
 
 describe('ContactDetailsNameComponent showError', () => {
-  let component: ContactDetailsNameComponent;
-  let fixture: ComponentFixture<ContactDetailsNameComponent>;
+  let component: ContactNameComponent;
+  let fixture: ComponentFixture<ContactNameComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ContactDetailsNameComponent],
+      declarations: [ContactNameComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ContactDetailsNameComponent);
+    fixture = TestBed.createComponent(ContactNameComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -55,19 +55,19 @@ describe('ContactDetailsNameComponent showError', () => {
   })));
 });
 
-describe('ContactDetailsNameComponent getErrorDescription(value, errorText)', () => {
+describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
 
-  let component: ContactDetailsNameComponent;
-  let fixture: ComponentFixture<ContactDetailsNameComponent>;
+  let component: ContactNameComponent;
+  let fixture: ComponentFixture<ContactNameComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ContactDetailsNameComponent],
+      declarations: [ContactNameComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ContactDetailsNameComponent);
+    fixture = TestBed.createComponent(ContactNameComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

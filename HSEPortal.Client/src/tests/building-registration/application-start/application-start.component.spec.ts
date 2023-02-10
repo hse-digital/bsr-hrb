@@ -3,22 +3,22 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { NewOrExistingRegistrationComponent } from '../../../app/features/application/components/application-start/application-start.component';
-import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
+import { ApplicationStartComponent } from '../../../app/features/application/components/application-start/application-start.component';
+import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
 
-let component: NewOrExistingRegistrationComponent;
-let fixture: ComponentFixture<NewOrExistingRegistrationComponent>;
+let component: ApplicationStartComponent;
+let fixture: ComponentFixture<ApplicationStartComponent>;
 
-describe('NewOrExistingRegistrationComponent showError', () => {
+describe('ApplicationStartComponent showError', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [NewOrExistingRegistrationComponent],
+      declarations: [ApplicationStartComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(NewOrExistingRegistrationComponent);
+    fixture = TestBed.createComponent(ApplicationStartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

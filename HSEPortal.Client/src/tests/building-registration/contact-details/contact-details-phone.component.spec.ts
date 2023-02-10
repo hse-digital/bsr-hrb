@@ -3,21 +3,21 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { ContactDetailsPhoneComponent } from '../../../app/building-registration/contact-details/contact-details-phone/contact-details-phone.component';
-import { BuildingRegistrationService } from '../../../app/services/building-registration/building-registration.service';
+import { ContactPhoneComponent } from '../../../app/features/application/new-application/contact-phone/contact-phone.component';
+import { BuildingRegistrationService } from '../../../app/services/building-registration.service';
 
-let component: ContactDetailsPhoneComponent;
-let fixture: ComponentFixture<ContactDetailsPhoneComponent>;
+let component: ContactPhoneComponent;
+let fixture: ComponentFixture<ContactPhoneComponent>;
 
 describe('ContactDetailsPhoneComponent showError', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ContactDetailsPhoneComponent],
+      declarations: [ContactPhoneComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
-    fixture = TestBed.createComponent(ContactDetailsPhoneComponent);
+    fixture = TestBed.createComponent(ContactPhoneComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -71,11 +71,11 @@ describe('ContactDetailsPhoneComponent getErrorDescription(hasError, errorText)'
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ContactDetailsPhoneComponent],
+      declarations: [ContactPhoneComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [BuildingRegistrationService, HttpClient, HttpHandler]
     }).compileComponents();
-    fixture = TestBed.createComponent(ContactDetailsPhoneComponent);
+    fixture = TestBed.createComponent(ContactPhoneComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

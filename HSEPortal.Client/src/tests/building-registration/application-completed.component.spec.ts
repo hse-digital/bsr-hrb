@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
 import { ApplicationCompletedComponent } from '../../app/features/application/components/application-completed/application-completed.component';
-import { BuildingRegistrationService } from '../../app/services/building-registration/building-registration.service';
+import { BuildingRegistrationService } from '../../app/services/building-registration.service';
 
 describe('ApplicationCompleteComponent', () => {
   let component: ApplicationCompletedComponent;

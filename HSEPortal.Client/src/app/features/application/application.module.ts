@@ -10,11 +10,14 @@ import { BuildingRegistrationService } from "src/app/services/building-registrat
 import { NewApplicationModule } from "./new-application/new-application.module";
 import { ApplicationCompletedComponent } from "./components/application-completed/application-completed.component";
 import { BuildingGuardService } from "../../services/route-guard/components/building/building-guard.service";
+import { AccountablePersonComponent } from './components/accountable-person/accountable-person.component';
+import { BlockRegistrationService } from "../../services/block-registration.service";
 
 const routes: Routes = [
   { path: ApplicationStartComponent.route, component: ApplicationStartComponent },
   { path: ApplicationContinueComponent.route, component: ApplicationContinueComponent },
   { path: SecurityCodeComponent.route, component: SecurityCodeComponent },
+  { path: AccountablePersonComponent.route, component: AccountablePersonComponent },
   { path: NewApplicationModule.baseRoute, loadChildren: () => import('./new-application/new-application.module').then(m => m.NewApplicationModule), canActivateChild: [BuildingGuardService] },
   { path: ':id', loadChildren: () => import('./continue-application/continue-application.module').then(m => m.ContinueApplicationModule) },
 ];
@@ -24,7 +27,8 @@ const routes: Routes = [
     ApplicationStartComponent,
     ApplicationContinueComponent,
     SecurityCodeComponent,
-    ApplicationCompletedComponent
+    ApplicationCompletedComponent,
+    AccountablePersonComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -32,7 +36,7 @@ const routes: Routes = [
     CommonModule,
     HttpClientModule
   ],
-  providers: [BuildingRegistrationService]
+  providers: [BuildingRegistrationService, BlockRegistrationService]
 })
 export class ApplicationModule {
   static baseRoute: string = 'application';

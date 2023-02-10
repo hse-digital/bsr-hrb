@@ -12,6 +12,5 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\app\building-registration\contact-details\contact-details-phone\" />
-    <Folder Include="src\tests\building-registration\new-or-existing-registration\" />
   </ItemGroup>
 </Project>
