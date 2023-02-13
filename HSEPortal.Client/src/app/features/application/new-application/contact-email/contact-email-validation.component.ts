@@ -39,7 +39,7 @@ export class ContactEmailValidationComponent extends BaseComponent {
                 await this.applicationService.registerNewBuildingApplication();
                 await this.navigationService.navigate('application/123/sections');
             } catch {
-                console.log('error');
+                this.sendingRequest = false;
                 this.hasErrors = true;
                 this.otpError = true;
             }
