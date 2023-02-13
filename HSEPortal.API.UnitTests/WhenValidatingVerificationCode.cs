@@ -11,6 +11,7 @@ public class WhenValidatingVerificationCode : UnitTestBase
 {
     private readonly EmailVerificationFunction emailVerificationFunction;
     private readonly OTPService otpService;
+    private readonly string emailAddress = "email@domain.com";
 
     public WhenValidatingVerificationCode()
     {
@@ -21,8 +22,8 @@ public class WhenValidatingVerificationCode : UnitTestBase
     [Fact]
     public async Task ShouldReturnSuccessIfOTPIsValid()
     {
-        var token = otpService.GenerateToken();
-        var model = new OTPValidationModel(token);
+        var token = otpService.GenerateToken(emailAddress);
+        var model = new OTPValidationModel(token, emailAddress);
 
         var request = BuildHttpRequestData(model);
         var response = await emailVerificationFunction.ValidateOTPToken(request);
@@ -35,8 +36,8 @@ public class WhenValidatingVerificationCode : UnitTestBase
     [InlineData(120)]
     public async Task ShouldReturnBadRequestIsOTPIsInvalid(int minutesToReduce)
     {
-        var token = otpService.GenerateToken(DateTime.UtcNow.AddMinutes(-minutesToReduce));
-        var model = new OTPValidationModel(token);
+        var token = otpService.GenerateToken(emailAddress, DateTime.UtcNow.AddMinutes(-minutesToReduce));
+        var model = new OTPValidationModel(token, emailAddress);
 
         var request = BuildHttpRequestData(model);
         var response = await emailVerificationFunction.ValidateOTPToken(request);
@@ -49,7 +50,22 @@ public class WhenValidatingVerificationCode : UnitTestBase
     [InlineData(null)]
     public async Task ShouldReturnBadRequestIsOTPIsEmpty(string token)
     {
-        var model = new OTPValidationModel(token);
+        var model = new OTPValidationModel(token, emailAddress);
+
+        var request = BuildHttpRequestData(model);
+        var response = await emailVerificationFunction.ValidateOTPToken(request);
+
+        response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Theory]
+    [InlineData("INVALID_SECRET_KEY")]
+    [InlineData("")]
+    [InlineData(null)]
+    public async Task ShouldReturnBadRequestIsSecretKeyIsInvalid(string secretKey)
+    {
+        var token = otpService.GenerateToken(emailAddress);
+        var model = new OTPValidationModel(token, secretKey);
 
         var request = BuildHttpRequestData(model);
         var response = await emailVerificationFunction.ValidateOTPToken(request);

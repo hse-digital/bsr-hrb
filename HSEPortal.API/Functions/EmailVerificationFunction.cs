@@ -7,7 +7,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 
 namespace HSEPortal.API.Functions;
 
-public class EmailVerificationFunction
+public class EmailVerificationFunction 
 {
     private readonly DynamicsService dynamicsService;
     private readonly OTPService otpService;
@@ -28,7 +28,7 @@ public class EmailVerificationFunction
             return await request.BuildValidationErrorResponseDataAsync(validation);
         }
 
-        var otpToken = otpService.GenerateToken();
+        var otpToken = otpService.GenerateToken(emailVerificationModel.EmailAddress);
 
         await dynamicsService.SendVerificationEmail(emailVerificationModel, otpToken);
         return new CustomHttpResponseData
@@ -41,7 +41,7 @@ public class EmailVerificationFunction
     public async Task<CustomHttpResponseData> ValidateOTPToken([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
     {
         var otpValidationModel = await request.ReadAsJsonAsync<OTPValidationModel>();
-        var isTokenValid = otpValidationModel.Validate().IsValid && otpService.ValidateToken(otpValidationModel.OTPToken);
+        var isTokenValid = otpValidationModel.Validate().IsValid && otpService.ValidateToken(otpValidationModel.OTPToken, otpValidationModel.EmailAddress);
 
         var returnStatusCode = HttpStatusCode.OK;
         if (!isTokenValid)

@@ -12,17 +12,18 @@ public class WhenSendingVerificationEmail : UnitTestBase
 {
     private readonly EmailVerificationFunction emailVerificationFunction;
     private readonly string otpToken = "123456";
+    private readonly string email = "user@domain.com";
 
     public WhenSendingVerificationEmail()
     {
-        var otpService = Mock.Of<OTPService>(x => x.GenerateToken(null) == otpToken);
+        var otpService = Mock.Of<OTPService>(x => x.GenerateToken(email, null) == otpToken);
         emailVerificationFunction = new EmailVerificationFunction(DynamicsService, otpService);
     }
 
     [Fact]
     public async Task ShouldCallFlowWithUserEmailAndOTP()
     {
-        var emailVerificationModel = new EmailVerificationModel("dsantin@codec.ie");
+        var emailVerificationModel = new EmailVerificationModel(email);
 
         var requestData = BuildHttpRequestData(emailVerificationModel);
         await emailVerificationFunction.SendVerificationEmail(requestData);
