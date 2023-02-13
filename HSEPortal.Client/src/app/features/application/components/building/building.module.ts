@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { BuildingBlocksIntroComponent } from "./blocks-intro/blocks-intro.component";
+import { BuildingBlocksIntroComponent } from "../../blocks/blocks-intro/blocks-intro.component";
 import { BuildingFloorsAboveComponent } from "./floors-above/floors-above.component";
 import { BuildingHeightComponent } from "./height/height.component";
 import { ResidentialUnitsComponent } from "./residential-units/residential-units.component";
@@ -11,7 +11,7 @@ import { PeopleLivingInBuildingComponent } from "./people-living-in-building/peo
 import { NumberBlocksBuildingComponent } from "./number-blocks-building/number-blocks-building.component";
 import { AnotherBlockComponent } from "./another-block/another-block.component";
 import { CheckAnswersComponent } from "./check-answers/check-answers.component";
-import { BlockNameComponent } from "./block-name/block-name.component";
+import { BlockNameComponent } from "../../blocks/block-name/block-name.component";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { CaptionService } from "src/app/services/caption.service";
 

@@ -1,20 +1,20 @@
-import { Component, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
+import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   templateUrl: './contact-name.component.html'
 })
-export class ContactNameComponent extends BaseComponent {
+export class ContactNameComponent extends BaseComponent implements IHasNextPage {
   static route: string = "contact-name";
 
-  constructor(router: Router, applicationService: ApplicationService) {
-    super(router, applicationService);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
   }
 
-  nextScreenRoute: string = '/application/new/contact-phone';
   firstNameInError: boolean = false;
   lastNameInError: boolean = false;
 
@@ -25,7 +25,11 @@ export class ContactNameComponent extends BaseComponent {
     return !this.firstNameInError && !this.lastNameInError;
   }
 
-  override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot){
     return !!this.applicationService.model.BuildingName;
+  }
+
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return navigationService.navigateRelative('contact-phone', activatedRoute);
   }
 }

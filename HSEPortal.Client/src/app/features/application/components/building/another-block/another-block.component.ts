@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { ApplicationService } from '../../../../../services/application.service';
-import { CaptionService } from '../../../../../services/caption.service';
+import { ApplicationService } from 'src/app/services/application.service';
+import { CaptionService } from 'src/app/services/caption.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'hse-another-block',
@@ -13,9 +14,8 @@ export class AnotherBlockComponent extends BaseComponent {
   static route: string = 'another-block'
   private blockId!: string;
 
-  constructor(router: Router, activatedRoute: ActivatedRoute, private captionService: CaptionService, private applicationService: ApplicationService) {
-    super(router, activatedRoute);
-    this.blockId = this.getURLParam('blockId');
+  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
   }
 
   anotherBlockHasErrors = false;
@@ -41,14 +41,6 @@ export class AnotherBlockComponent extends BaseComponent {
     this.nextScreenRoute = anotherBlock === "yes"
       ? this.nextScreenRouteWhenYes
       : this.nextScreenRouteWhenNo;
-  }
-
-  override async saveAndContinue() {
-    this.hasErrors = !this.canContinue();
-    if (!this.hasErrors) {
-      await this.applicationService.registerNewBuildingApplication();
-      this.router.navigate([this.nextScreenRoute], { relativeTo: this.activatedRoute })
-    }
   }
 
   get blockNames(): string | undefined {

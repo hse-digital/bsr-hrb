@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService } from 'src/app/services/application.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   templateUrl: './security-code.component.html'
@@ -16,8 +17,8 @@ export class SecurityCodeComponent extends BaseComponent {
     securityCode: { hasError: false, errorText: '' }
   }
 
-  constructor(router: Router, applicationService: ApplicationService) {
-    super(router, applicationService);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
     this.building.email = this.applicationService.model.ContactEmailAddress;
   }
 

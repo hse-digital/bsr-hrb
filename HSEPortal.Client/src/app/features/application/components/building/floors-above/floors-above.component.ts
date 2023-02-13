@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { Observable } from "rxjs";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { ApplicationService } from "../../../../../services/application.service";
-import { CaptionService } from "../../../../../services/caption.service";
+import { ApplicationService } from "src/app/services/application.service";
+import { CaptionService } from "src/app/services/caption.service";
+import { NavigationService } from "src/app/services/navigation.service";
 
 @Component({
   templateUrl: './floors-above.component.html'
@@ -11,11 +11,10 @@ import { CaptionService } from "../../../../../services/caption.service";
 export class BuildingFloorsAboveComponent extends BaseComponent {
 
   static route: string = 'floors-above';
-  private blockId!: string;  
+  private blockId!: string;
 
-  constructor(router: Router, activatedRoute: ActivatedRoute, private applicationService: ApplicationService, private captionService: CaptionService) {
-    super(router, activatedRoute);
-    this.blockId = this.getURLParam('blockId');
+  constructor(router: Router, applicationService: ApplicationService, private captionService: CaptionService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
   }
 
   nextScreenRoute: string = '';
@@ -45,20 +44,16 @@ export class BuildingFloorsAboveComponent extends BaseComponent {
     return !this.floorsHasError;
   }
 
-  override navigateNextScreenRoute() {
-    this.router.navigate(['../height'], { relativeTo: this.activatedRoute })
-  }
-
   updateFloorsAbove(floorsAbove: number) {
     let block = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId);
-    if(block) block.FloorsAbove = floorsAbove;
+    if (block) block.FloorsAbove = floorsAbove;
   }
 
   get captionText(): string | undefined {
     return this.captionService.caption;
-  } 
+  }
 
-  override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+  override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return !!this.applicationService.model.Blocks;
   }
 }

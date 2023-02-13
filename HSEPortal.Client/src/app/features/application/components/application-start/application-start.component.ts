@@ -21,5 +21,4 @@ export class ApplicationStartComponent {
       this.router.navigate([this.continueLink]);
     }
   }
-
 }

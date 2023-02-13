@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { Observable } from "rxjs";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { ApplicationService } from "../../../../../services/application.service";
-import { CaptionService } from "../../../../../services/caption.service";
+import { ApplicationService } from "src/app/services/application.service";
+import { CaptionService } from "src/app/services/caption.service";
+import { NavigationService } from "src/app/services/navigation.service";
 
 @Component({
   templateUrl: './height.component.html',
@@ -13,9 +13,8 @@ export class BuildingHeightComponent extends BaseComponent {
   static route: string = 'height';
   private blockId?: string;
 
-  constructor(router: Router, activatedRoute: ActivatedRoute, private captionService: CaptionService, private applicationService: ApplicationService) {
-    super(router, activatedRoute);
-    this.blockId = this.getURLParam('blockId');
+  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
   }
 
   nextScreenRoute: string = '';
@@ -43,10 +42,6 @@ export class BuildingHeightComponent extends BaseComponent {
     return !this.heightHasErrors;
   }
 
-  override navigateNextScreenRoute() {
-    this.router.navigate(['../residential-units'], { relativeTo: this.activatedRoute })
-  }
-
   updateHeight(height: number) {
     let block = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId);
     if (block) block.Height = height;
@@ -56,7 +51,7 @@ export class BuildingHeightComponent extends BaseComponent {
     return this.captionService.caption;
   }
 
-  override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+  override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot){
     return !!this.applicationService.model.Blocks?.find(x => x.BlockName === '')?.FloorsAbove;
   }
 }

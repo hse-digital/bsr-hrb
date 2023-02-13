@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { Router, UrlTree } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { ApplicationService } from '../../../../../services/application.service';
-import { CaptionService } from '../../../../../services/caption.service';
+import { ApplicationService } from 'src/app/services/application.service';
+import { CaptionService } from 'src/app/services/caption.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'hse-number-blocks-building',
@@ -12,9 +13,8 @@ export class NumberBlocksBuildingComponent extends BaseComponent {
   static route: string = ''
   private blockId!: string;
 
-  constructor(router: Router, private applicationService: ApplicationService, private captionService: CaptionService) {
-    super(router);
-    this.blockId = this.getURLParam('blockId');
+  constructor(router: Router, applicationService: ApplicationService, private captionService: CaptionService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
   }
 
   nextScreenRoute: string = '/building-registration/building/floors-above';

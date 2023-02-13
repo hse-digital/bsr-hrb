@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApplicationService, BuildingRegistrationModel } from '../../../../../services/application.service';
+import { Router } from '@angular/router';
+import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
   selector: 'hse-check-answers',
@@ -21,19 +21,14 @@ export class CheckAnswersComponent {
     address: "../check-answers" // TO-DO
   }
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private applicationService: ApplicationService) { }
+  constructor(private router: Router,  private applicationService: ApplicationService) { }
 
   get block(): any | undefined {
-    let blockId = this.activatedRoute.snapshot.params['blockId'];
-    return this.applicationService.model.Blocks?.find(x => x.Id === blockId);
+    return this.applicationService.currentBlock;
   }
 
   saveAndContinue() {
     this.router.navigate([this.nextScreenRoute]);
-  }
-
-  getLink(child: string) {
-    return this.activatedRoute.parent?.url + child;
   }
 
 }

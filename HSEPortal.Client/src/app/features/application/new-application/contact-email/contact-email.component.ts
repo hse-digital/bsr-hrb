@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService } from 'src/app/services/application.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   templateUrl: './contact-email.component.html'
@@ -10,8 +10,8 @@ import { ApplicationService } from 'src/app/services/application.service';
 export class ContactEmailComponent extends BaseComponent {
   static route: string = "contact-email";
 
-  constructor(router: Router, applicationService: ApplicationService) {
-    super(router, applicationService);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
   }
 
   nextScreenRoute: string = '';
@@ -38,7 +38,7 @@ export class ContactEmailComponent extends BaseComponent {
     return emailRegex.test(this.applicationService.model.ContactEmailAddress ?? '');
   }
 
-  override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
     return !!this.applicationService.model.ContactPhoneNumber;
   }
 }

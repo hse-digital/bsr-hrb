@@ -1,8 +1,9 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { ApplicationService } from "../../../../../services/application.service";
-import { CaptionService } from "../../../../../services/caption.service";
+import { ApplicationService } from "src/app/services/application.service";
+import { CaptionService } from "src/app/services/caption.service";
+import { NavigationService } from "src/app/services/navigation.service";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
@@ -11,9 +12,8 @@ export class PeopleLivingInBuildingComponent extends BaseComponent {
   static route: string = 'people-living-in-building';
   private blockId!: string;
 
-  constructor(router: Router, activatedRoute: ActivatedRoute, private captionService: CaptionService, private applicationService: ApplicationService) {
-    super(router, activatedRoute);
-    this.blockId = this.getURLParam('blockId');
+  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
   }
 
   nextScreenRoute: string = '';
@@ -24,10 +24,6 @@ export class PeopleLivingInBuildingComponent extends BaseComponent {
     let peopleLivingInBuilding = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId)?.PeopleLivingInBuilding;
     this.peopleLivingHasErrors = !peopleLivingInBuilding;
     return !this.peopleLivingHasErrors;
-  }
-
-  override navigateNextScreenRoute() {
-    this.router.navigate(['../another-block'], { relativeTo: this.activatedRoute })
   }
 
   updatePeopleLivingInBuilding(peopleLivingInBuilding: string) {

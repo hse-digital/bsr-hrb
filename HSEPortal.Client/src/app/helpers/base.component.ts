@@ -1,38 +1,32 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { Observable } from "rxjs";
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { ApplicationService } from "../services/application.service";
+import { NavigationService } from "../services/navigation.service";
+import { IHasNextPage } from "./has-next-page.interface";
 
 export abstract class BaseComponent implements CanActivate {
 
-  constructor(protected router: Router, protected applicationService: ApplicationService, protected activatedRoute?: ActivatedRoute) { }
+  constructor(protected router: Router, protected applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) { }
 
-  abstract nextScreenRoute: string;
   abstract canContinue(): boolean;
   
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+  canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
     return true;
   }
 
   hasErrors = false;
-  saveAndContinue(): void {
+  async saveAndContinue(): Promise<any> {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       this.applicationService.updateLocalStorage();
-      this.router.navigate([this.nextScreenRoute]);
-      this.navigateNextScreenRoute();
+      
+      var hasNextPage = <IHasNextPage><unknown>this;
+      if (hasNextPage) {
+        await hasNextPage.navigateToNextPage(this.navigationService, this.activatedRoute);
+      }
     }
-  }
-
-  navigateNextScreenRoute() {
-    this.router.navigate([this.nextScreenRoute]);
   }
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
     return this.hasErrors && showError ? errorMessage : undefined;
-  }
-
-  getURLParam(parameter: string) {
-    return this.activatedRoute?.snapshot.params[parameter] ?? '';
   }
 }

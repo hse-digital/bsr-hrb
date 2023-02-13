@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { CaptionService } from 'src/app/services/caption.service';
-import { ApplicationService } from '../../../../../services/application.service';
+import { NavigationService } from 'src/app/services/navigation.service';
+import { ApplicationService } from '../../../../services/application.service';
 
 @Component({
   selector: 'hse-block-name',
@@ -13,22 +14,17 @@ export class BlockNameComponent extends BaseComponent {
   static route: string = 'floors-above';
 
   nextScreenRoute: string = '';
-  building: { blockName ?: string } = {}
+  building: { blockName?: string } = {}
   blockNameHasErrors = false;
   private blockId!: string;
 
-  constructor(router: Router, activatedRoute: ActivatedRoute, private captionService: CaptionService, private applicationService: ApplicationService) {
-    super(router, activatedRoute);
-    this.blockId = this.getURLParam('blockId');
+  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
   }
 
   canContinue(): boolean {
     this.blockNameHasErrors = !this.applicationService.model.Blocks?.find(x => x.Id === this.blockId)?.BlockName;
     return !this.blockNameHasErrors;
-  }
-
-  override navigateNextScreenRoute() {
-    this.router.navigate(['../floors-above'], { relativeTo: this.activatedRoute })
   }
 
   updateBlockName(blockName: string) {
