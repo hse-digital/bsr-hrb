@@ -20,6 +20,17 @@ export class ApplicationService {
     this.model.Blocks = [];
   }
 
+  async sendVerificationEmail(): Promise<void> {
+    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": this.model.ContactEmailAddress }));
+  }
+
+  async validateOTPToken(otpToken: string): Promise<void> {
+    await firstValueFrom(this.httpClient.post('api/ValidateOTPToken', { 
+      "OTPToken": otpToken,
+      "EmailAddress": this.model.ContactEmailAddress 
+    }));
+  }
+
   async registerNewBuildingApplication(): Promise<void> {
     await firstValueFrom(this.httpClient.post('api/NewBuildingApplication', this.model));
   }
