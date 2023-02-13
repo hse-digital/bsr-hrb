@@ -5,7 +5,7 @@ import { IHasNextPage } from "./has-next-page.interface";
 
 export abstract class BaseComponent implements CanActivate {
 
-  constructor(protected router: Router, protected applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) { }
+  constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute) { }
 
   abstract canContinue(): boolean;
   

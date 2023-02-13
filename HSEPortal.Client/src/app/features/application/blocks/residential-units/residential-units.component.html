@@ -16,9 +16,8 @@
 
                     <govuk-input label="Number of residential units"
                                  labelClass="govuk-label--s" id="height"
-                                 [(model)]="building.residentialUnits"
+                                 [(model)]="applicationService.currentBlock.ResidentialUnits"
                                  [errorText]="getErrorDescription(residentialUnitsHasErrors, errorMessage)"
-                                 (modelChange)="updateNumberResidentialUnits($event)"
                                  class="govuk-input--width-4" #height />
                 </govuk-fieldset>
             </div>

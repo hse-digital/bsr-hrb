@@ -37,10 +37,10 @@ export class BuildingRegistrationModel {
   ContactEmailAddress?: string;
   AccountablePerson?: string;
   OtherAccountablePerson?: string;
+  NumberBlocksBuilding?: string;
   Blocks?: {
     Id?: string;
-    BlockName?: string;
-    NumberBlocksBuilding?: string;
+    Name?: string;
     FloorsAbove?: number;
     Height?: number;
     PeopleLivingInBuilding?: any;

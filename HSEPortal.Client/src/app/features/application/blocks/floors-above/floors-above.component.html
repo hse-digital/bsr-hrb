@@ -35,9 +35,8 @@
 
                     <govuk-input label="Number of floors above ground level for this block"
                                  labelClass="govuk-label--s" id="floors-above"
-                                 [(model)]="building.floorsAbove"
+                                 [(model)]="applicationService.currentBlock.FloorsAbove"
                                  [errorText]="getErrorDescription(floorsHasError, errorMessage)"
-                                 (modelChange)="updateFloorsAbove($event)"
                                  class="govuk-input--width-3"/>
 
                 </govuk-fieldset>

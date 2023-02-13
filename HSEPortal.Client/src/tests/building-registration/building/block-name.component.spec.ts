@@ -3,25 +3,25 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { BlockNameComponent } from '../../../app/features/application/blocks/block-name/block-name.component';
+import { NameComponent } from '../../../app/features/application/blocks/block-name/block-name.component';
 
 import { BlockRegistrationService } from '../../../app/services/block-registration.service';
 import { CaptionService } from '../../../app/services/caption.service';
 
-let component: BlockNameComponent;
-let fixture: ComponentFixture<BlockNameComponent>;
+let component: NameComponent;
+let fixture: ComponentFixture<NameComponent>;
 
 describe('BlockNameComponent showError', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [BlockNameComponent],
+      declarations: [NameComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [CaptionService, BlockRegistrationService, HttpClient, HttpHandler]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(BlockNameComponent);
+    fixture = TestBed.createComponent(NameComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -59,13 +59,13 @@ describe('BlockNameComponent showError', () => {
 describe('BlockNameComponent getErrorDescription(value, errorText)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [BlockNameComponent],
+      declarations: [NameComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [CaptionService, BlockRegistrationService, HttpClient, HttpHandler]
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(BlockNameComponent);
+    fixture = TestBed.createComponent(NameComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

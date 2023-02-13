@@ -9,29 +9,29 @@
         <govuk-fieldset title="First block" [isPageHeading]=false id="first-block" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-6' />
 
         <govuk-summary-list>
-          <govuk-summary-list-row key="Number of floors"
-                                  link="{{URLs.floorsAbove}}">{{block?.floorsAbove}}
+          <govuk-summary-list-row key="Number of floors" (onClick)="onSummaryRowClick($event, URLs.floorsAbove)"
+                                  link="{{URLs.floorsAbove}}">{{block.FloorsAbove}}
           </govuk-summary-list-row>
           <govuk-summary-list-row key="Height"
-                                  link="{{URLs.height}}">{{block?.height}} metres
+                                  link="{{URLs.height}}">{{block.Height}} metres
           </govuk-summary-list-row>
           <govuk-summary-list-row key="Number of residential units"
-                                  link="{{URLs.residentialUnits}}">{{block?.residentialUnits}}
+                                  link="{{URLs.residentialUnits}}">{{block.ResidentialUnits}}
           </govuk-summary-list-row>
           <govuk-summary-list-row key="Are people living in the block?"
-                                  link="{{URLs.peopleLivingInBuilding}}">{{block?.peopleLivingInBuilding}}
+                                  link="{{URLs.peopleLivingInBuilding}}">{{block.PeopleLivingInBuilding}}
           </govuk-summary-list-row>
           <govuk-summary-list-row key="Year of completion"
-                                  link="{{URLs.yearCompletition}}">{{block?.yearCompletition}}
+                                  link="{{URLs.yearCompletition}}">{{block.YearCompletition}}
           </govuk-summary-list-row>
           <govuk-summary-list-row key="Completion certificate issuer"
-                                  link="{{URLs.completitionCertificateIssuer}}">{{block?.completitionCertificateIssuer}}
+                                  link="{{URLs.completitionCertificateIssuer}}">{{block.CompletitionCertificateIssuer}}
           </govuk-summary-list-row>
           <govuk-summary-list-row key="Completion certificate reference"
-                                  link="{{URLs.completitionCertificateReference}}">{{block?.completitionCertificateReference}}
+                                  link="{{URLs.completitionCertificateReference}}">{{block.CompletitionCertificateReference}}
           </govuk-summary-list-row>
           <govuk-summary-list-row key="Address"
-                                  link="{{URLs.address}}">{{block?.address}}
+                                  link="{{URLs.address}}">{{block.Address}}
           </govuk-summary-list-row>
         </govuk-summary-list>
 

@@ -16,7 +16,7 @@
           <govuk-body>This will help you to identify which block we are asking you about later on.</govuk-body>
 
           <govuk-input id="block-name" label="Block name" labelClass="govuk-label--s"
-                       [(model)]="applicationService.currentBlock.name"
+                       [(model)]="applicationService.currentBlock.Name"
                        [errorText]="getErrorDescription(blockNameHasErrors, 'Enter this block\'s name')" />
 
         </govuk-fieldset>

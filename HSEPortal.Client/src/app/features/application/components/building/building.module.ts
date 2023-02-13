@@ -1,30 +1,30 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { RouterModule } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { BuildingBlocksIntroComponent } from "../../blocks/blocks-intro/blocks-intro.component";
-import { BuildingFloorsAboveComponent } from "./floors-above/floors-above.component";
-import { BuildingHeightComponent } from "./height/height.component";
-import { ResidentialUnitsComponent } from "./residential-units/residential-units.component";
-import { PeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
+import { BuildingBlocksIntroComponent } from "src/app/features/application/blocks/blocks-intro/blocks-intro.component";
+import { BuildingFloorsAboveComponent } from "src/app/features/application/blocks/floors-above/floors-above.component";
+import { BuildingHeightComponent } from "src/app/features/application/blocks/height/height.component";
+import { ResidentialUnitsComponent } from "src/app/features/application/blocks/residential-units/residential-units.component";
+import { PeopleLivingInBuildingComponent } from "src/app/features/application/blocks/people-living-in-building/people-living-in-building.component";
 import { NumberBlocksBuildingComponent } from "./number-blocks-building/number-blocks-building.component";
-import { AnotherBlockComponent } from "./another-block/another-block.component";
-import { CheckAnswersComponent } from "./check-answers/check-answers.component";
-import { BlockNameComponent } from "../../blocks/block-name/block-name.component";
+import { AnotherBlockComponent } from "src/app/features/application/blocks/another-block/another-block.component";
+import { CheckAnswersComponent } from "src/app/features/application/blocks/check-answers/check-answers.component";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { CaptionService } from "src/app/services/caption.service";
+import { NameComponent } from "src/app/features/application/blocks/name/name.component";
 
 const routes = new HseRoutes([
-  HseRoute.unsafe('intro', BuildingBlocksIntroComponent),
-  HseRoute.unsafe('block-name', BlockNameComponent),
-  HseRoute.unsafe('floors-above', BuildingFloorsAboveComponent),
-  HseRoute.unsafe('height', BuildingHeightComponent),
-  HseRoute.unsafe('residential-units', ResidentialUnitsComponent),
-  HseRoute.unsafe('people-living-in-building', PeopleLivingInBuildingComponent),
-  HseRoute.unsafe('number-blocks-building', NumberBlocksBuildingComponent),
-  HseRoute.unsafe('another-block', AnotherBlockComponent),
-  HseRoute.unsafe('check-answers', CheckAnswersComponent),
+  HseRoute.unsafe(BuildingBlocksIntroComponent.route, BuildingBlocksIntroComponent),
+  HseRoute.protected(NameComponent.route, NameComponent),
+  HseRoute.protected(BuildingFloorsAboveComponent.route, BuildingFloorsAboveComponent),
+  HseRoute.protected(BuildingHeightComponent.route, BuildingHeightComponent),
+  HseRoute.protected(ResidentialUnitsComponent.route, ResidentialUnitsComponent),
+  HseRoute.protected(PeopleLivingInBuildingComponent.route, PeopleLivingInBuildingComponent),
+  HseRoute.protected(NumberBlocksBuildingComponent.route, NumberBlocksBuildingComponent),
+  HseRoute.protected(AnotherBlockComponent.route, AnotherBlockComponent),
+  HseRoute.protected(CheckAnswersComponent.route, CheckAnswersComponent),
 ]);
 
 @NgModule({
@@ -37,7 +37,7 @@ const routes = new HseRoutes([
     NumberBlocksBuildingComponent,
     AnotherBlockComponent,
     CheckAnswersComponent,
-    BlockNameComponent
+    NameComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
@@ -45,7 +45,7 @@ const routes = new HseRoutes([
     CommonModule,
     HttpClientModule
   ],
-  providers: [HttpClient, CaptionService]
+  providers: [HttpClient, CaptionService, ...routes.getProviders()]
 })
 export class BuildingModule {
   static baseRoute: string = ":id/blocks/:blockId"

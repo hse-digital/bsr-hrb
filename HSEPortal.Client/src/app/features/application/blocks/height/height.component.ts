@@ -4,21 +4,19 @@ import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { IHasNextPage } from "../../../../helpers/has-next-page.interface";
 
 @Component({
   templateUrl: './height.component.html',
 })
-export class BuildingHeightComponent extends BaseComponent {
+export class BuildingHeightComponent extends BaseComponent implements IHasNextPage {
 
   static route: string = 'height';
-  private blockId?: string;
 
   constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
-  nextScreenRoute: string = '';
-  building: { height?: string } = {}
   heightHasErrors = false;
 
   errorSummaryMessage: string = 'You must enter the height of this block from ground level to the top floor in metres';
@@ -26,7 +24,7 @@ export class BuildingHeightComponent extends BaseComponent {
 
   canContinue(): boolean {
     this.heightHasErrors = true;
-    let height = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId)?.Height;
+    let height = this.applicationService.currentBlock.Height;
 
     if (!height || !Number(height)) {
       this.errorMessage = 'Enter the block height in metres';
@@ -42,16 +40,15 @@ export class BuildingHeightComponent extends BaseComponent {
     return !this.heightHasErrors;
   }
 
-  updateHeight(height: number) {
-    let block = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId);
-    if (block) block.Height = height;
-  }
-
   get captionText(): string | undefined {
     return this.captionService.caption;
   }
 
-  override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot){
-    return !!this.applicationService.model.Blocks?.find(x => x.BlockName === '')?.FloorsAbove;
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.currentBlock.FloorsAbove;
+  }
+
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return navigationService.navigateRelative('residential-units', activatedRoute);
   }
 }

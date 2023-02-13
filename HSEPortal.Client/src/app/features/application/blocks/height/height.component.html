@@ -26,9 +26,8 @@
 
                     <govuk-input label="Block height in metres"
                                  labelClass="govuk-label--s" id="height"
-                                 [(model)]="building.height"
+                                 [(model)]="applicationService.currentBlock.Height"
                                  [errorText]="getErrorDescription(heightHasErrors, errorMessage)" suffix="m"
-                                 (modelChange)="updateHeight($event)"
                                  class="govuk-input--width-4" #height />
 
                 </govuk-fieldset>

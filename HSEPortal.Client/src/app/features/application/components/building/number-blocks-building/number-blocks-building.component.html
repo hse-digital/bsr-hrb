@@ -11,8 +11,9 @@
             <govuk-radio-group [errorText]="getErrorDescription(numberBlocksHasErrors, 'Select how many blocks are in this building')"
                                title="How many blocks are in this building?" [isPageHeading]=true
                                fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'
-                               id="numberBlocksBuilding" [(model)]="building.numberBlocks"
-                               (modelChange)="updateNumberBlocksBuilding($event)">
+                               id="numberBlocksBuilding"
+                               [(model)]="applicationService.model.NumberBlocksBuilding"
+                               (modelChange)="radioModelHasChanged($event)">
                 <govuk-radio name="number-blocks" id="one" value="one" label="One" />
                 <govuk-radio name="number-blocks" id="two-or-more" value="two-or-more" label="Two or more" />
             </govuk-radio-group>

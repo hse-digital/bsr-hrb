@@ -1,37 +1,46 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CaptionService } from 'src/app/services/caption.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { IHasNextPage } from '../../../../../helpers/has-next-page.interface';
 
 @Component({
   selector: 'hse-number-blocks-building',
   templateUrl: './number-blocks-building.component.html',
 })
-export class NumberBlocksBuildingComponent extends BaseComponent {
-  static route: string = ''
-  private blockId!: string;
+export class NumberBlocksBuildingComponent extends BaseComponent implements IHasNextPage {
+
+  static route: string = 'number-blocks-building'
+
+  numberBlocksHasErrors = false;
 
   constructor(router: Router, applicationService: ApplicationService, private captionService: CaptionService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
-  nextScreenRoute: string = '/building-registration/building/floors-above';
-  building: { numberBlocks?: string } = {}
-  numberBlocksHasErrors = false;
+  canContinue(): boolean {
+    this.numberBlocksHasErrors = !this.applicationService.model.NumberBlocksBuilding;
+    return !this.numberBlocksHasErrors;
+  }
 
-  updateNumberBlocksBuilding(numberBlockBuilding: string) {
-    let block = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId);
-    if (block) block.NumberBlocksBuilding = numberBlockBuilding;
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return true;
+  }
 
-    this.captionService.caption = numberBlockBuilding === 'one'
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return navigationService.navigateRelative('floors-above', activatedRoute);
+  }
+
+  radioModelHasChanged(event: any) {
+    this.setCaptionText();
+  }
+
+  setCaptionText() {
+    this.captionService.caption = this.applicationService.model.NumberBlocksBuilding === 'one'
       ? "Blocks in the building"
       : "First block in the building";
   }
 
-  canContinue(): boolean {
-    this.numberBlocksHasErrors = !this.applicationService.model.Blocks?.find(x => x.Id === this.blockId)?.NumberBlocksBuilding;
-    return !this.numberBlocksHasErrors;
-  }
 }

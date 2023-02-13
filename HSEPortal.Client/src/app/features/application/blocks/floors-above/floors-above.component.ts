@@ -4,21 +4,20 @@ import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
+import { NameComponent } from "../name/name.component";
 
 @Component({
   templateUrl: './floors-above.component.html'
 })
-export class BuildingFloorsAboveComponent extends BaseComponent {
+export class BuildingFloorsAboveComponent extends BaseComponent implements IHasNextPage {
 
   static route: string = 'floors-above';
-  private blockId!: string;
 
   constructor(router: Router, applicationService: ApplicationService, private captionService: CaptionService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
-  nextScreenRoute: string = '';
-  building: { floorsAbove?: string } = {}
   floorsHasError = false;
 
   errorSummaryMessage: string = 'You must enter the number of floors above ground level for this block';
@@ -26,7 +25,7 @@ export class BuildingFloorsAboveComponent extends BaseComponent {
 
   canContinue(): boolean {
     this.floorsHasError = true;
-    let floorsAbove = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId)?.FloorsAbove;
+    let floorsAbove = this.applicationService.currentBlock.FloorsAbove;
 
     if (!floorsAbove || !Number(floorsAbove) || floorsAbove % 1 != 0) {
       this.errorMessage = 'Enter the number of floors above ground level for this block';
@@ -44,16 +43,15 @@ export class BuildingFloorsAboveComponent extends BaseComponent {
     return !this.floorsHasError;
   }
 
-  updateFloorsAbove(floorsAbove: number) {
-    let block = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId);
-    if (block) block.FloorsAbove = floorsAbove;
-  }
-
   get captionText(): string | undefined {
     return this.captionService.caption;
   }
 
-  override canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return !!this.applicationService.model.Blocks;
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.currentBlock.Name;
+  }
+
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return navigationService.navigateRelative('height', activatedRoute);
   }
 }
