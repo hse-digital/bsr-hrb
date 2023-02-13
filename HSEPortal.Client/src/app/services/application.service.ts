@@ -5,7 +5,7 @@ import { firstValueFrom } from "rxjs";
 @Injectable()
 export class ApplicationService {
   model: BuildingRegistrationModel = {};
-  currentBlock?: any;
+  currentBlock?: any = {};
 
   constructor(private httpClient: HttpClient) {
     var localStorageModel = localStorage.getItem("HSE_MODEL");

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
+import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { CaptionService } from 'src/app/services/caption.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { ApplicationService } from '../../../../services/application.service';
@@ -9,27 +10,25 @@ import { ApplicationService } from '../../../../services/application.service';
   selector: 'hse-block-name',
   templateUrl: './block-name.component.html'
 })
-export class BlockNameComponent extends BaseComponent {
+export class BlockNameComponent extends BaseComponent implements IHasNextPage {
 
   static route: string = 'floors-above';
 
-  nextScreenRoute: string = '';
   building: { blockName?: string } = {}
   blockNameHasErrors = false;
   private blockId!: string;
 
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+  constructor(router: Router,  private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
-  canContinue(): boolean {
-    this.blockNameHasErrors = !this.applicationService.model.Blocks?.find(x => x.Id === this.blockId)?.BlockName;
-    return !this.blockNameHasErrors;
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return navigationService.navigateRelative('floors-above', activatedRoute);
   }
 
-  updateBlockName(blockName: string) {
-    let block = this.applicationService.model.Blocks?.find(x => x.Id === this.blockId);
-    if (block) block.BlockName = blockName;
+  canContinue(): boolean {
+    this.blockNameHasErrors = !this.applicationService.currentBlock.name;
+    return !this.blockNameHasErrors;
   }
 
   get captionText(): string | undefined {
