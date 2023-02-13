@@ -14,6 +14,7 @@ import { BuildingModule } from "./components/building/building.module";
 import { ContactDetailsOtherApComponent } from './accountable-person/contact-details-other-ap/contact-details-other-ap.component';
 import { AccountablePersonComponent } from "./accountable-person/accountable-person/accountable-person.component";
 import { OtherAccountablePersonComponent } from "./accountable-person/other-accountable-person/other-accountable-person.component";
+import { AddAccountablePersonComponent } from './accountable-person/add-accountable-person/add-accountable-person.component';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationStartComponent.route, ApplicationStartComponent),
@@ -22,6 +23,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(AccountablePersonComponent.route, AccountablePersonComponent),
   HseRoute.unsafe(OtherAccountablePersonComponent.route, OtherAccountablePersonComponent),
   HseRoute.unsafe(ContactDetailsOtherApComponent.route, ContactDetailsOtherApComponent),
+  HseRoute.unsafe(AddAccountablePersonComponent.route, AddAccountablePersonComponent),
   HseRoute.forChildren(NewApplicationModule.baseRoute, () => import('./new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forChildren(':id', () => import('./continue-application/continue-application.module').then(m => m.ContinueApplicationModule)),
   HseRoute.forChildren(BuildingModule.baseRoute, () => import('./components/building/building.module').then(m => m.BuildingModule)),
@@ -35,7 +37,8 @@ const routes = new HseRoutes([
     ApplicationCompletedComponent,
     AccountablePersonComponent,
     OtherAccountablePersonComponent,
-    ContactDetailsOtherApComponent
+    ContactDetailsOtherApComponent,
+    AddAccountablePersonComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

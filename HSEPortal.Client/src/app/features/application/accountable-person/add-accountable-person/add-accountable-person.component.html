@@ -1,0 +1,38 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link anchorId="radios-add-accountable-person"
+                            message="Select yes if you want to add another accountable person" />
+        </govuk-error-summary>
+
+        <span class="govuk-caption-l">Other accountable persons</span>
+        <govuk-fieldset title="Add another accountable person" [isPageHeading]=true id="application"
+                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-3'>
+
+          <govuk-body>If anyone other than is accountable for any parts of the building then you should tell us about them here.</govuk-body>
+
+          <govuk-radio-group title="Add another accountable person?" fieldsetClass="govuk-fieldset__legend--m"
+                             id="radios-add-accountable-person"
+                             [(model)]="model.addAccountablePerson"
+                             [errorText]="getErrorDescription(hasErrors, 'Select yes if you want to add another accountable person')">
+            <govuk-radio name="application-group" id="yes" value="/application/other-accountable-person" label="Yes">
+            </govuk-radio>
+            <govuk-radio name="application-group" id="no" value="/application/add-accountable-person" label="No"
+                         class="govuk-radio-no-margin-bottom">
+            </govuk-radio>
+          </govuk-radio-group>
+
+        </govuk-fieldset>
+      </div>
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <govuk-body><a href="/" class="govuk-link">Save and exit this application</a></govuk-body>
+
+    </div>
+  </div>
+</div>
+

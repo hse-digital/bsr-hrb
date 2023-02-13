@@ -14,7 +14,18 @@ export class BuildingBlocksIntroComponent extends BaseComponent implements IHasN
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute)
-    applicationService.currentBlock = {};
+
+    // REMOVE
+    this.applicationService.newApplication();
+    // ######
+
+    this.initializeNewBlock();
+  }
+
+  initializeNewBlock() {
+    let blockId = this.activatedRoute?.snapshot.params["blockId"];
+    this.applicationService.currentBlock = { Id: blockId };
+    this.applicationService.model.Blocks?.push(this.applicationService.currentBlock);
   }
 
   canContinue(): boolean {
