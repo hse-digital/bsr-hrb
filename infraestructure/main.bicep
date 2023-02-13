@@ -159,6 +159,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                     value: appInsights.properties.InstrumentationKey
                 }
                 {
+                    name: 'Dynamics__EmailVerificationFlowUrl'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--EmailVerificationFlowUrl)'
+                }
+                {
                     name: 'Dynamics__EnvironmentUrl'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Dynamics--EnvironmentUrl)'
                 }
