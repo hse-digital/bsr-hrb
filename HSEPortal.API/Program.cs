@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using HSEPortal.API;
+using HSEPortal.API.Services;
 using HSEPortal.Domain.DynamicsDefinitions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +23,7 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.Configure<DynamicsOptions>(builderContext.Configuration.GetSection(DynamicsOptions.Dynamics));
 
     serviceCollection.AddTransient<DynamicsService>();
+    serviceCollection.AddTransient<OTPService>();
     serviceCollection.AddTransient<DynamicsModelDefinitionFactory>();
 }
 

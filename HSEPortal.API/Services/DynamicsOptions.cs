@@ -1,6 +1,4 @@
-using Microsoft.Extensions.Options;
-
-namespace HSEPortal.API;
+namespace HSEPortal.API.Services;
 
 public class DynamicsOptions
 {
@@ -10,4 +8,5 @@ public class DynamicsOptions
     public string TenantId { get; set; }
     public string ClientId { get; set; }
     public string ClientSecret { get; set; }
+    public string EmailVerificationFlowUrl { get; set; }
 }

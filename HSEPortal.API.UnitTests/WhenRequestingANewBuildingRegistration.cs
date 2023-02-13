@@ -90,7 +90,7 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
         return new BuildingRegistrationModel("Id", "BuildingName", "Diego", "Santin", "+44 808 157 0192", "dsantin@codec.ie");
     }
 
-    private async Task<HttpResponseDataWithCosmosDocument> WhenSendingANewBuildingRegistration(BuildingRegistrationModel buildingRegistrationModel)
+    private async Task<CustomHttpResponseData> WhenSendingANewBuildingRegistration(BuildingRegistrationModel buildingRegistrationModel)
     {
         var requestData = BuildHttpRequestData(buildingRegistrationModel);
         return await buildingApplicationFunctions.NewBuildingApplication(requestData);

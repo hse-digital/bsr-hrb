@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
+import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   templateUrl: './contact-email.component.html'
 })
-export class ContactEmailComponent extends BaseComponent {
+export class ContactEmailComponent extends BaseComponent implements IHasNextPage {
   static route: string = "contact-email";
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
@@ -24,12 +25,13 @@ export class ContactEmailComponent extends BaseComponent {
     return !this.emailHasErrors;
   }
 
-  override async saveAndContinue() {
+  override async saveAndContinue(): Promise<any> {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       this.sendingRequest = true;
-      await this.applicationService.registerNewBuildingApplication();
-      this.router.navigate(['/building-registration/sections']);
+
+      await this.applicationService.sendVerificationEmail();
+      await this.navigateToNextPage(this.navigationService, this.activatedRoute);
     }
   }
 
@@ -40,5 +42,9 @@ export class ContactEmailComponent extends BaseComponent {
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
     return !!this.applicationService.model.ContactPhoneNumber;
+  }
+
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return navigationService.navigateRelative('email-code', activatedRoute);
   }
 }

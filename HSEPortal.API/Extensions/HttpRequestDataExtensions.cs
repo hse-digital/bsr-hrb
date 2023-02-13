@@ -13,7 +13,7 @@ public static class HttpRequestDataExtensions
         return await JsonSerializer.DeserializeAsync<T>(httpRequestData.Body);
     }
     
-    public static async Task<HttpResponseDataWithCosmosDocument> BuildValidationErrorResponseDataAsync(this HttpRequestData httpRequestData, ValidationSummary validationSummary)
+    public static async Task<CustomHttpResponseData> BuildValidationErrorResponseDataAsync(this HttpRequestData httpRequestData, ValidationSummary validationSummary)
     {
         var stream = new MemoryStream();
         await JsonSerializer.SerializeAsync(stream, validationSummary);
@@ -24,7 +24,7 @@ public static class HttpRequestDataExtensions
         var badRequestResponse = httpRequestData.CreateResponse(HttpStatusCode.BadRequest);
         badRequestResponse.Body = stream;
 
-        return new HttpResponseDataWithCosmosDocument
+        return new CustomHttpResponseData
         {
             HttpResponse = badRequestResponse
         };

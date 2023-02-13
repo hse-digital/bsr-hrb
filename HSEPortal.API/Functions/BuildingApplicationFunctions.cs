@@ -1,5 +1,6 @@
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
+using HSEPortal.API.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 
@@ -15,7 +16,7 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(NewBuildingApplication))]
-    public async Task<HttpResponseDataWithCosmosDocument> NewBuildingApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
+    public async Task<CustomHttpResponseData> NewBuildingApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
     {
         var buildingRegistrationModel = await request.ReadAsJsonAsync<BuildingRegistrationModel>();
         var validation = buildingRegistrationModel.Validate();
@@ -25,7 +26,7 @@ public class BuildingApplicationFunctions
         }
         
         await dynamicsService.RegisterNewBuildingApplicationAsync(buildingRegistrationModel);
-        return new HttpResponseDataWithCosmosDocument
+        return new CustomHttpResponseData
         {
             CosmosDocument = buildingRegistrationModel,
             HttpResponse = request.CreateResponse()
@@ -33,7 +34,7 @@ public class BuildingApplicationFunctions
     }
 }
 
-public class HttpResponseDataWithCosmosDocument
+public class CustomHttpResponseData
 {
     [CosmosDBOutput("hseportal", "building-registrations", Connection = "CosmosConnection")]
     public object CosmosDocument { get; set; }
