@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Flurl.Http;
 using Flurl.Http.Testing;
+using HSEPortal.API.Services;
 using HSEPortal.API.UnitTests.Helpers;
 using HSEPortal.Domain.DynamicsDefinitions;
 using Microsoft.Azure.Functions.Worker;
@@ -31,7 +32,8 @@ public abstract class UnitTestBase
         EnvironmentUrl = "http://dynamics.api",
         TenantId = "1AEA2273-3130-4432-ABB5-9E45BED87E26",
         ClientId = "77C07F1C-2FB1-4C9F-9C99-82C468AF8299",
-        ClientSecret = "BA8787F6-C52B-49F8-B1D1-F9E54754EEF7"
+        ClientSecret = "BA8787F6-C52B-49F8-B1D1-F9E54754EEF7",
+        EmailVerificationFlowUrl = "http://flow_url"
     };
 
     protected HttpRequestData BuildHttpRequestData<T>(T data)

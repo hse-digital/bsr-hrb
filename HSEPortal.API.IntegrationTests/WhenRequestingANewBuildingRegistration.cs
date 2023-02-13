@@ -3,6 +3,7 @@ using Flurl;
 using Flurl.Http;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
+using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using HSEPortal.TestingCommon.Builders;
 using Microsoft.Extensions.Options;

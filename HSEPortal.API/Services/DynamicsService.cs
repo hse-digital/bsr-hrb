@@ -7,7 +7,7 @@ using HSEPortal.Domain.DynamicsDefinitions;
 using HSEPortal.Domain.Entities;
 using Microsoft.Extensions.Options;
 
-namespace HSEPortal.API;
+namespace HSEPortal.API.Services;
 
 public class DynamicsService
 {
@@ -91,5 +91,15 @@ public class DynamicsService
         var id = Regex.Match(header.Value, @"\((.+)\)");
 
         return id.Groups[1].Value;
+    }
+
+    public async Task SendVerificationEmail(EmailVerificationModel emailVerificationModel, string otpToken)
+    {
+        await dynamicsOptions.EmailVerificationFlowUrl
+            .PostJsonAsync(new
+            {
+                emailAddress = emailVerificationModel.EmailAddress,
+                otp = otpToken
+            });
     }
 }
