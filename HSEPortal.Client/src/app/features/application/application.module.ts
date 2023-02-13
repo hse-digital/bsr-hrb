@@ -9,10 +9,11 @@ import { SecurityCodeComponent } from "./components/security-code/security-code.
 import { NewApplicationModule } from "./new-application/new-application.module";
 import { ApplicationCompletedComponent } from "./components/application-completed/application-completed.component";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
-import { AccountablePersonComponent } from "./components/accountable-person/accountable-person.component";
-import { OtherAccountablePersonComponent } from "./components/other-accountable-person/other-accountable-person.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { BuildingModule } from "./components/building/building.module";
+import { ContactDetailsOtherApComponent } from './accountable-person/contact-details-other-ap/contact-details-other-ap.component';
+import { AccountablePersonComponent } from "./accountable-person/accountable-person/accountable-person.component";
+import { OtherAccountablePersonComponent } from "./accountable-person/other-accountable-person/other-accountable-person.component";
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationStartComponent.route, ApplicationStartComponent),
@@ -20,6 +21,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(SecurityCodeComponent.route, SecurityCodeComponent),
   HseRoute.unsafe(AccountablePersonComponent.route, AccountablePersonComponent),
   HseRoute.unsafe(OtherAccountablePersonComponent.route, OtherAccountablePersonComponent),
+  HseRoute.unsafe(ContactDetailsOtherApComponent.route, ContactDetailsOtherApComponent),
   HseRoute.forChildren(NewApplicationModule.baseRoute, () => import('./new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forChildren(':id', () => import('./continue-application/continue-application.module').then(m => m.ContinueApplicationModule)),
   HseRoute.forChildren(BuildingModule.baseRoute, () => import('./components/building/building.module').then(m => m.BuildingModule)),
@@ -32,7 +34,8 @@ const routes = new HseRoutes([
     SecurityCodeComponent,
     ApplicationCompletedComponent,
     AccountablePersonComponent,
-    OtherAccountablePersonComponent
+    OtherAccountablePersonComponent,
+    ContactDetailsOtherApComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

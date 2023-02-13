@@ -43,7 +43,7 @@ export class ResidentialUnitsComponent extends BaseComponent implements IHasNext
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return this.applicationService.currentBlock.Height;
+    return !!this.applicationService.currentBlock.Height;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
