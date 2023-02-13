@@ -23,7 +23,7 @@ export class ContactEmailValidationComponent extends BaseComponent {
     }
 
     getOtpError() {
-        return this.otpError ? 'Your 6 digit security code is invalid' : 'You must enter your 6 digit security code';
+        return this.otpError ? 'Enter the correct security code' : 'You must enter your 6 digit security code';
     }
 
     override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
