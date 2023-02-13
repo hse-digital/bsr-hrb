@@ -15,7 +15,7 @@ public class WhenSendingVerificationEmail : UnitTestBase
 
     public WhenSendingVerificationEmail()
     {
-        var otpService = Mock.Of<OTPService>(x => x.GenerateToken() == otpToken);
+        var otpService = Mock.Of<OTPService>(x => x.GenerateToken(null) == otpToken);
         emailVerificationFunction = new EmailVerificationFunction(DynamicsService, otpService);
     }
 

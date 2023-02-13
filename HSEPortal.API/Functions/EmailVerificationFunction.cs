@@ -1,3 +1,4 @@
+using System.Net;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
@@ -18,7 +19,7 @@ public class EmailVerificationFunction
     }
 
     [Function(nameof(SendVerificationEmail))]
-    public async Task<CustomHttpResponseData> SendVerificationEmail([HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequestData request)
+    public async Task<CustomHttpResponseData> SendVerificationEmail([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
     {
         var emailVerificationModel = await request.ReadAsJsonAsync<EmailVerificationModel>();
         var validation = emailVerificationModel.Validate();
@@ -26,13 +27,31 @@ public class EmailVerificationFunction
         {
             return await request.BuildValidationErrorResponseDataAsync(validation);
         }
+
         var otpToken = otpService.GenerateToken();
 
         await dynamicsService.SendVerificationEmail(emailVerificationModel, otpToken);
-        
         return new CustomHttpResponseData
         {
             HttpResponse = request.CreateResponse()
+        };
+    }
+
+    [Function(nameof(ValidateOTPToken))]
+    public async Task<CustomHttpResponseData> ValidateOTPToken([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
+    {
+        var otpValidationModel = await request.ReadAsJsonAsync<OTPValidationModel>();
+        var isTokenValid = otpValidationModel.Validate().IsValid && otpService.ValidateToken(otpValidationModel.OTPToken);
+
+        var returnStatusCode = HttpStatusCode.OK;
+        if (!isTokenValid)
+        {
+            returnStatusCode = HttpStatusCode.BadRequest;
+        }
+
+        return new CustomHttpResponseData
+        {
+            HttpResponse = request.CreateResponse(returnStatusCode)
         };
     }
 }
