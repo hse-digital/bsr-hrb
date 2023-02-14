@@ -4,6 +4,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { LocalStorage } from '../../../../helpers/local-storage';
 
 @Component({
   selector: 'hse-check-answers',
@@ -24,6 +25,7 @@ export class CheckAnswersComponent extends BaseComponent implements IHasNextPage
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
+    console.log(new LocalStorage().getJSON('HSE_MODEL'))
   }
 
   canContinue(): boolean {
@@ -31,7 +33,7 @@ export class CheckAnswersComponent extends BaseComponent implements IHasNextPage
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigate('/application/accountable-person');
+    return navigationService.navigate('/application/123/blocks/123/more-information');
   }
 
   get block(): any {

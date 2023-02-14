@@ -4,6 +4,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { PhoneNumberValidator } from 'src/app/helpers/validators/phone-number-validator';
 
 @Component({
   templateUrl: './contact-phone.component.html'
@@ -17,24 +18,10 @@ export class ContactPhoneComponent extends BaseComponent implements IHasNextPage
 
   phoneNumberHasErrors = false;
   canContinue(): boolean {
-    this.phoneNumberHasErrors = !this.isPhoneNumberValid();
+    let phone = this.applicationService.model.ContactPhoneNumber;
+    let phoneValidator = new PhoneNumberValidator();
+    this.phoneNumberHasErrors = !phoneValidator.isValid(phone?.toString() ?? '');
     return !this.phoneNumberHasErrors;
-  }
-
-  private _expectedPhonePatterns = [
-    { prefix: '+44', length: 13 },
-    { prefix: '0', length: 11 },
-  ]
-
-  private isPhoneNumberValid(): boolean {
-    let phoneNumber = this.cleanPhoneNumber();
-    if (!Number(phoneNumber)) return false;
-
-    return this._expectedPhonePatterns.find((pattern) => phoneNumber.startsWith(pattern.prefix) && phoneNumber.length == pattern.length) != undefined;
-  }
-
-  private cleanPhoneNumber(): string {
-    return this.applicationService.model.ContactPhoneNumber?.replaceAll(' ', '') ?? '';
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {

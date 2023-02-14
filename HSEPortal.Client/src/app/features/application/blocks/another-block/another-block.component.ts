@@ -41,6 +41,16 @@ export class AnotherBlockComponent extends BaseComponent implements IHasNextPage
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let nextScreenRoute = this.getNextScreenRoute();
+
+    // REMOVE
+    if (this.applicationService.currentBlock.AnotherBlock === 'yes') {
+      let blockId = Math.round(Math.random() * 100); // Getting or generating the blockId.
+      this.applicationService.initializeNewBlock(blockId.toString());
+      nextScreenRoute = `/application/${this.applicationService.model.Id}/blocks/${blockId}/${nextScreenRoute}`;
+      return navigationService.navigate(nextScreenRoute);
+    }
+    // ######
+
     return navigationService.navigateRelative(nextScreenRoute, activatedRoute);
   }
 

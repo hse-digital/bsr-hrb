@@ -4,6 +4,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { EmailValidator } from '../../../../helpers/validators/email-validator';
 
 @Component({
   templateUrl: './contact-email.component.html'
@@ -15,13 +16,14 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
     super(router, applicationService, navigationService, activatedRoute);
   }
 
-  nextScreenRoute: string = '';
   emailHasErrors = false;
 
   sendingRequest = false;
 
   canContinue(): boolean {
-    this.emailHasErrors = !this.applicationService.model.ContactEmailAddress || !this.isEmailValid();
+    let emailValidator = new EmailValidator();
+    let email = this.applicationService.model.ContactEmailAddress;
+    this.emailHasErrors = !email || !emailValidator.isValid(email);
     return !this.emailHasErrors;
   }
 
@@ -33,11 +35,6 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
       await this.applicationService.sendVerificationEmail();
       await this.navigateToNextPage(this.navigationService, this.activatedRoute);
     }
-  }
-
-  private isEmailValid(): boolean {
-    const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, "gm");
-    return emailRegex.test(this.applicationService.model.ContactEmailAddress ?? '');
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {

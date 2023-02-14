@@ -19,19 +19,19 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
   }
 
   canContinue(): boolean {
-    this.accountablePersonHasErrors = !this.applicationService.currentAccountablePerson;
+    this.accountablePersonHasErrors = !this.applicationService.currentAccountablePerson.Type;
     return !this.accountablePersonHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let nextRoute = this.getNextRoute();
-    return navigationService.navigate(nextRoute);
+    return navigationService.navigate(nextRoute,);
   }
   
   getNextRoute() {
     return this.applicationService.currentAccountablePerson.Type === 'organisation'
-      ? '/application/accountable-person'
-      : '/application/accountable-person';
+      ? '/application/organisation-type'
+      : '/application/individual-name';
   }
 
 }

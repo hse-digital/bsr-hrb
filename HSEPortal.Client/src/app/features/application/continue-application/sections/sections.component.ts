@@ -23,7 +23,7 @@ export class ApplicationsSectionsComponent {
         {
           title: "Blocks in the building",
           tag: "NOT STARTED YET",
-          link: "/application/number-blocks-building",
+          link: "/application/new/complex-structure",
           status: 0
         },
         {

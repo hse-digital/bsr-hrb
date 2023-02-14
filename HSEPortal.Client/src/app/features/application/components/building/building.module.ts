@@ -14,17 +14,21 @@ import { CheckAnswersComponent } from "src/app/features/application/blocks/check
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { CaptionService } from "src/app/services/caption.service";
 import { NameComponent } from "src/app/features/application/blocks/name/name.component";
+import { MoreInformationComponent } from 'src/app/features/application/blocks/more-information/more-information.component';
+import { NameAllBlocksComponent } from 'src/app/features/application/blocks/name-all-blocks/name-all-blocks.component';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(BuildingBlocksIntroComponent.route, BuildingBlocksIntroComponent),
   HseRoute.protected(NameComponent.route, NameComponent),
-  HseRoute.protected(BuildingFloorsAboveComponent.route, BuildingFloorsAboveComponent),
+  HseRoute.unsafe(BuildingFloorsAboveComponent.route, BuildingFloorsAboveComponent),
   HseRoute.protected(BuildingHeightComponent.route, BuildingHeightComponent),
   HseRoute.protected(ResidentialUnitsComponent.route, ResidentialUnitsComponent),
   HseRoute.protected(PeopleLivingInBuildingComponent.route, PeopleLivingInBuildingComponent),
   HseRoute.protected(NumberBlocksBuildingComponent.route, NumberBlocksBuildingComponent),
   HseRoute.protected(AnotherBlockComponent.route, AnotherBlockComponent),
   HseRoute.protected(CheckAnswersComponent.route, CheckAnswersComponent),
+  HseRoute.unsafe(MoreInformationComponent.route, MoreInformationComponent),
+  HseRoute.unsafe(NameAllBlocksComponent.route, NameAllBlocksComponent),
 ]);
 
 @NgModule({
@@ -37,7 +41,9 @@ const routes = new HseRoutes([
     NumberBlocksBuildingComponent,
     AnotherBlockComponent,
     CheckAnswersComponent,
-    NameComponent
+    NameComponent,
+    MoreInformationComponent,
+    NameAllBlocksComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

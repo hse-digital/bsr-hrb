@@ -4,14 +4,16 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { EmailValidator } from 'src/app/helpers/validators/email-validator';
+import { PhoneNumberValidator } from 'src/app/helpers/validators/phone-number-validator';
 
 @Component({
-  selector: 'hse-contact-details-other-ap',
-  templateUrl: './contact-details-other-ap.component.html'
+  selector: 'hse-individual-contact-details-ap',
+  templateUrl: './individual-contact-details-ap.component.html'
 })
-export class ContactDetailsOtherApComponent extends BaseComponent implements IHasNextPage {
+export class IndividualContactDetailsApComponent extends BaseComponent implements IHasNextPage {
 
-  static route: string = 'other-accountable-person-details';
+  static route: string = 'individual-contact-details';
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
@@ -41,10 +43,11 @@ export class ContactDetailsOtherApComponent extends BaseComponent implements IHa
   }
 
   isEmailValid(email: string): boolean {
+    let emailValidator = new EmailValidator();
     this.errors.email.hasErrors = true;
     if (!email) {
       this.errors.email.errorText = 'Enter your email address';
-    } else if (!this.isEmailFormatValid(email)) {
+    } else if (!emailValidator.isValid(email)) {
       this.errors.email.errorText = 'You must enter an email address in the correct format, for example \'name@example.com\''; 
     } else {
       this.errors.email.hasErrors = false;
@@ -53,16 +56,12 @@ export class ContactDetailsOtherApComponent extends BaseComponent implements IHa
     return !this.errors.email.hasErrors;
   }
 
-  isEmailFormatValid(email: string): boolean {
-    const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, "gm");
-    return emailRegex.test(email);
-  }
-
-  isPhoneNumberValid(phone: string) {    
+  isPhoneNumberValid(phone: string) {
+    let phoneValidator = new PhoneNumberValidator();
     this.errors.phoneNumber.hasErrors = true;
     if (!phone) {
       this.errors.phoneNumber.errorText = 'Enter your telephone number';
-    } else if (!this.isPhoneNumberFormatValid(phone)) {
+    } else if (!phoneValidator.isValid(phone)) {
       this.errors.phoneNumber.errorText = 'You must enter a UK telephone number. For example, \'01632 960 001\', \'07700 900 982\' or \'+44 808 157 0192\'';
     } else {
       this.errors.phoneNumber.hasErrors = false;
@@ -70,24 +69,8 @@ export class ContactDetailsOtherApComponent extends BaseComponent implements IHa
     return !this.errors.phoneNumber.hasErrors;
   }
 
-  _expectedPhonePatterns = [
-    { prefix: '+44', length: 13 },
-    { prefix: '0', length: 11 },
-  ]
-
-  isPhoneNumberFormatValid(phone: string): boolean {
-    let phoneNumber = this.cleanPhoneNumber(phone);
-    if (!Number(phoneNumber)) return false;
-
-    return this._expectedPhonePatterns.find((pattern) => phoneNumber.startsWith(pattern.prefix) && phoneNumber.length == pattern.length) != undefined;
-  }
-
-  cleanPhoneNumber(phone: string): string {
-    return phone?.replaceAll(' ', '') ?? '';
-  }
-
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return this.navigationService.navigate('/application/other-accountable-person-details');
+    return this.navigationService.navigateRelative('individual-address', activatedRoute);
   }
 
 }

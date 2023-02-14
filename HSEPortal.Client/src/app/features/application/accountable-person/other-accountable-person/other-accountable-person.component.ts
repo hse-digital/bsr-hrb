@@ -29,12 +29,12 @@ export class OtherAccountablePersonComponent extends BaseComponent implements IH
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let nextRoute = this.getNextRoute();
-    return navigationService.navigate(nextRoute);
+    return navigationService.navigateRelative(nextRoute, activatedRoute);
   }
 
   getNextRoute() {
     return this.applicationService.currentAccountablePerson.Type === 'organisation'
-      ? ''
-      : '';
+      ? 'organisation-type'
+      : 'individual-name';
   }
 }
