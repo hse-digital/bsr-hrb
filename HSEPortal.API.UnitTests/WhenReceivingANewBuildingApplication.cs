@@ -1,5 +1,6 @@
 using System.Net;
 using FluentAssertions;
+using HSEPortal.API.Extensions;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
@@ -7,14 +8,14 @@ using Xunit;
 
 namespace HSEPortal.API.UnitTests;
 
-public class WhenRequestingANewBuildingRegistration : UnitTestBase
+public class WhenReceivingANewBuildingApplication : UnitTestBase
 {
     private readonly BuildingApplicationFunctions buildingApplicationFunctions;
     private const string DynamicsAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkd";
     private const string BuildingApplicationReturnId = "EC6B32C8-0188-4CCE-B58C-D6F05FEEF79B";
     private const string BuildingReturnId = "06F8C7E4-F41A-4EB4-B8E2-3501701A4A53";
 
-    public WhenRequestingANewBuildingRegistration()
+    public WhenReceivingANewBuildingApplication()
     {
         buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService);
         HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken });
@@ -25,8 +26,8 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
     [Fact]
     public async Task ShouldAcquireAuthenticationTokenForDynamics()
     {
-        var buildingRegistrationModel = GivenABuildingRegistrationModel();
-        await WhenSendingANewBuildingRegistration(buildingRegistrationModel);
+        var buildingRegistrationModel = GivenABuildingApplicationModel();
+        await WhenANewBuildingApplicationIsReceived(buildingRegistrationModel);
 
         HttpTest.ShouldHaveCalled($"https://login.microsoftonline.com/{DynamicsOptions.TenantId}/oauth2/token")
             .WithRequestUrlEncoded(new
@@ -46,8 +47,8 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
     [InlineData("building", "firstname", "lastname", "phone", null)]
     public async Task ShouldReturnBadRequestIfInputsAreInvalid(string buildingName, string contactFirstName, string contactLastName, string contactPhone, string contactEmail)
     {
-        var buildingRegistrationModel = new BuildingRegistrationModel(buildingName, contactFirstName, contactLastName, contactPhone, contactEmail);
-        var response = await WhenSendingANewBuildingRegistration(buildingRegistrationModel);
+        var buildingRegistrationModel = new BuildingApplicationModel(buildingName, contactFirstName, contactLastName, contactPhone, contactEmail);
+        var response = await WhenANewBuildingApplicationIsReceived(buildingRegistrationModel);
 
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -55,8 +56,8 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
     [Fact]
     public async Task ShouldCreateBuildingApplication()
     {
-        var buildingRegistrationModel = GivenABuildingRegistrationModel();
-        await WhenSendingANewBuildingRegistration(buildingRegistrationModel);
+        var buildingRegistrationModel = GivenABuildingApplicationModel();
+        await WhenANewBuildingApplicationIsReceived(buildingRegistrationModel);
 
         HttpTest.ShouldHaveCalled($"{DynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_buildingapplications")
             .WithOAuthBearerToken(DynamicsAuthToken)
@@ -66,8 +67,8 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
     [Fact]
     public async Task ShouldCreateBuilding()
     {
-        var buildingRegistrationModel = GivenABuildingRegistrationModel();
-        await WhenSendingANewBuildingRegistration(buildingRegistrationModel);
+        var buildingRegistrationModel = GivenABuildingApplicationModel();
+        await WhenANewBuildingApplicationIsReceived(buildingRegistrationModel);
 
         HttpTest.ShouldHaveCalled($"{DynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_buildings")
             .WithOAuthBearerToken(DynamicsAuthToken)
@@ -77,22 +78,32 @@ public class WhenRequestingANewBuildingRegistration : UnitTestBase
     [Fact]
     public async Task ShouldCreateContact()
     {
-        var buildingRegistrationModel = GivenABuildingRegistrationModel();
-        await WhenSendingANewBuildingRegistration(buildingRegistrationModel);
+        var buildingRegistrationModel = GivenABuildingApplicationModel();
+        await WhenANewBuildingApplicationIsReceived(buildingRegistrationModel);
 
         HttpTest.ShouldHaveCalled($"{DynamicsOptions.EnvironmentUrl}/api/data/v9.2/contacts")
             .WithOAuthBearerToken(DynamicsAuthToken)
             .WithRequestJson(new DynamicsContact(buildingRegistrationModel.ContactFirstName, buildingRegistrationModel.ContactLastName, buildingRegistrationModel.ContactPhoneNumber, buildingRegistrationModel.ContactEmailAddress, odataReferenceId: $"/bsr_buildings({BuildingReturnId})"));
     }
 
-    private BuildingRegistrationModel GivenABuildingRegistrationModel()
+    [Fact]
+    public async Task ShouldSetIdToARandom9DigitNumberStartingWithHBR()
     {
-        return new BuildingRegistrationModel("Id", "BuildingName", "Diego", "Santin", "+44 808 157 0192", "dsantin@codec.ie");
+        var buildingApplicationModel = GivenABuildingApplicationModel();
+        var response = await WhenANewBuildingApplicationIsReceived(buildingApplicationModel);
+
+        var application = await response.HttpResponse.ReadAsJsonAsync<BuildingApplicationModel>();
+        application.Id.Should().MatchRegex(@"HBR\d{9}");
     }
 
-    private async Task<CustomHttpResponseData> WhenSendingANewBuildingRegistration(BuildingRegistrationModel buildingRegistrationModel)
+    private BuildingApplicationModel GivenABuildingApplicationModel()
     {
-        var requestData = BuildHttpRequestData(buildingRegistrationModel);
+        return new BuildingApplicationModel("Id", "BuildingName", "Diego", "Santin", "+44 808 157 0192", "dsantin@codec.ie");
+    }
+
+    private async Task<CustomHttpResponseData> WhenANewBuildingApplicationIsReceived(BuildingApplicationModel buildingApplicationModel)
+    {
+        var requestData = BuildHttpRequestData(buildingApplicationModel);
         return await buildingApplicationFunctions.NewBuildingApplication(requestData);
     }
 }

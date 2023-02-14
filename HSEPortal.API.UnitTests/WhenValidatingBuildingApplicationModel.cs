@@ -19,7 +19,7 @@ public class WhenValidatingBuildingRegistrationModel
 
     [Theory]
     [MemberData(nameof(ValidationTestCases))]
-    public void ShouldValidateBuildingRegistrationFields(BuildingRegistrationModel model, string errorMessage)
+    public void ShouldValidateBuildingRegistrationFields(BuildingApplicationModel model, string errorMessage)
     {
         var validationResult = model.Validate();
 

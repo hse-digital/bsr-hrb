@@ -36,7 +36,7 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
         await ThenShouldCreateContactRecord(buildingRegistrationModel);
     }
 
-    private static BuildingRegistrationModel GivenABuildingRegistrationModel()
+    private static BuildingApplicationModel GivenABuildingRegistrationModel()
     {
         return new BuildingRegistrationModelBuilder().Build();
     }
@@ -48,52 +48,52 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
         token = await dynamicsService.GetAuthenticationTokenAsync();
     }
 
-    private async Task WhenSendingTheRequestForANewBuildingRegistration(BuildingRegistrationModel buildingRegistrationModel)
+    private async Task WhenSendingTheRequestForANewBuildingRegistration(BuildingApplicationModel buildingApplicationModel)
     {
         await swaOptions.Value.Url.AppendPathSegments("api", nameof(BuildingApplicationFunctions.NewBuildingApplication))
-            .PostJsonAsync(buildingRegistrationModel);
+            .PostJsonAsync(buildingApplicationModel);
     }
 
     private DynamicsBuildingApplication newBuildingApplication = null!;
 
-    private async Task ThenShouldCreateBuildingApplicationRecord(BuildingRegistrationModel buildingRegistrationModel)
+    private async Task ThenShouldCreateBuildingApplicationRecord(BuildingApplicationModel buildingApplicationModel)
     {
         var buildApplications = await dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", "bsr_buildingapplications")
-            .SetQueryParam("$filter", $"bsr_name eq '{buildingRegistrationModel.BuildingName}'")
+            .SetQueryParam("$filter", $"bsr_name eq '{buildingApplicationModel.BuildingName}'")
             .WithOAuthBearerToken(token)
             .GetJsonAsync<DynamicsResponse<DynamicsBuildingApplication>>();
 
         newBuildingApplication = buildApplications.Value.Single();
-        newBuildingApplication.bsr_name.Should().Be(buildingRegistrationModel.BuildingName);
+        newBuildingApplication.bsr_name.Should().Be(buildingApplicationModel.BuildingName);
     }
 
     private DynamicsBuilding newBuilding = null!;
 
-    private async Task ThenShouldCreateBuildingRecord(BuildingRegistrationModel buildingRegistrationModel)
+    private async Task ThenShouldCreateBuildingRecord(BuildingApplicationModel buildingApplicationModel)
     {
         var buildings = await dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", "bsr_buildings")
-            .SetQueryParam("$filter", $"bsr_name eq '{buildingRegistrationModel.BuildingName}'")
+            .SetQueryParam("$filter", $"bsr_name eq '{buildingApplicationModel.BuildingName}'")
             .WithOAuthBearerToken(token)
             .GetJsonAsync<DynamicsResponse<DynamicsBuilding>>();
 
         newBuilding = buildings.Value.Single();
-        newBuilding.bsr_name.Should().Be(buildingRegistrationModel.BuildingName);
+        newBuilding.bsr_name.Should().Be(buildingApplicationModel.BuildingName);
     }
 
     private DynamicsContact newContact = null!;
 
-    private async Task ThenShouldCreateContactRecord(BuildingRegistrationModel buildingRegistrationModel)
+    private async Task ThenShouldCreateContactRecord(BuildingApplicationModel buildingApplicationModel)
     {
         var contacts = await dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", "contacts")
-            .SetQueryParam("$filter", $"firstname eq '{buildingRegistrationModel.ContactFirstName}' and lastname eq '{buildingRegistrationModel.ContactLastName}' and telephone1 eq '{buildingRegistrationModel.ContactPhoneNumber}' and emailaddress1 eq '{buildingRegistrationModel.ContactEmailAddress}'")
+            .SetQueryParam("$filter", $"firstname eq '{buildingApplicationModel.ContactFirstName}' and lastname eq '{buildingApplicationModel.ContactLastName}' and telephone1 eq '{buildingApplicationModel.ContactPhoneNumber}' and emailaddress1 eq '{buildingApplicationModel.ContactEmailAddress}'")
             .WithOAuthBearerToken(token)
             .GetJsonAsync<DynamicsResponse<DynamicsContact>>();
 
         newContact = contacts.Value.Single();
-        newContact.firstname.Should().Be(buildingRegistrationModel.ContactFirstName);
-        newContact.lastname.Should().Be(buildingRegistrationModel.ContactLastName);
-        newContact.telephone1.Should().Be(buildingRegistrationModel.ContactPhoneNumber);
-        newContact.emailaddress1.Should().Be(buildingRegistrationModel.ContactEmailAddress);
+        newContact.firstname.Should().Be(buildingApplicationModel.ContactFirstName);
+        newContact.lastname.Should().Be(buildingApplicationModel.ContactLastName);
+        newContact.telephone1.Should().Be(buildingApplicationModel.ContactPhoneNumber);
+        newContact.emailaddress1.Should().Be(buildingApplicationModel.ContactEmailAddress);
     }
 
     public void Dispose()

@@ -8,12 +8,12 @@ import { ApplicationService } from "src/app/services/application.service";
 export class ApplicationsSectionsComponent {
   static route: string = 'sections';
 
-  constructor(private buildingRegistrationService: ApplicationService, private activatedRouter: ActivatedRoute) {
+  constructor(private applicationService: ApplicationService, private activatedRouter: ActivatedRoute) {
     
   }
 
   getBuildingName() {
-    return this.buildingRegistrationService.model.BuildingName;
+    return this.applicationService.model.BuildingName;
   }
 
   tasks = [

@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace HSEPortal.API.Model;
 
-public record BuildingRegistrationModel(
+public record BuildingApplicationModel(
     [property: JsonPropertyName("id")] string Id = "REGISTRATION_ID",
     string BuildingName = null,
     string ContactFirstName = null,

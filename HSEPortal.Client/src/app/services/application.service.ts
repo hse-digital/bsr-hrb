@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
+import { firstValueFrom, map } from "rxjs";
 
 @Injectable()
 export class ApplicationService {
@@ -60,7 +61,7 @@ export class ApplicationService {
   }
 
   async registerNewBuildingApplication(): Promise<void> {
-    await firstValueFrom(this.httpClient.post('api/NewBuildingApplication', this.model));
+    this.model = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/NewBuildingApplication', this.model));
   }
 
 }
