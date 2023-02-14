@@ -20,15 +20,27 @@ public class DynamicsService
         this.dynamicsOptions = dynamicsOptions.Value;
     }
 
-    public async Task RegisterNewBuildingApplicationAsync(BuildingRegistrationModel buildingRegistrationModel)
+    public async Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel)
     {
         var authenticationToken = await GetAuthenticationTokenAsync();
-        var buildingApplication = await CreateBuildingApplicationAsync(buildingRegistrationModel, authenticationToken);
-        var building = await CreateBuildingAsync(buildingRegistrationModel, buildingApplication, authenticationToken);
-        await CreateContactAsync(buildingRegistrationModel, building, authenticationToken);
+        var buildingApplication = await CreateBuildingApplicationAsync(buildingApplicationModel, authenticationToken);
+        var building = await CreateBuildingAsync(buildingApplicationModel, buildingApplication, authenticationToken);
+        await CreateContactAsync(buildingApplicationModel, building, authenticationToken);
+
+        return buildingApplicationModel with { Id = $"HBR{GenerateApplicationId()}" };
     }
 
-    private async Task<BuildingApplication> CreateBuildingApplicationAsync(BuildingRegistrationModel model, string authenticationToken)
+    public async Task SendVerificationEmail(EmailVerificationModel emailVerificationModel, string otpToken)
+    {
+        await dynamicsOptions.EmailVerificationFlowUrl
+            .PostJsonAsync(new
+            {
+                emailAddress = emailVerificationModel.EmailAddress,
+                otp = otpToken
+            });
+    }
+
+    private async Task<BuildingApplication> CreateBuildingApplicationAsync(BuildingApplicationModel model, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<BuildingApplication, DynamicsBuildingApplication>();
         var buildingApplication = new BuildingApplication(model.BuildingName);
@@ -43,7 +55,7 @@ public class DynamicsService
         return buildingApplication with { Id = buildingApplicationId };
     }
 
-    private async Task<Building> CreateBuildingAsync(BuildingRegistrationModel model, BuildingApplication buildingApplication, string authenticationToken)
+    private async Task<Building> CreateBuildingAsync(BuildingApplicationModel model, BuildingApplication buildingApplication, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<Building, DynamicsBuilding>();
         var building = new Building(model.BuildingName, BuildingApplicationId: buildingApplication.Id);
@@ -58,7 +70,7 @@ public class DynamicsService
         return building with { Id = buildingId };
     }
 
-    private async Task CreateContactAsync(BuildingRegistrationModel model, Building building, string authenticationToken)
+    private async Task CreateContactAsync(BuildingApplicationModel model, Building building, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<Contact, DynamicsContact>();
         var contact = new Contact(model.ContactFirstName, model.ContactLastName, model.ContactPhoneNumber, model.ContactEmailAddress, BuildingId: building.Id);
@@ -93,13 +105,9 @@ public class DynamicsService
         return id.Groups[1].Value;
     }
 
-    public async Task SendVerificationEmail(EmailVerificationModel emailVerificationModel, string otpToken)
+    private static string GenerateApplicationId()
     {
-        await dynamicsOptions.EmailVerificationFlowUrl
-            .PostJsonAsync(new
-            {
-                emailAddress = emailVerificationModel.EmailAddress,
-                otp = otpToken
-            });
+        var uniqueCode = $"{DateTime.Now.Ticks / 10 % 1000000000:d9}";
+        return uniqueCode.PadLeft(9, '0');
     }
 }

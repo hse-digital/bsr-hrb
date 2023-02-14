@@ -40,8 +40,8 @@ public class BuildingRegistrationModelBuilder
         return this;
     }
 
-    public BuildingRegistrationModel Build()
+    public BuildingApplicationModel Build()
     {
-        return new BuildingRegistrationModel("Id", modelBuildingName, modelContactFirstName, modelContactLastName, modelContactPhoneNumber, modelContactEmailAddress);
+        return new BuildingApplicationModel("Id", modelBuildingName, modelContactFirstName, modelContactLastName, modelContactPhoneNumber, modelContactEmailAddress);
     }
 }
