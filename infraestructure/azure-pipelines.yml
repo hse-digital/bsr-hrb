@@ -43,6 +43,12 @@ stages:
     - job: IntegrationTesting
       dependsOn: Deploy
       steps:
+      - task: FileTransform@1
+        displayName: 'Set variables for integration testing'
+        inputs:
+          folderPath: '**/HSEPortal.API.IntegrationTests'
+          fileType: 'json'
+          targetFiles: 'appsettings.json'
       - task: DotNetCoreCLI@2
         displayName: 'Run Integration Tests'
         inputs:
