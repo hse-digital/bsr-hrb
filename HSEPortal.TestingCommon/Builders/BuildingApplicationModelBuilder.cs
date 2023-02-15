@@ -4,12 +4,19 @@ namespace HSEPortal.TestingCommon.Builders;
 
 public class BuildingApplicationModelBuilder
 {
+    private string modelId = "HBR000000000";
     private string modelBuildingName = "building name";
     private string modelContactFirstName = "first name";
     private string modelContactLastName = "last name";
     private string modelContactPhoneNumber = "+44 808 157 0192";
     private string modelContactEmailAddress = "email address";
 
+    public BuildingApplicationModelBuilder WithApplicationId(string applicationId)
+    {
+        modelId = applicationId;
+        return this;
+    }
+    
     public BuildingApplicationModelBuilder WithBuildingName(string buildingName)
     {
         modelBuildingName = buildingName;
@@ -42,6 +49,6 @@ public class BuildingApplicationModelBuilder
 
     public BuildingApplicationModel Build()
     {
-        return new BuildingApplicationModel("Id", modelBuildingName, modelContactFirstName, modelContactLastName, modelContactPhoneNumber, modelContactEmailAddress);
+        return new BuildingApplicationModel(modelId, modelBuildingName, modelContactFirstName, modelContactLastName, modelContactPhoneNumber, modelContactEmailAddress);
     }
 }

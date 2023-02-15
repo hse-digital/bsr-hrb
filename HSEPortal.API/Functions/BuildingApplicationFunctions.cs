@@ -42,6 +42,17 @@ public class BuildingApplicationFunctions
     {
         return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
+
+    [Function(nameof(GetApplication))]
+    public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetApplication/{applicationNumber}")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber}", PartitionKey = "{applicationNumber}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications)
+    {
+        if (buildingApplications.Any())
+            return await request.CreateObjectResponseAsync(buildingApplications[0]);
+
+        return request.CreateResponse(HttpStatusCode.BadRequest);
+    }
 }
 
 public class CustomHttpResponseData

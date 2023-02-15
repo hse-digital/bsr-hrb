@@ -25,6 +25,9 @@ import { OrganisationCheckAnswersApComponent } from './accountable-person/organi
 import { IndividualCheckAnswersApComponent } from './accountable-person/individual/individual-check-answers-ap/individual-check-answers-ap.component';
 import { IndividualAddressComponent } from './accountable-person/individual/individual-address/individual-address.component';
 import { OrganisationAddressComponent } from './accountable-person/organisation/organisation-address/organisation-address.component';
+import { ContinueApplicationEnterDataComponent } from "./components/application-continue/enterdata.component";
+import { ContinueApplicationVerifyComponent } from "./components/application-continue/verify.component";
+import { FormsModule } from "@angular/forms";
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationStartComponent.route, ApplicationStartComponent),
@@ -68,7 +71,9 @@ const routes = new HseRoutes([
     OrganisationCheckAnswersApComponent,
     IndividualCheckAnswersApComponent,
     IndividualAddressComponent,
-    OrganisationAddressComponent
+    OrganisationAddressComponent,
+    ContinueApplicationEnterDataComponent,
+    ContinueApplicationVerifyComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
