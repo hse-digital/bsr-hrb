@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OrganisationAddressComponent } from './organisation-address.component';
+import { OrganisationAddressComponent } from 'src/app/features/application/accountable-person/organisation/organisation-address/organisation-address.component';
 
 describe('OrganisationAddressComponent', () => {
   let component: OrganisationAddressComponent;
