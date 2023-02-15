@@ -46,7 +46,7 @@ export class ContinueApplicationVerifyComponent {
     private async doesSecurityCodeMatch(): Promise<boolean> {
         try {
             await this.applicationService.validateOTPToken(this.securityCode!, this.emailAddress);
-            await this.applicationService.continueApplication(this.applicationNumber);
+            await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
             this.navigationService.navigateRelative(`${this.applicationNumber}/sections`, this.activateRouted);
             return true;
         } catch {

@@ -69,8 +69,8 @@ export class ApplicationService {
     }
   }
 
-  async continueApplication(applicationNumber: string): Promise<void> {
-    var application = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}`));
+  async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
+    var application = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
     this.model = application;
   }
 
