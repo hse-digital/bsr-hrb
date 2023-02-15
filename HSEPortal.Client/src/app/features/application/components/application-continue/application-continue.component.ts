@@ -11,12 +11,12 @@ export class ApplicationContinueComponent extends BaseComponent {
   static route: string = "continue";
 
   nextScreenRoute: string = '/application/security-code';
-  building: { emailAddress?: string, applicationNumber?: string } = {}
 
   errors = {
     emailAddress: { hasError: false, errorText: '' },
     applicationNumber: { hasError: false, errorText: '' }
   }
+  model: { emailAddress?: string, applicationNumber?: string } = {}
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
@@ -28,30 +28,32 @@ export class ApplicationContinueComponent extends BaseComponent {
     return !this.errors.emailAddress.hasError && !this.errors.applicationNumber.hasError;
   }
 
-  isApplicationNumberValid() {
+  async isApplicationNumberValid() {
     this.errors.applicationNumber.hasError = true;
-    if (!this.building.applicationNumber) {
+    if (!this.model.applicationNumber) {
       this.errors.applicationNumber.errorText = 'Enter the application number';
-    } else if (this.building.applicationNumber.length != 12) {
+    } else if (this.model.applicationNumber.length != 12) {
       this.errors.applicationNumber.errorText = 'Application number must be 12 characters';
-    } else if (!this.doesApplicationNumberMatchEmail()) {
+    } else if (!(await this.doesApplicationNumberMatchEmail())) {
       this.errors.emailAddress.errorText = 'Application number doesn\'t match this email address.Enter the correct application number';
     } else {
       this.errors.applicationNumber.hasError = false;
     }
+
     return !this.errors.applicationNumber.hasError;
   }
 
   isEmailAddressValid() {
     this.errors.emailAddress.hasError = false;
-    if (!this.building.emailAddress) {
+    if (!this.model.emailAddress) {
       this.errors.emailAddress.errorText = 'Enter your email address';
       this.errors.emailAddress.hasError = true;
     }
+
     return !this.errors.emailAddress.hasError;
   }
 
-  doesApplicationNumberMatchEmail() {
-    return true;
+  async doesApplicationNumberMatchEmail(): Promise<boolean> {
+    return await this.applicationService.isApplicationNumberValid(this.model.emailAddress!, this.model.applicationNumber!);
   }
 }

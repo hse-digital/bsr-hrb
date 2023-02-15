@@ -40,6 +40,13 @@ stages:
     - template: deploy.yml
       parameters:
         subscription: 's118-dev-bsr-acs-services'
+    - job: IntegrationTesting
+      steps:
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Integration Tests'
+        inputs:
+          command: 'test'
+          projects: '**/HSEPortal.API.IntegrationTests.csproj'
         
 - stage: QA
   dependsOn: DEV

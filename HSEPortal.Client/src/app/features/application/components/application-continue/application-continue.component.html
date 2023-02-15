@@ -14,13 +14,13 @@
 
           <govuk-input id="email-address" label="Email address" labelClass="govuk-label--s"
                        hint="This is the email address you used when you began this application."
-                       [(model)]="building.emailAddress"
+                       [(model)]="model.emailAddress"
                        [errorText]="getErrorDescription(errors.emailAddress.hasError, errors.emailAddress.errorText)"
                        class="govuk-!-margin-bottom-5" />
 
           <govuk-input id="application-number" label="Application number" labelClass="govuk-label--s"
                        hint="Find this in the email we sent to you when you began your application. For example, '000123456789'."
-                       [(model)]="building.applicationNumber" class="govuk-input--width-20"
+                       [(model)]="model.applicationNumber" class="govuk-input--width-20"
                        [errorText]="getErrorDescription(errors.applicationNumber.hasError, errors.applicationNumber.errorText)" />
         </govuk-fieldset>
       </div>

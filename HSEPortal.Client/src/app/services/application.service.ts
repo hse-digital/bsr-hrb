@@ -59,6 +59,18 @@ export class ApplicationService {
     }));
   }
 
+  async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
+    try {
+      await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', {
+        "ApplicationNumber": applicationNumber,
+        "EmailAddress": emailAddress
+      }));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async registerNewBuildingApplication(): Promise<void> {
     this.model = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/NewBuildingApplication', this.model));
   }
