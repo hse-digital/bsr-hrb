@@ -39,9 +39,22 @@ export class ApplicationService {
     if (accountablePerson) accountablePerson = this.currentAccountablePerson;
   }
 
-  initializeNewBlock(blockId: string) {
-    this.currentBlock = { Id: blockId };
-    this.model.Blocks?.push(this.currentBlock);
+  initializeNewBlock(): string {
+    this.currentBlock = {};
+    let length = this.model.Blocks?.push(this.currentBlock) ?? 1;
+    let newId = this.generateNewBlockId(length);
+    this.setNewBlockId(newId);
+    return newId;
+  }
+
+  generateNewBlockId(index: number) {
+    return `block-${index ?? 1}`
+  }
+
+  setNewBlockId(newId: string) {
+    this.currentBlock.Id = newId;
+    let block = this.model.Blocks?.at(-1);
+    if (block) block.Id = newId; 
   }
 
   initializeNewAccountablePerson(accountablePersonId: string) {
@@ -62,6 +75,10 @@ export class ApplicationService {
 
   async registerNewBuildingApplication(): Promise<void> {
     this.model = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/NewBuildingApplication', this.model));
+  }
+
+  private _generateBlockId() {
+
   }
 
 }
