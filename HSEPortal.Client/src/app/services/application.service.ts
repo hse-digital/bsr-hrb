@@ -71,25 +71,43 @@ export class ApplicationService {
     this.currentAccountablePerson = <T>this.currentAccountablePerson;
   }
 
-  async sendVerificationEmail(): Promise<void> {
-    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": this.model.ContactEmailAddress }));
+  async sendVerificationEmail(emailAddress: string): Promise<void> {
+    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": emailAddress }));
   }
 
-  async validateOTPToken(otpToken: string): Promise<void> {
+  async validateOTPToken(otpToken: string, emailAddress: string): Promise<void> {
     await firstValueFrom(this.httpClient.post('api/ValidateOTPToken', {
       "OTPToken": otpToken,
-      "EmailAddress": this.model.ContactEmailAddress
+      "EmailAddress": emailAddress
     }));
+  }
+
+  async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
+    try {
+      await firstValueFrom(this.httpClient.get(`api/ValidateApplicationNumber/${applicationNumber}/${emailAddress}`));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
+    var application = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
+    this.model = application;
   }
 
   async registerNewBuildingApplication(): Promise<void> {
     this.model = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/NewBuildingApplication', this.model));
+
+    this.currentBlock = {};
+    this.currentAccountablePerson = {};
+    this._localStorage.setJSON('HSE_MODEL', this.model)
   }
 
 }
 
 export class BuildingRegistrationModel {
-  Id?: string;
+  id?: string;
   BuildingName?: string;
   ContactFirstName?: string;
   ContactLastName?: string;

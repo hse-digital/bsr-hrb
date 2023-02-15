@@ -17,7 +17,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
 
     public WhenReceivingANewBuildingApplication()
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService);
+        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService);
         HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken });
         HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(BuildingApplicationReturnId));
         HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(BuildingReturnId));
@@ -103,7 +103,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
 
     private async Task<CustomHttpResponseData> WhenANewBuildingApplicationIsReceived(BuildingApplicationModel buildingApplicationModel)
     {
-        var requestData = BuildHttpRequestData(buildingApplicationModel);
+        var requestData = BuildHttpRequestDataWithBody(buildingApplicationModel);
         return await buildingApplicationFunctions.NewBuildingApplication(requestData);
     }
 }

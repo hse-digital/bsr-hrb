@@ -1,3 +1,4 @@
+using System.Net;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
@@ -9,10 +10,12 @@ namespace HSEPortal.API.Functions;
 public class BuildingApplicationFunctions
 {
     private readonly DynamicsService dynamicsService;
+    private readonly OTPService otpService;
 
-    public BuildingApplicationFunctions(DynamicsService dynamicsService)
+    public BuildingApplicationFunctions(DynamicsService dynamicsService, OTPService otpService)
     {
         this.dynamicsService = dynamicsService;
+        this.otpService = otpService;
     }
 
     [Function(nameof(NewBuildingApplication))]
@@ -24,7 +27,7 @@ public class BuildingApplicationFunctions
         {
             return await request.BuildValidationErrorResponseDataAsync(validation);
         }
-        
+
         buildingApplicationModel = await dynamicsService.RegisterNewBuildingApplicationAsync(buildingApplicationModel);
         var response = await request.CreateObjectResponseAsync(buildingApplicationModel);
         return new CustomHttpResponseData
@@ -32,6 +35,29 @@ public class BuildingApplicationFunctions
             Application = buildingApplicationModel,
             HttpResponse = response
         };
+    }
+
+    [Function(nameof(ValidateApplicationNumber))]
+    public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ValidateApplicationNumber/{applicationNumber}/{emailAddress}")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber} and c.ContactEmailAddress = {emailAddress}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications)
+    {
+        return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
+    }
+
+    [Function(nameof(GetApplication))]
+    public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetApplication/{applicationNumber}/{emailAddress}/{otpToken}")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber} and c.ContactEmailAddress = {emailAddress}", PartitionKey = "{applicationNumber}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications, string otpToken)
+    {
+        if (buildingApplications.Any())
+        {
+            var application = buildingApplications[0];
+            if (otpService.ValidateToken(otpToken, application.ContactEmailAddress))
+                return await request.CreateObjectResponseAsync(application);
+        }
+
+        return request.CreateResponse(HttpStatusCode.BadRequest);
     }
 }
 

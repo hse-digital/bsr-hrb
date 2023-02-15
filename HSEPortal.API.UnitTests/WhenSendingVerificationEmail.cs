@@ -25,7 +25,7 @@ public class WhenSendingVerificationEmail : UnitTestBase
     {
         var emailVerificationModel = new EmailVerificationModel(email);
 
-        var requestData = BuildHttpRequestData(emailVerificationModel);
+        var requestData = BuildHttpRequestDataWithBody(emailVerificationModel);
         await emailVerificationFunction.SendVerificationEmail(requestData);
 
         HttpTest.ShouldHaveCalled(DynamicsOptions.EmailVerificationFlowUrl)
@@ -44,7 +44,7 @@ public class WhenSendingVerificationEmail : UnitTestBase
     {
         var emailVerificationModel = new EmailVerificationModel(emailAddress);
 
-        var requestData = BuildHttpRequestData(emailVerificationModel);
+        var requestData = BuildHttpRequestDataWithBody(emailVerificationModel);
         var response = await emailVerificationFunction.SendVerificationEmail(requestData);
 
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);

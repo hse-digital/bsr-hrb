@@ -26,7 +26,7 @@ public static class HttpRequestDataExtensions
         stream.Flush();
         stream.Seek(0, SeekOrigin.Begin);
 
-        var response = httpRequestData.CreateResponse();
+        var response = httpRequestData.CreateResponse(HttpStatusCode.OK);
         response.Body = stream;
 
         return response;

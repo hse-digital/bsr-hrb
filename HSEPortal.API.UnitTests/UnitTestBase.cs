@@ -15,6 +15,8 @@ public abstract class UnitTestBase
 {
     protected HttpTest HttpTest { get; }
     protected DynamicsService DynamicsService { get; }
+    
+    protected OTPService OtpService { get; }
 
     protected UnitTestBase()
     {
@@ -25,6 +27,7 @@ public abstract class UnitTestBase
 
         HttpTest = new HttpTest();
         DynamicsService = new DynamicsService(new DynamicsModelDefinitionFactory(), options.Object);
+        OtpService = new OTPService();
     }
 
     protected readonly DynamicsOptions DynamicsOptions = new()
@@ -36,7 +39,7 @@ public abstract class UnitTestBase
         EmailVerificationFlowUrl = "http://flow_url"
     };
 
-    protected HttpRequestData BuildHttpRequestData<T>(T data)
+    protected HttpRequestData BuildHttpRequestDataWithBody<T>(T data)
     {
         var functionContext = new Mock<FunctionContext>();
 
@@ -47,6 +50,14 @@ public abstract class UnitTestBase
         memoryStream.Seek(0, SeekOrigin.Begin);
 
         return new TestableHttpRequestData(functionContext.Object, new Uri(DynamicsOptions.EnvironmentUrl), memoryStream);
+    }
+
+    protected HttpRequestData BuildHttpRequestDataWithParameters(params string[] parameters)
+    {
+        var functionContext = new Mock<FunctionContext>();
+        var uriWithParameters = new Uri($"{DynamicsOptions.EnvironmentUrl}/{string.Join('/', parameters)}");
+
+        return new TestableHttpRequestData(functionContext.Object, uriWithParameters);
     }
 
     protected object BuildODataEntityHeader(string id)

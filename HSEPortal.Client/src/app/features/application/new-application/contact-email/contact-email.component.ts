@@ -32,7 +32,7 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
     if (!this.hasErrors) {
       this.sendingRequest = true;
 
-      await this.applicationService.sendVerificationEmail();
+      await this.applicationService.sendVerificationEmail(this.applicationService.model.ContactEmailAddress!);
       await this.navigateToNextPage(this.navigationService, this.activatedRoute);
     }
   }

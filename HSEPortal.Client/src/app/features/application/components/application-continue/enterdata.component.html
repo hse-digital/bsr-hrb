@@ -1,0 +1,23 @@
+<div class="govuk-form-group">
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+    <govuk-error-link *ngIf="errors.emailAddress.hasError" anchorId="input-email-address" message="{{errors.emailAddress.errorText}}" />
+    <govuk-error-link *ngIf="errors.applicationNumber.hasError" anchorId="input-application-number" message="{{errors.applicationNumber.errorText}}" />
+  </govuk-error-summary>
+
+  <govuk-fieldset title="Continue a saved application" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+    <govuk-input id="email-address" label="Email address" labelClass="govuk-label--s"
+                 hint="This is the email address you used when you began this application."
+                 [(model)]="model.emailAddress"
+                 [errorText]="getErrorDescription(errors.emailAddress.hasError, errors.emailAddress.errorText)"
+                 class="govuk-!-margin-bottom-5" />
+
+    <govuk-input id="application-number" label="Application number" labelClass="govuk-label--s"
+                 hint="Find this in the email we sent to you when you began your application. For example, '000123456789'."
+                 [(model)]="model.applicationNumber" class="govuk-input--width-20"
+                 [errorText]="getErrorDescription(errors.applicationNumber.hasError, errors.applicationNumber.errorText)" />
+  </govuk-fieldset>
+</div>
+
+<govuk-body>If that email address or application number is no longer available to you, <a href="/contact" class="govuk-link">contact us</a>.</govuk-body>
+
+<govuk-button (onClick)="validateAndContinue()" [isLoading]="sendingRequest" [disabled]="sendingRequest">Continue</govuk-button>
