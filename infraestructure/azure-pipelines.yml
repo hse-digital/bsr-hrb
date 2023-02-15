@@ -37,10 +37,13 @@ stages:
   variables: 
   - group: HSEPortal-DEV
   jobs:
-    - template: deploy.yml
-      parameters:
-        subscription: 's118-dev-bsr-acs-services'
+    - job: deploy
+      steps:
+      - template: deploy.yml
+        parameters:
+          subscription: 's118-dev-bsr-acs-services'
     - job: IntegrationTesting
+      dependsOn: deploy
       steps:
       - task: DotNetCoreCLI@2
         displayName: 'Run Integration Tests'
