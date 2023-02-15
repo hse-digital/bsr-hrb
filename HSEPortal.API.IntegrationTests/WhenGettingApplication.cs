@@ -19,7 +19,7 @@ public class WhenGettingApplication : IntegrationTestBase
     [Fact]
     public async Task ShouldReturnApplicationFromCosmos()
     {
-        var applicationId = "HBR953648078";
+        var applicationId = "HBR170597960";
         var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication", applicationId).GetJsonAsync<BuildingApplicationModel>();
 
         response.Id.Should().Be(applicationId);
