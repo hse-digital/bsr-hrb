@@ -5,19 +5,17 @@ import { LocalStorage } from "src/app/helpers/local-storage";
 
 @Injectable()
 export class ApplicationService {
-  private _localStorage: LocalStorage = new LocalStorage();
-
   model: BuildingRegistrationModel = {};
   currentBlock: BlockModel = {};
   currentAccountablePerson: any = {};
 
   constructor(private httpClient: HttpClient) {
-    this.model = this._localStorage.getJSON('HSE_MODEL');
-    if (!this.model) this.model = {};
+    this.model = LocalStorage.getJSON('HSE_MODEL') ?? {};
   }
 
   newApplication() {
-    this._localStorage.remove('HSE_MODEL');
+    LocalStorage.remove('HSE_MODEL');
+
     this.model = {};
     this.model.Blocks = [];
     this.model.AccountablePersons = [];
@@ -26,7 +24,8 @@ export class ApplicationService {
   updateLocalStorage() {
     this.updateCurrentBlockOnModel();
     this.updateCurrentAccountablePersonOnModel();
-    this._localStorage.setJSON('HSE_MODEL', this.model)
+
+    LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
   private updateCurrentBlockOnModel() {
@@ -41,10 +40,10 @@ export class ApplicationService {
 
   initializeNewBlock(): string {
     this.currentBlock = {};
-    console.log('model', this.model);
     let length = this.model.Blocks?.push(this.currentBlock) ?? 1;
     let newId = this.generateNewBlockId(length);
     this.setNewBlockId(newId);
+
     return newId;
   }
 
@@ -64,6 +63,7 @@ export class ApplicationService {
     this.currentAccountablePerson.Id = length;
     let accountablePerson = this.model.AccountablePersons?.at(-1);
     if (accountablePerson) accountablePerson.Id = length.toString();
+
     return length;
   }
 
@@ -101,7 +101,8 @@ export class ApplicationService {
 
     this.currentBlock = {};
     this.currentAccountablePerson = {};
-    this._localStorage.setJSON('HSE_MODEL', this.model)
+
+    LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
 }

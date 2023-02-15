@@ -1,18 +1,30 @@
 export class LocalStorage {
 
-  getJSON(key: string) {
-    var localStorageModel = localStorage.getItem(key);
-    if (localStorageModel) {
-      return JSON.parse(atob(localStorageModel));
+  private constructor() {
+  }
+
+  static getJSON(key: string) {
+    if (typeof localStorage !== 'undefined') {
+      var localStorageModel = localStorage.getItem(key);
+      if (localStorageModel) {
+        return JSON.parse(atob(localStorageModel));
+      }
+    }
+
+    return undefined;
+  }
+
+  static setJSON(key: string, value: any) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(key, btoa(JSON.stringify(value)));
     }
   }
 
-  setJSON(key: string, value: any) {
-    localStorage.setItem(key, btoa(JSON.stringify(value)));
-  }
-
-  remove(key: string) {
-    localStorage.removeItem(key);
+  static remove(key: string) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(key);
+    }
   }
 
 }
+
