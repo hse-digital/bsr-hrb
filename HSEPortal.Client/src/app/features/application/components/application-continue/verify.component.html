@@ -7,7 +7,7 @@
 
         <govuk-body>We have sent a 6-digit security code to: <b>{{ emailAddress }}</b>.</govuk-body>
         <govuk-body>If you cannot find the email, please check your junk or spam folders.</govuk-body>
-        <govuk-body>If you still cannot find it, or it has timed out <a href="" class="govuk-link">generate a new security code</a>.</govuk-body>
+        <govuk-body>If you still cannot find it, or it has timed out <a (click)="showResendStep()" class="govuk-link cursor">generate a new security code</a>.</govuk-body>
 
         <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s" 
                      hint="For example, '123456'." [(model)]="securityCode" class="govuk-input--width-10" 

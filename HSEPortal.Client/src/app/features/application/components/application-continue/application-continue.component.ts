@@ -11,8 +11,9 @@ import { NavigationService } from 'src/app/services/navigation.service';
 export class ApplicationContinueComponent extends BaseComponent implements IHasNextPage {
   static route: string = "continue";
 
-  model: { emailAddress?: string, applicationNumber?: string } = {}
-  verifyStep = false;
+  step = "enterdata";
+  emailAddress?: string;
+  applicationNumber?: string;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
@@ -26,9 +27,11 @@ export class ApplicationContinueComponent extends BaseComponent implements IHasN
     return false;
   }
 
-  showVerifyApplication(emailAddress: string, applicationNumber: string) {
-    this.model.emailAddress = emailAddress;
-    this.model.applicationNumber = applicationNumber;
-    this.verifyStep = true;
+  showVerifyApplication() {
+    this.step = 'verify';
+  }
+
+  showResendStep() {
+    this.step = 'resend';
   }
 }

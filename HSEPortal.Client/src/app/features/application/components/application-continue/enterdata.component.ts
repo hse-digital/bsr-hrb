@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ApplicationService } from "src/app/services/application.service";
 
 @Component({
@@ -13,7 +13,12 @@ export class ContinueApplicationEnterDataComponent {
         emailAddress: { hasError: false, errorText: '' },
         applicationNumber: { hasError: false, errorText: '' }
     }
-    model: { emailAddress?: string, applicationNumber?: string } = {}
+
+    @Input() emailAddress: string | undefined;
+    @Output() emailAddressChange = new EventEmitter<string | undefined>();
+
+    @Input() applicationNumber: string | undefined;
+    @Output() applicationNumberChange = new EventEmitter<string | undefined>();
 
     @Output()
     onContinue = new EventEmitter<{ emailAddress: string, applicationNumber: string }>();
@@ -33,8 +38,8 @@ export class ContinueApplicationEnterDataComponent {
         this.hasErrors = this.errors.emailAddress.hasError || this.errors.applicationNumber.hasError;
 
         if (!this.hasErrors) {
-            await this.applicationService.sendVerificationEmail(this.model.emailAddress!);
-            this.onContinue.emit({ emailAddress: this.model.emailAddress!, applicationNumber: this.model.applicationNumber! });
+            await this.applicationService.sendVerificationEmail(this.emailAddress!);
+            this.onContinue.emit({ emailAddress: this.emailAddress!, applicationNumber: this.applicationNumber! });
         }        
         
         this.sendingRequest = false;
@@ -42,9 +47,9 @@ export class ContinueApplicationEnterDataComponent {
 
     async isApplicationNumberValid() {
         this.errors.applicationNumber.hasError = true;
-        if (!this.model.applicationNumber) {
+        if (!this.applicationNumber) {
             this.errors.applicationNumber.errorText = 'Enter the application number';
-        } else if (this.model.applicationNumber.length != 12) {
+        } else if (this.applicationNumber.length != 12) {
             this.errors.applicationNumber.errorText = 'Application number must be 12 characters';
         } else if (!(await this.doesApplicationNumberMatchEmail())) {
             this.errors.applicationNumber.errorText = 'Application number doesn\'t match this email address. Enter the correct application number';
@@ -55,13 +60,13 @@ export class ContinueApplicationEnterDataComponent {
 
     isEmailAddressValid() {
         this.errors.emailAddress.hasError = false;
-        if (!this.model.emailAddress) {
+        if (!this.emailAddress) {
             this.errors.emailAddress.errorText = 'Enter your email address';
             this.errors.emailAddress.hasError = true;
         }
     }
 
     async doesApplicationNumberMatchEmail(): Promise<boolean> {
-        return await this.applicationService.isApplicationNumberValid(this.model.emailAddress!, this.model.applicationNumber!);
+        return await this.applicationService.isApplicationNumberValid(this.emailAddress!, this.applicationNumber!);
     }
 }

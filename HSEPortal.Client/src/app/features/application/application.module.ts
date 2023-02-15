@@ -14,6 +14,7 @@ import { BuildingModule } from "./components/building/building.module";
 import { AccountablePersonModule } from "./accountable-person/accountable-person.module";
 import { ContinueApplicationEnterDataComponent } from "./components/application-continue/enterdata.component";
 import { ContinueApplicationVerifyComponent } from "./components/application-continue/verify.component";
+import { ContinueApplicationResendCodeComponent } from "./components/application-continue/resend.component";
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationStartComponent.route, ApplicationStartComponent),
@@ -31,6 +32,7 @@ const routes = new HseRoutes([
     ApplicationContinueComponent,
     ContinueApplicationEnterDataComponent, 
     ContinueApplicationVerifyComponent,
+    ContinueApplicationResendCodeComponent,
     SecurityCodeComponent,
     ApplicationCompletedComponent,
   ],

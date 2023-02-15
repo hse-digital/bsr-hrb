@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
@@ -11,6 +11,7 @@ export class ContinueApplicationVerifyComponent {
 
     @Input() emailAddress!: string;
     @Input() applicationNumber!: string;
+    @Output() onResendClicked = new EventEmitter();
 
     sendingRequest = false;
     hasErrors = false;
@@ -41,6 +42,10 @@ export class ContinueApplicationVerifyComponent {
 
         this.hasErrors = this.errors.securityCode.hasError;
         this.sendingRequest = false;
+    }
+
+    showResendStep() {
+        this.onResendClicked.emit();
     }
 
     private async doesSecurityCodeMatch(): Promise<boolean> {
