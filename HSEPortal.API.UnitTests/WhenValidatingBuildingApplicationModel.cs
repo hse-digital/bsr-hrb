@@ -10,7 +10,7 @@ public class WhenValidatingBuildingRegistrationModel
     [Fact]
     public void ShouldReturnNoErrorsWhenModelIsValid()
     {
-        var model = new BuildingRegistrationModelBuilder().Build();
+        var model = new BuildingApplicationModelBuilder().Build();
         var validationResult = model.Validate();
 
         validationResult.IsValid.Should().BeTrue();
@@ -30,7 +30,7 @@ public class WhenValidatingBuildingRegistrationModel
     [Fact]
     public void ShouldReturnMultipleErrorMessagesWhenMultipleFieldsAreInvalid()
     {
-        var model = new BuildingRegistrationModelBuilder().WithBuildingName(null).WithContactFirstName(null)
+        var model = new BuildingApplicationModelBuilder().WithBuildingName(null).WithContactFirstName(null)
             .WithContactLastName(null).WithContactPhoneNumber(null).WithContactEmailAddress(null).Build();
         var validationResult = model.Validate();
         
@@ -54,7 +54,7 @@ public class WhenValidatingBuildingRegistrationModel
     [InlineData("+44 808 157 0192 33", false)]
     public void ShouldValidatePhoneNumberFormat(string phoneNumber, bool isValid)
     {
-        var model = new BuildingRegistrationModelBuilder().WithContactPhoneNumber(phoneNumber).Build();
+        var model = new BuildingApplicationModelBuilder().WithContactPhoneNumber(phoneNumber).Build();
         var validationResult = model.Validate();
 
         validationResult.IsValid.Should().Be(isValid);
@@ -67,28 +67,28 @@ public class WhenValidatingBuildingRegistrationModel
     public static IEnumerable<object[]> ValidationTestCases()
     {
         // building name
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithBuildingName("").Build(), "Building name is required" };
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithBuildingName(" ").Build(), "Building name is required" };
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithBuildingName(default).Build(), "Building name is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithBuildingName("").Build(), "Building name is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithBuildingName(" ").Build(), "Building name is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithBuildingName(default).Build(), "Building name is required" };
         
         // first name
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactFirstName("").Build(), "Contact first name is required" };
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactFirstName(" ").Build(), "Contact first name is required" };
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactFirstName(default).Build(), "Contact first name is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactFirstName("").Build(), "Contact first name is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactFirstName(" ").Build(), "Contact first name is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactFirstName(default).Build(), "Contact first name is required" };
         
         // last name
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactLastName("").Build(), "Contact last name is required" };
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactLastName(" ").Build(), "Contact last name is required" };
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactLastName(default).Build(), "Contact last name is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactLastName("").Build(), "Contact last name is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactLastName(" ").Build(), "Contact last name is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactLastName(default).Build(), "Contact last name is required" };
         
         // phone number
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactPhoneNumber("").Build(), "Contact phone number is required" };
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactPhoneNumber(" ").Build(), "Contact phone number is required" };
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactPhoneNumber(default).Build(), "Contact phone number is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactPhoneNumber("").Build(), "Contact phone number is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactPhoneNumber(" ").Build(), "Contact phone number is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactPhoneNumber(default).Build(), "Contact phone number is required" };
         
         // email address
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactEmailAddress("").Build(), "Contact email address is required" };
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactEmailAddress(" ").Build(), "Contact email address is required" };
-        yield return new object[] { new BuildingRegistrationModelBuilder().WithContactEmailAddress(default).Build(), "Contact email address is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactEmailAddress("").Build(), "Contact email address is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactEmailAddress(" ").Build(), "Contact email address is required" };
+        yield return new object[] { new BuildingApplicationModelBuilder().WithContactEmailAddress(default).Build(), "Contact email address is required" };
     }
 }

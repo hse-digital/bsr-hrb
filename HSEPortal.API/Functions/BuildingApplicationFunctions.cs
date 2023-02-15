@@ -1,3 +1,4 @@
+using System.Net;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
@@ -24,7 +25,7 @@ public class BuildingApplicationFunctions
         {
             return await request.BuildValidationErrorResponseDataAsync(validation);
         }
-        
+
         buildingApplicationModel = await dynamicsService.RegisterNewBuildingApplicationAsync(buildingApplicationModel);
         var response = await request.CreateObjectResponseAsync(buildingApplicationModel);
         return new CustomHttpResponseData
@@ -32,6 +33,14 @@ public class BuildingApplicationFunctions
             Application = buildingApplicationModel,
             HttpResponse = response
         };
+    }
+
+    [Function(nameof(ValidateApplicationNumber))]
+    public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ValidateApplicationNumber/{applicationNumber}/{emailAddress}")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber} and c.ContactEmailAddress = {emailAddress}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications)
+    {
+        return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 }
 

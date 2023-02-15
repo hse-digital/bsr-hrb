@@ -2,7 +2,7 @@ using HSEPortal.API.Model;
 
 namespace HSEPortal.TestingCommon.Builders;
 
-public class BuildingRegistrationModelBuilder
+public class BuildingApplicationModelBuilder
 {
     private string modelBuildingName = "building name";
     private string modelContactFirstName = "first name";
@@ -10,31 +10,31 @@ public class BuildingRegistrationModelBuilder
     private string modelContactPhoneNumber = "+44 808 157 0192";
     private string modelContactEmailAddress = "email address";
 
-    public BuildingRegistrationModelBuilder WithBuildingName(string buildingName)
+    public BuildingApplicationModelBuilder WithBuildingName(string buildingName)
     {
         modelBuildingName = buildingName;
         return this;
     }
 
-    public BuildingRegistrationModelBuilder WithContactFirstName(string contactFirstName)
+    public BuildingApplicationModelBuilder WithContactFirstName(string contactFirstName)
     {
         modelContactFirstName = contactFirstName;
         return this;
     }
 
-    public BuildingRegistrationModelBuilder WithContactLastName(string contactLastName)
+    public BuildingApplicationModelBuilder WithContactLastName(string contactLastName)
     {
         modelContactLastName = contactLastName;
         return this;
     }
 
-    public BuildingRegistrationModelBuilder WithContactPhoneNumber(string contactPhoneNumber)
+    public BuildingApplicationModelBuilder WithContactPhoneNumber(string contactPhoneNumber)
     {
         modelContactPhoneNumber = contactPhoneNumber;
         return this;
     }
 
-    public BuildingRegistrationModelBuilder WithContactEmailAddress(string contactEmailAddress)
+    public BuildingApplicationModelBuilder WithContactEmailAddress(string contactEmailAddress)
     {
         modelContactEmailAddress = contactEmailAddress;
         return this;

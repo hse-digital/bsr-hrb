@@ -38,7 +38,8 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
 
     private static BuildingApplicationModel GivenABuildingRegistrationModel()
     {
-        return new BuildingRegistrationModelBuilder().Build();
+        return new BuildingApplicationModelBuilder().WithBuildingName("INT-TESTING")
+            .WithContactEmailAddress("INT-TESTING@GMAIL.COM").WithContactFirstName("INT-TESTING").WithContactLastName("INT-TESTING").Build();
     }
 
     private string token = null!;

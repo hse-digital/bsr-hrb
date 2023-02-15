@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace HSEPortal.API.Model;
 
 public record BuildingApplicationModel(
-    [property: JsonPropertyName("id")] string Id = "REGISTRATION_ID",
+    [property: JsonPropertyName("id")] string Id,
     string BuildingName = null,
     string ContactFirstName = null,
     string ContactLastName = null,
