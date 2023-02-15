@@ -4,6 +4,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { PostcodeValidator } from 'src/app/helpers/validators/postcode-validator';
 
 @Component({
   selector: 'hse-organisation-address',
@@ -42,7 +43,7 @@ export class OrganisationAddressComponent extends BaseComponent implements IHasN
   }
 
   isPostcodeValid(postcode: string) {
-    return true;
+    return new PostcodeValidator().isValid(postcode);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
