@@ -15,6 +15,8 @@ public abstract class UnitTestBase
 {
     protected HttpTest HttpTest { get; }
     protected DynamicsService DynamicsService { get; }
+    
+    protected OTPService OtpService { get; }
 
     protected UnitTestBase()
     {
@@ -25,6 +27,7 @@ public abstract class UnitTestBase
 
         HttpTest = new HttpTest();
         DynamicsService = new DynamicsService(new DynamicsModelDefinitionFactory(), options.Object);
+        OtpService = new OTPService();
     }
 
     protected readonly DynamicsOptions DynamicsOptions = new()

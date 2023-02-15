@@ -2,6 +2,7 @@ using System.Net;
 using FluentAssertions;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
+using HSEPortal.API.Services;
 using Xunit;
 
 namespace HSEPortal.API.UnitTests;
@@ -12,7 +13,7 @@ public class WhenValidatingApplicationNumber : UnitTestBase
 
     public WhenValidatingApplicationNumber()
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService);
+        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, new OTPService());
     }
 
     [Fact]

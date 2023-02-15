@@ -10,10 +10,12 @@ namespace HSEPortal.API.Functions;
 public class BuildingApplicationFunctions
 {
     private readonly DynamicsService dynamicsService;
+    private readonly OTPService otpService;
 
-    public BuildingApplicationFunctions(DynamicsService dynamicsService)
+    public BuildingApplicationFunctions(DynamicsService dynamicsService, OTPService otpService)
     {
         this.dynamicsService = dynamicsService;
+        this.otpService = otpService;
     }
 
     [Function(nameof(NewBuildingApplication))]
@@ -44,12 +46,16 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(GetApplication))]
-    public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetApplication/{applicationNumber}")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber}", PartitionKey = "{applicationNumber}", Connection = "CosmosConnection")]
-        List<BuildingApplicationModel> buildingApplications)
+    public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetApplication/{applicationNumber}/{emailAddress}/{otpToken}")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber} and c.ContactEmailAddress = {emailAddress}", PartitionKey = "{applicationNumber}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications, string otpToken)
     {
         if (buildingApplications.Any())
-            return await request.CreateObjectResponseAsync(buildingApplications[0]);
+        {
+            var application = buildingApplications[0];
+            if (otpService.ValidateToken(otpToken, application.ContactEmailAddress))
+                return await request.CreateObjectResponseAsync(application);
+        }
 
         return request.CreateResponse(HttpStatusCode.BadRequest);
     }

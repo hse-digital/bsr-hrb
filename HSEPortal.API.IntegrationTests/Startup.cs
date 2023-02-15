@@ -20,6 +20,7 @@ public class Startup
         services.Configure<SwaOptions>(config.GetSection(SwaOptions.Swa));
 
         services.AddTransient<DynamicsService>();
+        services.AddTransient<OTPService>();
         services.AddTransient<DynamicsModelDefinitionFactory>();
     }
 }
