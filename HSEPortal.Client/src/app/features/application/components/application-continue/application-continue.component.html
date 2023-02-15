@@ -3,8 +3,8 @@
 <div class="govuk-main-wrapper">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <application-enterdata *ngIf="!verifyStep" (onContinue)="showVerifyApplication($event.emailAddress, $event.applicationNumber)"/>
-        <application-verify *ngIf="verifyStep" [emailAddress]="model.emailAddress!" [applicationNumber]="model.applicationNumber!" />
+      <application-enterdata *ngIf="!verifyStep" (onContinue)="showVerifyApplication($event.emailAddress, $event.applicationNumber)" />
+      <application-verify *ngIf="verifyStep" [emailAddress]="model.emailAddress!" [applicationNumber]="model.applicationNumber!" />
     </div>
   </div>
-</div>Ò
+</div>
