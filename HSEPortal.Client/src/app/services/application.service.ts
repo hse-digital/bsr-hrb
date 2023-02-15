@@ -9,7 +9,7 @@ export class ApplicationService {
 
   model: BuildingRegistrationModel = {};
   currentBlock: BlockModel = {};
-  currentAccountablePerson: AccountablePersonModel = {};
+  currentAccountablePerson: any = {};
 
   constructor(private httpClient: HttpClient) {
     this.model = this._localStorage.getJSON('HSE_MODEL');
@@ -41,6 +41,7 @@ export class ApplicationService {
 
   initializeNewBlock(): string {
     this.currentBlock = {};
+    console.log('model', this.model);
     let length = this.model.Blocks?.push(this.currentBlock) ?? 1;
     let newId = this.generateNewBlockId(length);
     this.setNewBlockId(newId);
@@ -57,9 +58,17 @@ export class ApplicationService {
     if (block) block.Id = newId;
   }
 
-  initializeNewAccountablePerson(accountablePersonId: string) {
-    this.currentAccountablePerson = { Id: accountablePersonId };
-    this.model.AccountablePersons?.push(this.currentAccountablePerson);
+  initializeNewAccountablePerson() {
+    this.currentAccountablePerson = <AccountablePersonModel>{};
+    let length = this.model.AccountablePersons?.push(this.currentAccountablePerson) ?? 1;
+    this.currentAccountablePerson.Id = length;
+    let accountablePerson = this.model.AccountablePersons?.at(-1);
+    if (accountablePerson) accountablePerson.Id = length.toString();
+    return length;
+  }
+
+  castDownAccountablePersonTo<T>() {
+    this.currentAccountablePerson = <T>this.currentAccountablePerson;
   }
 
   async sendVerificationEmail(): Promise<void> {
@@ -105,17 +114,24 @@ export class BlockModel {
   AnotherBlock?: string;
 }
 
-export class AccountablePersonModel {
+export abstract class AccountablePersonModel {
   Id?: string;
   Type?: string;
   IsPrincipal?: boolean;
-  OrganisationName?: string;
-  FirstName?: string;
-  LastName?: string;
-  Email?: string;
-  PhoneNumber?: string;
+}
+
+export class OrganisationAccountablePersonModel extends AccountablePersonModel {
+  Name?: string;
+  OrganisationType?: string;
   AddressLineOne?: string;
   AddressLineTwo?: string;
   TownOrCity?: string;
   Postcode?: string;
+}
+
+export class IndividualAccountablePersonModel extends AccountablePersonModel {
+  FirstName?: string;
+  LastName?: string;
+  Email?: string;
+  PhoneNumber?: string;
 }

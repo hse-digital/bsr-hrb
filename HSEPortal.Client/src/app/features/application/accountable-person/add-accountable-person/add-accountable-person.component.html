@@ -20,9 +20,9 @@
                              id="radios-add-accountable-person"
                              [(model)]="model.addAccountablePerson"
                              [errorText]="getErrorDescription(hasErrors, 'Select yes if you want to add another accountable person')">
-            <govuk-radio name="application-group" id="yes" value="/application/other-accountable-person" label="Yes">
+            <govuk-radio name="application-group" id="yes" value="other-accountable-person" label="Yes">
             </govuk-radio>
-            <govuk-radio name="application-group" id="no" value="/application/add-accountable-person" label="No"
+            <govuk-radio name="application-group" id="no" value="add-accountable-person" label="No"
                          class="govuk-radio-no-margin-bottom">
             </govuk-radio>
           </govuk-radio-group>

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BaseComponent } from '../../../../helpers/base.component';
-import { IHasNextPage } from '../../../../helpers/has-next-page.interface';
-import { ApplicationService } from '../../../../services/application.service';
-import { NavigationService } from '../../../../services/navigation.service';
+import { BaseComponent } from 'src/app/helpers/base.component';
+import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { ApplicationService } from 'src/app/services/application.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'hse-name-all-blocks',
@@ -22,6 +22,9 @@ export class NameAllBlocksComponent extends BaseComponent implements IHasNextPag
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return this.navigationService.navigate('application/accountable-person');
+    this.applicationService.model.AccountablePersons = [];
+    let accountablePersonId = this.applicationService.initializeNewAccountablePerson();
+    let route = `../../accountable-person/${accountablePersonId}/accountable-person`;
+    return this.navigationService.navigateRelative(route, activatedRoute);
   }
 }

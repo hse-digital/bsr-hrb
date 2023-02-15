@@ -7,18 +7,19 @@ import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'hse-organisation-type-ap',
-  templateUrl: './organisation-type-ap.component.html',
-  styleUrls: ['./organisation-type-ap.component.scss']
+  templateUrl: './organisation-type-ap.component.html'
 })
 export class OrganisationTypeApComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'organisation-type';
+  organisationTypeHasErrors = false;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
   canContinue(): boolean {
-    return true;
+    this.organisationTypeHasErrors = !this.applicationService.currentAccountablePerson.OrganisationType;
+    return !this.organisationTypeHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

@@ -17,7 +17,7 @@ export class ComplexStructureComponent extends BaseComponent implements IHasNext
     super(router, applicationService, navigationService, activatedRoute);
 
     // REMOVE
-    this.applicationService.newApplication();
+    this.applicationService.model.Blocks = [];
     // ######
   }
 
@@ -29,7 +29,7 @@ export class ComplexStructureComponent extends BaseComponent implements IHasNext
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let blockId = this.applicationService.initializeNewBlock();
-    let route = `../${blockId}/${this.continueLink}`;
+    let route = `../${this.applicationService.model.Id}/blocks/${blockId}/${this.continueLink}`;
     return this.navigationService.navigateRelative(route, activatedRoute);
   }
 

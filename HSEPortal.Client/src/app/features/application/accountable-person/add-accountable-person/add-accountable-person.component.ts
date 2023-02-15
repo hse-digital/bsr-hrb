@@ -29,7 +29,13 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return this.navigationService.navigate(this.model.addAccountablePerson ?? '');
+    let route = this.model.addAccountablePerson ?? '';
+    if (this.model.addAccountablePerson === 'other-accountable-person') {
+      let id = this.applicationService.initializeNewAccountablePerson();
+      route = `../${id}/${route}`;
+      console.log(this.applicationService.model);
+    }
+    return this.navigationService.navigateRelative(route, activatedRoute);
   }
 
 }

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { ApplicationService } from 'src/app/services/application.service';
+import { AccountablePersonModel, ApplicationService, IndividualAccountablePersonModel, OrganisationAccountablePersonModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { IHasNextPage } from '../../../../helpers/has-next-page.interface';
+import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 
 @Component({
   selector: 'hse-accountable-person',
@@ -25,13 +25,23 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let nextRoute = this.getNextRoute();
-    return navigationService.navigate(nextRoute,);
+    this.initialiseAccountablePerson();
+    return navigationService.navigateRelative(nextRoute, activatedRoute);
   }
-  
+
+  initialiseAccountablePerson() {
+    let type = this.applicationService.currentAccountablePerson.Type;
+    if (type === 'organisation')
+      this.applicationService.castDownAccountablePersonTo<OrganisationAccountablePersonModel>();
+    else
+      this.applicationService.castDownAccountablePersonTo<IndividualAccountablePersonModel>();
+    this.applicationService.currentAccountablePerson.Type = type;
+  }
+
   getNextRoute() {
     return this.applicationService.currentAccountablePerson.Type === 'organisation'
-      ? '/application/organisation-type'
-      : '/application/individual-name';
+      ? 'organisation-type'
+      : 'individual-name';
   }
 
 }

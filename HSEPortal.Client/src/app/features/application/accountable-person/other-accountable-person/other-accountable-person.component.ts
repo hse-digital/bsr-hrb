@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, IndividualAccountablePersonModel, OrganisationAccountablePersonModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from '../../../../helpers/has-next-page.interface';
 
@@ -29,7 +29,17 @@ export class OtherAccountablePersonComponent extends BaseComponent implements IH
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let nextRoute = this.getNextRoute();
+    this.initialiseAccountablePerson();
     return navigationService.navigateRelative(nextRoute, activatedRoute);
+  }
+
+  initialiseAccountablePerson() {
+    let type = this.applicationService.currentAccountablePerson.Type;
+    if (type === 'organisation')
+      this.applicationService.castDownAccountablePersonTo<OrganisationAccountablePersonModel>();
+    else
+      this.applicationService.castDownAccountablePersonTo<IndividualAccountablePersonModel>();
+    this.applicationService.currentAccountablePerson.Type = type;
   }
 
   getNextRoute() {
