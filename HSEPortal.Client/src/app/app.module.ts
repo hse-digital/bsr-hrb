@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LandingComponent } from './features/landing/landing.component';
 import { TimeoutComponent } from './features/timeout/timeout.component';
+import { ApplicationService } from './services/application.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import { TimeoutComponent } from './features/timeout/timeout.component';
     HseAngularModule,
     HttpClientModule
   ],
-  providers: [HttpClient],
+  providers: [HttpClient, ApplicationService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

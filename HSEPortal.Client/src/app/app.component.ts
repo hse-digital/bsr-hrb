@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApplicationService } from './services/application.service';
 import { HeaderTitleService } from './services/headertitle.service';
 import { IdleTimerService } from './services/idle-timer.service';
 
@@ -9,8 +10,11 @@ import { IdleTimerService } from './services/idle-timer.service';
 })
 export class AppComponent {
 
-  constructor(private headerTitleService: HeaderTitleService, private router: Router, private idleTimerService: IdleTimerService) {
-    this.idleTimerService.initTimer(15 * 60, () => { this.router.navigate(['/building-registration/continue-saved-application']) });
+  constructor(private headerTitleService: HeaderTitleService, private applicationService: ApplicationService, private router: Router, private idleTimerService: IdleTimerService) {
+    this.idleTimerService.initTimer(15 * 60, () => { 
+      this.applicationService.newApplication();
+      this.router.navigate(['/application/continue']);
+    });
   }
 
   get headerTitle(): string | undefined {
