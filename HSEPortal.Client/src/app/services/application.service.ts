@@ -13,6 +13,7 @@ export class ApplicationService {
 
   constructor(private httpClient: HttpClient) {
     this.model = this._localStorage.getJSON('HSE_MODEL');
+    if (!this.model) this.model = {};
   }
 
   newApplication() {
