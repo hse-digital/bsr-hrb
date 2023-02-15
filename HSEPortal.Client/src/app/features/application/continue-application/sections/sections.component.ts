@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import { ApplicationService } from "src/app/services/application.service";
 
 @Component({
@@ -8,8 +7,8 @@ import { ApplicationService } from "src/app/services/application.service";
 export class ApplicationsSectionsComponent {
   static route: string = 'sections';
 
-  constructor(private applicationService: ApplicationService, private activatedRouter: ActivatedRoute) {
-    
+  constructor(public applicationService: ApplicationService) {
+
   }
 
   getBuildingName() {

@@ -46,7 +46,7 @@ export class AnotherBlockComponent extends BaseComponent implements IHasNextPage
     if (this.applicationService.currentBlock.AnotherBlock === 'yes') {
       let blockId = Math.round(Math.random() * 100); // Getting or generating the blockId.
       this.applicationService.initializeNewBlock(blockId.toString());
-      nextScreenRoute = `/application/${this.applicationService.model.Id}/blocks/${blockId}/${nextScreenRoute}`;
+      nextScreenRoute = `/application/${this.applicationService.model.id}/blocks/${blockId}/${nextScreenRoute}`;
       return navigationService.navigate(nextScreenRoute);
     }
     // ######

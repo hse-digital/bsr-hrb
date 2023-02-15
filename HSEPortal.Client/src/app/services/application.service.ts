@@ -85,7 +85,7 @@ export class ApplicationService {
 }
 
 export class BuildingRegistrationModel {
-  Id?: string;
+  id?: string;
   BuildingName?: string;
   ContactFirstName?: string;
   ContactLastName?: string;

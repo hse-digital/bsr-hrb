@@ -37,7 +37,7 @@ export class ContactEmailValidationComponent extends BaseComponent {
                 this.sendingRequest = true;
                 await this.applicationService.validateOTPToken(this.otpToken, this.applicationService.model.ContactEmailAddress!);
                 await this.applicationService.registerNewBuildingApplication();
-                await this.navigationService.navigate(`application/${this.applicationService.model.Id}/sections`);
+                await this.navigationService.navigate(`application/${this.applicationService.model.id}/sections`);
             } catch {
                 this.sendingRequest = false;
                 this.hasErrors = true;
