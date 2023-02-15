@@ -12,6 +12,8 @@ import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { ApplicationService } from "src/app/services/application.service";
 import { BuildingModule } from "./components/building/building.module";
 import { AccountablePersonModule } from "./accountable-person/accountable-person.module";
+import { ContinueApplicationEnterDataComponent } from "./components/application-continue/enterdata.component";
+import { ContinueApplicationVerifyComponent } from "./components/application-continue/verify.component";
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationStartComponent.route, ApplicationStartComponent),
@@ -27,6 +29,8 @@ const routes = new HseRoutes([
   declarations: [
     ApplicationStartComponent,
     ApplicationContinueComponent,
+    ContinueApplicationEnterDataComponent, 
+    ContinueApplicationVerifyComponent,
     SecurityCodeComponent,
     ApplicationCompletedComponent,
   ],

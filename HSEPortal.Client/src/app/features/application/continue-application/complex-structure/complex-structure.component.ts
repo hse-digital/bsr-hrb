@@ -29,8 +29,8 @@ export class ComplexStructureComponent extends BaseComponent implements IHasNext
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let blockId = this.applicationService.initializeNewBlock();
-    let route = `../${this.applicationService.model.Id}/blocks/${blockId}/${this.continueLink}`;
-    return this.navigationService.navigateRelative(route, activatedRoute);
+    let route = `../${this.applicationService.model.id}/blocks/${blockId}/${this.continueLink}`;
+    return navigationService.navigateRelative(route, activatedRoute);
   }
 
 }
