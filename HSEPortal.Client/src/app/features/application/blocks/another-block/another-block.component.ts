@@ -27,7 +27,7 @@ export class AnotherBlockComponent extends BaseComponent implements IHasNextPage
 
   get blockNames(): string | undefined {
     let blockNames = this.applicationService.model.Blocks?.map(x => x.Name);
-    if (blockNames) return blockNames.reduce((name, current) => current + ", " + name);
+    if (blockNames) return blockNames?.reduce((name, current) => current + ", " + name) ?? '';
     return undefined;
   }
 

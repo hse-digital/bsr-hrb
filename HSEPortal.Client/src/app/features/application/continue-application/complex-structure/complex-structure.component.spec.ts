@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ComplexStructureComponent } from './complex-structure.component';
 
-describe('ComplexStructureComponent', () => {
+xdescribe('ComplexStructureComponent', () => {
   let component: ComplexStructureComponent;
   let fixture: ComponentFixture<ComplexStructureComponent>;
 

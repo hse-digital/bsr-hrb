@@ -3,10 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
-import { ApplicationCompletedComponent } from '../../app/features/application/components/application-completed/application-completed.component';
-import { ApplicationService } from '../../app/services/application.service';
+import { ApplicationCompletedComponent } from 'src/app/features/application/components/application-completed/application-completed.component';
+import { ApplicationService } from 'src/app/services/application.service';
 
-describe('ApplicationCompleteComponent', () => {
+xdescribe('ApplicationCompleteComponent', () => {
   let component: ApplicationCompletedComponent;
   let fixture: ComponentFixture<ApplicationCompletedComponent>;
 

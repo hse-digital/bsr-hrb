@@ -4,12 +4,14 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
-import { BuildingNameComponent } from '../../../app/features/application/new-application/building-name/building-name.component';
-import { ApplicationService } from '../../../app/services/application.service';
+import { BuildingNameComponent } from 'src/app/features/application/new-application/building-name/building-name.component';
+import { ApplicationService } from 'src/app/services/application.service';
+
+let component: BuildingNameComponent;
+let fixture: ComponentFixture<BuildingNameComponent>;
+
 
 describe('BuildingNameComponent showError', () => {
-  let component: BuildingNameComponent;
-  let fixture: ComponentFixture<BuildingNameComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -33,18 +35,18 @@ describe('BuildingNameComponent showError', () => {
   ];
 
   testCasesShowError.forEach((test) => {
-    it(test.description, async(inject([Router], (router: any) => {
+    it(test.description,  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
       spyOn(router, 'navigate');
-      component.applicationService.model.BuildingName = test.name;
+      applicationService.model.BuildingName = test.name;
       component.saveAndContinue()
       expect(component.hasErrors).toBeTrue();
       expect(router.navigate).not.toHaveBeenCalled();
     })));
   });
 
-  it('should NOT show an error when the name is defined and not empty.', async(inject([Router], (router: any) => {
+  it('should NOT show an error when the name is defined and not empty.',  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     spyOn(router, 'navigate');
-    component.applicationService.model.BuildingName = 'Building name';
+    applicationService.model.BuildingName = 'Building name';
     component.saveAndContinue();
     expect(component.hasErrors).toBeFalse();
     expect(router.navigate).toHaveBeenCalled();
@@ -54,8 +56,6 @@ describe('BuildingNameComponent showError', () => {
 
 
 describe('BuildingNameComponent getErrorDescription(value, errorText)', () => {
-  let component: BuildingNameComponent;
-  let fixture: ComponentFixture<BuildingNameComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -69,10 +69,10 @@ describe('BuildingNameComponent getErrorDescription(value, errorText)', () => {
     fixture.detectChanges();
   });
 
-  it('should display an error message when the name is undefined or empty.', async(inject([Router], (router: any) => {
+  it('should display an error message when the name is undefined or empty.',  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     spyOn(router, 'navigate');
     [undefined, ''].forEach(name => {
-      component.applicationService.model.BuildingName = name;
+      applicationService.model.BuildingName = name;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.nameHasErrors, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.nameHasErrors, 'Error message')).toEqual('Error message');
@@ -80,9 +80,9 @@ describe('BuildingNameComponent getErrorDescription(value, errorText)', () => {
     });
   })));
 
-  it('should NOT display an error message when the name is defined and not empty.', async(inject([Router], (router: any) => {
+  it('should NOT display an error message when the name is defined and not empty.',  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     spyOn(router, 'navigate');
-    component.applicationService.model.BuildingName = 'Building name';
+    applicationService.model.BuildingName = 'Building name';
     component.saveAndContinue();
     expect(component.getErrorDescription(component.nameHasErrors, 'Error message')).toBeUndefined();
     expect(router.navigate).toHaveBeenCalled();

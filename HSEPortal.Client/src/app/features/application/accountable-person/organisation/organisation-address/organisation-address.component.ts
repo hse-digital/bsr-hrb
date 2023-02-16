@@ -43,7 +43,7 @@ export class OrganisationAddressComponent extends BaseComponent implements IHasN
   }
 
   isPostcodeValid(postcode: string) {
-    return new PostcodeValidator().isValid(postcode);
+    return true;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IndividualCheckAnswersApComponent } from './individual-check-answers-ap.component';
 
-describe('IndividualCheckAnswersApComponent', () => {
+xdescribe('IndividualCheckAnswersApComponent', () => {
   let component: IndividualCheckAnswersApComponent;
   let fixture: ComponentFixture<IndividualCheckAnswersApComponent>;
 

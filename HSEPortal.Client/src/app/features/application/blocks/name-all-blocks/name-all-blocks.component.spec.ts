@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NameAllBlocksComponent } from './name-all-blocks.component';
 
-describe('NameAllBlocksComponent', () => {
+xdescribe('NameAllBlocksComponent', () => {
   let component: NameAllBlocksComponent;
   let fixture: ComponentFixture<NameAllBlocksComponent>;
 

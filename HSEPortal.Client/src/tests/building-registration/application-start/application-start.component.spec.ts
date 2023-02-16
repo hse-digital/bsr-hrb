@@ -3,8 +3,8 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { ApplicationStartComponent } from '../../../app/features/application/components/application-start/application-start.component';
-import { ApplicationService } from '../../../app/services/application.service';
+import { ApplicationStartComponent } from 'src/app/features/application/components/application-start/application-start.component';
+import { ApplicationService } from 'src/app/services/application.service';
 
 let component: ApplicationStartComponent;
 let fixture: ComponentFixture<ApplicationStartComponent>;
@@ -27,17 +27,17 @@ describe('ApplicationStartComponent showError', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show an error when the continueLink is empty or undefined.', async(inject([Router], (router: any) => {
+  it('should show an error when the continueLink is empty or undefined.',  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     [undefined, ''].forEach(link => {
       component.continueLink = link;
-      component.updateErrorStatus();
+      component.continue();
       expect(component.showError).toBeTrue();
     });
   })));
 
-  it('should NOT show an error when continueLink exists', async(inject([Router], (router: any) => {
+  it('should NOT show an error when continueLink exists',  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     component.continueLink = '/'
-    component.updateErrorStatus();
+    component.continue();
     expect(component.showError).toBeFalse();
   })));
 

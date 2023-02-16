@@ -3,13 +3,13 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { BuildingHeightComponent } from '../../../app/features/application/components/building/height/height.component';
-import { BlockRegistrationService } from '../../../app/services/block-registration.service';
-import { ApplicationService } from '../../../app/services/application.service';
-import { CaptionService } from '../../../app/services/caption.service';
+import { ApplicationService } from 'src/app/services/application.service';
+import { CaptionService } from 'src/app/services/caption.service';
+import { BuildingHeightComponent } from 'src/app/features/application/blocks/height/height.component';
 
 let component: BuildingHeightComponent;
 let fixture: ComponentFixture<BuildingHeightComponent>;
+
 
 describe('BuildingHeightComponent showError', () => {
 
@@ -17,7 +17,7 @@ describe('BuildingHeightComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [BuildingHeightComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
+      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BuildingHeightComponent);
@@ -37,10 +37,11 @@ describe('BuildingHeightComponent showError', () => {
   ]
 
   testCasesShowError.forEach((test) => {
-    it(test.description, async(inject([Router], (router: any) => {
+    it(test.description,  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
       spyOn(router, 'navigate');
       test.heights?.forEach((height) => {
-        component.building.height = height;
+        applicationService.newApplication();
+        applicationService.currentBlock.Height = height;
         component.saveAndContinue();
         expect(component.hasErrors).toBeTrue();
         expect(router.navigate).not.toHaveBeenCalled();
@@ -48,11 +49,12 @@ describe('BuildingHeightComponent showError', () => {
     })));
   });
 
-  it('should NOT show an error when the height greater than 2 and less than 1000.', async(inject([Router], (router: any) => {
+  it('should NOT show an error when the height greater than 2 and less than 1000.',  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     let heights: number[] = [3, 100, 150.5, 500, 999, 999.9, 999.9999]
     spyOn(router, 'navigate');
     heights.forEach(height => {
-      component.building.height = height;
+      applicationService.newApplication();
+      applicationService.currentBlock.Height = height;
       component.saveAndContinue();
       expect(component.hasErrors).toBeFalse();
       expect(router.navigate).toHaveBeenCalled();
@@ -67,19 +69,21 @@ describe('BuildingHeightComponent getErrorDescription(hasError, errorText)', () 
     await TestBed.configureTestingModule({
       declarations: [BuildingHeightComponent],
       imports: [RouterTestingModule, HseAngularModule],
-      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService, BlockRegistrationService]
+      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService]
     }).compileComponents();
+
     fixture = TestBed.createComponent(BuildingHeightComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should display an error message when the height is not valid.', async(inject([Router], (router: any) => {
+  it('should display an error message when the height is not valid.',  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     let wrongHeights: any = [0, 1, 2, 2.9999, 1000, 1000.01, 1001, 1500.5, 5000, undefined, 'abc', '123abc12', '1-2', '123?'];
 
     spyOn(router, 'navigate');
-    wrongHeights.forEach( (height: any) => {
-      component.building.height = height;
+    wrongHeights.forEach((height: any) => {
+      applicationService.newApplication();
+      applicationService.currentBlock.Height = height;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.heightHasErrors, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.heightHasErrors, 'Error message')).toEqual('Error message');
@@ -88,13 +92,14 @@ describe('BuildingHeightComponent getErrorDescription(hasError, errorText)', () 
 
   })));
 
-  it('should NOT display an error message when the height is valid.', async(inject([Router], (router: any) => {
+  it('should NOT display an error message when the height is valid.',  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
 
     let heights: number[] = [3, 100, 150.5, 500, 999, 999.9, 999.9999]
 
     spyOn(router, 'navigate');
     heights.forEach(height => {
-      component.building.height = height;
+      applicationService.newApplication();
+      applicationService.currentBlock.Height = height;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.heightHasErrors, 'Error message')).toBeUndefined();
       expect(router.navigate).toHaveBeenCalled();
