@@ -1,18 +1,19 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ApplicationService } from "src/app/services/application.service";
 
 @Component({
   templateUrl: './sections.component.html'
 })
-export class ApplicationsSectionsComponent {
+export class ApplicationsSectionsComponent implements OnInit {
   static route: string = 'sections';
 
   constructor(public applicationService: ApplicationService) {
 
   }
 
-  getBuildingName() {
-    return this.applicationService.model.BuildingName;
+  ngOnInit(): void {
+    if (!this.applicationService.model.BuildingName)
+      window.location.href = window.location.href;
   }
 
   tasks = [
