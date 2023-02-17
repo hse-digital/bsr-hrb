@@ -6,10 +6,10 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
-  templateUrl: './application-continue.component.html'
+  templateUrl: './returning-application.component.html'
 })
-export class ApplicationContinueComponent extends BaseComponent implements IHasNextPage {
-  static route: string = "continue";
+export class ReturningApplicationComponent extends BaseComponent implements IHasNextPage {
+  static route: string = "returning-application";
 
   step = "enterdata";
   emailAddress?: string;

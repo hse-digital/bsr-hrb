@@ -8,7 +8,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
     templateUrl: './contact-email-validation.component.html'
 })
 export class ContactEmailValidationComponent extends BaseComponent {
-    static route: string = "email-code";
+    static route: string = "verify";
 
     otpToken = "";
     otpError = false;
@@ -37,7 +37,7 @@ export class ContactEmailValidationComponent extends BaseComponent {
                 this.sendingRequest = true;
                 await this.applicationService.validateOTPToken(this.otpToken, this.applicationService.model.ContactEmailAddress!);
                 await this.applicationService.registerNewBuildingApplication();
-                await this.navigationService.navigate(`application/${this.applicationService.model.id}/sections`);
+                await this.navigationService.navigate(`application/${this.applicationService.model.id}`);
             } catch {
                 this.sendingRequest = false;
                 this.hasErrors = true;

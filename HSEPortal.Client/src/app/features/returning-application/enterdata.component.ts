@@ -5,7 +5,7 @@ import { ApplicationService } from "src/app/services/application.service";
     selector: 'application-enterdata',
     templateUrl: './enterdata.component.html'
 })
-export class ContinueApplicationEnterDataComponent {
+export class ReturningApplicationEnterDataComponent {
 
     hasErrors = false;
     sendingRequest = false;

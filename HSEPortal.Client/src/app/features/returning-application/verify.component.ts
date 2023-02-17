@@ -7,7 +7,7 @@ import { NavigationService } from "src/app/services/navigation.service";
     selector: 'application-verify',
     templateUrl: './verify.component.html'
 })
-export class ContinueApplicationVerifyComponent {
+export class ReturningApplicationVerifyComponent {
 
     @Input() emailAddress!: string;
     @Input() applicationNumber!: string;
@@ -20,7 +20,7 @@ export class ContinueApplicationVerifyComponent {
         securityCode: { hasError: false, errorText: '' }
     }
 
-    constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activateRouted: ActivatedRoute) { }
+    constructor(private applicationService: ApplicationService, private navigationService: NavigationService) { }
 
     getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
         return this.hasErrors && showError ? errorMessage : undefined;
@@ -52,7 +52,8 @@ export class ContinueApplicationVerifyComponent {
         try {
             await this.applicationService.validateOTPToken(this.securityCode!, this.emailAddress);
             await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
-            this.navigationService.navigateRelative(`${this.applicationNumber}/sections`, this.activateRouted);
+            this.navigationService.navigate(`application/${this.applicationNumber}`);
+            
             return true;
         } catch {
             return false;

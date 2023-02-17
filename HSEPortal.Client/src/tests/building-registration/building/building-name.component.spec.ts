@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
-import { BuildingNameComponent } from '../../../app/features/application/new-application/building-name/building-name.component';
+import { BuildingNameComponent } from '../../../app/features/new-application/building-name/building-name.component';
 import { ApplicationService } from '../../../app/services/application.service';
 
 describe('BuildingNameComponent showError', () => {

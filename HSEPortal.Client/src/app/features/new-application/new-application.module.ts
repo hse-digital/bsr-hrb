@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { RouterModule } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
 import { ApplicationService } from "src/app/services/application.service";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
@@ -36,5 +36,5 @@ const routes = new HseRoutes([
   providers: [HttpClient, ApplicationService, ...routes.getProviders()]
 })
 export class NewApplicationModule {
-  static baseRoute: string = 'new';
+  static baseRoute: string = 'new-application';
 }

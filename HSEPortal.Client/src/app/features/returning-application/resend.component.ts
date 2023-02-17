@@ -5,7 +5,7 @@ import { ApplicationService } from "src/app/services/application.service";
     selector: 'application-resend',
     templateUrl: './resend.component.html'
 })
-export class ContinueApplicationResendCodeComponent {
+export class ReturningApplicationResendCodeComponent {
 
     @Input() emailAddress!: string;
     @Output() onVerificationCodeSent = new EventEmitter();

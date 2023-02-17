@@ -3,13 +3,12 @@ import { Router } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
-  templateUrl: './application-start.component.html'
+  templateUrl: './application-selector.component.html'
 })
-export class ApplicationStartComponent {
+export class ApplicationSelectorComponent {
 
   constructor(private applicationService: ApplicationService, private router: Router){}
-
-  static route: string = "";
+  static route: string = "select";
   
   continueLink?: string;
   showError: boolean = false;

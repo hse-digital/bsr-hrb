@@ -94,6 +94,8 @@ export class ApplicationService {
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
     var application = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
     this.model = application;
+
+    LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
   async registerNewBuildingApplication(): Promise<void> {
