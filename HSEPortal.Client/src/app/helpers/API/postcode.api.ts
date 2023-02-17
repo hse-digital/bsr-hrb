@@ -14,7 +14,7 @@ export class PostcodeAPI {
 
     return this.httpClient.get(url).pipe(map(x => x)).toPromise().catch((error) => {
       console.log(error.error.error.statuscode);
-    });;
+    });
 
   }
 
