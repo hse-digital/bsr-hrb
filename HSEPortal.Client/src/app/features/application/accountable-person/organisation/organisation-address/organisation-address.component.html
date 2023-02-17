@@ -32,7 +32,7 @@
 
           <govuk-input id="postcode" label="Postcode"
                        [(model)]="applicationService.currentAccountablePerson.Postcode"
-                       [errorText]="getErrorDescription(errors.postcode.hasErrors, 'Enter a postcode')"
+                       [errorText]="getErrorDescription(errors.postcode.hasErrors, errors.postcode.errorText)"
                        class="govuk-!-margin-bottom-1 govuk-input--width-10" />
 
         </govuk-fieldset>

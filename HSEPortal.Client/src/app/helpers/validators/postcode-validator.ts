@@ -1,23 +1,18 @@
 import { HttpClient } from "@angular/common/http";
 import { firstValueFrom } from "rxjs";
+import { PostcodeAPI } from "src/app/helpers/API/postcode.api";
 import { IInputValidator } from "./input-validator.interface";
 
 export class PostcodeValidator implements IInputValidator {
-
-  private API_KEY: string = 'fPaSsYzfdvNhUwwV8r36LexwkqMsk15A';
+    private _postcodeAPI: PostcodeAPI;
 
   constructor(private httpClient: HttpClient) {
-
+    this._postcodeAPI = new PostcodeAPI(httpClient);
   }
 
-  isValid(value: string): boolean {
-    let result = this.getData(value);
-    return true;
-  }
-
-  async getData(postcode: string) {
-    let url = `https://api.os.uk/search/places/v1/postcode?postcode=${postcode}&key=${this.API_KEY}`
-    return await firstValueFrom(this.httpClient.get(url)).then((value) => { return value });
+  async isValid(postcode: string): Promise<boolean> {
+    let address: string[] = await this._postcodeAPI.getAddressUsingPostcodeOnDPA(postcode);
+    return address.length > 0;
   }
 
 }

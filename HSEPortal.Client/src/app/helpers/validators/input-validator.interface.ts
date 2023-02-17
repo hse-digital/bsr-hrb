@@ -1,3 +1,3 @@
 export interface IInputValidator {
-  isValid(value: any): boolean;
+  isValid(value: any): any;
 }
