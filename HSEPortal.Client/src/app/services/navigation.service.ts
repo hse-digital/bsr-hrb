@@ -12,4 +12,8 @@ export class NavigationService {
   navigateRelative(subRoute: string, activatedRoute: ActivatedRoute): Promise<boolean> {
     return this.router.navigate([`../${subRoute}`], { relativeTo: activatedRoute });
   }
+
+  navigateAppend(subRoute: string, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return this.router.navigate([subRoute], { relativeTo: activatedRoute });
+  }
 }

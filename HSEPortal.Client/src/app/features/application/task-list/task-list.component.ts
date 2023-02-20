@@ -7,10 +7,9 @@ import { NavigationService } from "src/app/services/navigation.service";
 @Component({
   templateUrl: './task-list.component.html'
 })
-export class ApplicationTaskListComponent extends BaseComponent implements OnInit {
+export class ApplicationTaskListComponent extends BaseComponent {
 
   static route: string = '';
-  private applicationId?: string | null;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
@@ -22,12 +21,6 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
 
   override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
     return this.applicationService.model?.id !== undefined && this.applicationService.model?.id == routeSnapshot.params['id'];
-  }
-  
-  ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
-      this.applicationId = params.get('id');
-    });
   }
 
   tasks = [

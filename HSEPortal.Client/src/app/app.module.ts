@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { HseAngularModule } from 'hse-angular';
 
 import { AppComponent } from './app.component';
@@ -23,8 +23,8 @@ const routes = new HseRoutes([
   HseRoute.unsafe(TimeoutComponent.route, TimeoutComponent),
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent),
   HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent),
-  HseRoute.forChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
-  HseRoute.forChildren(ApplicationModule.baseRoute, () => import('./features/application/application.module').then(m => m.ApplicationModule)),
+  HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
+  HseRoute.forLoadChildren(ApplicationModule.baseRoute, () => import('./features/application/application.module').then(m => m.ApplicationModule)),
 ]);
 
 @NgModule({

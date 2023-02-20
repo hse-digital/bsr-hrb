@@ -1,0 +1,39 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                  <govuk-error-link anchorId="input-height" [message]="errorSummaryMessage" />
+                </govuk-error-summary>
+
+                <span class="govuk-caption-xl">{{ captionText }}</span>
+                <govuk-fieldset title="Block height" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+
+                    <govuk-body>Measure the block height in metres from ground level to the top floor.</govuk-body>
+
+                    <govuk-body>Do not measure:</govuk-body>
+                    <govuk-list classes="govuk-list--bullet">
+                        <govuk-list-item text="any floor that is used only for machinery or plant rooms" />
+                        <govuk-list-item text="the roof" />
+                    </govuk-list>
+
+                    <govuk-details summaryText="Help with ground level">
+                        <p>Ground level is the level of land immediately next to the block. If the block is on uneven land, count from the lowest part of the land immediately next to the block.</p>
+                    </govuk-details>
+
+                    <govuk-input label="Block height in metres"
+                                 labelClass="govuk-label--s" id="height"
+                                 [(model)]="applicationService.currentSection.Height"
+                                 [errorText]="getErrorDescription(heightHasErrors, errorMessage)" suffix="m"
+                                 class="govuk-input--width-4" #height />
+
+                </govuk-fieldset>
+            </div>
+
+            <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+        </div>
+    </div>
+</div>

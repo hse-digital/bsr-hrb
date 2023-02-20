@@ -12,10 +12,6 @@ export class HseRoute implements Route {
   constructor(public path: string, public component?: Type<any>, public redirectTo?: string, public loadChildren?: LoadChildrenCallback) {
   }
 
-  static redirect(path: string, redirectTo: string): HseRoute {
-    return new HseRoute(path, undefined, redirectTo);
-  }
-
   static unsafe(path: string, component?: Type<any>, redirectTo?: string): HseRoute {
     return new HseRoute(path, component, redirectTo);
   }
@@ -28,8 +24,15 @@ export class HseRoute implements Route {
     return hseRoute;
   }
 
-  static forChildren(path: string, loadChildren: LoadChildrenCallback): HseRoute {
+  static forLoadChildren(path: string, loadChildren: LoadChildrenCallback): HseRoute {
     return new HseRoute(path, undefined, undefined, loadChildren);
+  }
+
+  static forChildren(path: string, childrenRoutes: HseRoutes): HseRoute {
+    var hseRoute = new HseRoute(path, undefined);
+    (<Route>hseRoute).children = childrenRoutes.getRoutes();
+
+    return hseRoute;
   }
 }
 

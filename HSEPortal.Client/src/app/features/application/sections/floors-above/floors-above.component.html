@@ -1,0 +1,48 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                  <govuk-error-link anchorId="input-floors-above" [message]="errorSummaryMessage" />
+                </govuk-error-summary>
+
+                <span class="govuk-caption-xl">{{ captionText }}</span>
+                <govuk-fieldset title="Number of floors above ground level" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+
+                    <govuk-body>Count all floors from ground level to the top floor of the block.</govuk-body>
+
+                    <govuk-body>Include:</govuk-body>
+                    <govuk-list classes="govuk-list--bullet">
+                        <govuk-list-item text="any floors at ground level" />
+                        <govuk-list-item text="mezzanine floors that are at least half the largest floor area you have counted in the rest of the block" />
+                    </govuk-list>
+
+                    <govuk-body>Do not count:</govuk-body>
+                    <govuk-list classes="govuk-list--bullet">
+                        <govuk-list-item text="floors below ground level" />
+                        <govuk-list-item text="floors used only for machinery or plant rooms" />
+                        <govuk-list-item text="the roof" />
+                    </govuk-list>
+
+
+                    <govuk-details summaryText="Help with ground level">
+                        <p>Ground level is the level of land immediately next to the block. If the block is on uneven land, count floors from the lowest part of the land immediately next to the block.</p>
+                        <p>Any ceiling below that level is below ground level.</p>
+                    </govuk-details>
+
+                    <govuk-input label="Number of floors above ground level for this block"
+                                 labelClass="govuk-label--s" id="floors-above"
+                                 [(model)]="applicationService.currentSection.FloorsAbove"
+                                 [errorText]="getErrorDescription(floorsHasError, errorMessage)"
+                                 class="govuk-input--width-3"/>
+
+                </govuk-fieldset>
+            </div>
+
+            <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+        </div>
+    </div>
+</div>

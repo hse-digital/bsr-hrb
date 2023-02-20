@@ -8,10 +8,10 @@
         <b>[WIP]</b>
         <govuk-fieldset title="Is your building a complex structure?" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
 
-          <govuk-radio-group [(model)]="continueLink">
-            <govuk-radio name="application-group" id="application-yes" value="intro" label="Yes">
+          <govuk-radio-group [(model)]="nextPage">
+            <govuk-radio name="application-group" id="application-yes" value="" label="Yes">
             </govuk-radio>
-            <govuk-radio name="application-group" id="application-no" value="floors-above" label="No"
+            <govuk-radio name="application-group" id="application-no" value="floors" label="No"
                          class="govuk-radio-no-margin-bottom">
             </govuk-radio>
           </govuk-radio-group>

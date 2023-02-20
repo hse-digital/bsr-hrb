@@ -6,20 +6,23 @@ import { HseAngularModule } from "hse-angular";
 import { ApplicationCompletedComponent } from "./components/application-completed/application-completed.component";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { ApplicationService } from "src/app/services/application.service";
-import { BuildingModule } from "./components/building/building.module";
-import { AccountablePersonModule } from "./accountable-person/accountable-person.module";
 import { ApplicationTaskListComponent } from "./task-list/task-list.component";
+import { ComplexStructureComponent } from "./complex-structure/complex-structure.component";
+import { SectionsModule } from "./sections/sections.module";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent),
-  HseRoute.forChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
-  HseRoute.forChildren(BuildingModule.baseRoute, () => import('./components/building/building.module').then(m => m.BuildingModule)),
+  HseRoute.protected(ComplexStructureComponent.route, ComplexStructureComponent),
+  HseRoute.forLoadChildren(SectionsModule.baseRoute, () => import('./sections/sections.module').then(m => m.SectionsModule)),
+
+  // HseRoute.forChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
 ]);
 
 @NgModule({
   declarations: [
     ApplicationTaskListComponent,
     ApplicationCompletedComponent,
+    ComplexStructureComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

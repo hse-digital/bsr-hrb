@@ -1,0 +1,27 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-xl">Provide basic information about the blocks</span>
+      <govuk-fieldset title="Check your answers" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+
+        <govuk-fieldset title="First block" [isPageHeading]=false id="first-block" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-6' />
+
+        <govuk-summary-list>
+          <govuk-summary-list-row key="Number of floors" [showAction]=true (onClick)="navigateTo(URLs.floorsAbove)">{{section.FloorsAbove}}</govuk-summary-list-row>
+          <govuk-summary-list-row key="Height" [showAction]=true (onClick)="navigateTo(URLs.height)">{{section.Height}} metres</govuk-summary-list-row>
+          <govuk-summary-list-row key="Number of residential units" [showAction]=true (onClick)="navigateTo(URLs.residentialUnits)">{{section.ResidentialUnits}} </govuk-summary-list-row>
+          <govuk-summary-list-row key="Are people living in the block?" [showAction]=true (onClick)="navigateTo(URLs.peopleLivingInBuilding)">{{section.PeopleLivingInBuilding | peopleLivingInSectionDescription}}</govuk-summary-list-row>
+          <govuk-summary-list-row key="Year of completion" [showAction]=true (onClick)="navigateTo(URLs.yearCompletition)">{{section.YearCompletition}}</govuk-summary-list-row>
+          <govuk-summary-list-row key="Completion certificate issuer" [showAction]=true (onClick)="navigateTo(URLs.completitionCertificateIssuer)">{{section.CompletitionCertificateIssuer}}</govuk-summary-list-row>
+          <govuk-summary-list-row key="Completion certificate reference" [showAction]=true (onClick)="navigateTo(URLs.completitionCertificateReference)">{{section.CompletitionCertificateReference}}</govuk-summary-list-row>
+          <govuk-summary-list-row key="Address" [showAction]=true (onClick)="navigateTo(URLs.address)">{{section.Address}}</govuk-summary-list-row>
+        </govuk-summary-list>
+
+      </govuk-fieldset>
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <govuk-body><a class="govuk-link" href="/start">Save and exit this application</a></govuk-body>
+    </div>
+  </div>
+</div>
