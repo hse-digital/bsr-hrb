@@ -12,6 +12,7 @@ import { SectionPeopleLivingInBuildingComponent } from "../people-living-in-buil
 })
 export class SectionResidentialUnitsComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'residential-units';
+  override updateOnSave: boolean = true;
 
   constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);

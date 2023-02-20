@@ -111,6 +111,10 @@ export class ApplicationService {
     LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
+  async updateApplication(): Promise<void> {
+    await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
+  }
+
 }
 
 export class BuildingRegistrationModel {
