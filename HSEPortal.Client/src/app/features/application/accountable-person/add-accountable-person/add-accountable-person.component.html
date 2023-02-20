@@ -18,11 +18,11 @@
 
           <govuk-radio-group title="Add another accountable person?" fieldsetClass="govuk-fieldset__legend--m"
                              id="radios-add-accountable-person"
-                             [(model)]="model.addAccountablePerson"
+                             [(model)]="addAccountablePerson"
                              [errorText]="getErrorDescription(hasErrors, 'Select yes if you want to add another accountable person')">
-            <govuk-radio name="application-group" id="yes" value="other-accountable-person" label="Yes">
+            <govuk-radio name="application-group" id="yes" value="yes" label="Yes">
             </govuk-radio>
-            <govuk-radio name="application-group" id="no" value="add-accountable-person" label="No"
+            <govuk-radio name="application-group" id="no" value="no" label="No"
                          class="govuk-radio-no-margin-bottom">
             </govuk-radio>
           </govuk-radio-group>
