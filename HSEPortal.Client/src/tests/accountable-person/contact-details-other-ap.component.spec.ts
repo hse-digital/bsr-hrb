@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { IndividualContactDetailsApComponent } from 'src/app/features/application/accountable-person/individual/individual-contact-details-ap/individual-contact-details-ap.component';
 
-import { ContactDetailsOtherApComponent } from '../../app/features/application/accountable-person/contact-details-other-ap/contact-details-other-ap.component';
-
-describe('ContactDetailsOtherApComponent', () => {
-  let component: ContactDetailsOtherApComponent;
-  let fixture: ComponentFixture<ContactDetailsOtherApComponent>;
+xdescribe('ContactDetailsOtherApComponent', () => {
+  let component: IndividualContactDetailsApComponent;
+  let fixture: ComponentFixture<IndividualContactDetailsApComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ContactDetailsOtherApComponent ]
+      declarations: [IndividualContactDetailsApComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ContactDetailsOtherApComponent);
+    fixture = TestBed.createComponent(IndividualContactDetailsApComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

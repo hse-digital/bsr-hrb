@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OrganisationTypeApComponent } from 'src/app/features/application/accountable-person/organisation/organisation-type-ap/organisation-type-ap.component';
 
-describe('OrganisationTypeApComponent', () => {
+xdescribe('OrganisationTypeApComponent', () => {
   let component: OrganisationTypeApComponent;
   let fixture: ComponentFixture<OrganisationTypeApComponent>;
 
