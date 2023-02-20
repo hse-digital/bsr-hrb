@@ -6,7 +6,7 @@ using HSEPortal.API.Services;
 using Moq;
 using Xunit;
 
-namespace HSEPortal.API.UnitTests;
+namespace HSEPortal.API.UnitTests.EmailVerification;
 
 public class WhenSendingVerificationEmail : UnitTestBase
 {

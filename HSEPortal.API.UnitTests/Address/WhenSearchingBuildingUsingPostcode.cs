@@ -8,7 +8,7 @@ using HSEPortal.API.Services;
 using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace HSEPortal.API.UnitTests;
+namespace HSEPortal.API.UnitTests.Address;
 
 public class WhenSearchingBuildingUsingPostcode : UnitTestBase
 {

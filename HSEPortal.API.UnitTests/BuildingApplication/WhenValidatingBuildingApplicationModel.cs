@@ -3,7 +3,7 @@ using HSEPortal.API.Model;
 using HSEPortal.TestingCommon.Builders;
 using Xunit;
 
-namespace HSEPortal.API.UnitTests;
+namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenValidatingBuildingRegistrationModel
 {

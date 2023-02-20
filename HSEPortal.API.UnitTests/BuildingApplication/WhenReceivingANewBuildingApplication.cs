@@ -6,7 +6,7 @@ using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
 using Xunit;
 
-namespace HSEPortal.API.UnitTests;
+namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenReceivingANewBuildingApplication : UnitTestBase
 {
