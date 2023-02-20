@@ -26,7 +26,7 @@ public class WhenGettingApplication : UnitTestBase
     {
         var token = OtpService.GenerateToken(emailAddress);
         var cosmosApplication = new BuildingApplicationModelBuilder().WithApplicationId(applicationId).WithContactEmailAddress(emailAddress).Build();
-        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestDataWithParameters(applicationId, emailAddress, token), new List<BuildingApplicationModel> { cosmosApplication }, token);
+        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: new object(), applicationId, emailAddress, token), new List<BuildingApplicationModel> { cosmosApplication }, token);
 
         applicationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var responseApplication = await applicationResponse.ReadAsJsonAsync<BuildingApplicationModel>();
@@ -38,7 +38,7 @@ public class WhenGettingApplication : UnitTestBase
     public async Task ShouldReturnBadRequestIfApplicationIdIsInvalid()
     {
         var token = OtpService.GenerateToken(emailAddress);
-        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestDataWithParameters(applicationId), new List<BuildingApplicationModel>(), token);
+        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: new object(), applicationId), new List<BuildingApplicationModel>(), token);
         applicationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -47,7 +47,7 @@ public class WhenGettingApplication : UnitTestBase
     {
         var invalidToken = "123456";
         var cosmosApplication = new BuildingApplicationModelBuilder().WithApplicationId(applicationId).WithContactEmailAddress(emailAddress).Build();
-        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestDataWithParameters(applicationId, emailAddress, invalidToken), new List<BuildingApplicationModel> { cosmosApplication }, invalidToken);
+        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: new object(), applicationId, emailAddress, invalidToken), new List<BuildingApplicationModel> { cosmosApplication }, invalidToken);
 
         applicationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }

@@ -59,6 +59,23 @@ public class BuildingApplicationFunctions
 
         return request.CreateResponse(HttpStatusCode.BadRequest);
     }
+
+    [Function(nameof(UpdateApplication))]
+    public async Task<CustomHttpResponseData> UpdateApplication([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "UpdateApplication/{applicationNumber}")] HttpRequestData request)
+    {
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        var validation = buildingApplicationModel.Validate();
+        if (!validation.IsValid)
+        {
+            return await request.BuildValidationErrorResponseDataAsync(validation);
+        }
+        
+        return new CustomHttpResponseData
+        {
+            Application = buildingApplicationModel,
+            HttpResponse = request.CreateResponse(HttpStatusCode.OK)
+        };
+    }
 }
 
 public class CustomHttpResponseData

@@ -25,7 +25,7 @@ public class WhenValidatingVerificationCode : UnitTestBase
         var token = otpService.GenerateToken(emailAddress);
         var model = new OTPValidationModel(token, emailAddress);
 
-        var request = BuildHttpRequestDataWithBody(model);
+        var request = BuildHttpRequestData(model);
         var response = await emailVerificationFunction.ValidateOTPToken(request);
 
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -39,7 +39,7 @@ public class WhenValidatingVerificationCode : UnitTestBase
         var token = otpService.GenerateToken(emailAddress, DateTime.UtcNow.AddMinutes(-minutesToReduce));
         var model = new OTPValidationModel(token, emailAddress);
 
-        var request = BuildHttpRequestDataWithBody(model);
+        var request = BuildHttpRequestData(model);
         var response = await emailVerificationFunction.ValidateOTPToken(request);
 
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -52,7 +52,7 @@ public class WhenValidatingVerificationCode : UnitTestBase
     {
         var model = new OTPValidationModel(token, emailAddress);
 
-        var request = BuildHttpRequestDataWithBody(model);
+        var request = BuildHttpRequestData(model);
         var response = await emailVerificationFunction.ValidateOTPToken(request);
 
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -67,7 +67,7 @@ public class WhenValidatingVerificationCode : UnitTestBase
         var token = otpService.GenerateToken(emailAddress);
         var model = new OTPValidationModel(token, secretKey);
 
-        var request = BuildHttpRequestDataWithBody(model);
+        var request = BuildHttpRequestData(model);
         var response = await emailVerificationFunction.ValidateOTPToken(request);
 
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
