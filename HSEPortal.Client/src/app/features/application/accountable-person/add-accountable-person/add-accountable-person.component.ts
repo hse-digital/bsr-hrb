@@ -4,15 +4,16 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { OtherAccountablePersonComponent } from '../other-accountable-person/other-accountable-person.component';
 
 @Component({
   selector: 'hse-add-accountable-person',
   templateUrl: './add-accountable-person.component.html',
 })
-export class AddAccountablePersonComponent extends BaseComponent implements IHasNextPage{
-  static route: string = 'add-accountable-person';
+export class AddAccountablePersonComponent extends BaseComponent implements IHasNextPage {
+  static route: string = 'add-more';
 
-  model: { addAccountablePerson?: string } = {}
+  addAccountablePerson?: string;
   addAccountablePersonHasError = false;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
@@ -24,17 +25,12 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
   }
 
   canContinue(): boolean {
-    this.addAccountablePersonHasError = !this.model.addAccountablePerson;
+    this.addAccountablePersonHasError = !this.addAccountablePerson;
     return !this.addAccountablePersonHasError;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let route = this.model.addAccountablePerson ?? '';
-    if (this.model.addAccountablePerson === 'other-accountable-person') {
-      let id = this.applicationService.initializeNewAccountablePerson();
-      route = `../${id}/${route}`;
-      console.log(this.applicationService.model);
-    }
+    let route = this.addAccountablePerson == 'yes' ? OtherAccountablePersonComponent.route : AddAccountablePersonComponent.route;
     return this.navigationService.navigateRelative(route, activatedRoute);
   }
 

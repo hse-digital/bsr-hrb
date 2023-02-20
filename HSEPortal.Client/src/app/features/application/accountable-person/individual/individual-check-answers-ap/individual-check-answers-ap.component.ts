@@ -7,8 +7,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'hse-individual-check-answers-ap',
-  templateUrl: './individual-check-answers-ap.component.html',
-  styleUrls: ['./individual-check-answers-ap.component.scss']
+  templateUrl: './individual-check-answers-ap.component.html'
 })
 export class IndividualCheckAnswersApComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'individual-check-answers';
@@ -22,6 +21,6 @@ export class IndividualCheckAnswersApComponent extends BaseComponent implements 
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return this.navigationService.navigateRelative('add-accountable-person', activatedRoute);
+    return this.navigationService.navigateRelative('../add-more', activatedRoute);
   }
 }

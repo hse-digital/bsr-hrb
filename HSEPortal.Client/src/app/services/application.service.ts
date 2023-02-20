@@ -8,6 +8,7 @@ export class ApplicationService {
   model: BuildingRegistrationModel;
 
   private _currentSectionIndex = 0;
+  private _currentAccountablePersonIndex = 0;
   get currentSection(): SectionModel {
     return this.model.Sections[this._currentSectionIndex];
   }
@@ -40,7 +41,28 @@ export class ApplicationService {
     this.model.Sections.push(new SectionModel());
     this._currentSectionIndex = this.model.Sections.length - 1;
 
-    return `section-${this._currentSectionIndex+1}`;
+    return `section-${this._currentSectionIndex + 1}`;
+  }
+
+  startAccountablePersonEdit(accountPersonType: string): string {
+    this._currentAccountablePersonIndex = 0;
+
+    let accountablePerson = new AccountablePersonModel();
+    accountablePerson.Type = accountPersonType;
+
+    this.model.AccountablePersons = [accountablePerson];
+
+    return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
+  }
+
+  startNewAccountablePerson(accountPersonType: string): string {
+    let accountablePerson = new AccountablePersonModel();
+    accountablePerson.Type = accountPersonType;
+
+    this.model.AccountablePersons.push(accountablePerson);
+    this._currentAccountablePersonIndex = this.model.AccountablePersons.length - 1;
+
+    return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
   initializeNewAccountablePerson() {
@@ -122,24 +144,20 @@ export class SectionModel {
   AnotherSection?: string;
 }
 
-export abstract class AccountablePersonModel {
+export class AccountablePersonModel {
   id?: string;
   Type?: string;
   IsPrincipal?: boolean;
-}
 
-export class OrganisationAccountablePersonModel extends AccountablePersonModel {
-  Name?: string;
+  OrganisationName?: string;
   OrganisationType?: string;
-  AddressLineOne?: string;
-  AddressLineTwo?: string;
-  TownOrCity?: string;
-  Postcode?: string;
-}
+  OrganisationAddressLineOne?: string;
+  OrganisationAddressLineTwo?: string;
+  OrganisationTownOrCity?: string;
+  OrganisationPostcode?: string;
 
-export class IndividualAccountablePersonModel extends AccountablePersonModel {
-  FirstName?: string;
-  LastName?: string;
-  Email?: string;
-  PhoneNumber?: string;
+  IndividualFirstName?: string;
+  IndividualLastName?: string;
+  IndividualEmail?: string;
+  IndividualPhoneNumber?: string;
 }

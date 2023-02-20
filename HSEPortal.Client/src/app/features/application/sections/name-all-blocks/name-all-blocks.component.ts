@@ -21,9 +21,6 @@ export class NameAllBlocksComponent extends BaseComponent implements IHasNextPag
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    this.applicationService.model.AccountablePersons = [];
-    let accountablePersonId = this.applicationService.initializeNewAccountablePerson();
-    let route = `../accountable-person/${accountablePersonId}/accountable-person`;
-    return this.navigationService.navigateRelative(route, activatedRoute);
+    return this.navigationService.navigateRelative(`../accountable-person`, activatedRoute);
   }
 }
