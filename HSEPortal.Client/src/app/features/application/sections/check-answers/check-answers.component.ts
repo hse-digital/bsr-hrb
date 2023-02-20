@@ -8,6 +8,7 @@ import { SectionFloorsAboveComponent } from '../floors-above/floors-above.compon
 import { SectionHeightComponent } from '../height/height.component';
 import { SectionResidentialUnitsComponent } from '../residential-units/residential-units.component';
 import { SectionPeopleLivingInBuildingComponent } from '../people-living-in-building/people-living-in-building.component';
+import { SectionAddressComponent } from '../address/section-address.component';
 @Component({
   selector: 'hse-check-answers',
   templateUrl: './check-answers.component.html',
@@ -23,7 +24,7 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     yearCompletition: "check-answers", // TO-DO
     completitionCertificateIssuer: "check-answers", // TO-DO
     completitionCertificateReference: "check-answers", // TO-DO
-    address: "check-answers" // TO-DO
+    address: SectionAddressComponent.route // TO-DO
   }
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
