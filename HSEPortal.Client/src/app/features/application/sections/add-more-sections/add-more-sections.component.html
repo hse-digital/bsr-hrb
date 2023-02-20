@@ -1,0 +1,32 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link anchorId="fieldset-another-block" message="Select yes if there are more blocks in the building" />
+        </govuk-error-summary>
+
+        <span class="govuk-caption-l">{{ captionText ?? "Blocks in the building" }}</span>
+        <govuk-fieldset [errorText]="getErrorDescription(anotherBlockHasErrors, 'Select yes if there are more blocks in the building')"
+                        title="Are there more blocks in the building?"
+                        [isPageHeading]=true id="application"
+                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'>
+
+          <govuk-body>So far you have told us about {{blockNames}}.</govuk-body>
+
+          <govuk-radio-group id="another-block"
+                             [(model)]="addAnotherSectionLink"
+                             title="Add another block?" fieldsetClass="govuk-fieldset__legend--s">
+            <govuk-radio name="another-block" id="yes" value="yes" label="Yes" />
+            <govuk-radio name="another-block" id="no" value="no" label="No" />
+          </govuk-radio-group>
+        </govuk-fieldset>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+    </div>
+  </div>
+</div>

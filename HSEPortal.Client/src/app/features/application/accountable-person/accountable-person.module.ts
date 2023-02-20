@@ -24,17 +24,20 @@ const routes = new HseRoutes([
   HseRoute.unsafe(AccountablePersonComponent.route, AccountablePersonComponent),
   HseRoute.unsafe(OtherAccountablePersonComponent.route, OtherAccountablePersonComponent),
   HseRoute.unsafe(AddAccountablePersonComponent.route, AddAccountablePersonComponent),
-  HseRoute.unsafe(OrganisationTypeApComponent.route, OrganisationTypeApComponent),
-  HseRoute.unsafe(OrganisationNameApComponent.route, OrganisationNameApComponent),
-  HseRoute.unsafe(OrganisationAddressComponent.route, OrganisationAddressComponent),
-  HseRoute.unsafe(OrganisationAreasApComponent.route, OrganisationAreasApComponent),
-  HseRoute.unsafe(OrganisationNamedContactApComponent.route, OrganisationNamedContactApComponent),
-  HseRoute.unsafe(OrganisationJobRoleApComponent.route, OrganisationJobRoleApComponent),
-  HseRoute.unsafe(OrganisationCheckAnswersApComponent.route, OrganisationCheckAnswersApComponent),
-  HseRoute.unsafe(IndividualNameApComponent.route, IndividualNameApComponent),
-  HseRoute.unsafe(IndividualContactDetailsApComponent.route, IndividualContactDetailsApComponent),
-  HseRoute.unsafe(IndividualAddressComponent.route, IndividualAddressComponent),
-  HseRoute.unsafe(IndividualCheckAnswersApComponent.route, IndividualCheckAnswersApComponent),
+  HseRoute.forChildren(':id', new HseRoutes([
+    HseRoute.unsafe(OrganisationTypeApComponent.route, OrganisationTypeApComponent),
+    HseRoute.unsafe(OrganisationNameApComponent.route, OrganisationNameApComponent),
+    HseRoute.unsafe(OrganisationAddressComponent.route, OrganisationAddressComponent),
+    HseRoute.unsafe(OrganisationAreasApComponent.route, OrganisationAreasApComponent),
+    HseRoute.unsafe(OrganisationNamedContactApComponent.route, OrganisationNamedContactApComponent),
+    HseRoute.unsafe(OrganisationJobRoleApComponent.route, OrganisationJobRoleApComponent),
+    HseRoute.unsafe(OrganisationCheckAnswersApComponent.route, OrganisationCheckAnswersApComponent),
+    HseRoute.unsafe(IndividualNameApComponent.route, IndividualNameApComponent),
+    HseRoute.unsafe(IndividualContactDetailsApComponent.route, IndividualContactDetailsApComponent),
+    HseRoute.unsafe(IndividualAddressComponent.route, IndividualAddressComponent),
+    HseRoute.unsafe(IndividualCheckAnswersApComponent.route, IndividualCheckAnswersApComponent),
+  ]))
+
 ]);
 
 @NgModule({
@@ -63,5 +66,5 @@ const routes = new HseRoutes([
   providers: [HttpClient, ...routes.getProviders()]
 })
 export class AccountablePersonModule {
-  static baseRoute: string = ':id/accountable-person/:acId';
+  static baseRoute: string = 'accountable-person';
 }

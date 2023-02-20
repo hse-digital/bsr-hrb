@@ -1,12 +1,18 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { firstValueFrom, map } from "rxjs";
+import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 
 @Injectable()
 export class ApplicationService {
-  model: BuildingRegistrationModel = {};
-  currentBlock: BlockModel = {};
+  model: BuildingRegistrationModel;
+
+  private _currentSectionIndex = 0;
+  private _currentAccountablePersonIndex = 0;
+  get currentSection(): SectionModel {
+    return this.model.Sections[this._currentSectionIndex];
+  }
+
   currentAccountablePerson: any = {};
 
   constructor(private httpClient: HttpClient) {
@@ -15,46 +21,48 @@ export class ApplicationService {
 
   newApplication() {
     LocalStorage.remove('HSE_MODEL');
-
-    this.model = {};
-    this.model.Blocks = [];
-    this.model.AccountablePersons = [];
+    this.model = new BuildingRegistrationModel();
   }
 
   updateLocalStorage() {
-    this.updateCurrentBlockOnModel();
-    this.updateCurrentAccountablePersonOnModel();
-
     LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
-  private updateCurrentBlockOnModel() {
-    let block = this.model.Blocks?.find(x => x.Id === this.currentBlock.Id)
-    if (block) block = this.currentBlock;
+  isCurrentApplication(id: string): boolean {
+    return this.model?.id !== undefined && this.model?.id == id;
   }
 
-  private updateCurrentAccountablePersonOnModel() {
-    let accountablePerson = this.model.AccountablePersons?.find(x => x.Id === this.currentAccountablePerson.Id)
-    if (accountablePerson) accountablePerson = this.currentAccountablePerson;
+  startSectionsEdit() {
+    this._currentSectionIndex = 0;
+    this.model.Sections = [new SectionModel()];
   }
 
-  initializeNewBlock(): string {
-    this.currentBlock = {};
-    let length = this.model.Blocks?.push(this.currentBlock) ?? 1;
-    let newId = this.generateNewBlockId(length);
-    this.setNewBlockId(newId);
+  startNewSection(): string {
+    this.model.Sections.push(new SectionModel());
+    this._currentSectionIndex = this.model.Sections.length - 1;
 
-    return newId;
+    return `section-${this._currentSectionIndex + 1}`;
   }
 
-  private generateNewBlockId(index: number) {
-    return `block-${index ?? 1}`
+  startAccountablePersonEdit(accountPersonType: string): string {
+    this._currentAccountablePersonIndex = 0;
+
+    let accountablePerson = new AccountablePersonModel();
+    accountablePerson.Type = accountPersonType;
+
+    this.model.AccountablePersons = [accountablePerson];
+
+    return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
-  private setNewBlockId(newId: string) {
-    this.currentBlock.Id = newId;
-    let block = this.model.Blocks?.at(-1);
-    if (block) block.Id = newId;
+  startNewAccountablePerson(accountPersonType: string): string {
+    let accountablePerson = new AccountablePersonModel();
+    accountablePerson.Type = accountPersonType;
+
+    this.model.AccountablePersons.push(accountablePerson);
+    this._currentAccountablePersonIndex = this.model.AccountablePersons.length - 1;
+
+    return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
   initializeNewAccountablePerson() {
@@ -62,7 +70,7 @@ export class ApplicationService {
     let length = this.model.AccountablePersons?.push(this.currentAccountablePerson) ?? 1;
     this.currentAccountablePerson.Id = length;
     let accountablePerson = this.model.AccountablePersons?.at(-1);
-    if (accountablePerson) accountablePerson.Id = length.toString();
+    if (accountablePerson) accountablePerson.id = length.toString();
 
     return length;
   }
@@ -94,20 +102,24 @@ export class ApplicationService {
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
     var application = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
     this.model = application;
+
+    LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
   async registerNewBuildingApplication(): Promise<void> {
     this.model = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/NewBuildingApplication', this.model));
-
-    this.currentBlock = {};
-    this.currentAccountablePerson = {};
-
     LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
 }
 
 export class BuildingRegistrationModel {
+
+  constructor() {
+    this.AccountablePersons = [];
+    this.Sections = [];
+  }
+
   id?: string;
   BuildingName?: string;
   ContactFirstName?: string;
@@ -115,12 +127,11 @@ export class BuildingRegistrationModel {
   ContactPhoneNumber?: string;
   ContactEmailAddress?: string;
   NumberBlocksBuilding?: string;
-  AccountablePersons?: AccountablePersonModel[];
-  Blocks?: BlockModel[];
+  AccountablePersons: AccountablePersonModel[] = [];
+  Sections: SectionModel[] = [];
 }
 
-export class BlockModel {
-  Id?: string;
+export class SectionModel {
   Name?: string;
   FloorsAbove?: number;
   Height?: number;
@@ -130,27 +141,23 @@ export class BlockModel {
   CompletitionCertificateIssuer?: any;
   CompletitionCertificateReference?: any;
   Address?: string;
-  AnotherBlock?: string;
+  AnotherSection?: string;
 }
 
-export abstract class AccountablePersonModel {
-  Id?: string;
+export class AccountablePersonModel {
+  id?: string;
   Type?: string;
   IsPrincipal?: boolean;
-}
 
-export class OrganisationAccountablePersonModel extends AccountablePersonModel {
-  Name?: string;
+  OrganisationName?: string;
   OrganisationType?: string;
-  AddressLineOne?: string;
-  AddressLineTwo?: string;
-  TownOrCity?: string;
-  Postcode?: string;
-}
+  OrganisationAddressLineOne?: string;
+  OrganisationAddressLineTwo?: string;
+  OrganisationTownOrCity?: string;
+  OrganisationPostcode?: string;
 
-export class IndividualAccountablePersonModel extends AccountablePersonModel {
-  FirstName?: string;
-  LastName?: string;
-  Email?: string;
-  PhoneNumber?: string;
+  IndividualFirstName?: string;
+  IndividualLastName?: string;
+  IndividualEmail?: string;
+  IndividualPhoneNumber?: string;
 }

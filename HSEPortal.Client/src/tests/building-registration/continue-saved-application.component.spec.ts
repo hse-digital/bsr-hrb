@@ -4,22 +4,22 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
-import { ApplicationContinueComponent } from '../../app/features/application/components/application-continue/application-continue.component';
+import { ReturningApplicationComponent } from '../../app/features/returning-application/returning-application.component';
 import { ApplicationService } from '../../app/services/application.service';
 
-let component: ApplicationContinueComponent;
-let fixture: ComponentFixture<ApplicationContinueComponent>;
+let component: ReturningApplicationComponent;
+let fixture: ComponentFixture<ReturningApplicationComponent>;
 
 
 xdescribe('ApplicationContinueComponent showError', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ApplicationContinueComponent],
+      declarations: [ReturningApplicationComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [HttpClient, HttpHandler, ApplicationService]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ApplicationContinueComponent);
+    fixture = TestBed.createComponent(ReturningApplicationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -91,12 +91,12 @@ xdescribe('ApplicationContinueComponent showError', () => {
 xdescribe('ApplicationContinueComponent getErrorDescription(value, errorText)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ApplicationContinueComponent],
+      declarations: [ReturningApplicationComponent],
       imports: [RouterTestingModule, HseAngularModule],
       providers: [HttpClient, HttpHandler, ApplicationService]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ApplicationContinueComponent);
+    fixture = TestBed.createComponent(ReturningApplicationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

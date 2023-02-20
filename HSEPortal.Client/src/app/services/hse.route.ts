@@ -9,11 +9,11 @@ export class HseRoute implements Route {
     return this._isProtected;
   }
 
-  constructor(public path: string, public component?: Type<any>, public loadChildren?: LoadChildrenCallback) {
+  constructor(public path: string, public component?: Type<any>, public redirectTo?: string, public loadChildren?: LoadChildrenCallback) {
   }
 
-  static unsafe(path: string, component: Type<any>): HseRoute {
-    return new HseRoute(path, component);
+  static unsafe(path: string, component?: Type<any>, redirectTo?: string): HseRoute {
+    return new HseRoute(path, component, redirectTo);
   }
 
   static protected(path: string, component: Type<any>): HseRoute {
@@ -24,8 +24,15 @@ export class HseRoute implements Route {
     return hseRoute;
   }
 
-  static forChildren(path: string, loadChildren: LoadChildrenCallback): HseRoute {
-    return new HseRoute(path, undefined, loadChildren);
+  static forLoadChildren(path: string, loadChildren: LoadChildrenCallback): HseRoute {
+    return new HseRoute(path, undefined, undefined, loadChildren);
+  }
+
+  static forChildren(path: string, childrenRoutes: HseRoutes): HseRoute {
+    var hseRoute = new HseRoute(path, undefined);
+    (<Route>hseRoute).children = childrenRoutes.getRoutes();
+
+    return hseRoute;
   }
 }
 
