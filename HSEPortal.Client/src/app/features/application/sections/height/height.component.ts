@@ -12,6 +12,7 @@ import { IHasNextPage } from "../../../../helpers/has-next-page.interface";
 export class SectionHeightComponent extends BaseComponent implements IHasNextPage {
 
   static route: string = 'height';
+  override updateOnSave: boolean = true;
 
   constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);

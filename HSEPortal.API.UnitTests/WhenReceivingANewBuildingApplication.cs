@@ -103,7 +103,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
 
     private async Task<CustomHttpResponseData> WhenANewBuildingApplicationIsReceived(BuildingApplicationModel buildingApplicationModel)
     {
-        var requestData = BuildHttpRequestDataWithBody(buildingApplicationModel);
+        var requestData = BuildHttpRequestData(buildingApplicationModel);
         return await buildingApplicationFunctions.NewBuildingApplication(requestData);
     }
 }
