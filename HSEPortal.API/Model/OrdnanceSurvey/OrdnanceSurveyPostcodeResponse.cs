@@ -9,28 +9,18 @@ public class OrdnanceSurveyPostcodeResponse
 public class Result
 {
     public LPI LPI { get; set; }
+    public DPA DPA { get; set; }
 }
 
 public class Header
 {
-    public string uri { get; set; }
-    public string query { get; set; }
     public int offset { get; set; }
     public int totalresults { get; set; }
-    public string format { get; set; }
-    public string dataset { get; set; }
-    public string lr { get; set; }
     public int maxresults { get; set; }
-    public string epoch { get; set; }
-    public string lastupdate { get; set; }
-    public string filter { get; set; }
-    public string output_srs { get; set; }
 }
 
-public class LPI
+public class LPI : BASEADDRESS
 {
-    public string UPRN { get; set; }
-    public string ADDRESS { get; set; }
     public string USRN { get; set; }
     public string LPI_KEY { get; set; }
     public string PAO_TEXT { get; set; }
@@ -38,9 +28,32 @@ public class LPI
     public string TOWN_NAME { get; set; }
     public string ADMINISTRATIVE_AREA { get; set; }
     public string POSTCODE_LOCATOR { get; set; }
-    public string RPC { get; set; }
-    public double X_COORDINATE { get; set; }
-    public double Y_COORDINATE { get; set; }
+    public string LPI_LOGICAL_STATUS_CODE { get; set; }
+    public string LPI_LOGICAL_STATUS_CODE_DESCRIPTION { get; set; }
+}
+
+public class DPA : BASEADDRESS
+{
+    public string UDPRN { get; set; }
+    public string SUB_BUILDING_NAME { get; set; }
+    public string BUILDING_NUMBER { get; set; }
+    public string THOROUGHFARE_NAME { get; set; }
+    public string POST_TOWN { get; set; }
+    public string POSTCODE { get; set; }
+    public string PARENT_UPRN { get; set; }
+    public string DELIVERY_POINT_SUFFIX { get; set; }
+}
+
+public class BASEADDRESS
+{
+    public string UPRN { get; set; }
+    public string ADDRESS { get; set; }
+    public string LAST_UPDATE_DATE { get; set; }
+    public string ENTRY_DATE { get; set; }
+    public string BLPU_STATE_DATE { get; set; }
+    public string LANGUAGE { get; set; }
+    public double MATCH { get; set; }
+    public string MATCH_DESCRIPTION { get; set; }
     public string STATUS { get; set; }
     public string LOGICAL_STATUS_CODE { get; set; }
     public string CLASSIFICATION_CODE { get; set; }
@@ -54,12 +67,7 @@ public class LPI
     public string BLPU_STATE_CODE { get; set; }
     public string BLPU_STATE_CODE_DESCRIPTION { get; set; }
     public string TOPOGRAPHY_LAYER_TOID { get; set; }
-    public string LAST_UPDATE_DATE { get; set; }
-    public string ENTRY_DATE { get; set; }
-    public string BLPU_STATE_DATE { get; set; }
-    public string LPI_LOGICAL_STATUS_CODE { get; set; }
-    public string LPI_LOGICAL_STATUS_CODE_DESCRIPTION { get; set; }
-    public string LANGUAGE { get; set; }
-    public double MATCH { get; set; }
-    public string MATCH_DESCRIPTION { get; set; }
+    public string RPC { get; set; }
+    public double X_COORDINATE { get; set; }
+    public double Y_COORDINATE { get; set; }
 }
