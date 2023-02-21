@@ -28,6 +28,11 @@ export class ApplicationService {
     LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
+  clearApplication() {
+    this.model = new BuildingRegistrationModel();
+    this.updateLocalStorage();
+  }
+
   isCurrentApplication(id: string): boolean {
     return this.model?.id !== undefined && this.model?.id == id;
   }

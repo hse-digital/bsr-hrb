@@ -5,3 +5,5 @@
 
     <router-outlet />
 </govuk-page>
+
+<timeout-modal *ngIf="showTimeoutDialog" (onContinueClicked)="timeoutContinue()" (onSaveAndComebackClicked)="timeoutSaveAndComeBack()" (onTimeout)="timeout()" />
