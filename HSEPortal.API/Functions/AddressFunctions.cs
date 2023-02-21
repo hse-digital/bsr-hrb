@@ -57,7 +57,6 @@ public class AddressFunctions
         {
             query = query,
             dataset = "LPI,DPA",
-            fq = "CLASSIFICATION_CODE:PP",
             minmatch = 0.5,
             key = integrationOptions.OrdnanceSurveyApiKey
         });

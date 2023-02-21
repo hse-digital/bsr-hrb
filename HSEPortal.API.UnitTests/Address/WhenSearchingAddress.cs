@@ -29,7 +29,7 @@ public class WhenSearchingAddress : UnitTestBase
         HttpTest.RespondWithJson(BuildAddressResponseJson());
         await addressFunctions.SearchAddress(BuildHttpRequestData<object>(default, searchQuery), searchQuery);
 
-        HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/find?query={Url.Encode(searchQuery)}&dataset={Url.Encode("LPI,DPA")}&fq=CLASSIFICATION_CODE%3APP&minmatch=0.5&key={integrationsOptions.OrdnanceSurveyApiKey}")
+        HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/find?query={Url.Encode(searchQuery)}&dataset={Url.Encode("LPI,DPA")}&minmatch=0.5&key={integrationsOptions.OrdnanceSurveyApiKey}")
             .WithVerb(HttpMethod.Get);
     }
 
