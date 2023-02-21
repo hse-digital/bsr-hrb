@@ -9,7 +9,8 @@ public record BuildingApplicationModel(
     string ContactFirstName = null,
     string ContactLastName = null,
     string ContactPhoneNumber = null,
-    string ContactEmailAddress = null) : IValidatableModel
+    string ContactEmailAddress = null,
+    SectionModel[] Sections = null) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
@@ -53,3 +54,5 @@ public record BuildingApplicationModel(
         return Regex.IsMatch(noSpacesPhoneNumber, @"^\+44\d{10}$") || Regex.IsMatch(noSpacesPhoneNumber, @"^0\d{10}$");
     }
 }
+
+public record SectionModel(string Name, string FloorsAbove, string Height, string PeopleLivingInBuilding, string ResidentialUnits);

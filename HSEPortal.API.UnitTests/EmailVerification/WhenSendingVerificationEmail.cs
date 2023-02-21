@@ -6,7 +6,7 @@ using HSEPortal.API.Services;
 using Moq;
 using Xunit;
 
-namespace HSEPortal.API.UnitTests;
+namespace HSEPortal.API.UnitTests.EmailVerification;
 
 public class WhenSendingVerificationEmail : UnitTestBase
 {
@@ -25,7 +25,7 @@ public class WhenSendingVerificationEmail : UnitTestBase
     {
         var emailVerificationModel = new EmailVerificationModel(email);
 
-        var requestData = BuildHttpRequestDataWithBody(emailVerificationModel);
+        var requestData = BuildHttpRequestData(emailVerificationModel);
         await emailVerificationFunction.SendVerificationEmail(requestData);
 
         HttpTest.ShouldHaveCalled(DynamicsOptions.EmailVerificationFlowUrl)
@@ -44,7 +44,7 @@ public class WhenSendingVerificationEmail : UnitTestBase
     {
         var emailVerificationModel = new EmailVerificationModel(emailAddress);
 
-        var requestData = BuildHttpRequestDataWithBody(emailVerificationModel);
+        var requestData = BuildHttpRequestData(emailVerificationModel);
         var response = await emailVerificationFunction.SendVerificationEmail(requestData);
 
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);

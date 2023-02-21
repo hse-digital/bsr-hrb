@@ -1,6 +1,8 @@
 using System.Text.Json;
+using AutoMapper;
 using Flurl.Http;
 using Flurl.Http.Testing;
+using HSEPortal.API.Model.OrdnanceSurvey;
 using HSEPortal.API.Services;
 using HSEPortal.API.UnitTests.Helpers;
 using HSEPortal.Domain.DynamicsDefinitions;
@@ -15,7 +17,7 @@ public abstract class UnitTestBase
 {
     protected HttpTest HttpTest { get; }
     protected DynamicsService DynamicsService { get; }
-    
+
     protected OTPService OtpService { get; }
 
     protected UnitTestBase()
@@ -39,7 +41,7 @@ public abstract class UnitTestBase
         EmailVerificationFlowUrl = "http://flow_url"
     };
 
-    protected HttpRequestData BuildHttpRequestDataWithBody<T>(T data)
+    protected HttpRequestData BuildHttpRequestData<T>(T data, params string[] parameters)
     {
         var functionContext = new Mock<FunctionContext>();
 
@@ -52,16 +54,13 @@ public abstract class UnitTestBase
         return new TestableHttpRequestData(functionContext.Object, new Uri(DynamicsOptions.EnvironmentUrl), memoryStream);
     }
 
-    protected HttpRequestData BuildHttpRequestDataWithParameters(params string[] parameters)
-    {
-        var functionContext = new Mock<FunctionContext>();
-        var uriWithParameters = new Uri($"{DynamicsOptions.EnvironmentUrl}/{string.Join('/', parameters)}");
-
-        return new TestableHttpRequestData(functionContext.Object, uriWithParameters);
-    }
-
     protected object BuildODataEntityHeader(string id)
     {
         return $"OData-EntityId={DynamicsOptions.EnvironmentUrl}/api/data/v9.2/whatever_entity({id})";
+    }
+
+    protected IMapper GetMapper()
+    {
+        return new MapperConfiguration(config => { config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>(); }).CreateMapper();
     }
 }
