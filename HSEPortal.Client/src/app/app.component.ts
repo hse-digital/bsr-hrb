@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from './services/application.service';
 import { HeaderTitleService } from './services/headertitle.service';
 import { IdleTimerService } from './services/idle-timer.service';
@@ -10,14 +10,33 @@ import { IdleTimerService } from './services/idle-timer.service';
 })
 export class AppComponent {
 
-  constructor(private headerTitleService: HeaderTitleService, private applicationService: ApplicationService, private router: Router, private idleTimerService: IdleTimerService) {
-    this.idleTimerService.initTimer(15 * 60, () => { 
-      this.applicationService.newApplication();
-      this.router.navigate(['/application/continue']);
+  showTimeoutDialog = false;
+
+  constructor(private applicationService: ApplicationService,
+    private router: Router, private headerTitleService: HeaderTitleService, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute) {
+    this.idleTimerService.initTimer(13 * 60, () => {
+      if (typeof window !== 'undefined' && window.location.href.indexOf("/application/") > -1) {
+        this.showTimeoutDialog = true;
+      }
     });
   }
 
   get headerTitle(): string | undefined {
     return this.headerTitleService.headerTitle;
+  }
+
+  async timeoutSaveAndComeBack() {
+    await this.applicationService.updateApplication();
+    this.showTimeoutDialog = false;
+    this.router.navigate(['']);
+  }
+
+  timeoutContinue() {
+    this.showTimeoutDialog = false;
+  }
+
+  timeout() {
+    this.applicationService.clearApplication();
+    this.showTimeoutDialog = false;
   }
 }
