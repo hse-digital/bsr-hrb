@@ -1,10 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application.service';
 import { HttpClient } from '@angular/common/http';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { PostcodeAPI } from '../../../../helpers/API/postcode.api';
+import { PostcodeAPI } from 'src/app/helpers/API/postcode.api';
 @Component({
   selector: 'find-address',
   templateUrl: './find-address.component.html'
@@ -17,7 +14,6 @@ export class FindAddressComponent {
   postcodeErrorText: string = '';
 
   @Output() public onFindAddress = new EventEmitter<{ input: string, addresses: string[] | undefined }>();
-
 
   constructor(public applicationService: ApplicationService, private httpClient: HttpClient) {
 

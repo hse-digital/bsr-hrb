@@ -16,6 +16,8 @@ export class SectionAddressComponent extends BaseComponent implements IHasNextPa
   public address?: string;
   public addresses?: string[];
 
+  private history: string[] = [];
+
   step = 'find';
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
@@ -47,28 +49,39 @@ export class SectionAddressComponent extends BaseComponent implements IHasNextPa
     this.address = find.input;
     if (find.addresses && find.addresses.length > 0) {
       this.addresses = find.addresses;
-      this.step = find.addresses.length < 100 ? "select" : "too-many";
+      this.changeStepTo(find.addresses.length < 100 ? "select" : "too-many");
     } else {
-      this.step = "not-found";
+      this.changeStepTo("not-found");
     }
   }
 
   selectAddress(selectedAddress: any) {
     this.selectedAddress = selectedAddress;
-    this.step = 'confirm';
+    this.changeStepTo('confirm');
   }
 
   searchAgain() {
-    this.step = 'find';
+    this.changeStepTo('find');
   }
 
   enterManualAddress() {
-    this.step = 'manual';
+    this.changeStepTo('manual');
   }
 
   manualAddress(manualAddress: { AddressLineOne?: string, AddressLineTwo?: string, TownOrCity?: string, Postcode?: string }) {
     this.selectedAddress = `${manualAddress.AddressLineOne}, ${manualAddress.Postcode}`;
-    this.step = 'confirm';
+    this.changeStepTo('confirm');
+  }
+
+  changeStepTo(step: string) {
+    this.history.push(this.step);
+    this.step = step;
+  }
+
+  navigateBack() {
+    let previousStep = this.history.pop();
+    this.step = previousStep ?? "find";
+    if (!previousStep) history.back();
   }
 
 }
