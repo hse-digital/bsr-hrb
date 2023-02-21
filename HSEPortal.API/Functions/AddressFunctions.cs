@@ -8,7 +8,6 @@ using HSEPortal.API.Model.OrdnanceSurvey;
 using HSEPortal.API.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions;
@@ -45,6 +44,21 @@ public class AddressFunctions
         {
             postcode = postcode,
             dataset = "DPA",
+            key = integrationOptions.OrdnanceSurveyApiKey
+        });
+
+        return await BuildResponseObject(request, response);
+    }
+
+    [Function(nameof(SearchAddress))]
+    public async Task<HttpResponseData> SearchAddress([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(SearchAddress)}/{{query}}")] HttpRequestData request, string query)
+    {
+        var response = await GetDataFromOrdnanceSurvey("find", new
+        {
+            query = query,
+            dataset = "LPI,DPA",
+            fq = "CLASSIFICATION_CODE:PP",
+            minmatch = 0.5,
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
