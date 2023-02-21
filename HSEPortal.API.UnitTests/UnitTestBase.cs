@@ -1,6 +1,8 @@
 using System.Text.Json;
+using AutoMapper;
 using Flurl.Http;
 using Flurl.Http.Testing;
+using HSEPortal.API.Model.OrdnanceSurvey;
 using HSEPortal.API.Services;
 using HSEPortal.API.UnitTests.Helpers;
 using HSEPortal.Domain.DynamicsDefinitions;
@@ -15,7 +17,7 @@ public abstract class UnitTestBase
 {
     protected HttpTest HttpTest { get; }
     protected DynamicsService DynamicsService { get; }
-    
+
     protected OTPService OtpService { get; }
 
     protected UnitTestBase()
@@ -55,5 +57,10 @@ public abstract class UnitTestBase
     protected object BuildODataEntityHeader(string id)
     {
         return $"OData-EntityId={DynamicsOptions.EnvironmentUrl}/api/data/v9.2/whatever_entity({id})";
+    }
+
+    protected IMapper GetMapper()
+    {
+        return new MapperConfiguration(config => { config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>(); }).CreateMapper();
     }
 }

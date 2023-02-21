@@ -3,11 +3,10 @@ using FluentAssertions;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
-using HSEPortal.API.Services;
 using HSEPortal.TestingCommon.Builders;
 using Xunit;
 
-namespace HSEPortal.API.UnitTests;
+namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenGettingApplication : UnitTestBase
 {

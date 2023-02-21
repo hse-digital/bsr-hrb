@@ -5,7 +5,7 @@ using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using Xunit;
 
-namespace HSEPortal.API.UnitTests;
+namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenValidatingVerificationCode : UnitTestBase
 {
