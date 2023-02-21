@@ -48,6 +48,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
 
         responseAddress.Results[0].UPRN.Should().Be(postcodeResponse.results[0].LPI.UPRN);
         responseAddress.Results[0].Address.Should().Be(postcodeResponse.results[0].LPI.ADDRESS);
+        responseAddress.Results[0].Number.Should().Be(postcodeResponse.results[0].LPI.PAO_START_NUMBER);
         responseAddress.Results[0].BuildingName.Should().Be(postcodeResponse.results[0].LPI.PAO_TEXT);
         responseAddress.Results[0].Street.Should().Be(postcodeResponse.results[0].LPI.STREET_DESCRIPTION);
         responseAddress.Results[0].Town.Should().Be(postcodeResponse.results[0].LPI.TOWN_NAME);
@@ -85,6 +86,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
                         USRN = "8401058",
                         LPI_KEY = "5990L 000016069",
                         PAO_TEXT = "BUCKINGHAM PALACE",
+                        PAO_START_NUMBER = "123",
                         STREET_DESCRIPTION = "THE MALL",
                         TOWN_NAME = "LONDON",
                         ADMINISTRATIVE_AREA = "CITY OF WESTMINSTER",

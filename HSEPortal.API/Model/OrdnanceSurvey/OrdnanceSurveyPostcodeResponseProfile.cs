@@ -13,6 +13,7 @@ public class OrdnanceSurveyPostcodeResponseProfile : Profile
 
         CreateMap<Result, BuildingAddress>()
             .ForMember(x => x.Address, x => x.MapFrom(y => y.LPI != null ? y.LPI.ADDRESS : y.DPA.ADDRESS))
+            .ForMember(x => x.Number, x => x.MapFrom(y => y.LPI != null ? y.LPI.PAO_START_NUMBER : string.Empty))
             .ForMember(x => x.UPRN, x => x.MapFrom(y => y.LPI != null ? y.LPI.UPRN : y.DPA.UPRN))
             .ForMember(x => x.Postcode, x => x.MapFrom(y => y.LPI != null ? y.LPI.POSTCODE_LOCATOR : y.DPA.POSTCODE))
             .ForMember(x => x.Street, x => x.MapFrom(y => y.LPI != null ? y.LPI.STREET_DESCRIPTION : y.DPA.THOROUGHFARE_NAME))
