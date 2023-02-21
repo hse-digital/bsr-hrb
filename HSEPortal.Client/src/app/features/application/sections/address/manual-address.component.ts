@@ -30,6 +30,7 @@ export class ManualAddressComponent {
     await !this.validateAndContinue();
     if (!this.hasErrors) {
       this.onManualAddress.emit(this.model);
+      this.model = {};
     }
   }
 

@@ -7,8 +7,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'hse-section-address',
-  templateUrl: './section-address.component.html',
-  styleUrls: ['./section-address.component.scss']
+  templateUrl: './section-address.component.html'
 })
 export class SectionAddressComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'address';
@@ -45,7 +44,6 @@ export class SectionAddressComponent extends BaseComponent implements IHasNextPa
   }
 
   findAddress(find: { input: string, addresses: string[] | undefined }) {
-    console.log(find);
     this.address = find.input;
     if (find.addresses && find.addresses.length > 0) {
       this.addresses = find.addresses;

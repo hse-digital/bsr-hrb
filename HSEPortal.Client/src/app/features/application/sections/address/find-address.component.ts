@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application.service';
 import { HttpClient } from '@angular/common/http';
-import { PostcodeAPI } from 'src/app/helpers/API/postcode.api';
+import { AddressService } from 'src/app/services/address.service';
 @Component({
   selector: 'find-address',
   templateUrl: './find-address.component.html'
@@ -15,7 +15,7 @@ export class FindAddressComponent {
 
   @Output() public onFindAddress = new EventEmitter<{ input: string, addresses: string[] | undefined }>();
 
-  constructor(public applicationService: ApplicationService, private httpClient: HttpClient) {
+  constructor(public applicationService: ApplicationService, private addressService: AddressService, private httpClient: HttpClient) {
 
   }
 
@@ -44,12 +44,8 @@ export class FindAddressComponent {
   }
 
   async find(): Promise<string[] | undefined> {
-    let addresses: string[] = [];
-    let postcodeApi = new PostcodeAPI(this.httpClient);
-    await postcodeApi.getAddressUsingPostcodeOnDPA(this.model.postcode ?? '').then((value) => {
-      addresses = value;
-    });
-    return addresses ?? [];
+    let model: any = await this.addressService.SearchPostalAddressByPostcode(this.model.postcode ?? '');
+    return model.Results.map((x: any) => x.Address);
   }
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
