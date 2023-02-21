@@ -182,6 +182,14 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                     name: 'CosmosConnection'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=CosmosConnection)'
                 }
+                {
+                    name: 'Integrations__OrdnanceSurveyEndpoint'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--OrdnanceSurveyEndpoint)'
+                }
+                {
+                    name: 'Integrations__OrdnanceSurveyApiKey'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--OrdnanceSurveyApiKey)'
+                }
             ]
         }
         httpsOnly: true
