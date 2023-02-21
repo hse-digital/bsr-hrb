@@ -13,7 +13,7 @@ import { AccountablePersonModule } from "./accountable-person/accountable-person
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent),
-  HseRoute.protected(ComplexStructureComponent.route, ComplexStructureComponent),
+  HseRoute.unsafe(ComplexStructureComponent.route, ComplexStructureComponent),
   HseRoute.forLoadChildren(SectionsModule.baseRoute, () => import('./sections/sections.module').then(m => m.SectionsModule)),
   HseRoute.forLoadChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
 ]);

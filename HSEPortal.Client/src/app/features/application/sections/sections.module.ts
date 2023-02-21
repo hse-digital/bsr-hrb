@@ -6,14 +6,9 @@ import { HseAngularModule } from "hse-angular";
 import { PipesModule } from "src/app/pipes/pipes.module";
 import { CaptionService } from "src/app/services/caption.service";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
+import { AddressModule } from "src/app/helpers/Components/Address/address.module";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
-import { ConfirmAddressComponent } from "./address/confirm-address.component";
-import { FindAddressComponent } from "./address/find-address.component";
-import { ManualAddressComponent } from "./address/manual-address.component";
-import { NotFoundAddressComponent } from "./address/not-found-address.component";
 import { SectionAddressComponent } from "./address/section-address.component";
-import { SelectAddressComponent } from "./address/select-address.component";
-import { TooManyAddressComponent } from "./address/too-many-address.component";
 import { SectionCheckAnswersComponent } from "./check-answers/check-answers.component";
 import { SectionFloorsAboveComponent } from "./floors-above/floors-above.component";
 import { SectionHeightComponent } from "./height/height.component";
@@ -53,20 +48,15 @@ const routes = new HseRoutes([
     AddMoreSectionsComponent,
     SectionAddressComponent,
     MoreInformationComponent,
-    NameAllBlocksComponent,
-    ConfirmAddressComponent,
-    NotFoundAddressComponent,
-    TooManyAddressComponent,
-    FindAddressComponent,
-    SelectAddressComponent,
-    ManualAddressComponent
+    NameAllBlocksComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
     HseAngularModule,
     CommonModule,
     HttpClientModule,
-    PipesModule
+    PipesModule,
+    AddressModule
   ],
   providers: [
     CaptionService,
