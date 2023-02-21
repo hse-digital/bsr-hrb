@@ -1,6 +1,4 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
-import { Router } from "@angular/router";
-import { ApplicationService } from "src/app/services/application.service";
 import { IdleTimerService } from "src/app/services/idle-timer.service";
 
 @Component({
