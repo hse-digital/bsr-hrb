@@ -10,7 +10,6 @@ import { PaymentConfirmationComponent } from '../payment-confirmation/payment-co
 @Component({
   selector: 'hse-payment',
   templateUrl: './payment.component.html',
-  styleUrls: ['./payment.component.scss']
 })
 export class PaymentComponent extends BaseComponent implements IHasNextPage {
 
@@ -41,7 +40,7 @@ export class PaymentComponent extends BaseComponent implements IHasNextPage {
     this.errors.billingAddressLineTwoHasErrors = !this.paymentService.model.BillingAddressLineTwo;
     this.errors.billingPostcodeHasErrors = !this.paymentService.model.BillingPostcode;
 
-    this.hasErrors = this.errors.nameOnCardHasErrors ||
+    let errors = this.errors.nameOnCardHasErrors ||
       this.errors.cardNumberHasErrors ||
       this.errors.expiryMonthHasErrors ||
       this.errors.expiryYearHasErrors ||
@@ -50,7 +49,7 @@ export class PaymentComponent extends BaseComponent implements IHasNextPage {
       this.errors.billingAddressLineTwoHasErrors ||
       this.errors.billingPostcodeHasErrors;
 
-    return !this.hasErrors;
+    return errors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

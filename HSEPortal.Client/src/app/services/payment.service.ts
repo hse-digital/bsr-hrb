@@ -23,4 +23,6 @@ export class PaymentModel {
   BillingPostcode?: string;
 
   Amount?: number;
+
+  EmployeeNumber?: string;
 }
