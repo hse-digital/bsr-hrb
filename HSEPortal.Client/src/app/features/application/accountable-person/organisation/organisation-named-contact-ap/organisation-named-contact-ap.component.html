@@ -5,13 +5,34 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <b>[WIP]</b>
-        <govuk-fieldset title="Named contact" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
 
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link *ngIf="firstNameInError" anchorId="input-first-name" message="Enter your first name" />
+          <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter your last name" />
+        </govuk-error-summary>
+
+        <span class="govuk-caption-l">Principal accountable person</span>
+        <govuk-fieldset title="Lead contact's name" [isPageHeading]=true id="application"
+                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+
+          <govuk-body>This is the person at that we will contact for building safety queries.</govuk-body>
+
+          <govuk-input id="first-name" label="First name"
+                       [(model)]="applicationService.currentAccountablePerson.OrganisationNamedContactFirstName"
+                       [errorText]="getErrorDescription(firstNameInError, 'Enter your first name')"
+                       class="govuk-!-margin-bottom-5" />
+
+          <govuk-input id="last-name" label="Last name"
+                       [(model)]="applicationService.currentAccountablePerson.OrganisationNamedContactLastName"
+                       [errorText]="getErrorDescription(lastNameInError, 'Enter your last name')" />
         </govuk-fieldset>
+
       </div>
 
-      <govuk-button (onClick)="saveAndContinue()">Continue</govuk-button>
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <govuk-body><a href="#" class="govuk-link" (click)="saveAndExit($event)">Save and exit this application</a></govuk-body>
+
     </div>
   </div>
 </div>

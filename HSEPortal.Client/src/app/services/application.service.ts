@@ -155,6 +155,8 @@ export class AccountablePersonModel {
   OrganisationAddressLineTwo?: string;
   OrganisationTownOrCity?: string;
   OrganisationPostcode?: string;
+  OrganisationNamedContactFirstName?: string; 
+  OrganisationNamedContactLastName?: string; 
 
   IndividualFirstName?: string;
   IndividualLastName?: string;

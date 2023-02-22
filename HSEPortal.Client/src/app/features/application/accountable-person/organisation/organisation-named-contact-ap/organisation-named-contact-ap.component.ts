@@ -17,12 +17,22 @@ export class OrganisationNamedContactApComponent extends BaseComponent implement
     super(router, applicationService, navigationService, activatedRoute);
   }
 
-  canContinue(): boolean {
-    return true;
+  firstNameInError: boolean = false;
+  lastNameInError: boolean = false;
+
+  canContinue() {
+    this.firstNameInError = !this.applicationService.currentAccountablePerson.OrganisationNamedContactFirstName;
+    this.lastNameInError = !this.applicationService.currentAccountablePerson.OrganisationNamedContactLastName;
+
+    return !this.firstNameInError && !this.lastNameInError;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return this.navigationService.navigateRelative('organisation-job-role', activatedRoute);
+  }
+
+  saveAndExit(event: any) {
+    event.preventDefault();
   }
 
 }
