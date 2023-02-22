@@ -1,0 +1,48 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-l">Submit and pay the fee</span>
+      <govuk-fieldset title="Registration application submitted for {{applicationService.model.BuildingName ?? '[Building name]'}}"
+                      [isPageHeading]=true titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-5' class='govuk-!-margin-bottom-1'>
+
+
+        <govuk-body>Your application number is <b>{{applicationService.model.id ?? "[Application number]"}}</b>.</govuk-body>
+        <govuk-body>Your payment reference number is <b>{{paymentService.model.PaymentId ?? "[Payment reference]"}}</b>.</govuk-body>
+
+        <govuk-body>We've emailed confirmation of your payment to . If you cannot find the email, check your junk or spam folders. If you did not get the email, <a href="#">contact us</a>.</govuk-body>
+
+        <govuk-body>[We have also sent an email to the principal accountable person that outlines their duties at this stage.]</govuk-body>
+
+
+
+        <govuk-fieldset title="What happens next" [isPageHeading]=false
+                        titleClass='govuk-fieldset__legend--m govuk-!-margin-bottom-4'
+                        class='govuk-!-margin-bottom-1' />
+
+        <govuk-body>We'll look at your application and contact you when we have made a decision.</govuk-body>
+        <govuk-body>We may also contact you if we need further information.</govuk-body>
+        <govuk-body>We're registering all the high-rise buildings in England. This is likely to take several months. So you might not hear from us for a while. Do not worry. We have your application.</govuk-body>
+
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+            You must give us structure and safety information for
+            {{applicationService.model.BuildingName ?? '[building-name]'}} by [30 September 2023].
+          </strong>
+        </div>
+
+      </govuk-fieldset>
+
+      <govuk-button (onClick)="saveAndContinue()">Continue to structure and safety information</govuk-button>
+
+      <govuk-body>
+        Alternatively, you can <a href="#" (click)="registerAnotherBuilding()">register another building</a>.
+      </govuk-body>
+
+    </div>
+  </div>
+</div>

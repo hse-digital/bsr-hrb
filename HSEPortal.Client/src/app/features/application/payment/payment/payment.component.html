@@ -1,0 +1,83 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-l">Submit and pay the fee</span>
+      <govuk-fieldset title="Pay" [isPageHeading]=true titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-5' class='govuk-!-margin-bottom-1'>
+        <govuk-body>You can use Visa, Visa Electron or Mastercard debit and credit cards.</govuk-body>
+
+        <govuk-fieldset title="Order summary" [isPageHeading]=false
+                        titleClass='govuk-fieldset__legend--m govuk-!-margin-bottom-4'
+                        class='govuk-!-margin-bottom-1'></govuk-fieldset>
+
+        <govuk-summary-list>
+          <govuk-summary-list-row key="Building name" [showAction]=false>{{applicationService.model.BuildingName}}</govuk-summary-list-row>
+          <govuk-summary-list-row key="Total amount to pay" [showAction]=false>£{{paymentService.model.Amount}}</govuk-summary-list-row>
+        </govuk-summary-list>
+
+        <govuk-input id="name-card" label="Name on card" labelClass="govuk-label--s"
+                     hint="Your name as it appears on the front of your card"
+                     [(model)]="paymentService.model.NameOnCard"
+                     [errorText]="getErrorDescription(errors.nameOnCardHasErrors, 'Enter the name on the card')"
+                     class="govuk-!-margin-bottom-1" />
+
+        <govuk-input id="card-number" label="Card number" labelClass="govuk-label--s"
+                     hint="The long card number on the front of your card"
+                     [(model)]="paymentService.model.CardNumber"
+                     [errorText]="getErrorDescription(errors.cardNumberHasErrors, 'Enter the card number')"
+                     class="govuk-!-margin-bottom-1 govuk-input--width-20" />
+
+        <govuk-input id="expiry-month" label="Expiry month" labelClass="govuk-label--s"
+                     [(model)]="paymentService.model.ExpiryMonth"
+                     [errorText]="getErrorDescription(errors.expiryMonthHasErrors, 'Enter an expiry month')"
+                     class="govuk-!-margin-bottom-1 govuk-input--width-2" />
+
+        <govuk-input id="expiry-year" label="Expiry year" labelClass="govuk-label--s"
+                     [(model)]="paymentService.model.ExpiryYear"
+                     [errorText]="getErrorDescription(errors.expiryYearHasErrors, 'Enter an expiry year')"
+                     class="govuk-!-margin-bottom-1 govuk-input--width-4" />
+
+        <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
+                     hint="The 3 digit number on the back of your card"
+                     [(model)]="paymentService.model.SecurityCode"
+                     [errorText]="getErrorDescription(errors.securityCodeHasErrors, 'Enter a security code')"
+                     class="govuk-!-margin-bottom-1 govuk-input--width-3" />
+      </govuk-fieldset>
+
+      <govuk-fieldset title="Billing address" [isPageHeading]=false
+                      titleClass='govuk-fieldset__legend--m govuk-!-margin-bottom-4'
+                      class='govuk-!-margin-bottom-1'></govuk-fieldset>
+
+      <govuk-input id="billing-address-line-one" label="Address line 1" labelClass="govuk-label--s"
+                   [(model)]="paymentService.model.BillingAddressLineOne"
+                   [errorText]="getErrorDescription(errors.billingAddressLineOneHasErrors, 'Enter an address line 1')"
+                   class="govuk-!-margin-bottom-1 " />
+
+      <govuk-input id="billing-address-line-two" label="Address line 2" labelClass="govuk-label--s"
+                   [(model)]="paymentService.model.BillingAddressLineTwo"
+                   [errorText]="getErrorDescription(errors.billingAddressLineTwoHasErrors, 'Enter an address line 2')"
+                   class="govuk-!-margin-bottom-1 " />
+
+      <govuk-input id="postcode" label="Postcode" labelClass="govuk-label--s"
+                   [(model)]="paymentService.model.BillingPostcode"
+                   [errorText]="getErrorDescription(errors.billingPostcodeHasErrors, 'Enter a postcode')"
+                   class="govuk-!-margin-bottom-1 govuk-input--width-10" />
+
+
+
+      <govuk-body><a href="#" (click)="postcodeFinder()">Find a postcode on Royal Mail's postcode finder</a></govuk-body>
+
+      <govuk-button (onClick)="saveAndContinue()">Pay and submit</govuk-button>
+
+      <govuk-body>
+        Card information is transferred in accordance with our security statement and is held in accordance with our privacy statement.
+        See our <a href="#">terms and conditions</a> for further information.
+      </govuk-body>
+
+      <govuk-body><a href="#" (click)="saveAndComeBackLater()">Save and come back later</a></govuk-body>
+
+    </div>
+  </div>
+</div>
