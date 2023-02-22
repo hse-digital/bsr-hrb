@@ -7,7 +7,6 @@ import { PipesModule } from "src/app/pipes/pipes.module";
 import { CaptionService } from "src/app/services/caption.service";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
-import { SectionAddressComponent } from "./address/address.component";
 import { SectionCheckAnswersComponent } from "./check-answers/check-answers.component";
 import { SectionFloorsAboveComponent } from "./floors-above/floors-above.component";
 import { SectionHeightComponent } from "./height/height.component";

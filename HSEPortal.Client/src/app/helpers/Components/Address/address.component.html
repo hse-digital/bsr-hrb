@@ -1,0 +1,14 @@
+<a (click)="navigateBack()" class="govuk-back-link">Back</a>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <find-address *ngIf="step == 'find'" (onFindAddress)="findAddress($event)" />
+      <confirm-address *ngIf="step == 'confirm'" (onAddressConfirmed)="addressConfirmed()" [selectedAddress]="selectedAddress" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()"/>
+      <not-found-address *ngIf="step == 'not-found'" [address]="address" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()" />
+      <too-many-address *ngIf="step == 'too-many'" [address]="address" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()" />
+      <select-address *ngIf="step == 'select'" [addresses]="addresses" [address]="address" (onSelectAddress)="selectAddress($event)" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()" />
+      <manual-address *ngIf="step == 'manual'" (onSearchAgain)="searchAgain()" (onManualAddress)="manualAddress($event)" />
+    </div>
+  </div>
+</div>
