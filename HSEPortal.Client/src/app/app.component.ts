@@ -36,8 +36,8 @@ export class AppComponent {
   }
 
   timeout() {
-    this.applicationService.clearApplication();
     this.showTimeoutDialog = false;
+    this.applicationService.clearApplication();
     this.router.navigate(['']);
   }
 }

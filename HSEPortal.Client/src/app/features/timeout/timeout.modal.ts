@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { IdleTimerService } from "src/app/services/idle-timer.service";
 
 @Component({
@@ -10,11 +10,32 @@ export class TimeoutModalComponent implements OnInit {
     constructor(private idleTimerService: IdleTimerService) {
     }
 
+    @Input() delayToTimeout!: number;
+    _remainingSeconds!: number;
+
     @Output() onContinueClicked = new EventEmitter();
     @Output() onSaveAndComebackClicked = new EventEmitter();
     @Output() onTimeout = new EventEmitter();
 
+    interval?: any;
     ngOnInit(): void {
-        this.idleTimerService.initTimer(2 * 60, () => this.onTimeout.emit());
+        this._remainingSeconds = this.delayToTimeout;
+
+        clearInterval(this.interval);
+        this.interval = setInterval(() => {
+            this._remainingSeconds -= 1;
+            if (this._remainingSeconds == 0) {
+                this.onTimeout.emit();
+                clearInterval(this.interval);
+            }
+        }, 1000);
+    }
+
+    getTimeRemaining() {
+        if (this._remainingSeconds && this._remainingSeconds < 60) {
+            return `${this._remainingSeconds} second(s)`;
+        }
+
+        return '2 minutes';
     }
 }
