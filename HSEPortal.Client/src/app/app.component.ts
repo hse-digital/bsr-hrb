@@ -31,7 +31,7 @@ export class AppComponent {
     this.router.navigate(['']);
   }
 
-  timeoutContinue() {
+  timeoutContinue()  { 
     this.showTimeoutDialog = false;
   }
 

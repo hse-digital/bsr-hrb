@@ -11,12 +11,32 @@
         <govuk-body class="govuk-!-margin-bottom-4">We have sent an email containing your application number to <b>{{applicationService.model.ContactEmailAddress}}</b>. Use this email to return to this application at any time.</govuk-body>
 
         <govuk-task-list>
-          <govuk-task-list-item *ngFor="let task of tasks; let i = index" sectionNumber="{{i+1}}" text="{{task.title}}">
+          <govuk-task-list-item sectionNumber="1" text="Prepare your application">
             <govuk-summary-list>
-              <govuk-summary-list-row *ngFor="let item of task.items">
-                <a *ngIf="item.link" class="govuk-link" href="{{item.link}}">{{item.title}}</a>
-                <span *ngIf="!item.link">{{item.title}}</span>
-                <govuk-tag greyTag>{{item.tag}}</govuk-tag>
+              <govuk-summary-list-row>
+                <a class="govuk-link" (click)="navigateToSections()">Blocks in the building</a>
+                <govuk-tag greyTag>NOT STARTED YET</govuk-tag>
+              </govuk-summary-list-row>
+
+              <govuk-summary-list-row>
+                <!-- <a *ngIf="item.link" class="govuk-link" href="{{item.link}}">{{item.title}}</a> -->
+                <span>Principal accountable person</span>
+                <govuk-tag greyTag>CANNOT START YET</govuk-tag>
+              </govuk-summary-list-row>
+
+              <govuk-summary-list-row>
+                <!-- <a *ngIf="item.link" class="govuk-link" href="{{item.link}}">{{item.title}}</a> -->
+                <span>Other accountable persons</span>
+                <govuk-tag greyTag>CANNOT START YET</govuk-tag>
+              </govuk-summary-list-row>
+            </govuk-summary-list>
+          </govuk-task-list-item>
+
+          <govuk-task-list-item sectionNumber="2" text="Submit your application">
+            <govuk-summary-list>
+              <govuk-summary-list-row>
+                <span>Apply and pay the fee</span>
+                <govuk-tag greyTag>CANNOT START YET</govuk-tag>
               </govuk-summary-list-row>
             </govuk-summary-list>
           </govuk-task-list-item>

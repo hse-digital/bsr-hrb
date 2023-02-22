@@ -49,6 +49,11 @@ export class ApplicationService {
     return `section-${this._currentSectionIndex + 1}`;
   }
 
+  selectSection(sectionName: string) {
+    let index = Number(sectionName.split('-').at(-1));
+    this._currentSectionIndex = index - 1;
+  }
+
   startAccountablePersonEdit(accountPersonType: string): string {
     this._currentAccountablePersonIndex = 0;
 
@@ -135,7 +140,7 @@ export class BuildingRegistrationModel {
   ContactLastName?: string;
   ContactPhoneNumber?: string;
   ContactEmailAddress?: string;
-  NumberBlocksBuilding?: string;
+  NumberOfSections?: string;
   AccountablePersons: AccountablePersonModel[] = [];
   Sections: SectionModel[] = [];
 }
@@ -146,7 +151,11 @@ export class SectionModel {
   Height?: number;
   PeopleLivingInBuilding?: any;
   ResidentialUnits?: number;
-  YearCompletition?: any;
+
+  YearOfCompletionOption?: any;
+  YearOfCompletion?: string;
+  YearOfCompletionRange?: string;
+
   CompletitionCertificateIssuer?: any;
   CompletitionCertificateReference?: any;
   Address?: string;

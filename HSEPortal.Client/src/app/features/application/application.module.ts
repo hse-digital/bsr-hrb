@@ -7,13 +7,13 @@ import { ApplicationCompletedComponent } from "./components/application-complete
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { ApplicationService } from "src/app/services/application.service";
 import { ApplicationTaskListComponent } from "./task-list/task-list.component";
-import { ComplexStructureComponent } from "./complex-structure/complex-structure.component";
 import { SectionsModule } from "./sections/sections.module";
 import { AccountablePersonModule } from "./accountable-person/accountable-person.module";
+import { NumberOfSectionsComponment } from "./number-of-sections/number-of-sections.component";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent),
-  HseRoute.protected(ComplexStructureComponent.route, ComplexStructureComponent),
+  HseRoute.protected(NumberOfSectionsComponment.route, NumberOfSectionsComponment),
   HseRoute.forLoadChildren(SectionsModule.baseRoute, () => import('./sections/sections.module').then(m => m.SectionsModule)),
   HseRoute.forLoadChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
 ]);
@@ -22,7 +22,7 @@ const routes = new HseRoutes([
   declarations: [
     ApplicationTaskListComponent,
     ApplicationCompletedComponent,
-    ComplexStructureComponent
+    NumberOfSectionsComponment
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

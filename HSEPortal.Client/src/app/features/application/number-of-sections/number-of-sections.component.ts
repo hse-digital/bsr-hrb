@@ -6,26 +6,29 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
-  selector: 'hse-complex-structure',
-  templateUrl: './complex-structure.component.html'
+  templateUrl: './number-of-sections.component.html'
 })
-export class ComplexStructureComponent extends BaseComponent implements IHasNextPage {
-  static route: string = 'complex-structure';
+export class NumberOfSectionsComponment extends BaseComponent implements IHasNextPage {
+  static route: string = 'number-of-sections';
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
+  numberOfSectionsHasErrors = false;
   canContinue(): boolean {
-    return true;
+    this.numberOfSectionsHasErrors = !this.applicationService.model.NumberOfSections;
+    return !this.numberOfSectionsHasErrors;
   }
 
-  nextPage = ''
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    this.applicationService.startSectionsEdit();
-    let route = `/sections/section-1/${this.nextPage}`;
+    let route = '';
+    if (this.applicationService.model.NumberOfSections == "two_or_more") {
+      this.applicationService.startSectionsEdit();
+      route = `floors`;
+    }
 
-    return navigationService.navigateRelative(route, activatedRoute);
+    return navigationService.navigateRelative(`/sections/section-1/${route}`, activatedRoute);
   }
 
   override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {

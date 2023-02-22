@@ -8,11 +8,13 @@ import { SectionFloorsAboveComponent } from '../floors-above/floors-above.compon
 import { SectionHeightComponent } from '../height/height.component';
 import { SectionResidentialUnitsComponent } from '../residential-units/residential-units.component';
 import { SectionPeopleLivingInBuildingComponent } from '../people-living-in-building/people-living-in-building.component';
+import { MoreInformationComponent } from '../more-information/more-information.component';
 @Component({
   selector: 'hse-check-answers',
   templateUrl: './check-answers.component.html',
+  styleUrls: ['./check-answers.component.scss']
 })
-export class SectionCheckAnswersComponent extends BaseComponent implements IHasNextPage {
+export class SectionCheckAnswersComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'check-answers';
 
   URLs = {
@@ -26,8 +28,14 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     address: "check-answers" // TO-DO
   }
 
+  sections: SectionModel[] = [];
+
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
+  }
+
+  ngOnInit(): void {
+    this.sections = this.applicationService.model.Sections;
   }
 
   canContinue(): boolean {
@@ -35,14 +43,30 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative('../add-more', activatedRoute);
+    return navigationService.navigateRelative(MoreInformationComponent.route, activatedRoute);
   }
 
   get section(): SectionModel {
     return this.applicationService.currentSection;
   }
   
-  navigateTo(url: string) {
-    this.navigationService.navigateRelative(url, this.activatedRoute);
+  navigateTo(sectionIndex: number, url: string) {
+    this.navigationService.navigateRelative(`section-${sectionIndex+1}/${url}`, this.activatedRoute, { return: 'check-answers' });
+  }
+
+  getSectionName(sectionIndex: number, section: SectionModel) {
+    return section.Name ?? `${this.getBlockIndex(sectionIndex+1)} block`;
+  }
+
+  getBlockIndex(index: number) {
+    switch(index) {
+      case 1: return 'First';
+      case 2: return 'Second';
+      case 3: return 'Third';
+      case 4: return 'Fourth';
+      case 5: return 'Fifth';
+    }
+
+    return "Last";
   }
 }
