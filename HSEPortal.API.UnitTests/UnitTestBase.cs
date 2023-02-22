@@ -1,6 +1,8 @@
 using System.Text.Json;
+using AutoMapper;
 using Flurl.Http;
 using Flurl.Http.Testing;
+using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Services;
 using HSEPortal.API.UnitTests.Helpers;
 using HSEPortal.Domain.DynamicsDefinitions;
@@ -60,8 +62,39 @@ public abstract class UnitTestBase
         return new TestableHttpRequestData(functionContext.Object, uriWithParameters);
     }
 
+    protected HttpRequestData BuildHttpRequestData<T>(T data, params string[] parameters)
+    {
+        var functionContext = new Mock<FunctionContext>();
+
+        var memoryStream = new MemoryStream();
+        JsonSerializer.Serialize(memoryStream, data);
+
+        memoryStream.Flush();
+        memoryStream.Seek(0, SeekOrigin.Begin);
+
+        return new TestableHttpRequestData(functionContext.Object, new Uri(DynamicsOptions.EnvironmentUrl), memoryStream);
+    }
+
+    protected TestableHttpRequestData BuildHttpRequestDataWithUri<T>(T data, Uri uri)
+    {
+        var functionContext = new Mock<FunctionContext>();
+
+        var memoryStream = new MemoryStream();
+        JsonSerializer.Serialize(memoryStream, data);
+
+        memoryStream.Flush();
+        memoryStream.Seek(0, SeekOrigin.Begin);
+
+        return new TestableHttpRequestData(functionContext.Object, uri, memoryStream);
+    }
+
     protected object BuildODataEntityHeader(string id)
     {
         return $"OData-EntityId={DynamicsOptions.EnvironmentUrl}/api/data/v9.2/whatever_entity({id})";
+    }
+
+    protected IMapper GetMapper()
+    {
+        return new MapperConfiguration(config => { config.AddProfile<PaymentProfile>(); }).CreateMapper();
     }
 }

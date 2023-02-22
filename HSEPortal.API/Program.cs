@@ -1,8 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AutoMapper;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using HSEPortal.API;
+using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.DynamicsDefinitions;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +27,11 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.AddTransient<DynamicsService>();
     serviceCollection.AddTransient<OTPService>();
     serviceCollection.AddTransient<DynamicsModelDefinitionFactory>();
+
+    serviceCollection.AddSingleton(_ => new MapperConfiguration(config =>
+    {
+        config.AddProfile<PaymentProfile>();
+    }).CreateMapper());
 }
 
 namespace HSEPortal.API
