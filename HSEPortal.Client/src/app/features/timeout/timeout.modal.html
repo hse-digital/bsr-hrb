@@ -4,7 +4,7 @@
             <h2 class="govuk-fieldset__heading">Your application will be closed soon</h2>
         </legend>
 
-        <govuk-body>We will close your application if you do not do anything in the next <b>2 minutes</b>. Your unsaved answers will be deleted. This is to protect your information.</govuk-body>
+        <govuk-body>We will close your application if you do not do anything in the next <b>{{getTimeRemaining()}}</b>. Your unsaved answers will be deleted. This is to protect your information.</govuk-body>
 
         <div class="modal-actions">
             <govuk-button (onClick)="onContinueClicked.emit()">Continue</govuk-button>
