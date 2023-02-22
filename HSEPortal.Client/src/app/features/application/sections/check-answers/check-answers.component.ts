@@ -9,7 +9,8 @@ import { SectionHeightComponent } from '../height/height.component';
 import { SectionResidentialUnitsComponent } from '../residential-units/residential-units.component';
 import { SectionPeopleLivingInBuildingComponent } from '../people-living-in-building/people-living-in-building.component';
 import { MoreInformationComponent } from '../more-information/more-information.component';
-import { SectionAddressComponent } from '../address/section-address.component';
+import { SectionAddressComponent } from '../address/address.component';
+
 @Component({
   selector: 'hse-check-answers',
   templateUrl: './check-answers.component.html',

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { AddressResponseModel } from 'src/app/services/address.service';
 
 @Component({
   selector: 'hse-address',
@@ -16,12 +17,14 @@ export class AddressComponent {
 
   step = 'find';
 
-  constructor() { }
-
   addressHasErrors = false;
 
   addressConfirmed() {
     this.onAddressConfirmed.emit();
+  }
+
+  searchPerformed(addressResponse: AddressResponseModel) {
+    
   }
 
   findAddress(find: { input: string, addresses: string[] | undefined }) {
