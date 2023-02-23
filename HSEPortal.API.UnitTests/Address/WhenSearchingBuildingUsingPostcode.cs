@@ -29,7 +29,14 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
         
         await addressFunctions.SearchBuildingByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
 
-        HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/postcode?postcode={buckinghamPalacePostcode}&dataset=LPI&fq=CLASSIFICATION_CODE%3APP&key={integrationsOptions.OrdnanceSurveyApiKey}")
+        HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/postcode")
+            .WithQueryParams(new
+            {
+                postcode = buckinghamPalacePostcode,
+                dataset = "LPI",
+                fq = "CLASSIFICATION_CODE:PP&fq=COUNTRY_CODE:E",
+                key = integrationsOptions.OrdnanceSurveyApiKey
+            })
             .WithVerb(HttpMethod.Get);
     }
 

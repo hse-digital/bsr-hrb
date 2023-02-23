@@ -26,10 +26,17 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
     public async Task ShouldCallPostcodeEndpoint()
     {
         HttpTest.RespondWithJson(BuildPostcodeResponseJson());
-        
+
         await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
 
-        HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/postcode?postcode={buckinghamPalacePostcode}&dataset=DPA&key={integrationsOptions.OrdnanceSurveyApiKey}")
+        HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/postcode")
+            .WithQueryParams(new
+            {
+                postcode = buckinghamPalacePostcode,
+                dataset = "DPA",
+                fq = "COUNTRY_CODE=E&fq=COUNTRY_CODE=W",
+                key = integrationsOptions.OrdnanceSurveyApiKey
+            })
             .WithVerb(HttpMethod.Get);
     }
 
@@ -53,16 +60,16 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
         responseAddress.Results[0].Town.Should().Be(postcodeResponse.results[0].DPA.POST_TOWN);
         responseAddress.Results[0].Postcode.Should().Be(postcodeResponse.results[0].DPA.POSTCODE);
     }
-    
+
     [Fact]
     public async Task ShouldReturnEmptyResultsIfPostcodeIsNotFound()
     {
         HttpTest.RespondWith(status: (int)HttpStatusCode.BadRequest);
-        
+
         var response = await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, "invalid"), "invalid");
-        
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        
+
         var responseAddress = await response.ReadAsJsonAsync<BuildingAddressSearchResponse>();
         responseAddress.MaxResults.Should().Be(0);
         responseAddress.Offset.Should().Be(0);

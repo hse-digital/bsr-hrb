@@ -30,7 +30,7 @@ public class AddressFunctions
         {
             postcode = postcode,
             dataset = "LPI",
-            fq = "CLASSIFICATION_CODE:PP",
+            fq = "CLASSIFICATION_CODE:PP&fq=COUNTRY_CODE:E",
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
@@ -44,6 +44,7 @@ public class AddressFunctions
         {
             postcode = postcode,
             dataset = "DPA",
+            fq = "COUNTRY_CODE=E&fq=COUNTRY_CODE=W",
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
@@ -69,7 +70,7 @@ public class AddressFunctions
         BuildingAddressSearchResponse searchResponse;
         if (response.StatusCode == (int)HttpStatusCode.BadRequest)
         {
-            searchResponse = new BuildingAddressSearchResponse { Results = Array.Empty<BuildingAddress>()};
+            searchResponse = new BuildingAddressSearchResponse { Results = Array.Empty<BuildingAddress>() };
         }
         else
         {
