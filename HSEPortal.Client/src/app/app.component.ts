@@ -14,11 +14,7 @@ export class AppComponent {
 
   constructor(private applicationService: ApplicationService,
     private router: Router, private headerTitleService: HeaderTitleService, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute) {
-    this.idleTimerService.initTimer(13 * 60, () => {
-      if (typeof window !== 'undefined' && window.location.href.indexOf("/application/") > -1) {
-        this.showTimeoutDialog = true;
-      }
-    });
+    this.initTimer();
   }
 
   get headerTitle(): string | undefined {
@@ -33,11 +29,26 @@ export class AppComponent {
 
   timeoutContinue()  { 
     this.showTimeoutDialog = false;
+    this.initTimer();
   }
 
   timeout() {
     this.showTimeoutDialog = false;
     this.applicationService.clearApplication();
-    this.router.navigate(['']);
+    this.router.navigate(['/timeout']);
+  }
+
+  initTimer() {
+    this.idleTimerService.initTimer(5, () => {
+      if (typeof window !== 'undefined' && (this.doesUrlContains("/application/", "/new-application/", "/returning-application"))) {
+        this.showTimeoutDialog = true;
+      } else {
+        this.initTimer();
+      }
+    });
+  }
+
+  private doesUrlContains(...segment: string[]) {
+    return segment.filter(x => window.location.href.indexOf(x) > -1).length > 0;
   }
 }
