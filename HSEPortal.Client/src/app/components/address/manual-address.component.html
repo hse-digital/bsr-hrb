@@ -13,7 +13,7 @@
                   class='govuk-!-margin-bottom-3'>
 
     <govuk-input id="address-line-one" label="Address line 1"
-                 [(model)]="model.AddressLineOne"
+                 [(model)]="model.Address"
                  [errorText]="getErrorDescription(errors.lineOneHasErrors, 'Enter the first line of the address')"
                  class="govuk-!-margin-bottom-5" />
 
@@ -22,7 +22,7 @@
                  class="govuk-!-margin-bottom-5" />
 
     <govuk-input id="town-or-city" label="Town or city"
-                 [(model)]="model.TownOrCity"
+                 [(model)]="model.Town"
                  [errorText]="getErrorDescription(errors.townOrCityHasErrors, 'Enter a town or city')"
                  class="govuk-!-margin-bottom-5 govuk-!-width-two-thirds" />
 
@@ -34,5 +34,5 @@
   </govuk-fieldset>
 </div>
 
-<govuk-button (onClick)="canContinue()">Confirm address</govuk-button>
-<govuk-body><a href="#" class="govuk-link" (click)="searchAgain($event)">Search again</a></govuk-body>
+<govuk-button (onClick)="confirmAddress()">Confirm address</govuk-button>
+<govuk-body><a class="govuk-link" (click)="onSearchAgain.emit()">Search again</a></govuk-body>

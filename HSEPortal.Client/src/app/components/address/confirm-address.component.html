@@ -3,11 +3,16 @@
   <span class="govuk-caption-l">Address of {{ applicationService.currentSection.Name ?? "[Name]"}}</span>
   <govuk-fieldset title="Confirm address" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
     <govuk-inset-text>
-      {{selectedAddress}}
+      {{getAddressLineOne()}}
+      <br>
+      <span *ngIf="address.AddressLineTwo">{{address.AddressLineTwo}}<br></span>
+      {{address.Town}}
+      <br>
+      {{address.Postcode}}
     </govuk-inset-text>
   </govuk-fieldset>
 </div>
 
-<govuk-button (onClick)="confirm()">Confirm</govuk-button>
-<govuk-body><a href="#" class="govuk-link" (click)="searchAgain($event)">Search again</a></govuk-body>
-<govuk-body><a href="#" class="govuk-link" (click)="enterManualAddress($event)">Enter address manually</a></govuk-body>
+<govuk-button (onClick)="onAddressConfirmed.emit()">Confirm</govuk-button>
+<govuk-body><a class="govuk-link" (click)="onSearchAgain.emit()">Search again</a></govuk-body>
+<govuk-body><a class="govuk-link" (click)="onEnterManualAddress.emit()">Enter address manually</a></govuk-body>

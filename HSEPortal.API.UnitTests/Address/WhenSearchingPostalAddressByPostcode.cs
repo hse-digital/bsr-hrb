@@ -53,14 +53,21 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
         responseAddress.Results[0].Town.Should().Be(postcodeResponse.results[0].DPA.POST_TOWN);
         responseAddress.Results[0].Postcode.Should().Be(postcodeResponse.results[0].DPA.POSTCODE);
     }
-
+    
     [Fact]
-    public async Task ShouldReturnBadRequestIfPostcodeIsInvalid()
+    public async Task ShouldReturnEmptyResultsIfPostcodeIsNotFound()
     {
         HttpTest.RespondWith(status: (int)HttpStatusCode.BadRequest);
         
         var response = await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, "invalid"), "invalid");
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        var responseAddress = await response.ReadAsJsonAsync<BuildingAddressSearchResponse>();
+        responseAddress.MaxResults.Should().Be(0);
+        responseAddress.Offset.Should().Be(0);
+        responseAddress.TotalResults.Should().Be(0);
+        responseAddress.Results.Should().BeEmpty();
     }
 
     private OrdnanceSurveyPostcodeResponse BuildPostcodeResponseJson()

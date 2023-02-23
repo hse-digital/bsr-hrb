@@ -10,16 +10,16 @@
                   class='govuk-!-margin-bottom-3'>
 
     <govuk-input id="postcode" label="Postcode"
-                 [(model)]="model.postcode"
+                 [(model)]="searchModel.postcode"
                  [errorText]="getErrorDescription(postcodeHasErrors, postcodeErrorText)"
                  class="govuk-!-margin-bottom-5 govuk-input--width-10" />
 
     <govuk-input id="address-line-one" label="Address line 1 (optional)"
                  hint="For example, 'Flat 3A' or '30 St Mary Axe'."
-                 [(model)]="model.addressLineOne"
+                 [(model)]="searchModel.addressLine1"
                  class="govuk-!-margin-bottom-5" />
 
   </govuk-fieldset>
 
-  <govuk-button (onClick)="findAddress()">Find address</govuk-button>
+  <govuk-button [isLoading]="loading" loadingText="Searching..." [disabled]="loading" (onClick)="findAddress()">Find address</govuk-button>
 </div>

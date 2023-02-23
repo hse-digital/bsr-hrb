@@ -5,7 +5,6 @@ import { ApplicationService } from "src/app/services/application.service";
 import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
-import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
 import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
 
 @Component({

@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { AddressResponseModel } from 'src/app/services/address.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AddressModel, AddressResponseModel } from 'src/app/services/address.service';
 
 @Component({
   selector: 'hse-address',
@@ -7,38 +7,36 @@ import { AddressResponseModel } from 'src/app/services/address.service';
 })
 export class AddressComponent {
 
-  @Output() public onAddressConfirmed = new EventEmitter();
+  @Input() searchMode: AddressSearchMode = AddressSearchMode.Building;
+  @Output() onAddressConfirmed = new EventEmitter<AddressModel>();
 
-  public selectedAddress?: string;
-  public address?: string;
-  public addresses?: string[];
-
-  private history: string[] = [];
+  searchModel: { postcode?: string, addressLine1?: string } = {};
+  addressResponse?: AddressResponseModel;
+  selectedAddress?: AddressModel;
 
   step = 'find';
-
-  addressHasErrors = false;
+  private history: string[] = [];
 
   addressConfirmed() {
-    this.onAddressConfirmed.emit();
+    this.onAddressConfirmed.emit(this.selectedAddress);
   }
 
   searchPerformed(addressResponse: AddressResponseModel) {
-    
-  }
-
-  findAddress(find: { input: string, addresses: string[] | undefined }) {
-    this.address = find.input;
-    if (find.addresses && find.addresses.length > 0) {
-      this.addresses = find.addresses;
-      this.changeStepTo(find.addresses.length < 100 ? "select" : "too-many");
+    if (addressResponse.Results.length > 0) {
+      this.addressResponse = addressResponse;
+      this.changeStepTo(addressResponse.TotalResults < 100 ? "select" : "too-many");
     } else {
       this.changeStepTo("not-found");
     }
   }
 
-  selectAddress(selectedAddress: any) {
+  addressSelected(selectedAddress: any) {
     this.selectedAddress = selectedAddress;
+    this.changeStepTo('confirm');
+  }
+
+  manualAddressEntered(address: AddressModel) {
+    this.selectedAddress = address;
     this.changeStepTo('confirm');
   }
 
@@ -50,20 +48,21 @@ export class AddressComponent {
     this.changeStepTo('manual');
   }
 
-  manualAddress(manualAddress: { AddressLineOne?: string, AddressLineTwo?: string, TownOrCity?: string, Postcode?: string }) {
-    this.selectedAddress = `${manualAddress.AddressLineOne}, ${manualAddress.Postcode}`;
-    this.changeStepTo('confirm');
-  }
-
-  changeStepTo(step: string) {
-    this.history.push(this.step);
-    this.step = step;
-  }
-
   navigateBack() {
     let previousStep = this.history.pop();
     this.step = previousStep ?? "find";
     if (!previousStep) history.back();
   }
 
+  private changeStepTo(step: string) {
+    this.history.push(this.step);
+    this.step = step;
+  }
+
+}
+
+export enum AddressSearchMode {
+  Building,
+  PostalAddress,
+  FreeSearch
 }

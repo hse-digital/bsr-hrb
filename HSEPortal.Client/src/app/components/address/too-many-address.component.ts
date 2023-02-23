@@ -7,22 +7,10 @@ import { ApplicationService } from 'src/app/services/application.service';
 })
 export class TooManyAddressComponent {
 
-  @Input() public address?: string;
-
-  @Output() public onSearchAgain = new EventEmitter();
-  @Output() public onEnterManualAddress = new EventEmitter();
+  @Input() searchModel!: { postcode?: string, addressLine1?: string };
+  @Output() onSearchAgain = new EventEmitter();
+  @Output() onEnterManualAddress = new EventEmitter();
 
   constructor(public applicationService: ApplicationService) {
   }
-
-  searchAgain(event: any) {
-    event.preventDefault();
-    this.onSearchAgain.emit();
-  }
-
-  enterManualAddress(event: any) {
-    event.preventDefault();
-    this.onEnterManualAddress.emit();
-  }
-
 }

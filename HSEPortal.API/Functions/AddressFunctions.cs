@@ -66,11 +66,17 @@ public class AddressFunctions
 
     private async Task<HttpResponseData> BuildResponseObject(HttpRequestData request, IFlurlResponse response)
     {
+        BuildingAddressSearchResponse searchResponse;
         if (response.StatusCode == (int)HttpStatusCode.BadRequest)
-            return request.CreateResponse(HttpStatusCode.BadRequest);
+        {
+            searchResponse = new BuildingAddressSearchResponse { Results = Array.Empty<BuildingAddress>()};
+        }
+        else
+        {
+            var postcodeResponse = await response.GetJsonAsync<OrdnanceSurveyPostcodeResponse>();
+            searchResponse = mapper.Map<BuildingAddressSearchResponse>(postcodeResponse);
+        }
 
-        var postcodeResponse = await response.GetJsonAsync<OrdnanceSurveyPostcodeResponse>();
-        var searchResponse = mapper.Map<BuildingAddressSearchResponse>(postcodeResponse);
         return await request.CreateObjectResponseAsync(searchResponse);
     }
 

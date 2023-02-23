@@ -32,6 +32,7 @@ export class AddressResponseModel {
 export class AddressModel {
   UPRN?: string;
   Address?: string;
+  AddressLineTwo?: string;
   BuildingName?: string;
   Number?: string;
   Street?: string;

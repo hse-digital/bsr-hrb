@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'not-found-address',
@@ -8,22 +7,11 @@ import { NavigationService } from 'src/app/services/navigation.service';
 })
 export class NotFoundAddressComponent {
 
-  @Input() public address?: string;
+  @Input() searchModel: { postcode?: string, addressLine1?: string } = {};
+  @Output() onSearchAgain = new EventEmitter();
+  @Output() onEnterManualAddress = new EventEmitter();
 
-  @Output() public onSearchAgain = new EventEmitter();
-  @Output() public onEnterManualAddress = new EventEmitter();
-
-  constructor(public applicationService: ApplicationService, navigationService: NavigationService) {
-  }
-
-  searchAgain(event: any) {
-    event.preventDefault();
-    this.onSearchAgain.emit();
-  }
-
-  enterManualAddress(event: any) {
-    event.preventDefault();
-    this.onEnterManualAddress.emit();
+  constructor(public applicationService: ApplicationService) {
   }
 
 }

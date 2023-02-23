@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
+import { AddressModel } from "./address.service";
 
 @Injectable()
 export class ApplicationService {
@@ -158,7 +159,7 @@ export class SectionModel {
 
   CompletitionCertificateIssuer?: any;
   CompletitionCertificateReference?: any;
-  Address?: string;
+  Address?: AddressModel;
   AnotherSection?: string;
 }
 

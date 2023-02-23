@@ -16,6 +16,7 @@ import { SectionsIntroComponent } from "./intro/intro.component";
 import { MoreInformationComponent } from "./more-information/more-information.component";
 import { NameAllBlocksComponent } from "./name-all-blocks/name-all-blocks.component";
 import { SectionNameComponent } from "./name/name.component";
+import { SectionOtherAddressesComponent } from "./other-addresses/other-addresses.component";
 import { SectionPeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
 import { SectionResidentialUnitsComponent } from "./residential-units/residential-units.component";
 import { SectionsComponent } from "./sections.component";
@@ -36,6 +37,7 @@ const routes = new HseRoutes([
         HseRoute.unsafe(SectionYearOfCompletionComponent.route, SectionYearOfCompletionComponent),
         HseRoute.unsafe(SectionYearRangeComponent.route, SectionYearRangeComponent),
         HseRoute.unsafe(SectionAddressComponent.route, SectionAddressComponent),
+        HseRoute.unsafe(SectionOtherAddressesComponent.route, SectionOtherAddressesComponent),
         HseRoute.unsafe(SectionPeopleLivingInBuildingComponent.route, SectionPeopleLivingInBuildingComponent),
     ])),
 ]);
@@ -55,6 +57,7 @@ const routes = new HseRoutes([
         SectionYearOfCompletionComponent,
         SectionYearRangeComponent,
         SectionAddressComponent,
+        SectionOtherAddressesComponent,
         NameAllBlocksComponent
     ],
     imports: [

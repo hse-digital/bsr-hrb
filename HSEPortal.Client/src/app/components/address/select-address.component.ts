@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AddressModel, AddressResponseModel } from 'src/app/services/address.service';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'select-address',
@@ -9,31 +9,22 @@ import { NavigationService } from 'src/app/services/navigation.service';
 export class SelectAddressComponent {
 
   addressHasErrors = false;
-  selectedAddress?: string;
+  selectedAddress?: AddressModel;
 
-  @Input() address?: string;
-  @Input() addresses?: string[];
-  @Output() public onSelectAddress = new EventEmitter<string | undefined>();
+  @Input() addressResponse?: AddressResponseModel;
+  @Input() searchModel: { postcode?: string, addressLine1?: string } = {}
 
-  @Output() public onSearchAgain = new EventEmitter();
-  @Output() public onEnterManualAddress = new EventEmitter();
+  @Output() onAddressSelected = new EventEmitter<AddressModel>();
+  @Output() onSearchAgain = new EventEmitter();
+  @Output() onEnterManualAddress = new EventEmitter();
 
-  constructor(public applicationService: ApplicationService, public navigationService: NavigationService) {
-  }
+  constructor(public applicationService: ApplicationService) {}
 
   continue() {
     this.addressHasErrors = !this.selectedAddress;
-    if (!this.addressHasErrors) this.onSelectAddress.emit(this.selectedAddress);
-  }
-
-  searchAgain(event: any) {
-    event.preventDefault();
-    this.onSearchAgain.emit();
-  }
-
-  enterManualAddress(event: any) {
-    event.preventDefault();
-    this.onEnterManualAddress.emit();
+    if (!this.addressHasErrors) {
+      this.onAddressSelected.emit(this.selectedAddress);
+    }
   }
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
@@ -41,6 +32,6 @@ export class SelectAddressComponent {
   }
 
   get numberOfAddresses(): number | undefined {
-    return this.addresses?.length;
+    return this.addressResponse?.Results.length;
   }
 }

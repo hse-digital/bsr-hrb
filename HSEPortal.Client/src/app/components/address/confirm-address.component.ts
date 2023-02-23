@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AddressModel } from 'src/app/services/address.service';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
@@ -8,27 +9,19 @@ import { NavigationService } from 'src/app/services/navigation.service';
 })
 export class ConfirmAddressComponent {
 
-  @Input() public selectedAddress?: string;
-
-  @Output() public onAddressConfirmed = new EventEmitter<boolean | undefined>();
-  @Output() public onSearchAgain = new EventEmitter();
-  @Output() public onEnterManualAddress = new EventEmitter();
+  @Input() address!: AddressModel;
+  @Output() onAddressConfirmed = new EventEmitter<boolean | undefined>();
+  @Output() onSearchAgain = new EventEmitter();
+  @Output() onEnterManualAddress = new EventEmitter();
 
   constructor(public applicationService: ApplicationService, public navigationService: NavigationService) {
   }
 
-  confirm() {
-    this.onAddressConfirmed.emit(true);
-  }
+  getAddressLineOne() {
+    var address = this.address.Address?.replace(this.address.Town!, '')!;
+    address = address.replace(this.address?.Postcode!, '');
 
-  searchAgain(event: any) {
-    event.preventDefault();
-    this.onSearchAgain.emit();
-  }
-
-  enterManualAddress(event: any) {
-    event.preventDefault();
-    this.onEnterManualAddress.emit();
+    return address.split(',').filter(x => x.trim().length > 0).join(', ');
   }
 
 }
