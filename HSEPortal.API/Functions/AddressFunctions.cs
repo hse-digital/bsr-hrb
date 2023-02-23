@@ -34,7 +34,7 @@ public class AddressFunctions
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
-        return await BuildResponseObject(request, response);
+        return await BuildResponseObjectAsync(request, response);
     }
 
     [Function(nameof(SearchPostalAddressByPostcode))]
@@ -44,11 +44,10 @@ public class AddressFunctions
         {
             postcode = postcode,
             dataset = "DPA",
-            fq = "COUNTRY_CODE=E&fq=COUNTRY_CODE=W",
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
-        return await BuildResponseObject(request, response);
+        return await BuildResponseObjectAsync(request, response);
     }
 
     [Function(nameof(SearchAddress))]
@@ -62,10 +61,16 @@ public class AddressFunctions
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
-        return await BuildResponseObject(request, response);
+        return await BuildResponseObjectAsync(request, response);
     }
 
-    private async Task<HttpResponseData> BuildResponseObject(HttpRequestData request, IFlurlResponse response)
+    private async Task<HttpResponseData> BuildResponseObjectAsync(HttpRequestData request, IFlurlResponse response)
+    {
+        var searchResponse = await GetSearchResponseAsync(response);
+        return await request.CreateObjectResponseAsync(searchResponse);
+    }
+
+    private async Task<BuildingAddressSearchResponse> GetSearchResponseAsync(IFlurlResponse response)
     {
         BuildingAddressSearchResponse searchResponse;
         if (response.StatusCode == (int)HttpStatusCode.BadRequest)
@@ -78,7 +83,7 @@ public class AddressFunctions
             searchResponse = mapper.Map<BuildingAddressSearchResponse>(postcodeResponse);
         }
 
-        return await request.CreateObjectResponseAsync(searchResponse);
+        return searchResponse;
     }
 
     private Task<IFlurlResponse> GetDataFromOrdnanceSurvey(string endpoint, object queryParams)
