@@ -39,7 +39,7 @@ export class AppComponent {
   }
 
   initTimer() {
-    this.idleTimerService.initTimer(5, () => {
+    this.idleTimerService.initTimer(13 * 60, () => {
       if (typeof window !== 'undefined' && (this.doesUrlContains("/application/", "/new-application/", "/returning-application"))) {
         this.showTimeoutDialog = true;
       } else {
