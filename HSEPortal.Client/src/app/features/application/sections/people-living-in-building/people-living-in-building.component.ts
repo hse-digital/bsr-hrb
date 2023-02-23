@@ -12,6 +12,7 @@ import { SectionCheckAnswersComponent } from "../check-answers/check-answers.com
 })
 export class SectionPeopleLivingInBuildingComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'people-living';
+  override updateOnSave: boolean = true;
 
   constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);

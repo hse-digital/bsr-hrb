@@ -5,7 +5,7 @@ using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using Xunit;
 
-namespace HSEPortal.API.UnitTests;
+namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenValidatingApplicationNumber : UnitTestBase
 {
@@ -27,7 +27,7 @@ public class WhenValidatingApplicationNumber : UnitTestBase
             new(applicationId, "BuildingName", "ContactFirstName", "ContactLastName", "ContactPhoneNumber", contactEmailAddress)
         };
 
-        var response = buildingApplicationFunctions.ValidateApplicationNumber(BuildHttpRequestDataWithParameters(applicationId, contactEmailAddress), applicationsInjectedByCosmos);
+        var response = buildingApplicationFunctions.ValidateApplicationNumber(BuildHttpRequestData(new object(), applicationId, contactEmailAddress), applicationsInjectedByCosmos);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
@@ -38,7 +38,7 @@ public class WhenValidatingApplicationNumber : UnitTestBase
         var applicationId = "RegistrationId";
         var contactEmailAddress = "ContactEmailAddress";
 
-        var response = buildingApplicationFunctions.ValidateApplicationNumber(BuildHttpRequestDataWithParameters(applicationId, contactEmailAddress), new List<BuildingApplicationModel>());
+        var response = buildingApplicationFunctions.ValidateApplicationNumber(BuildHttpRequestData(new object(), applicationId, contactEmailAddress), new List<BuildingApplicationModel>());
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }

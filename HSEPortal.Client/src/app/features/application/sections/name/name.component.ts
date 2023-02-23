@@ -11,11 +11,10 @@ import { SectionFloorsAboveComponent } from '../floors-above/floors-above.compon
   templateUrl: './name.component.html'
 })
 export class SectionNameComponent extends BaseComponent implements IHasNextPage {
-
   static route: string = 'name';
 
   blockNameHasErrors = false;
-  constructor(router: Router,  private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 

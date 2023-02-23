@@ -28,6 +28,11 @@ export class ApplicationService {
     LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
+  clearApplication() {
+    this.model = new BuildingRegistrationModel();
+    this.updateLocalStorage();
+  }
+
   isCurrentApplication(id: string): boolean {
     return this.model?.id !== undefined && this.model?.id == id;
   }
@@ -109,6 +114,10 @@ export class ApplicationService {
   async registerNewBuildingApplication(): Promise<void> {
     this.model = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/NewBuildingApplication', this.model));
     LocalStorage.setJSON('HSE_MODEL', this.model)
+  }
+
+  async updateApplication(): Promise<void> {
+    await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
   }
 
 }

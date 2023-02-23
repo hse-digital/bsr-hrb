@@ -6,7 +6,7 @@ using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
 using Xunit;
 
-namespace HSEPortal.API.UnitTests;
+namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenReceivingANewBuildingApplication : UnitTestBase
 {
@@ -103,7 +103,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
 
     private async Task<CustomHttpResponseData> WhenANewBuildingApplicationIsReceived(BuildingApplicationModel buildingApplicationModel)
     {
-        var requestData = BuildHttpRequestDataWithBody(buildingApplicationModel);
+        var requestData = BuildHttpRequestData(buildingApplicationModel);
         return await buildingApplicationFunctions.NewBuildingApplication(requestData);
     }
 }

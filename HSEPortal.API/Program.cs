@@ -1,8 +1,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AutoMapper;
 using Flurl.Http;
 using Flurl.Http.Configuration;
-using HSEPortal.API;
+using HSEPortal.API.Model.OrdnanceSurvey;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.DynamicsDefinitions;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,35 +22,38 @@ host.Run();
 static void ConfigureServices(HostBuilderContext builderContext, IServiceCollection serviceCollection)
 {
     serviceCollection.Configure<DynamicsOptions>(builderContext.Configuration.GetSection(DynamicsOptions.Dynamics));
+    serviceCollection.Configure<IntegrationsOptions>(builderContext.Configuration.GetSection(IntegrationsOptions.Integrations));
 
     serviceCollection.AddTransient<DynamicsService>();
     serviceCollection.AddTransient<OTPService>();
     serviceCollection.AddTransient<DynamicsModelDefinitionFactory>();
+
+    serviceCollection.AddSingleton(_ => new MapperConfiguration(config =>
+    {
+        config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>();
+    }).CreateMapper());
 }
 
-namespace HSEPortal.API
+public class SystemTextJsonSerializer : ISerializer
 {
-    public class SystemTextJsonSerializer : ISerializer
+    private readonly JsonSerializerOptions serializerOptions = new()
     {
-        private readonly JsonSerializerOptions serializerOptions = new()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNameCaseInsensitive = true
-        };
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNameCaseInsensitive = true
+    };
 
-        public string Serialize(object obj)
-        {
-            return JsonSerializer.Serialize(obj, serializerOptions);
-        }
+    public string Serialize(object obj)
+    {
+        return JsonSerializer.Serialize(obj, serializerOptions);
+    }
 
-        public T Deserialize<T>(string s)
-        {
-            return JsonSerializer.Deserialize<T>(s, serializerOptions);
-        }
+    public T Deserialize<T>(string s)
+    {
+        return JsonSerializer.Deserialize<T>(s, serializerOptions);
+    }
 
-        public T Deserialize<T>(Stream stream)
-        {
-            return JsonSerializer.Deserialize<T>(stream, serializerOptions);
-        }
+    public T Deserialize<T>(Stream stream)
+    {
+        return JsonSerializer.Deserialize<T>(stream, serializerOptions);
     }
 }
