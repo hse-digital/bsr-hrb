@@ -24,7 +24,12 @@ export class AddressComponent {
   searchPerformed(addressResponse: AddressResponseModel) {
     if (addressResponse.Results.length > 0) {
       this.addressResponse = addressResponse;
-      this.changeStepTo(addressResponse.TotalResults < 100 ? "select" : "too-many");
+      if (this.addressResponse.Results.length == 1) {
+        this.selectedAddress = this.addressResponse.Results[0];
+        this.changeStepTo('confirm');
+      } else {
+        this.changeStepTo(addressResponse.TotalResults < 100 ? "select" : "too-many");
+      }
     } else {
       this.changeStepTo("not-found");
     }
