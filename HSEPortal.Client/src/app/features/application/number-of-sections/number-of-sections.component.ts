@@ -23,7 +23,7 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let route = '';
-    if (this.applicationService.model.NumberOfSections == "two_or_more") {
+    if (this.applicationService.model.NumberOfSections == "one") {
       this.applicationService.startSectionsEdit();
       route = `floors`;
     }

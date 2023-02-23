@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Router, RouterStateSn
 import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { NumberOfSectionsComponment } from "../number-of-sections/number-of-sections.component";
 
 @Component({
   templateUrl: './task-list.component.html'
@@ -24,7 +25,7 @@ export class ApplicationTaskListComponent extends BaseComponent {
   }
 
   navigateToSections() {
-    let appendRoute = 'complex-structure';
+    let appendRoute = NumberOfSectionsComponment.route;
 
     if (this.applicationService.model.Sections?.length > 0) {
       appendRoute = 'sections/check-answers'
