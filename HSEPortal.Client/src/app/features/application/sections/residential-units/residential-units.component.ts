@@ -6,7 +6,6 @@ import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionPeopleLivingInBuildingComponent } from "../people-living-in-building/people-living-in-building.component";
-import { PeopleLivingInSectionDescriptionPipe } from "src/app/pipes/people-living-in-section-description.pipe";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
 
 @Component({

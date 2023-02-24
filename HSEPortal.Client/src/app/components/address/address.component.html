@@ -8,7 +8,7 @@
       <not-found-address *ngIf="step == 'not-found'" [searchModel]="searchModel" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()" />
       <too-many-address *ngIf="step == 'too-many'" [searchModel]="searchModel" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()" />
       <manual-address *ngIf="step == 'manual'" (onSearchAgain)="searchAgain()" (onAddressEntered)="manualAddressEntered($event)" />
-      <confirm-address *ngIf="step == 'confirm'" (onAddressConfirmed)="addressConfirmed()" [address]="selectedAddress!" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()" />
+      <confirm-address *ngIf="step == 'confirm'" (onAddressConfirmed)="addressConfirmed()" [address]="address!" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()" />
     </div>
   </div>
 </div>

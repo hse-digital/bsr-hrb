@@ -1,0 +1,16 @@
+<govuk-summary-list>
+    <govuk-summary-list-row (onClick)="navigateTo('name')" key="Name" [showAction]=true (onClick)="navigateTo('name')">{{section.Name}}</govuk-summary-list-row>
+    <govuk-summary-list-row (onClick)="navigateTo('floors')" key="Number of floors" [showAction]=true>{{section.FloorsAbove}}</govuk-summary-list-row>
+    <govuk-summary-list-row (onClick)="navigateTo('height')" key="Height" [showAction]=true>{{section.Height}} metres</govuk-summary-list-row>
+    <govuk-summary-list-row (onClick)="navigateTo('residential-units')" key="Number of residential units" [showAction]=true>{{section.ResidentialUnits}} </govuk-summary-list-row>
+    <govuk-summary-list-row (onClick)="navigateTo('people-living')" key="Are people living in the block?" [showAction]=true>{{section.PeopleLivingInBuilding | peopleLivingInSectionDescription}}</govuk-summary-list-row>
+    <govuk-summary-list-row (onClick)="navigateTo('year-of-completion')" key="When was the building originally built?" [showAction]=true>{{section.YearOfCompletionOption == 'year-exact' ? section.YearOfCompletion : section.YearOfCompletionOption | yearOfCompletionOptionDescription}}</govuk-summary-list-row>
+    <govuk-summary-list-row (onClick)="navigateTo('year-range')" *ngIf="section.YearOfCompletionOption == 'year-not-exact'" key="Completion year range" [showAction]=true>{{section.YearOfCompletionRange | yearOfCompletionDescription}}</govuk-summary-list-row>
+
+    <ng-container *ngFor="let address of section.Addresses; let i = index">
+        <govuk-summary-list-row (onClick)="navigateToAddress('address', i)" key="Address" [showAction]=true>
+            <address-description [address]="address" />
+        </govuk-summary-list-row>
+        <govuk-summary-list-row (onClick)="navigateToAddress('other-addresses', i)" key="Add another address?" [showAction]=true>{{i < section.Addresses.length-1 ? 'Yes' : 'No' }}</govuk-summary-list-row>
+    </ng-container>
+</govuk-summary-list>

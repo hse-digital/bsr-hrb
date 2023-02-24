@@ -18,7 +18,7 @@ export class ManualAddressComponent {
     postcode: { hasErrors: false, errorText: '' },
   }
 
-  model: AddressModel = {}
+  model: AddressModel = { IsManual: true }
 
   constructor(public applicationService: ApplicationService) { }
 

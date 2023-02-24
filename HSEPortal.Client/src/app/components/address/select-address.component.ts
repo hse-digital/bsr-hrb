@@ -11,10 +11,10 @@ export class SelectAddressComponent {
   addressHasErrors = false;
   selectedAddress?: AddressModel;
 
+  @Input() address!: AddressModel;
   @Input() addressResponse?: AddressResponseModel;
   @Input() searchModel: { postcode?: string, addressLine1?: string } = {}
 
-  @Output() onAddressSelected = new EventEmitter<AddressModel>();
   @Output() onSearchAgain = new EventEmitter();
   @Output() onEnterManualAddress = new EventEmitter();
 
@@ -23,7 +23,7 @@ export class SelectAddressComponent {
   continue() {
     this.addressHasErrors = !this.selectedAddress;
     if (!this.addressHasErrors) {
-      this.onAddressSelected.emit(this.selectedAddress);
+      this.address = this.selectedAddress!;
     }
   }
 

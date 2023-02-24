@@ -22,7 +22,7 @@ export class ApplicationTaskListComponent extends BaseComponent {
 
   override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
     return this.applicationService.model?.id !== undefined && this.applicationService.model?.id == routeSnapshot.params['id'];
-  }
+  } 
 
   navigateToSections() {
     let appendRoute = NumberOfSectionsComponment.route;

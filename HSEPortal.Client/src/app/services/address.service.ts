@@ -30,6 +30,7 @@ export class AddressResponseModel {
 }
 
 export class AddressModel {
+  IsManual: boolean = false;
   UPRN?: string;
   Address?: string;
   AddressLineTwo?: string;

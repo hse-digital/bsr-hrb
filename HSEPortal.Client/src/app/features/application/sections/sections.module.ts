@@ -10,6 +10,7 @@ import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
 import { SectionAddressComponent } from "./address/address.component";
 import { SectionCheckAnswersComponent } from "./check-answers/check-answers.component";
+import { SectionAnswersComponent } from "./check-answers/section-answers.component";
 import { SectionFloorsAboveComponent } from "./floors-above/floors-above.component";
 import { SectionHeightComponent } from "./height/height.component";
 import { SectionsIntroComponent } from "./intro/intro.component";
@@ -58,7 +59,8 @@ const routes = new HseRoutes([
         SectionYearRangeComponent,
         SectionAddressComponent,
         SectionOtherAddressesComponent,
-        NameAllBlocksComponent
+        NameAllBlocksComponent,
+        SectionAnswersComponent
     ],
     imports: [
         RouterModule.forChild(routes.getRoutes()),

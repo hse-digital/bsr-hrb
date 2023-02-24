@@ -18,6 +18,9 @@ export class ConfirmAddressComponent {
   }
 
   getAddressLineOne() {
+    if (this.address.IsManual)
+      return this.address.Address;
+
     var address = this.address.Address?.replace(this.address.Town!, '')!;
     address = address.replace(this.address?.Postcode!, '');
 

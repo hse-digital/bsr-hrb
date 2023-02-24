@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService, SectionModel } from 'src/app/services/application.service';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -14,7 +14,8 @@ import { SectionAddressComponent } from '../address/address.component';
 @Component({
   selector: 'hse-check-answers',
   templateUrl: './check-answers.component.html',
-  styleUrls: ['./check-answers.component.scss']
+  styleUrls: ['./check-answers.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SectionCheckAnswersComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'check-answers';

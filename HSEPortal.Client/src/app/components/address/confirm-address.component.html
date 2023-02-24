@@ -3,12 +3,7 @@
   <span class="govuk-caption-l">Address of {{ applicationService.currentSection.Name ?? "[Name]"}}</span>
   <govuk-fieldset title="Confirm address" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
     <govuk-inset-text>
-      {{getAddressLineOne()}}
-      <br>
-      <span *ngIf="address.AddressLineTwo">{{address.AddressLineTwo}}<br></span>
-      {{address.Town}}
-      <br>
-      {{address.Postcode}}
+      <address-description [address]="address"/>
     </govuk-inset-text>
   </govuk-fieldset>
 </div>

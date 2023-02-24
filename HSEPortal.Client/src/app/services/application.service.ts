@@ -159,7 +159,7 @@ export class SectionModel {
 
   CompletitionCertificateIssuer?: any;
   CompletitionCertificateReference?: any;
-  Address?: AddressModel;
+  Addresses: AddressModel[] = [];
   AnotherSection?: string;
 }
 

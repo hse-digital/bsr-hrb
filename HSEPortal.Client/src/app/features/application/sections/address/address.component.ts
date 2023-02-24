@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { AddressModel } from "src/app/services/address.service";
@@ -10,7 +10,7 @@ import { SectionOtherAddressesComponent } from "../other-addresses/other-address
 @Component({
     templateUrl: './address.component.html'
 })
-export class SectionAddressComponent extends BaseComponent {
+export class SectionAddressComponent extends BaseComponent implements OnInit {
     static route: string = 'address';
     searchMode = AddressSearchMode.Building;
 
@@ -18,11 +18,28 @@ export class SectionAddressComponent extends BaseComponent {
         super(router, applicationService, navigationService, activatedRoute);
     }
 
+    private addressIndex?: number;
+    address?: AddressModel;
+    ngOnInit(): void {
+        this.activatedRoute.queryParams.subscribe(query => {
+            this.addressIndex = query['address'];
+            if (this.addressIndex) {
+                this.address = this.applicationService.currentSection.Addresses[this.addressIndex - 1];
+            }
+        });
+    }
+
     async updateSectionAddress(address: AddressModel) {
-        this.applicationService.currentSection.Address = address;
+        if (this.addressIndex) {
+            this.applicationService.currentSection.Addresses[this.addressIndex - 1] = address;
+        } else {
+            if (!this.applicationService.currentSection.Addresses)
+                this.applicationService.currentSection.Addresses = [];
+
+            this.applicationService.currentSection.Addresses.push(address);
+        }
 
         await this.applicationService.updateApplication();
-
         this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
     }
 

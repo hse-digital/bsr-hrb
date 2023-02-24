@@ -10,6 +10,7 @@ public record BuildingApplicationModel(
     string ContactLastName = null,
     string ContactPhoneNumber = null,
     string ContactEmailAddress = null,
+    string NumberOfSections = null,
     SectionModel[] Sections = null) : IValidatableModel
 {
     public ValidationSummary Validate()
@@ -55,4 +56,4 @@ public record BuildingApplicationModel(
     }
 }
 
-public record SectionModel(string Name, string FloorsAbove, string Height, string PeopleLivingInBuilding, string ResidentialUnits);
+public record SectionModel(string Name, string FloorsAbove, string Height, string PeopleLivingInBuilding, string ResidentialUnits, BuildingAddress[] Addresses = null);

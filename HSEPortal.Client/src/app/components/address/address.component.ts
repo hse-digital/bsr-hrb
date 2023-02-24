@@ -1,31 +1,37 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AddressModel, AddressResponseModel } from 'src/app/services/address.service';
 
 @Component({
   selector: 'hse-address',
   templateUrl: './address.component.html'
 })
-export class AddressComponent {
+export class AddressComponent implements OnInit {
 
   @Input() searchMode: AddressSearchMode = AddressSearchMode.Building;
-  @Output() onAddressConfirmed = new EventEmitter<AddressModel>();
+  @Input() address?: AddressModel;
+  @Output() onAddressConfirmed = new EventEmitter();
 
   searchModel: { postcode?: string, addressLine1?: string } = {};
   addressResponse?: AddressResponseModel;
-  selectedAddress?: AddressModel;
 
   step = 'find';
   private history: string[] = [];
 
+  ngOnInit(): void {
+    if(this.address) {
+      this.changeStepTo('confirm');
+    }
+  }
+
   addressConfirmed() {
-    this.onAddressConfirmed.emit(this.selectedAddress);
+    this.onAddressConfirmed.emit(this.address);
   }
 
   searchPerformed(addressResponse: AddressResponseModel) {
     if (addressResponse.Results.length > 0) {
       this.addressResponse = addressResponse;
       if (this.addressResponse.Results.length == 1) {
-        this.selectedAddress = this.addressResponse.Results[0];
+        this.address = this.addressResponse.Results[0];
         this.changeStepTo('confirm');
       } else {
         this.changeStepTo(addressResponse.TotalResults < 100 ? "select" : "too-many");
@@ -36,12 +42,12 @@ export class AddressComponent {
   }
 
   addressSelected(selectedAddress: any) {
-    this.selectedAddress = selectedAddress;
+    this.address = selectedAddress;
     this.changeStepTo('confirm');
   }
 
   manualAddressEntered(address: AddressModel) {
-    this.selectedAddress = address;
+    this.address = address;
     this.changeStepTo('confirm');
   }
 
