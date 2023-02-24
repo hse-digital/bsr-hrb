@@ -10,6 +10,7 @@ import { SectionResidentialUnitsComponent } from '../residential-units/residenti
 import { SectionPeopleLivingInBuildingComponent } from '../people-living-in-building/people-living-in-building.component';
 import { MoreInformationComponent } from '../more-information/more-information.component';
 import { SectionAddressComponent } from '../address/address.component';
+import { NumberOfSectionsComponment } from '../../number-of-sections/number-of-sections.component';
 
 @Component({
   selector: 'hse-check-answers',
@@ -49,16 +50,12 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     return navigationService.navigateRelative(MoreInformationComponent.route, activatedRoute);
   }
 
-  get section(): SectionModel {
-    return this.applicationService.currentSection;
-  }
-  
-  navigateTo(sectionIndex: number, url: string) {
-    this.navigationService.navigateRelative(`section-${sectionIndex+1}/${url}`, this.activatedRoute, { return: 'check-answers' });
+  navigateToMultipleSections() { 
+    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { return: 'sections/check-answers' });
   }
 
-  getSectionName(sectionIndex: number, section: SectionModel) {
-    return section.Name ?? `${this.getBlockIndex(sectionIndex+1)} block`;
+  getSectionName(sectionIndex: number, section?: SectionModel) {
+    return section?.Name ?? `${this.getBlockIndex(sectionIndex+1)} section`;
   }
 
   getBlockIndex(index: number) {

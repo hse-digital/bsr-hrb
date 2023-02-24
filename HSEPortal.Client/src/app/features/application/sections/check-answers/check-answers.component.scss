@@ -10,3 +10,23 @@
     margin-bottom: 0 !important;
     border-bottom: none !important;
 }
+
+.section-wrapper {
+    border: 1px solid #b1b4b6;
+
+    .section-content {
+        padding: 20px;
+    }
+
+    .section-header {
+        padding: 15px 20px;
+        background: #f3f2f1;
+        font-family: "GDS Transport", arial, sans-serif;
+        font-weight: 600;
+        font-size: 1.1875rem;
+    }
+}
+
+.govuk-summary-list:first-child {
+    border-bottom: none !important;
+}

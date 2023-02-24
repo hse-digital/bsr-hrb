@@ -38,7 +38,8 @@ export abstract class BaseComponent implements CanActivate {
     }
 
     if (this.returnUrl) {
-      this.navigationService.navigateRelative(`../${this.returnUrl}`, this.activatedRoute);
+      let returnUri = this.returnUrl == 'check-answers' ? `../${this.returnUrl}` : this.returnUrl;
+      this.navigationService.navigateRelative(returnUri, this.activatedRoute);
       return;
     }
 
