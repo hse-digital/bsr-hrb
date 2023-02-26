@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { IdleTimerService } from "src/app/services/idle-timer.service";
 
 @Component({
     selector: 'timeout-modal',
@@ -7,9 +6,6 @@ import { IdleTimerService } from "src/app/services/idle-timer.service";
     styleUrls: ['./timeout.modal.scss'],
 })
 export class TimeoutModalComponent implements OnInit {
-    constructor(private idleTimerService: IdleTimerService) {
-    }
-
     @Input() delayToTimeout!: number;
     _remainingSeconds!: number;
 

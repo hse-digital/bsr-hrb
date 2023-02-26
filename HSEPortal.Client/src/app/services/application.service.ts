@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
+import { AddressModel } from "./address.service";
 
 @Injectable()
 export class ApplicationService {
@@ -47,6 +48,11 @@ export class ApplicationService {
     this._currentSectionIndex = this.model.Sections.length - 1;
 
     return `section-${this._currentSectionIndex + 1}`;
+  }
+
+  selectSection(sectionName: string) {
+    let index = Number(sectionName.split('-').at(-1));
+    this._currentSectionIndex = index - 1;
   }
 
   startAccountablePersonEdit(accountPersonType: string): string {
@@ -135,7 +141,7 @@ export class BuildingRegistrationModel {
   ContactLastName?: string;
   ContactPhoneNumber?: string;
   ContactEmailAddress?: string;
-  NumberBlocksBuilding?: string;
+  NumberOfSections?: string;
   AccountablePersons: AccountablePersonModel[] = [];
   Sections: SectionModel[] = [];
 }
@@ -146,10 +152,14 @@ export class SectionModel {
   Height?: number;
   PeopleLivingInBuilding?: any;
   ResidentialUnits?: number;
-  YearCompletition?: any;
+
+  YearOfCompletionOption?: any;
+  YearOfCompletion?: string;
+  YearOfCompletionRange?: string;
+
   CompletitionCertificateIssuer?: any;
   CompletitionCertificateReference?: any;
-  Address?: string;
+  Addresses: AddressModel[] = [];
   AnotherSection?: string;
 }
 

@@ -29,7 +29,14 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
         
         await addressFunctions.SearchBuildingByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
 
-        HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/postcode?postcode={buckinghamPalacePostcode}&dataset=LPI&fq=CLASSIFICATION_CODE%3APP&key={integrationsOptions.OrdnanceSurveyApiKey}")
+        HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/postcode")
+            .WithQueryParams(new
+            {
+                postcode = buckinghamPalacePostcode,
+                dataset = "LPI",
+                fq = "CLASSIFICATION_CODE:PP&fq=COUNTRY_CODE:E",
+                key = integrationsOptions.OrdnanceSurveyApiKey
+            })
             .WithVerb(HttpMethod.Get);
     }
 
@@ -57,12 +64,19 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
     }
 
     [Fact]
-    public async Task ShouldReturnBadRequestIfPostcodeIsInvalid()
+    public async Task ShouldReturnEmptyResultsIfPostcodeIsNotFound()
     {
         HttpTest.RespondWith(status: (int)HttpStatusCode.BadRequest);
         
         var response = await addressFunctions.SearchBuildingByPostcode(BuildHttpRequestData<object>(default, "invalid"), "invalid");
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        var responseAddress = await response.ReadAsJsonAsync<BuildingAddressSearchResponse>();
+        responseAddress.MaxResults.Should().Be(0);
+        responseAddress.Offset.Should().Be(0);
+        responseAddress.TotalResults.Should().Be(0);
+        responseAddress.Results.Should().BeEmpty();
     }
 
     private OrdnanceSurveyPostcodeResponse BuildPostcodeResponseJson()

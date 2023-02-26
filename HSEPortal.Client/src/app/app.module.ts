@@ -38,7 +38,7 @@ const routes = new HseRoutes([
     ReturningApplicationEnterDataComponent,
     ReturningApplicationResendCodeComponent,
     ReturningApplicationVerifyComponent,
-    TimeoutModalComponent
+    TimeoutModalComponent,
   ],
   imports: [
     RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking' }),

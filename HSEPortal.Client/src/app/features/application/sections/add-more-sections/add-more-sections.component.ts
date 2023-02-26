@@ -6,10 +6,10 @@ import { CaptionService } from 'src/app/services/caption.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
+import { SectionCheckAnswersComponent } from '../check-answers/check-answers.component';
 
 @Component({
-  templateUrl: './add-more-sections.component.html',
-  styleUrls: ['./add-more-sections.component.scss']
+  templateUrl: './add-more-sections.component.html'
 })
 export class AddMoreSectionsComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'add-more'
@@ -48,6 +48,6 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
       nextPage = `${section}/${SectionFloorsAboveComponent.route}`;
     }
 
-    return navigationService.navigateRelative(nextPage, activatedRoute);
+    return navigationService.navigateRelative(SectionCheckAnswersComponent.route, activatedRoute);
   }
 }

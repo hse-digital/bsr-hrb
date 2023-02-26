@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Router, RouterStateSn
 import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { NumberOfSectionsComponment } from "../number-of-sections/number-of-sections.component";
 
 @Component({
   templateUrl: './task-list.component.html'
@@ -21,42 +22,15 @@ export class ApplicationTaskListComponent extends BaseComponent {
 
   override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
     return this.applicationService.model?.id !== undefined && this.applicationService.model?.id == routeSnapshot.params['id'];
-  }
+  } 
 
-  tasks = [
-    {
-      title: "Prepare your application",
-      items: [
-        {
-          title: "Blocks in the building",
-          tag: "NOT STARTED YET",
-          link: `/application/${this.applicationService.model.id}/complex-structure`,
-          status: 0
-        },
-        {
-          title: "Principal accountable person",
-          tag: "CANNOT START YET",
-          link: undefined,
-          status: 0
-        },
-        {
-          title: "Other accountable persons",
-          tag: "CANNOT START YET",
-          link: undefined,
-          status: 0
-        },
-      ]
-    },
-    {
-      title: "Submit your application",
-      items: [
-        {
-          title: "Apply and pay the fee",
-          tag: "CANNOT START YET",
-          link: undefined,
-          status: 0
-        }
-      ]
+  navigateToSections() {
+    let appendRoute = NumberOfSectionsComponment.route;
+
+    if (this.applicationService.model.Sections?.length > 0) {
+      appendRoute = 'sections/check-answers'
     }
-  ]
+    
+    this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
+  }
 }

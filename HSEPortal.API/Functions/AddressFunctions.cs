@@ -34,7 +34,7 @@ public class AddressFunctions
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
-        return await BuildResponseObject(request, response);
+        return await BuildResponseObjectAsync(request, response);
     }
 
     [Function(nameof(SearchPostalAddressByPostcode))]
@@ -47,7 +47,7 @@ public class AddressFunctions
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
-        return await BuildResponseObject(request, response);
+        return await BuildResponseObjectAsync(request, response);
     }
 
     [Function(nameof(SearchAddress))]
@@ -61,17 +61,29 @@ public class AddressFunctions
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
-        return await BuildResponseObject(request, response);
+        return await BuildResponseObjectAsync(request, response);
     }
 
-    private async Task<HttpResponseData> BuildResponseObject(HttpRequestData request, IFlurlResponse response)
+    private async Task<HttpResponseData> BuildResponseObjectAsync(HttpRequestData request, IFlurlResponse response)
     {
-        if (response.StatusCode == (int)HttpStatusCode.BadRequest)
-            return request.CreateResponse(HttpStatusCode.BadRequest);
-
-        var postcodeResponse = await response.GetJsonAsync<OrdnanceSurveyPostcodeResponse>();
-        var searchResponse = mapper.Map<BuildingAddressSearchResponse>(postcodeResponse);
+        var searchResponse = await GetSearchResponseAsync(response);
         return await request.CreateObjectResponseAsync(searchResponse);
+    }
+
+    private async Task<BuildingAddressSearchResponse> GetSearchResponseAsync(IFlurlResponse response)
+    {
+        BuildingAddressSearchResponse searchResponse;
+        if (response.StatusCode == (int)HttpStatusCode.BadRequest)
+        {
+            searchResponse = new BuildingAddressSearchResponse { Results = Array.Empty<BuildingAddress>() };
+        }
+        else
+        {
+            var postcodeResponse = await response.GetJsonAsync<OrdnanceSurveyPostcodeResponse>();
+            searchResponse = mapper.Map<BuildingAddressSearchResponse>(postcodeResponse);
+        }
+
+        return searchResponse;
     }
 
     private Task<IFlurlResponse> GetDataFromOrdnanceSurvey(string endpoint, object queryParams)

@@ -5,7 +5,7 @@ import { ApplicationService } from "src/app/services/application.service";
 import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
-import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
+import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
@@ -35,6 +35,6 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(SectionCheckAnswersComponent.route, activatedRoute);
+    return navigationService.navigateRelative(`../${AddMoreSectionsComponent.route}`, activatedRoute);
   }
 }

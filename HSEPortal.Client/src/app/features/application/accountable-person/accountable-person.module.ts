@@ -24,7 +24,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(AccountablePersonComponent.route, AccountablePersonComponent),
   HseRoute.unsafe(OtherAccountablePersonComponent.route, OtherAccountablePersonComponent),
   HseRoute.unsafe(AddAccountablePersonComponent.route, AddAccountablePersonComponent),
-  HseRoute.forChildren(':id', new HseRoutes([
+  HseRoute.forChildren(':id', undefined, new HseRoutes([
     HseRoute.unsafe(OrganisationTypeApComponent.route, OrganisationTypeApComponent),
     HseRoute.unsafe(OrganisationNameApComponent.route, OrganisationNameApComponent),
     HseRoute.unsafe(OrganisationAddressComponent.route, OrganisationAddressComponent),

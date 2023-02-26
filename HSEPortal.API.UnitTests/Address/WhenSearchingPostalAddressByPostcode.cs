@@ -26,10 +26,16 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
     public async Task ShouldCallPostcodeEndpoint()
     {
         HttpTest.RespondWithJson(BuildPostcodeResponseJson());
-        
+
         await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
 
-        HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/postcode?postcode={buckinghamPalacePostcode}&dataset=DPA&key={integrationsOptions.OrdnanceSurveyApiKey}")
+        HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/postcode")
+            .WithQueryParams(new
+            {
+                postcode = buckinghamPalacePostcode,
+                dataset = "DPA",
+                key = integrationsOptions.OrdnanceSurveyApiKey
+            })
             .WithVerb(HttpMethod.Get);
     }
 
@@ -55,12 +61,32 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
     }
 
     [Fact]
-    public async Task ShouldReturnBadRequestIfPostcodeIsInvalid()
+    public async Task ShouldReturnEmptyResultsIfPostcodeIsNotFound()
     {
         HttpTest.RespondWith(status: (int)HttpStatusCode.BadRequest);
-        
+
         var response = await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, "invalid"), "invalid");
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var responseAddress = await response.ReadAsJsonAsync<BuildingAddressSearchResponse>();
+        responseAddress.MaxResults.Should().Be(0);
+        responseAddress.Offset.Should().Be(0);
+        responseAddress.TotalResults.Should().Be(0);
+        responseAddress.Results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task ShouldRemoveResultsFromCountriesNotEorW()
+    {
+        var postcodeResponse = BuildPostcodeResponseJsonWithMultipleCountries();
+        HttpTest.RespondWithJson(postcodeResponse);
+
+        var response = await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
+        var responseAddress = await response.ReadAsJsonAsync<BuildingAddressSearchResponse>();
+
+        responseAddress.Results.Length.Should().Be(2);
+        responseAddress.Results.FirstOrDefault(x => x.Address == "F").Should().BeNull();
     }
 
     private OrdnanceSurveyPostcodeResponse BuildPostcodeResponseJson()
@@ -111,6 +137,48 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
                         MATCH = 1.0,
                         MATCH_DESCRIPTION = "EXACT",
                         DELIVERY_POINT_SUFFIX = "3Q"
+                    }
+                }
+            }
+        };
+    }
+
+    private OrdnanceSurveyPostcodeResponse BuildPostcodeResponseJsonWithMultipleCountries()
+    {
+        return new OrdnanceSurveyPostcodeResponse
+        {
+            header = new Header
+            {
+                offset = 0,
+                totalresults = 1,
+                maxresults = 100,
+            },
+            results = new List<Result>
+            {
+                new()
+                {
+                    DPA = new DPA
+                    {
+                        ADDRESS = "E",
+                        COUNTRY_CODE = "E",
+                    }
+                },
+
+                new()
+                {
+                    DPA = new DPA
+                    {
+                        ADDRESS = "W",
+                        COUNTRY_CODE = "W",
+                    }
+                },
+
+                new()
+                {
+                    DPA = new DPA
+                    {
+                        ADDRESS = "J",
+                        COUNTRY_CODE = "J",
                     }
                 }
             }

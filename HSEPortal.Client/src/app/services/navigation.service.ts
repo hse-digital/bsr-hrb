@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
@@ -9,8 +9,8 @@ export class NavigationService {
     return this.router.navigate([route]);
   }
 
-  navigateRelative(subRoute: string, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return this.router.navigate([`../${subRoute}`], { relativeTo: activatedRoute });
+  navigateRelative(subRoute: string, activatedRoute: ActivatedRoute, queryParams?: Params): Promise<boolean> {
+    return this.router.navigate([`../${subRoute}`], { relativeTo: activatedRoute, queryParams: queryParams });
   }
 
   navigateAppend(subRoute: string, activatedRoute: ActivatedRoute): Promise<boolean> {
