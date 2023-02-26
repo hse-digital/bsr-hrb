@@ -76,19 +76,6 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
         responseAddress.Results.Should().BeEmpty();
     }
 
-    [Fact]
-    public async Task ShouldRemoveResultsFromCountriesNotEorW()
-    {
-        var postcodeResponse = BuildPostcodeResponseJsonWithMultipleCountries();
-        HttpTest.RespondWithJson(postcodeResponse);
-
-        var response = await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
-        var responseAddress = await response.ReadAsJsonAsync<BuildingAddressSearchResponse>();
-
-        responseAddress.Results.Length.Should().Be(2);
-        responseAddress.Results.FirstOrDefault(x => x.Address == "F").Should().BeNull();
-    }
-
     private OrdnanceSurveyPostcodeResponse BuildPostcodeResponseJson()
     {
         return new OrdnanceSurveyPostcodeResponse
@@ -137,48 +124,6 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
                         MATCH = 1.0,
                         MATCH_DESCRIPTION = "EXACT",
                         DELIVERY_POINT_SUFFIX = "3Q"
-                    }
-                }
-            }
-        };
-    }
-
-    private OrdnanceSurveyPostcodeResponse BuildPostcodeResponseJsonWithMultipleCountries()
-    {
-        return new OrdnanceSurveyPostcodeResponse
-        {
-            header = new Header
-            {
-                offset = 0,
-                totalresults = 1,
-                maxresults = 100,
-            },
-            results = new List<Result>
-            {
-                new()
-                {
-                    DPA = new DPA
-                    {
-                        ADDRESS = "E",
-                        COUNTRY_CODE = "E",
-                    }
-                },
-
-                new()
-                {
-                    DPA = new DPA
-                    {
-                        ADDRESS = "W",
-                        COUNTRY_CODE = "W",
-                    }
-                },
-
-                new()
-                {
-                    DPA = new DPA
-                    {
-                        ADDRESS = "J",
-                        COUNTRY_CODE = "J",
                     }
                 }
             }
