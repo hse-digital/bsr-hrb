@@ -24,4 +24,9 @@ export class BuildingOutOfScopeComponent extends BaseComponent implements IHasNe
         return navigationService.navigateRelative(ContinueAnywayComponent.route, activatedRoute);
     }
 
+    async registerAnother() {
+        this.applicationService.clearApplication();
+        await this.navigationService.navigate('');
+    }
+
 }
