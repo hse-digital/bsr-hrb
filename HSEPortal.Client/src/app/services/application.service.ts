@@ -144,6 +144,7 @@ export class BuildingRegistrationModel {
   NumberOfSections?: string;
   AccountablePersons: AccountablePersonModel[] = [];
   Sections: SectionModel[] = [];
+  OutOfScopeContinueReason?: string;
 }
 
 export class SectionModel {

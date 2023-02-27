@@ -11,6 +11,9 @@ import { SectionPeopleLivingInBuildingComponent } from '../people-living-in-buil
 import { MoreInformationComponent } from '../more-information/more-information.component';
 import { SectionAddressComponent } from '../address/address.component';
 import { NumberOfSectionsComponment } from '../../number-of-sections/number-of-sections.component';
+import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
+import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
+import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
 
 @Component({
   selector: 'hse-check-answers',
@@ -48,19 +51,31 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(MoreInformationComponent.route, activatedRoute);
+
+    var sectionsOutOfScope = this.getOutOfScopeSections();
+    if (sectionsOutOfScope.length == this.applicationService.model.Sections.length) {
+      // all blocks out of scope
+      return navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, activatedRoute);
+    }
+
+    if (sectionsOutOfScope.length > 0) {
+      // some blocks out of scope
+      return navigationService.navigateRelative(MoreInformationComponent.route, activatedRoute);
+    }
+
+    return navigationService.navigateRelative(`../${AccountablePersonModule.baseRoute}/${AccountablePersonComponent.route}`, activatedRoute);
   }
 
-  navigateToMultipleSections() { 
+  navigateToMultipleSections() {
     return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { return: 'sections/check-answers' });
   }
 
   getSectionName(sectionIndex: number, section?: SectionModel) {
-    return section?.Name ?? `${this.getBlockIndex(sectionIndex+1)} section`;
+    return section?.Name ?? `${this.getBlockIndex(sectionIndex + 1)} section`;
   }
 
   getBlockIndex(index: number) {
-    switch(index) {
+    switch (index) {
       case 1: return 'First';
       case 2: return 'Second';
       case 3: return 'Third';
@@ -69,5 +84,17 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     }
 
     return "Last";
+  }
+
+  private getOutOfScopeSections() {
+    return this.applicationService.model.Sections.filter(section => {
+      var fewerThan7Stories = Number(section.FloorsAbove) < 7;
+      var lessThan18Meters = Number(section.Height) < 18;
+
+      var criteria1 = fewerThan7Stories && lessThan18Meters;
+      var criteria2 = Number(section.ResidentialUnits) < 2;
+
+      return criteria1 || criteria2;
+    });
   }
 }

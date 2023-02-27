@@ -1,0 +1,25 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link anchorId="textarea-reason" message="Enter why you still want to continue" />
+        </govuk-error-summary>
+
+        <govuk-fieldset [errorText]="getErrorDescription(emptyReason, 'Enter why you still want to continue')"
+                        title="Tell us why you still want to register this building"
+                        [isPageHeading]=true id="application"
+                        titleClass='govuk-fieldset__legend--xl'>
+
+        <govuk-textarea id="reason" [(model)]="applicationService.model.OutOfScopeContinueReason" (modelChange)="updateCharacters()" [enableCharacterCount]="true" [maxCharacterRemaining]="maxCharacters"/>
+
+        </govuk-fieldset>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [disabled]="tooManyCharacters">Save and continue</govuk-button>
+    </div>
+  </div>
+</div>
