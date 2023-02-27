@@ -8,6 +8,7 @@ import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections
 import { SectionAddressComponent } from "../address/address.component";
 import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
 import { SectionFloorsAboveComponent } from "../floors-above/floors-above.component";
+import { SectionNameComponent } from "../name/name.component";
 
 @Component({
     templateUrl: './other-addresses.component.html',
@@ -66,10 +67,9 @@ export class SectionOtherAddressesComponent extends BaseComponent implements IHa
 
             // user only entered one section so far, create a new one and navigate to floors
             var nextSection = this.applicationService.startNewSection();
-            return navigationService.navigateRelative(`../${nextSection}/${SectionFloorsAboveComponent.route}`, activatedRoute);
+            return navigationService.navigateRelative(`../${nextSection}/${SectionNameComponent.route}`, activatedRoute);
         }
 
-        this.returnUrl = undefined;
         // section has more than a single address, navigate to address page
         return navigationService.navigateRelative(`${SectionAddressComponent.route}`, activatedRoute);
     }
