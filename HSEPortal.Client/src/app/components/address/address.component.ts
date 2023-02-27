@@ -9,6 +9,7 @@ export class AddressComponent implements OnInit {
 
   @Input() searchMode: AddressSearchMode = AddressSearchMode.Building;
   @Input() address?: AddressModel;
+  @Input() addressName!: string;
   @Output() onAddressConfirmed = new EventEmitter();
 
   searchModel: { postcode?: string, addressLine1?: string } = {};

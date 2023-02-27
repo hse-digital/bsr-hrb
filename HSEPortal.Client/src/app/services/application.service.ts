@@ -8,7 +8,7 @@ import { AddressModel } from "./address.service";
 export class ApplicationService {
   model: BuildingRegistrationModel;
 
-  private _currentSectionIndex = 0;
+  _currentSectionIndex = 0;
   private _currentAccountablePersonIndex = 0;
   get currentSection(): SectionModel {
     return this.model.Sections[this._currentSectionIndex];

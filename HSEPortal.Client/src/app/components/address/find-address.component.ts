@@ -10,6 +10,7 @@ export class FindAddressComponent {
 
   @Input() searchMode: AddressSearchMode = AddressSearchMode.Building;
   @Input() searchModel!: { postcode?: string, addressLine1?: string };
+  @Input() addressName!: string;
   @Output() public onSearchPerformed = new EventEmitter<AddressResponseModel>();
 
   postcodeHasErrors: boolean = false;
