@@ -38,8 +38,9 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     super(router, applicationService, navigationService, activatedRoute);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.sections = this.applicationService.model.Sections;
+    await this.applicationService.updateApplication();
   }
 
   canContinue(): boolean {

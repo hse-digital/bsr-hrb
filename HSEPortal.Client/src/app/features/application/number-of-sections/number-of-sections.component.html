@@ -9,7 +9,7 @@
         </govuk-error-summary>
 
         <govuk-fieldset title="How many blocks are in this building?" [isPageHeading]=true id="number-of-sections" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'>
-          <govuk-radio-group [errorText]="getErrorDescription(numberOfSectionsHasErrors, 'Select how many blocks are in this building')"
+          <govuk-radio-group (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(numberOfSectionsHasErrors, 'Select how many blocks are in this building')"
                              [(model)]="applicationService.model.NumberOfSections">
             <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-yes" value="one" label="One" />
             <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-no" value="two_or_more" label="Two or more" />
