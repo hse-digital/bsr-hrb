@@ -18,6 +18,7 @@ import { MoreInformationComponent } from "./more-information/more-information.co
 import { NameAllBlocksComponent } from "./name-all-blocks/name-all-blocks.component";
 import { SectionNameComponent } from "./name/name.component";
 import { SectionOtherAddressesComponent } from "./other-addresses/other-addresses.component";
+import { BuildingOutOfScopeComponent } from "../out-of-scope/out-of-scope.component";
 import { SectionPeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
 import { SectionResidentialUnitsComponent } from "./residential-units/residential-units.component";
 import { SectionsComponent } from "./sections.component";

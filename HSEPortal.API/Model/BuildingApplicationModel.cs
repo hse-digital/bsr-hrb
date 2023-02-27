@@ -11,7 +11,8 @@ public record BuildingApplicationModel(
     string ContactPhoneNumber = null,
     string ContactEmailAddress = null,
     string NumberOfSections = null,
-    SectionModel[] Sections = null) : IValidatableModel
+    SectionModel[] Sections = null,
+    string OutOfScopeContinueReason = null) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
