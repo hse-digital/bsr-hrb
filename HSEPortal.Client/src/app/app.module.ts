@@ -1,8 +1,8 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule, Routes } from '@angular/router';
 import { HseAngularModule } from 'hse-angular';
 
 import { AppComponent } from './app.component';
@@ -17,6 +17,7 @@ import { ReturningApplicationEnterDataComponent } from './features/returning-app
 import { ReturningApplicationResendCodeComponent } from './features/returning-application/resend.component';
 import { ReturningApplicationVerifyComponent } from './features/returning-application/verify.component';
 import { ApplicationModule } from './features/application/application.module';
+
 
 const routes = new HseRoutes([
   HseRoute.unsafe(HomeComponent.route, HomeComponent),

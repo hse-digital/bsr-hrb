@@ -20,6 +20,7 @@ import { IndividualCheckAnswersApComponent } from 'src/app/features/application/
 import { IndividualAddressComponent } from 'src/app/features/application/accountable-person/individual/individual-address/individual-address.component';
 import { OrganisationAddressComponent } from 'src/app/features/application/accountable-person/organisation/organisation-address/organisation-address.component';
 
+
 const routes = new HseRoutes([
   HseRoute.unsafe(AccountablePersonComponent.route, AccountablePersonComponent),
   HseRoute.unsafe(OtherAccountablePersonComponent.route, OtherAccountablePersonComponent),

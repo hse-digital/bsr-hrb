@@ -24,4 +24,21 @@ export class OrganisationNameApComponent extends BaseComponent implements IHasNe
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return this.navigationService.navigateRelative('organisation-address', activatedRoute);
   }
+
+  saveAndComeBackLater() {
+
+  }
+
+  autocompleteSelectedValue(event: any) {
+    console.log(event);
+    // Selected value on the autocomplete list.
+  }
+
+  debounceFunction() {
+    console.log("debounce function")
+    // Connection with the API.
+    // Update autocompleteValues with the API result.
+  }
+
+  autocompleteValues = ["Dublin", "Madrid", "Barcelona", "Barcelota", "Barceloja", "Londres", "Paris", "Berlin"]
 }
