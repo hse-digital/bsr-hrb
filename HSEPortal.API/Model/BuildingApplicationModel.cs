@@ -13,6 +13,7 @@ public record BuildingApplicationModel(
     string NumberOfSections = null,
     SectionModel[] Sections = null,
     string OutOfScopeContinueReason = null,
+    string PrincipalAccountableType = null,
     BuildingApplicationStatus ApplicationStatus = BuildingApplicationStatus.None) : IValidatableModel
 {
     public ValidationSummary Validate()

@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Address } from "cluster";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
@@ -10,11 +11,14 @@ export class ApplicationService {
 
   _currentSectionIndex = 0;
   private _currentAccountablePersonIndex = 0;
+
   get currentSection(): SectionModel {
     return this.model.Sections[this._currentSectionIndex];
   }
-
-  currentAccountablePerson: any = {};
+  
+  get currentAccountablePerson(): AccountablePersonModel {
+    return this.model.AccountablePersons[this._currentAccountablePersonIndex];
+  }
 
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('HSE_MODEL') ?? {};
@@ -55,11 +59,11 @@ export class ApplicationService {
     this._currentSectionIndex = index - 1;
   }
 
-  startAccountablePersonEdit(accountPersonType: string): string {
+  startAccountablePersonEdit(): string {
     this._currentAccountablePersonIndex = 0;
 
     let accountablePerson = new AccountablePersonModel();
-    accountablePerson.Type = accountPersonType;
+    accountablePerson.Type = this.model.PrincipalAccountableType;
 
     this.model.AccountablePersons = [accountablePerson];
 
@@ -74,20 +78,6 @@ export class ApplicationService {
     this._currentAccountablePersonIndex = this.model.AccountablePersons.length - 1;
 
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
-  }
-
-  initializeNewAccountablePerson() {
-    this.currentAccountablePerson = <AccountablePersonModel>{};
-    let length = this.model.AccountablePersons?.push(this.currentAccountablePerson) ?? 1;
-    this.currentAccountablePerson.Id = length;
-    let accountablePerson = this.model.AccountablePersons?.at(-1);
-    if (accountablePerson) accountablePerson.id = length.toString();
-
-    return length;
-  }
-
-  castDownAccountablePersonTo<T>() {
-    this.currentAccountablePerson = <T>this.currentAccountablePerson;
   }
 
   async sendVerificationEmail(emailAddress: string): Promise<void> {
@@ -142,9 +132,10 @@ export class BuildingRegistrationModel {
   ContactPhoneNumber?: string;
   ContactEmailAddress?: string;
   NumberOfSections?: string;
-  AccountablePersons: AccountablePersonModel[] = [];
   Sections: SectionModel[] = [];
   OutOfScopeContinueReason?: string;
+  PrincipalAccountableType?: string;
+  AccountablePersons: AccountablePersonModel[] = [];
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
 }
 
@@ -180,7 +171,8 @@ export class SectionModel {
 export class AccountablePersonModel {
   id?: string;
   Type?: string;
-  IsPrincipal?: boolean;
+  IsPrincipal?: string;
+  Address?: AddressModel;
 
   OrganisationName?: string;
   OrganisationType?: string;
@@ -189,8 +181,8 @@ export class AccountablePersonModel {
   OrganisationTownOrCity?: string;
   OrganisationPostcode?: string;
 
-  IndividualFirstName?: string;
-  IndividualLastName?: string;
-  IndividualEmail?: string;
-  IndividualPhoneNumber?: string;
+  FirstName?: string;
+  LastName?: string;
+  Email?: string;
+  PhoneNumber?: string;
 }

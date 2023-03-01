@@ -6,10 +6,9 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
-  selector: 'hse-organisation-type-ap',
-  templateUrl: './organisation-type-ap.component.html'
+  templateUrl: './organisation-type.component.html'
 })
-export class OrganisationTypeApComponent extends BaseComponent implements IHasNextPage {
+export class OrganisationTypeComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'organisation-type';
   organisationTypeHasErrors = false;
 

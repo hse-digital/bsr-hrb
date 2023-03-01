@@ -6,13 +6,13 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
-          <govuk-error-link *ngIf="errors.email.hasErrors" anchorId="input-email" message="{{errors.email.errorText}}" />
-          <govuk-error-link *ngIf="errors.phoneNumber.hasErrors" anchorId="input-phone-number" message="{{errors.phoneNumber.errorText}}" />
-          <govuk-error-link *ngIf="errors.contactDetailsAreEmpty" anchorId="input-email" message="Enter your contact details" />
+            <govuk-error-link *ngIf="errors.email.hasErrors" anchorId="input-email" message="{{errors.email.errorText}}" />
+            <govuk-error-link *ngIf="errors.phoneNumber.hasErrors" anchorId="input-phone-number" message="{{errors.phoneNumber.errorText}}" />
+            <govuk-error-link *ngIf="errors.contactDetailsAreEmpty" anchorId="input-email" message="Enter your contact details" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-l">Other accountable persons</span>
-        <govuk-fieldset title="{{applicationService.currentAccountablePerson.FirstName}}'s contact details"
+        <span class="govuk-caption-l">Principal accountable person</span>
+        <govuk-fieldset title="{{papName}}'s contact details"
                         [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'
                         [errorText]="getErrorDescription(errors.contactDetailsAreEmpty, 'Enter your contact details')"
                         class='govuk-!-margin-bottom-4'>
