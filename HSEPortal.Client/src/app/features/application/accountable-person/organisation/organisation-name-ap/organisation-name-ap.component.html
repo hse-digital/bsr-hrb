@@ -15,9 +15,9 @@
 
           <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
                                     hint="This is the name of the organisation that is the principal accountable person."
+                                    (onDebounce)="onInputDebounce()"
                                     [(model)]="applicationService.currentAccountablePerson.OrganisationName"
                                     [autocompleteValues]="autocompleteValues"
-                                    [debounceFunction]="debounceFunction"
                                     [debounceTimer]=1000
                                     [minimunNumberCharactersForAutocomplete]=2
                                     [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/>

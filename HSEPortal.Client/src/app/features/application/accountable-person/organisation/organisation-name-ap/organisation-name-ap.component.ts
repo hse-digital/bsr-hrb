@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
@@ -30,10 +29,8 @@ export class OrganisationNameApComponent extends BaseComponent implements IHasNe
     return navigationService.navigateRelative('organisation-address', activatedRoute);
   }
 
-  async debounceFunction() {
-    this.autocompleteValues = await firstValueFrom(this.httpClient
-      .get(`api/SearchCompany/${this.applicationService.currentAccountablePerson.OrganisationName}`))
-      .catch((error) => console.log(error));
+  async onInputDebounce() {
+    this.autocompleteValues = await this.applicationService.getCompanyNames(this.applicationService.currentAccountablePerson?.OrganisationName);
   }
 
   saveAndComeBackLater() {

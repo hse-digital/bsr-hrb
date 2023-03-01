@@ -111,6 +111,10 @@ export class ApplicationService {
     LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
+  async getCompanyNames(organisationName: string) {
+    return await firstValueFrom(this.httpClient.get(`api/SearchCompany/${organisationName}`))
+  }
+
 }
 
 export class BuildingRegistrationModel {

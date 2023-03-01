@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Net;
 using AutoMapper;
 using Flurl;
 using Flurl.Http;
+using HSEPortal.API.Extensions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -20,9 +22,12 @@ public class SearchCompanyFunctions
         string operation = "advanced-search/companies";
         var response = await $"{ENDPOINT}/{operation}"
             .SetQueryParam("company_name_includes", companyName)
-            .WithOAuthBearerToken(API_KEY)
+            .WithBasicAuth(API_KEY, string.Empty)
             .AllowHttpStatus(HttpStatusCode.BadRequest)
-            .GetJsonAsync();
-        return response.GetJsonAsync().Result;
+            .GetAsync();
+
+        var jsonResponse = response.GetJsonAsync();
+
+        return await request.CreateObjectResponseAsync(jsonResponse);
     }
 }
