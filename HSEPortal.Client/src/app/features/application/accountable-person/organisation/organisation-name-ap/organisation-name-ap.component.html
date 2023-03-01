@@ -5,16 +5,22 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link *ngIf="organisationNameHasErrors" anchorId="input-organisation-name" message="Enter the organisation name" />
+        </govuk-error-summary>
+
         <govuk-fieldset title="Principal accountable person for" [isPageHeading]=true id="application"
                         titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
 
-          <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s"
+          <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
                                     hint="This is the name of the organisation that is the principal accountable person."
-                                    (onSelectedValue)="autocompleteSelectedValue($event)"
+                                    [(model)]="applicationService.currentAccountablePerson.OrganisationName"
                                     [autocompleteValues]="autocompleteValues"
                                     [debounceFunction]="debounceFunction"
                                     [debounceTimer]=1000
-                                    [minimunNumberCharactersForAutocomplete]=0 />
+                                    [minimunNumberCharactersForAutocomplete]=2
+                                    [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/>
 
         </govuk-fieldset>
       </div>

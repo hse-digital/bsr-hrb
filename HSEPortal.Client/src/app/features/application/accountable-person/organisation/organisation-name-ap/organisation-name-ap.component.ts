@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
@@ -12,33 +14,30 @@ import { NavigationService } from 'src/app/services/navigation.service';
 })
 export class OrganisationNameApComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'organisation-name';
+  autocompleteValues?: any;
+  organisationNameHasErrors = false;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, private httpClient: HttpClient) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
   canContinue(): boolean {
-    return true;
+    this.organisationNameHasErrors = !this.applicationService.currentAccountablePerson.OrganisationName;
+    return !this.organisationNameHasErrors
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return this.navigationService.navigateRelative('organisation-address', activatedRoute);
+    return navigationService.navigateRelative('organisation-address', activatedRoute);
+  }
+
+  async debounceFunction() {
+    this.autocompleteValues = await firstValueFrom(this.httpClient
+      .get(`api/SearchCompany/${this.applicationService.currentAccountablePerson.OrganisationName}`))
+      .catch((error) => console.log(error));
   }
 
   saveAndComeBackLater() {
 
   }
 
-  autocompleteSelectedValue(event: any) {
-    console.log(event);
-    // Selected value on the autocomplete list.
-  }
-
-  debounceFunction() {
-    console.log("debounce function")
-    // Connection with the API.
-    // Update autocompleteValues with the API result.
-  }
-
-  autocompleteValues = ["Dublin", "Madrid", "Barcelona", "Barcelota", "Barceloja", "Londres", "Paris", "Berlin"]
 }
