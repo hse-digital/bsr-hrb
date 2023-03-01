@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using AutoMapper;
 using Flurl.Http;
 using Flurl.Http.Configuration;
+using HSEPortal.API.Model.CompaniesHouse;
 using HSEPortal.API.Model.OrdnanceSurvey;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.DynamicsDefinitions;
@@ -32,6 +33,7 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.AddSingleton(_ => new MapperConfiguration(config =>
     {
         config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>();
+        config.AddProfile<CompaniesHouseSearchResponseProfile>();
     }).CreateMapper());
 }
 

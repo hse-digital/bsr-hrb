@@ -6,4 +6,6 @@ public class IntegrationsOptions
     
     public string OrdnanceSurveyEndpoint { get; set; }
     public string OrdnanceSurveyApiKey { get; set; }
+    public string CompaniesHouseEndpoint { get; set; }
+    public string CompaniesHouseApiKey { get; set; }
 }
