@@ -21,6 +21,8 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
   
   ngOnInit(): void {
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.PrincipleAccountablePersonInProgress;
+    this.applicationService.updateLocalStorage();
+    this.applicationService.updateApplication();
   }
 
   canContinue(): boolean {

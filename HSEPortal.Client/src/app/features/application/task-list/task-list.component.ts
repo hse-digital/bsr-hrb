@@ -9,13 +9,22 @@ import { NumberOfSectionsComponment } from "../number-of-sections/number-of-sect
 @Component({
   templateUrl: './task-list.component.html'
 })
-export class ApplicationTaskListComponent extends BaseComponent {
+export class ApplicationTaskListComponent extends BaseComponent implements OnInit {
 
   static route: string = '';
+
   applicationStatus = BuildingApplicationStatus;
+  completedSections: number = 0;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
+  }
+
+  ngOnInit(): void {
+    if (this.containsFlag(BuildingApplicationStatus.BlocksInBuildingComplete)) this.completedSections++;
+    if (this.containsFlag(BuildingApplicationStatus.PrincipleAccountablePersonComplete)) this.completedSections++;
+    if (this.containsFlag(BuildingApplicationStatus.OtherAccountablePersonsComplete)) this.completedSections++;
+    if (this.containsFlag(BuildingApplicationStatus.PaymentComplete)) this.completedSections++;
   }
 
   canContinue(): boolean {
@@ -50,7 +59,7 @@ export class ApplicationTaskListComponent extends BaseComponent {
   }
 
   navigateToPayment() {
-    
+
   }
 
   containsFlag(flag: BuildingApplicationStatus) {
