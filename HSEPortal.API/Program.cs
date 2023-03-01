@@ -23,6 +23,7 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
 {
     serviceCollection.Configure<DynamicsOptions>(builderContext.Configuration.GetSection(DynamicsOptions.Dynamics));
     serviceCollection.Configure<IntegrationsOptions>(builderContext.Configuration.GetSection(IntegrationsOptions.Integrations));
+    serviceCollection.Configure<FeatureOptions>(builderContext.Configuration.GetSection(FeatureOptions.Feature));
 
     serviceCollection.AddTransient<DynamicsService>();
     serviceCollection.AddTransient<OTPService>();

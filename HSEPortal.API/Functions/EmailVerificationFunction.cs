@@ -4,18 +4,21 @@ using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions;
 
-public class EmailVerificationFunction 
+public class EmailVerificationFunction
 {
     private readonly DynamicsService dynamicsService;
     private readonly OTPService otpService;
+    private readonly FeatureOptions featureOptions;
 
-    public EmailVerificationFunction(DynamicsService dynamicsService, OTPService otpService)
+    public EmailVerificationFunction(DynamicsService dynamicsService, OTPService otpService, IOptions<FeatureOptions> featureOptions)
     {
         this.dynamicsService = dynamicsService;
         this.otpService = otpService;
+        this.featureOptions = featureOptions.Value;
     }
 
     [Function(nameof(SendVerificationEmail))]
@@ -44,7 +47,7 @@ public class EmailVerificationFunction
         var isTokenValid = otpValidationModel.Validate().IsValid && otpService.ValidateToken(otpValidationModel.OTPToken, otpValidationModel.EmailAddress);
 
         var returnStatusCode = HttpStatusCode.OK;
-        if (!isTokenValid)
+        if (!featureOptions.DisableOtpValidation && !isTokenValid)
         {
             returnStatusCode = HttpStatusCode.BadRequest;
         }

@@ -3,20 +3,21 @@ using FluentAssertions;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenValidatingVerificationCode : UnitTestBase
 {
-    private readonly EmailVerificationFunction emailVerificationFunction;
+    private EmailVerificationFunction emailVerificationFunction;
     private readonly OTPService otpService;
     private readonly string emailAddress = "email@domain.com";
 
     public WhenValidatingVerificationCode()
     {
         otpService = new OTPService();
-        emailVerificationFunction = new EmailVerificationFunction(DynamicsService, otpService);
+        emailVerificationFunction = new EmailVerificationFunction(DynamicsService, otpService, new OptionsWrapper<FeatureOptions>(new FeatureOptions()));
     }
 
     [Fact]
@@ -24,6 +25,19 @@ public class WhenValidatingVerificationCode : UnitTestBase
     {
         var token = otpService.GenerateToken(emailAddress);
         var model = new OTPValidationModel(token, emailAddress);
+
+        var request = BuildHttpRequestData(model);
+        var response = await emailVerificationFunction.ValidateOTPToken(request);
+
+        response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task ShouldReturnSuccessIfOTPValidationIsDisabled()
+    {
+        emailVerificationFunction = new EmailVerificationFunction(DynamicsService, otpService, new OptionsWrapper<FeatureOptions>(new FeatureOptions { DisableOtpValidation = true }));
+
+        var model = new OTPValidationModel("invalid token", emailAddress);
 
         var request = BuildHttpRequestData(model);
         var response = await emailVerificationFunction.ValidateOTPToken(request);

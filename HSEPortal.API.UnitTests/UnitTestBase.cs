@@ -19,6 +19,7 @@ public abstract class UnitTestBase
     protected DynamicsService DynamicsService { get; }
 
     protected OTPService OtpService { get; }
+    protected IOptions<FeatureOptions> FeatureOptions = new OptionsWrapper<FeatureOptions>(new FeatureOptions());
 
     protected UnitTestBase()
     {
