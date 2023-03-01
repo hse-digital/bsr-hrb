@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApplicationService, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { NavigationService } from 'src/app/services/navigation.service';
@@ -43,8 +43,8 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   async ngOnInit() {
+    this.updateOnSave = true;
     this.sections = this.applicationService.model.Sections;
-    await this.applicationService.updateApplication();
   }
 
   canContinue(): boolean {
@@ -52,7 +52,6 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-
     var sectionsOutOfScope = this.getOutOfScopeSections();
     if (sectionsOutOfScope.length == this.applicationService.model.Sections.length) {
       // all blocks out of scope
@@ -85,6 +84,10 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     }
 
     return "Last";
+  }
+
+  override async onSave(): Promise<void> {
+    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.BlocksInBuildingComplete;
   }
 
   private getOutOfScopeSections() {

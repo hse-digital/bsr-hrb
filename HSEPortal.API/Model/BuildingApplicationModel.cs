@@ -12,7 +12,8 @@ public record BuildingApplicationModel(
     string ContactEmailAddress = null,
     string NumberOfSections = null,
     SectionModel[] Sections = null,
-    string OutOfScopeContinueReason = null) : IValidatableModel
+    string OutOfScopeContinueReason = null,
+    BuildingApplicationStatus ApplicationStatus = BuildingApplicationStatus.None) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
@@ -58,3 +59,17 @@ public record BuildingApplicationModel(
 }
 
 public record SectionModel(string Name, string FloorsAbove, string Height, string PeopleLivingInBuilding, string ResidentialUnits, BuildingAddress[] Addresses = null);
+
+[Flags]
+public enum BuildingApplicationStatus
+{
+    None = 0,
+    BlocksInBuildingInProgress = 1,
+    BlocksInBuildingComplete = 2,
+    PrincipleAccountablePersonInProgress = 4,
+    PrincipleAccountablePersonComplete = 8,
+    OtherAccountablePersonsInProgress = 16,
+    OtherAccountablePersonsComplete = 32,
+    PaymentInProgress = 64,
+    PaymentComplete = 128
+}

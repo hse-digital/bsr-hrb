@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
@@ -18,6 +18,7 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
   private previousAnswer?: string;
   ngOnInit(): void {
     this.previousAnswer = this.applicationService.model.NumberOfSections;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.BlocksInBuildingInProgress;
   }
 
   numberOfSectionsHasErrors = false;

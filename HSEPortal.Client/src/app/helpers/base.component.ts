@@ -23,6 +23,7 @@ export abstract class BaseComponent implements CanActivate {
   async saveAndContinue(): Promise<any> {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
+      await this.onSave();
       this.applicationService.updateLocalStorage();
       await this.runInheritances();
     }
@@ -31,6 +32,8 @@ export abstract class BaseComponent implements CanActivate {
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
     return this.hasErrors && showError ? errorMessage : undefined;
   }
+
+  async onSave() {}
 
   private async runInheritances(): Promise<void> {
     if (this.updateOnSave) {

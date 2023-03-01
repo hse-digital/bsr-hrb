@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 
@@ -9,7 +9,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
   selector: 'hse-accountable-person',
   templateUrl: './accountable-person.component.html'
 })
-export class AccountablePersonComponent extends BaseComponent implements IHasNextPage {
+export class AccountablePersonComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = '';
 
   accountablePersonHasErrors = false;
@@ -17,6 +17,10 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
+  }
+  
+  ngOnInit(): void {
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.PrincipleAccountablePersonInProgress;
   }
 
   canContinue(): boolean {

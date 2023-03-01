@@ -145,6 +145,19 @@ export class BuildingRegistrationModel {
   AccountablePersons: AccountablePersonModel[] = [];
   Sections: SectionModel[] = [];
   OutOfScopeContinueReason?: string;
+  ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
+}
+
+export enum BuildingApplicationStatus {
+  None = 0,
+  BlocksInBuildingInProgress = 1,
+  BlocksInBuildingComplete = 2,
+  PrincipleAccountablePersonInProgress = 4,
+  PrincipleAccountablePersonComplete = 8,
+  OtherAccountablePersonsInProgress = 16,
+  OtherAccountablePersonsComplete = 32,
+  PaymentInProgress = 64,
+  PaymentComplete = 128
 }
 
 export class SectionModel {

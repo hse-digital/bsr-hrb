@@ -15,19 +15,28 @@
             <govuk-summary-list>
               <govuk-summary-list-row>
                 <a class="govuk-link" (click)="navigateToSections()">Blocks in the building</a>
-                <govuk-tag greyTag>NOT STARTED YET</govuk-tag>
+                <govuk-tag class="govuk-tag--grey" *ngIf="this.applicationService.model.ApplicationStatus == applicationStatus.None">NOT STARTED YET</govuk-tag>
+                <govuk-tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.BlocksInBuildingInProgress) && !containsFlag(applicationStatus.BlocksInBuildingComplete)">IN PROGRESS</govuk-tag>
+                <govuk-tag *ngIf="containsFlag(applicationStatus.BlocksInBuildingComplete)">COMPLETE</govuk-tag>
+              </govuk-summary-list-row>
+
+              <govuk-summary-list-row>
+                <span *ngIf="!containsFlag(applicationStatus.BlocksInBuildingComplete)">Principal accountable person</span>
+                <a *ngIf="containsFlag(applicationStatus.BlocksInBuildingComplete)" class="govuk-link" (click)="navigateToPap()">Principal accountable person</a>
+                <govuk-tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.BlocksInBuildingComplete)">CANNOT START YET</govuk-tag>
+                <govuk-tag class="govuk-tag--grey" *ngIf="containsFlag(applicationStatus.BlocksInBuildingComplete) && !containsFlag(applicationStatus.PrincipleAccountablePersonInProgress)">NOT STARTED YET</govuk-tag>
+                <govuk-tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.PrincipleAccountablePersonInProgress) && !containsFlag(applicationStatus.PrincipleAccountablePersonComplete)">IN PROGRESS</govuk-tag>
+                <govuk-tag *ngIf="containsFlag(applicationStatus.PrincipleAccountablePersonComplete)">COMPLETE</govuk-tag>
               </govuk-summary-list-row>
 
               <govuk-summary-list-row>
                 <!-- <a *ngIf="item.link" class="govuk-link" href="{{item.link}}">{{item.title}}</a> -->
-                <span>Principal accountable person</span>
-                <govuk-tag greyTag>CANNOT START YET</govuk-tag>
-              </govuk-summary-list-row>
-
-              <govuk-summary-list-row>
-                <!-- <a *ngIf="item.link" class="govuk-link" href="{{item.link}}">{{item.title}}</a> -->
-                <span>Other accountable persons</span>
-                <govuk-tag greyTag>CANNOT START YET</govuk-tag>
+                <span *ngIf="!containsFlag(applicationStatus.PrincipleAccountablePersonComplete)">Other accountable persons</span>
+                <a *ngIf="containsFlag(applicationStatus.PrincipleAccountablePersonComplete)" class="govuk-link" (click)="navigateToOtherAp()">Other accountable persons</a>
+                <govuk-tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.PrincipleAccountablePersonComplete)">CANNOT START YET</govuk-tag>
+                <govuk-tag class="govuk-tag--grey" *ngIf="containsFlag(applicationStatus.PrincipleAccountablePersonComplete) && !containsFlag(applicationStatus.OtherAccountablePersonsInProgress)">NOT STARTED YET</govuk-tag>
+                <govuk-tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.OtherAccountablePersonsInProgress)">IN PROGRESS</govuk-tag>
+                <govuk-tag *ngIf="containsFlag(applicationStatus.OtherAccountablePersonsComplete)">COMPLETE</govuk-tag>
               </govuk-summary-list-row>
             </govuk-summary-list>
           </govuk-task-list-item>
@@ -35,8 +44,12 @@
           <govuk-task-list-item sectionNumber="2" text="Submit your application">
             <govuk-summary-list>
               <govuk-summary-list-row>
-                <span>Apply and pay the fee</span>
-                <govuk-tag greyTag>CANNOT START YET</govuk-tag>
+                <span *ngIf="!containsFlag(applicationStatus.OtherAccountablePersonsComplete)">Apply and pay the fee</span>
+                <a *ngIf="containsFlag(applicationStatus.OtherAccountablePersonsComplete)" class="govuk-link" (click)="navigateToPayment()">Apply and pay the fee</a>
+                <govuk-tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.OtherAccountablePersonsComplete)">CANNOT START YET</govuk-tag>
+                <govuk-tag class="govuk-tag--grey" *ngIf="containsFlag(applicationStatus.OtherAccountablePersonsComplete) && !containsFlag(applicationStatus.PaymentInProgress)">NOT STARTED YET</govuk-tag>
+                <govuk-tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.PaymentInProgress)">IN PROGRESS</govuk-tag>
+                <govuk-tag *ngIf="containsFlag(applicationStatus.PaymentComplete)">COMPLETE</govuk-tag>
               </govuk-summary-list-row>
             </govuk-summary-list>
           </govuk-task-list-item>
