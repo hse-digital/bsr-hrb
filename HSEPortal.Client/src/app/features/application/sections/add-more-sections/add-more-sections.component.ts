@@ -7,6 +7,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
 import { SectionCheckAnswersComponent } from '../check-answers/check-answers.component';
+import { SectionNameComponent } from '../name/name.component';
 
 @Component({
   templateUrl: './add-more-sections.component.html'
@@ -27,9 +28,8 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
   }
 
   get blockNames(): string | undefined {
-    let blockNames = this.applicationService.model.Sections?.map(x => x.Name);
-    if (blockNames) return blockNames.reduce((name, current) => current + ", " + name);
-    return undefined;
+    let blockNames = this.applicationService.model.Sections!.map(x => x.Name);
+    return blockNames.join(', ');
   }
 
   get captionText(): string | undefined {
@@ -45,7 +45,8 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
 
     if (this.addAnotherSectionLink === 'yes') {
       let section = this.applicationService.startNewSection();
-      nextPage = `${section}/${SectionFloorsAboveComponent.route}`;
+      nextPage = `${section}/${SectionNameComponent.route}`;
+      return navigationService.navigateRelative(nextPage, activatedRoute);
     }
 
     return navigationService.navigateRelative(SectionCheckAnswersComponent.route, activatedRoute);

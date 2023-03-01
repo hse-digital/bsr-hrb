@@ -6,7 +6,7 @@ import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { AddressSearchMode } from "src/app/components/address/address.component";
 import { SectionOtherAddressesComponent } from "../other-addresses/other-addresses.component";
-import { SectionNameHelper } from "src/app/helpers/section-name-helper";
+import { SectionHelper } from "src/app/helpers/section-name-helper";
 
 @Component({
     templateUrl: './address.component.html'
@@ -52,7 +52,7 @@ export class SectionAddressComponent extends BaseComponent implements OnInit {
         if (this.applicationService.model.NumberOfSections == "one")
             return this.applicationService.model.BuildingName!;
 
-        return this.applicationService.currentSection.Name ?? `${SectionNameHelper.getSectionCardinalName(this.applicationService._currentSectionIndex).toLowerCase()} section`;
+        return this.applicationService.currentSection.Name ?? `${SectionHelper.getSectionCardinalName(this.applicationService._currentSectionIndex).toLowerCase()} section`;
     }
 
 }

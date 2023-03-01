@@ -14,6 +14,7 @@ import { NumberOfSectionsComponment } from '../../number-of-sections/number-of-s
 import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
 import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
 import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
+import { SectionHelper } from 'src/app/helpers/section-name-helper';
 
 @Component({
   selector: 'hse-check-answers',
@@ -87,14 +88,6 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   private getOutOfScopeSections() {
-    return this.applicationService.model.Sections.filter(section => {
-      var fewerThan7Stories = Number(section.FloorsAbove) < 7;
-      var lessThan18Meters = Number(section.Height) < 18;
-
-      var criteria1 = fewerThan7Stories && lessThan18Meters;
-      var criteria2 = Number(section.ResidentialUnits) < 2;
-
-      return criteria1 || criteria2;
-    });
+    return this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
   }
 }

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { AddressModel } from 'src/app/services/address.service';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
@@ -27,4 +28,10 @@ export class ConfirmAddressComponent {
     return address.split(',').filter(x => x.trim().length > 0).join(', ');
   }
 
+  getSectionName() {
+    if (this.applicationService.model.NumberOfSections == 'one')
+      return this.applicationService.model.BuildingName;
+
+    return this.applicationService.currentSection.Name ?? SectionHelper.getSectionCardinalName(this.applicationService._currentSectionIndex);
+  }
 }

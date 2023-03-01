@@ -1,4 +1,6 @@
-export class SectionNameHelper {
+import { SectionModel } from "../services/application.service";
+
+export class SectionHelper {
     static getSectionCardinalName(sectionIndex: number): string {
         switch (sectionIndex) {
             case 0: return 'First';
@@ -9,5 +11,15 @@ export class SectionNameHelper {
         }
 
         return "Last";
+    }
+
+    static isOutOfScope(section: SectionModel) {
+        var fewerThan7Stories = Number(section.FloorsAbove) < 7;
+        var lessThan18Meters = Number(section.Height) < 18;
+
+        var criteria1 = fewerThan7Stories && lessThan18Meters;
+        var criteria2 = Number(section.ResidentialUnits) < 2;
+
+        return criteria1 || criteria2;
     }
 }

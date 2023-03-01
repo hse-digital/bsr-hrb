@@ -52,6 +52,7 @@ export class SectionOtherAddressesComponent extends BaseComponent implements IHa
             if (this.previousAnswer && this.hasMoreAddresses != this.previousAnswer) {
                 this.applicationService.currentSection.Addresses.splice(this.addressIndex!, 1);
                 this.applicationService.updateApplication();
+                return navigationService.navigateRelative(`../${SectionCheckAnswersComponent.route}`, activatedRoute);
             }
 
             // user said there is only a single section in the building - go for check answers
