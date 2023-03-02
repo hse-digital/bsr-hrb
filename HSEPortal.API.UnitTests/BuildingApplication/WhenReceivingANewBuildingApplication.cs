@@ -4,6 +4,7 @@ using HSEPortal.API.Extensions;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
+using Moq;
 using Xunit;
 
 namespace HSEPortal.API.UnitTests.BuildingApplication;
@@ -14,10 +15,11 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
     private const string DynamicsAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkd";
     private const string BuildingApplicationReturnId = "EC6B32C8-0188-4CCE-B58C-D6F05FEEF79B";
     private const string BuildingReturnId = "06F8C7E4-F41A-4EB4-B8E2-3501701A4A53";
+    private const string BuildingApplicationId = "HBR123123123";
 
     public WhenReceivingANewBuildingApplication()
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService);
+        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, FeatureOptions);
         HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken });
         HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(BuildingApplicationReturnId));
         HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(BuildingReturnId));
@@ -59,9 +61,10 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
         var buildingRegistrationModel = GivenABuildingApplicationModel();
         await WhenANewBuildingApplicationIsReceived(buildingRegistrationModel);
 
-        HttpTest.ShouldHaveCalled($"{DynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_buildingapplications")
-            .WithOAuthBearerToken(DynamicsAuthToken)
-            .WithRequestJson(new DynamicsBuildingApplication(buildingRegistrationModel.BuildingName));
+        var request = HttpTest.CallLog.FirstOrDefault(x => x.Request.Url == $"{DynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_buildingapplications");
+        request.Should().NotBeNull();
+        request!.Request.Headers.Should().Contain(("Authorization", $"Bearer {DynamicsAuthToken}"));
+        request.RequestBody.Should().MatchRegex($"{{\"bsr_name\":\"{buildingRegistrationModel.BuildingName}\",\"bsr_applicationid\":\"HBR\\d{{9}}\"}}");
     }
 
     [Fact]

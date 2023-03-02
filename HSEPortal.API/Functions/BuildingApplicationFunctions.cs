@@ -4,6 +4,7 @@ using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions;
 
@@ -11,11 +12,13 @@ public class BuildingApplicationFunctions
 {
     private readonly DynamicsService dynamicsService;
     private readonly OTPService otpService;
+    private readonly FeatureOptions featureOptions;
 
-    public BuildingApplicationFunctions(DynamicsService dynamicsService, OTPService otpService)
+    public BuildingApplicationFunctions(DynamicsService dynamicsService, OTPService otpService, IOptions<FeatureOptions> featureOptions)
     {
         this.dynamicsService = dynamicsService;
         this.otpService = otpService;
+        this.featureOptions = featureOptions.Value;
     }
 
     [Function(nameof(NewBuildingApplication))]
@@ -53,7 +56,7 @@ public class BuildingApplicationFunctions
         if (buildingApplications.Any())
         {
             var application = buildingApplications[0];
-            if (otpService.ValidateToken(otpToken, application.ContactEmailAddress))
+            if (otpService.ValidateToken(otpToken, application.ContactEmailAddress) || featureOptions.DisableOtpValidation)
                 return await request.CreateObjectResponseAsync(application);
         }
 

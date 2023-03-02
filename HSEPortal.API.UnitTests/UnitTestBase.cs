@@ -2,6 +2,7 @@ using System.Text.Json;
 using AutoMapper;
 using Flurl.Http;
 using Flurl.Http.Testing;
+using HSEPortal.API.Model.CompaniesHouse;
 using HSEPortal.API.Model.OrdnanceSurvey;
 using HSEPortal.API.Services;
 using HSEPortal.API.UnitTests.Helpers;
@@ -19,6 +20,7 @@ public abstract class UnitTestBase
     protected DynamicsService DynamicsService { get; }
 
     protected OTPService OtpService { get; }
+    protected IOptions<FeatureOptions> FeatureOptions = new OptionsWrapper<FeatureOptions>(new FeatureOptions());
 
     protected UnitTestBase()
     {
@@ -61,6 +63,10 @@ public abstract class UnitTestBase
 
     protected IMapper GetMapper()
     {
-        return new MapperConfiguration(config => { config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>(); }).CreateMapper();
+        return new MapperConfiguration(config =>
+        {
+            config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>();
+            config.AddProfile<CompaniesHouseSearchResponseProfile>();
+        }).CreateMapper();
     }
 }

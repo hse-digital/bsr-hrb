@@ -13,7 +13,7 @@ public class WhenValidatingApplicationNumber : UnitTestBase
 
     public WhenValidatingApplicationNumber()
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, new OTPService());
+        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, new OTPService(), FeatureOptions);
     }
 
     [Fact]

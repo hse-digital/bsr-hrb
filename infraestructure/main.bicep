@@ -190,6 +190,14 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                     name: 'Integrations__OrdnanceSurveyApiKey'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--OrdnanceSurveyApiKey)'
                 }
+                {
+                    name: 'Integrations__CompaniesHouseEndpoint'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CompaniesHouseEndpoint)'
+                }
+                {
+                    name: 'Integrations__CompaniesHouseApiKey'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CompaniesHouseApiKey)'
+                }
             ]
         }
         httpsOnly: true

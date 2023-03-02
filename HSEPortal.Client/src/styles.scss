@@ -36,3 +36,8 @@ a.govuk-link, a.govuk-back-link {
   color: #1d70b8;
   cursor: pointer;
 }
+
+.inline-radios {
+  display: flex;
+  gap: 20px;
+}

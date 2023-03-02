@@ -1,0 +1,22 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-fieldset title="You do not need to register this building "
+                        [isPageHeading]=true id="application"
+                        titleClass='govuk-fieldset__legend--l'>
+
+          <govuk-body>Based on the answers you've given, there is no need to register this building.</govuk-body>
+          <govuk-body>If you have read the guidance and believe you do need to register this building, you can continue your application.</govuk-body>
+          <govuk-body>Or you can <a class="govuk-link" (click)="registerAnother()" >register another building.</a></govuk-body>
+        </govuk-fieldset>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()">I still want to register this building</govuk-button>
+      <govuk-body><a class="govuk-link">Back to GOV.UK home</a></govuk-body>
+    </div>
+  </div>
+</div>

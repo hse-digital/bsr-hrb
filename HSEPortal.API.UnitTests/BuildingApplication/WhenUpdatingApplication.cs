@@ -12,7 +12,7 @@ public class WhenUpdatingApplication : UnitTestBase
     private readonly BuildingApplicationFunctions buildingApplicationFunctions;
     public WhenUpdatingApplication()
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService);
+        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, FeatureOptions);
     }
 
     [Fact]

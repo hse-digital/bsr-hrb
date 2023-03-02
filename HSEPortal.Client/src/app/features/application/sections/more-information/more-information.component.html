@@ -5,8 +5,18 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <b>[WIP]</b>
-        <govuk-fieldset title="We need more information on some of your blocks" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+        <govuk-fieldset title="We need more information on some of your blocks" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+
+          <govuk-body>For <b>{{getSectionNames(inScopeSections!)}}</b> <span *ngIf="inScopeSections!.length > 1"> and <b>{{getSectionName(inScopeSections!.at(-1)!, inScopeSections!.length-1)}}</b></span>, we need you to tell us about:</govuk-body>
+
+          <govuk-list classes='govuk-list--bullet'>
+            <govuk-list-item text="the principal accountable person" />
+            <govuk-list-item text="other accountable persons" />
+            <govuk-list-item text="how we can contact them" />
+            <govuk-list-item text="what they're accountable for" />
+          </govuk-list>
+
+          <govuk-body *ngIf="outOfScopeSections">Based on the information you have given us, you do not need to tell us anything more about <b>{{getSectionNames(outOfScopeSections!)}}</b> <span *ngIf="outOfScopeSections!.length > 1"> and <b>{{getSectionName(outOfScopeSections!.at(-1)!, outOfScopeSections!.length-1)}}</b></span>.</govuk-body>
 
         </govuk-fieldset>
       </div>

@@ -1,0 +1,25 @@
+<div class="govuk-form-group">
+
+  <govuk-error-summary *ngIf="postcodeHasErrors" title="There is a problem">
+    <govuk-error-link anchorId="input-postcode" message="{{postcodeErrorText}}" />
+  </govuk-error-summary>
+
+  <span class="govuk-caption-l">{{ addressName }}</span>
+  <govuk-fieldset title="Find an address"
+                  [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-3'
+                  class='govuk-!-margin-bottom-3'>
+
+    <govuk-input id="postcode" label="Postcode"
+                 [(model)]="searchModel.postcode"
+                 [errorText]="getErrorDescription(postcodeHasErrors, postcodeErrorText)"
+                 class="govuk-!-margin-bottom-5 govuk-input--width-10" />
+
+    <govuk-input id="address-line-one" label="Address line 1 (optional)"
+                 hint="For example, 'Flat 3A' or '30 St Mary Axe'."
+                 [(model)]="searchModel.addressLine1"
+                 class="govuk-!-margin-bottom-5" />
+
+  </govuk-fieldset>
+
+  <govuk-button [isLoading]="loading" loadingText="Searching..." [disabled]="loading" (onClick)="findAddress()">Find address</govuk-button>
+</div>

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OrganisationTypeApComponent } from 'src/app/features/application/accountable-person/organisation/organisation-type-ap/organisation-type-ap.component';
+import { OrganisationTypeApComponent } from 'src/app/features/application/accountable-person/organisation/organisation-type/organisation-type.component';
 
 xdescribe('OrganisationTypeApComponent', () => {
   let component: OrganisationTypeApComponent;

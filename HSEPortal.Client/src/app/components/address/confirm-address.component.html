@@ -1,0 +1,13 @@
+<div class="govuk-form-group">
+
+  <span class="govuk-caption-l">Address of {{ getSectionName() }}</span>
+  <govuk-fieldset title="Confirm address" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+    <govuk-inset-text>
+      <address-description [address]="address"/>
+    </govuk-inset-text>
+  </govuk-fieldset>
+</div>
+
+<govuk-button (onClick)="onAddressConfirmed.emit()">Confirm</govuk-button>
+<govuk-body><a class="govuk-link" (click)="onSearchAgain.emit()">Search again</a></govuk-body>
+<govuk-body><a class="govuk-link" (click)="onEnterManualAddress.emit()">Enter address manually</a></govuk-body>
