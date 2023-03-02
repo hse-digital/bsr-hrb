@@ -198,6 +198,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                     name: 'Integrations__CompaniesHouseApiKey'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CompaniesHouseApiKey)'
                 }
+                {
+                    name: 'Feature__DisableOtpValidation'
+                    value: 'false'
+                }
             ]
         }
         httpsOnly: true
