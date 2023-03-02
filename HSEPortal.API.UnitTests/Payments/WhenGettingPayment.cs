@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
 using HSEPortal.API.Functions;
+using HSEPortal.API.Services;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +15,12 @@ namespace HSEPortal.API.UnitTests.Payments;
 public class WhenGettingPayment : UnitTestBase
 {
     private readonly PaymentFunctions paymentFunctions;
-
+    private readonly IntegrationsOptions integrationOptions;
 
     public WhenGettingPayment()
     {
-
-        paymentFunctions = new PaymentFunctions(GetMapper());
+        integrationOptions = new IntegrationsOptions { PaymentEndpoint = "https://publicapi.payments.service.gov.uk", PaymentApiKey = "abc123" };
+        paymentFunctions = new PaymentFunctions(new OptionsWrapper<IntegrationsOptions>(integrationOptions), GetMapper());
     }
 
     [Fact]
@@ -27,7 +29,7 @@ public class WhenGettingPayment : UnitTestBase
         string paymentId = "1234";
         await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentId), paymentId);
 
-        HttpTest.ShouldHaveCalled(PaymentFunctions.baseURL);
+        HttpTest.ShouldHaveCalled(this.integrationOptions.PaymentEndpoint).WithVerb(HttpMethod.Get);
         HttpTest.Should().Be(HttpStatusCode.OK);
     }
 
@@ -38,7 +40,7 @@ public class WhenGettingPayment : UnitTestBase
     {
         await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentId), paymentId);
 
-        HttpTest.ShouldHaveCalled(PaymentFunctions.baseURL);
+        HttpTest.ShouldHaveCalled(this.integrationOptions.PaymentEndpoint);
         HttpTest.Should().Be(HttpStatusCode.BadRequest);
     }
 
