@@ -22,8 +22,4 @@
       <ProjectReference Include="..\HSEPortal.API\HSEPortal.API.csproj" />
       <ProjectReference Include="..\HSEPortal.TestingCommon\HSEPortal.TestingCommon.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Builders" />
-    </ItemGroup>
 </Project>

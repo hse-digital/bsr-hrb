@@ -2,18 +2,22 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
+import { AddressModel } from "./address.service";
 
 @Injectable()
 export class ApplicationService {
   model: BuildingRegistrationModel;
 
-  private _currentSectionIndex = 0;
+  _currentSectionIndex = 0;
   private _currentAccountablePersonIndex = 0;
+
   get currentSection(): SectionModel {
     return this.model.Sections[this._currentSectionIndex];
   }
 
-  currentAccountablePerson: any = {};
+  get currentAccountablePerson(): AccountablePersonModel {
+    return this.model.AccountablePersons[this._currentAccountablePersonIndex];
+  }
 
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('HSE_MODEL') ?? {};
@@ -26,6 +30,11 @@ export class ApplicationService {
 
   updateLocalStorage() {
     LocalStorage.setJSON('HSE_MODEL', this.model)
+  }
+
+  clearApplication() {
+    this.model = new BuildingRegistrationModel();
+    this.updateLocalStorage();
   }
 
   isCurrentApplication(id: string): boolean {
@@ -44,13 +53,20 @@ export class ApplicationService {
     return `section-${this._currentSectionIndex + 1}`;
   }
 
-  startAccountablePersonEdit(accountPersonType: string): string {
+  selectSection(sectionName: string) {
+    let index = Number(sectionName.split('-').at(-1));
+    this._currentSectionIndex = index - 1;
+  }
+
+  startAccountablePersonEdit(): string {
     this._currentAccountablePersonIndex = 0;
 
-    let accountablePerson = new AccountablePersonModel();
-    accountablePerson.Type = accountPersonType;
+    if (!this.model.AccountablePersons || this.model.AccountablePersons.length == 0) {
+      let accountablePerson = new AccountablePersonModel();
+      accountablePerson.Type = this.model.PrincipalAccountableType;
 
-    this.model.AccountablePersons = [accountablePerson];
+      this.model.AccountablePersons = [accountablePerson];
+    }
 
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
@@ -63,20 +79,6 @@ export class ApplicationService {
     this._currentAccountablePersonIndex = this.model.AccountablePersons.length - 1;
 
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
-  }
-
-  initializeNewAccountablePerson() {
-    this.currentAccountablePerson = <AccountablePersonModel>{};
-    let length = this.model.AccountablePersons?.push(this.currentAccountablePerson) ?? 1;
-    this.currentAccountablePerson.Id = length;
-    let accountablePerson = this.model.AccountablePersons?.at(-1);
-    if (accountablePerson) accountablePerson.id = length.toString();
-
-    return length;
-  }
-
-  castDownAccountablePersonTo<T>() {
-    this.currentAccountablePerson = <T>this.currentAccountablePerson;
   }
 
   async sendVerificationEmail(emailAddress: string): Promise<void> {
@@ -111,6 +113,10 @@ export class ApplicationService {
     LocalStorage.setJSON('HSE_MODEL', this.model)
   }
 
+  async updateApplication(): Promise<void> {
+    await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
+  }
+
 }
 
 export class BuildingRegistrationModel {
@@ -126,9 +132,24 @@ export class BuildingRegistrationModel {
   ContactLastName?: string;
   ContactPhoneNumber?: string;
   ContactEmailAddress?: string;
-  NumberBlocksBuilding?: string;
-  AccountablePersons: AccountablePersonModel[] = [];
+  NumberOfSections?: string;
   Sections: SectionModel[] = [];
+  OutOfScopeContinueReason?: string;
+  PrincipalAccountableType?: string;
+  AccountablePersons: AccountablePersonModel[] = [];
+  ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
+}
+
+export enum BuildingApplicationStatus {
+  None = 0,
+  BlocksInBuildingInProgress = 1,
+  BlocksInBuildingComplete = 2,
+  PrincipleAccountablePersonInProgress = 4,
+  PrincipleAccountablePersonComplete = 8,
+  OtherAccountablePersonsInProgress = 16,
+  OtherAccountablePersonsComplete = 32,
+  PaymentInProgress = 64,
+  PaymentComplete = 128
 }
 
 export class SectionModel {
@@ -137,27 +158,38 @@ export class SectionModel {
   Height?: number;
   PeopleLivingInBuilding?: any;
   ResidentialUnits?: number;
-  YearCompletition?: any;
+
+  YearOfCompletionOption?: any;
+  YearOfCompletion?: string;
+  YearOfCompletionRange?: string;
+
   CompletitionCertificateIssuer?: any;
   CompletitionCertificateReference?: any;
-  Address?: string;
+  Addresses: AddressModel[] = [];
   AnotherSection?: string;
 }
 
 export class AccountablePersonModel {
-  id?: string;
   Type?: string;
-  IsPrincipal?: boolean;
+  IsPrincipal?: string;
+  Address?: AddressModel;
+  PapAddress?: AddressModel;
 
   OrganisationName?: string;
   OrganisationType?: string;
-  OrganisationAddressLineOne?: string;
-  OrganisationAddressLineTwo?: string;
-  OrganisationTownOrCity?: string;
-  OrganisationPostcode?: string;
+  OrganisationTypeDescription?: string;
 
-  IndividualFirstName?: string;
-  IndividualLastName?: string;
-  IndividualEmail?: string;
-  IndividualPhoneNumber?: string;
+  FirstName?: string;
+  LastName?: string;
+  Email?: string;
+  PhoneNumber?: string;
+  Role?: string;
+  LeadJobRole?: string;
+
+  ActingForSameAddress?: string;
+  ActingForAddress?: AddressModel;
+  LeadFirstName?: string;
+  LeadLastName?: string;
+  LeadEmail?: string;
+  LeadPhoneNumber?: string;
 }

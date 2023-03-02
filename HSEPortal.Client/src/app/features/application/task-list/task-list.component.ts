@@ -1,18 +1,30 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Type } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { ApplicationService } from "src/app/services/application.service";
+import { ApplicationService, BuildingApplicationStatus } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { AccountablePersonModule } from "../accountable-person/accountable-person.module";
+import { NumberOfSectionsComponment } from "../number-of-sections/number-of-sections.component";
 
 @Component({
   templateUrl: './task-list.component.html'
 })
-export class ApplicationTaskListComponent extends BaseComponent {
+export class ApplicationTaskListComponent extends BaseComponent implements OnInit {
 
   static route: string = '';
 
+  applicationStatus = BuildingApplicationStatus;
+  completedSections: number = 0;
+
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
+  }
+
+  ngOnInit(): void {
+    if (this.containsFlag(BuildingApplicationStatus.BlocksInBuildingComplete)) this.completedSections++;
+    if (this.containsFlag(BuildingApplicationStatus.PrincipleAccountablePersonComplete)) this.completedSections++;
+    if (this.containsFlag(BuildingApplicationStatus.OtherAccountablePersonsComplete)) this.completedSections++;
+    if (this.containsFlag(BuildingApplicationStatus.PaymentComplete)) this.completedSections++;
   }
 
   canContinue(): boolean {
@@ -23,40 +35,34 @@ export class ApplicationTaskListComponent extends BaseComponent {
     return this.applicationService.model?.id !== undefined && this.applicationService.model?.id == routeSnapshot.params['id'];
   }
 
-  tasks = [
-    {
-      title: "Prepare your application",
-      items: [
-        {
-          title: "Blocks in the building",
-          tag: "NOT STARTED YET",
-          link: `/application/${this.applicationService.model.id}/complex-structure`,
-          status: 0
-        },
-        {
-          title: "Principal accountable person",
-          tag: "CANNOT START YET",
-          link: undefined,
-          status: 0
-        },
-        {
-          title: "Other accountable persons",
-          tag: "CANNOT START YET",
-          link: undefined,
-          status: 0
-        },
-      ]
-    },
-    {
-      title: "Submit your application",
-      items: [
-        {
-          title: "Apply and pay the fee",
-          tag: "CANNOT START YET",
-          link: undefined,
-          status: 0
-        }
-      ]
+  navigateToSections() {
+    let appendRoute = NumberOfSectionsComponment.route;
+
+    if (this.applicationService.model.Sections?.length > 0) {
+      appendRoute = 'sections/check-answers'
     }
-  ]
+
+    this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
+  }
+
+  navigateToPap() {
+    let appendRoute = AccountablePersonModule.baseRoute;
+
+    if (this.applicationService.model.AccountablePersons?.length > 0) {
+    }
+
+    this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
+  }
+
+  navigateToOtherAp() {
+
+  }
+
+  navigateToPayment() {
+
+  }
+
+  containsFlag(flag: BuildingApplicationStatus) {
+    return (this.applicationService.model.ApplicationStatus & flag) == flag;
+  }
 }

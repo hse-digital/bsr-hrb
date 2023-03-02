@@ -26,7 +26,7 @@ export class OrganisationAddressComponent extends BaseComponent implements IHasN
   }
 
   override async saveAndContinue() {
-    this.hasErrors = ! await this.validateAndContinue();
+    this.hasErrors = !await this.validateAndContinue();
     if (!this.hasErrors) {
       this.applicationService.updateLocalStorage();
 
@@ -34,25 +34,30 @@ export class OrganisationAddressComponent extends BaseComponent implements IHasN
       if (hasNextPage) {
         await hasNextPage.navigateToNextPage(this.navigationService, this.activatedRoute);
       }
-    }}
+    }
+  }
 
   private async validateAndContinue() {
-    this.errors.lineOneHasErrors = !this.applicationService.currentAccountablePerson.AddressLineOne;
-    this.errors.townOrCityHasErrors = !this.applicationService.currentAccountablePerson.TownOrCity;
-    await this.validatePostcode();
-    return !this.errors.lineOneHasErrors && !this.errors.townOrCityHasErrors && !this.errors.postcode.hasErrors;
+    return true;
+    // this.errors.lineOneHasErrors = !this.applicationService.currentAccountablePerson.AddressLineOne;
+    // this.errors.townOrCityHasErrors = !this.applicationService.currentAccountablePerson.TownOrCity;
+
+    // await this.validatePostcode();
+
+    // return !this.errors.lineOneHasErrors && !this.errors.townOrCityHasErrors && !this.errors.postcode.hasErrors;
   }
 
   async validatePostcode() {
-    let postcode = this.applicationService.currentAccountablePerson.Postcode;
-    this.errors.postcode.hasErrors = true;
-    if (!postcode) {
-      this.errors.postcode.errorText = 'Enter a postcode';
-    } else if (!(await this.isPostcodeValid(postcode))) {
-      this.errors.postcode.errorText = 'Enter a real postcode, like ‘EC3A 8BF’.';
-    } else {
-      this.errors.postcode.hasErrors = false;
-    }
+    return true;
+    // let postcode = this.applicationService.currentAccountablePerson.Postcode;
+    // this.errors.postcode.hasErrors = true;
+    // if (!postcode) {
+    //   this.errors.postcode.errorText = 'Enter a postcode';
+    // } else if (!(await this.isPostcodeValid(postcode))) {
+    //   this.errors.postcode.errorText = 'Enter a real postcode, like ‘EC3A 8BF’.';
+    // } else {
+    //   this.errors.postcode.hasErrors = false;
+    // }
   }
 
   async isPostcodeValid(postcode: string): Promise<boolean> {

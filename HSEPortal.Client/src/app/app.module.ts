@@ -17,6 +17,7 @@ import { ReturningApplicationEnterDataComponent } from './features/returning-app
 import { ReturningApplicationResendCodeComponent } from './features/returning-application/resend.component';
 import { ReturningApplicationVerifyComponent } from './features/returning-application/verify.component';
 import { ApplicationModule } from './features/application/application.module';
+import { TimeoutModalComponent } from './features/timeout/timeout.modal';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(HomeComponent.route, HomeComponent),
@@ -36,7 +37,8 @@ const routes = new HseRoutes([
     ReturningApplicationComponent,
     ReturningApplicationEnterDataComponent,
     ReturningApplicationResendCodeComponent,
-    ReturningApplicationVerifyComponent
+    ReturningApplicationVerifyComponent,
+    TimeoutModalComponent,
   ],
   imports: [
     RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking' }),

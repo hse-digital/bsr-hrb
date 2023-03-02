@@ -23,11 +23,13 @@ public class DynamicsService
     public async Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel)
     {
         var authenticationToken = await GetAuthenticationTokenAsync();
-        var buildingApplication = await CreateBuildingApplicationAsync(buildingApplicationModel, authenticationToken);
+
+        var applicationId = $"HBR{GenerateApplicationId()}";
+        var buildingApplication = await CreateBuildingApplicationAsync(buildingApplicationModel, applicationId, authenticationToken);
         var building = await CreateBuildingAsync(buildingApplicationModel, buildingApplication, authenticationToken);
         await CreateContactAsync(buildingApplicationModel, building, authenticationToken);
 
-        return buildingApplicationModel with { Id = $"HBR{GenerateApplicationId()}" };
+        return buildingApplicationModel with { Id = applicationId };
     }
 
     public async Task SendVerificationEmail(EmailVerificationModel emailVerificationModel, string otpToken)
@@ -40,10 +42,10 @@ public class DynamicsService
             });
     }
 
-    private async Task<BuildingApplication> CreateBuildingApplicationAsync(BuildingApplicationModel model, string authenticationToken)
+    private async Task<BuildingApplication> CreateBuildingApplicationAsync(BuildingApplicationModel model, string applicationId, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<BuildingApplication, DynamicsBuildingApplication>();
-        var buildingApplication = new BuildingApplication(model.BuildingName);
+        var buildingApplication = new BuildingApplication(model.BuildingName, applicationId);
         var dynamicsBuildingApplication = modelDefinition.BuildDynamicsEntity(buildingApplication);
 
         var response = await dynamicsOptions.EnvironmentUrl

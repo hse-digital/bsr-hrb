@@ -1,0 +1,15 @@
+<div class="timeout-modal">
+    <div class="timeout-modal-content">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h2 class="govuk-fieldset__heading">Your application will be closed soon</h2>
+        </legend>
+
+        <govuk-body>We will close your application if you do not do anything in the next <b>{{getTimeRemaining()}}</b>. Your unsaved answers will be deleted. This is to protect your information.</govuk-body>
+
+        <div class="modal-actions">
+            <govuk-button (onClick)="onContinueClicked.emit()">Continue</govuk-button>
+            <a class="govuk-link" href="#" (click)="onSaveAndComebackClicked.emit()">Save and come back later</a>
+        </div>
+    </div>
+
+</div>

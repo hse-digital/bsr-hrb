@@ -28,9 +28,10 @@ export class HseRoute implements Route {
     return new HseRoute(path, undefined, undefined, loadChildren);
   }
 
-  static forChildren(path: string, childrenRoutes: HseRoutes): HseRoute {
+  static forChildren(path: string, component?: Type<any>, childrenRoutes?: HseRoutes): HseRoute {
     var hseRoute = new HseRoute(path, undefined);
-    (<Route>hseRoute).children = childrenRoutes.getRoutes();
+    (<Route>hseRoute).children = childrenRoutes!.getRoutes();
+    (<Route>hseRoute).component = component;
 
     return hseRoute;
   }

@@ -92,7 +92,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
                 ]
                 kind: 'Hash'
             }
-            defaultTtl: 86400
+            defaultTtl: -1
         }
     }
 }
@@ -181,6 +181,22 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                 {
                     name: 'CosmosConnection'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=CosmosConnection)'
+                }
+                {
+                    name: 'Integrations__OrdnanceSurveyEndpoint'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--OrdnanceSurveyEndpoint)'
+                }
+                {
+                    name: 'Integrations__OrdnanceSurveyApiKey'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--OrdnanceSurveyApiKey)'
+                }
+                {
+                    name: 'Integrations__CompaniesHouseEndpoint'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CompaniesHouseEndpoint)'
+                }
+                {
+                    name: 'Integrations__CompaniesHouseApiKey'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CompaniesHouseApiKey)'
                 }
             ]
         }
