@@ -8,4 +8,6 @@ public class IntegrationsOptions
     public string OrdnanceSurveyApiKey { get; set; }
     public string CompaniesHouseEndpoint { get; set; }
     public string CompaniesHouseApiKey { get; set; }
+    public string PaymentEndpoint { get; set; }
+    public string PaymentApiKey { get; set; }
 }

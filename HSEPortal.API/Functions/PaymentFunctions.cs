@@ -1,5 +1,6 @@
 using System.Net;
 using AutoMapper;
+using Flurl;
 using Flurl.Http;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
@@ -13,14 +14,14 @@ using Microsoft.Extensions.Options;
 namespace HSEPortal.API.Functions
 {
     public class PaymentFunctions
-    {
-        public static string baseURL = "https://publicapi.payments.service.gov.uk"; // local.settings.json
-        
+    {        
         private readonly IMapper mapper;
+        private readonly IntegrationsOptions integrationOptions;
 
-        public PaymentFunctions(IMapper mapper)
+        public PaymentFunctions(IOptions<IntegrationsOptions> integrationOptions, IMapper mapper)
         {
             this.mapper = mapper;
+            this.integrationOptions = integrationOptions.Value;
         }
 
         [Function(nameof(InitialisePayment))]
@@ -28,7 +29,9 @@ namespace HSEPortal.API.Functions
         {
             var paymentModel = await request.ReadAsJsonAsync<PaymentRequestModel>();
             
-            var response = $"{baseURL}/v1/payments".PostJsonAsync(paymentModel);
+            var response = this.integrationOptions.PaymentEndpoint
+                                    .SetQueryParams("v1", "payments")
+                                    .PostJsonAsync(paymentModel);
 
             if (response.Result.StatusCode == (int)HttpStatusCode.BadRequest)
                 return request.CreateResponse(HttpStatusCode.BadRequest);
@@ -42,7 +45,10 @@ namespace HSEPortal.API.Functions
         [Function(nameof(GetPayment))]
         public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentId}}")] HttpRequestData request, string paymentId)
         {
-            var response = $"{baseURL}/v1/payments/{paymentId}".GetAsync();
+            var response = this.integrationOptions.PaymentEndpoint
+                                .SetQueryParams("v1", "payments", paymentId)
+                                .AllowHttpStatus(HttpStatusCode.BadRequest)
+                                .GetAsync();
 
             if (response.Result.StatusCode == (int)HttpStatusCode.BadRequest)
                 return request.CreateResponse(HttpStatusCode.BadRequest);
