@@ -30,7 +30,7 @@ namespace HSEPortal.API.Functions
             var paymentModel = await request.ReadAsJsonAsync<PaymentRequestModel>();
             
             var response = this.integrationOptions.PaymentEndpoint
-                                    .SetQueryParams("v1", "payments")
+                                    .AppendPathSegments("v1", "payments")
                                     .PostJsonAsync(paymentModel);
 
             if (response.Result.StatusCode == (int)HttpStatusCode.BadRequest)
@@ -46,7 +46,7 @@ namespace HSEPortal.API.Functions
         public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentId}}")] HttpRequestData request, string paymentId)
         {
             var response = this.integrationOptions.PaymentEndpoint
-                                .SetQueryParams("v1", "payments", paymentId)
+                                .AppendPathSegments("v1", "payments", paymentId)
                                 .AllowHttpStatus(HttpStatusCode.BadRequest)
                                 .GetAsync();
 

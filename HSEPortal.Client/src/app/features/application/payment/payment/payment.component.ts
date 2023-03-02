@@ -41,10 +41,13 @@ export class PaymentComponent extends BaseComponent implements IHasNextPage {
           "Reference": this.reference,
           "ReturnLink": this.paymentReturnUrl,
           "Description": "",
+          "Email": "",
           "CardholderName": this.paymentService.model.NameOnCard,
           "AddressLineOne": this.paymentService.model.BillingAddressLineOne,
           "AddressLineTwo": this.paymentService.model.BillingAddressLineTwo,
           "Postcode": this.paymentService.model.BillingPostcode,
+          "City": "",
+          "Country": "",
         })
         await this.navigateToNextPage(this.navigationService, this.activatedRoute);
       } catch {
