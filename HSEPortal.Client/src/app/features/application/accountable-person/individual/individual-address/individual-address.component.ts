@@ -1,31 +1,21 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddressSearchMode } from 'src/app/components/address/address.component';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { AddressModel } from 'src/app/services/address.service';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { AddAccountablePersonComponent } from '../../add-accountable-person/add-accountable-person.component';
 import { PapNameComponent } from '../pap-name/pap-name.component';
 
 @Component({
   templateUrl: './individual-address.component.html'
 })
-export class IndividualAddressComponent extends BaseComponent implements IHasNextPage {
+export class IndividualAddressComponent {
   static route: string = 'individual-address';
   searchMode = AddressSearchMode.PostalAddress;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
-  }
-
-  canContinue(): boolean {
-    return true;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return this.navigationService.navigateRelative('individual-check-answers', activatedRoute);
+  constructor(private router: Router, private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
   }
 
   getAddressName() {
@@ -38,8 +28,8 @@ export class IndividualAddressComponent extends BaseComponent implements IHasNex
   async updateSectionAddress(address: AddressModel) {
     this.applicationService.currentAccountablePerson.Address = address;
     await this.applicationService.updateApplication();
-    
+
     var userIsNotPrincipal = this.applicationService.currentAccountablePerson.IsPrincipal == 'no';
-    this.navigationService.navigateRelative(userIsNotPrincipal ? PapNameComponent.route : '', this.activatedRoute);
+    this.navigationService.navigateRelative(userIsNotPrincipal ? PapNameComponent.route : `../${AddAccountablePersonComponent.route}`, this.activatedRoute);
   }
 }

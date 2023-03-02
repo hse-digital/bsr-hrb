@@ -1,0 +1,26 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link anchorId="who_are_you" [message]="getErrorMessage()" />
+        </govuk-error-summary>
+
+        <span class="govuk-caption-l">Principal accountable person</span>
+        <govuk-fieldset title="Who are you?" [isPageHeading]=true id="who_are_you" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
+                        [errorText]="getErrorDescription(roleHasErrors, getErrorMessage())">
+            <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.Role">
+                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" hint="This is the person who will deal with building safety issues on behalf of"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-registering_for" value="registering_for" label="I am registering for the named contact" class="govuk-radio-no-margin-bottom"/>
+              </govuk-radio-group>
+        </govuk-fieldset> 
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <govuk-body><a href="/" class="govuk-link">Save and come back later</a></govuk-body>
+    </div>
+  </div>
+</div>

@@ -15,7 +15,7 @@ export class ApplicationService {
   get currentSection(): SectionModel {
     return this.model.Sections[this._currentSectionIndex];
   }
-  
+
   get currentAccountablePerson(): AccountablePersonModel {
     return this.model.AccountablePersons[this._currentAccountablePersonIndex];
   }
@@ -62,10 +62,12 @@ export class ApplicationService {
   startAccountablePersonEdit(): string {
     this._currentAccountablePersonIndex = 0;
 
-    let accountablePerson = new AccountablePersonModel();
-    accountablePerson.Type = this.model.PrincipalAccountableType;
+    if (!this.model.AccountablePersons || this.model.AccountablePersons.length == 0) {
+      let accountablePerson = new AccountablePersonModel();
+      accountablePerson.Type = this.model.PrincipalAccountableType;
 
-    this.model.AccountablePersons = [accountablePerson];
+      this.model.AccountablePersons = [accountablePerson];
+    }
 
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
@@ -169,20 +171,26 @@ export class SectionModel {
 }
 
 export class AccountablePersonModel {
-  id?: string;
   Type?: string;
   IsPrincipal?: string;
   Address?: AddressModel;
+  PapAddress?: AddressModel;
 
   OrganisationName?: string;
   OrganisationType?: string;
-  OrganisationAddressLineOne?: string;
-  OrganisationAddressLineTwo?: string;
-  OrganisationTownOrCity?: string;
-  OrganisationPostcode?: string;
+  OrganisationTypeDescription?: string;
 
   FirstName?: string;
   LastName?: string;
   Email?: string;
   PhoneNumber?: string;
+  Role?: string;
+  LeadJobRole?: string;
+
+  ActingForSameAddress?: string;
+  ActingForAddress?: AddressModel;
+  LeadFirstName?: string;
+  LeadLastName?: string;
+  LeadEmail?: string;
+  LeadPhoneNumber?: string;
 }

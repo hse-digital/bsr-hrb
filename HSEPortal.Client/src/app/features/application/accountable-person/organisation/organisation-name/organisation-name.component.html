@@ -1,0 +1,40 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link *ngIf="organisationNameHasErrors" anchorId="input-organisation-name" message="Enter the organisation name" />
+        </govuk-error-summary>
+
+        <span class="govuk-caption-xl">Principal accountable person</span>
+        <govuk-fieldset title="What is the name of organisation that is the principal accountable person?" [isPageHeading]=true id="application"
+                        titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'>
+
+          <govuk-input id="organisation-name"
+                        [(model)]="applicationService.currentAccountablePerson.OrganisationName"
+                        [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/>
+
+          <!-- <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
+                                    hint="This is the name of the organisation that is the principal accountable person."
+                                    (onDebounce)="onInputDebounce()"
+                                    [(model)]="organisationName"
+                                    [autocompleteValues]="autocompleteValues"
+                                    [debounceTimer]=1000
+                                    [minimunNumberCharactersForAutocomplete]=2
+                                    [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/> -->
+
+        </govuk-fieldset>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <govuk-body><a class="govuk-link" (click)="saveAndComeBackLater()">Save and come back later</a></govuk-body>
+    </div>
+  </div>
+</div>
+
+
+

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
@@ -6,44 +6,35 @@ import { EmailValidator } from "src/app/helpers/validators/email-validator";
 import { PhoneNumberValidator } from "src/app/helpers/validators/phone-number-validator";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
-import { PapAddressComponent } from "../../pap-address/pap-address.component";
+import { AddAccountablePersonComponent } from "../../add-accountable-person/add-accountable-person.component";
 
 @Component({
-    templateUrl: './pap-details.component.html'
+    templateUrl: './lead-details.component.html'
 })
-export class PapDetailsComponent extends BaseComponent implements IHasNextPage, OnInit {
-    static route: string = 'pap-details';
+export class LeadDetailsComponent extends BaseComponent implements IHasNextPage {
+    static route: string = 'lead-details';
 
     constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
         super(router, applicationService, navigationService, activatedRoute);
-    }
-
-    papName?: string;
-    ngOnInit(): void {
-        this.papName = `${this.applicationService.currentAccountablePerson.FirstName} ${this.applicationService.currentAccountablePerson.LastName}`;
+        this.updateOnSave = true;
     }
 
     errors = {
-        contactDetailsAreEmpty: false,
         email: { hasErrors: false, errorText: '' },
-        phoneNumber: { hasErrors: false, errorText: '' }
+        phoneNumber: { hasErrors: false, errorText: '' },
+        jobRole: { hasErrors: false, errorText: 'Select your job role' }
     };
 
     canContinue(): boolean {
-        let email = this.applicationService.currentAccountablePerson.Email ?? '';
-        let phone = this.applicationService.currentAccountablePerson.PhoneNumber ?? '';
-        let canContinue = false;
+        let email = this.applicationService.currentAccountablePerson.LeadEmail ?? '';
+        let phone = this.applicationService.currentAccountablePerson.LeadPhoneNumber ?? '';
 
-        if (!email && !phone) {
-            this.errors.contactDetailsAreEmpty = true;
-        } else {
-            this.errors.contactDetailsAreEmpty = false;
-            let emailValid = this.isEmailValid(email);
-            let phoneValid = this.isPhoneNumberValid(phone);
-            canContinue = emailValid && phoneValid;
-        }
+        let emailValid = this.isEmailValid(email);
+        let phoneValid = this.isPhoneNumberValid(phone);
+        let jobRoleValid = this.applicationService.currentAccountablePerson.LeadJobRole != undefined;
+        this.errors.jobRole.hasErrors = !jobRoleValid;
 
-        return canContinue;
+        return emailValid && phoneValid && jobRoleValid;
     }
 
     isEmailValid(email: string): boolean {
@@ -68,12 +59,13 @@ export class PapDetailsComponent extends BaseComponent implements IHasNextPage, 
         } else if (!phoneValidator.isValid(phone)) {
             this.errors.phoneNumber.errorText = 'You must enter a UK telephone number. For example, \'01632 960 001\', \'07700 900 982\' or \'+44 808 157 0192\'';
         } else {
-            this.errors.phoneNumber.hasErrors = false;
+            this.errors.phoneNumber.hasErrors = false; 
         }
         return !this.errors.phoneNumber.hasErrors;
     }
 
     navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-        return navigationService.navigateRelative(PapAddressComponent.route, activatedRoute);
+        return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
     }
-}
+
+} 
