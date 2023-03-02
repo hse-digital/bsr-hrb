@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
@@ -24,6 +24,11 @@ export class PaymentConfirmationComponent extends BaseComponent implements IHasN
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(PaymentConfirmationComponent.route, activatedRoute);
+  }
+
+
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.paymentService.model.PaymentId;
   }
 
   registerAnotherBuilding() {

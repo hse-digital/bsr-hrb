@@ -59,6 +59,14 @@ namespace HSEPortal.API.Functions
         public string Reference;
         public string ReturnLink;
         public string Description;
+
+        public string Email;
+        public string CardholderName;
+        public string AddressLineOne;
+        public string AddressLineTwo;
+        public string Postcode;
+        public string City;
+        public string Country;
     }
 
 }

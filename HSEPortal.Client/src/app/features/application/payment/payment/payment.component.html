@@ -30,17 +30,17 @@
                      class="govuk-!-margin-bottom-1 govuk-input--width-20" />
 
         <govuk-input id="expiry-month" label="Expiry month" labelClass="govuk-label--s"
-                     [(model)]="paymentService.model.ExpiryMonth"
+                     [(model)]="paymentService.model.ExpiryMonth" [maxlength]=2
                      [errorText]="getErrorDescription(errors.expiryMonthHasErrors, 'Enter an expiry month')"
                      class="govuk-!-margin-bottom-1 govuk-input--width-2" />
 
         <govuk-input id="expiry-year" label="Expiry year" labelClass="govuk-label--s"
-                     [(model)]="paymentService.model.ExpiryYear"
+                     [(model)]="paymentService.model.ExpiryYear" [maxlength]=4
                      [errorText]="getErrorDescription(errors.expiryYearHasErrors, 'Enter an expiry year')"
                      class="govuk-!-margin-bottom-1 govuk-input--width-4" />
 
         <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
-                     hint="The 3 digit number on the back of your card"
+                     hint="The 3 digit number on the back of your card" [maxlength]=3
                      [(model)]="paymentService.model.SecurityCode"
                      [errorText]="getErrorDescription(errors.securityCodeHasErrors, 'Enter a security code')"
                      class="govuk-!-margin-bottom-1 govuk-input--width-3" />
@@ -67,7 +67,7 @@
 
 
 
-      <govuk-body><a href="#" (click)="postcodeFinder()">Find a postcode on Royal Mail's postcode finder</a></govuk-body>
+      <govuk-body><a (click)="postcodeFinder()">Find a postcode on Royal Mail's postcode finder</a></govuk-body>
 
       <govuk-button (onClick)="saveAndContinue()">Pay and submit</govuk-button>
 
@@ -76,7 +76,7 @@
         See our <a href="#">terms and conditions</a> for further information.
       </govuk-body>
 
-      <govuk-body><a href="#" (click)="saveAndComeBackLater()">Save and come back later</a></govuk-body>
+      <govuk-body><a (click)="saveAndComeBackLater()">Save and come back later</a></govuk-body>
 
     </div>
   </div>

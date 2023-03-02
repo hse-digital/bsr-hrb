@@ -4,7 +4,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { EmailValidator } from '../../../helpers/validators/email-validator';
+import { EmailValidator } from 'src/app/helpers/validators/email-validator';
 
 @Component({
   templateUrl: './contact-email.component.html'

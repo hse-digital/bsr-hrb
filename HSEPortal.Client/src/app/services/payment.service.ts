@@ -1,12 +1,23 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class PaymentService {
 
   model: PaymentModel;
 
-  constructor() {
+  constructor(private httpClient: HttpClient) {
     this.model = {};
+  }
+
+  async GetPayment(paymetId: string): Promise<void> {
+    let payment = await firstValueFrom(this.httpClient.get<PaymentModel>(`api/GetPayment/${paymetId}`));
+    this.model = payment;
+  }
+
+  async InitialisePayment(body: any) {
+    await firstValueFrom(this.httpClient.post<PaymentResponseModel>('api/InitialisePayment', body));
   }
 }
 
@@ -23,6 +34,23 @@ export class PaymentModel {
   BillingPostcode?: string;
 
   Amount?: number;
+  ReturnURL?: string;
+  Reference?: string;
+  Description?: string;
 
   EmployeeNumber?: string;
+}
+
+export class PaymentResponseModel {
+  public CreatedDate?: string;
+  public Status?: string;
+  public Finished?: boolean;
+  public LinkSelf?: string;
+  public Amount?: number;
+  public Reference?: string;
+  public Description?: string;
+  public ReturnURL?: string;
+  public PaymentId?: string;
+  public PaymentProvider?: string;
+  public ProviderId?: string;
 }

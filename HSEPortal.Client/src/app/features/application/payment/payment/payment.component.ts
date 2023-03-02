@@ -14,6 +14,8 @@ import { PaymentConfirmationComponent } from '../payment-confirmation/payment-co
 export class PaymentComponent extends BaseComponent implements IHasNextPage {
 
   static route: string = 'pay';
+  private paymentReturnUrl: string = '';
+  private reference: string = '';
 
   errors = {
     nameOnCardHasErrors: false,
@@ -30,7 +32,44 @@ export class PaymentComponent extends BaseComponent implements IHasNextPage {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
-  canContinue(): boolean {
+  override async saveAndContinue() {
+    this.hasErrors = !this.canContinue();
+    if (!this.hasErrors) {
+      try {
+        await this.paymentService.InitialisePayment({
+          "Amount": this.paymentService.model?.Amount ?? -1,
+          "Reference": this.reference,
+          "ReturnLink": this.paymentReturnUrl,
+          "Description": "",
+          "CardholderName": this.paymentService.model.NameOnCard,
+          "AddressLineOne": this.paymentService.model.BillingAddressLineOne,
+          "AddressLineTwo": this.paymentService.model.BillingAddressLineTwo,
+          "Postcode": this.paymentService.model.BillingPostcode,
+        })
+        await this.navigateToNextPage(this.navigationService, this.activatedRoute);
+      } catch {
+
+      }
+    }
+  }
+
+  canContinue() {
+    return !this.paymentHasErrors();
+  }
+
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return navigationService.navigateRelative(PaymentConfirmationComponent.route, activatedRoute);
+  }
+
+  postcodeFinder() {
+
+  }
+
+  saveAndComeBackLater() {
+
+  }
+
+  private paymentHasErrors() {
     this.errors.nameOnCardHasErrors = !this.paymentService.model.NameOnCard;
     this.errors.cardNumberHasErrors = !this.paymentService.model.CardNumber;
     this.errors.expiryMonthHasErrors = !this.paymentService.model.ExpiryMonth;
@@ -50,17 +89,5 @@ export class PaymentComponent extends BaseComponent implements IHasNextPage {
       this.errors.billingPostcodeHasErrors;
 
     return errors;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(PaymentConfirmationComponent.route, activatedRoute);
-  }
-
-  postcodeFinder() {
-
-  }
-
-  saveAndComeBackLater() {
-
   }
 }
