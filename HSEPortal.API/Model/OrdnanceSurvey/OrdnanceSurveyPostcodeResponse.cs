@@ -21,7 +21,6 @@ public class Header
 
 public class LPI : BASEADDRESS
 {
-    public string USRN { get; set; }
     public string LPI_KEY { get; set; }
     public string PAO_START_NUMBER { get; set; }
     public string PAO_TEXT { get; set; }
@@ -47,6 +46,7 @@ public class DPA : BASEADDRESS
 
 public class BASEADDRESS
 {
+    public string USRN { get; set; }
     public string UPRN { get; set; }
     public string ADDRESS { get; set; }
     public string LAST_UPDATE_DATE { get; set; }

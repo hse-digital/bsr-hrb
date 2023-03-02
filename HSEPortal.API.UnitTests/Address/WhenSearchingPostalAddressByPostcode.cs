@@ -53,6 +53,7 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
         responseAddress.TotalResults.Should().Be(postcodeResponse.header.totalresults);
 
         responseAddress.Results[0].UPRN.Should().Be(postcodeResponse.results[0].DPA.UPRN);
+        responseAddress.Results[0].USRN.Should().Be(postcodeResponse.results[0].DPA.USRN);
         responseAddress.Results[0].Address.Should().Be(postcodeResponse.results[0].DPA.ADDRESS);
         responseAddress.Results[0].BuildingName.Should().Be(postcodeResponse.results[0].DPA.SUB_BUILDING_NAME);
         responseAddress.Results[0].Street.Should().Be(postcodeResponse.results[0].DPA.THOROUGHFARE_NAME);
@@ -93,6 +94,7 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
                     DPA = new DPA
                     {
                         UPRN = "100021210108",
+                        USRN = "15751415",
                         UDPRN = "15751415",
                         ADDRESS = "FLAT 1, 1, PALACE GATES ROAD, LONDON, N22 7BW",
                         SUB_BUILDING_NAME = "FLAT 1",

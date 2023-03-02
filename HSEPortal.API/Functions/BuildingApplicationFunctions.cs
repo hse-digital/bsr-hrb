@@ -26,7 +26,7 @@ public class BuildingApplicationFunctions
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var validation = buildingApplicationModel.Validate();
-        if (!validation.IsValid)
+        if (!featureOptions.DisableOtpValidation && !validation.IsValid)
         {
             return await request.BuildValidationErrorResponseDataAsync(validation);
         }
