@@ -63,3 +63,12 @@ stages:
     - template: deploy.yml
       parameters:
         subscription: 's118-test-bsr-acs-services'
+        
+- stage: UAT
+  dependsOn: QA
+  variables: 
+  - group: HSEPortal-UAT
+  jobs:
+    - template: deploy.yml
+      parameters:
+        subscription: 's118-test-bsr-acs-services'

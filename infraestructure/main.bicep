@@ -18,12 +18,12 @@ param keyVaultSku object = {
 param storageAccountType string = 'Standard_LRS'
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-    name: 's118-${environment}-itf-acs-portal-identity'
+    name: 's118-${environment}-bsr-acs-portal-identity'
     location: location
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
-    name: 's118-${environment}-itf-acs-kv'
+    name: 's118-${environment}-bsr-acs-kv'
     location: location
     properties: {
         enableRbacAuthorization: false
@@ -44,7 +44,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2021-04-15' = {
-    name: 's118-${environment}-itf-acs-cosmos'
+    name: 's118-${environment}-bsr-acs-cosmos'
     location: location
     kind: 'GlobalDocumentDB'
     properties: {
@@ -98,7 +98,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
 }
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
-    name: 's118-${environment}-itf-acs-ai'
+    name: 's118-${environment}-bsr-acs-ai'
     location: location
     kind: 'web'
     properties: {
@@ -107,7 +107,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
-    name: 's118${environment}itfacsportalsa'
+    name: 's118${environment}bsracsportalsa'
     location: location
     sku: {
         name: storageAccountType
@@ -116,7 +116,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
 }
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
-    name: 's118-${environment}-itf-acs-portal-fa'
+    name: 's118-${environment}-bsr-acs-portal-fa'
     location: location
     sku: {
         name: 'Y1'
@@ -126,7 +126,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
 }
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
-    name: 's118-${environment}-itf-acs-portal-fa'
+    name: 's118-${environment}-bsr-acs-portal-fa'
     location: location
     kind: 'functionapp'
     identity: {
@@ -209,7 +209,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
 }
 
 resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
-    name: 's118-${environment}-itf-acs-portal-swa'
+    name: 's118-${environment}-bsr-acs-portal-swa'
     location: swaLocation
     tags: null
     properties: {
@@ -236,7 +236,7 @@ resource swaAppSettings 'Microsoft.Web/staticSites/config@2022-03-01' = {
 }
 
 resource swaFunctionAppLink 'Microsoft.Web/staticSites/userProvidedFunctionApps@2022-03-01' = {
-    name: 's118-${environment}-itf-acs-portal-swa-fa'
+    name: 's118-${environment}-bsr-acs-portal-swa-fa'
     parent: swa
     properties: {
         functionAppRegion: functionApp.location

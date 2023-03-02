@@ -22,7 +22,7 @@ jobs:
       inputs:
         azureSubscription: '${{parameters.subscription}}'
         appType: 'functionAppLinux'
-        appName: 's118-$(env)-itf-acs-portal-fa'
+        appName: 's118-$(env)-bsr-acs-portal-fa'
         package: '$(Pipeline.Workspace)/HSEPortalAPI/HSEPortalAPI.zip'
 
     - task: AzureCLI@2
@@ -32,7 +32,7 @@ jobs:
         scriptType: pscore
         scriptLocation: 'inlineScript'
         inlineScript: | 
-                    $swa = az staticwebapp secrets list --name 's118-$(env)-itf-acs-portal-swa' | ConvertFrom-Json
+                    $swa = az staticwebapp secrets list --name 's118-$(env)-bsr-acs-portal-swa' | ConvertFrom-Json
                     Write-Host "##vso[task.setvariable variable=swaToken;issecret=true]$($swa.properties.apiKey)"
 
     - task: AzureStaticWebApp@0
