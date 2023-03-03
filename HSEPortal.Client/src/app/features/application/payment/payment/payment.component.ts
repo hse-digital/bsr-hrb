@@ -16,6 +16,7 @@ export class PaymentComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'pay';
   private paymentReturnUrl: string = '';
   private reference: string = '';
+  private description: string = '';
 
   errors = {
     nameOnCardHasErrors: false,
@@ -35,24 +36,37 @@ export class PaymentComponent extends BaseComponent implements IHasNextPage {
   override async saveAndContinue() {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
-      try {
-        await this.paymentService.InitialisePayment({
-          "Amount": this.paymentService.model?.Amount ?? -1,
-          "Reference": this.reference,
-          "ReturnLink": this.paymentReturnUrl,
-          "Description": "",
-          "Email": "",
-          "CardholderName": this.paymentService.model.NameOnCard,
-          "AddressLineOne": this.paymentService.model.BillingAddressLineOne,
-          "AddressLineTwo": this.paymentService.model.BillingAddressLineTwo,
-          "Postcode": this.paymentService.model.BillingPostcode,
-          "City": "",
-          "Country": "",
-        })
-        await this.navigateToNextPage(this.navigationService, this.activatedRoute);
-      } catch {
+      await this.initialisePayment();
+      await this.getPaymentInformation();
+      await this.navigateToNextPage(this.navigationService, this.activatedRoute);
+    }
+  }
 
-      }
+  private async initialisePayment() {
+    try {
+      await this.paymentService.InitialisePayment({
+        "Amount": this.paymentService.model?.Amount ?? -1,
+        "Reference": this.reference,
+        "ReturnLink": this.paymentReturnUrl,
+        "Description": this.description,
+        "Email": this.applicationService.model.ContactEmailAddress,
+        "CardholderName": this.paymentService.model.NameOnCard,
+        "AddressLineOne": this.paymentService.model.BillingAddressLineOne,
+        "AddressLineTwo": this.paymentService.model.BillingAddressLineTwo,
+        "Postcode": this.paymentService.model.BillingPostcode,
+        "City": "",
+        "Country": "",
+      })
+    } catch {
+
+    }
+  }
+
+  private async getPaymentInformation() {
+    try {
+      await this.paymentService.GetPayment(this.paymentService.model.PaymentId ?? "");
+    } catch {
+
     }
   }
 

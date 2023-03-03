@@ -4,7 +4,6 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <span class="govuk-caption-l">Apply and pay the fee</span>
       <govuk-fieldset title="Declaration" [isPageHeading]=true
                       titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-5' class='govuk-!-margin-bottom-1'>
 
@@ -19,31 +18,19 @@
 
         <govuk-body>By submitting this application, you are also confirming that:</govuk-body>
 
-        <ul class="govuk-list govuk-list--bullet">
-          <li>the principal accountable person (PAP) has instructed you in writing to make this application on their behalf</li>
-          <li>the PAP gave you the details or they are the result of your own investigations</li>
-          <li>you have explained to the PAP that it is a criminal offence to give false or misleading information to the Building Safety Regulator</li>
-        </ul>
+        <govuk-list classes='govuk-list--bullet'>
+          <govuk-list-item text="the principal accountable person (PAP) has instructed you in writing to make this application on their behalf" />
+          <govuk-list-item text="the PAP gave you the details or they are the result of your own investigations" />
+          <govuk-list-item text="you have explained to the PAP that it is a criminal offence to give false or misleading information to the Building Safety Regulator" />
+        </govuk-list>
 
         <govuk-body>We may ask you for written evidence that the principal accountable person has authorised you to act for them.</govuk-body>
-
-
-        <govuk-details summaryText="If you are a member of the BSR CAT team" id="details-bsr-cat-team">
-          <govuk-checkbox-group [(model)]="checkbox" id="checkboxes-id" name="checkboxes-id">
-            <govuk-checkbox text="I have completed this application for someone over the phone" value="1">
-              <govuk-input id="employee-number" label="Your employee number"
-                           [(model)]="paymentService.model.EmployeeNumber"
-                           [errorText]="getErrorDescription(employeeNumberHasErrors, 'Enter the employee number')"
-                           class="govuk-!-margin-bottom-1" />
-            </govuk-checkbox>
-          </govuk-checkbox-group>
-        </govuk-details>
 
       </govuk-fieldset>
 
       <govuk-button (onClick)="saveAndContinue()">Declare and continue</govuk-button>
 
-      <govuk-body><a href="#" (click)="saveAndComeBackLater()">Save and come back later</a></govuk-body>
+      <govuk-body><a href="#" class="govuk-link" (click)="saveAndComeBackLater()">Save and come back later</a></govuk-body>
 
     </div>
   </div>

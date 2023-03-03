@@ -11,13 +11,12 @@ export class PaymentService {
     this.model = {};
   }
 
-  async GetPayment(paymetId: string): Promise<void> {
-    let payment = await firstValueFrom(this.httpClient.get<PaymentModel>(`api/GetPayment/${paymetId}`));
-    this.model = payment;
+  async GetPayment(paymetId: string): Promise<PaymentResponseModel> {
+    return await firstValueFrom(this.httpClient.get<PaymentResponseModel>(`api/GetPayment/${paymetId}`));
   }
 
-  async InitialisePayment(body: any) {
-    await firstValueFrom(this.httpClient.post<PaymentResponseModel>('api/InitialisePayment', body));
+  async InitialisePayment(body: any): Promise<PaymentResponseModel> {
+    return await firstValueFrom(this.httpClient.post<PaymentResponseModel>('api/InitialisePayment', body));
   }
 }
 

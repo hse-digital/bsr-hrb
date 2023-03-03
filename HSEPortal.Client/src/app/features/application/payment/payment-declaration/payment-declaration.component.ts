@@ -9,22 +9,17 @@ import { PaymentComponent } from 'src/app/features/application/payment/payment/p
 
 @Component({
   selector: 'hse-payment-declaration',
-  templateUrl: './payment-declaration.component.html',
-  styleUrls: ['./payment-declaration.component.scss']
+  templateUrl: './payment-declaration.component.html'
 })
 export class PaymentDeclarationComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'declaration';
-
-  checkbox: string[] = [];
-  employeeNumberHasErrors = false;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, public paymentService: PaymentService) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
   canContinue(): boolean {
-    this.employeeNumberHasErrors = this.checkbox.length > 0 && !this.paymentService.model.EmployeeNumber;
-    return !this.employeeNumberHasErrors;
+    return true;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
