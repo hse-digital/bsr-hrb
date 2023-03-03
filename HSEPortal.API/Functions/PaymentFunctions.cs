@@ -3,12 +3,11 @@ using AutoMapper;
 using Flurl;
 using Flurl.Http;
 using HSEPortal.API.Extensions;
-using HSEPortal.API.Model;
-using HSEPortal.API.Model.Payment;
+using HSEPortal.API.Model.Payment.Request;
+using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions
@@ -28,10 +27,12 @@ namespace HSEPortal.API.Functions
         public async Task<HttpResponseData> InitialisePayment([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
         {
             var paymentModel = await request.ReadAsJsonAsync<PaymentRequestModel>();
-            
+
+            var paymentApiResquetModel = mapper.Map<PaymentApiRequestModel>(paymentModel);
+
             var response = this.integrationOptions.PaymentEndpoint
                                     .AppendPathSegments("v1", "payments")
-                                    .PostJsonAsync(paymentModel);
+                                    .PostJsonAsync(paymentApiResquetModel);
 
             if (response.Result.StatusCode == (int)HttpStatusCode.BadRequest)
                 return request.CreateResponse(HttpStatusCode.BadRequest);
@@ -58,21 +59,4 @@ namespace HSEPortal.API.Functions
             return await request.CreateObjectResponseAsync(paymentFunctionResponse);
         }
     }
-
-    public class PaymentRequestModel
-    {
-        public int Amount;
-        public string Reference;
-        public string ReturnLink;
-        public string Description;
-
-        public string Email;
-        public string CardholderName;
-        public string AddressLineOne;
-        public string AddressLineTwo;
-        public string Postcode;
-        public string City;
-        public string Country;
-    }
-
 }

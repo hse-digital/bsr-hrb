@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HSEPortal.API.Model.Payment;
+namespace HSEPortal.API.Model.Payment.Response;
 
 public class PaymentApiResponseModel
 {
