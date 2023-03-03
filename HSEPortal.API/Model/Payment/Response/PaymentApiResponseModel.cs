@@ -8,32 +8,32 @@ namespace HSEPortal.API.Model.Payment.Response;
 
 public class PaymentApiResponseModel
 {
-    public string created_date;
-    public State state;
-    public Links _links;
-    public int amount;
-    public string reference;
-    public string description;
-    public string return_url;
-    public string payment_id;
-    public string payment_provider;
-    public string provider_id;
+    public string created_date { get; set; }
+    public State state { get; set; }
+    public Links _links { get; set; }
+    public int amount { get; set; }
+    public string reference { get; set; }
+    public string description { get; set; }
+    public string return_url { get; set; }
+    public string payment_id { get; set; }
+    public string payment_provider { get; set; }
+    public string provider_id { get; set; }
 }
 
 public class State
 {
-    public string status;
-    public bool finished;
+    public string status { get; set; }
+    public bool finished { get; set; }
 }
 
 public class Links
 {
-    public Url self;
-    public Url next_url;
+    public Url self { get; set; }
+    public Url next_url { get; set; }
 }
 
 public class Url
 {
-    public string href;
-    public string method;
+    public string href { get; set; }
+    public string method { get; set; }
 }

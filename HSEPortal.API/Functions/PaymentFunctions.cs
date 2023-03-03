@@ -17,6 +17,11 @@ public class PaymentFunctions
     private readonly IMapper mapper;
     private readonly IntegrationsOptions integrationOptions;
 
+    private readonly int amount = 250;
+    private readonly string returnUrl = "return url";
+    private readonly string description = "description";
+    private string reference = "";
+
     public PaymentFunctions(IOptions<IntegrationsOptions> integrationOptions, IMapper mapper)
     {
         this.mapper = mapper;
@@ -27,17 +32,21 @@ public class PaymentFunctions
     public async Task<HttpResponseData> InitialisePayment([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
     {
         var paymentModel = await request.ReadAsJsonAsync<PaymentRequestModel>();
+        this.reference = paymentModel.Reference;
 
+        if (description.Equals(string.Empty) || amount == -1 || returnUrl.Equals(string.Empty) || reference.Equals(string.Empty)) return null;
+    
         var paymentApiResquetModel = mapper.Map<PaymentApiRequestModel>(paymentModel);
 
-        var response = this.integrationOptions.PaymentEndpoint
+        var response = await this.integrationOptions.PaymentEndpoint
                                 .AppendPathSegments("v1", "payments")
+                                .WithOAuthBearerToken(this.integrationOptions.PaymentApiKey)
                                 .PostJsonAsync(paymentApiResquetModel);
 
-        if (response.Result.StatusCode == (int)HttpStatusCode.BadRequest)
+        if (response.StatusCode == (int)HttpStatusCode.BadRequest)
             return request.CreateResponse(HttpStatusCode.BadRequest);
 
-        var paymentApiResponse = await response.Result.GetJsonAsync<PaymentApiResponseModel>();
+        var paymentApiResponse = await response.GetJsonAsync<PaymentApiResponseModel>();
         var paymentFunctionResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
         return await request.CreateObjectResponseAsync(paymentFunctionResponse);
     }
@@ -46,16 +55,13 @@ public class PaymentFunctions
     [Function(nameof(GetPayment))]
     public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentId}}")] HttpRequestData request, string paymentId)
     {
-        var response = this.integrationOptions.PaymentEndpoint
-                            .AppendPathSegments("v1", "payments", paymentId)
+        var response = await this.integrationOptions.PaymentEndpoint
+                            .AppendPathSegments("v1", "payments", paymentId ?? "")
+                            .WithOAuthBearerToken(this.integrationOptions.PaymentApiKey)
                             .AllowHttpStatus(HttpStatusCode.BadRequest)
-                            .GetAsync();
+                            .GetJsonAsync<PaymentApiResponseModel>();
 
-        if (response.Result.StatusCode == (int)HttpStatusCode.BadRequest)
-            return request.CreateResponse(HttpStatusCode.BadRequest);
-
-        var paymentApiResponse = await response.Result.GetJsonAsync<PaymentApiResponseModel>();
-        var paymentFunctionResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
+        var paymentFunctionResponse = mapper.Map<PaymentResponseModel>(response);
         return await request.CreateObjectResponseAsync(paymentFunctionResponse);
     }
 }

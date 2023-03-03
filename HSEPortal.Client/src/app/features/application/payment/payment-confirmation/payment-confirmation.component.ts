@@ -18,6 +18,18 @@ export class PaymentConfirmationComponent extends BaseComponent implements IHasN
     super(router, applicationService, navigationService, activatedRoute);
   }
 
+  override async saveAndContinue() {
+    let status = await this.getPaymentInformation();
+    if (status) this.navigateToNextPage(this.navigationService, this.activatedRoute); 
+  }
+
+  private async getPaymentInformation() {
+    let status: string = '';
+    await this.paymentService.GetPayment(this.paymentService.model.PaymentId ?? "")
+      .then((value: any) => status = value.Status);
+    return status;
+  }
+
   canContinue(): boolean {
     return true;
   }
@@ -25,7 +37,6 @@ export class PaymentConfirmationComponent extends BaseComponent implements IHasN
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(PaymentConfirmationComponent.route, activatedRoute);
   }
-
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
     return !!this.paymentService.model.PaymentId;

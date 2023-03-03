@@ -5,10 +5,10 @@ import { firstValueFrom } from 'rxjs';
 @Injectable()
 export class PaymentService {
 
-  model: PaymentModel;
+  model: PaymentResponseModel;
 
   constructor(private httpClient: HttpClient) {
-    this.model = {};
+    this.model = new PaymentResponseModel();
   }
 
   async GetPayment(paymetId: string): Promise<PaymentResponseModel> {
@@ -18,26 +18,6 @@ export class PaymentService {
   async InitialisePayment(body: any): Promise<PaymentResponseModel> {
     return await firstValueFrom(this.httpClient.post<PaymentResponseModel>('api/InitialisePayment', body));
   }
-}
-
-export class PaymentModel {
-  PaymentId?: string;
-
-  NameOnCard?: string;
-  CardNumber?: string;
-  ExpiryMonth?: string;
-  ExpiryYear?: string;
-  SecurityCode?: string;
-  BillingAddressLineOne?: string;
-  BillingAddressLineTwo?: string;
-  BillingPostcode?: string;
-
-  Amount?: number;
-  ReturnURL?: string;
-  Reference?: string;
-  Description?: string;
-
-  EmployeeNumber?: string;
 }
 
 export class PaymentResponseModel {

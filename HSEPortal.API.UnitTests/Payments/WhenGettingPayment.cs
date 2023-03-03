@@ -1,6 +1,9 @@
 ﻿using FluentAssertions;
+using HSEPortal.API.Extensions;
 using HSEPortal.API.Functions;
+using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -26,11 +29,20 @@ public class WhenGettingPayment : UnitTestBase
     [Fact]
     public async Task ShouldGetPaymentInformation()
     {
-        string paymentId = "1234";
-        await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentId), paymentId);
+        PaymentApiResponseModel responseApiModel = this.CreatePaymentApiResponse();
+        HttpTest.RespondWithJson(responseApiModel);
 
-        HttpTest.ShouldHaveCalled(this.integrationOptions.PaymentEndpoint).WithVerb(HttpMethod.Get);
-        HttpTest.Should().Be(HttpStatusCode.OK);
+        string paymentId = "1234";
+        var response = await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentId), paymentId);
+
+        HttpTest.ShouldHaveCalled($"{this.integrationOptions.PaymentEndpoint}/v1/payments/{paymentId}")
+                .WithVerb(HttpMethod.Get);
+
+        PaymentResponseModel paymentResponseModel = await response.ReadAsJsonAsync<PaymentResponseModel>();
+
+        paymentResponseModel.Status.Should().Be(responseApiModel.state.status);
+        paymentResponseModel.Finished.Should().Be(responseApiModel.state.finished);
+        paymentResponseModel.LinkSelf.Should().Be(responseApiModel._links.self.href);
     }
 
     [Theory]
@@ -38,11 +50,29 @@ public class WhenGettingPayment : UnitTestBase
     [InlineData(null)]
     public async Task ShouldReturnBadRequestIfAmountIsWrong(string paymentId)
     {
-        await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentId), paymentId);
+        PaymentApiResponseModel responseApiModel = this.CreatePaymentApiResponse();
+        HttpTest.RespondWithJson(responseApiModel);
 
-        HttpTest.ShouldHaveCalled(this.integrationOptions.PaymentEndpoint);
-        HttpTest.Should().Be(HttpStatusCode.BadRequest);
+        var response = await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentId), paymentId);
+
+        HttpTest.ShouldNotHaveCalled($"{this.integrationOptions.PaymentEndpoint}/v1/payments/{paymentId}");
     }
 
-
+    public PaymentApiResponseModel CreatePaymentApiResponse()
+    {
+        return new PaymentApiResponseModel
+        {
+            created_date = "",
+            state = new State() { finished = false, status = "created" },
+            _links = new Links() { self = new Url() { href = "link" } },
+            amount = 250,
+            reference = "12345",
+            description = "description",
+            return_url = "https://your.service.gov.uk/completed",
+            payment_id = "hu20sqlact5260q2nanm0q8u93",
+            payment_provider = "worldpay",
+            provider_id = "10987654321"
+        };
+    }
 }
+

@@ -13,12 +13,4 @@ public class PaymentRequestModel
     public string ReturnLink { get; set; }
     public string Description { get; set; }
 
-    public string Email { get; set; }
-    public string CardholderName { get; set; }
-    public string AddressLineOne { get; set; }
-    public string AddressLineTwo { get; set; }
-    public string Postcode { get; set; }
-    public string City { get; set; }
-    public string Country { get; set; }
-    public string Language { get; set; }
 }

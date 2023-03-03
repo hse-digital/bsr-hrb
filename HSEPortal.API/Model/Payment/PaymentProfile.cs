@@ -26,15 +26,7 @@ public class PaymentProfile : Profile
             .ForMember(x => x.amount, x => x.MapFrom(y => y.Amount))
             .ForMember(x => x.reference, x => x.MapFrom(y => y.Reference))
             .ForMember(x => x.description, x => x.MapFrom(y => y.Description))
-            .ForMember(x => x.return_url, x => x.MapFrom(y => y.ReturnLink))
-            .ForMember(x => x.email, x => x.MapFrom(y => y.Email))
-            .ForPath(x => x.prefilled_cardholder_details.cardholder_name, x => x.MapFrom(y => y.CardholderName))
-            .ForPath(x => x.prefilled_cardholder_details.billing_address.line1, x => x.MapFrom(y => y.AddressLineOne))
-            .ForPath(x => x.prefilled_cardholder_details.billing_address.line2, x => x.MapFrom(y => y.AddressLineTwo))
-            .ForPath(x => x.prefilled_cardholder_details.billing_address.postcode, x => x.MapFrom(y => y.Postcode))
-            .ForPath(x => x.prefilled_cardholder_details.billing_address.city, x => x.MapFrom(y => y.City))
-            .ForPath(x => x.prefilled_cardholder_details.billing_address.country, x => x.MapFrom(y => y.Country))
-            .ForMember(x => x.language, x => x.MapFrom(y => y.Language));
+            .ForMember(x => x.return_url, x => x.MapFrom(y => y.ReturnLink));
     }
 
 }
