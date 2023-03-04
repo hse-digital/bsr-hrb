@@ -11,7 +11,7 @@
             <govuk-error-link *ngIf="errors.contactDetailsAreEmpty" anchorId="input-email" message="Enter your contact details" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-l">Principal accountable person</span>
+        <span class="govuk-caption-l">{{pap ? ' Principal accountable person' : 'Other accountable persons'}}</span>
         <govuk-fieldset title="{{papName}}'s contact details"
                         [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'
                         [errorText]="getErrorDescription(errors.contactDetailsAreEmpty, 'Enter your contact details')"

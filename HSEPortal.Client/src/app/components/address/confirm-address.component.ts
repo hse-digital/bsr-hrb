@@ -11,6 +11,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 export class ConfirmAddressComponent {
 
   @Input() address!: AddressModel;
+  @Input() addressName?: string;
   @Output() onAddressConfirmed = new EventEmitter<boolean | undefined>();
   @Output() onSearchAgain = new EventEmitter();
   @Output() onEnterManualAddress = new EventEmitter();

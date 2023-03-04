@@ -25,3 +25,4 @@ export class OrganisationTypeComponent extends BaseComponent implements IHasNext
     return this.navigationService.navigateRelative('organisation-name', activatedRoute);
   }
 }
+   

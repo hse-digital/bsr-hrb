@@ -24,7 +24,7 @@ export class ActingForSameAddressComponent extends BaseComponent implements IHas
     }
 
     getOrganisationAddress() {
-        var address = this.applicationService.currentAccountablePerson.PapAddress ?? this.applicationService.currentAccountablePerson.Address;
+        var address = this.applicationService.currentAccountablePerson.Address;
         var addressLine = this.getAddressLineOne(address!);
 
         if (address?.AddressLineTwo) {

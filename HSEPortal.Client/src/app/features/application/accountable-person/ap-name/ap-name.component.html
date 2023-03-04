@@ -10,7 +10,7 @@
           <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter their last name" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-xl">Principal accountable person</span>
+        <span class="govuk-caption-xl">{{pap ? ' Principal accountable person' : 'Other accountable persons'}}</span>
         <govuk-fieldset title="Name" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
 
           <govuk-input id="first-name" label="First name" 

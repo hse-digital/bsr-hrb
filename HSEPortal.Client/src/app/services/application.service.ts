@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Address } from "cluster";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
@@ -10,7 +9,7 @@ export class ApplicationService {
   model: BuildingRegistrationModel;
 
   _currentSectionIndex = 0;
-  private _currentAccountablePersonIndex = 0;
+  _currentAccountablePersonIndex = 0;
 
   get currentSection(): SectionModel {
     return this.model.Sections[this._currentSectionIndex];
@@ -72,11 +71,8 @@ export class ApplicationService {
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
-  startNewAccountablePerson(accountPersonType: string): string {
-    let accountablePerson = new AccountablePersonModel();
-    accountablePerson.Type = accountPersonType;
-
-    this.model.AccountablePersons.push(accountablePerson);
+  startNewAccountablePerson(): string {
+    this.model.AccountablePersons.push(new AccountablePersonModel());
     this._currentAccountablePersonIndex = this.model.AccountablePersons.length - 1;
 
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;

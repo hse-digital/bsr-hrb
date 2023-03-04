@@ -21,6 +21,7 @@ export class AddressComponent implements OnInit {
   ngOnInit(): void {
     if(this.address) {
       this.changeStepTo('confirm');
+      this.history = [];
     }
   }
 
@@ -62,8 +63,11 @@ export class AddressComponent implements OnInit {
 
   navigateBack() {
     let previousStep = this.history.pop();
-    this.step = previousStep ?? "find";
-    if (!previousStep) history.back();
+    if (!previousStep) {
+      history.back();
+    } else {
+      this.step = previousStep;
+    }
   }
 
   private changeStepTo(step: string) {

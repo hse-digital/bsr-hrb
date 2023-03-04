@@ -11,6 +11,7 @@ export class SelectAddressComponent {
   addressHasErrors = false;
   selectedAddress?: AddressModel;
 
+  @Input() addressName!: string;
   @Input() addressResponse?: AddressResponseModel;
   @Input() searchModel: { postcode?: string, addressLine1?: string } = {}
 

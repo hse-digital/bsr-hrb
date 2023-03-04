@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application.service';
 import { AddressModel } from 'src/app/services/address.service';
 
@@ -10,6 +10,7 @@ export class ManualAddressComponent {
 
   @Output() onSearchAgain = new EventEmitter();
   @Output() onAddressEntered = new EventEmitter<AddressModel>();
+  @Input() addressName?: string;
 
   hasErrors = false;
   errors = {

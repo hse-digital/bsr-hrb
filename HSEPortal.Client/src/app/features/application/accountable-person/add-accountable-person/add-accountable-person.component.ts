@@ -4,7 +4,8 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { OtherAccountablePersonComponent } from '../other-accountable-person/other-accountable-person.component';
+import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
+import { AccountablePersonTypeComponent } from './accountable-person-type.component';
 
 @Component({
   selector: 'hse-add-accountable-person',
@@ -30,8 +31,12 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let route = this.addAccountablePerson == 'yes' ? OtherAccountablePersonComponent.route : AddAccountablePersonComponent.route;
-    return this.navigationService.navigateRelative(route, activatedRoute);
+    if (this.addAccountablePerson == 'yes') {
+      let newAp = this.applicationService.startNewAccountablePerson();
+      return navigationService.navigateRelative(`${newAp}/${AccountablePersonTypeComponent.route}`, activatedRoute);
+    }
+
+    return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
   }
 
 }

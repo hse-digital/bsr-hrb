@@ -4,7 +4,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { PrincipleAccountableSelection } from '../individual/principal/principal.component';
+import { PrincipleAccountableSelection } from '../principal/principal.component';
 
 @Component({
   selector: 'hse-accountable-person',

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
@@ -6,14 +6,18 @@ import { EmailValidator } from "src/app/helpers/validators/email-validator";
 import { PhoneNumberValidator } from "src/app/helpers/validators/phone-number-validator";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
-import { PapAddressComponent } from "../../pap-address/pap-address.component";
+import { ApAddressComponent } from "../ap-address/ap-address.component";
 
 @Component({
-    templateUrl: './pap-details.component.html'
+    selector: 'ap-details',
+    templateUrl: './ap-details.component.html'
 })
-export class PapDetailsComponent extends BaseComponent implements IHasNextPage, OnInit {
-    static route: string = 'pap-details';
+export class ApDetailsComponent extends BaseComponent implements IHasNextPage, OnInit {
+    static route: string = 'details';
 
+    @Input() nextRoute?: string;
+    @Input() pap: boolean = false;
+    
     constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
         super(router, applicationService, navigationService, activatedRoute);
     }
@@ -74,6 +78,6 @@ export class PapDetailsComponent extends BaseComponent implements IHasNextPage, 
     }
 
     navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-        return navigationService.navigateRelative(PapAddressComponent.route, activatedRoute);
+        return navigationService.navigateRelative(this.nextRoute ?? ApAddressComponent.route, activatedRoute);
     }
 }

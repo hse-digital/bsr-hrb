@@ -6,11 +6,10 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
-  selector: 'hse-individual-check-answers-ap',
-  templateUrl: './individual-check-answers-ap.component.html'
+  templateUrl: './check-answers.component.html'
 })
-export class IndividualCheckAnswersApComponent extends BaseComponent implements IHasNextPage {
-  static route: string = 'individual-check-answers';
+export class AccountablePersonCheckAnswersComponent extends BaseComponent implements IHasNextPage {
+  static route: string = 'check-answers';
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);

@@ -8,6 +8,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 export class NotFoundAddressComponent {
 
   @Input() searchModel: { postcode?: string, addressLine1?: string } = {};
+  @Input() addressName!: string;
   @Output() onSearchAgain = new EventEmitter();
   @Output() onEnterManualAddress = new EventEmitter();
 

@@ -4,7 +4,7 @@ import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
-import { IndividualAddressComponent } from "../individual-address/individual-address.component";
+import { ApAddressComponent } from "../ap-address/ap-address.component";
 
 @Component({
     templateUrl: './principal.component.html'
@@ -23,6 +23,6 @@ export class PrincipleAccountableSelection extends BaseComponent implements IHas
     }
      
     navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-        return navigationService.navigateRelative(IndividualAddressComponent.route, activatedRoute);
+        return navigationService.navigateRelative(ApAddressComponent.route, activatedRoute);
     }
 }
