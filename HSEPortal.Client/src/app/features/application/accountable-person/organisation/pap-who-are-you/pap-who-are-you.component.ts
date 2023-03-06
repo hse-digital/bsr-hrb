@@ -11,7 +11,7 @@ import { ActingForSameAddressComponent } from '../acting-for-same-address/acting
   templateUrl: './pap-who-are-you.component.html'
 })
 export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage {
-  static route: string = 'pap-who-are-you';
+  static route: string = 'who-are-you';
 
   roleHasErrors = false;
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {

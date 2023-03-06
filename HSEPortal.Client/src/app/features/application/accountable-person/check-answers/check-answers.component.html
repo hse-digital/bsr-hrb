@@ -5,13 +5,30 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <b>[WIP]</b>
-        <govuk-fieldset title="Check your answers" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+        <span class="govuk-caption-xl">Accountable persons</span>
+        <govuk-fieldset title="Check your answers" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8'>
+
+          <ng-container *ngIf="aps.length == 1">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Principal accountable person</legend>
+            <organisation-answers *ngIf="aps[0].Type == 'organisation'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
+            <individual-answers *ngIf="aps[0].Type == 'individual'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
+          </ng-container>
+
+          <div *ngIf="aps.length > 1">
+            <div *ngFor="let ap of aps; let i = index" class="section-wrapper">
+              <div class="section-header" *ngIf="i == 0">Principal accountable person</div>
+              <div class="section-header" *ngIf="i > 0">Other accountable person {{ i }}</div>
+              <div class="section-content">
+                <organisation-answers *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+                <individual-answers *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+              </div>
+            </div>
+          </div>
 
         </govuk-fieldset>
       </div>
 
-      <govuk-button (onClick)="saveAndContinue()">Continue</govuk-button>
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
     </div>
   </div>
 </div>

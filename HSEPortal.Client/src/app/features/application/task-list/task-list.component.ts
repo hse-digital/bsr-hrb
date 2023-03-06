@@ -48,6 +48,7 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
     let appendRoute = AccountablePersonModule.baseRoute;
 
     if (this.applicationService.model.AccountablePersons?.length > 0) {
+      appendRoute = 'accountable-person/check-answers'
     }
 
     this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
