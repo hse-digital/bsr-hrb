@@ -15,6 +15,7 @@ import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.com
 import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
 import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
+import { SectionYearOfCompletionComponent } from '../year-of-completion/year-of-completion.component';
 
 @Component({
   selector: 'hse-check-answers',
@@ -30,7 +31,7 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     height: SectionHeightComponent.route,
     residentialUnits: SectionResidentialUnitsComponent.route,
     peopleLivingInBuilding: SectionPeopleLivingInBuildingComponent.route,
-    yearCompletition: "check-answers", // TO-DO
+    yearCompletition: SectionYearOfCompletionComponent.route, // TO-DO
     completitionCertificateIssuer: "check-answers", // TO-DO
     completitionCertificateReference: "check-answers", // TO-DO
     address: SectionAddressComponent.route // TO-DO

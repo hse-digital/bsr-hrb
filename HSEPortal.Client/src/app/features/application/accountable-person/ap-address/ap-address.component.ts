@@ -20,11 +20,15 @@ export class ApAddressComponent implements OnInit {
     @Input() pap: boolean = false;
     @Input() addressName?: string;
     address?: AddressModel;
-
     constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
     }
 
+    private returnUrl?: string;
     ngOnInit(): void {
+        this.activatedRoute.queryParams.subscribe(params => {
+            this.returnUrl = params['return'];
+        });
+
         this.address = this.pap ? this.applicationService.currentAccountablePerson.PapAddress : this.applicationService.currentAccountablePerson.Address;
     }
 
@@ -50,7 +54,9 @@ export class ApAddressComponent implements OnInit {
             this.applicationService.currentAccountablePerson.Address = address;
         }
 
-        if (this.applicationService._currentAccountablePersonIndex == 0) {
+        if (this.returnUrl) {
+            this.navigationService.navigateRelative(`../${this.returnUrl}`, this.activatedRoute);
+        } else if (this.applicationService._currentAccountablePersonIndex == 0) {
             this.navigateFirstAccountablePerson();
         } else {
             this.navigateOtherAccountablePersons();

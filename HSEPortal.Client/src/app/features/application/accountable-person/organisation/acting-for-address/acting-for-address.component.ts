@@ -17,15 +17,24 @@ export class ActingForAddressComponent implements OnInit {
   }
 
   address?: AddressModel
+  private returnUrl?: string;
   ngOnInit(): void {
     this.address = this.applicationService.currentAccountablePerson.ActingForAddress;
+    this.activatedRoute.queryParams.subscribe(query => {
+      this.returnUrl = query['return'];
+    })
   }
 
   async updateActingForAddress(address: AddressModel) {
     this.applicationService.currentAccountablePerson.ActingForAddress = address;
     await this.applicationService.updateApplication();
 
-    this.navigationService.navigateRelative(LeadNameComponent.route, this.activatedRoute);
+    let route = LeadNameComponent.route;
+    if (this.returnUrl) {
+      route = `../${this.returnUrl}`;
+    }
+
+    this.navigationService.navigateRelative(route, this.activatedRoute);
   }
 
 }

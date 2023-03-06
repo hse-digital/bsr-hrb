@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ApplicationService } from "src/app/services/application.service";
 
 @Component({
@@ -7,7 +7,7 @@ import { ApplicationService } from "src/app/services/application.service";
 export class PapAddressComponent {
     static route: string = 'pap-address';
 
-    constructor(private applicationService: ApplicationService) {}
+    constructor(private applicationService: ApplicationService) { }
 
     getPapAddressName() {
         if (this.applicationService.currentAccountablePerson.Type == 'organisation') {
