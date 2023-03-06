@@ -11,19 +11,20 @@ import { SectionHelper } from "src/app/helpers/section-name-helper";
 @Component({
     templateUrl: './address.component.html'
 })
-export class SectionAddressComponent extends BaseComponent implements OnInit {
+export class SectionAddressComponent implements OnInit {
     static route: string = 'address';
     searchMode = AddressSearchMode.Building;
 
-    constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-        super(router, applicationService, navigationService, activatedRoute);
+    constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
     }
 
     private addressIndex?: number;
+    private returnUrl?: string;
     address?: AddressModel;
     ngOnInit(): void {
         this.activatedRoute.queryParams.subscribe(query => {
             this.addressIndex = query['address'];
+            this.returnUrl = query['return'];
             if (this.addressIndex) {
                 this.address = this.applicationService.currentSection.Addresses[this.addressIndex - 1];
             }
@@ -41,11 +42,12 @@ export class SectionAddressComponent extends BaseComponent implements OnInit {
         }
 
         await this.applicationService.updateApplication();
-        this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
-    }
 
-    canContinue(): boolean {
-        return true;
+        if (this.returnUrl) {
+            this.navigationService.navigateRelative(`../${this.returnUrl}`, this.activatedRoute);
+        } else {
+            this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
+        }
     }
 
     getAddressSectionName() {
