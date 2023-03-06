@@ -19,4 +19,16 @@ public class PaymentResponseModel
     public string PaymentId { get; set; }
     public string PaymentProvider { get; set; }
     public string ProviderId { get; set; }
+
+    public int LastFourDigitsCardNumber { get; set; }
+    public string Metadata { get; set; }
+    public string CardExpiryDate { get; set; }
+    public string CardBrand { get; set; }
+    public string CardType { get; set; }
+    public string AddressLineOne { get; set; }
+    public string AddressLineTwo { get; set; }
+    public string City { get; set; }
+    public string Country { get; set; }
+    public string Postcode { get; set; }
+
 }

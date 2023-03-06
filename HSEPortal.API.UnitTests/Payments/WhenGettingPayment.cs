@@ -37,6 +37,11 @@ public class WhenGettingPayment : UnitTestBase
         paymentResponseModel.Status.Should().Be(responseApiModel.state.status);
         paymentResponseModel.Finished.Should().Be(responseApiModel.state.finished);
         paymentResponseModel.LinkSelf.Should().Be(responseApiModel._links.self.href);
+        paymentResponseModel.CardType.Should().Be(responseApiModel.card_details.card_type);
+        paymentResponseModel.CardBrand.Should().Be(responseApiModel.card_details.card_brand);
+        paymentResponseModel.LastFourDigitsCardNumber.Should().Be(responseApiModel.card_details.last_digits_card_number);
+        paymentResponseModel.AddressLineOne.Should().Be(responseApiModel.card_details.billing_address.line1);
+        paymentResponseModel.Postcode.Should().Be(responseApiModel.card_details.billing_address.postcode);
     }
 
     [Theory]
@@ -53,7 +58,7 @@ public class WhenGettingPayment : UnitTestBase
     {
         return new PaymentApiResponseModel
         {
-            created_date = "",
+            created_date = "created_date",
             state = new State() { finished = false, status = "created" },
             _links = new Links() { self = new Url() { href = "link" } },
             amount = 250,
@@ -62,7 +67,21 @@ public class WhenGettingPayment : UnitTestBase
             return_url = "https://your.service.gov.uk/completed",
             payment_id = "hu20sqlact5260q2nanm0q8u93",
             payment_provider = "worldpay",
-            provider_id = "10987654321"
+            provider_id = "10987654321",
+            metadata = "metadata",
+            card_details = new CardDetails() { 
+                card_type = "debit",
+                card_brand = "Jcb",
+                expiry_date = "expiry date",
+                last_digits_card_number = 1234,
+                billing_address = new BillingAddress() {
+                    line1 = "line1",
+                    line2 = "line2",
+                    city = "city",
+                    country = "country",
+                    postcode = "postcode",
+                }
+            },
         };
     }
 }

@@ -18,6 +18,8 @@ public class PaymentApiResponseModel
     public string payment_id { get; set; }
     public string payment_provider { get; set; }
     public string provider_id { get; set; }
+    public string metadata { get; set; }
+    public CardDetails card_details { get; set; }
 }
 
 public class State
@@ -36,4 +38,23 @@ public class Url
 {
     public string href { get; set; }
     public string method { get; set; }
+}
+
+public class CardDetails
+{
+    public int last_digits_card_number { get; set; }
+    public string expiry_date { get; set; }
+    public BillingAddress billing_address { get; set; }
+    public string card_brand { get; set; }
+    public string card_type { get; set; }
+
+}
+
+public class BillingAddress
+{
+    public string line1 { get; set; }
+    public string line2 { get; set; }
+    public string postcode { get; set; }
+    public string city { get; set; }
+    public string country { get; set; }
 }
