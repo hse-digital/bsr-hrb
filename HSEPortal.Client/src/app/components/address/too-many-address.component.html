@@ -4,8 +4,8 @@
   <govuk-fieldset title="Too many results" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
     <govuk-body>Too many results found for <b>{{ searchModel.postcode }}</b><span *ngIf="searchModel.addressLine1"> and <b>{{searchModel.addressLine1}}</b></span></govuk-body>
     <govuk-body>
-      You can either <a class="govuk-link" (click)="onSearchAgain.emit()">search again</a> or
-      <a class="govuk-link" (click)="onEnterManualAddress.emit()">enter address manually</a>.
+      You can either <a class="govuk-link" (click)="onSearchAgain.emit()" role="link">search again</a> or
+      <a class="govuk-link" (click)="onEnterManualAddress.emit()" role="link">enter address manually</a>.
     </govuk-body>
   </govuk-fieldset>
 </div>
