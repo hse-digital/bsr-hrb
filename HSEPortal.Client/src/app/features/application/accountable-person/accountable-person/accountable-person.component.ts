@@ -19,7 +19,7 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
   }
   
   ngOnInit(): void {
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.PrincipleAccountablePersonInProgress;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.AccountablePersonsInProgress;
     this.applicationService.updateLocalStorage();
     this.applicationService.updateApplication();
   }

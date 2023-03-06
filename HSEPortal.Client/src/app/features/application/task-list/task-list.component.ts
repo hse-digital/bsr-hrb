@@ -22,8 +22,7 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
 
   ngOnInit(): void {
     if (this.containsFlag(BuildingApplicationStatus.BlocksInBuildingComplete)) this.completedSections++;
-    if (this.containsFlag(BuildingApplicationStatus.PrincipleAccountablePersonComplete)) this.completedSections++;
-    if (this.containsFlag(BuildingApplicationStatus.OtherAccountablePersonsComplete)) this.completedSections++;
+    if (this.containsFlag(BuildingApplicationStatus.AccountablePersonsComplete)) this.completedSections++;
     if (this.containsFlag(BuildingApplicationStatus.PaymentComplete)) this.completedSections++;
   }
 

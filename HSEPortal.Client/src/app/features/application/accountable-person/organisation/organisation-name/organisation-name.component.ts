@@ -26,7 +26,12 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(PapAddressComponent.route, activatedRoute);
+    let route = PapAddressComponent.route;
+    if (this.applicationService._currentAccountablePersonIndex > 0) {
+      route = ApAddressComponent.route;
+    }
+
+    return navigationService.navigateRelative(route, activatedRoute);
   }
 
   saveAndComeBackLater() {
@@ -41,5 +46,9 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
 
   selectCompanyName(company: string) {
     this.applicationService.currentAccountablePerson.OrganisationName = company;
+  }
+
+  getPrincipalOrOther() {
+    return this.applicationService._currentAccountablePersonIndex > 0 ? 'Other' : 'Principal';
   }
 }

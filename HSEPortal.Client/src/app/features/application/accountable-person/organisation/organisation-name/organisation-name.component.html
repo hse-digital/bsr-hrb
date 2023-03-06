@@ -10,16 +10,12 @@
           <govuk-error-link *ngIf="organisationNameHasErrors" anchorId="input-organisation-name" message="Enter the organisation name" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-xl">Principal accountable person</span>
+        <span class="govuk-caption-xl">{{getPrincipalOrOther()}} accountable person</span>
         <govuk-fieldset title="What is the name of organisation that is the principal accountable person?" [isPageHeading]=true id="application"
                         titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'>
 
-          <!-- <govuk-input id="organisation-name"
-                        [(model)]="applicationService.currentAccountablePerson.OrganisationName"
-                        [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/> -->
-
-          <govuk-input-autocomplete2 label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
-                                     hint="This is the name of the organisation that is the principal accountable person."
+          <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
+                                    hint="This is the name of the organisation that is the principal accountable person."
                                     [model]="applicationService.currentAccountablePerson.OrganisationName"
                                     [values]="companies" (onDebounce)="searchCompanies($event)" (onSelectedValue)="selectCompanyName($event)"
                                     [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/>

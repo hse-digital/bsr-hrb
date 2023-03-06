@@ -58,6 +58,11 @@ export class ApplicationService {
     this._currentSectionIndex = index - 1;
   }
 
+  selectAccountablePerson(apName: string) {
+    let index = Number(apName.split('-').at(-1));
+    this._currentAccountablePersonIndex = index - 1;
+  }
+
   startAccountablePersonEdit(): string {
     this._currentAccountablePersonIndex = 0;
 
@@ -141,12 +146,10 @@ export enum BuildingApplicationStatus {
   None = 0,
   BlocksInBuildingInProgress = 1,
   BlocksInBuildingComplete = 2,
-  PrincipleAccountablePersonInProgress = 4,
-  PrincipleAccountablePersonComplete = 8,
-  OtherAccountablePersonsInProgress = 16,
-  OtherAccountablePersonsComplete = 32,
-  PaymentInProgress = 64,
-  PaymentComplete = 128
+  AccountablePersonsInProgress = 4,
+  AccountablePersonsComplete = 8,
+  PaymentInProgress = 16,
+  PaymentComplete = 32
 }
 
 export class SectionModel {
@@ -175,6 +178,10 @@ export class AccountablePersonModel {
   OrganisationName?: string;
   OrganisationType?: string;
   OrganisationTypeDescription?: string;
+  NamedContactFirstName?: string;
+  NamedContactLastName?: string;
+  NamedContactEmail?: string;
+  NamedContactPhoneNumber?: string;
 
   FirstName?: string;
   LastName?: string;
@@ -189,4 +196,6 @@ export class AccountablePersonModel {
   LeadLastName?: string;
   LeadEmail?: string;
   LeadPhoneNumber?: string;
+
+  SectionsAccountability?: string[][];
 }

@@ -4,6 +4,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { OrganisationNameComponent } from '../organisation-name/organisation-name.component';
 
 @Component({
   templateUrl: './organisation-type.component.html'
@@ -22,7 +23,11 @@ export class OrganisationTypeComponent extends BaseComponent implements IHasNext
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return this.navigationService.navigateRelative('organisation-name', activatedRoute);
+    return navigationService.navigateRelative(OrganisationNameComponent.route, activatedRoute);
+  }
+
+  getPrincipalOrOther() {
+    return this.applicationService._currentAccountablePersonIndex > 0 ? 'Other' : 'Principal';
   }
 }
    

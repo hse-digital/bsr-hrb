@@ -73,10 +73,8 @@ public enum BuildingApplicationStatus
     None = 0,
     BlocksInBuildingInProgress = 1,
     BlocksInBuildingComplete = 2,
-    PrincipleAccountablePersonInProgress = 4,
-    PrincipleAccountablePersonComplete = 8,
-    OtherAccountablePersonsInProgress = 16,
-    OtherAccountablePersonsComplete = 32,
-    PaymentInProgress = 64,
-    PaymentComplete = 128
+    AccountablePersonsInProgress = 4,
+    AccountablePersonsComplete = 8,
+    PaymentInProgress = 16,
+    PaymentComplete = 32
 }

@@ -1,9 +1,9 @@
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
+import { Component, NgModule, OnInit } from "@angular/core";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { HseAngularModule } from "hse-angular";
 import { CommonModule } from "@angular/common";
-import { RouterModule } from "@angular/router";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 
 import { AccountablePersonComponent } from "src/app/features/application/accountable-person/accountable-person/accountable-person.component";
 import { AccountablePersonTypeComponent } from "src/app/features/application/accountable-person/add-accountable-person/accountable-person-type.component";
@@ -23,17 +23,37 @@ import { ActingForSameAddressComponent } from "./organisation/acting-for-same-ad
 import { ActingForAddressComponent } from "./organisation/acting-for-address/acting-for-address.component";
 import { LeadNameComponent } from "./organisation/lead-name/lead-name.component";
 import { LeadDetailsComponent } from "./organisation/lead-details/lead-details.component";
-import { GovukInputAutocompleteComponent2 } from "./organisation/govuk-input-autocomplete/govuk-input-autocomplete.component";
 import { FormsModule } from "@angular/forms";
 import { ApNameComponent } from "./ap-name/ap-name.component";
 import { PapNameComponent } from "./ap-name/pap-name.component";
 import { PapAddressComponent } from "./ap-address/pap-address.component";
 import { PapDetailsComponent } from "./ap-details/pap-details.component";
+import { ApplicationService } from "src/app/services/application.service";
+import { ApAccountableForComponent } from "./accountable-for/accountable-for.component";
+import { OrganisationNamedContactComponent } from "./organisation/named-contact/named-contact.component";
+import { OrganisationNamedContactDetailsComponent } from "./organisation/named-contact/named-contact-details.component";
+
+@Component({
+  template: '<router-outlet></router-outlet>'
+})
+export class IdCaptureComponent implements OnInit {
+
+  constructor(private applicationService: ApplicationService, private activatedRoute: ActivatedRoute) {
+  }
+
+  ngOnInit(): void {
+    this.activatedRoute.params.subscribe(params => {
+      var accountablePersonId = params['id'];
+      this.applicationService.selectAccountablePerson(accountablePersonId);
+    });
+  }
+
+}
 
 const routes = new HseRoutes([
   HseRoute.unsafe(AccountablePersonComponent.route, AccountablePersonComponent),
   HseRoute.unsafe(AddAccountablePersonComponent.route, AddAccountablePersonComponent),
-  HseRoute.forChildren(':id', undefined, new HseRoutes([
+  HseRoute.forChildren(':id', IdCaptureComponent, new HseRoutes([
     HseRoute.unsafe(PrincipleAccountableSelection.route, PrincipleAccountableSelection),
     HseRoute.unsafe(PapNamedRoleComponent.route, PapNamedRoleComponent),
     HseRoute.unsafe(ActingForSameAddressComponent.route, ActingForSameAddressComponent),
@@ -47,6 +67,9 @@ const routes = new HseRoutes([
     HseRoute.unsafe(PapAddressComponent.route, PapAddressComponent),
     HseRoute.unsafe(ApDetailsComponent.route, ApDetailsComponent),
     HseRoute.unsafe(PapDetailsComponent.route, PapDetailsComponent),
+    HseRoute.unsafe(ApAccountableForComponent.route, ApAccountableForComponent),
+    HseRoute.unsafe(OrganisationNamedContactComponent.route, OrganisationNamedContactComponent),
+    HseRoute.unsafe(OrganisationNamedContactDetailsComponent.route, OrganisationNamedContactDetailsComponent),
 
     HseRoute.unsafe(OrganisationTypeComponent.route, OrganisationTypeComponent),
     HseRoute.unsafe(OrganisationNameComponent.route, OrganisationNameComponent),
@@ -58,44 +81,47 @@ const routes = new HseRoutes([
 ]);
 
 @NgModule({
-    declarations: [
-        AccountablePersonComponent,
-        AddAccountablePersonComponent,
-        AccountablePersonTypeComponent,
+  declarations: [
+    AccountablePersonComponent,
+    AddAccountablePersonComponent,
+    AccountablePersonTypeComponent,
+    IdCaptureComponent,
 
-        ApNameComponent,
-        PapNameComponent,
-        ApAddressComponent,
-        PapAddressComponent,
-        ApDetailsComponent,
-        PapDetailsComponent,
+    ApNameComponent,
+    PapNameComponent,
+    ApAddressComponent,
+    PapAddressComponent,
+    ApDetailsComponent,
+    PapDetailsComponent,
 
-        PrincipleAccountableSelection,
-        PapWhoAreYouComponent,
-        PapNamedRoleComponent,
-        ActingForSameAddressComponent,
-        ActingForAddressComponent,
-        LeadNameComponent,
-        LeadDetailsComponent,
-        AccountablePersonCheckAnswersComponent,
+    PrincipleAccountableSelection,
+    PapWhoAreYouComponent,
+    PapNamedRoleComponent,
+    ActingForSameAddressComponent,
+    ActingForAddressComponent,
+    LeadNameComponent,
+    LeadDetailsComponent,
+    ApAccountableForComponent,
+    AccountablePersonCheckAnswersComponent,
+    OrganisationNamedContactComponent,
+    OrganisationNamedContactDetailsComponent,
 
-        OrganisationTypeComponent,
-        OrganisationNameComponent,
-        OrganisationCheckAnswersApComponent,
-        OrganisationAddressComponent,
-
-        GovukInputAutocompleteComponent2
-    ],
-    providers: [HttpClient, ...routes.getProviders()],
-    imports: [
-        RouterModule.forChild(routes.getRoutes()),
-        HseAngularModule,
-        CommonModule,
-        HttpClientModule,
-        AddressModule,
-        FormsModule
-    ]
+    OrganisationTypeComponent,
+    OrganisationNameComponent,
+    OrganisationCheckAnswersApComponent,
+    OrganisationAddressComponent,
+  ],
+  providers: [HttpClient, ...routes.getProviders()],
+  imports: [
+    RouterModule.forChild(routes.getRoutes()),
+    HseAngularModule,
+    CommonModule,
+    HttpClientModule,
+    AddressModule,
+    FormsModule
+  ]
 })
 export class AccountablePersonModule {
   static baseRoute: string = 'accountable-person';
+
 }
