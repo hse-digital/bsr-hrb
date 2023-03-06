@@ -5,12 +5,6 @@ using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace HSEPortal.API.UnitTests.Payments;
@@ -50,10 +44,7 @@ public class WhenGettingPayment : UnitTestBase
     [InlineData(null)]
     public async Task ShouldReturnBadRequestIfAmountIsWrong(string paymentId)
     {
-        PaymentApiResponseModel responseApiModel = this.CreatePaymentApiResponse();
-        HttpTest.RespondWithJson(responseApiModel);
-
-        var response = await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentId), paymentId);
+        await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentId), paymentId);
 
         HttpTest.ShouldNotHaveCalled($"{this.integrationOptions.PaymentEndpoint}/v1/payments/{paymentId}");
     }
