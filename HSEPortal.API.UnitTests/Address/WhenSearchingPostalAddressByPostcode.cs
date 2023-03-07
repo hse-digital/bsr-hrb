@@ -27,7 +27,7 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
     {
         HttpTest.RespondWithJson(BuildPostcodeResponseJson());
 
-        await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
+        await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, parameters: buckinghamPalacePostcode), buckinghamPalacePostcode);
 
         HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/postcode")
             .WithQueryParams(new
@@ -45,7 +45,7 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
         var postcodeResponse = BuildPostcodeResponseJson();
         HttpTest.RespondWithJson(postcodeResponse);
 
-        var response = await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
+        var response = await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, parameters: buckinghamPalacePostcode), buckinghamPalacePostcode);
         var responseAddress = await response.ReadAsJsonAsync<BuildingAddressSearchResponse>();
 
         responseAddress.MaxResults.Should().Be(postcodeResponse.header.maxresults);
@@ -66,7 +66,7 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
     {
         HttpTest.RespondWith(status: (int)HttpStatusCode.BadRequest);
 
-        var response = await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, "invalid"), "invalid");
+        var response = await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, parameters: "invalid"), "invalid");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 

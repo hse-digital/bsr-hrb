@@ -1,4 +1,4 @@
-namespace HSEPortal.API.IntegrationTests;
+namespace HSEPortal.API.Services;
 
 public class SwaOptions
 {

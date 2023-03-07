@@ -199,6 +199,22 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CompaniesHouseApiKey)'
                 }
                 {
+                    name: 'Integrations__PaymentEndpoint'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--PaymentEndpoint)'
+                }
+                {
+                    name: 'Integrations__PaymentApiKey'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--PaymentApiKey)'
+                }
+                {
+                    name: 'Integrations__PaymentAmount'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--PaymentAmount)'
+                }
+                {
+                    name: 'Swa__Url'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Swa--Url)'
+                }
+                {
                     name: 'Feature__DisableOtpValidation'
                     value: 'false'
                 }

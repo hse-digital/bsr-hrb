@@ -2,6 +2,7 @@ using System.Net;
 using FluentAssertions;
 using Flurl;
 using Flurl.Http;
+using HSEPortal.API.Services;
 using Microsoft.Extensions.Options;
 using Xunit;
 

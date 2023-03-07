@@ -5,6 +5,7 @@ using Flurl.Http;
 using Flurl.Http.Configuration;
 using HSEPortal.API.Model.CompaniesHouse;
 using HSEPortal.API.Model.OrdnanceSurvey;
+using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.DynamicsDefinitions;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.Configure<DynamicsOptions>(builderContext.Configuration.GetSection(DynamicsOptions.Dynamics));
     serviceCollection.Configure<IntegrationsOptions>(builderContext.Configuration.GetSection(IntegrationsOptions.Integrations));
     serviceCollection.Configure<FeatureOptions>(builderContext.Configuration.GetSection(FeatureOptions.Feature));
+    serviceCollection.Configure<SwaOptions>(builderContext.Configuration.GetSection(SwaOptions.Swa));
 
     serviceCollection.AddTransient<DynamicsService>();
     serviceCollection.AddTransient<OTPService>();
@@ -34,6 +36,7 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     {
         config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>();
         config.AddProfile<CompaniesHouseSearchResponseProfile>();
+        config.AddProfile<PaymentProfile>();
     }).CreateMapper());
 }
 
