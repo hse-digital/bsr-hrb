@@ -11,7 +11,8 @@
 
         <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s" 
                      hint="For example, '123456'." [(model)]="securityCode" class="govuk-input--width-10" 
-                     [errorText]="getErrorDescription(errors.securityCode.hasError, errors.securityCode.errorText)" />
+                     [errorText]="getErrorDescription(errors.securityCode.hasError, errors.securityCode.errorText)"
+                     (onKeyupEnter)="validateAndContinue()" />
     </govuk-fieldset>
 </div>
 

@@ -18,11 +18,13 @@
           <govuk-input id="first-name" label="First name" 
                        [(model)]="applicationService.model.ContactFirstName"
                        [errorText]="getErrorDescription(firstNameInError, 'Enter your first name')"
-                       class="govuk-!-margin-bottom-5" />
+                       class="govuk-!-margin-bottom-5"
+                       (onKeyupEnter)="saveAndContinue()" />
 
           <govuk-input id="last-name" label="Last name" 
                        [(model)]="applicationService.model.ContactLastName"
-                       [errorText]="getErrorDescription(lastNameInError, 'Enter your last name')" />
+                       [errorText]="getErrorDescription(lastNameInError, 'Enter your last name')"
+                       (onKeyupEnter)="saveAndContinue()" />
         </govuk-fieldset>
       </div>
 

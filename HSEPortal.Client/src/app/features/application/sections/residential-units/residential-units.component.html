@@ -18,7 +18,8 @@
                                  labelClass="govuk-label--s" id="height"
                                  [(model)]="applicationService.currentSection.ResidentialUnits"
                                  [errorText]="getErrorDescription(residentialUnitsHasErrors, errorMessage)"
-                                 class="govuk-input--width-4" #height />
+                                 class="govuk-input--width-4" #height
+                                 (onKeyupEnter)="saveAndContinue()"/>
                 </govuk-fieldset>
             </div>
 

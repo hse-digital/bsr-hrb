@@ -15,10 +15,10 @@
                         titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-1' class='govuk-!-margin-bottom-3'>
 
           <govuk-radio-group [(model)]="continueLink">
-            <govuk-radio name="application-group" id="application-new" value="/new-application/building-name" label="Start a new application">
+            <govuk-radio name="application-group" id="application-new" value="/new-application/building-name" label="Start a new application" (onKeyupEnter)="continue()">
             </govuk-radio>
             <govuk-radio name="application-group" id="application-return" value="/returning-application" label="Continue a saved application"
-                         class="govuk-radio-no-margin-bottom">
+                         class="govuk-radio-no-margin-bottom" (onKeyupEnter)="continue()">
             </govuk-radio>
           </govuk-radio-group>
 

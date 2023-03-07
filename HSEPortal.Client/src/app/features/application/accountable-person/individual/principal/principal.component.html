@@ -13,8 +13,8 @@
         <govuk-fieldset title="Are you the principal accountable person?" [isPageHeading]=true id="principal" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
                         [errorText]="getErrorDescription(principalHasErrors, 'Select \'Yes\' if you are the principal accountable person')">
             <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.IsPrincipal">
-                <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-yes" value="yes" label="Yes"/>
-                <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-no" value="no" label="No" class="govuk-radio-no-margin-bottom"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-no" value="no" label="No" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()"/>
               </govuk-radio-group>
         </govuk-fieldset>
       </div>

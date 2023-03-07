@@ -17,7 +17,8 @@
           <govuk-input id="phone-number"
                        [(model)]="applicationService.model.ContactPhoneNumber"
                        [errorText]="getErrorDescription(phoneNumberHasErrors, 'Enter a UK telephone number')"
-                       class="govuk-!-margin-bottom-1" />
+                       class="govuk-!-margin-bottom-1"
+                       (onKeyupEnter)="saveAndContinue()" />
         </govuk-fieldset>
       </div>
 

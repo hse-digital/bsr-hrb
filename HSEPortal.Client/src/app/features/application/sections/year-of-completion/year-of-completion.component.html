@@ -10,12 +10,12 @@
 
                 <govuk-fieldset title="Do you know what year the block was built?" [isPageHeading]=true id="number-of-sections" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'>
                     <govuk-radio-group (onRadioSelected)="radioChange()" [errorText]="getErrorDescription(yearOfCompletionHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletionOption">
-                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-exact" value="year-exact" label="Yes, I know the exact year">
-                            <govuk-input [(model)]="applicationService.currentSection.YearOfCompletion" class="govuk-input--width-4" labelClass="govuk-label--s" label="Exact Year" hint="For example '1983'." />
+                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-exact" value="year-exact" label="Yes, I know the exact year" (onKeyupEnter)="saveAndContinue()">
+                            <govuk-input [(model)]="applicationService.currentSection.YearOfCompletion" class="govuk-input--width-4" labelClass="govuk-label--s" label="Exact Year" hint="For example '1983'." (onKeyupEnter)="saveAndContinue()" />
                         </govuk-radio>
-                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-not-exact" value="year-not-exact" label="No, I don't know the exact year" hint="Select this option if you know a general range" />
+                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-not-exact" value="year-not-exact" label="No, I don't know the exact year" hint="Select this option if you know a general range" (onKeyupEnter)="saveAndContinue()"/>
                         <div class="govuk-radios__divider">or</div>
-                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="not-completed" value="not-completed" label="The block has not yet been completed" />
+                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="not-completed" value="not-completed" label="The block has not yet been completed" (onKeyupEnter)="saveAndContinue()" />
                     </govuk-radio-group>
                 </govuk-fieldset>
             </div>

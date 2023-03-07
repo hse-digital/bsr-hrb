@@ -20,8 +20,8 @@
           <govuk-radio-group id="another-block"
                              [(model)]="addAnotherSectionLink"
                              title="Add another block?" fieldsetClass="govuk-fieldset__legend--s">
-            <govuk-radio name="another-block" id="yes" value="yes" label="Yes" />
-            <govuk-radio name="another-block" id="no" value="no" label="No" />
+            <govuk-radio name="another-block" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()"/>
+            <govuk-radio name="another-block" id="no" value="no" label="No" (onKeyupEnter)="saveAndContinue()"/>
           </govuk-radio-group>
         </govuk-fieldset>
       </div>

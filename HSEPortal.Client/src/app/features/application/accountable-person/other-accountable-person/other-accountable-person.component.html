@@ -19,9 +19,9 @@
           <govuk-radio-group title="This accountable person is" fieldsetClass="govuk-fieldset__legend--m"
                              [(model)]="accountablePersonType" id="radios-accountable-person"
                              [errorText]="getErrorDescription(hasErrors, 'Select if the accountable person is an organisation or an individual')">
-            <govuk-radio name="application-group" id="organisation" value="organisation" label="An organisation">
+            <govuk-radio name="application-group" id="organisation" value="organisation" label="An organisation" (onKeyupEnter)="saveAndContinue()">
             </govuk-radio>
-            <govuk-radio name="application-group" id="individual" value="individual" label="An individual"
+            <govuk-radio name="application-group" id="individual" value="individual" label="An individual" (onKeyupEnter)="saveAndContinue()"
                          class="govuk-radio-no-margin-bottom">
             </govuk-radio>
           </govuk-radio-group>

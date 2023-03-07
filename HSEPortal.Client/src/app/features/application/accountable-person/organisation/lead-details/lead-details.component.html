@@ -1,40 +1,42 @@
 <govuk-back-link>Back</govuk-back-link>
 
 <div class="govuk-main-wrapper">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-form-group">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
 
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
-                    <govuk-error-link *ngIf="errors.jobRole.hasErrors" anchorId="job_role" message="{{errors.jobRole.errorText}}" />
-                    <govuk-error-link *ngIf="errors.email.hasErrors" anchorId="input-email" message="{{errors.email.errorText}}" />
-                    <govuk-error-link *ngIf="errors.phoneNumber.hasErrors" anchorId="input-phone-number" message="{{errors.phoneNumber.errorText}}" />
-                </govuk-error-summary>
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+          <govuk-error-link *ngIf="errors.jobRole.hasErrors" anchorId="job_role" message="{{errors.jobRole.errorText}}" />
+          <govuk-error-link *ngIf="errors.email.hasErrors" anchorId="input-email" message="{{errors.email.errorText}}" />
+          <govuk-error-link *ngIf="errors.phoneNumber.hasErrors" anchorId="input-phone-number" message="{{errors.phoneNumber.errorText}}" />
+        </govuk-error-summary>
 
-                <span class="govuk-caption-l">Principal accountable person</span>
-                <govuk-fieldset title="{{applicationService.currentAccountablePerson.LeadFirstName}} {{applicationService.currentAccountablePerson.LeadLastName}}'s details" [isPageHeading]=true id="job_role" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'
-                                [errorText]="getErrorDescription(false, 'Select your job role')">
-                    <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.LeadJobRole" id="job_role" class="govuk-!-margin-bottom-6" title="Job role">
-                        <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-director" value="director" label="Director"/>
-                        <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-administrative_worker" value="administrative_worker" label="Administrative or office worker" />
-                        <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_manager" value="building_manager" label="Building or facilities manager" />
-                        <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_director" value="building_director" label="Building safety director" />
-                        <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-other" value="other" label="Other" />
-                    </govuk-radio-group>
+        <span class="govuk-caption-l">Principal accountable person</span>
+        <govuk-fieldset title="{{applicationService.currentAccountablePerson.LeadFirstName}} {{applicationService.currentAccountablePerson.LeadLastName}}'s details" [isPageHeading]=true id="job_role" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'
+                        [errorText]="getErrorDescription(false, 'Select your job role')">
+          <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.LeadJobRole" id="job_role" class="govuk-!-margin-bottom-6" title="Job role">
+            <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-director" value="director" label="Director"  (onKeyupEnter)="saveAndContinue()" />
+            <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-administrative_worker" value="administrative_worker" label="Administrative or office worker"  (onKeyupEnter)="saveAndContinue()" />
+            <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_manager" value="building_manager" label="Building or facilities manager" (onKeyupEnter)="saveAndContinue()" />
+            <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_director" value="building_director" label="Building safety director" (onKeyupEnter)="saveAndContinue()"/>
+            <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-other" value="other" label="Other" (onKeyupEnter)="saveAndContinue()" />
+          </govuk-radio-group>
 
-                    <govuk-input id="email" label="Email address"
-                                 [(model)]="applicationService.currentAccountablePerson.LeadEmail"
-                                 [errorText]="getErrorDescription(errors.email.hasErrors, errors.email.errorText)"
-                                 class="govuk-!-margin-bottom-5" />
-          
-                    <govuk-input id="phone-number" label="Telephone number"
-                                 [(model)]="applicationService.currentAccountablePerson.LeadPhoneNumber"
-                                 [errorText]="getErrorDescription(errors.phoneNumber.hasErrors, errors.phoneNumber.errorText)" />
-                </govuk-fieldset>
-            </div>
+          <govuk-input id="email" label="Email address"
+                       [(model)]="applicationService.currentAccountablePerson.LeadEmail"
+                       [errorText]="getErrorDescription(errors.email.hasErrors, errors.email.errorText)"
+                       class="govuk-!-margin-bottom-5"
+                       (onKeyupEnter)="saveAndContinue()" />
 
-            <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
-            <govuk-body><a href="/" class="govuk-link" role="link">Save and come back later</a></govuk-body>
-        </div>
+          <govuk-input id="phone-number" label="Telephone number"
+                       [(model)]="applicationService.currentAccountablePerson.LeadPhoneNumber"
+                       [errorText]="getErrorDescription(errors.phoneNumber.hasErrors, errors.phoneNumber.errorText)"
+                       (onKeyupEnter)="saveAndContinue()" />
+        </govuk-fieldset>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <govuk-body><a href="/" class="govuk-link" role="link">Save and come back later</a></govuk-body>
     </div>
+  </div>
 </div>

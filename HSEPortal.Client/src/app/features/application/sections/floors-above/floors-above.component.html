@@ -37,7 +37,8 @@
                                  labelClass="govuk-label--s" id="floors-above"
                                  [(model)]="applicationService.currentSection.FloorsAbove"
                                  [errorText]="getErrorDescription(floorsHasError, errorMessage)"
-                                 class="govuk-input--width-3"/>
+                                 class="govuk-input--width-3"
+                                 (onKeyupEnter)="saveAndContinue()"/>
 
                 </govuk-fieldset>
             </div>

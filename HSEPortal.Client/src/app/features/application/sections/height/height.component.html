@@ -28,7 +28,8 @@
                                  labelClass="govuk-label--s" id="height"
                                  [(model)]="applicationService.currentSection.Height"
                                  [errorText]="getErrorDescription(heightHasErrors, errorMessage)" suffix="m"
-                                 class="govuk-input--width-4" #height />
+                                 class="govuk-input--width-4" #height
+                                 (onKeyupEnter)="saveAndContinue()"/>
 
                 </govuk-fieldset>
             </div>

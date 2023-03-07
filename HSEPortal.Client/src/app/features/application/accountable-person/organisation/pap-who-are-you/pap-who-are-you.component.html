@@ -13,8 +13,8 @@
         <govuk-fieldset title="Who are you?" [isPageHeading]=true id="who_are_you" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
                         [errorText]="getErrorDescription(roleHasErrors, getErrorMessage())">
             <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.Role">
-                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" hint="This is the person who will deal with building safety issues on behalf of"/>
-                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-registering_for" value="registering_for" label="I am registering for the named contact" class="govuk-radio-no-margin-bottom"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" hint="This is the person who will deal with building safety issues on behalf of" (onKeyupEnter)="saveAndContinue()"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-registering_for" value="registering_for" label="I am registering for the named contact" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()"/>
               </govuk-radio-group>
         </govuk-fieldset> 
       </div>

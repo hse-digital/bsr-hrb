@@ -23,8 +23,8 @@
           <govuk-radio-group title="The principal accountable person is" fieldsetClass="govuk-fieldset__legend--m"
                              [(model)]="applicationService.model.PrincipalAccountableType" id="radios-accountable-person"
                              [errorText]="getErrorDescription(hasErrors, 'Select if the principal accountable person is an organisation or an individual')">
-            <govuk-radio [model]="applicationService.model.PrincipalAccountableType" name="application-group" id="organisation" value="organisation" label="An organisation"/>
-            <govuk-radio [model]="applicationService.model.PrincipalAccountableType" name="application-group" id="individual" value="individual" label="An individual" class="govuk-radio-no-margin-bottom"/>
+            <govuk-radio [model]="applicationService.model.PrincipalAccountableType" name="application-group" id="organisation" value="organisation" label="An organisation" (onKeyupEnter)="saveAndContinue()"/>
+            <govuk-radio [model]="applicationService.model.PrincipalAccountableType" name="application-group" id="individual" value="individual" label="An individual" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()"/>
           </govuk-radio-group>
 
         </govuk-fieldset>

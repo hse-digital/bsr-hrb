@@ -17,8 +17,8 @@
             <govuk-body class="govuk-!-margin-0"><b>Should we use the same address to contact you?</b></govuk-body>
 
             <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.ActingForSameAddress">
-                <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-yes" value="yes" label="Yes, use this address"/>
-                <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-no" value="no" label="No, use a different address"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-yes" value="yes" label="Yes, use this address" (onKeyupEnter)="saveAndContinue()"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-no" value="no" label="No, use a different address" (onKeyupEnter)="saveAndContinue()"/>
               </govuk-radio-group>
         </govuk-fieldset> 
       </div>
