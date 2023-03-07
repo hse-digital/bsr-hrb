@@ -5,6 +5,9 @@ import { ApplicationService, BuildingApplicationStatus } from "src/app/services/
 import { NavigationService } from "src/app/services/navigation.service";
 import { AccountablePersonModule } from "../accountable-person/accountable-person.module";
 import { NumberOfSectionsComponment } from "../number-of-sections/number-of-sections.component";
+import { PaymentConfirmationComponent } from "../payment/payment-confirmation/payment-confirmation.component";
+import { PaymentDeclarationComponent } from "../payment/payment-declaration/payment-declaration.component";
+import { PaymentModule } from "../payment/payment.module";
 
 @Component({
   templateUrl: './task-list.component.html'
@@ -54,12 +57,16 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
     this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
   }
 
-  navigateToOtherAp() {
-
-  }
-
   navigateToPayment() {
+    let appendRoute = PaymentModule.baseRoute;
 
+    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
+      appendRoute = `${appendRoute}/${PaymentConfirmationComponent.route}`;
+    } else {
+      appendRoute = `${appendRoute}/${PaymentDeclarationComponent.route}`;
+    }
+
+    this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
   }
 
   containsFlag(flag: BuildingApplicationStatus) {

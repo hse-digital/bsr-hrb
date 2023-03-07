@@ -44,7 +44,6 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   async ngOnInit() {
-    this.updateOnSave = true;
     this.sections = this.applicationService.model.Sections;
   }
 

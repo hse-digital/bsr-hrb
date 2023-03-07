@@ -4,6 +4,8 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { PaymentDeclarationComponent } from '../../payment/payment-declaration/payment-declaration.component';
+import { PaymentModule } from '../../payment/payment.module';
 
 @Component({
   templateUrl: './check-answers.component.html',
@@ -30,6 +32,10 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsComplete;
     this.applicationService.updateApplication();
 
-    return navigationService.navigateRelative('../add-more', activatedRoute);
+    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
+      return navigationService.navigateRelative(`..`, activatedRoute);
+    }
+
+    return navigationService.navigateRelative(`../${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`, activatedRoute);
   }
 }

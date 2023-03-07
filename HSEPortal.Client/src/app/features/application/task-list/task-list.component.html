@@ -3,7 +3,7 @@
     <div class="govuk-grid-column-two-thirds">
       <govuk-fieldset title="Register {{applicationService.model.BuildingName}}" [isPageHeading]="true" titleClass="govuk-fieldset__legend--xl  govuk-!-margin-bottom-8">
 
-        <govuk-body class="govuk-fieldset__legend--s govuk-!-margin-bottom-2">Application incomplete</govuk-body>
+        <govuk-body class="govuk-fieldset__legend--s govuk-!-margin-bottom-2">Application {{completedSections == 3 ? 'complete' : 'incomplete'}}</govuk-body>
         <govuk-body class="govuk-!-margin-bottom-8">You have completed {{completedSections}} of 3 sections.</govuk-body>
 
         <govuk-body class="govuk-fieldset__legend--s govuk-!-margin-bottom-2">Returning to this application</govuk-body>
@@ -38,7 +38,7 @@
                 <a *ngIf="containsFlag(applicationStatus.AccountablePersonsComplete)" class="govuk-link" (click)="navigateToPayment()">Apply and pay the fee</a>
                 <govuk-tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.AccountablePersonsComplete)">CANNOT START YET</govuk-tag>
                 <govuk-tag class="govuk-tag--grey" *ngIf="containsFlag(applicationStatus.AccountablePersonsComplete) && !containsFlag(applicationStatus.PaymentInProgress)">NOT STARTED YET</govuk-tag>
-                <govuk-tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.PaymentInProgress)">IN PROGRESS</govuk-tag>
+                <govuk-tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.PaymentInProgress) && !containsFlag(applicationStatus.PaymentComplete)">IN PROGRESS</govuk-tag>
                 <govuk-tag *ngIf="containsFlag(applicationStatus.PaymentComplete)">COMPLETE</govuk-tag>
               </govuk-summary-list-row>
             </govuk-summary-list>

@@ -12,6 +12,7 @@ import { AccountablePersonModule } from "./accountable-person/accountable-person
 import { NumberOfSectionsComponment } from "./number-of-sections/number-of-sections.component";
 import { BuildingOutOfScopeComponent } from "./out-of-scope/out-of-scope.component";
 import { ContinueAnywayComponent } from "./out-of-scope/continue-anyway.component";
+import { PaymentModule } from "./payment/payment.module";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent),
@@ -20,6 +21,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(ContinueAnywayComponent.route, ContinueAnywayComponent),
   HseRoute.forLoadChildren(SectionsModule.baseRoute, () => import('./sections/sections.module').then(m => m.SectionsModule)),
   HseRoute.forLoadChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
+  HseRoute.forLoadChildren(PaymentModule.baseRoute, () => import('./payment/payment.module').then(m => m.PaymentModule)),
 ]);
 
 @NgModule({

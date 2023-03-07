@@ -37,7 +37,7 @@ public class PaymentFunctions
 
         var paymentRequestModel = mapper.Map<PaymentApiRequestModel>(paymentModel);
         paymentRequestModel.amount = integrationOptions.PaymentAmount;
-        paymentRequestModel.return_url = $"{swaOptions.Url}/application/{paymentModel.Reference}/confirm";
+        paymentRequestModel.return_url = $"{swaOptions.Url}/application/{paymentModel.Reference}/payment/confirm";
 
         var response = await integrationOptions.PaymentEndpoint
             .AppendPathSegments("v1", "payments")

@@ -13,8 +13,6 @@ export abstract class BaseComponent implements CanActivate {
   }
 
   abstract canContinue(): boolean;
-  updateOnSave: boolean = false;
-
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
     return true;
   }
@@ -24,7 +22,7 @@ export abstract class BaseComponent implements CanActivate {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       await this.onSave();
-      this.applicationService.updateLocalStorage();
+      await this.applicationService.updateApplication();
       await this.runInheritances();
     }
   }
@@ -36,10 +34,6 @@ export abstract class BaseComponent implements CanActivate {
   async onSave() { }
 
   private async runInheritances(): Promise<void> {
-    if (this.updateOnSave) {
-      await this.applicationService.updateApplication();
-    }
-
     if (this.returnUrl) {
       let returnUri = this.returnUrl == 'check-answers' ? `../${this.returnUrl}` : this.returnUrl;
       this.navigationService.navigateRelative(returnUri, this.activatedRoute);

@@ -41,8 +41,9 @@ public class WhenGettingPayment : UnitTestBase
         var paymentResponseModel = await response.ReadAsJsonAsync<PaymentResponseModel>();
 
         paymentResponseModel.Status.Should().Be(responseApiModel.state.status);
+        paymentResponseModel.Email.Should().Be(responseApiModel.email);
         paymentResponseModel.Finished.Should().Be(responseApiModel.state.finished);
-        paymentResponseModel.PaymentLink.Should().Be(responseApiModel._links.self.href);
+        paymentResponseModel.PaymentLink.Should().Be(responseApiModel._links.next_url.href);
         paymentResponseModel.CardType.Should().Be(responseApiModel.card_details.card_type);
         paymentResponseModel.CardBrand.Should().Be(responseApiModel.card_details.card_brand);
         paymentResponseModel.LastFourDigitsCardNumber.Should().Be(responseApiModel.card_details.last_digits_card_number);
@@ -67,8 +68,9 @@ public class WhenGettingPayment : UnitTestBase
         {
             created_date = "created_date",
             state = new State { finished = false, status = "created" },
-            _links = new Links { self = new Url { href = "link" } },
+            _links = new Links { next_url = new Url { href = "link" } },
             amount = 250,
+            email = "user@email.com",
             reference = "12345",
             description = "description",
             return_url = "https://your.service.gov.uk/completed",

@@ -5,7 +5,7 @@ public class PaymentApiRequestModel
     public double amount { get; set; }
     public string reference { get; set; }
     public string return_url { get; set; }
-    public string description => $"Payment for ${reference}";
+    public string description => $"Payment for application {reference}";
     public bool delayed_capture = false;
     public string email { get; set; }
     public ApiCardHolderDetails prefilled_cardholder_details { get; set; }

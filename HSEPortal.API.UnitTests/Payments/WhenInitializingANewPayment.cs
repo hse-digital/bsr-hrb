@@ -17,7 +17,7 @@ public class WhenInitializingANewPayment : UnitTestBase
     private readonly SwaOptions swaOptions;
     private readonly string applicationId = "HBR123123123";
     private readonly PaymentApiResponseModel paymentApiResponse;
-    private string returnUrl => $"{swaOptions.Url}/application/{applicationId}/confirm";
+    private string returnUrl => $"{swaOptions.Url}/application/{applicationId}/payment/confirm";
 
     public WhenInitializingANewPayment()
     {
@@ -84,7 +84,7 @@ public class WhenInitializingANewPayment : UnitTestBase
             CreatedDate = paymentApiResponse.created_date,
             Status = paymentApiResponse.state.status,
             Finished = paymentApiResponse.state.finished,
-            PaymentLink = paymentApiResponse._links.self.href,
+            PaymentLink = paymentApiResponse._links.next_url.href,
             Amount = paymentApiResponse.amount,
             Reference = paymentApiResponse.reference,
             Description = paymentApiResponse.description,
@@ -132,7 +132,7 @@ public class WhenInitializingANewPayment : UnitTestBase
         {
             created_date = "",
             state = new State { finished = false, status = "created" },
-            _links = new Links { self = new Url { href = "link" } },
+            _links = new Links { next_url = new Url { href = "link" } },
             amount = 250,
             reference = applicationId,
             description = "description",

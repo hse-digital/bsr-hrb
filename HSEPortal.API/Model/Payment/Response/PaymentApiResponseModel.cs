@@ -12,6 +12,7 @@ public class PaymentApiResponseModel
     public State state { get; set; }
     public Links _links { get; set; }
     public int amount { get; set; }
+    public string email { get; set; }
     public string reference { get; set; }
     public string description { get; set; }
     public string return_url { get; set; }
@@ -29,7 +30,7 @@ public class State
 
 public class Links
 {
-    public Url self { get; set; }
+    public Url next_url { get; set; }
 }
 
 public class Url
@@ -39,7 +40,7 @@ public class Url
 
 public class CardDetails
 {
-    public int last_digits_card_number { get; set; }
+    public int? last_digits_card_number { get; set; }
     public string expiry_date { get; set; }
     public string card_brand { get; set; }
     public string card_type { get; set; }

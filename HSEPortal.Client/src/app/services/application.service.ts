@@ -116,6 +116,7 @@ export class ApplicationService {
   }
 
   async updateApplication(): Promise<void> {
+    this.updateLocalStorage();
     await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
   }
 
@@ -139,6 +140,7 @@ export class BuildingRegistrationModel {
   OutOfScopeContinueReason?: string;
   PrincipalAccountableType?: string;
   AccountablePersons: AccountablePersonModel[] = [];
+  Payment?: PaymentModel;
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
 }
 
@@ -163,8 +165,8 @@ export class SectionModel {
   YearOfCompletion?: string;
   YearOfCompletionRange?: string;
 
-  CompletitionCertificateIssuer?: any;
-  CompletitionCertificateReference?: any;
+  CompletionCertificateIssuer?: any;
+  CompletionCertificateReference?: any;
   Addresses: AddressModel[] = [];
   AnotherSection?: string;
 }
@@ -198,4 +200,19 @@ export class AccountablePersonModel {
   LeadPhoneNumber?: string;
 
   SectionsAccountability?: string[][];
+}
+
+export class PaymentModel {
+  CreatedDate?: string;
+  Status?: string;
+  Finished?: boolean;
+  PaymentLink!: string;
+  Amount?: number;
+  Email?: string;
+  Reference?: string;
+  Description?: string;
+  ReturnURL?: string;
+  PaymentId?: string;
+  PaymentProvider?: string;
+  ProviderId?: string;
 }

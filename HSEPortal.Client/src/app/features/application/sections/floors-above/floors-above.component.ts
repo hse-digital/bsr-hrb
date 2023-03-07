@@ -50,8 +50,6 @@ export class SectionFloorsAboveComponent extends BaseComponent implements IHasNe
     return !!this.applicationService.currentSection.Name;
   }
 
-  override updateOnSave: boolean = true;
-
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative('height', activatedRoute);
   }

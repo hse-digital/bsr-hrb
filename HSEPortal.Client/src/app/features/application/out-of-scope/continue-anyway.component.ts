@@ -19,7 +19,6 @@ export class ContinueAnywayComponent extends BaseComponent implements IHasNextPa
 
     constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
         super(router, applicationService, navigationService, activatedRoute);
-        this.updateOnSave = true;
     }
 
     updateCharacters() {

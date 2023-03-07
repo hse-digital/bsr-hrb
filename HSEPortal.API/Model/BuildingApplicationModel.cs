@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using HSEPortal.API.Model.Payment.Response;
 
 namespace HSEPortal.API.Model;
 
@@ -15,6 +16,7 @@ public record BuildingApplicationModel(
     AccountablePerson[] AccountablePersons = null,
     string OutOfScopeContinueReason = null,
     string PrincipalAccountableType = null,
+    PaymentResponseModel Payment = null,
     BuildingApplicationStatus ApplicationStatus = BuildingApplicationStatus.None) : IValidatableModel
 {
     public ValidationSummary Validate()
@@ -60,12 +62,17 @@ public record BuildingApplicationModel(
     }
 }
 
-public record SectionModel(string Name, string FloorsAbove, string Height, string PeopleLivingInBuilding, string ResidentialUnits, BuildingAddress[] Addresses = null);
+public record SectionModel(string Name, 
+        string FloorsAbove, string Height, string PeopleLivingInBuilding, 
+        string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange,
+        string CompletionCertificateIssuer, string CompletionCertificateReference, BuildingAddress[] Addresses = null);
 
 public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress Address, BuildingAddress PapAddress,
-    string OrganisationName, string OrganisationType, string OrganisationTypeDescription, string FirstName, string LastName,
-    string Email, string PhoneNumber, string Role, string LeadJobRole, string ActingForSameAddress, BuildingAddress ActingForAddress, 
-    string LeadFirstName, string LeadLastName, string LeadEmail, string LeadPhoneNumber);
+    string OrganisationName, string OrganisationType, string OrganisationTypeDescription,
+    string NamedContactFirstName, string NamedContactLastName, string NamedContactEmail, string NamedContactPhoneNumber,
+    string FirstName, string LastName, string Email, string PhoneNumber, string Role, string LeadJobRole, 
+    string ActingForSameAddress, BuildingAddress ActingForAddress, string LeadFirstName, string LeadLastName, 
+    string LeadEmail, string LeadPhoneNumber, string[][] SectionsAccountability);
 
 [Flags]
 public enum BuildingApplicationStatus

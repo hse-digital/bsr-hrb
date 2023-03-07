@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using HSEPortal.API.Functions;
 using HSEPortal.API.Model.Payment.Request;
 using HSEPortal.API.Model.Payment.Response;
 
@@ -14,7 +13,7 @@ public class PaymentProfile : Profile
             .ForMember(x => x.CreatedDate, x => x.MapFrom(y => y.created_date))
             .ForMember(x => x.Status, x => x.MapFrom(y => y.state.status))
             .ForMember(x => x.Finished, x => x.MapFrom(y => y.state.finished))
-            .ForMember(x => x.PaymentLink, x => x.MapFrom(y => y._links.self.href))
+            .ForMember(x => x.PaymentLink, x => x.MapFrom(y => y._links.next_url.href))
             .ForMember(x => x.Reference, x => x.MapFrom(y => y.reference))
             .ForMember(x => x.Description, x => x.MapFrom(y => y.description))
             .ForMember(x => x.ReturnURL, x => x.MapFrom(y => y.return_url))
