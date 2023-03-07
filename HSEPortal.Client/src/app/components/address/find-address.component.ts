@@ -73,4 +73,8 @@ export class FindAddressComponent {
   getTitle() {
     return this.selfAddress ? 'Find your address' : `Find the address of ${this.addressName}`;
   }
+
+  postcodeHint() {
+    return this.searchMode == AddressSearchMode.Building ? 'You can use the temporary postcode if its postcode has not been approved yet.' : undefined;
+  }
 }

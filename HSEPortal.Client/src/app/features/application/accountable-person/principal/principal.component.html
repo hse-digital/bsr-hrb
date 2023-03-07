@@ -9,8 +9,7 @@
           <govuk-error-link anchorId="principal" message="Select 'Yes' if you are the principal accountable person" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-l">Principal accountable person</span>
-        <govuk-fieldset title="Are you the principal accountable person?" [isPageHeading]=true id="principal" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
+        <govuk-fieldset title="Are you the principal accountable person for {{applicationService.model.BuildingName}}?" [isPageHeading]=true id="principal" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
                         [errorText]="getErrorDescription(principalHasErrors, 'Select \'Yes\' if you are the principal accountable person')">
             <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.IsPrincipal">
                 <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-yes" value="yes" label="Yes"/>

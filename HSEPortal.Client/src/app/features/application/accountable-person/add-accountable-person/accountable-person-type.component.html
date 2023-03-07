@@ -10,14 +10,10 @@
                             message="Select if the accountable person is an organisation or an individual" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-l">Other accountable persons</span>
-        <govuk-fieldset title="Is this accountable person an organisation or an individual?" [isPageHeading]=true id="application"
+        <govuk-fieldset title="Is this accountable person for {{applicationService.model.BuildingName}} an organisation or an individual?" [isPageHeading]=true id="application"
                         titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-3'>
 
-          <govuk-body>Tell us about one of the accountable persons. You'll be able to add more accountable persons later.</govuk-body>
-
-          <govuk-radio-group title="This accountable person is" fieldsetClass="govuk-fieldset__legend--m"
-                             [(model)]="applicationService.currentAccountablePerson.Type" id="radios-accountable-person"
+          <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.Type" id="radios-accountable-person"
                              [errorText]="getErrorDescription(hasErrors, 'Select if the accountable person is an organisation or an individual')">
             <govuk-radio [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="organisation" value="organisation" label="An organisation"/>
             <govuk-radio [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="individual" value="individual" label="An individual"/>

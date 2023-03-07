@@ -27,6 +27,12 @@
     {{ap.LeadEmail}}<br>
     {{ap.LeadPhoneNumber}}
   </govuk-summary-list-row>
+
+  <govuk-summary-list-row *ngIf="!notLead()" (onClick)="navigateTo('named-contact')" key="Named contact" [showAction]=true>{{ap.NamedContactFirstName}} {{ap.NamedContactLastName}}</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="!notLead()" (onClick)="navigateTo('named-contact-details')" key="Named contact's details" [showAction]=true>
+    {{ap.NamedContactEmail}}<br>
+    {{ap.NamedContactPhoneNumber}}
+  </govuk-summary-list-row>
   
   <govuk-summary-list-row (onClick)="navigateTo('')" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
 </govuk-summary-list>

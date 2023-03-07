@@ -10,8 +10,7 @@
                     <govuk-error-link *ngIf="errors.phoneNumber.hasErrors" anchorId="input-phone-number" message="{{errors.phoneNumber.errorText}}" />
                 </govuk-error-summary>
 
-                <span class="govuk-caption-l">Other accountable persons</span>
-                <govuk-fieldset title="{{applicationService.currentAccountablePerson.NamedContactFirstName}} {{applicationService.currentAccountablePerson.NamedContactLastName}}'s details" 
+                <govuk-fieldset title="{{applicationService.currentAccountablePerson.NamedContactFirstName}} {{applicationService.currentAccountablePerson.NamedContactLastName}}'s contact details" 
                               [isPageHeading]=true 
                               id="job_role" 
                               titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'>
@@ -22,6 +21,7 @@
                                  class="govuk-!-margin-bottom-5" />
           
                     <govuk-input id="phone-number" label="Telephone number"
+                                 hint="Enter a UK phone number with or without spaces. For example, '012 3456 7890' or '+4407654321098'"
                                  [(model)]="applicationService.currentAccountablePerson.NamedContactPhoneNumber"
                                  [errorText]="getErrorDescription(errors.phoneNumber.hasErrors, errors.phoneNumber.errorText)" />
                 </govuk-fieldset>

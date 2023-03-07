@@ -62,7 +62,7 @@ export class ApAddressComponent implements OnInit {
     }
 
     private navigateFirstAccountablePerson() {
-        if (this.pap) {
+        if (this.pap || this.applicationService.currentAccountablePerson.IsPrincipal == 'yes') {
             if (this.applicationService.currentAccountablePerson.Type == 'organisation') {
                 this.navigationService.navigateRelative(PapWhoAreYouComponent.route, this.activatedRoute);
             } else {

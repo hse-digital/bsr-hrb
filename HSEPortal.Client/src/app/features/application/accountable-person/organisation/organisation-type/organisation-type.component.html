@@ -10,10 +10,10 @@
                             message="Enter the type of organisation" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-l">{{getPrincipalOrOther()}} accountable person</span>
-        <govuk-fieldset title="Organisation type" [isPageHeading]=true id="application"
-                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-1' class='govuk-!-margin-bottom-3'>
+        <govuk-fieldset title="Other accountable person for {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application"
+                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-3'>
 
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">What type of organisation is this accountable person?</legend>
           <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.OrganisationType" id="radios-accountable-person"
                              [errorText]="getErrorDescription(hasErrors, 'Enter the type of organisation')">
             <govuk-radio [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="commonhold-association" value="commonhold-association" label="Commonhold association"/>

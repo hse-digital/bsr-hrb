@@ -10,11 +10,9 @@
           <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter their last name" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-xl">Other accountable persons</span>
         <govuk-fieldset title="Named contact at {{getOrganisationName()}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-4'>
 
-            <govuk-body>This is the person at that we will contact for building safety queries about the parts of the building they are accountable for.</govuk-body>
-
+          <govuk-body>This is who we will talk to about building safety issues for the parts of <b>{{applicationService.model.BuildingName}}</b> that <b>{{applicationService.currentAccountablePerson.OrganisationName}}</b> is accountable for.</govuk-body>
           <govuk-input id="first-name" label="First name" 
                        [(model)]="applicationService.currentAccountablePerson.NamedContactFirstName"
                        [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"

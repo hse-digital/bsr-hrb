@@ -10,7 +10,7 @@
 
     <govuk-body>{{addressTypeDescription()}}</govuk-body>
     <govuk-input id="postcode" label="Postcode"
-                 hint="You can use the temporary postcode if its postcode has not been approved yet." 
+                 [hint]="postcodeHint()" 
                  [(model)]="searchModel.postcode"
                  [errorText]="getErrorDescription(postcodeHasErrors, postcodeErrorText)"
                  class="govuk-!-margin-bottom-5 govuk-input--width-10" />

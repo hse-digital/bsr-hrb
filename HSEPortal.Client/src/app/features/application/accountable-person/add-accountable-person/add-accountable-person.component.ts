@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { AccountablePersonTypeComponent } from './accountable-person-type.component';
@@ -48,6 +48,27 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
     this.applicationService.updateApplication();
 
     return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
+  }
+
+  principalName() {
+    var pap = this.applicationService.model.AccountablePersons[0];
+    if (pap.IsPrincipal == 'yes') {
+      return `${this.applicationService.model.ContactFirstName} ${this.applicationService.model.ContactLastName}`;
+    }
+
+    return `${pap.FirstName} ${pap.LastName}`;
+  }
+
+  otherAps() {
+    var aps = this.applicationService.model.AccountablePersons;
+    return aps.slice(1, aps.length);
+  }
+
+  apName(ap: AccountablePersonModel) {
+    if (ap.Type == 'organisation')
+      return ap.OrganisationName;
+
+    return `${ap.FirstName} ${ap.LastName}`;
   }
 
 }
