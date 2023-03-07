@@ -5,6 +5,7 @@ import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/
 import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { PrincipleAccountableSelection } from '../principal/principal.component';
+import { OrganisationTypeComponent } from '../organisation/organisation-type/organisation-type.component';
 
 @Component({
   selector: 'hse-accountable-person',
@@ -31,7 +32,7 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let accountablePerson = this.applicationService.startAccountablePersonEdit();
-    let route = this.applicationService.model.PrincipalAccountableType == 'organisation' ? 'organisation-type' : PrincipleAccountableSelection.route;
+    let route = this.applicationService.currentAccountablePerson.Type == 'organisation' ? OrganisationTypeComponent.route : PrincipleAccountableSelection.route;
 
     return navigationService.navigateAppend(`${accountablePerson}/${route}`, activatedRoute);
   }

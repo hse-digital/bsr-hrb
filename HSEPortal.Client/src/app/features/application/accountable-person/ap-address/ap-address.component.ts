@@ -34,7 +34,7 @@ export class ApAddressComponent implements OnInit {
 
     getApName() {
         var currentAccountablePerson = this.applicationService.currentAccountablePerson;
-        if (currentAccountablePerson.Type == 'individual') {
+        if ((currentAccountablePerson.Type == 'individual' && this.applicationService._currentAccountablePersonIndex > 0) || (this.applicationService._currentAccountablePersonIndex == 0 && this.applicationService.model.PrincipalAccountableType == 'individual')) {
             return `${currentAccountablePerson.FirstName} ${currentAccountablePerson.LastName}`;
         }
 

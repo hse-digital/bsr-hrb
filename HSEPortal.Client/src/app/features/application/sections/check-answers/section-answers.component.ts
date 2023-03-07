@@ -13,6 +13,7 @@ export class SectionAnswersComponent {
 
     @Input() section!: SectionModel;
     @Input() sectionIndex!: number;
+    @Input() hasMoreSections = false;
 
     navigateTo(url: string, query?: string) {
         this.navigationService.navigateRelative(`section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {

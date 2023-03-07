@@ -66,7 +66,7 @@ export class ApplicationService {
   startAccountablePersonEdit(): string {
     this._currentAccountablePersonIndex = 0;
 
-    if (!this.model.AccountablePersons || this.model.AccountablePersons.length == 0) {
+    if (!this.model.AccountablePersons || this.model.AccountablePersons.length <= 1) {
       let accountablePerson = new AccountablePersonModel();
       accountablePerson.Type = this.model.PrincipalAccountableType;
 

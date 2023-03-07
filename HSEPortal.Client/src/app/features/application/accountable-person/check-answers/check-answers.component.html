@@ -5,8 +5,7 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <span class="govuk-caption-xl">Accountable persons</span>
-        <govuk-fieldset title="Check your answers" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8'>
+        <govuk-fieldset title="Check your accountable persons answers for {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8'>
 
           <ng-container *ngIf="aps.length == 1">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Principal accountable person</legend>

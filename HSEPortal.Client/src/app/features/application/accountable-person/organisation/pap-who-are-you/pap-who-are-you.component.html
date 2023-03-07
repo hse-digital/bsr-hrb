@@ -9,11 +9,13 @@
           <govuk-error-link anchorId="who_are_you" [message]="getErrorMessage()" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-l">Principal accountable person</span>
-        <govuk-fieldset title="Who are you?" [isPageHeading]=true id="who_are_you" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
+        <govuk-fieldset title="Are you the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}?" [isPageHeading]=true id="who_are_you" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
                         [errorText]="getErrorDescription(roleHasErrors, getErrorMessage())">
+
+            <govuk-body>The named contact is the person we will talk to about building safety issues relating to on behalf of {{applicationService.currentAccountablePerson.OrganisationName}}.</govuk-body>
+
             <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.Role">
-                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" hint="This is the person who will deal with building safety issues on behalf of"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}"/>
                 <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-registering_for" value="registering_for" label="I am registering for the named contact" class="govuk-radio-no-margin-bottom"/>
               </govuk-radio-group>
         </govuk-fieldset> 

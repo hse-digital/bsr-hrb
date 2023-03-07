@@ -28,7 +28,7 @@ export class MoreInformationComponent extends BaseComponent implements IHasNextP
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative('name-all-blocks', activatedRoute);
+    return navigationService.navigateRelative(`../accountable-person`, activatedRoute);
   }
 
   getInScopeSectionNames() {

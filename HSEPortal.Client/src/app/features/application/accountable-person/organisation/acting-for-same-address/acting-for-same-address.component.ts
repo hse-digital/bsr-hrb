@@ -24,8 +24,8 @@ export class ActingForSameAddressComponent extends BaseComponent implements IHas
     }
 
     getOrganisationAddress() {
-        var address = this.applicationService.currentAccountablePerson.Address;
-        var addressLine = this.getAddressLineOne(address!);
+        var address = this.applicationService.currentAccountablePerson.PapAddress ?? this.applicationService.currentAccountablePerson.Address;
+        var addressLine = this.getAddressLineOne(address);
 
         if (address?.AddressLineTwo) {
             addressLine = `${addressLine}, ${address.AddressLineTwo}`;
@@ -34,8 +34,10 @@ export class ActingForSameAddressComponent extends BaseComponent implements IHas
         return `${addressLine}, ${address?.Postcode}`;
     }
 
-    getAddressLineOne(address: AddressModel) {
-      if (address.IsManual)
+    getAddressLineOne(address?: AddressModel) {
+      if (!address) return undefined;
+
+      if (address?.IsManual)
         return address.Address;
   
       var address2 = address.Address?.replace(address.Town!, '')!;

@@ -29,5 +29,9 @@ export class OrganisationTypeComponent extends BaseComponent implements IHasNext
   getPrincipalOrOther() {
     return this.applicationService._currentAccountablePersonIndex > 0 ? 'Other' : 'Principal';
   }
+
+  title() {
+    return `${this.applicationService._currentAccountablePersonIndex == 0 ? 'Principal' : 'Other'} accountable person for ${this.applicationService.model.BuildingName}`;
+  }
 }
    

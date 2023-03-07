@@ -9,7 +9,6 @@
                     <govuk-error-link anchorId="job_role" message="Select your job role" />
                 </govuk-error-summary>
 
-                <span class="govuk-caption-l">Principal accountable person</span>
                 <govuk-fieldset title="What is your job role at {{applicationService.currentAccountablePerson.OrganisationName}}?" [isPageHeading]=true id="who_are_you" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4' [errorText]="getErrorDescription(namedRoleHasErrors, 'Select your job role')">
                     <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.LeadJobRole" id="job_role">
                         <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-director" value="director" label="Director"/>

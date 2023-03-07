@@ -3,8 +3,7 @@
 <div class="govuk-main-wrapper">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <span class="govuk-caption-xl">The building</span>
-      <govuk-fieldset title="Check your answers" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+      <govuk-fieldset title="Check your building summary answers for {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
 
         <govuk-summary-list classes="govuk-summary-list--no-border answers-heading-border {{applicationService.model.NumberOfSections == 'one' ? 'no-margin-bottom' : ''}}">
           <govuk-summary-list-row (onClick)="navigateToMultipleSections()" key="Is the building made up of multiple independent sections?" [showAction]=true>
@@ -18,7 +17,7 @@
           <div *ngFor="let section of sections; let i = index" class="section-wrapper">
             <div class="section-header">{{ getSectionName(i, undefined) }}</div>
             <div class="section-content">
-              <section-answers [section]="section" [sectionIndex]="i" />
+              <section-answers [section]="section" [sectionIndex]="i" [hasMoreSections]="i < sections.length" />
             </div>
           </div>
         </div>

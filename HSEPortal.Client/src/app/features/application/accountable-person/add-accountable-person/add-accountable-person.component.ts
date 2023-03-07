@@ -52,8 +52,11 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
 
   principalName() {
     var pap = this.applicationService.model.AccountablePersons[0];
+    if (pap.Type == 'organisation') return pap.OrganisationName;
+
     if (pap.IsPrincipal == 'yes') {
-      return `${this.applicationService.model.ContactFirstName} ${this.applicationService.model.ContactLastName}`;
+      if (pap.Type == 'individual')
+        return `${this.applicationService.model.ContactFirstName} ${this.applicationService.model.ContactLastName}`;
     }
 
     return `${pap.FirstName} ${pap.LastName}`;

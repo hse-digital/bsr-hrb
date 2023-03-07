@@ -10,7 +10,7 @@
           <govuk-error-link *ngIf="organisationNameHasErrors" anchorId="input-organisation-name" message="Enter the organisation name" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Other accountable person for {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application"
+        <govuk-fieldset [title]="title()" [isPageHeading]=true id="application"
                         titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-6'>
 
           <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
