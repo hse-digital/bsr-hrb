@@ -15,7 +15,7 @@ export class PaymentService {
     return await firstValueFrom(this.httpClient.get<PaymentModel>(`api/GetPayment/${paymetId}`));
   }
 
-  async InitialisePayment(): Promise<void> {
+  async InitialisePayment(): Promise<PaymentModel> {
     var address = this.applicationService.model.AccountablePersons[0].PapAddress ?? this.applicationService.model.AccountablePersons[0].Address;
     var body = {
       Reference: this.applicationService.model.id,
@@ -35,5 +35,7 @@ export class PaymentService {
     
     this.applicationService.model.Payment = response;
     await this.applicationService.updateApplication();
+
+    return response;
   }
 }

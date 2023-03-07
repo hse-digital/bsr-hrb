@@ -25,9 +25,9 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
   override async saveAndContinue() {
     this.loading = true;
 
-    await this.paymentService.InitialisePayment();
+    var paymentResponse = await this.paymentService.InitialisePayment();
     if (typeof window !== 'undefined') {
-      window.location.href = this.applicationService.model.Payment!.PaymentLink;
+      window.location.href = paymentResponse.PaymentLink;
     }
   }
 
