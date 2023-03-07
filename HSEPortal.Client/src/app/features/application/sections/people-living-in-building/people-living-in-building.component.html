@@ -6,10 +6,10 @@
             <div class="govuk-form-group">
 
                 <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
-                    <govuk-error-link anchorId="fieldset-peopleLivingInBuilding" message="Select if people are living in the block or not" />
+                    <govuk-error-link anchorId="fieldset-peopleLivingInBuilding" [message]="getErrorMessage()" />
                 </govuk-error-summary>
 
-                <govuk-fieldset [errorText]="getErrorDescription(peopleLivingHasErrors, 'Select if people are living in the block or not')" 
+                <govuk-fieldset [errorText]="getErrorDescription(peopleLivingHasErrors, getErrorMessage())" 
                                 title="Is anyone living in {{sectionBuildingName()}}?" 
                                 [isPageHeading]=true id="application" 
                                 titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-6'>

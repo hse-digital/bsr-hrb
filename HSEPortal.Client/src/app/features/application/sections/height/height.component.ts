@@ -18,20 +18,18 @@ export class SectionHeightComponent extends BaseComponent implements IHasNextPag
 
   heightHasErrors = false;
 
-  errorSummaryMessage: string = 'You must enter the height of this block from ground level to the top floor in metres';
-  errorMessage: string = 'Enter the block height in metres';
+  errorMessage: string = 'Enter the height in metres';
 
   canContinue(): boolean {
     this.heightHasErrors = true;
     let height = this.applicationService.currentSection.Height;
 
     if (!height || !Number(height)) {
-      this.errorMessage = 'Enter the block height in metres';
-      this.errorSummaryMessage = 'You must enter the height of this block from ground level to the top floor in metres';
+      this.errorMessage = 'Enter the height in metres';
     } else if (height >= 1000) {
-      this.errorSummaryMessage = this.errorMessage = 'Block height in metres must be 999.9 or less';
+      this.errorMessage = this.errorMessage = 'Height in metres must be 999.9 or less';
     } else if (height < 3) {
-      this.errorSummaryMessage = this.errorMessage = 'Block height in metres must be more than 2';
+      this.errorMessage = this.errorMessage = 'Height in metres must be more than 2';
     } else {
       this.heightHasErrors = false;
     }

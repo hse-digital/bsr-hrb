@@ -8,7 +8,7 @@
                     <govuk-error-link anchorId="fieldset-number-of-sections" message="Select one of the options below" />
                 </govuk-error-summary>
 
-                <govuk-fieldset title="When was originally {{sectionBuildingName()}} built?" [isPageHeading]=true id="number-of-sections" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4' hintText="If you're not sure, tell us your best estimate.">
+                <govuk-fieldset title="When was {{sectionBuildingName()}} originally built?" [isPageHeading]=true id="number-of-sections" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4' hintText="If you're not sure, tell us your best estimate.">
                     <govuk-radio-group [errorText]="getErrorDescription(yearRangeHasErrors, 'Select one of the options below')" [(model)]="applicationService.currentSection.YearOfCompletionRange">
                         <govuk-radio [model]="applicationService.currentSection.YearOfCompletionRange" name="application-group" id="before-1900" value="Before-1900" label="Before 1900"/>
                         <govuk-radio [model]="applicationService.currentSection.YearOfCompletionRange" name="application-group" id="1901-to-1955" value="1901-to-1955" label="1901 to 1955"/>

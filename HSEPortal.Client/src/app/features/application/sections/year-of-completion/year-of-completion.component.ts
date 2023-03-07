@@ -10,8 +10,10 @@ import { NavigationService } from "src/app/services/navigation.service";
 })
 export class SectionYearOfCompletionComponent extends BaseComponent implements IHasNextPage {
     static route: string = 'year-of-completion';
+
     yearOfCompletionHasErrors = false;
-    errorMessage = 'Select one of the options below';
+    exactYearHasErrors = false;
+    errorMessage = `Select when ${this.sectionBuildingName()} was originally built`;
 
     constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
         super(router, applicationService, navigationService, activatedRoute);
@@ -21,25 +23,32 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
         let yearOfCompletionOption = this.applicationService.currentSection.YearOfCompletionOption;
         let yearOfCompletion = this.applicationService.currentSection.YearOfCompletion;
 
+        this.exactYearHasErrors = false;
+        this.yearOfCompletionHasErrors = false;
+
         if (!yearOfCompletionOption) {
             this.yearOfCompletionHasErrors = true;
         } else if (yearOfCompletionOption == 'year-exact') {
             if (!yearOfCompletion) {
                 this.errorMessage = 'Exact year cannot be blank';
+                this.exactYearHasErrors = true;
                 this.yearOfCompletionHasErrors = true;
             } else if (Number(yearOfCompletion) > new Date().getFullYear()) {
                 this.errorMessage = 'Exact year must be this year or in the past';
+                this.exactYearHasErrors = true;
                 this.yearOfCompletionHasErrors = true;
             } else if (yearOfCompletion.length != 4) {
                 this.errorMessage = 'Exact year must be a real year';
+                this.exactYearHasErrors = true;
                 this.yearOfCompletionHasErrors = true;
             } else if (!Number(yearOfCompletion)) {
                 this.errorMessage = 'Exact year must be a number';
+                this.exactYearHasErrors = true;
                 this.yearOfCompletionHasErrors = true;
             }
         }
 
-        return !this.yearOfCompletionHasErrors;
+        return !this.yearOfCompletionHasErrors && !this.exactYearHasErrors;
     }
 
     navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
@@ -58,7 +67,7 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
     }
 
     sectionBuildingName() {
-      return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-        this.applicationService.currentSection.Name;
+        return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+            this.applicationService.currentSection.Name;
     }
 }

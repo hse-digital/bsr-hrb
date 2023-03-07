@@ -19,20 +19,18 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
 
   residentialUnitsHasErrors = false;
 
-  errorSummaryMessage: string = 'You must enter the number of residential units in this block';
-  errorMessage: string = 'Enter the number of residential units in this block';
+  errorMessage: string = 'Enter the number of residential units';
 
   canContinue(): boolean {
     this.residentialUnitsHasErrors = true;
     let residentialUnits = this.applicationService.currentSection.ResidentialUnits;
 
     if (!residentialUnits) {
-      this.errorMessage = 'Enter the number of residential units in this block';
-      this.errorSummaryMessage = 'You must enter the number of residential units in this block';
+      this.errorMessage = 'Enter the number of residential units';
     } else if (!Number.isInteger(Number(residentialUnits)) || Number(residentialUnits) % 1 != 0 || Number(residentialUnits) < 0) {
-      this.errorSummaryMessage = this.errorMessage = 'Number of residential units must be a whole number';
+      this.errorMessage = this.errorMessage = 'Number of residential units must be a whole number';
     } else if (residentialUnits >= 10000) {
-      this.errorSummaryMessage = this.errorMessage = 'Number of residential units must be 9999 or less';
+      this.errorMessage = this.errorMessage = 'Number of residential units must be 9999 or less';
     } else {
       this.residentialUnitsHasErrors = false;
     }

@@ -12,9 +12,9 @@
 
                     <govuk-body>This is the year when it was originally ready for people to live in it.</govuk-body>
 
-                    <govuk-radio-group (onRadioSelected)="radioChange()" [errorText]="getErrorDescription(yearOfCompletionHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletionOption">
+                    <govuk-radio-group (onRadioSelected)="radioChange()" [errorText]="getErrorDescription(yearOfCompletionHasErrors && !exactYearHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletionOption">
                         <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-exact" value="year-exact" label="I know the exact year">
-                            <govuk-input [(model)]="applicationService.currentSection.YearOfCompletion" class="govuk-input--width-4" labelClass="govuk-label--s" label="Exact Year" hint="For example '1983'." />
+                            <govuk-input [errorText]="getErrorDescription(exactYearHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletion" class="govuk-input--width-4" labelClass="govuk-label--s" label="Exact Year" hint="For example '1983'." />
                         </govuk-radio>
                         <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-not-exact" value="year-not-exact" label="I do not know the exact year" hint="Select this option if you know a general range" />
                         <div class="govuk-radios__divider">or</div>
