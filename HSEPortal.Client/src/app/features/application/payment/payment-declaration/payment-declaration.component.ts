@@ -34,8 +34,4 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
   canContinue(): boolean {
     return true;
   }
-
-  saveAndComeBackLater() {
-
-  }
 }

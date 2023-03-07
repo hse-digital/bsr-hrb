@@ -12,6 +12,7 @@ import { NotFoundAddressComponent } from "./address/not-found-address.component"
 import { SelectAddressComponent } from "./address/select-address.component";
 import { TooManyAddressComponent } from "./address/too-many-address.component";
 import { AddressDescriptionComponent } from "./address-description.component";
+import { SaveAndComeBackLaterComponent } from "./save-and-come-back.component";
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { AddressDescriptionComponent } from "./address-description.component";
     NotFoundAddressComponent,
     TooManyAddressComponent,
     SelectAddressComponent,
-    AddressDescriptionComponent
+    AddressDescriptionComponent,
+    SaveAndComeBackLaterComponent
   ],
   imports: [
     HseAngularModule,
@@ -31,10 +33,11 @@ import { AddressDescriptionComponent } from "./address-description.component";
   ],
   exports: [
     AddressComponent,
-    AddressDescriptionComponent
+    AddressDescriptionComponent,
+    SaveAndComeBackLaterComponent
   ],
   providers: [HttpClient, AddressService]
 })
-export class AddressModule {
+export class ComponentsModule {
 
 }

@@ -6,6 +6,7 @@ import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { RouterModule } from "@angular/router";
 import { PaymentConfirmationComponent } from './payment-confirmation/payment-confirmation.component';
 import { PaymentDeclarationComponent } from './payment-declaration/payment-declaration.component';
+import { ComponentsModule } from "src/app/components/components.module";
 
 const routes = new HseRoutes([
   HseRoute.unsafe(PaymentDeclarationComponent.route, PaymentDeclarationComponent),
@@ -21,6 +22,7 @@ const routes = new HseRoutes([
     HseAngularModule,
     CommonModule,
     HttpClientModule,
+    ComponentsModule
   ],
   providers: [HttpClient, ...routes.getProviders()]
 })

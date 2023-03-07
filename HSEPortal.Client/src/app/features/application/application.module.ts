@@ -13,6 +13,7 @@ import { NumberOfSectionsComponment } from "./number-of-sections/number-of-secti
 import { BuildingOutOfScopeComponent } from "./out-of-scope/out-of-scope.component";
 import { ContinueAnywayComponent } from "./out-of-scope/continue-anyway.component";
 import { PaymentModule } from "./payment/payment.module";
+import { ComponentsModule } from "src/app/components/components.module";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent),
@@ -30,11 +31,12 @@ const routes = new HseRoutes([
     ApplicationCompletedComponent,
     NumberOfSectionsComponment,
     BuildingOutOfScopeComponent,
-    ContinueAnywayComponent
+    ContinueAnywayComponent,
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
     HseAngularModule,
+    ComponentsModule,
     CommonModule,
     HttpClientModule
   ],

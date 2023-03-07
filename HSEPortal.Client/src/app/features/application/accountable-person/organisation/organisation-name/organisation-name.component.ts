@@ -34,10 +34,6 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
     return navigationService.navigateRelative(route, activatedRoute);
   }
 
-  saveAndComeBackLater() {
-
-  }
-
   companies: string[] = [];
   async searchCompanies(company: string) {
     var response = await this.companiesService.SearchCompany(company);

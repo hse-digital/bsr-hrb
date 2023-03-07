@@ -3,7 +3,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
-import { AddressModule } from "src/app/components/address.module";
+import { ComponentsModule } from "src/app/components/components.module";
 import { PipesModule } from "src/app/pipes/pipes.module";
 import { CaptionService } from "src/app/services/caption.service";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
@@ -69,7 +69,7 @@ const routes = new HseRoutes([
         CommonModule,
         HttpClientModule,
         PipesModule,
-        AddressModule
+        ComponentsModule
     ],
     providers: [
         CaptionService,

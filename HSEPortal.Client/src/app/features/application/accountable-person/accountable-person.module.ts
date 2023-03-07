@@ -14,7 +14,7 @@ import { PapWhoAreYouComponent } from 'src/app/features/application/accountable-
 import { AccountablePersonCheckAnswersComponent } from 'src/app/features/application/accountable-person/check-answers/check-answers.component';
 import { OrganisationAddressComponent } from 'src/app/features/application/accountable-person/organisation/organisation-address/organisation-address.component';
 import { PrincipleAccountableSelection } from "./principal/principal.component";
-import { AddressModule } from "../../../components/address.module";
+import { ComponentsModule } from "../../../components/components.module";
 import { ApDetailsComponent } from "./ap-details/ap-details.component";
 import { ApAddressComponent } from "./ap-address/ap-address.component";
 import { PapNamedRoleComponent } from "./organisation/pap-named-role/pap-named-role.component";
@@ -120,7 +120,7 @@ const routes = new HseRoutes([
     HseAngularModule,
     CommonModule,
     HttpClientModule,
-    AddressModule,
+    ComponentsModule,
     FormsModule
   ]
 })
