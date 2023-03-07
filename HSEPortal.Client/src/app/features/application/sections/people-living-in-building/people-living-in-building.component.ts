@@ -36,4 +36,9 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(`${SectionYearOfCompletionComponent.route}`, activatedRoute);
   }
+
+  sectionBuildingName() {
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+      this.applicationService.currentSection.Name;
+  }
 }

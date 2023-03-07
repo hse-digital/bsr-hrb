@@ -11,6 +11,7 @@ export class TooManyAddressComponent {
   @Input() addressName!: string;
   @Output() onSearchAgain = new EventEmitter();
   @Output() onEnterManualAddress = new EventEmitter();
+  @Input() selfAddress = false;
 
   constructor(public applicationService: ApplicationService) {
   }

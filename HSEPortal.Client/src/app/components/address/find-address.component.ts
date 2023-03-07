@@ -11,6 +11,7 @@ export class FindAddressComponent {
   @Input() searchMode: AddressSearchMode = AddressSearchMode.Building;
   @Input() searchModel!: { postcode?: string, addressLine1?: string };
   @Input() addressName!: string;
+  @Input() selfAddress = false;
   @Output() public onSearchPerformed = new EventEmitter<AddressResponseModel>();
 
   postcodeHasErrors: boolean = false;
@@ -61,4 +62,15 @@ export class FindAddressComponent {
     }
   }
 
+  addressTypeDescription() {
+    if (this.searchMode == AddressSearchMode.Building) {
+      return 'This address must be in England.';
+    }
+
+    return 'This address must be in England or Wales.';
+  }
+
+  getTitle() {
+    return this.selfAddress ? 'Find your address' : `Find the address of ${this.addressName}`;
+  }
 }

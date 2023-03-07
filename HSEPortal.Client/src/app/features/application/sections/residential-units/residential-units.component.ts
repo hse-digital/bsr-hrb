@@ -57,4 +57,9 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
 
     return navigationService.navigateRelative(route, activatedRoute);
   }
+
+  sectionBuildingName() {
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+      this.applicationService.currentSection.Name;
+  }
 }

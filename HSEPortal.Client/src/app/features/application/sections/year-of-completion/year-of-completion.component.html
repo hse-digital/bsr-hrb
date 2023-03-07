@@ -8,14 +8,17 @@
                     <govuk-error-link anchorId="fieldset-number-of-sections" [message]="errorMessage" />
                 </govuk-error-summary>
 
-                <govuk-fieldset title="Do you know what year the block was built?" [isPageHeading]=true id="number-of-sections" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'>
+                <govuk-fieldset title="When was originally {{sectionBuildingName()}} built?" [isPageHeading]=true id="number-of-sections" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+
+                    <govuk-body>This is the year when it was originally ready for people to live in it.</govuk-body>
+
                     <govuk-radio-group (onRadioSelected)="radioChange()" [errorText]="getErrorDescription(yearOfCompletionHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletionOption">
-                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-exact" value="year-exact" label="Yes, I know the exact year">
+                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-exact" value="year-exact" label="I know the exact year">
                             <govuk-input [(model)]="applicationService.currentSection.YearOfCompletion" class="govuk-input--width-4" labelClass="govuk-label--s" label="Exact Year" hint="For example '1983'." />
                         </govuk-radio>
-                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-not-exact" value="year-not-exact" label="No, I don't know the exact year" hint="Select this option if you know a general range" />
+                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-not-exact" value="year-not-exact" label="I do not know the exact year" hint="Select this option if you know a general range" />
                         <div class="govuk-radios__divider">or</div>
-                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="not-completed" value="not-completed" label="The block has not yet been completed" />
+                        <govuk-radio [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="not-completed" value="not-completed" label="Not yet built" />
                     </govuk-radio-group>
                 </govuk-fieldset>
             </div>

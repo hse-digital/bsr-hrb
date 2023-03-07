@@ -8,13 +8,13 @@
           <govuk-error-link anchorId="fieldset-number-of-sections" message="Select how many blocks are in this building" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="How many blocks are in this building?"
+        <govuk-fieldset title="Is made up of multiple independent sections?"
                         [isPageHeading]=true id="number-of-sections" titleClass='govuk-fieldset__legend--l'
                         class='govuk-!-margin-bottom-4'>
           <govuk-radio-group (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(numberOfSectionsHasErrors, 'Select how many blocks are in this building')"
                              [(model)]="applicationService.model.NumberOfSections">
-            <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-yes" value="one" label="One" />
-            <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-no" value="two_or_more" label="Two or more" />
+            <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-yes" value="one" label="Single independent section" hint="All units in the building can be accessed from the same main entrance without having to go though a party wall, walkway, shared lobby or basement." />
+            <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-no" value="two_or_more" label="Multiple independent sections" hint="Some of the units in the building have a different main entrance, or are separated from others by a party wall, walkway, shared lobby or basement." />
           </govuk-radio-group>
         </govuk-fieldset>
       </div>

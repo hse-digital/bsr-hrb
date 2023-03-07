@@ -54,7 +54,7 @@ export class SectionAddressComponent implements OnInit {
         if (this.applicationService.model.NumberOfSections == "one")
             return this.applicationService.model.BuildingName!;
 
-        return this.applicationService.currentSection.Name ?? `${SectionHelper.getSectionCardinalName(this.applicationService._currentSectionIndex).toLowerCase()} section`;
+        return this.applicationService.currentSection.Name!;
     }
 
 }

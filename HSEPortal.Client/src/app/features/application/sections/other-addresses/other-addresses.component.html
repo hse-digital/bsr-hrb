@@ -2,13 +2,16 @@
 <div class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-caption-xl">First block in the building</span>
             <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
                 <govuk-error-link anchorId="fieldset-number-of-sections" message="Select one of the options below" />
             </govuk-error-summary>
 
-            <govuk-fieldset title="Does the block have another address?" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl' class='govuk-!-margin-bottom-4' hintText="Blocks may have more than one address or postcode. For example, the block might have entrances on other streets.">
-                <govuk-radio-group (modelChange)="updateReturnUrl()" class="inline-radios" [errorText]="getErrorDescription(hasMoreAddressesError, 'Select one of the options below')" [(model)]="hasMoreAddresses">
+            <govuk-fieldset title="Does {{sectionBuildingName()}} have another address?" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+
+                <govuk-body>It may have more than one address and postcode.</govuk-body>
+                <govuk-body>Do not tell us the address for each residential unit within it.</govuk-body>
+
+                <govuk-radio-group (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(hasMoreAddressesError, 'Select one of the options below')" [(model)]="hasMoreAddresses">
                     <govuk-radio [model]="hasMoreAddresses" name="application-group" id="application-yes" value="yes" label="Yes" />
                     <govuk-radio [model]="hasMoreAddresses" name="application-group" id="application-no" value="no" label="No" />
                 </govuk-radio-group>

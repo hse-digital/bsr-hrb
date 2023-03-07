@@ -15,7 +15,7 @@ export class OrganisationAddressComponent {
   searchMode = AddressSearchMode.Building;
 
   address?: AddressModel
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+  constructor(public applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
   }
 
   private returnUrl?: string;

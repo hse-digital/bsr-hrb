@@ -53,4 +53,9 @@ export class SectionFloorsAboveComponent extends BaseComponent implements IHasNe
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative('height', activatedRoute);
   }
+
+  sectionBuildingName() {
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+      this.applicationService.currentSection.Name;
+  }
 }

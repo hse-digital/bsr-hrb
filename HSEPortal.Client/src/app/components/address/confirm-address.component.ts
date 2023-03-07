@@ -12,6 +12,7 @@ export class ConfirmAddressComponent {
 
   @Input() address!: AddressModel;
   @Input() addressName?: string;
+  @Input() selfAddress = false;
   @Output() onAddressConfirmed = new EventEmitter<boolean | undefined>();
   @Output() onSearchAgain = new EventEmitter();
   @Output() onEnterManualAddress = new EventEmitter();
@@ -34,5 +35,9 @@ export class ConfirmAddressComponent {
       return this.applicationService.model.BuildingName;
 
     return this.applicationService.currentSection.Name ?? SectionHelper.getSectionCardinalName(this.applicationService._currentSectionIndex);
+  }
+
+  getTitle() {
+    return this.selfAddress ? 'Confirm your address' : `Confirm the address of ${this.addressName}`;
   }
 }

@@ -33,18 +33,16 @@ export class ApAddressComponent implements OnInit {
     }
 
     getApName() {
-        if (this.addressName) return this.addressName;
-
-        if (this.applicationService._currentAccountablePersonIndex == 0) {
-            return "Your address";
-        }
-
         var currentAccountablePerson = this.applicationService.currentAccountablePerson;
         if (currentAccountablePerson.Type == 'individual') {
-            return `Address of ${currentAccountablePerson.FirstName} ${currentAccountablePerson.LastName}`;
+            return `${currentAccountablePerson.FirstName} ${currentAccountablePerson.LastName}`;
         }
 
-        return `Address of ${currentAccountablePerson.OrganisationName}`;
+        return currentAccountablePerson.OrganisationName!;
+    }
+
+    isSelfAddress() {
+        return !this.pap && this.applicationService._currentAccountablePersonIndex == 0;
     }
 
     updateAddress(address: AddressModel) {

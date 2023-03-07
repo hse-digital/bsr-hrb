@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application.service';
 import { AddressModel } from 'src/app/services/address.service';
+import { AddressSearchMode } from './address.component';
 
 @Component({
   selector: 'manual-address',
@@ -8,9 +9,11 @@ import { AddressModel } from 'src/app/services/address.service';
 })
 export class ManualAddressComponent {
 
+  @Input() searchMode: AddressSearchMode = AddressSearchMode.Building;
   @Output() onSearchAgain = new EventEmitter();
   @Output() onAddressEntered = new EventEmitter<AddressModel>();
   @Input() addressName?: string;
+  @Input() selfAddress = false;
 
   hasErrors = false;
   errors = {
@@ -57,4 +60,15 @@ export class ManualAddressComponent {
     return this.hasErrors && showError ? errorMessage : undefined;
   }
 
+  addressTypeDescription() {
+    if (this.searchMode == AddressSearchMode.Building) {
+      return 'This address must be in England.';
+    }
+
+    return 'This address must be in England or Wales.';
+  }
+
+  getTitle() {
+    return this.selfAddress ? 'Enter you address manually' : `Enter address manually for ${this.addressName}`;
+  }
 }

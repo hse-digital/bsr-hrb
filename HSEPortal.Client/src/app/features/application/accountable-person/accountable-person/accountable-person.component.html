@@ -10,16 +10,14 @@
                             message="Select if the principal accountable person is an organisation or an individual" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-l">Principal accountable person</span>
-        <govuk-fieldset title="Is the principal accountable person an organisation or an individual?" [isPageHeading]=true id="application"
-                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-3'>
+        <govuk-fieldset title="Is the principal accountable person for {{applicationService.model.BuildingName}} an organisation or an individual?" [isPageHeading]=true id="application"
+            titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-3'>
 
-          <govuk-body>If we need to talk to someone about building safety issues for , we will contact the principal accountable person.</govuk-body>
-
-          <govuk-body>If they are an organisation, we will ask you to tell us what type of organisation they are. We will also ask you for the name and contact details of someone in the organisation we can contact.</govuk-body>
-
-          <govuk-body>If the principal accountable person is an individual, we will always contact that individual.</govuk-body>
-
+          <govuk-body>The principal accountable person is the individual or organisation that owns or is legally obliged to repair the structure and exterior of the building.</govuk-body>
+          <govuk-body>There may be other accountable persons that own or are legally obliged to repair other parts of the building. You can tell us about these later.</govuk-body>
+          <govuk-body>If the principal accountable person is an organisation, individuals within that organisation are not accountable persons, but we will ask you for the name and contact details of someone in the organisation we can contact.</govuk-body>
+          <govuk-body>If the principal accountable person is an individual, we will contact that individual.</govuk-body>
+                
           <govuk-radio-group title="The principal accountable person is" fieldsetClass="govuk-fieldset__legend--m"
                              [(model)]="applicationService.model.PrincipalAccountableType" id="radios-accountable-person"
                              [errorText]="getErrorDescription(hasErrors, 'Select if the principal accountable person is an organisation or an individual')">

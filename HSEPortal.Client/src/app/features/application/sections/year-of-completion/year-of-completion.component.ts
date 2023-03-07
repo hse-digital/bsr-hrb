@@ -56,4 +56,9 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
             this.applicationService.currentSection.YearOfCompletion = undefined;
         }
     }
+
+    sectionBuildingName() {
+      return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+        this.applicationService.currentSection.Name;
+    }
 }

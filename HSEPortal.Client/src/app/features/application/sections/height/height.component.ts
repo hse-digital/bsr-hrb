@@ -50,4 +50,9 @@ export class SectionHeightComponent extends BaseComponent implements IHasNextPag
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative('residential-units', activatedRoute);
   }
+
+  sectionBuildingName() {
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+      this.applicationService.currentSection.Name;
+  }
 }

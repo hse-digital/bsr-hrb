@@ -16,7 +16,6 @@ export class OrganisationAnswersComponent {
     @Input() hasMoreAp = false;
 
     navigateTo(url: string, query?: string) {
-        console.log(`accountable-person-${this.apIndex + 1}/${url}`);
         this.navigationService.navigateRelative(`accountable-person-${this.apIndex + 1}/${url}`, this.activatedRoute, {
             return: 'check-answers'
         });

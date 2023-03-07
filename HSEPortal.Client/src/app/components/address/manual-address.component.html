@@ -7,11 +7,11 @@
     <govuk-error-link *ngIf="errors.postcode.hasErrors" anchorId="input-postcode" message="{{errors.postcode.errorText}}" />
   </govuk-error-summary>
 
-  <span class="govuk-caption-l">{{addressName}}</span>
-  <govuk-fieldset title="Enter address manually"
-                  [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-3'
+  <govuk-fieldset [title]="getTitle()"
+                  [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'
                   class='govuk-!-margin-bottom-3'>
 
+    <govuk-body>{{addressTypeDescription()}}</govuk-body>
     <govuk-input id="address-line-one" label="Address line 1"
                  [(model)]="model.Address"
                  [errorText]="getErrorDescription(errors.lineOneHasErrors, 'Enter the first line of the address')"
@@ -30,7 +30,6 @@
                  [(model)]="model.Postcode"
                  [errorText]="getErrorDescription(errors.postcode.hasErrors, errors.postcode.errorText)"
                  class="govuk-!-margin-bottom-1 govuk-input--width-10" />
-
   </govuk-fieldset>
 </div>
 
