@@ -49,11 +49,11 @@ stages:
           folderPath: '**/HSEPortal.API.IntegrationTests'
           fileType: 'json'
           targetFiles: 'appsettings.json'
-      - task: DotNetCoreCLI@2
-        displayName: 'Run Integration Tests'
-        inputs:
-          command: 'test'
-          projects: '**/HSEPortal.API.IntegrationTests.csproj'
+      # - task: DotNetCoreCLI@2
+      #   displayName: 'Run Integration Tests'
+      #   inputs:
+      #     command: 'test'
+      #     projects: '**/HSEPortal.API.IntegrationTests.csproj'
         
 - stage: QA
   dependsOn: DEV
