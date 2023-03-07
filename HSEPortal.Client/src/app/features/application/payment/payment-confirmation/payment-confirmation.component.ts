@@ -47,4 +47,9 @@ export class PaymentConfirmationComponent extends BaseComponent implements IHasN
     await this.navigationService.navigate('');
   }
 
+  notPap() {
+    var pap = this.applicationService.model.AccountablePersons[0];
+    return pap.IsPrincipal == 'no' && pap.Type == 'individual';
+  }
+
 }

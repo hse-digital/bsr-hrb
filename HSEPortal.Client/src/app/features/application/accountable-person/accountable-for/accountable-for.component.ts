@@ -28,26 +28,27 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
             this.applicationService.currentAccountablePerson.SectionsAccountability = [];
         }
 
-        for(let i = 0; i < this.applicationService.model.Sections.length; i++) {
+        for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
+            var section = this.applicationService.model.Sections[i];
             if (!this.applicationService.currentAccountablePerson.SectionsAccountability[i]) {
-                this.applicationService.currentAccountablePerson.SectionsAccountability[i] = [];
+                this.applicationService.currentAccountablePerson.SectionsAccountability[i] = { SectionName: section.Name!, Accountability: [] };
             }
         }
     }
 
     canContinue(): boolean {
-        this.anySelected = true;
-        for(let i = 0; i < this.applicationService.model.Sections.length; i++) {
+        for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
             var sectionAccountability = this.applicationService.currentAccountablePerson.SectionsAccountability![i];
-            this.anySelected = this.anySelected && sectionAccountability.length > 0;
+            if (sectionAccountability.Accountability!.length > 0)
+                return true;
         }
 
-        return this.anySelected;
+        return false;
     }
 
     getTitle() {
-        return this.multi ? 
-            `Which areas of ${this.applicationService.model.BuildingName} is ${this.getApName()} accountable for?` : 
+        return this.multi ?
+            `Which areas of ${this.applicationService.model.BuildingName} is ${this.getApName()} accountable for?` :
             `What is ${this.getApName()} accountable for?`
     }
 
@@ -59,10 +60,10 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
 
     getSectionError(sectionIndex: number) {
         var sectionAccountability = this.applicationService.currentAccountablePerson.SectionsAccountability![sectionIndex];
-        if (!sectionAccountability || sectionAccountability.length == 0) {
+        if (!sectionAccountability || sectionAccountability.Accountability?.length == 0) {
             return this.getErrorDescription(true, this.errorMessage!);
         }
-        
+
         return this.getErrorDescription(false, '');
     }
 

@@ -72,7 +72,9 @@ public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress
     string NamedContactFirstName, string NamedContactLastName, string NamedContactEmail, string NamedContactPhoneNumber,
     string FirstName, string LastName, string Email, string PhoneNumber, string Role, string LeadJobRole, 
     string ActingForSameAddress, BuildingAddress ActingForAddress, string LeadFirstName, string LeadLastName, 
-    string LeadEmail, string LeadPhoneNumber, string[][] SectionsAccountability);
+    string LeadEmail, string LeadPhoneNumber, SectionAccountability[] SectionsAccountability);
+
+public record SectionAccountability(string SectionName, string[] Accountability);
 
 [Flags]
 public enum BuildingApplicationStatus

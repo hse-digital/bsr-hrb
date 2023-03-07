@@ -199,7 +199,12 @@ export class AccountablePersonModel {
   LeadEmail?: string;
   LeadPhoneNumber?: string;
 
-  SectionsAccountability?: string[][];
+  SectionsAccountability?: SectionAccountability[];
+}
+
+export class SectionAccountability {
+  SectionName!: string;
+  Accountability?: string[];
 }
 
 export class PaymentModel {

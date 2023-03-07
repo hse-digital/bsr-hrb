@@ -38,7 +38,7 @@ export class OrganisationAnswersComponent {
     }
 
     whoAreYouDescription() {
-        switch(this.ap.Role) {
+        switch (this.ap.Role) {
             case 'named_contact': return 'I am the named contact';
             case 'registering_for': return 'I am registering for the named contact';
         }
@@ -51,7 +51,7 @@ export class OrganisationAnswersComponent {
     }
 
     organisationTypeDescription() {
-        switch(this.ap.OrganisationType) {
+        switch (this.ap.OrganisationType) {
             case 'commonhold-association': return 'Commonhold association';
             case 'housing-association': return 'Housing association or other company operating under section 27 of the Housing Act 1985';
             case 'local-authority': return 'Local authority';
@@ -63,7 +63,7 @@ export class OrganisationAnswersComponent {
     }
 
     leadJobRoleDescription() {
-        switch(this.ap.LeadJobRole) {
+        switch (this.ap.LeadJobRole) {
             case 'director': return 'Director';
             case 'administrative_worker': return 'Administrative or office worker';
             case 'building_manager': return 'Building or facilities manager';
@@ -73,16 +73,11 @@ export class OrganisationAnswersComponent {
         return 'Other';
     }
 
-    areasOfAccountability() {
-        var values = new Set(this.ap.SectionsAccountability?.reduce((array, current) => {
-            array.push(...current);
-            return array;
-        }, []));
-        
-        return [...values].map(x => this._accountabilityDescription(x)).join(', ');
+    sectionsWithAccountability() {
+        return this.ap.SectionsAccountability?.filter(x => x.Accountability?.length ?? 0 > 0);
     }
 
-    private _accountabilityDescription(value: string) {
+    _accountabilityDescription(value: string) {
         switch (value) {
             case 'external_walls': return 'External walls and roof';
             case 'routes': return 'Routes that residents can walk through';

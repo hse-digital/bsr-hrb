@@ -11,7 +11,7 @@
 
         <govuk-body>We've emailed confirmation of your payment to {{applicationService.model.Payment?.Email}}. If you cannot find the email, check your junk or spam folders. If you did not get the email, <a href="#" class="govuk-link">contact us</a>.</govuk-body>
 
-        <govuk-body>[We have also sent an email to the principal accountable person that outlines their duties at this stage.]</govuk-body>
+        <govuk-body *ngIf="notPap()">We have also sent an email to the principal accountable person that outlines their duties at this stage.</govuk-body>
 
         <govuk-fieldset title="What happens next" [isPageHeading]=false
                         titleClass='govuk-fieldset__legend--m govuk-!-margin-bottom-4'
@@ -26,7 +26,7 @@
           <strong class="govuk-warning-text__text">
             <span class="govuk-warning-text__assistive">Warning</span>
             You must give us structure and safety information for
-            {{applicationService.model.BuildingName ?? '[building-name]'}} by [30 September 2023].
+            {{applicationService.model.BuildingName ?? '[building-name]'}} by 30 September 2023.
           </strong>
         </div>
 

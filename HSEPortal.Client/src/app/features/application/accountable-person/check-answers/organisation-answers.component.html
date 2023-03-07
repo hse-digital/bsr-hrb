@@ -18,7 +18,12 @@
   </ng-container>
 
   <ng-container *ngIf="apIndex > 0">
-    <govuk-summary-list-row *ngIf="apIndex > 0" (onClick)="navigateTo('accountable-for')" key="Areas of accountability" [showAction]=true>{{areasOfAccountability()}}</govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="apIndex > 0" (onClick)="navigateTo('accountable-for')" key="Areas of accountability" [showAction]=true>
+      <ng-container *ngFor="let section of sectionsWithAccountability()">
+        <legend class="govuk-fieldset__legend--s">{{section.SectionName}}</legend>
+        <govuk-body class="govuk-!-margin-0 govuk-!-margin-bottom-3" *ngFor="let acc of section.Accountability">{{_accountabilityDescription(acc)}}</govuk-body>
+      </ng-container>
+    </govuk-summary-list-row>
   </ng-container>
 
   <govuk-summary-list-row *ngIf="notLead()" (onClick)="navigateTo('lead-name')" key="Named contact" [showAction]=true>{{ap.LeadFirstName}} {{ap.LeadLastName}}</govuk-summary-list-row>
@@ -33,6 +38,6 @@
     {{ap.NamedContactEmail}}<br>
     {{ap.NamedContactPhoneNumber}}
   </govuk-summary-list-row>
-  
+
   <govuk-summary-list-row (onClick)="navigateTo('')" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
 </govuk-summary-list>

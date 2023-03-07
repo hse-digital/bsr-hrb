@@ -65,16 +65,11 @@ export class IndividualAnswersComponent {
         return 'Other';
     }
 
-    areasOfAccountability() {
-        var values = new Set(this.ap.SectionsAccountability?.reduce((array, current) => {
-            array.push(...current);
-            return array;
-        }, []));
-        
-        return [...values].map(x => this._accountabilityDescription(x)).join(', ');
+    sectionsWithAccountability() {
+        return this.ap.SectionsAccountability?.filter(x => x.Accountability?.length ?? 0 > 0);
     }
 
-    private _accountabilityDescription(value: string) {
+    _accountabilityDescription(value: string) {
         switch (value) {
             case 'external_walls': return 'External walls and roof';
             case 'routes': return 'Routes that residents can walk through';
