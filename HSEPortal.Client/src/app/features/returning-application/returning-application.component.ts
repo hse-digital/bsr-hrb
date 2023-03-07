@@ -8,7 +8,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 @Component({
   templateUrl: './returning-application.component.html'
 })
-export class ReturningApplicationComponent extends BaseComponent implements IHasNextPage {
+export class ReturningApplicationComponent extends BaseComponent{
   static route: string = "returning-application";
 
   step = "enterdata";
@@ -17,10 +17,7 @@ export class ReturningApplicationComponent extends BaseComponent implements IHas
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative('security-code', activatedRoute);
+    this.updateOnSave = false;
   }
 
   canContinue(): boolean {

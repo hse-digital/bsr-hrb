@@ -6,6 +6,7 @@ import { IHasNextPage } from "./has-next-page.interface";
 export abstract class BaseComponent implements CanActivate {
 
   returnUrl?: string;
+  updateOnSave: boolean = true;
   constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute) {
     this.activatedRoute.queryParams.subscribe(params => {
       this.returnUrl = params['return'];
@@ -22,7 +23,10 @@ export abstract class BaseComponent implements CanActivate {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       await this.onSave();
-      await this.applicationService.updateApplication();
+
+      if (this.updateOnSave)
+        await this.applicationService.updateApplication();
+
       await this.runInheritances();
     }
   }

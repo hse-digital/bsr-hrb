@@ -16,6 +16,7 @@ export class ContactEmailValidationComponent extends BaseComponent {
 
     constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
         super(router, applicationService, navigationService, activatedRoute);
+        this.updateOnSave = false;
     }
 
     canContinue(): boolean {
