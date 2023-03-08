@@ -1,5 +1,5 @@
 <div class="govuk-form-group">
-    <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
         <govuk-error-link *ngIf="errors.securityCode.hasError" anchorId="input-security-code" message="{{errors.securityCode.errorText}}" />
     </govuk-error-summary>
 

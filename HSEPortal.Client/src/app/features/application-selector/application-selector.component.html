@@ -5,7 +5,7 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="showError" title="There is a problem">
+        <govuk-error-summary *ngIf="showError" title="There is a problem" #summaryError>
           <govuk-error-link anchorId="fieldset-application"
                             message="Select if you want to start a new application or continue a saved application" />
         </govuk-error-summary>

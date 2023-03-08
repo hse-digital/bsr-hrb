@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { CaptionService } from "src/app/services/caption.service";
@@ -13,6 +14,8 @@ export class SectionHeightComponent extends BaseComponent implements IHasNextPag
 
   static route: string = 'height';
   override updateOnSave: boolean = true;
+
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);

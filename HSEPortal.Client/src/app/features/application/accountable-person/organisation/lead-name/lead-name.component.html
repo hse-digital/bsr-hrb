@@ -5,7 +5,7 @@ a<govuk-back-link>Back</govuk-back-link>
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link *ngIf="firstNameInError" anchorId="input-first-name" message="Enter their first name" />
           <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter their last name" />
         </govuk-error-summary>

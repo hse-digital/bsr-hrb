@@ -5,7 +5,7 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link *ngIf="errors.lineOneHasErrors" anchorId="input-address-line-one" message="Enter the first line of the address" />
           <govuk-error-link *ngIf="errors.townOrCityHasErrors" anchorId="input-town-or-city" message="Enter a town or city" />
           <govuk-error-link *ngIf="errors.postcode.hasErrors" anchorId="input-postcode" message="{{errors.postcode.errorText}}" />

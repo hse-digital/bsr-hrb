@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
@@ -6,14 +6,17 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { PostcodeValidator } from 'src/app/helpers/validators/postcode-validator';
 import { HttpClient } from '@angular/common/http';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 
 @Component({
   selector: 'hse-organisation-address',
   templateUrl: './organisation-address.component.html'
 })
 export class OrganisationAddressComponent extends BaseComponent implements IHasNextPage {
-
   static route: string = 'organisation-address';
+
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+
 
   errors = {
     lineOneHasErrors: false,

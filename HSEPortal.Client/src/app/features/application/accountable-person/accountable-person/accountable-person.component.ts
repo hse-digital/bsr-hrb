@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { PrincipleAccountableSelection } from '../individual/principal/principal.component';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 
 @Component({
   selector: 'hse-accountable-person',
@@ -12,6 +13,8 @@ import { PrincipleAccountableSelection } from '../individual/principal/principal
 })
 export class AccountablePersonComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = '';
+
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   accountablePersonHasErrors = false;
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {

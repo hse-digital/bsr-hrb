@@ -1,6 +1,6 @@
 <div class="govuk-form-group">
 
-  <govuk-error-summary *ngIf="addressHasErrors" title="There is a problem">
+  <govuk-error-summary *ngIf="addressHasErrors" title="There is a problem" #summaryError>
     <govuk-error-link anchorId="radios-addresses"
                       message="Select an address" />
   </govuk-error-summary>

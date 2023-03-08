@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService } from 'src/app/services/application.service';
@@ -8,12 +8,15 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
 import { SectionCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { SectionNameComponent } from '../name/name.component';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 
 @Component({
   templateUrl: './add-more-sections.component.html'
 })
 export class AddMoreSectionsComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'add-more'
+
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);

@@ -1,5 +1,5 @@
 <div class="govuk-form-group">
-    <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
     <govuk-error-link *ngIf="errors.emailAddress.hasError" anchorId="input-email-address" message="{{errors.emailAddress.errorText}}" />
     <govuk-error-link *ngIf="errors.applicationNumber.hasError" anchorId="input-application-number" message="{{errors.applicationNumber.errorText}}" />
   </govuk-error-summary>
