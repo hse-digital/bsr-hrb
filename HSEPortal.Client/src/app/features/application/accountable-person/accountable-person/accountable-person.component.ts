@@ -30,8 +30,12 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
     return !this.accountablePersonHasErrors;
   }
 
+  override async onSave(): Promise<void> {
+    await this.applicationService.startAccountablePersonEdit();
+  }
+
   async navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let accountablePerson = await this.applicationService.startAccountablePersonEdit();
+    let accountablePerson = `accountable-person-${this.applicationService._currentAccountablePersonIndex + 1}`
     let route = this.applicationService.currentAccountablePerson.Type == 'organisation' ? OrganisationTypeComponent.route : PrincipleAccountableSelection.route;
 
     return navigationService.navigateAppend(`${accountablePerson}/${route}`, activatedRoute);
