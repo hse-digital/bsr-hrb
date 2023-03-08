@@ -10,15 +10,14 @@ export abstract class BaseComponent implements CanActivate {
   summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   returnUrl?: string;
-  constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute) { 
+  updateOnSave: boolean = true;
+  constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute) {
     this.activatedRoute.queryParams.subscribe(params => {
       this.returnUrl = params['return'];
     });
   }
 
   abstract canContinue(): boolean;
-  updateOnSave: boolean = false;
-
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
     return true;
   }
@@ -28,7 +27,10 @@ export abstract class BaseComponent implements CanActivate {
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       await this.onSave();
-      this.applicationService.updateLocalStorage();
+
+      if (this.updateOnSave)
+        await this.applicationService.updateApplication();
+
       await this.runInheritances();
     } else {
       this.summaryError?.first?.focus();
@@ -39,13 +41,9 @@ export abstract class BaseComponent implements CanActivate {
     return this.hasErrors && showError ? errorMessage : undefined;
   }
 
-  async onSave() {}
+  async onSave() { }
 
   private async runInheritances(): Promise<void> {
-    if (this.updateOnSave) {
-      await this.applicationService.updateApplication();
-    }
-
     if (this.returnUrl) {
       let returnUri = this.returnUrl == 'check-answers' ? `../${this.returnUrl}` : this.returnUrl;
       this.navigationService.navigateRelative(returnUri, this.activatedRoute);

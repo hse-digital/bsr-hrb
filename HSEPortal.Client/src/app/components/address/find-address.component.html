@@ -4,19 +4,21 @@
     <govuk-error-link anchorId="input-postcode" message="{{postcodeErrorText}}" />
   </govuk-error-summary>
 
-  <span class="govuk-caption-l">{{ addressName }}</span>
-  <govuk-fieldset title="Find an address"
-                  [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-3'
+  <govuk-fieldset [title]="getTitle()"
+                  [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'
                   class='govuk-!-margin-bottom-3'>
 
+    <govuk-body *ngIf="pap()">This is the address we will use to send official communications or to serve notices.</govuk-body>
+    <govuk-body>{{addressTypeDescription()}}</govuk-body>
     <govuk-input id="postcode" label="Postcode"
+                 [hint]="postcodeHint()" 
                  [(model)]="searchModel.postcode"
                  [errorText]="getErrorDescription(postcodeHasErrors, postcodeErrorText)"
                  class="govuk-!-margin-bottom-5 govuk-input--width-10"
                  (onKeyupEnter)="findAddress()" />
 
     <govuk-input id="address-line-one" label="Address line 1 (optional)"
-                 hint="For example, 'Flat 3A' or '30 St Mary Axe'."
+                 hint="For example, '30 St Mary Axe'."
                  [(model)]="searchModel.addressLine1"
                  class="govuk-!-margin-bottom-5"
                  (onKeyupEnter)="findAddress()" />

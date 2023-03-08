@@ -10,29 +10,20 @@
           <govuk-error-link *ngIf="organisationNameHasErrors" anchorId="input-organisation-name" message="Enter the organisation name" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-xl">Principal accountable person</span>
-        <govuk-fieldset title="What is the name of organisation that is the principal accountable person?" [isPageHeading]=true id="application"
-                        titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'>
+        <govuk-fieldset [title]="title()" [isPageHeading]=true id="application"
+                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-6'>
 
-          <govuk-input id="organisation-name"
-                       [(model)]="applicationService.currentAccountablePerson.OrganisationName"
-                       [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"
-                       (onKeyupEnter)="saveAndContinue()"/>
-
-          <!-- <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
-                                    hint="This is the name of the organisation that is the principal accountable person."
-                                    (onDebounce)="onInputDebounce()"
-                                    [(model)]="organisationName"
-                                    [autocompleteValues]="autocompleteValues"
-                                    [debounceTimer]=1000
-                                    [minimunNumberCharactersForAutocomplete]=2
-                                    [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/> -->
+          <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
+                                    hint="This is the name of the organisation that is an accountable person."
+                                    [model]="applicationService.currentAccountablePerson.OrganisationName"
+                                    [values]="companies" (onDebounce)="searchCompanies($event)" (onSelectedValue)="selectCompanyName($event)"
+                                    [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/>
 
         </govuk-fieldset>
       </div>
 
       <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
-      <govuk-body><a class="govuk-link" (click)="saveAndComeBackLater()" role="link">Save and come back later</a></govuk-body>
+      <save-and-come-back/>
     </div>
   </div>
 </div>

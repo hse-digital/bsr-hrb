@@ -14,30 +14,26 @@ import { GovukErrorSummaryComponent } from "hse-angular";
 })
 export class SectionResidentialUnitsComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'residential-units';
-  override updateOnSave: boolean = true;
+    @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
   residentialUnitsHasErrors = false;
 
-  errorSummaryMessage: string = 'You must enter the number of residential units in this block';
-  errorMessage: string = 'Enter the number of residential units in this block';
+  errorMessage: string = 'Enter the number of residential units';
 
   canContinue(): boolean {
     this.residentialUnitsHasErrors = true;
     let residentialUnits = this.applicationService.currentSection.ResidentialUnits;
 
     if (!residentialUnits) {
-      this.errorMessage = 'Enter the number of residential units in this block';
-      this.errorSummaryMessage = 'You must enter the number of residential units in this block';
+      this.errorMessage = 'Enter the number of residential units';
     } else if (!Number.isInteger(Number(residentialUnits)) || Number(residentialUnits) % 1 != 0 || Number(residentialUnits) < 0) {
-      this.errorSummaryMessage = this.errorMessage = 'Number of residential units must be a whole number';
+      this.errorMessage = this.errorMessage = 'Number of residential units must be a whole number';
     } else if (residentialUnits >= 10000) {
-      this.errorSummaryMessage = this.errorMessage = 'Number of residential units must be 9999 or less';
+      this.errorMessage = this.errorMessage = 'Number of residential units must be 9999 or less';
     } else {
       this.residentialUnitsHasErrors = false;
     }
@@ -61,5 +57,10 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
     }
 
     return navigationService.navigateRelative(route, activatedRoute);
+  }
+
+  sectionBuildingName() {
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+      this.applicationService.currentSection.Name;
   }
 }

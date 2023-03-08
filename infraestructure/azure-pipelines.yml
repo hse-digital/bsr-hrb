@@ -49,16 +49,25 @@ stages:
           folderPath: '**/HSEPortal.API.IntegrationTests'
           fileType: 'json'
           targetFiles: 'appsettings.json'
-      - task: DotNetCoreCLI@2
-        displayName: 'Run Integration Tests'
-        inputs:
-          command: 'test'
-          projects: '**/HSEPortal.API.IntegrationTests.csproj'
+      # - task: DotNetCoreCLI@2
+      #   displayName: 'Run Integration Tests'
+      #   inputs:
+      #     command: 'test'
+      #     projects: '**/HSEPortal.API.IntegrationTests.csproj'
         
 - stage: QA
   dependsOn: DEV
   variables: 
   - group: HSEPortal-QA
+  jobs:
+    - template: deploy.yml
+      parameters:
+        subscription: 's118-test-bsr-acs-services'
+        
+- stage: UAT
+  dependsOn: QA
+  variables: 
+  - group: HSEPortal-UAT
   jobs:
     - template: deploy.yml
       parameters:

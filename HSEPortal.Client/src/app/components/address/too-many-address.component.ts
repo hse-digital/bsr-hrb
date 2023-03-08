@@ -8,8 +8,10 @@ import { ApplicationService } from 'src/app/services/application.service';
 export class TooManyAddressComponent {
 
   @Input() searchModel!: { postcode?: string, addressLine1?: string };
+  @Input() addressName!: string;
   @Output() onSearchAgain = new EventEmitter();
   @Output() onEnterManualAddress = new EventEmitter();
+  @Input() selfAddress = false;
 
   constructor(public applicationService: ApplicationService) {
   }

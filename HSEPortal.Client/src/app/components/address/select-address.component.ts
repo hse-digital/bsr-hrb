@@ -12,8 +12,10 @@ export class SelectAddressComponent {
   addressHasErrors = false;
   selectedAddress?: AddressModel;
 
+  @Input() addressName!: string;
   @Input() addressResponse?: AddressResponseModel;
   @Input() searchModel: { postcode?: string, addressLine1?: string } = {}
+  @Input() selfAddress = false;
 
   @Output() onAddressSelected = new EventEmitter<AddressModel>();
   @Output() onSearchAgain = new EventEmitter();
@@ -38,5 +40,9 @@ export class SelectAddressComponent {
 
   get numberOfAddresses(): number | undefined {
     return this.addressResponse?.Results.length;
+  }
+
+  getTitle() {
+    return this.selfAddress ? 'Select your address' : `Select the address of ${this.addressName}`;
   }
 }

@@ -9,17 +9,16 @@
           <govuk-error-link anchorId="fieldset-another-block" message="Select yes if there are more blocks in the building" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-l">{{ captionText ?? "Blocks in the building" }}</span>
         <govuk-fieldset [errorText]="getErrorDescription(anotherBlockHasErrors, 'Select yes if there are more blocks in the building')"
-                        title="Are there more blocks in the building?"
+                        title="The independent sections in {{applicationService.model.BuildingName}}"
                         [isPageHeading]=true id="application"
                         titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'>
-
-          <govuk-body>So far you have told us about <b>{{blockNames}}.</b></govuk-body>
+                        
+          <govuk-body>So far you have told us about <b>{{getSectionNames()}}</b> <span *ngIf="sections!.length > 1"> and <b>{{getSectionName(sections!.at(-1)!, sections!.length-1)}}</b></span>.</govuk-body>
 
           <govuk-radio-group id="another-block"
                              [(model)]="addAnotherSectionLink"
-                             title="Add another block?" fieldsetClass="govuk-fieldset__legend--s">
+                             title="Add another independent section?" fieldsetClass="govuk-fieldset__legend--s">
             <govuk-radio name="another-block" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()"/>
             <govuk-radio name="another-block" id="no" value="no" label="No" (onKeyupEnter)="saveAndContinue()"/>
           </govuk-radio-group>
@@ -27,6 +26,7 @@
       </div>
 
       <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <save-and-come-back/>
     </div>
   </div>
 </div>

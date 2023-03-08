@@ -25,7 +25,12 @@ export class SectionYearRangeComponent extends BaseComponent implements IHasNext
     return !this.yearRangeHasErrors;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(SectionAddressComponent.route, activatedRoute);
-  }
+    navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+        return navigationService.navigateRelative(SectionAddressComponent.route, activatedRoute);
+    }
+
+    sectionBuildingName() {
+      return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+        this.applicationService.currentSection.Name;
+    }
 }

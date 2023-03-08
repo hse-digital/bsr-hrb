@@ -5,7 +5,6 @@ import { ApplicationService } from "src/app/services/application.service";
 import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
-import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
 import { GovukErrorSummaryComponent } from "hse-angular";
 
@@ -14,11 +13,9 @@ import { GovukErrorSummaryComponent } from "hse-angular";
 })
 export class SectionPeopleLivingInBuildingComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'people-living';
-  override updateOnSave: boolean = true;
+    @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
@@ -40,5 +37,14 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(`${SectionYearOfCompletionComponent.route}`, activatedRoute);
+  }
+
+  sectionBuildingName() {
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+      this.applicationService.currentSection.Name;
+  }
+
+  getErrorMessage() {
+    return `Select if people are living in ${this.sectionBuildingName()}`;
   }
 }

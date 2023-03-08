@@ -12,26 +12,25 @@ import { GovukErrorSummaryComponent } from "hse-angular";
 @Component({
   templateUrl: './address.component.html'
 })
-export class SectionAddressComponent extends BaseComponent implements OnInit {
-  static route: string = 'address';
-  searchMode = AddressSearchMode.Building;
+export class SectionAddressComponent implements OnInit {
+    static route: string = 'address';
+    searchMode = AddressSearchMode.Building;
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+    constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+    }
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
-  }
-
-  private addressIndex?: number;
-  address?: AddressModel;
-  ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe(query => {
-      this.addressIndex = query['address'];
-      if (this.addressIndex) {
-        this.address = this.applicationService.currentSection.Addresses[this.addressIndex - 1];
-      }
-    });
-  }
+    private addressIndex?: number;
+    private returnUrl?: string;
+    address?: AddressModel;
+    ngOnInit(): void {
+        this.activatedRoute.queryParams.subscribe(query => {
+            this.addressIndex = query['address'];
+            this.returnUrl = query['return'];
+            if (this.addressIndex) {
+                this.address = this.applicationService.currentSection.Addresses[this.addressIndex - 1];
+            }
+        });
+    }
 
   async updateSectionAddress(address: AddressModel) {
     if (this.addressIndex) {
@@ -43,19 +42,20 @@ export class SectionAddressComponent extends BaseComponent implements OnInit {
       this.applicationService.currentSection.Addresses.push(address);
     }
 
-    await this.applicationService.updateApplication();
-    this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
-  }
+        await this.applicationService.updateApplication();
 
-  canContinue(): boolean {
-    return true;
-  }
+        if (this.returnUrl) {
+            this.navigationService.navigateRelative(`../${this.returnUrl}`, this.activatedRoute);
+        } else {
+            this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
+        }
+    }
 
   getAddressSectionName() {
     if (this.applicationService.model.NumberOfSections == "one")
       return this.applicationService.model.BuildingName!;
 
-    return this.applicationService.currentSection.Name ?? `${SectionHelper.getSectionCardinalName(this.applicationService._currentSectionIndex).toLowerCase()} section`;
-  }
+        return this.applicationService.currentSection.Name!;
+    }
 
 }

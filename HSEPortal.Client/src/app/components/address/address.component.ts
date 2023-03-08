@@ -10,6 +10,7 @@ export class AddressComponent implements OnInit {
   @Input() searchMode: AddressSearchMode = AddressSearchMode.Building;
   @Input() address?: AddressModel;
   @Input() addressName!: string;
+  @Input() selfAddress = false;
   @Output() onAddressConfirmed = new EventEmitter();
 
   searchModel: { postcode?: string, addressLine1?: string } = {};
@@ -21,6 +22,7 @@ export class AddressComponent implements OnInit {
   ngOnInit(): void {
     if(this.address) {
       this.changeStepTo('confirm');
+      this.history = [];
     }
   }
 
@@ -62,8 +64,11 @@ export class AddressComponent implements OnInit {
 
   navigateBack() {
     let previousStep = this.history.pop();
-    this.step = previousStep ?? "find";
-    if (!previousStep) history.back();
+    if (!previousStep) {
+      history.back();
+    } else {
+      this.step = previousStep;
+    }
   }
 
   private changeStepTo(step: string) {

@@ -16,6 +16,7 @@ export class BuildingNameComponent extends BaseComponent implements IHasNextPage
 
   constructor(router: Router, registrationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, registrationService, navigationService, activatedRoute);
+    this.updateOnSave = false;
   }
 
   nameHasErrors: boolean = false;

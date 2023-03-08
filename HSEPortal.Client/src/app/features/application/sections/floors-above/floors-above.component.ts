@@ -22,21 +22,17 @@ export class SectionFloorsAboveComponent extends BaseComponent implements IHasNe
 
   floorsHasError = false;
 
-  errorSummaryMessage: string = 'You must enter the number of floors above ground level for this block';
-  errorMessage: string = 'Enter the number of floors above ground level for this block';
+  errorMessage: string = 'Enter the number of floors at or above ground level';
 
   canContinue(): boolean {
     this.floorsHasError = true;
     let floorsAbove = this.applicationService.currentSection.FloorsAbove;
 
     if (!floorsAbove || !Number(floorsAbove) || floorsAbove % 1 != 0) {
-      this.errorMessage = 'Enter the number of floors above ground level for this block';
-      this.errorSummaryMessage = 'You must enter the number of floors above ground level for this block';
+      this.errorMessage = 'Enter the number of floors at or above ground level';
     } else if (floorsAbove >= 1000) {
-      this.errorSummaryMessage = 'Number of floors must be 999 or less';
       this.errorMessage = 'Enter a whole number below 999';
     } else if (floorsAbove < 1) {
-      this.errorSummaryMessage = 'A block must have at least 1 floor including the ground floor';
       this.errorMessage = 'Enter a whole number above 0';
     } else {
       this.floorsHasError = false;
@@ -53,9 +49,12 @@ export class SectionFloorsAboveComponent extends BaseComponent implements IHasNe
     return !!this.applicationService.currentSection.Name;
   }
 
-  override updateOnSave: boolean = true;
-
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative('height', activatedRoute);
+  }
+
+  sectionBuildingName() {
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+      this.applicationService.currentSection.Name;
   }
 }

@@ -11,6 +11,7 @@ public class BuildingAddressSearchResponse
 public class BuildingAddress
 {
     public string UPRN { get; init; }
+    public string USRN { get; init; }
     public string Address { get; init; }
     public string BuildingName { get; init; }
     public string Number { get; init; }

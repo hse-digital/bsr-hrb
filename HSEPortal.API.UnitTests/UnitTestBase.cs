@@ -4,6 +4,7 @@ using Flurl.Http;
 using Flurl.Http.Testing;
 using HSEPortal.API.Model.CompaniesHouse;
 using HSEPortal.API.Model.OrdnanceSurvey;
+using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Services;
 using HSEPortal.API.UnitTests.Helpers;
 using HSEPortal.Domain.DynamicsDefinitions;
@@ -45,6 +46,11 @@ public abstract class UnitTestBase
 
     protected HttpRequestData BuildHttpRequestData<T>(T data, params string[] parameters)
     {
+        return BuildHttpRequestDataWithUri(data, new Uri(DynamicsOptions.EnvironmentUrl));
+    }
+
+    protected TestableHttpRequestData BuildHttpRequestDataWithUri<T>(T data, Uri uri)
+    {
         var functionContext = new Mock<FunctionContext>();
 
         var memoryStream = new MemoryStream();
@@ -53,7 +59,7 @@ public abstract class UnitTestBase
         memoryStream.Flush();
         memoryStream.Seek(0, SeekOrigin.Begin);
 
-        return new TestableHttpRequestData(functionContext.Object, new Uri(DynamicsOptions.EnvironmentUrl), memoryStream);
+        return new TestableHttpRequestData(functionContext.Object, uri, memoryStream);
     }
 
     protected object BuildODataEntityHeader(string id)
@@ -67,6 +73,7 @@ public abstract class UnitTestBase
         {
             config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>();
             config.AddProfile<CompaniesHouseSearchResponseProfile>();
+            config.AddProfile<PaymentProfile>();
         }).CreateMapper();
     }
 }

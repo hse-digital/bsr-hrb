@@ -6,7 +6,8 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { PapAddressComponent } from '../../pap-address/pap-address.component';
+import { ApAddressComponent } from '../../ap-address/ap-address.component';
+import { PapAddressComponent } from '../../ap-address/pap-address.component';
 
 @Component({
   templateUrl: './organisation-name.component.html'
@@ -28,10 +29,29 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(PapAddressComponent.route, activatedRoute);
+    let route = PapAddressComponent.route;
+    if (this.applicationService._currentAccountablePersonIndex > 0) {
+      route = ApAddressComponent.route;
+    }
+
+    return navigationService.navigateRelative(route, activatedRoute);
   }
 
-  saveAndComeBackLater() {
+  companies: string[] = [];
+  async searchCompanies(company: string) {
+    var response = await this.companiesService.SearchCompany(company);
+    this.companies = response.Companies.map(x => x.Name);
+  }
 
+  selectCompanyName(company: string) {
+    this.applicationService.currentAccountablePerson.OrganisationName = company;
+  }
+
+  getPrincipalOrOther() {
+    return this.applicationService._currentAccountablePersonIndex > 0 ? 'Other' : 'Principal';
+  }
+
+  title() {
+    return `${this.applicationService._currentAccountablePersonIndex == 0 ? 'Principal' : 'Other'} accountable person for ${this.applicationService.model.BuildingName}`;
   }
 }

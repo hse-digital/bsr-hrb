@@ -74,7 +74,12 @@ export class SectionOtherAddressesComponent extends BaseComponent implements IHa
       return navigationService.navigateRelative(`../${nextSection}/${SectionNameComponent.route}`, activatedRoute);
     }
 
-    // section has more than a single address, navigate to address page
-    return navigationService.navigateRelative(`${SectionAddressComponent.route}`, activatedRoute);
-  }
+        // section has more than a single address, navigate to address page
+        return navigationService.navigateRelative(`${SectionAddressComponent.route}`, activatedRoute);
+    }
+
+    sectionBuildingName() {
+      return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+        this.applicationService.currentSection.Name;
+    }
 }

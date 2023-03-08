@@ -1,79 +1,40 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { PostcodeValidator } from 'src/app/helpers/validators/postcode-validator';
-import { HttpClient } from '@angular/common/http';
-import { GovukErrorSummaryComponent } from 'hse-angular';
+import { AddressModel } from 'src/app/services/address.service';
+import { PapWhoAreYouComponent } from '../pap-who-are-you/pap-who-are-you.component';
+import { AddressSearchMode } from 'src/app/components/address/address.component';
 
 @Component({
   selector: 'hse-organisation-address',
   templateUrl: './organisation-address.component.html'
 })
-export class OrganisationAddressComponent extends BaseComponent implements IHasNextPage {
+export class OrganisationAddressComponent {
   static route: string = 'organisation-address';
+  searchMode = AddressSearchMode.Building;
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-
-  errors = {
-    lineOneHasErrors: false,
-    townOrCityHasErrors: false,
-    postcode: { hasErrors: false, errorText: '' },
+  address?: AddressModel
+  constructor(public applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
   }
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, private httpClient: HttpClient) {
-    super(router, applicationService, navigationService, activatedRoute);
+  private returnUrl?: string;
+  ngOnInit(): void {
+    this.address = this.applicationService.currentAccountablePerson.Address;
+    this.activatedRoute.queryParams.subscribe(query => {
+      this.returnUrl = query['return'];
+    })
   }
 
-  override async saveAndContinue() {
-    this.hasErrors = !await this.validateAndContinue();
-    if (!this.hasErrors) {
-      this.applicationService.updateLocalStorage();
+  async updateOrganisationAddress(address: AddressModel) {
+    this.applicationService.currentAccountablePerson.ActingForAddress = address;
+    await this.applicationService.updateApplication();
 
-      var hasNextPage = <IHasNextPage><unknown>this;
-      if (hasNextPage) {
-        await hasNextPage.navigateToNextPage(this.navigationService, this.activatedRoute);
-      }
+    let route = PapWhoAreYouComponent.route;
+    if (this.returnUrl) {
+      route = `../${this.returnUrl}`;
     }
-  }
 
-  private async validateAndContinue() {
-    return true;
-    // this.errors.lineOneHasErrors = !this.applicationService.currentAccountablePerson.AddressLineOne;
-    // this.errors.townOrCityHasErrors = !this.applicationService.currentAccountablePerson.TownOrCity;
-
-    // await this.validatePostcode();
-
-    // return !this.errors.lineOneHasErrors && !this.errors.townOrCityHasErrors && !this.errors.postcode.hasErrors;
-  }
-
-  async validatePostcode() {
-    return true;
-    // let postcode = this.applicationService.currentAccountablePerson.Postcode;
-    // this.errors.postcode.hasErrors = true;
-    // if (!postcode) {
-    //   this.errors.postcode.errorText = 'Enter a postcode';
-    // } else if (!(await this.isPostcodeValid(postcode))) {
-    //   this.errors.postcode.errorText = 'Enter a real postcode, like ‘EC3A 8BF’.';
-    // } else {
-    //   this.errors.postcode.hasErrors = false;
-    // }
-  }
-
-  async isPostcodeValid(postcode: string): Promise<boolean> {
-    return await new PostcodeValidator(this.httpClient).isValid(postcode).then((value: boolean) => {
-      return value
-    });
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return this.navigationService.navigateRelative('organisation-job-role', activatedRoute);
-  }
-
-  canContinue(): boolean {
-    return true;
+    this.navigationService.navigateRelative(route, this.activatedRoute);
   }
 }

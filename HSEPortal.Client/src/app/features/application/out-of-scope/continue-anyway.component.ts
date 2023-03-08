@@ -9,33 +9,32 @@ import { AccountablePersonModule } from "../accountable-person/accountable-perso
 import { AccountablePersonComponent } from "../accountable-person/accountable-person/accountable-person.component";
 
 @Component({
-  templateUrl: './continue-anyway.component.html'
+    templateUrl: './continue-anyway.component.html'
 })
 export class ContinueAnywayComponent extends BaseComponent implements IHasNextPage {
-  static route: string = 'continue-anyway';
+    static route: string = 'continue-anyway';
 
-  maxCharacters = 300;
-  tooManyCharacters: boolean = false;
-  emptyReason = true;
+    maxCharacters = 300;
+    tooManyCharacters: boolean = false;
+    emptyReason = true;
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+    @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
-    this.updateOnSave = true;
-  }
+    constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+        super(router, applicationService, navigationService, activatedRoute);
+    }
 
-  updateCharacters() {
-    this.tooManyCharacters = (this.applicationService.model.OutOfScopeContinueReason?.length ?? 0) > this.maxCharacters;
-  }
+    updateCharacters() {
+        this.tooManyCharacters = (this.applicationService.model.OutOfScopeContinueReason?.length ?? 0) > this.maxCharacters;
+    }
 
-  canContinue(): boolean {
-    this.emptyReason = !this.applicationService.model.OutOfScopeContinueReason || this.applicationService.model.OutOfScopeContinueReason.length == 0;
-    return !this.emptyReason;
-  }
+    canContinue(): boolean {
+        this.emptyReason = !this.applicationService.model.OutOfScopeContinueReason || this.applicationService.model.OutOfScopeContinueReason.length == 0;
+        return !this.emptyReason;
+    }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(`${AccountablePersonModule.baseRoute}/${AccountablePersonComponent.route}`, activatedRoute);
-  }
+    navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+        return navigationService.navigateRelative(`${AccountablePersonModule.baseRoute}/${AccountablePersonComponent.route}`, activatedRoute);
+    }
 
 }

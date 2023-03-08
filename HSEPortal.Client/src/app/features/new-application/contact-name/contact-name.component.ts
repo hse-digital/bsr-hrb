@@ -16,6 +16,7 @@ export class ContactNameComponent extends BaseComponent implements IHasNextPage 
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
+    this.updateOnSave = false;
   }
 
   firstNameInError: boolean = false;

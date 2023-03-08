@@ -12,7 +12,7 @@ import { GovukErrorSummaryComponent } from 'hse-angular';
   templateUrl: './pap-who-are-you.component.html'
 })
 export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage {
-  static route: string = 'pap-who-are-you';
+  static route: string = 'who-are-you';
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 

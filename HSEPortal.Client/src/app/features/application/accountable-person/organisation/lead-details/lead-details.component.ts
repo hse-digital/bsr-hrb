@@ -15,12 +15,10 @@ import { AddAccountablePersonComponent } from "../../add-accountable-person/add-
 export class LeadDetailsComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'lead-details';
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
-    this.updateOnSave = true;
-  }
+    @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+    constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+        super(router, applicationService, navigationService, activatedRoute);
+    }
 
   errors = {
     email: { hasErrors: false, errorText: '' },

@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Address } from "cluster";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
@@ -10,7 +9,7 @@ export class ApplicationService {
   model: BuildingRegistrationModel;
 
   _currentSectionIndex = 0;
-  private _currentAccountablePersonIndex = 0;
+  _currentAccountablePersonIndex = 0;
 
   get currentSection(): SectionModel {
     return this.model.Sections[this._currentSectionIndex];
@@ -59,10 +58,15 @@ export class ApplicationService {
     this._currentSectionIndex = index - 1;
   }
 
+  selectAccountablePerson(apName: string) {
+    let index = Number(apName.split('-').at(-1));
+    this._currentAccountablePersonIndex = index - 1;
+  }
+
   startAccountablePersonEdit(): string {
     this._currentAccountablePersonIndex = 0;
 
-    if (!this.model.AccountablePersons || this.model.AccountablePersons.length == 0) {
+    if (!this.model.AccountablePersons || this.model.AccountablePersons.length <= 1) {
       let accountablePerson = new AccountablePersonModel();
       accountablePerson.Type = this.model.PrincipalAccountableType;
 
@@ -72,11 +76,8 @@ export class ApplicationService {
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
-  startNewAccountablePerson(accountPersonType: string): string {
-    let accountablePerson = new AccountablePersonModel();
-    accountablePerson.Type = accountPersonType;
-
-    this.model.AccountablePersons.push(accountablePerson);
+  startNewAccountablePerson(): string {
+    this.model.AccountablePersons.push(new AccountablePersonModel());
     this._currentAccountablePersonIndex = this.model.AccountablePersons.length - 1;
 
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
@@ -115,6 +116,7 @@ export class ApplicationService {
   }
 
   async updateApplication(): Promise<void> {
+    this.updateLocalStorage();
     await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
   }
 
@@ -138,6 +140,7 @@ export class BuildingRegistrationModel {
   OutOfScopeContinueReason?: string;
   PrincipalAccountableType?: string;
   AccountablePersons: AccountablePersonModel[] = [];
+  Payment?: PaymentModel;
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
 }
 
@@ -145,12 +148,10 @@ export enum BuildingApplicationStatus {
   None = 0,
   BlocksInBuildingInProgress = 1,
   BlocksInBuildingComplete = 2,
-  PrincipleAccountablePersonInProgress = 4,
-  PrincipleAccountablePersonComplete = 8,
-  OtherAccountablePersonsInProgress = 16,
-  OtherAccountablePersonsComplete = 32,
-  PaymentInProgress = 64,
-  PaymentComplete = 128
+  AccountablePersonsInProgress = 4,
+  AccountablePersonsComplete = 8,
+  PaymentInProgress = 16,
+  PaymentComplete = 32
 }
 
 export class SectionModel {
@@ -164,8 +165,8 @@ export class SectionModel {
   YearOfCompletion?: string;
   YearOfCompletionRange?: string;
 
-  CompletitionCertificateIssuer?: any;
-  CompletitionCertificateReference?: any;
+  CompletionCertificateIssuer?: any;
+  CompletionCertificateReference?: any;
   Addresses: AddressModel[] = [];
   AnotherSection?: string;
 }
@@ -179,6 +180,10 @@ export class AccountablePersonModel {
   OrganisationName?: string;
   OrganisationType?: string;
   OrganisationTypeDescription?: string;
+  NamedContactFirstName?: string;
+  NamedContactLastName?: string;
+  NamedContactEmail?: string;
+  NamedContactPhoneNumber?: string;
 
   FirstName?: string;
   LastName?: string;
@@ -193,4 +198,26 @@ export class AccountablePersonModel {
   LeadLastName?: string;
   LeadEmail?: string;
   LeadPhoneNumber?: string;
+
+  SectionsAccountability?: SectionAccountability[];
+}
+
+export class SectionAccountability {
+  SectionName!: string;
+  Accountability?: string[];
+}
+
+export class PaymentModel {
+  CreatedDate?: string;
+  Status?: string;
+  Finished?: boolean;
+  PaymentLink!: string;
+  Amount?: number;
+  Email?: string;
+  Reference?: string;
+  Description?: string;
+  ReturnURL?: string;
+  PaymentId?: string;
+  PaymentProvider?: string;
+  ProviderId?: string;
 }

@@ -1,19 +1,19 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, SectionModel } from 'src/app/services/application.service';
 import { CaptionService } from 'src/app/services/caption.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
 import { SectionCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { SectionNameComponent } from '../name/name.component';
+import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 
 @Component({
   templateUrl: './add-more-sections.component.html'
 })
-export class AddMoreSectionsComponent extends BaseComponent implements IHasNextPage {
+export class AddMoreSectionsComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'add-more'
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
@@ -22,9 +22,13 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
     super(router, applicationService, navigationService, activatedRoute);
   }
 
+  sections: SectionModel[] = [];
+  ngOnInit(): void {
+    this.sections = this.applicationService.model.Sections;
+  }
+
   anotherBlockHasErrors = false;
   addAnotherSectionLink?: string;
-
   canContinue(): boolean {
     this.anotherBlockHasErrors = !this.addAnotherSectionLink;
     return !this.anotherBlockHasErrors;
@@ -53,5 +57,13 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
     }
 
     return navigationService.navigateRelative(SectionCheckAnswersComponent.route, activatedRoute);
+  }
+
+  getSectionNames() {
+    return this.sections.slice(0, this.sections.length - 1).map((section, index) => this.getSectionName(section, index)).join(', ');
+  }
+
+  getSectionName(section: SectionModel, index: number) {
+    return section.Name ?? SectionHelper.getSectionCardinalName(index);
   }
 }

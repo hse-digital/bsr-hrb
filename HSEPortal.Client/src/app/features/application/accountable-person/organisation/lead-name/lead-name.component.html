@@ -1,4 +1,4 @@
-a<govuk-back-link>Back</govuk-back-link>
+<govuk-back-link>Back</govuk-back-link>
 
 <div class="govuk-main-wrapper">
   <div class="govuk-grid-row">
@@ -10,10 +10,8 @@ a<govuk-back-link>Back</govuk-back-link>
           <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter their last name" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-xl">Principal accountable person</span>
-        <govuk-fieldset title="Lead contact's name" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-4'>
-
-            <govuk-body>This is the person at that we will contact for building safety queries.</govuk-body>
+        <govuk-fieldset title="Named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-4'>
+            <govuk-body>Tell us the name of the person who we should contact about building safety issues.</govuk-body>
 
           <govuk-input id="first-name" label="First name" 
                        [(model)]="applicationService.currentAccountablePerson.LeadFirstName"
@@ -29,6 +27,7 @@ a<govuk-back-link>Back</govuk-back-link>
       </div>
 
       <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <save-and-come-back/>
     </div>
   </div>
 </div>

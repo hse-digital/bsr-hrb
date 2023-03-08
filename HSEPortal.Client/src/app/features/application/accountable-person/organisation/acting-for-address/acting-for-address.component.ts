@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AddressSearchMode } from "src/app/components/address/address.component";
 import { AddressModel } from "src/app/services/address.service";
@@ -7,20 +7,34 @@ import { NavigationService } from "src/app/services/navigation.service";
 import { LeadNameComponent } from "../lead-name/lead-name.component";
 
 @Component({
-    templateUrl: './acting-for-address.component.html'
+  templateUrl: './acting-for-address.component.html'
 })
-export class ActingForAddressComponent {
-    static route: string = 'acting-for-address';
-    searchMode = AddressSearchMode.PostalAddress;
+export class ActingForAddressComponent implements OnInit {
+  static route: string = 'acting-for-address';
+  searchMode = AddressSearchMode.PostalAddress;
 
-    constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+  }
+
+  address?: AddressModel
+  private returnUrl?: string;
+  ngOnInit(): void {
+    this.address = this.applicationService.currentAccountablePerson.ActingForAddress;
+    this.activatedRoute.queryParams.subscribe(query => {
+      this.returnUrl = query['return'];
+    })
+  }
+
+  async updateActingForAddress(address: AddressModel) {
+    this.applicationService.currentAccountablePerson.ActingForAddress = address;
+    await this.applicationService.updateApplication();
+
+    let route = LeadNameComponent.route;
+    if (this.returnUrl) {
+      route = `../${this.returnUrl}`;
     }
 
-    async updateActingForAddress(address: AddressModel) {
-      this.applicationService.currentAccountablePerson.ActingForAddress = address;
-      await this.applicationService.updateApplication();
-  
-      this.navigationService.navigateRelative(LeadNameComponent.route, this.activatedRoute);
-    }
+    this.navigationService.navigateRelative(route, this.activatedRoute);
+  }
 
 }

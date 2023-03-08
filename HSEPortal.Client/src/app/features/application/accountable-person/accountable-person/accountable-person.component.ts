@@ -4,8 +4,9 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { PrincipleAccountableSelection } from '../individual/principal/principal.component';
 import { GovukErrorSummaryComponent } from 'hse-angular';
+import { PrincipleAccountableSelection } from '../principal/principal.component';
+import { OrganisationTypeComponent } from '../organisation/organisation-type/organisation-type.component';
 
 @Component({
   selector: 'hse-accountable-person',
@@ -22,7 +23,7 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
   }
   
   ngOnInit(): void {
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.PrincipleAccountablePersonInProgress;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.AccountablePersonsInProgress;
     this.applicationService.updateLocalStorage();
     this.applicationService.updateApplication();
   }
@@ -34,7 +35,7 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let accountablePerson = this.applicationService.startAccountablePersonEdit();
-    let route = this.applicationService.model.PrincipalAccountableType == 'organisation' ? 'organisation-type' : PrincipleAccountableSelection.route;
+    let route = this.applicationService.currentAccountablePerson.Type == 'organisation' ? OrganisationTypeComponent.route : PrincipleAccountableSelection.route;
 
     return navigationService.navigateAppend(`${accountablePerson}/${route}`, activatedRoute);
   }

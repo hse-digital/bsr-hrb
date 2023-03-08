@@ -54,6 +54,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
         responseAddress.TotalResults.Should().Be(postcodeResponse.header.totalresults);
 
         responseAddress.Results[0].UPRN.Should().Be(postcodeResponse.results[0].LPI.UPRN);
+        responseAddress.Results[0].USRN.Should().Be(postcodeResponse.results[0].LPI.USRN);
         responseAddress.Results[0].Address.Should().Be(postcodeResponse.results[0].LPI.ADDRESS);
         responseAddress.Results[0].Number.Should().Be(postcodeResponse.results[0].LPI.PAO_START_NUMBER);
         responseAddress.Results[0].BuildingName.Should().Be(postcodeResponse.results[0].LPI.PAO_TEXT);

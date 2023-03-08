@@ -17,9 +17,10 @@ export class ContactEmailValidationComponent extends BaseComponent {
   otpError = false;
   sendingRequest = false;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
-  }
+    constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+        super(router, applicationService, navigationService, activatedRoute);
+        this.updateOnSave = false;
+    }
 
   canContinue(): boolean {
     return this.otpToken !== undefined && this.otpToken.length == 6;
