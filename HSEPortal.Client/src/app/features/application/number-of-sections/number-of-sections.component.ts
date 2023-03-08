@@ -27,6 +27,12 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
     return !this.numberOfSectionsHasErrors;
   }
 
+  override async onSave(): Promise<void> {
+    if (!this.applicationService.model.Sections || this.applicationService.model.Sections.length == 0) {
+      this.applicationService.startSectionsEdit();
+    }
+  }
+
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     // user is changing the answer
     if (this.previousAnswer && this.previousAnswer != this.applicationService.model.NumberOfSections) {
@@ -45,10 +51,6 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
       return navigationService.navigateRelative(`/sections/check-answers`, activatedRoute);
 
     let route = '';
-    if (!this.applicationService.model.Sections || this.applicationService.model.Sections.length == 0) {
-      this.applicationService.startSectionsEdit();
-    }
-
     if (this.applicationService.model.NumberOfSections == "one") {
       route = `floors`;
     }
