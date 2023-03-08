@@ -82,7 +82,8 @@ public class WhenGettingPayment : UnitTestBase
                 card_type = "debit",
                 card_brand = "Jcb",
                 expiry_date = "expiry date",
-                last_digits_card_number = 1234,
+                last_digits_card_number = "1234",
+                first_digits_card_number = "12345",
                 billing_address = new BillingAddress
                 {
                     line1 = "line1",

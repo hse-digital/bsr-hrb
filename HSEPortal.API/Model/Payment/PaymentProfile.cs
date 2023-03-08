@@ -21,6 +21,7 @@ public class PaymentProfile : Profile
             .ForMember(x => x.PaymentProvider, x => x.MapFrom(y => y.payment_provider))
             .ForMember(x => x.ProviderId, x => x.MapFrom(y => y.provider_id))
             .ForPath(x => x.LastFourDigitsCardNumber, x => x.MapFrom(y => y.card_details.last_digits_card_number))
+            .ForPath(x => x.FirstDigitsCardNumber, x => x.MapFrom(y => y.card_details.first_digits_card_number))
             .ForPath(x => x.CardExpiryDate, x => x.MapFrom(y => y.card_details.expiry_date))
             .ForPath(x => x.AddressLineOne, x => x.MapFrom(y => y.card_details.billing_address.line1))
             .ForPath(x => x.AddressLineTwo, x => x.MapFrom(y => y.card_details.billing_address.line2))

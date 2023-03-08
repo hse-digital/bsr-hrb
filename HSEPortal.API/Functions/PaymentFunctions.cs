@@ -51,7 +51,7 @@ public class PaymentFunctions
         var paymentFunctionResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
         return await request.CreateObjectResponseAsync(paymentFunctionResponse);
     }
-
+ 
 
     [Function(nameof(GetPayment))]
     public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentId}}")] HttpRequestData request, string paymentId)
@@ -60,8 +60,8 @@ public class PaymentFunctions
             return request.CreateResponse(HttpStatusCode.BadRequest);
 
         var response = await integrationOptions.PaymentEndpoint
-            .AppendPathSegments("v1", "payments", paymentId ?? "")
-            .WithOAuthBearerToken(this.integrationOptions.PaymentApiKey)
+            .AppendPathSegments("v1", "payments", paymentId)
+            .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
             .AllowHttpStatus(HttpStatusCode.BadRequest)
             .GetJsonAsync<PaymentApiResponseModel>();
 
