@@ -1,37 +1,37 @@
 <govuk-summary-list>
-    <govuk-summary-list-row (onClick)="navigateTo('accountable-person-type')" key="Type" [showAction]=true>{{ap.Type == 'individual' ? 'Individual' : 'Organisation'}}</govuk-summary-list-row>
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('accountable-person-type')" (onClick)="navigateTo('accountable-person-type')" key="Type" [showAction]=true>{{ap.Type == 'individual' ? 'Individual' : 'Organisation'}}</govuk-summary-list-row>
 
     <ng-container *ngIf="apIndex == 0">
-        <govuk-summary-list-row (onClick)="navigateTo('principal')" key="Are you the principal accountable person?" [showAction]=true>{{ap.IsPrincipal == 'yes' ? 'Yes' : 'No'}}</govuk-summary-list-row>
+        <govuk-summary-list-row (onKeyupEnter)="navigateTo('principal')" (onClick)="navigateTo('principal')" key="Are you the principal accountable person?" [showAction]=true>{{ap.IsPrincipal == 'yes' ? 'Yes' : 'No'}}</govuk-summary-list-row>
     </ng-container>
 
     <ng-container *ngIf="apIndex > 0">
-        <govuk-summary-list-row (onClick)="navigateTo('name')" key="Name" [showAction]=true>{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
-        <govuk-summary-list-row (onClick)="navigateTo('details')" key="Contact Details" [showAction]=true>
+        <govuk-summary-list-row (onKeyupEnter)="navigateTo('name')" (onClick)="navigateTo('name')" key="Name" [showAction]=true>{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
+        <govuk-summary-list-row (onKeyupEnter)="navigateTo('details')" (onClick)="navigateTo('details')" key="Contact Details" [showAction]=true>
             {{ap.Email}}<br>
             {{ap.PhoneNumber}}
         </govuk-summary-list-row>
     </ng-container>
 
-    <govuk-summary-list-row (onClick)="navigateTo('address')" key="{{apIndex == 0 ? ' Your address' : 'Address'}}" [showAction]=true><address-description [address]="ap.Address" /></govuk-summary-list-row>
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('address')" (onClick)="navigateTo('address')" key="{{apIndex == 0 ? ' Your address' : 'Address'}}" [showAction]=true><address-description [address]="ap.Address" /></govuk-summary-list-row>
 
     <ng-container *ngIf="ap.IsPrincipal == 'no'">
-        <govuk-summary-list-row (onClick)="navigateTo('pap-name')" key="Principal accountable person's name" [showAction]=true>{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
-        <govuk-summary-list-row (onClick)="navigateTo('pap-details')" key="Principal accountable person's contact details" [showAction]=true>
+        <govuk-summary-list-row (onKeyupEnter)="navigateTo('pap-name')" (onClick)="navigateTo('pap-name')" key="Principal accountable person's name" [showAction]=true>{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
+        <govuk-summary-list-row (onKeyupEnter)="navigateTo('pap-details')" (onClick)="navigateTo('pap-details')" key="Principal accountable person's contact details" [showAction]=true>
             {{ap.Email}}<br>
             {{ap.PhoneNumber}}
         </govuk-summary-list-row>
-        <govuk-summary-list-row (onClick)="navigateTo('pap-address')" key="Principal accountable person's address" [showAction]=true>
+        <govuk-summary-list-row (onKeyupEnter)="navigateTo('pap-address')" (onClick)="navigateTo('pap-address')" key="Principal accountable person's address" [showAction]=true>
             <address-description [address]="ap.PapAddress" />
         </govuk-summary-list-row>
     </ng-container>
 
-    <govuk-summary-list-row *ngIf="apIndex > 0" (onClick)="navigateTo('accountable-for')" key="Areas of accountability" [showAction]=true>
+    <govuk-summary-list-row *ngIf="apIndex > 0" (onKeyupEnter)="navigateTo('accountable-for')" (onClick)="navigateTo('accountable-for')" key="Areas of accountability" [showAction]=true>
         <ng-container *ngFor="let section of sectionsWithAccountability()">
             <legend class="govuk-fieldset__legend--s">{{section.SectionName}}</legend>
             <govuk-body class="govuk-!-margin-0 govuk-!-margin-bottom-3" *ngFor="let acc of section.Accountability">{{_accountabilityDescription(acc)}}</govuk-body>
         </ng-container>
     </govuk-summary-list-row>
 
-    <govuk-summary-list-row (onClick)="navigateTo('')" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('')" (onClick)="navigateTo('')" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
 </govuk-summary-list>
