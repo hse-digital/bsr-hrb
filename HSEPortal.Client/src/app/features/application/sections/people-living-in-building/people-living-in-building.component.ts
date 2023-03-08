@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService } from "src/app/services/application.service";
-import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
@@ -12,7 +11,7 @@ import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-
 })
 export class SectionPeopleLivingInBuildingComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'people-living';
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
@@ -22,10 +21,6 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
     let peopleLivingInBuilding = this.applicationService.currentSection.PeopleLivingInBuilding;
     this.peopleLivingHasErrors = !peopleLivingInBuilding;
     return !this.peopleLivingHasErrors;
-  }
-
-  get captionText(): string | undefined {
-    return this.captionService.caption;
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {

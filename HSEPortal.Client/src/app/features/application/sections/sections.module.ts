@@ -5,10 +5,11 @@ import { RouterModule } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
 import { ComponentsModule } from "src/app/components/components.module";
 import { PipesModule } from "src/app/pipes/pipes.module";
-import { CaptionService } from "src/app/services/caption.service";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
 import { SectionAddressComponent } from "./address/address.component";
+import { CertificateIssuerComponent } from "./certificate-issuer/certificate-issuer.component";
+import { CertificateNumberComponent } from "./certificate-number/certificate-number.component";
 import { SectionCheckAnswersComponent } from "./check-answers/check-answers.component";
 import { SectionAnswersComponent } from "./check-answers/section-answers.component";
 import { SectionFloorsAboveComponent } from "./floors-above/floors-above.component";
@@ -18,7 +19,6 @@ import { MoreInformationComponent } from "./more-information/more-information.co
 import { NameAllBlocksComponent } from "./name-all-blocks/name-all-blocks.component";
 import { SectionNameComponent } from "./name/name.component";
 import { SectionOtherAddressesComponent } from "./other-addresses/other-addresses.component";
-import { BuildingOutOfScopeComponent } from "../out-of-scope/out-of-scope.component";
 import { SectionPeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
 import { SectionResidentialUnitsComponent } from "./residential-units/residential-units.component";
 import { SectionsComponent } from "./sections.component";
@@ -38,6 +38,8 @@ const routes = new HseRoutes([
         HseRoute.unsafe(SectionResidentialUnitsComponent.route, SectionResidentialUnitsComponent),
         HseRoute.unsafe(SectionYearOfCompletionComponent.route, SectionYearOfCompletionComponent),
         HseRoute.unsafe(SectionYearRangeComponent.route, SectionYearRangeComponent),
+        HseRoute.unsafe(CertificateIssuerComponent.route, CertificateIssuerComponent),
+        HseRoute.unsafe(CertificateNumberComponent.route, CertificateNumberComponent),
         HseRoute.unsafe(SectionAddressComponent.route, SectionAddressComponent),
         HseRoute.unsafe(SectionOtherAddressesComponent.route, SectionOtherAddressesComponent),
         HseRoute.unsafe(SectionPeopleLivingInBuildingComponent.route, SectionPeopleLivingInBuildingComponent),
@@ -61,7 +63,9 @@ const routes = new HseRoutes([
         SectionAddressComponent,
         SectionOtherAddressesComponent,
         NameAllBlocksComponent,
-        SectionAnswersComponent
+        SectionAnswersComponent,
+        CertificateIssuerComponent,
+        CertificateNumberComponent
     ],
     imports: [
         RouterModule.forChild(routes.getRoutes()),
@@ -72,7 +76,6 @@ const routes = new HseRoutes([
         ComponentsModule
     ],
     providers: [
-        CaptionService,
         ...routes.getProviders()
     ]
 })
