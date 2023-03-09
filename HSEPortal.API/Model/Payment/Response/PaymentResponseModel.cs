@@ -20,7 +20,8 @@ public class PaymentResponseModel
     public string PaymentId { get; set; }
     public string PaymentProvider { get; set; }
     public string ProviderId { get; set; }
-    public int? LastFourDigitsCardNumber { get; set; }
+    public string LastFourDigitsCardNumber { get; set; }
+    public string FirstDigitsCardNumber { get; set; }
     public string CardExpiryDate { get; set; }
     public string CardBrand { get; set; }
     public string CardType { get; set; }

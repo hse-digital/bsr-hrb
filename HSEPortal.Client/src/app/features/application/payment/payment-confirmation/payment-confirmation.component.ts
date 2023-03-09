@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { ActivatedRoute } from '@angular/router';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { PaymentService } from 'src/app/services/payment.service';
@@ -10,25 +8,17 @@ import { PaymentService } from 'src/app/services/payment.service';
   selector: 'hse-confirmation',
   templateUrl: './payment-confirmation.component.html',
 })
-export class PaymentConfirmationComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class PaymentConfirmationComponent implements OnInit {
   static route: string = "confirm";
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, public paymentService: PaymentService) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(public applicationService: ApplicationService, public paymentService: PaymentService, private navigationService: NavigationService) {
   }
 
   async ngOnInit() {
+    this.applicationService.model.Payment =  await this.paymentService.GetPayment(this.applicationService.model.Payment!.PaymentId!)
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
+
     await this.applicationService.updateApplication();
-  }
-
-  override async saveAndContinue() {
-    let status = await this.getPaymentInformation();
-    if (status) this.navigateToNextPage(this.navigationService, this.activatedRoute);
-  }
-
-  private async getPaymentInformation() {
-    return await this.paymentService.GetPayment(this.applicationService.model.Payment!.PaymentId!)
   }
 
   canContinue(): boolean {
@@ -39,17 +29,13 @@ export class PaymentConfirmationComponent extends BaseComponent implements IHasN
     return navigationService.navigateRelative(PaymentConfirmationComponent.route, activatedRoute);
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.model.Payment?.PaymentId;
-  }
-
-  async registerAnotherBuilding() {
-    await this.navigationService.navigate('');
-  }
-
   notPap() {
     var pap = this.applicationService.model.AccountablePersons[0];
     return pap.IsPrincipal == 'no' && pap.Type == 'individual';
+  }
+
+  registerAnotherBuilding() {
+    this.navigationService.navigate('');
   }
 
 }

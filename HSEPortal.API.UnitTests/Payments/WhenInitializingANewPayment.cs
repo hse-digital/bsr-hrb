@@ -96,6 +96,7 @@ public class WhenInitializingANewPayment : UnitTestBase
             CardType = paymentApiResponse.card_details.card_type,
             CardExpiryDate = paymentApiResponse.card_details.expiry_date,
             LastFourDigitsCardNumber = paymentApiResponse.card_details.last_digits_card_number,
+            FirstDigitsCardNumber = paymentApiResponse.card_details.first_digits_card_number,
             AddressLineOne = paymentApiResponse.card_details.billing_address.line1,
             AddressLineTwo = paymentApiResponse.card_details.billing_address.line2,
             City = paymentApiResponse.card_details.billing_address.city,
@@ -145,7 +146,8 @@ public class WhenInitializingANewPayment : UnitTestBase
                 card_brand = "mastercard",
                 card_type = "credit",
                 expiry_date = "now",
-                last_digits_card_number = 1234,
+                last_digits_card_number = "1234",
+                first_digits_card_number = "12345",
                 billing_address = new BillingAddress
                 {
                     line1 = "line1",

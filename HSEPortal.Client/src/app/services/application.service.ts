@@ -63,7 +63,7 @@ export class ApplicationService {
     this._currentAccountablePersonIndex = index - 1;
   }
 
-  startAccountablePersonEdit(): string {
+  async startAccountablePersonEdit(): Promise<void> {
     this._currentAccountablePersonIndex = 0;
 
     if (!this.model.AccountablePersons || this.model.AccountablePersons.length <= 1) {
@@ -71,9 +71,8 @@ export class ApplicationService {
       accountablePerson.Type = this.model.PrincipalAccountableType;
 
       this.model.AccountablePersons = [accountablePerson];
+      await this.updateApplication();
     }
-
-    return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
   startNewAccountablePerson(): string {

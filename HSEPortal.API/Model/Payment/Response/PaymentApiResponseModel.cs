@@ -40,12 +40,13 @@ public class Url
 
 public class CardDetails
 {
-    public int? last_digits_card_number { get; set; }
+    public string last_digits_card_number { get; set; }
+    public string first_digits_card_number { get; set; }
+    public string cardholder_name { get; set; }
     public string expiry_date { get; set; }
     public string card_brand { get; set; }
     public string card_type { get; set; }
     public BillingAddress billing_address { get; set; }
-
 }
 
 public class BillingAddress
