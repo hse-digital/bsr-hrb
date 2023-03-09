@@ -15,9 +15,9 @@ export class LeadNameComponent extends BaseComponent implements IHasNextPage {
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-    constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-        super(router, applicationService, navigationService, activatedRoute);
-    }
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
+  }
 
   firstNameInError: boolean = false;
   lastNameInError: boolean = false;
