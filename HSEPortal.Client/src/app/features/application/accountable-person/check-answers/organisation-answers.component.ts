@@ -15,6 +15,18 @@ export class OrganisationAnswersComponent {
     @Input() apIndex!: number;
     @Input() hasMoreAp = false;
 
+    addMore() {
+        this.navigationService.navigateRelative('add-more', this.activatedRoute);
+    }
+
+    goToApType() {
+        if (this.apIndex == 0) {
+            this.navigationService.navigateRelative('', this.activatedRoute);
+        } else {
+            this.navigateTo('accountable-person-type');
+        }
+    }
+
     navigateTo(url: string, query?: string) {
         this.navigationService.navigateRelative(`accountable-person-${this.apIndex + 1}/${url}`, this.activatedRoute, {
             return: 'check-answers'
@@ -29,14 +41,6 @@ export class OrganisationAnswersComponent {
         return this.ap.Role == 'registering_for';
     }
 
-    individual() {
-        return this.ap.Type == 'individual';
-    }
-
-    organisation() {
-        return this.ap.Type == 'organisation';
-    }
-
     whoAreYouDescription() {
         switch (this.ap.Role) {
             case 'named_contact': return 'I am the named contact';
@@ -47,7 +51,12 @@ export class OrganisationAnswersComponent {
     }
 
     useSameAddressDescription() {
-        return this.ap.ActingForSameAddress == 'yes' ? 'Yes, use the same address' : 'No, use a different address';
+        switch(this.ap.ActingForSameAddress) {
+            case 'yes': return 'Yes, use the same address';
+            case 'no': return 'No, use a different address';
+        }
+        
+        return undefined;
     }
 
     organisationTypeDescription() {
@@ -68,9 +77,10 @@ export class OrganisationAnswersComponent {
             case 'administrative_worker': return 'Administrative or office worker';
             case 'building_manager': return 'Building or facilities manager';
             case 'building_director': return 'Building safety director';
+            case 'other': return 'Other';
         }
 
-        return 'Other';
+        return undefined;
     }
 
     sectionsWithAccountability() {
@@ -85,5 +95,9 @@ export class OrganisationAnswersComponent {
         }
 
         return 'Facilities that residents share';
+    }
+
+    apAddress() {
+        return this.ap.PapAddress ?? this.ap.Address;
     }
 }

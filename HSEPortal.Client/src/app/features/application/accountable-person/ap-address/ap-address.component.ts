@@ -17,19 +17,17 @@ export class ApAddressComponent implements OnInit {
     static route: string = 'address';
     searchMode = AddressSearchMode.PostalAddress;
 
-    @Input() pap: boolean = false;
     @Input() addressName?: string;
-    address?: AddressModel;
-    constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
-    }
+    @Input() pap: boolean = false;
+    constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {}
 
     private returnUrl?: string;
+    address?: AddressModel;
     ngOnInit(): void {
+        this.address = this.pap ? this.applicationService.currentAccountablePerson.PapAddress : this.applicationService.currentAccountablePerson.Address;
         this.activatedRoute.queryParams.subscribe(params => {
             this.returnUrl = params['return'];
         });
-
-        this.address = this.pap ? this.applicationService.currentAccountablePerson.PapAddress : this.applicationService.currentAccountablePerson.Address;
     }
 
     getApName() {
@@ -45,12 +43,14 @@ export class ApAddressComponent implements OnInit {
         return !this.pap && this.applicationService._currentAccountablePersonIndex == 0;
     }
 
-    updateAddress(address: AddressModel) {
+    async updateAddress(address: AddressModel) {
         if (this.pap) {
             this.applicationService.currentAccountablePerson.PapAddress = address;
         } else {
             this.applicationService.currentAccountablePerson.Address = address;
         }
+
+        await this.applicationService.updateApplication();
 
         if (this.returnUrl) {
             this.navigationService.navigateRelative(`../${this.returnUrl}`, this.activatedRoute);

@@ -1,17 +1,17 @@
 <govuk-summary-list>
-  <govuk-summary-list-row (onClick)="navigateTo('accountable-person-type')" key="Type" [showAction]=true>{{ap.Type == 'individual' ? 'Individual' : 'Organisation'}}</govuk-summary-list-row>
+  <govuk-summary-list-row (onClick)="goToApType()" key="Type" [showAction]=true>{{ap.Type == 'individual' ? 'Individual' : 'Organisation'}}</govuk-summary-list-row>
 
   <govuk-summary-list-row (onClick)="navigateTo('organisation-type')" key="Organisation type" [showAction]=true>{{organisationTypeDescription()}}</govuk-summary-list-row>
   <govuk-summary-list-row (onClick)="navigateTo('organisation-name')" key="Organisation name" [showAction]=true>{{ap.OrganisationName}}</govuk-summary-list-row>
 
-  <govuk-summary-list-row (onClick)="navigateTo('organisation-address')" key="Organisation address" [showAction]=true>
-    <address-description [address]="ap.Address" />
+  <govuk-summary-list-row (onClick)="navigateTo('address')" key="Organisation address" [showAction]=true>
+    <address-description [address]="apAddress()" />
   </govuk-summary-list-row>
 
   <ng-container *ngIf="apIndex == 0">
     <govuk-summary-list-row (onClick)="navigateTo('who-are-you')" key="Who are you?" [showAction]=true>{{whoAreYouDescription()}}</govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="!notLead()" (onClick)="navigateTo('pap-named-role')" key="Job role" [showAction]=true>{{leadJobRoleDescription()}}</govuk-summary-list-row>
     <govuk-summary-list-row *ngIf="notLead()" (onClick)="navigateTo('same-address')" key="Should we use the same address to contact you?" [showAction]=true>{{useSameAddressDescription()}}</govuk-summary-list-row>
-
     <govuk-summary-list-row *ngIf="notLead() && ap.ActingForSameAddress == 'no'" (onClick)="navigateTo('acting-for-address')" key="Your address" [showAction]=true>
       <address-description [address]="ap.ActingForAddress" />
     </govuk-summary-list-row>
@@ -33,11 +33,5 @@
     {{ap.LeadPhoneNumber}}
   </govuk-summary-list-row>
 
-  <govuk-summary-list-row *ngIf="!notLead()" (onClick)="navigateTo('named-contact')" key="Named contact" [showAction]=true>{{ap.NamedContactFirstName}} {{ap.NamedContactLastName}}</govuk-summary-list-row>
-  <govuk-summary-list-row *ngIf="!notLead()" (onClick)="navigateTo('named-contact-details')" key="Named contact's details" [showAction]=true>
-    {{ap.NamedContactEmail}}<br>
-    {{ap.NamedContactPhoneNumber}}
-  </govuk-summary-list-row>
-
-  <govuk-summary-list-row (onClick)="navigateTo('')" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
+  <govuk-summary-list-row (onClick)="addMore()" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
 </govuk-summary-list>
