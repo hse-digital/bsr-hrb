@@ -31,9 +31,9 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
         await GivenAnAuthenticationToken();
         await WhenSendingTheRequestForANewBuildingRegistration(buildingRegistrationModel);
 
+        await ThenShouldCreateContactRecord(buildingRegistrationModel);
         await ThenShouldCreateBuildingApplicationRecord(buildingRegistrationModel);
         await ThenShouldCreateBuildingRecord(buildingRegistrationModel);
-        await ThenShouldCreateContactRecord(buildingRegistrationModel);
     }
 
     private static BuildingApplicationModel GivenABuildingRegistrationModel()
