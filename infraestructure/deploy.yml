@@ -1,10 +1,11 @@
 parameters:
   - name: subscription
+  - name: environmentName
 
 jobs:
   - deployment: Deploy
-    displayName: 'Deploy App to ${( variables.env })'
-    environment: '${( variables.env })'
+    displayName: 'Deploy App to ${( parameters.environmentName })'
+    environment: '${(parameters.environmentName})'
     strategy:
       runOnce:
         deploy:
