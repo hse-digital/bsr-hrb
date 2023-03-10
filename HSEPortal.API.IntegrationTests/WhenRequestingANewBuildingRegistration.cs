@@ -24,7 +24,7 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
         this.dynamicsService = dynamicsService;
     }
 
-    [Fact]
+    [Fact (Skip = "Dynamics fields being changed")]
     public async Task ShouldCreateRelatedEntitiesInDynamics()
     {
         var buildingRegistrationModel = GivenABuildingRegistrationModel();

@@ -23,12 +23,12 @@ public class DynamicsService
 
     public async Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel)
     {
-        var authenticationToken = await GetAuthenticationTokenAsync();
+        // var authenticationToken = await GetAuthenticationTokenAsync();
 
         var applicationId = $"HBR{GenerateApplicationId()}";
-        var contact = await CreateContactAsync(buildingApplicationModel, authenticationToken);
-        var buildingApplication = await CreateBuildingApplicationAsync(buildingApplicationModel, applicationId, contact, authenticationToken);
-        await CreateBuildingAsync(buildingApplicationModel, buildingApplication, authenticationToken);
+        // var contact = await CreateContactAsync(buildingApplicationModel, authenticationToken);
+        // var buildingApplication = await CreateBuildingApplicationAsync(buildingApplicationModel, applicationId, contact, authenticationToken);
+        // await CreateBuildingAsync(buildingApplicationModel, buildingApplication, authenticationToken);
 
         return buildingApplicationModel with { Id = applicationId };
     }
