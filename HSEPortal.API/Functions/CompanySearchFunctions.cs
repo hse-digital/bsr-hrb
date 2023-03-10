@@ -39,8 +39,8 @@ public class CompanySearchFunctions
         return await request.CreateObjectResponseAsync(companySearchResponse);
     }
 
-    [Function(nameof(SearchLocalAuthority))]
-    public async Task<HttpResponseData> SearchLocalAuthority([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(SearchLocalAuthority)}/{{name}}")] HttpRequestData request, string name)
+    [Function(nameof(SearchLocalAuthorityCompany))]
+    public async Task<HttpResponseData> SearchLocalAuthorityCompany([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(SearchLocalAuthorityCompany)}/{{name}}")] HttpRequestData request, string name)
     {
         if (name == null || name.Equals(string.Empty))
             return request.CreateResponse(HttpStatusCode.BadRequest);

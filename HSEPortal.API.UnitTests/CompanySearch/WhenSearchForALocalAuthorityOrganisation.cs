@@ -27,7 +27,7 @@ public class WhenSearchForALocalAuthorityOrganisation : UnitTestBase
     }
 
     [Fact]
-    public async Task ShouldCallSearchLocalAuthorityFunctionToSearchForNames()
+    public async Task ShouldCallSearchLocalAuthorityCompanyFunctionToSearchForNames()
     {
         string name = "test";
 
@@ -35,7 +35,7 @@ public class WhenSearchForALocalAuthorityOrganisation : UnitTestBase
 
         HttpTest.RespondWithJson(dynamicsLocalAuthorityRequestModel);
 
-        var response = await companySearchFunctions.SearchLocalAuthority(BuildHttpRequestData(new object(), name), name);
+        var response = await companySearchFunctions.SearchLocalAuthorityCompany(BuildHttpRequestData(new object(), name), name);
 
         var localAuthorityResponseModel = await response.ReadAsJsonAsync<LocalAuthority>();
 
@@ -53,9 +53,9 @@ public class WhenSearchForALocalAuthorityOrganisation : UnitTestBase
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public async Task ShouldNOTCallSearchLocalAuthorityFunction(string name)
+    public async Task ShouldNOTCallSearchLocalAuthorityCompanyFunction(string name)
     {
-        await companySearchFunctions.SearchLocalAuthority(BuildHttpRequestData(new object(), name), name);
+        await companySearchFunctions.SearchLocalAuthorityCompany(BuildHttpRequestData(new object(), name), name);
 
         HttpTest.ShouldNotHaveMadeACall();
         HttpTest.RespondWith(status: 400);
