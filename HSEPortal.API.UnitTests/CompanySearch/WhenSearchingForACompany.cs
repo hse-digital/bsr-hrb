@@ -18,7 +18,7 @@ public class WhenSearchingForACompany : UnitTestBase
     public WhenSearchingForACompany()
     {
         integrationsOptions = new IntegrationsOptions { CompaniesHouseEndpoint = "https://api.company-information.service.gov.uk", CompaniesHouseApiKey = "123" };
-        companySearchFunctions = new CompanySearchFunctions(new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper());
+        companySearchFunctions = new CompanySearchFunctions(new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper(), null);
     }
 
     [Fact]

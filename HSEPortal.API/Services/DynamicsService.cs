@@ -21,6 +21,25 @@ public class DynamicsService
         this.dynamicsOptions = dynamicsOptions.Value;
     }
 
+    public async Task<LocalAuthority> SearchLocalAuthority(string name)
+    {
+        string authenticationToken = await GetAuthenticationTokenAsync(); 
+
+        var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<LocalAuthority, DynamicsLocalAuthority>();
+        
+        string filterQuery = $"$filter=_bsr_accounttype_accountid_value eq '{dynamicsOptions.AccountId}' and contains(name, '%{name}%')";
+        var response = await dynamicsOptions.EnvironmentUrl
+            .AppendPathSegments("api", "data", "v9.2", modelDefinition.Endpoint)
+            .SetQueryParam(filterQuery)
+            .SetQueryParam("$select", "name")
+            .WithOAuthBearerToken(authenticationToken)
+            .GetJsonAsync<DynamicsLocalAuthority>();
+
+        var localAuthorityResponseModel = modelDefinition.BuildEntity(response);
+
+        return localAuthorityResponseModel;
+    }
+
     public async Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel)
     {
         // var authenticationToken = await GetAuthenticationTokenAsync();

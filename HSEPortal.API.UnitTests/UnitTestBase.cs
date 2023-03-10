@@ -41,7 +41,8 @@ public abstract class UnitTestBase
         TenantId = "1AEA2273-3130-4432-ABB5-9E45BED87E26",
         ClientId = "77C07F1C-2FB1-4C9F-9C99-82C468AF8299",
         ClientSecret = "BA8787F6-C52B-49F8-B1D1-F9E54754EEF7",
-        EmailVerificationFlowUrl = "http://flow_url"
+        EmailVerificationFlowUrl = "http://flow_url",
+        AccountId = "db305f3e-1dad-ed11-83ff-0022481b5e4f"
     };
 
     protected HttpRequestData BuildHttpRequestData<T>(T data, params string[] parameters)
