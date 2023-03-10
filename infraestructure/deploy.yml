@@ -4,7 +4,7 @@ parameters:
 jobs:
   - deployment: Deploy
     displayName: 'Deploy App to ${( variables.env })'
-    environment: ${( variables.env })
+    environment: '${( variables.env })'
     strategy:
       runOnce:
         deploy:
