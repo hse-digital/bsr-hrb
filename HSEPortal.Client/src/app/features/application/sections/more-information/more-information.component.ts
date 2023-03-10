@@ -40,6 +40,9 @@ export class MoreInformationComponent extends BaseComponent implements IHasNextP
   }
 
   getSectionNames(sections: SectionModel[]) {
+    if (sections.length == 1)
+      return sections.map(x => this.getSectionName(x, 0));
+
     return sections.slice(0, sections.length - 1).map((section, index) => this.getSectionName(section, index)).join(', ');
   }
 

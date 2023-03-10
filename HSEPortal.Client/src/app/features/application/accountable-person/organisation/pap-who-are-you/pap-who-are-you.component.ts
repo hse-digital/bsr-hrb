@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
@@ -10,12 +10,17 @@ import { ActingForSameAddressComponent } from '../acting-for-same-address/acting
 @Component({
   templateUrl: './pap-who-are-you.component.html'
 })
-export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage {
+export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'who-are-you';
 
   roleHasErrors = false;
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
+  }
+
+  previousAnswer?: string;
+  ngOnInit(): void {
+    this.previousAnswer = this.applicationService.currentAccountablePerson.Role;
   }
 
   getErrorMessage() {
@@ -25,6 +30,25 @@ export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage
   canContinue(): boolean {
     this.roleHasErrors = !this.applicationService.currentAccountablePerson.Role;
     return !this.roleHasErrors;
+  }
+
+  override async onSave(): Promise<void> {
+    let newAnswer = this.applicationService.currentAccountablePerson.Role;
+    if (this.previousAnswer && this.previousAnswer != newAnswer) {
+      this.returnUrl = undefined;
+
+      this.applicationService.currentAccountablePerson.ActingForAddress = undefined;
+      this.applicationService.currentAccountablePerson.ActingForSameAddress = undefined;
+      this.applicationService.currentAccountablePerson.LeadJobRole = undefined;
+      this.applicationService.currentAccountablePerson.LeadEmail = undefined;
+      this.applicationService.currentAccountablePerson.LeadFirstName = undefined;
+      this.applicationService.currentAccountablePerson.LeadLastName = undefined;
+      this.applicationService.currentAccountablePerson.LeadJobRole = undefined;
+      this.applicationService.currentAccountablePerson.LeadPhoneNumber = undefined;
+
+      await this.applicationService.updateApplication();
+    }
+
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

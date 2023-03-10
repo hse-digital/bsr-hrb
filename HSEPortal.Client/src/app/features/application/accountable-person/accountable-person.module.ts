@@ -12,7 +12,6 @@ import { OrganisationTypeComponent } from 'src/app/features/application/accounta
 import { OrganisationNameComponent } from 'src/app/features/application/accountable-person/organisation/organisation-name/organisation-name.component';
 import { PapWhoAreYouComponent } from 'src/app/features/application/accountable-person/organisation/pap-who-are-you/pap-who-are-you.component';
 import { AccountablePersonCheckAnswersComponent } from 'src/app/features/application/accountable-person/check-answers/check-answers.component';
-import { OrganisationAddressComponent } from 'src/app/features/application/accountable-person/organisation/organisation-address/organisation-address.component';
 import { PrincipleAccountableSelection } from "./principal/principal.component";
 import { ComponentsModule } from "../../../components/components.module";
 import { ApDetailsComponent } from "./ap-details/ap-details.component";
@@ -25,7 +24,6 @@ import { LeadDetailsComponent } from "./organisation/lead-details/lead-details.c
 import { FormsModule } from "@angular/forms";
 import { ApNameComponent } from "./ap-name/ap-name.component";
 import { PapNameComponent } from "./ap-name/pap-name.component";
-import { PapAddressComponent } from "./ap-address/pap-address.component";
 import { PapDetailsComponent } from "./ap-details/pap-details.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { ApAccountableForComponent } from "./accountable-for/accountable-for.component";
@@ -33,6 +31,7 @@ import { OrganisationNamedContactComponent } from "./organisation/named-contact/
 import { OrganisationNamedContactDetailsComponent } from "./organisation/named-contact/named-contact-details.component";
 import { IndividualAnswersComponent } from "./check-answers/individual-answers.component";
 import { OrganisationAnswersComponent } from "./check-answers/organisation-answers.component";
+import { PapAddressComponent } from "./ap-address/pap-address.component";
 
 @Component({
   template: '<router-outlet></router-outlet>'
@@ -75,7 +74,6 @@ const routes = new HseRoutes([
 
     HseRoute.unsafe(OrganisationTypeComponent.route, OrganisationTypeComponent),
     HseRoute.unsafe(OrganisationNameComponent.route, OrganisationNameComponent),
-    HseRoute.unsafe(OrganisationAddressComponent.route, OrganisationAddressComponent),
     HseRoute.unsafe(PapWhoAreYouComponent.route, PapWhoAreYouComponent),
   ]))
 ]);
@@ -90,8 +88,8 @@ const routes = new HseRoutes([
     ApNameComponent,
     PapNameComponent,
     ApAddressComponent,
-    PapAddressComponent,
     ApDetailsComponent,
+    PapAddressComponent,
     PapDetailsComponent,
 
     PrincipleAccountableSelection,
@@ -112,7 +110,6 @@ const routes = new HseRoutes([
 
     OrganisationTypeComponent,
     OrganisationNameComponent,
-    OrganisationAddressComponent,
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

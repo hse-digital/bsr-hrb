@@ -1,5 +1,5 @@
 <govuk-summary-list>
-    <govuk-summary-list-row (onClick)="navigateTo('accountable-person-type')" key="Type" [showAction]=true>{{ap.Type == 'individual' ? 'Individual' : 'Organisation'}}</govuk-summary-list-row>
+    <govuk-summary-list-row (onClick)="goToApType()" key="Type" [showAction]=true>{{ap.Type == 'individual' ? 'Individual' : 'Organisation'}}</govuk-summary-list-row>
 
     <ng-container *ngIf="apIndex == 0">
         <govuk-summary-list-row (onClick)="navigateTo('principal')" key="Are you the principal accountable person?" [showAction]=true>{{ap.IsPrincipal == 'yes' ? 'Yes' : 'No'}}</govuk-summary-list-row>
@@ -13,7 +13,9 @@
         </govuk-summary-list-row>
     </ng-container>
 
-    <govuk-summary-list-row (onClick)="navigateTo('address')" key="{{apIndex == 0 ? ' Your address' : 'Address'}}" [showAction]=true><address-description [address]="ap.Address" /></govuk-summary-list-row>
+    <govuk-summary-list-row (onClick)="navigateTo('address')" key="{{apIndex == 0 ? ' Your address' : 'Address'}}" [showAction]=true>
+        <address-description [address]="ap.Address" />
+    </govuk-summary-list-row>
 
     <ng-container *ngIf="ap.IsPrincipal == 'no'">
         <govuk-summary-list-row (onClick)="navigateTo('pap-name')" key="Principal accountable person's name" [showAction]=true>{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
@@ -33,5 +35,5 @@
         </ng-container>
     </govuk-summary-list-row>
 
-    <govuk-summary-list-row (onClick)="navigateTo('')" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
+    <govuk-summary-list-row (onClick)="addMore()" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
 </govuk-summary-list>

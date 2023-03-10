@@ -7,7 +7,6 @@ import { CompaniesService } from 'src/app/services/companies.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { SocialHousingOrganisationService } from 'src/app/services/social-housing-organisation.service';
 import { ApAddressComponent } from '../../ap-address/ap-address.component';
-import { PapAddressComponent } from '../../ap-address/pap-address.component';
 
 @Component({
   templateUrl: './organisation-name.component.html'
@@ -27,12 +26,7 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let route = PapAddressComponent.route;
-    if (this.applicationService._currentAccountablePersonIndex > 0) {
-      route = ApAddressComponent.route;
-    }
-
-    return navigationService.navigateRelative(route, activatedRoute);
+    return navigationService.navigateRelative(ApAddressComponent.route, activatedRoute);
   }
 
   companies: string[] = [];
