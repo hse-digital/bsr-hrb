@@ -37,38 +37,56 @@ stages:
   variables: 
   - group: HSEPortal-DEV
   jobs:
-    - template: deploy.yml
-      parameters:
-        subscription: 's118-dev-bsr-acs-services'
-    - job: IntegrationTesting
-      dependsOn: Deploy
-      steps:
-      - task: FileTransform@1
-        displayName: 'Set variables for integration testing'
-        inputs:
-          folderPath: '**/HSEPortal.API.IntegrationTests'
-          fileType: 'json'
-          targetFiles: 'appsettings.json'
-      # - task: DotNetCoreCLI@2
-      #   displayName: 'Run Integration Tests'
-      #   inputs:
-      #     command: 'test'
-      #     projects: '**/HSEPortal.API.IntegrationTests.csproj'
+    - deployment: DeployDEV
+      displayName: 'Deploy App To DEV Environment'
+      environment: DEV
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - template: deploy.yml
+                parameters:
+                  subscription: 's118-dev-bsr-acs-services'
+              - task: FileTransform@1
+                displayName: 'Set variables for integration testing'
+                inputs:
+                  folderPath: '**/HSEPortal.API.IntegrationTests'
+                  fileType: 'json'
+                  targetFiles: 'appsettings.json'
+              - task: DotNetCoreCLI@2
+                displayName: 'Run Integration Tests'
+                inputs:
+                  command: 'test'
+                  projects: '**/HSEPortal.API.IntegrationTests.csproj'
         
 - stage: QA
   dependsOn: DEV
   variables: 
   - group: HSEPortal-QA
   jobs:
-    - template: deploy.yml
-      parameters:
-        subscription: 's118-test-bsr-acs-services'
+    - deployment: DeployQA
+      displayName: 'Deploy App To QA Environment'
+      environment: QA
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: deploy.yml
+              parameters:
+                subscription: 's118-test-bsr-acs-services'
         
 - stage: UAT
   dependsOn: QA
   variables: 
   - group: HSEPortal-UAT
   jobs:
-    - template: deploy.yml
-      parameters:
-        subscription: 's118-test-bsr-acs-services'
+    - deployment: DeployUAT
+      displayName: 'Deploy App To UAT Environment'
+      environment: UAT
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - template: deploy.yml
+              parameters:
+                subscription: 's118-test-bsr-acs-services'
