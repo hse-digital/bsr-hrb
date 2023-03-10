@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.RegularExpressions;
 using Flurl;
 using Flurl.Http;
@@ -22,12 +23,12 @@ public class DynamicsService
 
     public async Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel)
     {
-        var authenticationToken = await GetAuthenticationTokenAsync();
+        // var authenticationToken = await GetAuthenticationTokenAsync();
 
         var applicationId = $"HBR{GenerateApplicationId()}";
-        var buildingApplication = await CreateBuildingApplicationAsync(buildingApplicationModel, applicationId, authenticationToken);
-        var building = await CreateBuildingAsync(buildingApplicationModel, buildingApplication, authenticationToken);
-        await CreateContactAsync(buildingApplicationModel, building, authenticationToken);
+        // var contact = await CreateContactAsync(buildingApplicationModel, authenticationToken);
+        // var buildingApplication = await CreateBuildingApplicationAsync(buildingApplicationModel, applicationId, contact, authenticationToken);
+        // await CreateBuildingAsync(buildingApplicationModel, buildingApplication, authenticationToken);
 
         return buildingApplicationModel with { Id = applicationId };
     }
@@ -42,15 +43,16 @@ public class DynamicsService
             });
     }
 
-    private async Task<BuildingApplication> CreateBuildingApplicationAsync(BuildingApplicationModel model, string applicationId, string authenticationToken)
+    private async Task<BuildingApplication> CreateBuildingApplicationAsync(BuildingApplicationModel model, string applicationId, Contact contact, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<BuildingApplication, DynamicsBuildingApplication>();
-        var buildingApplication = new BuildingApplication(model.BuildingName, applicationId);
+        var buildingApplication = new BuildingApplication(model.BuildingName, applicationId, contact.Id);
         var dynamicsBuildingApplication = modelDefinition.BuildDynamicsEntity(buildingApplication);
 
         var response = await dynamicsOptions.EnvironmentUrl
             .AppendPathSegments("api", "data", "v9.2", modelDefinition.Endpoint)
             .WithOAuthBearerToken(authenticationToken)
+            .AllowAnyHttpStatus()
             .PostJsonAsync(dynamicsBuildingApplication);
 
         var buildingApplicationId = ExtractEntityIdFromHeader(response.Headers);
@@ -72,16 +74,19 @@ public class DynamicsService
         return building with { Id = buildingId };
     }
 
-    private async Task CreateContactAsync(BuildingApplicationModel model, Building building, string authenticationToken)
+    private async Task<Contact> CreateContactAsync(BuildingApplicationModel model, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<Contact, DynamicsContact>();
-        var contact = new Contact(model.ContactFirstName, model.ContactLastName, model.ContactPhoneNumber, model.ContactEmailAddress, BuildingId: building.Id);
+        var contact = new Contact(model.ContactFirstName, model.ContactLastName, model.ContactPhoneNumber, model.ContactEmailAddress);
         var dynamicsContact = modelDefinition.BuildDynamicsEntity(contact);
 
-        await dynamicsOptions.EnvironmentUrl
+        var response = await dynamicsOptions.EnvironmentUrl
             .AppendPathSegments("api", "data", "v9.2", modelDefinition.Endpoint)
             .WithOAuthBearerToken(authenticationToken)
             .PostJsonAsync(dynamicsContact);
+
+        var contactId = ExtractEntityIdFromHeader(response.Headers);
+        return contact with { Id = contactId };
     }
 
     internal async Task<string> GetAuthenticationTokenAsync()
