@@ -40,7 +40,7 @@ stages:
     - template: deploy.yml
       parameters:
         subscription: 's118-dev-bsr-acs-services'
-        environmentName: $(env)
+        environmentName: dev
     - job: IntegrationTesting
       dependsOn: Deploy
       steps:
@@ -64,7 +64,7 @@ stages:
     - template: deploy.yml
       parameters:
         subscription: 's118-test-bsr-acs-services'
-        environmentName: $(env)
+        environmentName: qa
         
 - stage: UAT
   dependsOn: QA
@@ -74,4 +74,4 @@ stages:
     - template: deploy.yml
       parameters:
         subscription: 's118-test-bsr-acs-services'
-        environmentName: $(env)
+        environmentName: uat
