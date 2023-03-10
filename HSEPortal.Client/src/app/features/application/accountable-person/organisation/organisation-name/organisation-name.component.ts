@@ -5,6 +5,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { SocialHousingOrganisationService } from 'src/app/services/social-housing-organisation.service';
 import { ApAddressComponent } from '../../ap-address/ap-address.component';
 import { PapAddressComponent } from '../../ap-address/pap-address.component';
 
@@ -16,7 +17,7 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
 
   organisationNameHasErrors = false;
   organisationName?: string;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, private companiesService: CompaniesService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, private companiesService: CompaniesService, private socialHousingOrganisationService: SocialHousingOrganisationService) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
@@ -35,7 +36,13 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
   }
 
   companies: string[] = [];
-  async searchCompanies(company: string) {
+  async searchCompanies(company: string) {    
+    switch (this.applicationService?.currentAccountablePerson?.OrganisationType) {
+      case "housing-association":
+        this.companies = this.socialHousingOrganisationService.getNamesBy(company);
+        return;
+      case "local-authority": return; 
+    }    
     var response = await this.companiesService.SearchCompany(company);
     this.companies = response.Companies.map(x => x.Name);
   }
