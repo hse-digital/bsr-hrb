@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
-import { OrganisationNamesJson } from 'src/assets/json/organisation_names';
+import { SocialHousingOrganisationNamesJson } from 'src/assets/json/social-housing-organisation-names';
 
 @Injectable({ providedIn: 'root' })
 export class SocialHousingOrganisationService {
 
-  constructor() {  }
-
+  constructor() { }
+ 
   getNamesBy(filter: string): string[] {
-    return OrganisationNamesJson.values.map(x => x.organisation_name).filter(x => x.indexOf(filter) > -1);
+    return SocialHousingOrganisationNamesJson.values
+              .map(x => x.organisation_name)
+              .filter(x => x.toLowerCase().indexOf(filter.toLowerCase()) > -1);
   }
 
 }

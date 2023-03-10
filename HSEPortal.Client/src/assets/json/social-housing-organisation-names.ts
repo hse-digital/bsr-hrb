@@ -1,4 +1,4 @@
-export class OrganisationNameModel {
+export class SocialHousingOrganisationNameModel {
   public organisation_name!: string;
   public registration_number!: string;
   public registration_date!: string;
@@ -6,8 +6,8 @@ export class OrganisationNameModel {
   public corporate_form!: string;
 }
 
-export class OrganisationNamesJson {
-  public static readonly values: OrganisationNameModel[] = [
+export class SocialHousingOrganisationNamesJson {
+  public static readonly values: SocialHousingOrganisationNameModel[] = [
     {
       "organisation_name": "20-20 Housing Co-operative Limited",
       "registration_number": "C3489",
