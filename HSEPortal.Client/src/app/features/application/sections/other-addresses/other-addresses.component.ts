@@ -46,7 +46,7 @@ export class SectionOtherAddressesComponent extends BaseComponent implements IHa
         return !this.hasMoreAddressesError;
     }
 
-    navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    async navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
         // section has a single address
         if (this.hasMoreAddresses == 'no') {
             if (this.previousAnswer && this.hasMoreAddresses != this.previousAnswer) {
@@ -68,6 +68,7 @@ export class SectionOtherAddressesComponent extends BaseComponent implements IHa
 
             // user only entered one section so far, create a new one and navigate to floors
             var nextSection = this.applicationService.startNewSection();
+            await this.applicationService.updateApplication();
             return navigationService.navigateRelative(`../${nextSection}/${SectionNameComponent.route}`, activatedRoute);
         }
 
