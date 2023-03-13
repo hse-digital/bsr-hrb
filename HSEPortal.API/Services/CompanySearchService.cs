@@ -44,7 +44,7 @@ public class CompanySearchService
         switch(type)
         {
             case "local-authority": return await this.SearchLocalAuthorityCompany(request, company);
-            case "social-housing": return await this.SearchSocialHousing(request, company);
+            case "housing-association": return await this.SearchSocialHousing(request, company);
         }
         return await this.SearchCompany(request, company);
     }

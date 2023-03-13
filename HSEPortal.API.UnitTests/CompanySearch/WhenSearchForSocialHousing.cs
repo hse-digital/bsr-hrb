@@ -36,7 +36,7 @@ public class WhenSearchForSocialHousing : UnitTestBase
         string[] expectedResponse = BuildResponseJson();
 
         HttpRequestData request = BuildHttpRequestData(new object(), new Parameter[] {
-            new Parameter() { Key = "companyType", Value = "social-housing" },
+            new Parameter() { Key = "companyType", Value = "housing-association" },
             new Parameter() { Key = "company", Value = "aaa" }
         });
 
