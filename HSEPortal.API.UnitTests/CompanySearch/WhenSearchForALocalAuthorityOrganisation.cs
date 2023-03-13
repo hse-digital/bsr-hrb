@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using Azure;
+using Azure.Core;
 using FluentAssertions;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Functions;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -55,10 +57,10 @@ public class WhenSearchForALocalAuthorityOrganisation : UnitTestBase
     [InlineData("")]
     public async Task ShouldNOTCallSearchLocalAuthorityCompanyFunction(string name)
     {
-        await companySearchFunctions.SearchLocalAuthorityCompany(BuildHttpRequestData(new object(), name), name);
+        var response = await companySearchFunctions.SearchLocalAuthorityCompany(BuildHttpRequestData(new object(), name), name);
 
         HttpTest.ShouldNotHaveMadeACall();
-        HttpTest.RespondWith(status: 400);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
 
