@@ -17,16 +17,16 @@ public class CompanySearchService
     private readonly DynamicsService dynamicsService;
     private readonly IMapper mapper;
     private readonly IntegrationsOptions integrationsOptions;
-    private readonly IFileReaderService fileReaderService;
+    public IFileReaderService fileReaderService;
 
     private static SocialHousing[] SocialHousing;
 
 
-    public CompanySearchService(DynamicsService dynamicsService, IOptions<IntegrationsOptions> integrationsOptions, IMapper mapper, IFileReaderService fileReaderService) {
+    public CompanySearchService(DynamicsService dynamicsService, IOptions<IntegrationsOptions> integrationsOptions, IMapper mapper, IFileReaderService fileReaderService = null) {
         this.dynamicsService = dynamicsService;
         this.mapper = mapper;
         this.integrationsOptions = integrationsOptions.Value;
-        this.fileReaderService = fileReaderService;
+        this.fileReaderService = fileReaderService ?? new FileReaderService();
 
         this.GetSocialHousingValues();
     }

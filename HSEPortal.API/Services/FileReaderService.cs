@@ -32,6 +32,7 @@ public class FileReaderService : IFileReaderService
 
     public object DeserializeJsonFile<T>(FileStream stream)
     {
+        if (stream == null) return null;
         return JsonSerializer.Deserialize<T>(stream);
     }
 

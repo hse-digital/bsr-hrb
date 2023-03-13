@@ -31,8 +31,8 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.AddTransient<DynamicsService>();
     serviceCollection.AddTransient<OTPService>();
     serviceCollection.AddTransient<DynamicsModelDefinitionFactory>();
+    // serviceCollection.AddTransient<IFileReaderService>();
     serviceCollection.AddTransient<CompanySearchService>();
-    serviceCollection.AddTransient<FileReaderService>();
 
     serviceCollection.AddSingleton(_ => new MapperConfiguration(config =>
     {
