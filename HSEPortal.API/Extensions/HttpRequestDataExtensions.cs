@@ -1,3 +1,4 @@
+using System.Collections.Specialized;
 using System.Net;
 using System.Text.Json;
 using HSEPortal.API.Functions;
@@ -47,5 +48,10 @@ public static class HttpRequestDataExtensions
         {
             HttpResponse = badRequestResponse
         };
+    }
+
+    public static NameValueCollection GetQueryParameters(this HttpRequestData request)
+    {
+        return System.Web.HttpUtility.ParseQueryString(request.Url.Query);
     }
 }

@@ -10,43 +10,30 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Options;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace HSEPortal.API.Functions;
 
 public class CompanySearchFunctions
 {
-    private readonly IMapper mapper;
-    private readonly IntegrationsOptions integrationsOptions;
-    private readonly DynamicsService dynamicsService;
+    private readonly CompanySearchService companySearchService;
 
-    public CompanySearchFunctions(IOptions<IntegrationsOptions> integrationsOptions, IMapper mapper, DynamicsService dynamicsService)
+    public CompanySearchFunctions(CompanySearchService companySearchService)
     {
-        this.mapper = mapper;
-        this.integrationsOptions = integrationsOptions.Value;
-        this.dynamicsService = dynamicsService;
+        this.companySearchService = companySearchService;
     }
 
     [Function(nameof(SearchCompany))]
-    public async Task<HttpResponseData> SearchCompany([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(SearchCompany)}/{{companyName}}")] HttpRequestData request, string companyName)
+    public async Task<HttpResponseData> SearchCompany([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(SearchCompany)}")] HttpRequestData request)
     {
-        var response = await integrationsOptions.CompaniesHouseEndpoint
-            .AppendPathSegments("advanced-search", "companies")
-            .SetQueryParam("company_name_includes", companyName)
-            .WithBasicAuth(integrationsOptions.CompaniesHouseApiKey, string.Empty)
-            .GetJsonAsync<CompaniesHouseSearchResponse>();
+        var parameters = request.GetQueryParameters();
+        string companyType = parameters["companyType"];
+        string company = parameters["company"];
 
-        var companySearchResponse = mapper.Map<CompanySearchResponse>(response);
-        return await request.CreateObjectResponseAsync(companySearchResponse);
-    }
-
-    [Function(nameof(SearchLocalAuthorityCompany))]
-    public async Task<HttpResponseData> SearchLocalAuthorityCompany([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(SearchLocalAuthorityCompany)}/{{name}}")] HttpRequestData request, string name)
-    {
-        if (name == null || name.Equals(string.Empty))
+        if(companyType == null || companyType.Equals(string.Empty) || company == null || company.Equals(string.Empty))
             return request.CreateResponse(HttpStatusCode.BadRequest);
 
-        LocalAuthority localAuthorityModel = await dynamicsService.SearchLocalAuthority(name);
-
-        return await request.CreateObjectResponseAsync(localAuthorityModel);
+        return await this.companySearchService.SearchCompany(companyType, company, request);
     }
+
 }

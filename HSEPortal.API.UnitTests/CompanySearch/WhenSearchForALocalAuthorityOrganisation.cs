@@ -1,4 +1,5 @@
-﻿using Azure;
+﻿using AutoMapper;
+using Azure;
 using Azure.Core;
 using FluentAssertions;
 using HSEPortal.API.Extensions;
@@ -6,6 +7,7 @@ using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -21,23 +23,29 @@ public class WhenSearchForALocalAuthorityOrganisation : UnitTestBase
 {
     private readonly CompanySearchFunctions companySearchFunctions;
     private const string DynamicsAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkd";
+    private readonly IntegrationsOptions integrationsOptions;
 
     public WhenSearchForALocalAuthorityOrganisation()
     {
-        HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken });
-        companySearchFunctions = new CompanySearchFunctions(new OptionsWrapper<IntegrationsOptions>(null), GetMapper(), DynamicsService);
+        integrationsOptions = new IntegrationsOptions { CompaniesHouseEndpoint = "https://api.company-information.service.gov.uk", CompaniesHouseApiKey = "123" };
+        companySearchFunctions = new CompanySearchFunctions(new CompanySearchService(DynamicsService, new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper()));
+     
+        HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken }); 
     }
 
     [Fact]
     public async Task ShouldCallSearchLocalAuthorityCompanyFunctionToSearchForNames()
     {
-        string name = "test";
-
         var dynamicsLocalAuthorityRequestModel = CreateDynamicsLocalAuthorityResponseModel();
 
         HttpTest.RespondWithJson(dynamicsLocalAuthorityRequestModel);
 
-        var response = await companySearchFunctions.SearchLocalAuthorityCompany(BuildHttpRequestData(new object(), name), name);
+        HttpRequestData request = BuildHttpRequestData(new object(), new Parameter[] {
+            new Parameter() { Key = "companyType", Value = "local-authority" },
+            new Parameter() { Key = "company", Value = "test" }
+        });
+
+        var response = await companySearchFunctions.SearchCompany(request);
 
         var localAuthorityResponseModel = await response.ReadAsJsonAsync<LocalAuthority>();
 
@@ -57,8 +65,13 @@ public class WhenSearchForALocalAuthorityOrganisation : UnitTestBase
     [InlineData("")]
     public async Task ShouldNOTCallSearchLocalAuthorityCompanyFunction(string name)
     {
-        var response = await companySearchFunctions.SearchLocalAuthorityCompany(BuildHttpRequestData(new object(), name), name);
+        HttpRequestData request = BuildHttpRequestData(new object(), new Parameter[] {
+            new Parameter() { Key = "companyType", Value = "local-authority" },
+            new Parameter() { Key = "company", Value = name }
+        });
 
+        var response = await companySearchFunctions.SearchCompany(request);
+        
         HttpTest.ShouldNotHaveMadeACall();
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }

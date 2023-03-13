@@ -4,6 +4,7 @@ using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Model.CompaniesHouse;
 using HSEPortal.API.Services;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Options;
 using Xunit;
 
@@ -18,7 +19,7 @@ public class WhenSearchingForACompany : UnitTestBase
     public WhenSearchingForACompany()
     {
         integrationsOptions = new IntegrationsOptions { CompaniesHouseEndpoint = "https://api.company-information.service.gov.uk", CompaniesHouseApiKey = "123" };
-        companySearchFunctions = new CompanySearchFunctions(new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper(), null);
+        companySearchFunctions = new CompanySearchFunctions(new CompanySearchService(DynamicsService, new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper()));
     }
 
     [Fact]
@@ -26,8 +27,13 @@ public class WhenSearchingForACompany : UnitTestBase
     {
         var companiesResponse = BuildResponseJson();
         HttpTest.RespondWithJson(companiesResponse);
-        
-        await companySearchFunctions.SearchCompany(BuildHttpRequestData(new object(), companyName), companyName);
+
+        HttpRequestData request = BuildHttpRequestData(new object(), new Parameter[] {
+            new Parameter() { Key = "companyType", Value = "other" },
+            new Parameter() { Key = "company", Value = companyName }
+        });
+
+        var response = await companySearchFunctions.SearchCompany(request);
 
         HttpTest.ShouldHaveCalled($"{integrationsOptions.CompaniesHouseEndpoint}/advanced-search/companies")
             .WithQueryParam("company_name_includes", companyName)
@@ -40,8 +46,14 @@ public class WhenSearchingForACompany : UnitTestBase
     {
         var companiesResponse = BuildResponseJson();
         HttpTest.RespondWithJson(companiesResponse);
-        
-        var response = await companySearchFunctions.SearchCompany(BuildHttpRequestData(new object(), companyName), companyName);
+
+        HttpRequestData request = BuildHttpRequestData(new object(), new Parameter[] {
+            new Parameter() { Key = "companyType", Value = "other" },
+            new Parameter() { Key = "company", Value = "test" }
+        });
+
+        var response = await companySearchFunctions.SearchCompany(request);
+
         var responseCompanies = await response.ReadAsJsonAsync<CompanySearchResponse>();
         
         responseCompanies.Results.Should().Be(companiesResponse.hits);

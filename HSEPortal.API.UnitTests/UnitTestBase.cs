@@ -1,5 +1,6 @@
 using System.Text.Json;
 using AutoMapper;
+using Flurl;
 using Flurl.Http;
 using Flurl.Http.Testing;
 using HSEPortal.API.Model.CompaniesHouse;
@@ -50,6 +51,12 @@ public abstract class UnitTestBase
         return BuildHttpRequestDataWithUri(data, new Uri(DynamicsOptions.EnvironmentUrl));
     }
 
+    protected HttpRequestData BuildHttpRequestData<T>(T data, Parameter[] parameters)
+    {
+        Uri uri = new Uri(DynamicsOptions.EnvironmentUrl).SetQueryParams(parameters.Select(p => new { key = p.Key, value = p.Value })).ToUri();
+        return BuildHttpRequestDataWithUri(data, uri);
+    }
+
     protected TestableHttpRequestData BuildHttpRequestDataWithUri<T>(T data, Uri uri)
     {
         var functionContext = new Mock<FunctionContext>();
@@ -77,4 +84,10 @@ public abstract class UnitTestBase
             config.AddProfile<PaymentProfile>();
         }).CreateMapper();
     }
+}
+
+public class Parameter
+{
+    public string Key { get; set; }
+    public string Value { get; set; }
 }
