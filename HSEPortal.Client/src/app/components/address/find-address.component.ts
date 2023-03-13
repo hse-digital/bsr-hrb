@@ -38,7 +38,7 @@ export class FindAddressComponent {
     this.postcodeHasErrors = true;
     if (!postcode) {
       this.postcodeErrorText = 'Enter a postcode';
-    } else if (postcode.length < 5 && postcode.length > 7) {
+    } else if (postcode.length < 5 || postcode.length > 7) {
       this.postcodeErrorText = "Enter a real postcode, like 'EC3A 8BF'.";
     } else {
       this.postcodeHasErrors = false;
