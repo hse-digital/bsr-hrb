@@ -4,7 +4,7 @@
   <govuk-summary-list-row (onClick)="navigateTo('organisation-type')" key="Organisation type" [showAction]=true>{{organisationTypeDescription()}}</govuk-summary-list-row>
   <govuk-summary-list-row (onClick)="navigateTo('organisation-name')" key="Organisation name" [showAction]=true>{{ap.OrganisationName}}</govuk-summary-list-row>
 
-  <govuk-summary-list-row (onClick)="navigateTo('address')" key="Organisation address" [showAction]=true>
+  <govuk-summary-list-row (onClick)="navigateTo('pap-address')" key="Organisation address" [showAction]=true>
     <address-description [address]="apAddress()" />
   </govuk-summary-list-row>
 
