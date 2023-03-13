@@ -6,6 +6,7 @@ using HSEPortal.API.Model.CompaniesHouse;
 using HSEPortal.API.Services;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Options;
+using Moq;
 using Xunit;
 
 namespace HSEPortal.API.UnitTests.CompanySearch;
@@ -19,7 +20,7 @@ public class WhenSearchingForACompany : UnitTestBase
     public WhenSearchingForACompany()
     {
         integrationsOptions = new IntegrationsOptions { CompaniesHouseEndpoint = "https://api.company-information.service.gov.uk", CompaniesHouseApiKey = "123" };
-        companySearchFunctions = new CompanySearchFunctions(new CompanySearchService(DynamicsService, new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper()));
+        companySearchFunctions = new CompanySearchFunctions(new CompanySearchService(DynamicsService, new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper(), new Mock<FileReaderService>().Object));
     }
 
     [Fact]

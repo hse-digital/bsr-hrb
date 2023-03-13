@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Flurl;
 using Flurl.Http;
 using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace HSEPortal.API.Services;
 public class CompanySearchService
@@ -16,12 +17,26 @@ public class CompanySearchService
     private readonly DynamicsService dynamicsService;
     private readonly IMapper mapper;
     private readonly IntegrationsOptions integrationsOptions;
+    private readonly IFileReaderService fileReaderService;
+
+    private static SocialHousing[] SocialHousing;
 
 
-    public CompanySearchService(DynamicsService dynamicsService, IOptions<IntegrationsOptions> integrationsOptions, IMapper mapper) {
+    public CompanySearchService(DynamicsService dynamicsService, IOptions<IntegrationsOptions> integrationsOptions, IMapper mapper, IFileReaderService fileReaderService) {
         this.dynamicsService = dynamicsService;
         this.mapper = mapper;
         this.integrationsOptions = integrationsOptions.Value;
+        this.fileReaderService = fileReaderService;
+
+        this.GetSocialHousingValues();
+    }
+
+    private void GetSocialHousingValues()
+    {
+        if (this.integrationsOptions.SocialHousingFilePath == null || this.integrationsOptions.SocialHousingFilePath.Equals(string.Empty)) return;
+
+        FileStream stream = this.fileReaderService.GetFileStream(this.integrationsOptions.SocialHousingFilePath);
+        SocialHousing = this.fileReaderService.DeserializeJsonFile<SocialHousing[]>(stream) as SocialHousing[];
     }
 
     public async Task<HttpResponseData> SearchCompany(string type, string company, HttpRequestData request)
@@ -29,7 +44,7 @@ public class CompanySearchService
         switch(type)
         {
             case "local-authority": return await this.SearchLocalAuthorityCompany(request, company);
-            case "social-housing": return await this.SearchLocalHousing(request, company);
+            case "social-housing": return await this.SearchSocialHousing(request, company);
         }
         return await this.SearchCompany(request, company);
     }
@@ -59,9 +74,30 @@ public class CompanySearchService
         return await request.CreateObjectResponseAsync(companySearchResponse);
     }
 
-    private async Task<HttpResponseData> SearchLocalHousing(HttpRequestData request, string housingName)
+    private async Task<HttpResponseData> SearchSocialHousing(HttpRequestData request, string name)
     {
-        return null;
+        if (name == null || name.Equals(string.Empty))
+            return request.CreateResponse(HttpStatusCode.BadRequest);
+
+        string[] values = SocialHousing.Where(x => x.organisation_name.ToLower().IndexOf(name.ToLower()) > -1)
+                                       .Select(x => x.organisation_name)
+                                       .ToArray();
+
+        return await request.CreateObjectResponseAsync(new SocialHousingResponse() { SocialHousingNames = values });
     }
 
+}
+
+public class SocialHousingResponse
+{
+    public string[] SocialHousingNames { get; set; }
+}
+
+public class SocialHousing
+{
+    public string organisation_name { get; set; }
+    public string registration_number { get; set; }
+    public string registration_date { get; set; }
+    public string designation { get; set; }
+    public string corporate_form { get; set; }
 }

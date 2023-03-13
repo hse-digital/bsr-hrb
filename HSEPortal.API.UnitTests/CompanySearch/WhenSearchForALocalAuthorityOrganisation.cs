@@ -9,6 +9,7 @@ using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Options;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ public class WhenSearchForALocalAuthorityOrganisation : UnitTestBase
     public WhenSearchForALocalAuthorityOrganisation()
     {
         integrationsOptions = new IntegrationsOptions { CompaniesHouseEndpoint = "https://api.company-information.service.gov.uk", CompaniesHouseApiKey = "123" };
-        companySearchFunctions = new CompanySearchFunctions(new CompanySearchService(DynamicsService, new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper()));
+        companySearchFunctions = new CompanySearchFunctions(new CompanySearchService(DynamicsService, new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper(), new Mock<FileReaderService>().Object));
      
         HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken }); 
     }
