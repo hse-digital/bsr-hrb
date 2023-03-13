@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SocialHousingOrganisationNamesJson } from 'src/assets/json/social-housing-organisation-names';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class SocialHousingOrganisationService {
 
   constructor() { }
