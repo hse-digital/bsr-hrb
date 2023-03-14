@@ -1,9 +1,13 @@
+import { QueryList } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { GovukErrorSummaryComponent } from "hse-angular";
 import { ApplicationService } from "../services/application.service";
 import { NavigationService } from "../services/navigation.service";
 import { IHasNextPage } from "./has-next-page.interface";
 
 export abstract class BaseComponent implements CanActivate {
+
+  summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   returnUrl?: string;
   updateOnSave: boolean = true;
@@ -28,6 +32,8 @@ export abstract class BaseComponent implements CanActivate {
         await this.applicationService.updateApplication();
 
       await this.runInheritances();
+    } else {
+      this.summaryError?.first?.focus();
     }
   }
 

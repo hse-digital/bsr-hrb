@@ -1,17 +1,21 @@
-import { Component } from "@angular/core";
+import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
-import { IHasNextPage } from "../../../../helpers/has-next-page.interface";
+import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 
 @Component({
   templateUrl: './height.component.html',
 })
 export class SectionHeightComponent extends BaseComponent implements IHasNextPage {
 
-  static route: string = 'height';
+    static route: string = 'height';
+
+    @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+
   constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);
   }

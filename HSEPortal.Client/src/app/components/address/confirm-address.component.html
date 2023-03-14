@@ -9,5 +9,5 @@
 </div>
 
 <govuk-button (onClick)="onAddressConfirmed.emit()">Confirm</govuk-button>
-<govuk-body><a class="govuk-link" (click)="onSearchAgain.emit()" role="link">Search again</a></govuk-body>
-<govuk-body><a class="govuk-link" (click)="onEnterManualAddress.emit()" role="link">Enter address manually</a></govuk-body>
+<govuk-body><a class="govuk-link" (keyup.enter)="onSearchAgain.emit()" (click)="onSearchAgain.emit()" role="link" tabindex="0">Search again</a></govuk-body>
+<govuk-body><a class="govuk-link" (keyup.enter)="onEnterManualAddress.emit()" (click)="onEnterManualAddress.emit()" role="link" tabindex="0">Enter address manually</a></govuk-body>

@@ -1,6 +1,6 @@
 <div class="govuk-form-group">
 
-  <govuk-error-summary *ngIf="addressHasErrors" title="There is a problem">
+  <govuk-error-summary *ngIf="addressHasErrors" title="There is a problem" #summaryError>
     <govuk-error-link anchorId="radios-addresses"
                       message="Select an address" />
   </govuk-error-summary>
@@ -13,7 +13,7 @@
 
     <govuk-radio-group [(model)]="selectedAddress" id="radios-addresses"
                        [errorText]="getErrorDescription(addressHasErrors, 'Select an address.')">
-      <govuk-radio *ngFor="let item of addressResponse?.Results; let i = index"
+      <govuk-radio *ngFor="let item of addressResponse?.Results; let i = index" (onKeyupEnter)="continue()"
                    name="application-group" id="address-{{i}}" [value]="item" label="{{ item.Address }}">
       </govuk-radio>
     </govuk-radio-group>
@@ -22,5 +22,5 @@
 </div>
 
 <govuk-button (onClick)="continue()">Save and continue</govuk-button>
-<govuk-body><a class="govuk-link" (click)="onSearchAgain.emit()" role="link">Search again</a></govuk-body>
-<govuk-body><a class="govuk-link" (click)="onEnterManualAddress.emit()" role="link">Enter address manually</a></govuk-body>
+<govuk-body><a class="govuk-link" (keyup.enter)="onSearchAgain.emit()" (click)="onSearchAgain.emit()" role="link" tabindex="0">Search again</a></govuk-body>
+<govuk-body><a class="govuk-link" (keyup.enter)="onEnterManualAddress.emit()" (click)="onEnterManualAddress.emit()" role="link" tabindex="0">Enter address manually</a></govuk-body>

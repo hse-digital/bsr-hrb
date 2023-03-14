@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, QueryList, ViewChildren, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
@@ -6,12 +6,15 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { ApplicationService, SectionModel } from 'src/app/services/application.service';
 import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 
 @Component({
   templateUrl: './name.component.html'
 })
 export class SectionNameComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'name';
+
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   blockNameHasErrors = false;
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {

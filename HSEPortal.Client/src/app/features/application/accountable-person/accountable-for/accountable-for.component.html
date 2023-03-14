@@ -5,7 +5,7 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
 
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
                     <govuk-error-link anchorId="radios-accountable-person" [message]="errorMessage" />
                 </govuk-error-summary>
 
@@ -17,10 +17,10 @@
                     <div class="govuk-!-margin-bottom-6" *ngFor="let section of applicationService.model.Sections; let i = index">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" *ngIf="applicationService.model.NumberOfSections == 'two_or_more'">{{section.Name ?? 'First section'}}</legend>
                         <govuk-checkbox-group [(model)]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!">
-                            <govuk-checkbox [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="External walls and roof" value="external_walls" />
-                            <govuk-checkbox [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="Routes that residents can walk through" value="routes" hint="This includes stairs, lobbies, corridors, and maintaining the internal walls and floors." />
-                            <govuk-checkbox [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="Maintaining plant and equipment" value="maintenance" hint="This includes all utilities, fire alarms, sprinklers, and other fire and smoke provisions." />
-                            <govuk-checkbox [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="Facilities that residents share" value="facilities" hint="This includes underground car parks, laundry rooms, bin stores and other storage areas." />
+                            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="External walls and roof" value="external_walls" />
+                            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="Routes that residents can walk through" value="routes" hint="This includes stairs, lobbies, corridors, and maintaining the internal walls and floors." />
+                            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="Maintaining plant and equipment" value="maintenance" hint="This includes all utilities, fire alarms, sprinklers, and other fire and smoke provisions." />
+                            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="Facilities that residents share" value="facilities" hint="This includes underground car parks, laundry rooms, bin stores and other storage areas." />
                         </govuk-checkbox-group>
                     </div>
 

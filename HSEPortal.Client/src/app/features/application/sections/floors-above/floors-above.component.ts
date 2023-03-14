@@ -1,10 +1,11 @@
-import { Component } from "@angular/core";
+import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
+import { GovukErrorSummaryComponent } from "hse-angular";
 
 @Component({
   templateUrl: './floors-above.component.html'
@@ -12,6 +13,8 @@ import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 export class SectionFloorsAboveComponent extends BaseComponent implements IHasNextPage {
 
   static route: string = 'floors';
+
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   constructor(router: Router, applicationService: ApplicationService, private captionService: CaptionService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);

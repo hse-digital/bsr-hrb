@@ -5,7 +5,7 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link anchorId="who_are_you" [message]="getErrorMessage()" />
         </govuk-error-summary>
 
@@ -15,8 +15,8 @@
             <govuk-body>The named contact is the person we will talk to about building safety issues relating to on behalf of {{applicationService.currentAccountablePerson.OrganisationName}}.</govuk-body>
 
             <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.Role">
-                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}"/>
-                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-registering_for" value="registering_for" label="I am registering for the named contact" class="govuk-radio-no-margin-bottom"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" (onKeyupEnter)="saveAndContinue()"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-registering_for" value="registering_for" label="I am registering for the named contact" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
               </govuk-radio-group>
         </govuk-fieldset> 
       </div>

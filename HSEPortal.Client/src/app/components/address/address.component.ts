@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AddressModel, AddressResponseModel } from 'src/app/services/address.service';
 
 @Component({
@@ -6,6 +6,8 @@ import { AddressModel, AddressResponseModel } from 'src/app/services/address.ser
   templateUrl: './address.component.html'
 })
 export class AddressComponent implements OnInit {
+
+  @ViewChild("backButton") public backButton?: ElementRef;
 
   @Input() searchMode: AddressSearchMode = AddressSearchMode.Building;
   @Input() address?: AddressModel;
@@ -74,6 +76,7 @@ export class AddressComponent implements OnInit {
   private changeStepTo(step: string) {
     this.history.push(this.step);
     this.step = step;
+    this.backButton?.nativeElement?.focus();
   }
 
 }

@@ -1,6 +1,6 @@
 <div class="govuk-form-group">
 
-  <govuk-error-summary *ngIf="postcodeHasErrors" title="There is a problem">
+  <govuk-error-summary *ngIf="postcodeHasErrors" title="There is a problem" #summaryError>
     <govuk-error-link anchorId="input-postcode" message="{{postcodeErrorText}}" />
   </govuk-error-summary>
 
@@ -14,12 +14,14 @@
                  [hint]="postcodeHint()" 
                  [(model)]="searchModel.postcode"
                  [errorText]="getErrorDescription(postcodeHasErrors, postcodeErrorText)"
-                 class="govuk-!-margin-bottom-5 govuk-input--width-10" />
+                 class="govuk-!-margin-bottom-5 govuk-input--width-10"
+                 (onKeyupEnter)="findAddress()" />
 
     <govuk-input id="address-line-one" label="Address line 1 (optional)"
                  hint="For example, '30 St Mary Axe'."
                  [(model)]="searchModel.addressLine1"
-                 class="govuk-!-margin-bottom-5" />
+                 class="govuk-!-margin-bottom-5"
+                 (onKeyupEnter)="findAddress()" />
 
   </govuk-fieldset>
 

@@ -1,7 +1,7 @@
 
 <div class="govuk-form-group">
 
-  <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
     <govuk-error-link *ngIf="errors.lineOneHasErrors" anchorId="input-address-line-one" message="Enter the first line of the address" />
     <govuk-error-link *ngIf="errors.townOrCityHasErrors" anchorId="input-town-or-city" message="Enter a town or city" />
     <govuk-error-link *ngIf="errors.postcode.hasErrors" anchorId="input-postcode" message="{{errors.postcode.errorText}}" />
@@ -15,23 +15,28 @@
     <govuk-input id="address-line-one" label="Address line 1"
                  [(model)]="model.Address"
                  [errorText]="getErrorDescription(errors.lineOneHasErrors, 'Enter the first line of the address')"
-                 class="govuk-!-margin-bottom-5" />
+                 class="govuk-!-margin-bottom-5"
+                 (onKeyupEnter)="confirmAddress()" />
 
     <govuk-input id="address-line-two" label="Address line 2 (optional)"
                  [(model)]="model.AddressLineTwo"
-                 class="govuk-!-margin-bottom-5" />
+                 class="govuk-!-margin-bottom-5"
+                 (onKeyupEnter)="confirmAddress()" />
 
     <govuk-input id="town-or-city" label="Town or city"
                  [(model)]="model.Town"
                  [errorText]="getErrorDescription(errors.townOrCityHasErrors, 'Enter a town or city')"
-                 class="govuk-!-margin-bottom-5 govuk-!-width-two-thirds" />
+                 class="govuk-!-margin-bottom-5 govuk-!-width-two-thirds"
+                 (onKeyupEnter)="confirmAddress()" />
 
     <govuk-input id="postcode" label="Postcode"
                  [(model)]="model.Postcode"
                  [errorText]="getErrorDescription(errors.postcode.hasErrors, errors.postcode.errorText)"
-                 class="govuk-!-margin-bottom-1 govuk-input--width-10" />
+                 class="govuk-!-margin-bottom-1 govuk-input--width-10"
+                 (onKeyupEnter)="confirmAddress()" />
+
   </govuk-fieldset>
 </div>
 
 <govuk-button (onClick)="confirmAddress()">Confirm address</govuk-button>
-<govuk-body><a class="govuk-link" (click)="onSearchAgain.emit()" role="link">Search again</a></govuk-body>
+<govuk-body><a class="govuk-link" (click)="onSearchAgain.emit()" (keyup.enter)="onSearchAgain.emit()" tabindex="0" role="link">Search again</a></govuk-body>
