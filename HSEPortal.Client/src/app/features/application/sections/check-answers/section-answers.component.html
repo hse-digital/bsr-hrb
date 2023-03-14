@@ -11,6 +11,6 @@
         <govuk-summary-list-row (onClick)="navigateToAddress('address', i)" key="Address" [showAction]=true>
             <address-description [address]="address" />
         </govuk-summary-list-row>
-        <govuk-summary-list-row (onClick)="navigateToAddress('other-addresses', i)" key="Add another address?" [showAction]=true>{{i < section.Addresses.length-1 ? 'Yes' : 'No' }}</govuk-summary-list-row>
+        <govuk-summary-list-row *ngIf="section.Addresses.length < 5 || i < section.Addresses.length-1" (onClick)="navigateToAddress('other-addresses', i)" key="Add another address?" [showAction]=true>{{i < section.Addresses.length-1 ? 'Yes' : 'No' }}</govuk-summary-list-row>
     </ng-container>
 </govuk-summary-list>

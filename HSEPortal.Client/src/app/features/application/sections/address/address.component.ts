@@ -7,6 +7,9 @@ import { NavigationService } from "src/app/services/navigation.service";
 import { AddressSearchMode } from "src/app/components/address/address.component";
 import { SectionOtherAddressesComponent } from "../other-addresses/other-addresses.component";
 import { SectionHelper } from "src/app/helpers/section-name-helper";
+import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
+import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
+import { SectionNameComponent } from "../name/name.component";
 
 @Component({
     templateUrl: './address.component.html'
@@ -45,8 +48,18 @@ export class SectionAddressComponent implements OnInit {
 
         if (this.returnUrl) {
             this.navigationService.navigateRelative(`../${this.returnUrl}`, this.activatedRoute);
-        } else {
+        } else if (this.applicationService.currentSection.Addresses.length < 5) {
             this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
+        } else {
+            if (this.applicationService.model.NumberOfSections == 'one') {
+                this.navigationService.navigateRelative(`../${SectionCheckAnswersComponent.route}`, this.activatedRoute);
+            } else if (this.applicationService.model.Sections.length > 1) {
+                this.navigationService.navigateRelative(`../${AddMoreSectionsComponent.route}`, this.activatedRoute);
+            } else {
+                var nextSection = this.applicationService.startNewSection();
+                await this.applicationService.updateApplication();
+                this.navigationService.navigateRelative(`../${nextSection}/${SectionNameComponent.route}`, this.activatedRoute);
+            }
         }
     }
 
