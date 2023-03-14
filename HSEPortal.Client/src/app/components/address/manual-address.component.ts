@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application.service';
 import { AddressModel } from 'src/app/services/address.service';
 import { AddressSearchMode } from './address.component';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 
 @Component({
   selector: 'manual-address',
@@ -24,11 +25,15 @@ export class ManualAddressComponent {
 
   model: AddressModel = { IsManual: true }
 
+  @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
+
   constructor(public applicationService: ApplicationService) { }
 
   confirmAddress() {
     if (this.isModelValid()) {
       this.onAddressEntered.emit(this.model);
+    } else {
+      this.summaryError?.first?.focus();
     }
   }
 

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, QueryList, ViewChildren, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { AccountablePersonModel, ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
@@ -12,6 +13,8 @@ import { OrganisationTypeComponent } from '../organisation/organisation-type/org
 })
 export class AccountablePersonTypeComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'accountable-person-type';
+
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   otherAccountablePersonHasErrors = false;
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {

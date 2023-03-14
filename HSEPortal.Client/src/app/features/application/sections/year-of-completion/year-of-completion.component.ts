@@ -1,12 +1,13 @@
-import { Component } from "@angular/core";
+import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 
 @Component({
-    templateUrl: './year-of-completion.component.html'
+  templateUrl: './year-of-completion.component.html'
 })
 export class SectionYearOfCompletionComponent extends BaseComponent implements IHasNextPage {
     static route: string = 'year-of-completion';
@@ -15,13 +16,15 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
     exactYearHasErrors = false;
     errorMessage = `Select when ${this.sectionBuildingName()} was originally built`;
 
-    constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-        super(router, applicationService, navigationService, activatedRoute);
-    }
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-    canContinue(): boolean {
-        let yearOfCompletionOption = this.applicationService.currentSection.YearOfCompletionOption;
-        let yearOfCompletion = this.applicationService.currentSection.YearOfCompletion;
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(router, applicationService, navigationService, activatedRoute);
+  }
+
+  canContinue(): boolean {
+    let yearOfCompletionOption = this.applicationService.currentSection.YearOfCompletionOption;
+    let yearOfCompletion = this.applicationService.currentSection.YearOfCompletion;
 
         this.exactYearHasErrors = false;
         this.yearOfCompletionHasErrors = false;
@@ -51,14 +54,14 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
         return !this.yearOfCompletionHasErrors && !this.exactYearHasErrors;
     }
 
-    navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-        let route = 'address';
-        if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
-            route = 'year-range';
-        }
-
-        return navigationService.navigateRelative(route, activatedRoute);
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    let route = 'address';
+    if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
+      route = 'year-range';
     }
+
+    return navigationService.navigateRelative(route, activatedRoute);
+  }
 
     radioChange() {
         if (this.applicationService.currentSection.YearOfCompletionOption != 'year-exact') {

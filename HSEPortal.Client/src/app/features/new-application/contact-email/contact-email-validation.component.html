@@ -5,7 +5,7 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem"  #summaryError>
           <govuk-error-link anchorId="input-security-code" [message]="getOtpError()" />
         </govuk-error-summary>
 
@@ -19,7 +19,8 @@
           <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
                        hint="For example, '123456'."
                        [(model)]="otpToken" class="govuk-input--width-10"
-                       [errorText]="getErrorDescription(hasErrors, getOtpError())" />
+                       [errorText]="getErrorDescription(hasErrors, getOtpError())"
+                       (onKeyupEnter)="saveAndContinue()"/>
         </govuk-fieldset>
       </div>
 

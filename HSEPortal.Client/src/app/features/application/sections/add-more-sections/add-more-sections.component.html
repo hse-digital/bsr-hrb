@@ -5,7 +5,7 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link anchorId="fieldset-another-block" message="Select yes if there are more blocks in the building" />
         </govuk-error-summary>
 
@@ -19,8 +19,8 @@
           <govuk-radio-group id="another-block"
                              [(model)]="addAnotherSectionLink"
                              title="Add another high-rise residential structure?" fieldsetClass="govuk-fieldset__legend--s">
-            <govuk-radio name="another-block" id="yes" value="yes" label="Yes" />
-            <govuk-radio name="another-block" id="no" value="no" label="No" />
+            <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="yes" value="yes" label="Yes" />
+            <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="no" value="no" label="No" />
           </govuk-radio-group>
         </govuk-fieldset>
       </div>

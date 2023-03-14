@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -16,6 +16,7 @@ import { AccountablePersonComponent } from '../../accountable-person/accountable
 import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { SectionYearOfCompletionComponent } from '../year-of-completion/year-of-completion.component';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 
 @Component({
   selector: 'hse-check-answers',
@@ -38,6 +39,8 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   sections: SectionModel[] = [];
+
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);

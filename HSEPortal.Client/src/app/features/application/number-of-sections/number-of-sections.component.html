@@ -4,7 +4,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link anchorId="fieldset-number-of-sections" message="Select how many blocks are in this building" />
         </govuk-error-summary>
 
@@ -19,8 +19,8 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Is it a single structure?</legend>
           <govuk-radio-group (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(numberOfSectionsHasErrors, 'Select how many blocks are in this building')"
                              [(model)]="applicationService.model.NumberOfSections">
-            <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-yes" value="one" label="Yes" />
-            <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-no" value="two_or_more" label="No" />
+            <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.model.NumberOfSections" name="application-group" id="application-yes" value="one" label="Yes" />
+            <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.model.NumberOfSections" name="application-group" id="application-no" value="two_or_more" label="No" />
           </govuk-radio-group>
         </govuk-fieldset>
       </div>

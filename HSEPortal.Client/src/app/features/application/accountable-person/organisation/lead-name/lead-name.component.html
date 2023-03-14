@@ -5,7 +5,7 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link *ngIf="firstNameInError" anchorId="input-first-name" message="Enter their first name" />
           <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter their last name" />
         </govuk-error-summary>
@@ -16,11 +16,13 @@
           <govuk-input id="first-name" label="First name" 
                        [(model)]="applicationService.currentAccountablePerson.LeadFirstName"
                        [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
-                       class="govuk-!-margin-bottom-5" />
+                       class="govuk-!-margin-bottom-5"
+                       (onKeyupEnter)="saveAndContinue()" />
 
           <govuk-input id="last-name" label="Last name" 
                        [(model)]="applicationService.currentAccountablePerson.LeadLastName"
-                       [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')" />
+                       [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
+                       (onKeyupEnter)="saveAndContinue()" />
         </govuk-fieldset>
       </div>
 

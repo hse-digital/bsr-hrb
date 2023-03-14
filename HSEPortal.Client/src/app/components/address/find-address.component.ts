@@ -1,7 +1,8 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ViewChildren, QueryList } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application.service';
 import { AddressResponseModel, AddressService } from 'src/app/services/address.service';
 import { AddressSearchMode } from './address.component';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 @Component({
   selector: 'find-address',
   templateUrl: './find-address.component.html'
@@ -18,6 +19,9 @@ export class FindAddressComponent {
   postcodeErrorText: string = '';
 
   loading = false;
+
+  @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
+
   constructor(public applicationService: ApplicationService, private addressService: AddressService) { }
 
   async findAddress() {
@@ -30,6 +34,8 @@ export class FindAddressComponent {
       }
 
       this.onSearchPerformed.emit(addressResponse);
+    } else {
+      this.summaryError?.first?.focus();
     }
   }
 

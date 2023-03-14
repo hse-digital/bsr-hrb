@@ -1,4 +1,4 @@
-<a (click)="navigateBack()" class="govuk-back-link cursor" role="link">Back</a>
+<a (click)="navigateBack()" (keyup.enter)="navigateBack()" class="govuk-back-link cursor" role="link" tabindex="0" #backButton>Back</a>
 
 <div class="govuk-main-wrapper">
   <div class="govuk-grid-row">

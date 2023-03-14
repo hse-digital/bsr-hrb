@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { ApplicationService } from "src/app/services/application.service";
@@ -16,6 +17,8 @@ export class ContinueAnywayComponent extends BaseComponent implements IHasNextPa
     maxCharacters = 300;
     tooManyCharacters: boolean = false;
     emptyReason = true;
+
+    @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
     constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
         super(router, applicationService, navigationService, activatedRoute);

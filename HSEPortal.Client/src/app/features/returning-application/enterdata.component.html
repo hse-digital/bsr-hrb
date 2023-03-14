@@ -1,5 +1,5 @@
 <div class="govuk-form-group">
-    <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
     <govuk-error-link *ngIf="errors.emailAddress.hasError" anchorId="input-email-address" message="{{errors.emailAddress.errorText}}" />
     <govuk-error-link *ngIf="errors.applicationNumber.hasError" anchorId="input-application-number" message="{{errors.applicationNumber.errorText}}" />
   </govuk-error-summary>
@@ -10,13 +10,15 @@
                  [(model)]="emailAddress"
                  (modelChange)="emailAddressChange.emit(emailAddress)"
                  [errorText]="getErrorDescription(errors.emailAddress.hasError, errors.emailAddress.errorText)"
-                 class="govuk-!-margin-bottom-5" />
+                 class="govuk-!-margin-bottom-5"
+                 (onKeyupEnter)="validateAndContinue()"/>
 
     <govuk-input id="application-number" label="Application number" labelClass="govuk-label--s"
                  hint="Find this in the email we sent to you when you began your application. For example, '000123456789'."
                  [(model)]="applicationNumber" class="govuk-input--width-20"
                  (modelChange)="applicationNumberChange.emit(applicationNumber)"
-                 [errorText]="getErrorDescription(errors.applicationNumber.hasError, errors.applicationNumber.errorText)" />
+                 [errorText]="getErrorDescription(errors.applicationNumber.hasError, errors.applicationNumber.errorText)"
+                 (onKeyupEnter)="validateAndContinue()"/>
   </govuk-fieldset>
 </div>
 

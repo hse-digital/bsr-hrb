@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { AddressModel } from "src/app/services/address.service";
@@ -10,9 +10,10 @@ import { SectionHelper } from "src/app/helpers/section-name-helper";
 import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
 import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
 import { SectionNameComponent } from "../name/name.component";
+import { GovukErrorSummaryComponent } from "hse-angular";
 
 @Component({
-    templateUrl: './address.component.html'
+  templateUrl: './address.component.html'
 })
 export class SectionAddressComponent implements OnInit {
     static route: string = 'address';
@@ -34,15 +35,15 @@ export class SectionAddressComponent implements OnInit {
         });
     }
 
-    async updateSectionAddress(address: AddressModel) {
-        if (this.addressIndex) {
-            this.applicationService.currentSection.Addresses[this.addressIndex - 1] = address;
-        } else {
-            if (!this.applicationService.currentSection.Addresses)
-                this.applicationService.currentSection.Addresses = [];
+  async updateSectionAddress(address: AddressModel) {
+    if (this.addressIndex) {
+      this.applicationService.currentSection.Addresses[this.addressIndex - 1] = address;
+    } else {
+      if (!this.applicationService.currentSection.Addresses)
+        this.applicationService.currentSection.Addresses = [];
 
-            this.applicationService.currentSection.Addresses.push(address);
-        }
+      this.applicationService.currentSection.Addresses.push(address);
+    }
 
         await this.applicationService.updateApplication();
 
@@ -63,9 +64,9 @@ export class SectionAddressComponent implements OnInit {
         }
     }
 
-    getAddressSectionName() {
-        if (this.applicationService.model.NumberOfSections == "one")
-            return this.applicationService.model.BuildingName!;
+  getAddressSectionName() {
+    if (this.applicationService.model.NumberOfSections == "one")
+      return this.applicationService.model.BuildingName!;
 
         return this.applicationService.currentSection.Name!;
     }

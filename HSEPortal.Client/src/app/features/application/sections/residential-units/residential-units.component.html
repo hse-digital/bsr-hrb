@@ -5,7 +5,7 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
 
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
                   <govuk-error-link  anchorId="input-height" [message]="errorMessage" />
                 </govuk-error-summary>
 
@@ -18,7 +18,8 @@
                                  labelClass="govuk-label--s" id="height"
                                  [(model)]="applicationService.currentSection.ResidentialUnits"
                                  [errorText]="getErrorDescription(residentialUnitsHasErrors, errorMessage)"
-                                 class="govuk-input--width-4" #height />
+                                 class="govuk-input--width-4" #height
+                                 (onKeyupEnter)="saveAndContinue()"/>
                 </govuk-fieldset>
             </div>
 
