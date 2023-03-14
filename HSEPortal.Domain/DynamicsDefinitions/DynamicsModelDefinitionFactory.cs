@@ -9,7 +9,7 @@ public class DynamicsModelDefinitionFactory
         [typeof(Contact)] = new ContactModelDefinition(),
         [typeof(Building)] = new BuildingModelDefinition(),
         [typeof(Block)] = new BlockModelDefinition(),
-        [typeof(BuildingApplication)] = new BuildingApplicationModelDefinition()
+        [typeof(BuildingApplication)] = new BuildingApplicationModelDefinition(),
     };
 
     public DynamicsModelDefinition<TEntity, TDynamicsEntity> GetDefinitionFor<TEntity, TDynamicsEntity>() where TEntity : Entity 

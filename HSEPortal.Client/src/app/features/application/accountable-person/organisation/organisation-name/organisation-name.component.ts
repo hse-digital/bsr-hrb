@@ -30,7 +30,7 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
 
   companies: string[] = [];
   async searchCompanies(company: string) {
-    var response = await this.companiesService.SearchCompany(company);
+    var response = await this.companiesService.SearchCompany(company, this.applicationService.currentAccountablePerson.OrganisationType!);
     this.companies = response.Companies.map(x => x.Name);
   }
 

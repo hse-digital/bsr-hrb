@@ -8,8 +8,8 @@ import { firstValueFrom } from "rxjs";
 export class CompaniesService {
     constructor(private httpClient: HttpClient) { }
 
-    async SearchCompany(company: string): Promise<CompanySearchResponseModel> {
-        return await firstValueFrom(this.httpClient.get<CompanySearchResponseModel>(`api/SearchCompany/${company}`));
+    async SearchCompany(company: string, companyType: string): Promise<CompanySearchResponseModel> {
+        return await firstValueFrom(this.httpClient.get<CompanySearchResponseModel>(`api/SearchCompany?companyType=${companyType}&company=${company}`));
     }
 }
 

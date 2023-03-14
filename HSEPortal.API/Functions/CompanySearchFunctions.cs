@@ -1,37 +1,31 @@
-using AutoMapper;
-using Flurl;
-using Flurl.Http;
+using System.Net;
 using HSEPortal.API.Extensions;
-using HSEPortal.API.Model;
-using HSEPortal.API.Model.CompaniesHouse;
-using HSEPortal.API.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Options;
+using HSEPortal.API.Services.CompanySearch;
 
 namespace HSEPortal.API.Functions;
 
 public class CompanySearchFunctions
 {
-    private readonly IMapper mapper;
-    private readonly IntegrationsOptions integrationsOptions;
+    private readonly CompanySearchService companySearchService;
 
-    public CompanySearchFunctions(IOptions<IntegrationsOptions> integrationsOptions, IMapper mapper)
+    public CompanySearchFunctions(CompanySearchService companySearchService)
     {
-        this.mapper = mapper;
-        this.integrationsOptions = integrationsOptions.Value;
+        this.companySearchService = companySearchService;
     }
 
     [Function(nameof(SearchCompany))]
-    public async Task<HttpResponseData> SearchCompany([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(SearchCompany)}/{{companyName}}")] HttpRequestData request, string companyName)
+    public async Task<HttpResponseData> SearchCompany([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(SearchCompany)}")] HttpRequestData request)
     {
-        var response = await integrationsOptions.CompaniesHouseEndpoint
-            .AppendPathSegments("advanced-search", "companies")
-            .SetQueryParam("company_name_includes", companyName)
-            .WithBasicAuth(integrationsOptions.CompaniesHouseApiKey, string.Empty)
-            .GetJsonAsync<CompaniesHouseSearchResponse>();
+        var parameters = request.GetQueryParameters();
+        var companyType = parameters["companyType"];
+        var company = parameters["company"];
 
-        var companySearchResponse = mapper.Map<CompanySearchResponse>(response);
-        return await request.CreateObjectResponseAsync(companySearchResponse);
+        if (string.IsNullOrWhiteSpace(companyType) || string.IsNullOrWhiteSpace(company))
+            return request.CreateResponse(HttpStatusCode.BadRequest);
+
+        var companyResponse = await companySearchService.SearchCompany(companyType, company);
+        return await request.CreateObjectResponseAsync(companyResponse);
     }
 }

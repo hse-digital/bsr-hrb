@@ -4,9 +4,11 @@ using AutoMapper;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using HSEPortal.API.Model.CompaniesHouse;
+using HSEPortal.API.Model.LocalAuthority;
 using HSEPortal.API.Model.OrdnanceSurvey;
 using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Services;
+using HSEPortal.API.Services.CompanySearch;
 using HSEPortal.Domain.DynamicsDefinitions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,11 +33,14 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.AddTransient<DynamicsService>();
     serviceCollection.AddTransient<OTPService>();
     serviceCollection.AddTransient<DynamicsModelDefinitionFactory>();
+    serviceCollection.AddTransient<CompanySearchService>();
+    serviceCollection.AddTransient<CompanySearchFactory>();
 
     serviceCollection.AddSingleton(_ => new MapperConfiguration(config =>
     {
         config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>();
         config.AddProfile<CompaniesHouseSearchResponseProfile>();
+        config.AddProfile<LocalAuthoritiesSearchResponseProfile>();
         config.AddProfile<PaymentProfile>();
     }).CreateMapper());
 }
