@@ -23,16 +23,14 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
   }
 
   canContinue(): boolean {
-    this.organisationNameHasErrors = !this.applicationService.currentAccountablePerson.OrganisationName;
-    return !this.organisationNameHasErrors
-  }
-
-  override async onSave(): Promise<void> {
     if (this.searchedCompany) {
       this.applicationService.currentAccountablePerson.OrganisationName = this.searchedCompany;
     }
-  }
 
+    this.organisationNameHasErrors = !this.applicationService.currentAccountablePerson.OrganisationName;
+    return !this.organisationNameHasErrors
+  }
+  
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(PapAddressComponent.route, activatedRoute);
   }
