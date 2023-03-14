@@ -16,7 +16,7 @@ public class CompanySearchFunctions
     }
 
     [Function(nameof(SearchCompany))]
-    public async Task<HttpResponseData> SearchCompany([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(SearchCompany)}")] HttpRequestData request)
+    public async Task<HttpResponseData> SearchCompany([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
     {
         var parameters = request.GetQueryParameters();
         var companyType = parameters["companyType"];

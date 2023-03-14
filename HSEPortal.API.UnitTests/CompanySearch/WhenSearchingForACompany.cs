@@ -68,6 +68,19 @@ public class WhenSearchingForACompany : UnitTestBase
     }
 
     [Fact]
+    public async Task AndCompanyTypeIsCompaniesHouseAndCompanyIsNotFoundShouldReturnEmptyResults()
+    {
+        HttpTest.RespondWith(status: 404);
+        
+        var request = BuildRequestData(companyName, "management-company");
+        var response = await companySearchFunctions.SearchCompany(request);
+        
+        var companySearchResponse = await response.ReadAsJsonAsync<CompanySearchResponse>();
+        companySearchResponse.Results.Should().Be(0);
+        companySearchResponse.Companies.Count.Should().Be(0);
+    }
+
+    [Fact]
     public async Task AndCompanyTypeIsLocalAuthorityShouldCallEndpointToSearchForCompany()
     {
         var localAuthoritySearchResponse = BuildLocalAuthorityResponseJson();

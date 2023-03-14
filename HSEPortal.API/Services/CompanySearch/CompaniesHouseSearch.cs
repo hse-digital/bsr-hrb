@@ -1,3 +1,4 @@
+using System.Net;
 using AutoMapper;
 using Flurl;
 using Flurl.Http;
@@ -23,8 +24,15 @@ public class CompaniesHouseSearch : ISearchCompany
             .AppendPathSegments("advanced-search", "companies")
             .SetQueryParam("company_name_includes", company)
             .WithBasicAuth(integrationsOptions.CompaniesHouseApiKey, string.Empty)
-            .GetJsonAsync<CompaniesHouseSearchResponse>();
+            .AllowHttpStatus(HttpStatusCode.NotFound)
+            .GetAsync();
 
-        return mapper.Map<CompanySearchResponse>(response);
+        if (response.StatusCode == (int)HttpStatusCode.NotFound)
+        {
+            return new CompanySearchResponse();
+        }
+
+        var companies = await response.GetJsonAsync<CompaniesHouseSearchResponse>();
+        return mapper.Map<CompanySearchResponse>(companies);
     }
 }
