@@ -25,7 +25,7 @@ public class DynamicsService
     {
         // var authenticationToken = await GetAuthenticationTokenAsync();
 
-        var applicationId = $"HBR{GenerateApplicationId()}";
+        var applicationId = $"HRB{GenerateApplicationId()}";
         // var contact = await CreateContactAsync(buildingApplicationModel, authenticationToken);
         // var buildingApplication = await CreateBuildingApplicationAsync(buildingApplicationModel, applicationId, contact, authenticationToken);
         // await CreateBuildingAsync(buildingApplicationModel, buildingApplication, authenticationToken);

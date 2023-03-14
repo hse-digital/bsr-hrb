@@ -97,7 +97,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
         var response = await WhenANewBuildingApplicationIsReceived(buildingApplicationModel);
 
         var application = await response.HttpResponse.ReadAsJsonAsync<BuildingApplicationModel>();
-        application.Id.Should().MatchRegex(@"HBR\d{9}");
+        application.Id.Should().MatchRegex(@"HRB\d{9}");
     }
 
     private BuildingApplicationModel GivenABuildingApplicationModel()
