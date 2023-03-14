@@ -24,17 +24,27 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
     return !this.organisationNameHasErrors
   }
 
+  override async onSave(): Promise<void> {
+    if (this.searchedCompany) {
+      this.applicationService.currentAccountablePerson.OrganisationName = this.searchedCompany;
+    }
+  }
+
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(PapAddressComponent.route, activatedRoute);
   }
 
+  searchedCompany?: string;
   companies: string[] = [];
   async searchCompanies(company: string) {
+    this.searchedCompany = company;
+
     var response = await this.companiesService.SearchCompany(company, this.applicationService.currentAccountablePerson.OrganisationType!);
     this.companies = response.Companies.map(x => x.Name);
   }
 
   selectCompanyName(company: string) {
+    this.searchedCompany = undefined;
     this.applicationService.currentAccountablePerson.OrganisationName = company;
   }
 
