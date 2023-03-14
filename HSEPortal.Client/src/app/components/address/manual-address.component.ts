@@ -43,11 +43,11 @@ export class ManualAddressComponent {
   }
 
   private isPostcodeValid(): boolean {
-    let postcode = this.model.Postcode;
+    let postcode = this.model.Postcode?.replace(' ', '');
     this.errors.postcode.hasErrors = true;
     if (!postcode) {
       this.errors.postcode.errorText = 'Enter a postcode';
-    } else if (postcode.replace(' ', '').length != 7) {
+    } else if (postcode.length < 5 || postcode.length > 7) {
       this.errors.postcode.errorText = "Enter a real postcode, like 'EC3A 8BF'.";
     } else {
       this.errors.postcode.hasErrors = false;

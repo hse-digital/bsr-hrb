@@ -8,13 +8,19 @@
           <govuk-error-link anchorId="fieldset-number-of-sections" message="Select how many blocks are in this building" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Is {{applicationService.model.BuildingName}} made up of multiple independent sections?"
+        <govuk-fieldset title="Is {{applicationService.model.BuildingName}} a single high-rise residential structure?"
                         [isPageHeading]=true id="number-of-sections" titleClass='govuk-fieldset__legend--l'
                         class='govuk-!-margin-bottom-4'>
+
+          <govuk-body>A high-rise residential building can contain 1 or more high-rise residential structures.</govuk-body>
+
+          <govuk-inset-text>For example, The Gherkin in London is a single high-rise residential structure</govuk-inset-text>
+
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Is it a single structure?</legend>
           <govuk-radio-group (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(numberOfSectionsHasErrors, 'Select how many blocks are in this building')"
                              [(model)]="applicationService.model.NumberOfSections">
-            <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-yes" value="one" label="Single independent section" hint="All units in the building can be accessed from the same main entrance without having to go though a party wall, walkway, shared lobby or basement." />
-            <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-no" value="two_or_more" label="Multiple independent sections" hint="Some of the units in the building have a different main entrance, or are separated from others by a party wall, walkway, shared lobby or basement." />
+            <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-yes" value="one" label="Yes" />
+            <govuk-radio [model]="applicationService.model.NumberOfSections" name="application-group" id="application-no" value="two_or_more" label="No" />
           </govuk-radio-group>
         </govuk-fieldset>
       </div>
