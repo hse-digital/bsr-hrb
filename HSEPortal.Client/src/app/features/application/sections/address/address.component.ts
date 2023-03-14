@@ -10,7 +10,7 @@ import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections
 import { SectionNameComponent } from "../name/name.component";
 
 @Component({
-  templateUrl: './address.component.html'
+    templateUrl: './address.component.html'
 })
 export class SectionAddressComponent implements OnInit {
     static route: string = 'address';
@@ -32,16 +32,15 @@ export class SectionAddressComponent implements OnInit {
         });
     }
 
-  async updateSectionAddress(address: AddressModel) {
-    if (this.addressIndex) {
-      this.applicationService.currentSection.Addresses[this.addressIndex - 1] = address;
-    } else {
-      if (!this.applicationService.currentSection.Addresses)
-        this.applicationService.currentSection.Addresses = [];
+    async updateSectionAddress(address: AddressModel) {
+        if (this.addressIndex) {
+            this.applicationService.currentSection.Addresses[this.addressIndex - 1] = address;
+        } else {
+            if (!this.applicationService.currentSection.Addresses)
+                this.applicationService.currentSection.Addresses = [];
 
-      this.applicationService.currentSection.Addresses.push(address);
-    }
-
+            this.applicationService.currentSection.Addresses.push(address);
+        }
         await this.applicationService.updateApplication();
 
         if (this.returnUrl) {
@@ -61,9 +60,9 @@ export class SectionAddressComponent implements OnInit {
         }
     }
 
-  getAddressSectionName() {
-    if (this.applicationService.model.NumberOfSections == "one")
-      return this.applicationService.model.BuildingName!;
+    getAddressSectionName() {
+        if (this.applicationService.model.NumberOfSections == "one")
+            return this.applicationService.model.BuildingName!;
 
         return this.applicationService.currentSection.Name!;
     }
