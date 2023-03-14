@@ -4,6 +4,7 @@ using Flurl;
 using Flurl.Http;
 using Flurl.Http.Testing;
 using HSEPortal.API.Model.CompaniesHouse;
+using HSEPortal.API.Model.LocalAuthority;
 using HSEPortal.API.Model.OrdnanceSurvey;
 using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Services;
@@ -43,7 +44,7 @@ public abstract class UnitTestBase
         ClientId = "77C07F1C-2FB1-4C9F-9C99-82C468AF8299",
         ClientSecret = "BA8787F6-C52B-49F8-B1D1-F9E54754EEF7",
         EmailVerificationFlowUrl = "http://flow_url",
-        AccountId = "db305f3e-1dad-ed11-83ff-0022481b5e4f"
+        LocalAuthorityTypeId = "db305f3e-1dad-ed11-83ff-0022481b5e4f"
     };
 
     protected HttpRequestData BuildHttpRequestData<T>(T data, params string[] parameters)
@@ -81,6 +82,7 @@ public abstract class UnitTestBase
         {
             config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>();
             config.AddProfile<CompaniesHouseSearchResponseProfile>();
+            config.AddProfile<LocalAuthoritiesSearchResponseProfile>();
             config.AddProfile<PaymentProfile>();
         }).CreateMapper();
     }

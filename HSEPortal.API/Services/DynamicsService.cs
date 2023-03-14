@@ -1,9 +1,9 @@
-using System.Net;
 using System.Text.RegularExpressions;
 using Flurl;
 using Flurl.Http;
 using Flurl.Util;
 using HSEPortal.API.Model;
+using HSEPortal.API.Model.LocalAuthority;
 using HSEPortal.Domain.DynamicsDefinitions;
 using HSEPortal.Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -21,25 +21,6 @@ public class DynamicsService
         this.dynamicsOptions = dynamicsOptions.Value;
     }
 
-    public async Task<LocalAuthority> SearchLocalAuthority(string name)
-    {
-        string authenticationToken = await GetAuthenticationTokenAsync(); 
-
-        var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<LocalAuthority, DynamicsLocalAuthority>();
-        
-        string filterQuery = $"$filter=_bsr_accounttype_accountid_value eq '{dynamicsOptions.AccountId}' and contains(name, '%{name}%')";
-        var response = await dynamicsOptions.EnvironmentUrl
-            .AppendPathSegments("api", "data", "v9.2", modelDefinition.Endpoint)
-            .SetQueryParam(filterQuery)
-            .SetQueryParam("$select", "name")
-            .WithOAuthBearerToken(authenticationToken)
-            .GetJsonAsync<DynamicsLocalAuthority>();
-
-        var localAuthorityResponseModel = modelDefinition.BuildEntity(response);
-
-        return localAuthorityResponseModel;
-    }
-
     public async Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel)
     {
         // var authenticationToken = await GetAuthenticationTokenAsync();
@@ -54,12 +35,23 @@ public class DynamicsService
 
     public async Task SendVerificationEmail(EmailVerificationModel emailVerificationModel, string otpToken)
     {
-        await dynamicsOptions.EmailVerificationFlowUrl
-            .PostJsonAsync(new
-            {
-                emailAddress = emailVerificationModel.EmailAddress,
-                otp = otpToken
-            });
+        await dynamicsOptions.EmailVerificationFlowUrl.PostJsonAsync(new
+        {
+            emailAddress = emailVerificationModel.EmailAddress,
+            otp = otpToken
+        });
+    }
+
+    public async Task<LocalAuthoritiesSearchResponse> SearchLocalAuthorities(string authorityName)
+    {
+        var authenticationToken = await GetAuthenticationTokenAsync();
+
+        return await dynamicsOptions.EnvironmentUrl
+            .AppendPathSegments("api", "data", "v9.2", "accounts")
+            .SetQueryParam("$filter", $"_bsr_accounttype_accountid_value eq '{dynamicsOptions.LocalAuthorityTypeId}' and contains(name, '{authorityName}')")
+            .SetQueryParam("$select", "name")
+            .WithOAuthBearerToken(authenticationToken)
+            .GetJsonAsync<LocalAuthoritiesSearchResponse>();
     }
 
     private async Task<BuildingApplication> CreateBuildingApplicationAsync(BuildingApplicationModel model, string applicationId, Contact contact, string authenticationToken)

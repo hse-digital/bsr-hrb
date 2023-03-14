@@ -5,20 +5,17 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { SocialHousingOrganisationService } from 'src/app/services/social-housing-organisation.service';
-import { LocalAuthorityService } from 'src/app/services/local-authority.service';
 import { ApAddressComponent } from '../../ap-address/ap-address.component';
 
 @Component({
-  templateUrl: './organisation-name.component.html',
-  providers: [SocialHousingOrganisationService, LocalAuthorityService]
+  templateUrl: './organisation-name.component.html'
 })
 export class OrganisationNameComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'organisation-name';
 
   organisationNameHasErrors = false;
   organisationName?: string;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, private companiesService: CompaniesService, private socialHousingOrganisationService: SocialHousingOrganisationService, private localAuthorityService: LocalAuthorityService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, private companiesService: CompaniesService) {
     super(router, applicationService, navigationService, activatedRoute);
   }
 
@@ -32,16 +29,8 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
   }
 
   companies: string[] = [];
-  async searchCompanies(company: string) {    
-    switch (this.applicationService?.currentAccountablePerson?.OrganisationType) {
-      case "housing-association":
-        this.companies = this.socialHousingOrganisationService.getNamesBy(company);
-        return;
-      case "local-authority":
-        this.companies = await this.localAuthorityService.getNamesBy(company);
-        return; 
-    }    
-    var response = await this.companiesService.SearchCompany(company);
+  async searchCompanies(company: string) {
+    var response = await this.companiesService.SearchCompany(company, this.applicationService.currentAccountablePerson.OrganisationType!);
     this.companies = response.Companies.map(x => x.Name);
   }
 
