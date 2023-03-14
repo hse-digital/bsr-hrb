@@ -47,12 +47,13 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
     return !!this.applicationService.currentSection.PeopleLivingInBuilding;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+  async navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let nextPage = 'more-information';
 
     if (this.addAnotherSectionLink === 'yes') {
       let section = this.applicationService.startNewSection();
       nextPage = `${section}/${SectionNameComponent.route}`;
+      await this.applicationService.updateApplication();
       return navigationService.navigateRelative(nextPage, activatedRoute);
     }
 

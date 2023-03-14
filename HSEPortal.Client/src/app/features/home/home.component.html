@@ -9,7 +9,7 @@
       <div class="govuk-grid-column-two-thirds">
         <govuk-fieldset id="high-rise-building" title="Register a high-rise building" [isPageHeading]=true titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' />
   
-        <govuk-body class="govuk-!-margin-bottom-4">Use this service to apply to register a high-rise building in England.</govuk-body>
+        <govuk-body class="govuk-!-margin-bottom-4">Use this service to apply to register a high-rise residential building in England.</govuk-body>
         
         <govuk-body class="govuk-!-margin-bottom-4">If you are the principal accountable person for a building, or the principal accountable person has authorised you to act for them, you can use this service to:</govuk-body>
         <govuk-list classes='govuk-list--bullet'>
@@ -22,12 +22,24 @@
           <p>If the building has more than one accountable person, then the accountable person for the external common parts of the building will be the principal accountable person.</p>
         </govuk-details>
   
-        <govuk-fieldset id="before-start" title="Before you start" [isPageHeading]=false titleClass='govuk-fieldset__legend--m' />
-  
-        <govuk-body>You need to tell us if the building has multiple independent sections.</govuk-body>
-        <govuk-body>An independent section is any collection of units that are accessed from the same main entrance, or can only be accessed through a party wall, walkway, shared lobby or basement.</govuk-body>
-        <govuk-body>These independent sections may have different names. For example, 'Hawthorn Shopping Centre' and 'Primrose Apartments'.</govuk-body>
-        
+        <govuk-fieldset title="Before you start" [isPageHeading]=false titleClass='govuk-fieldset__legend--m' />
+
+        <govuk-body>A high-rise residential structure has:</govuk-body>
+        <govuk-list classes='govuk-list--bullet'>
+          <govuk-list-item text="at least 7 floors or is at least 18 metres in height" />
+          <govuk-list-item text="at least 2 residential units" />
+        </govuk-list>
+
+        <govuk-body>A high-rise residential building can contain 1 or more high-rise residential structures.</govuk-body>
+
+        <govuk-body>Apply to register 2 or more structures as a single building when they're connected by either:</govuk-body>
+        <govuk-list classes='govuk-list--bullet'>
+          <govuk-list-item text="a walkway, lobby or basement, that contains a residential unit" />
+          <govuk-list-item text="a wall containing normal use doors" />
+        </govuk-list>
+
+        <govuk-body>If your building is made up of more than 1 high-rise residential structure, you must tell us this information for each structure.</govuk-body>
+
         <govuk-body>You must tell us the following information about the building:</govuk-body>
         <govuk-list classes='govuk-list--bullet'>
           <govuk-list-item text="the number of floors at or above ground level" />
@@ -38,7 +50,7 @@
         </govuk-list>
 
         <govuk-body>If your building has multiple independent sections, you must tell us this information for each independent section.</govuk-body>
-        <govuk-body>You will also be asked about the principal accountable person and any other accountable persons we need to know about.</govuk-body>
+        <govuk-body>You will also be asked about the principal accountable person and any other accountable persons.</govuk-body>
         <govuk-body>To complete your application, you must declare that all the information you have told us is correct.</govuk-body>
         <govuk-body>Then you must pay for the application.</govuk-body>
         <govuk-body>After you have paid, we will then ask you for more detailed structure and safety information about the building.</govuk-body>
@@ -52,7 +64,7 @@
         </govuk-button>
 
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">If you need help using this service</legend>
-        <govuk-body><a class="govuk-link" href="https://www.hse.gov.uk/contact/tell-us-about-a-health-and-safety-issue.htm">Contact us</a> if you need help with your application to register a high-rise building.</govuk-body>
+        <govuk-body><a class="govuk-link" href="https://www.hse.gov.uk/contact/tell-us-about-a-health-and-safety-issue.htm">Contact us</a> if you need help with your application to register a high-rise residential building.</govuk-body>
       </div>
 
       <div class="govuk-grid-column-one-third">

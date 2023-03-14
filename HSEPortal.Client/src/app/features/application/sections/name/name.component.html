@@ -9,21 +9,19 @@
           <govuk-error-link *ngIf="blockNameHasErrors" anchorId="input-block-name" message="Enter this block's name" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Tell us the name of one of the independent sections in {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+        <govuk-fieldset title="Tell us the name of one of the high-rise residential structures in {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
 
-          <govuk-body>An independent section is a collection of units in the building that share a main entrance, or can only be accessed by crossing a party wall, walkway, shared lobby or basement.</govuk-body>
-          <govuk-body>This will help you to identify which block we are asking you about later on.</govuk-body>
+          <govuk-body>This will help you to identify which structure we are asking you about later on.</govuk-body>
 
-          <govuk-input id="block-name" label="Section name" labelClass="govuk-label--s"
-                       [(model)]="applicationService.currentSection.Name"
-                       [errorText]="getErrorDescription(blockNameHasErrors, 'Enter this block\'s name')"
-                       (onKeyupEnter)="saveAndContinue()"/>
+          <govuk-body *ngIf="applicationService._currentSectionIndex > 0">So far you have told us about <b>{{getSectionNames()}}</b> <span *ngIf="sections!.length > 1"> and <b>{{getSectionName(sections!.at(-1)!, sections!.length-1)}}</b></span>.</govuk-body>
+
+          <govuk-input id="block-name" (onKeyupEnter)="saveAndContinue()" label="{{getCurrentStructureName()}} structure's name" labelClass="govuk-label--s" [(model)]="applicationService.currentSection.Name" [errorText]="getErrorDescription(blockNameHasErrors, 'Enter this block\'s name')" />
 
         </govuk-fieldset>
       </div>
 
       <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
-      <save-and-come-back/>
+      <save-and-come-back />
     </div>
   </div>
 </div>

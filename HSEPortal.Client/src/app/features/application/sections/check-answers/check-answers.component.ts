@@ -74,19 +74,7 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   getSectionName(sectionIndex: number, section?: SectionModel) {
-    return section?.Name ?? `${this.getBlockIndex(sectionIndex + 1)} section`;
-  }
-
-  getBlockIndex(index: number) {
-    switch (index) {
-      case 1: return 'First';
-      case 2: return 'Second';
-      case 3: return 'Third';
-      case 4: return 'Fourth';
-      case 5: return 'Fifth';
-    }
-
-    return "Last";
+    return section?.Name ?? `${SectionHelper.getSectionCardinalName(sectionIndex)} high-rise residential structure`;
   }
 
   override async onSave(): Promise<void> {

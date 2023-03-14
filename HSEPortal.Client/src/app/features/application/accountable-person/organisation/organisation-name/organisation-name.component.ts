@@ -6,7 +6,6 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CompaniesService } from 'src/app/services/companies.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { ApAddressComponent } from '../../ap-address/ap-address.component';
 import { PapAddressComponent } from '../../ap-address/pap-address.component';
 
 @Component({
@@ -29,12 +28,7 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let route = PapAddressComponent.route;
-    if (this.applicationService._currentAccountablePersonIndex > 0) {
-      route = ApAddressComponent.route;
-    }
-
-    return navigationService.navigateRelative(route, activatedRoute);
+    return navigationService.navigateRelative(PapAddressComponent.route, activatedRoute);
   }
 
   companies: string[] = [];
