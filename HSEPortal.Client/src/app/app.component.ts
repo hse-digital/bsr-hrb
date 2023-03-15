@@ -56,6 +56,7 @@ export class AppComponent {
 
   showCookieBanner: boolean = true;
   showCookieBannerAccepted: boolean = false;
+  showCookieBannerRejected: boolean = false;
   initCookiesBanner() {
     this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
   }
@@ -63,15 +64,23 @@ export class AppComponent {
   cookiesAccepted() {
     this.cookiesBannerService.acceptCookies();
     this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+    this.showCookieBannerRejected = false;
     this.showCookieBannerAccepted = true;
   }
 
   cookiesRejected() {
     this.cookiesBannerService.rejectCookies();
     this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+    this.showCookieBannerRejected = true;
+    this.showCookieBannerAccepted = false;
   }
 
-  hideCookieBannerAccepted() {
+  changeCookies() {
+
+  }
+
+  hideCookieBannerConfirmation() {
+    this.showCookieBannerRejected = false;
     this.showCookieBannerAccepted = false;
   }
 

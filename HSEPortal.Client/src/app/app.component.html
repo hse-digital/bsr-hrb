@@ -8,11 +8,22 @@
   <govuk-cookie-banner *ngIf="showCookieBanner" nameService="Register a high-rise residential building"
                        (cookiesAccepted)="cookiesAccepted()"
                        (cookiesRejected)="cookiesRejected()"
-                       viewCookiesLink="https://www.hse.gov.uk/privacy-cookies.htm"/>
+                       viewCookiesLink="https://www.hse.gov.uk/privacy-cookies.htm" />
 
-  <govuk-cookie-banner-accepted *ngIf="showCookieBannerAccepted"
-                                (hideCookie)="hideCookieBannerAccepted()"
-                                changeCookiesLink="https://www.hse.gov.uk/cookies.htm"/>
+  <govuk-cookie-banner-confirmation *ngIf="showCookieBannerAccepted" (hideCookie)="hideCookieBannerConfirmation()">
+    <govuk-body>
+      You've accepted analytics cookies.
+      You can <a class="govuk-link" href="https://www.hse.gov.uk/cookies.htm" (click)="changeCookies()">change your cookie settings</a> at any time.
+    </govuk-body>
+  </govuk-cookie-banner-confirmation>
+
+  <govuk-cookie-banner-confirmation *ngIf="showCookieBannerRejected" (hideCookie)="hideCookieBannerConfirmation()">
+    <govuk-body>
+      You've rejected analytics cookies.
+      You can <a class="govuk-link" href="https://www.hse.gov.uk/cookies.htm" (click)="changeCookies()">change your cookie settings</a> at any time.
+    </govuk-body>
+  </govuk-cookie-banner-confirmation>
+
 
 </govuk-page>
 
