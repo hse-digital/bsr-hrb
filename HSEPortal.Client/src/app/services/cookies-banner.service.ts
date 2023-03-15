@@ -32,7 +32,7 @@ export class CookiesBannerService {
   }
 
   private initCookiesModel() {
-    let model = this.getCookie("nonEsentialCookies");
+    let model = this.getCookie(this.cookieKey);
     this.cookiesModel = model ? model
       : { showCookies: true, cookiesAccepted: false };
   }
