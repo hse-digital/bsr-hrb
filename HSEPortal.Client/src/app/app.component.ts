@@ -7,7 +7,8 @@ import { CookiesBannerService } from './services/cookies-banner.service';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  providers: [CookiesBannerService]
 })
 export class AppComponent {
 
@@ -29,7 +30,7 @@ export class AppComponent {
     this.router.navigate(['']);
   }
 
-  timeoutContinue()  { 
+  timeoutContinue() {
     this.showTimeoutDialog = false;
     this.initTimer();
   }
