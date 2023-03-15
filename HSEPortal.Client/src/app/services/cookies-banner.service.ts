@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { LocalStorage } from "src/app/helpers/local-storage";
 
 @Injectable({
   providedIn: 'root'
@@ -32,35 +31,31 @@ export class CookiesBannerService {
 
   rejectCookies() {
     if (!this.cookiesModel) this.initCookiesModel();
-    this.cookiesModel.showCookies = false;
-    this.cookiesModel.cookiesAccepted = false;
+    this.cookiesModel.showCookies = this.cookiesModel.cookiesAccepted = false;
     this.setCookie("false");
   }
 
   private initCookiesModel() {
-    this.cookiesModel = this.parseCookie("nonEsentialCookies");
-    if (!this.cookiesModel) {
-      this.cookiesModel = { showCookies: true, cookiesAccepted: false };
-    }
+    let model = this.getCookie("nonEsentialCookies");
+    this.cookiesModel = model ? model
+      : { showCookies: true, cookiesAccepted: false };
   }
 
   private setCookie(value: string) {
     this.Cookies.set(this.cookieKey, value, this.cookieExpiresDays);
   }
 
-  private parseCookie(cookieKey: string) {
+  private getCookie(cookieKey: string) {
     let cookie: string = this.Cookies.get(cookieKey);
     if (cookie) {
-      let value = cookie.substring(cookie.indexOf('=') + 1);
-      this.cookiesModel = {
-        showCookies: value === "true",
+      let value = cookie.substring(cookie.indexOf('=') + 1, cookie.length - 1);
+      return { 
+        showCookies: false,
         cookiesAccepted: value === "true"
       };
     }
-    return this.cookiesModel;
-  }
-
-  
+    return undefined;
+  }  
 }
 
 export class Cookies {
