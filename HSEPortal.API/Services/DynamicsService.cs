@@ -23,12 +23,12 @@ public class DynamicsService
 
     public async Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel)
     {
-        // var authenticationToken = await GetAuthenticationTokenAsync();
+        var authenticationToken = await GetAuthenticationTokenAsync();
 
         var applicationId = $"HRB{GenerateApplicationId()}";
-        // var contact = await CreateContactAsync(buildingApplicationModel, authenticationToken);
-        // var buildingApplication = await CreateBuildingApplicationAsync(buildingApplicationModel, applicationId, contact, authenticationToken);
-        // await CreateBuildingAsync(buildingApplicationModel, buildingApplication, authenticationToken);
+        var building = await CreateBuildingAsync(buildingApplicationModel, authenticationToken);
+        var contact = await CreateContactAsync(buildingApplicationModel, authenticationToken);
+        await CreateBuildingApplicationAsync(buildingApplicationModel, applicationId, contact, building, authenticationToken);
 
         return buildingApplicationModel with { Id = applicationId };
     }
@@ -54,10 +54,10 @@ public class DynamicsService
             .GetJsonAsync<LocalAuthoritiesSearchResponse>();
     }
 
-    private async Task<BuildingApplication> CreateBuildingApplicationAsync(BuildingApplicationModel model, string applicationId, Contact contact, string authenticationToken)
+    private async Task<BuildingApplication> CreateBuildingApplicationAsync(BuildingApplicationModel model, string applicationId, Contact contact, Building building, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<BuildingApplication, DynamicsBuildingApplication>();
-        var buildingApplication = new BuildingApplication(model.BuildingName, applicationId, contact.Id);
+        var buildingApplication = new BuildingApplication(applicationId, contact.Id, building.Id);
         var dynamicsBuildingApplication = modelDefinition.BuildDynamicsEntity(buildingApplication);
 
         var response = await dynamicsOptions.EnvironmentUrl
@@ -70,10 +70,10 @@ public class DynamicsService
         return buildingApplication with { Id = buildingApplicationId };
     }
 
-    private async Task<Building> CreateBuildingAsync(BuildingApplicationModel model, BuildingApplication buildingApplication, string authenticationToken)
+    private async Task<Building> CreateBuildingAsync(BuildingApplicationModel model, string authenticationToken)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<Building, DynamicsBuilding>();
-        var building = new Building(model.BuildingName, BuildingApplicationId: buildingApplication.Id);
+        var building = new Building(model.BuildingName);
         var dynamicsBuilding = modelDefinition.BuildDynamicsEntity(building);
 
         var response = await dynamicsOptions.EnvironmentUrl
