@@ -15,7 +15,7 @@
 
           <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
                                     hint="This is the name of the organisation that is an accountable person."
-                                    [model]="applicationService.currentAccountablePerson.OrganisationName"
+                                    [(model)]="applicationService.currentAccountablePerson.OrganisationName"
                                     [values]="companies" (onDebounce)="searchCompanies($event)" (onSelectedValue)="selectCompanyName($event)"
                                     [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/>
 
