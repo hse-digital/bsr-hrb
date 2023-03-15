@@ -10,7 +10,9 @@
                        (cookiesRejected)="cookiesRejected()"
                        viewCookiesLink="https://www.hse.gov.uk/privacy-cookies.htm"/>
 
-  <govuk-cookie-banner-accepted *ngIf="showCookieBannerAccepted" (hideCookie)="hideCookieBannerAccepted()" />
+  <govuk-cookie-banner-accepted *ngIf="showCookieBannerAccepted"
+                                (hideCookie)="hideCookieBannerAccepted()"
+                                changeCookiesLink="https://www.hse.gov.uk/cookies.htm"/>
 
 </govuk-page>
 
