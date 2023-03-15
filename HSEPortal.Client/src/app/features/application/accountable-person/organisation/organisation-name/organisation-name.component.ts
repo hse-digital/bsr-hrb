@@ -23,29 +23,23 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
   }
 
   canContinue(): boolean {
-    if (this.searchedCompany) {
-      this.applicationService.currentAccountablePerson.OrganisationName = this.searchedCompany;
-    }
-
     this.organisationNameHasErrors = !this.applicationService.currentAccountablePerson.OrganisationName;
     return !this.organisationNameHasErrors
   }
-  
+
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(PapAddressComponent.route, activatedRoute);
   }
 
-  searchedCompany?: string;
   companies: string[] = [];
   async searchCompanies(company: string) {
-    this.searchedCompany = company;
-
-    var response = await this.companiesService.SearchCompany(company, this.applicationService.currentAccountablePerson.OrganisationType!);
-    this.companies = response.Companies.map(x => x.Name);
+    if (company?.length > 2) {
+      var response = await this.companiesService.SearchCompany(company, this.applicationService.currentAccountablePerson.OrganisationType!);
+      this.companies = response.Companies.map(x => x.Name);
+    }
   }
 
   selectCompanyName(company: string) {
-    this.searchedCompany = undefined;
     this.applicationService.currentAccountablePerson.OrganisationName = company;
   }
 
