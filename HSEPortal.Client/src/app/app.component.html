@@ -1,9 +1,17 @@
-<govuk-page [headerTitle]="headerTitle">
-    <govuk-phase-banner tag="Private beta">
-        This is a new service in development - do not take anything you see here as guidance.
-    </govuk-phase-banner>
+<govuk-cookie-banner viewCookiesLink = "https://www.hse.gov.uk/privacy-cookies.htm"
+                    title="Register a high-rise residential building"
+                    class="govuk-width-container"
+                    [showCookieBanner]="showCookieBanner"
+                    (onChangeCookies)="cookiesChanged()"
+                    (onCookiesAccepted)="cookiesAccepted()"
+                    (onCookiesRejected)="cookiesRejected()"/>
 
-    <router-outlet />
+<govuk-page [headerTitle]="headerTitle">
+  <govuk-phase-banner tag="Private beta">
+    This is a new service in development - do not take anything you see here as guidance.
+  </govuk-phase-banner>
+  <router-outlet />
 </govuk-page>
+
 
 <timeout-modal *ngIf="showTimeoutDialog" [delayToTimeout]="120" (onContinueClicked)="timeoutContinue()" (onSaveAndComebackClicked)="timeoutSaveAndComeBack()" (onTimeout)="timeout()" />

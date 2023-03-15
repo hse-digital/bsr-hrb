@@ -1,20 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from './services/application.service';
 import { HeaderTitleService } from './services/headertitle.service';
 import { IdleTimerService } from './services/idle-timer.service';
+import { CookiesBannerService } from './services/cookies-banner.service';
+import { GovukCookieBannerComponent } from 'hse-angular';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  providers: [CookiesBannerService]
 })
 export class AppComponent {
 
   showTimeoutDialog = false;
 
   constructor(private applicationService: ApplicationService,
-    private router: Router, private headerTitleService: HeaderTitleService, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute) {
+    private router: Router, private headerTitleService: HeaderTitleService, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute, private cookiesBannerService: CookiesBannerService) {
     this.initTimer();
+    this.initCookiesBanner();
   }
 
   get headerTitle(): string | undefined {
@@ -27,7 +31,7 @@ export class AppComponent {
     this.router.navigate(['']);
   }
 
-  timeoutContinue()  { 
+  timeoutContinue() {
     this.showTimeoutDialog = false;
     this.initTimer();
   }
@@ -50,5 +54,28 @@ export class AppComponent {
 
   private doesUrlContains(...segment: string[]) {
     return segment.filter(x => window.location.href.indexOf(x) > -1).length > 0;
+  }
+
+  @ViewChild(GovukCookieBannerComponent) cookieBanner?: GovukCookieBannerComponent;
+
+  showCookieBanner: boolean = true;
+  initCookiesBanner() {
+    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+  }
+
+  cookiesAccepted() {
+    this.cookiesBannerService.acceptCookies();
+    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+  }
+
+  cookiesRejected() {
+    this.cookiesBannerService.rejectCookies();
+    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+  }
+
+  cookiesChanged() {
+    this.cookieBanner?.hideCookieBannerConfirmation();
+    this.showCookieBanner = true;
+    this.cookiesBannerService.resetCookies();
   }
 }
