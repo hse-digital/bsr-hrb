@@ -14,7 +14,6 @@ export class CookiesBannerService {
 
   getShowCookiesStatus() {
     if (!this.cookiesModel) this.initCookiesModel();
-
     return this.cookiesModel?.showCookies ?? true;
   }
 
@@ -29,6 +28,11 @@ export class CookiesBannerService {
     if (!this.cookiesModel) this.initCookiesModel();
     this.cookiesModel.showCookies = this.cookiesModel.cookiesAccepted = false;
     this.setCookie("false");
+  }
+
+  resetCookies() {
+    Cookies.set(this.cookieKey, "", -1);
+    this.initCookiesModel();
   }
 
   private initCookiesModel() {

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from './services/application.service';
 import { HeaderTitleService } from './services/headertitle.service';
 import { IdleTimerService } from './services/idle-timer.service';
 import { CookiesBannerService } from './services/cookies-banner.service';
+import { GovukCookieBannerComponent } from 'hse-angular';
 
 @Component({
   selector: 'app-root',
@@ -55,6 +56,8 @@ export class AppComponent {
     return segment.filter(x => window.location.href.indexOf(x) > -1).length > 0;
   }
 
+  @ViewChild(GovukCookieBannerComponent) cookieBanner?: GovukCookieBannerComponent;
+
   showCookieBanner: boolean = true;
   initCookiesBanner() {
     this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
@@ -68,5 +71,11 @@ export class AppComponent {
   cookiesRejected() {
     this.cookiesBannerService.rejectCookies();
     this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+  }
+
+  cookiesChanged() {
+    this.cookieBanner?.hideCookieBannerConfirmation();
+    this.showCookieBanner = true;
+    this.cookiesBannerService.resetCookies();
   }
 }
