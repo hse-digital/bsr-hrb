@@ -4,13 +4,11 @@ import { Injectable } from '@angular/core';
 export class CookiesBannerService {
 
   cookiesModel!: { showCookies: boolean, cookiesAccepted: boolean };
-  private Cookies: Cookies;
 
   cookieKey: string = "nonEsentialCookies";
   cookieExpiresDays = 365;
 
   constructor() {
-    this.Cookies = new Cookies();
     this.initCookiesModel();
   }
 
@@ -40,11 +38,11 @@ export class CookiesBannerService {
   }
 
   private setCookie(value: string) {
-    this.Cookies.set(this.cookieKey, value, this.cookieExpiresDays);
+    Cookies.set(this.cookieKey, value, this.cookieExpiresDays);
   }
 
   private getCookie(cookieKey: string) {
-    let cookie: string = this.Cookies.get(cookieKey);
+    let cookie: string = Cookies.get(cookieKey);
     if (cookie) {
       let value = cookie.substring(cookie.indexOf('=') + 1, cookie.length - 1);
       return { 
@@ -58,23 +56,21 @@ export class CookiesBannerService {
 
 export class Cookies {
 
-  constructor() { }
-
-  set(key: string, value: string, expiresDays?: number) {
+  static set(key: string, value: string, expiresDays?: number) {
     let expires = expiresDays ? this.createExpiresValue(expiresDays) : "";
     this.add(key, value, expires);
   }
 
-  get(key: string): string {
+  static get(key: string): string {
     return document.cookie.split(' ').find(x => x.trim().startsWith(`${key}=`)) ?? "";
   }
 
-  private add(key: string, value: string, expires?: string) {
+  private static add(key: string, value: string, expires?: string) {
     let newCookie = `${key}=${value}${expires ? "; expires=" + expires : ""}`;
     document.cookie = newCookie;
   }
 
-  private createExpiresValue(expiresDays: number) {
+  private static createExpiresValue(expiresDays: number) {
     const d = new Date();
     d.setTime(d.getTime() + (expiresDays * 24 * 60 * 60 * 1000));
     return `expires=${d.toUTCString()}`;
