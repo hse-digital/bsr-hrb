@@ -7,7 +7,8 @@
 
   <govuk-cookie-banner *ngIf="showCookieBanner" nameService="Register a high-rise residential building"
                        (cookiesAccepted)="cookiesAccepted()"
-                       (cookiesRejected)="cookiesRejected()" />
+                       (cookiesRejected)="cookiesRejected()"
+                       viewCookiesLink="https://www.hse.gov.uk/privacy-cookies.htm"/>
 
   <govuk-cookie-banner-accepted *ngIf="showCookieBannerAccepted" (hideCookie)="hideCookieBannerAccepted()" />
 
