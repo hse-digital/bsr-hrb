@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from './services/application.service';
 import { HeaderTitleService } from './services/headertitle.service';
 import { IdleTimerService } from './services/idle-timer.service';
+import { CookiesBannerService } from './services/cookies-banner.service';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +14,9 @@ export class AppComponent {
   showTimeoutDialog = false;
 
   constructor(private applicationService: ApplicationService,
-    private router: Router, private headerTitleService: HeaderTitleService, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute) {
+    private router: Router, private headerTitleService: HeaderTitleService, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute, private cookiesBannerService: CookiesBannerService) {
     this.initTimer();
+    this.initCookiesBanner();
   }
 
   get headerTitle(): string | undefined {
@@ -51,4 +53,26 @@ export class AppComponent {
   private doesUrlContains(...segment: string[]) {
     return segment.filter(x => window.location.href.indexOf(x) > -1).length > 0;
   }
+
+  showCookieBanner: boolean = true;
+  showCookieBannerAccepted: boolean = false;
+  initCookiesBanner() {
+    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+  }
+
+  cookiesAccepted() {
+    this.cookiesBannerService.acceptCookies();
+    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+    this.showCookieBannerAccepted = true;
+  }
+
+  cookiesRejected() {
+    this.cookiesBannerService.rejectCookies();
+    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+  }
+
+  hideCookieBannerAccepted() {
+    this.showCookieBannerAccepted = false;
+  }
+
 }

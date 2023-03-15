@@ -1,9 +1,17 @@
 <govuk-page [headerTitle]="headerTitle">
-    <govuk-phase-banner tag="Private beta">
-        This is a new service in development - do not take anything you see here as guidance.
-    </govuk-phase-banner>
+  <govuk-phase-banner tag="Private beta">
+    This is a new service in development - do not take anything you see here as guidance.
+  </govuk-phase-banner>
 
-    <router-outlet />
+  <router-outlet />
+
+  <govuk-cookie-banner *ngIf="showCookieBanner" nameService="Register a high-rise residential building"
+                       (cookiesAccepted)="cookiesAccepted()"
+                       (cookiesRejected)="cookiesRejected()" />
+
+  <govuk-cookie-banner-accepted *ngIf="showCookieBannerAccepted" (hideCookie)="hideCookieBannerAccepted()" />
+
 </govuk-page>
+
 
 <timeout-modal *ngIf="showTimeoutDialog" [delayToTimeout]="120" (onContinueClicked)="timeoutContinue()" (onSaveAndComebackClicked)="timeoutSaveAndComeBack()" (onTimeout)="timeout()" />

@@ -41,3 +41,8 @@ a.govuk-link, a.govuk-back-link {
   display: flex;
   gap: 20px;
 }
+
+govuk-cookie-banner, govuk-cookie-banner-accepted {
+  position: fixed;
+  bottom: 30px;
+}
