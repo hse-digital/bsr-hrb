@@ -17,6 +17,7 @@ import { AccountablePersonModule } from '../../accountable-person/accountable-pe
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { SectionYearOfCompletionComponent } from '../year-of-completion/year-of-completion.component';
 import { GovukErrorSummaryComponent } from 'hse-angular';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'hse-check-answers',
@@ -41,9 +42,10 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   sections: SectionModel[] = [];
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+    static title: string | undefined;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   async ngOnInit() {

@@ -1,4 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
@@ -19,8 +20,8 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
   multi: boolean = false;
   anySelected = false;
   errorMessage?: string;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {

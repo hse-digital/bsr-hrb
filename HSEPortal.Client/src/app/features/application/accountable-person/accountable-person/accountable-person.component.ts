@@ -8,6 +8,7 @@ import { GovukErrorSummaryComponent } from 'hse-angular';
 import { PrincipleAccountableSelection } from '../principal/principal.component';
 import { OrganisationTypeComponent } from '../organisation/organisation-type/organisation-type.component';
 import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   templateUrl: './accountable-person.component.html'
@@ -18,8 +19,8 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   accountablePersonHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   previousAnswer?: string;

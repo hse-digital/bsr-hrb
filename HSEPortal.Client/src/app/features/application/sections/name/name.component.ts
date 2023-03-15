@@ -7,23 +7,26 @@ import { ApplicationService, SectionModel } from 'src/app/services/application.s
 import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { GovukErrorSummaryComponent } from 'hse-angular';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   templateUrl: './name.component.html'
 })
 export class SectionNameComponent extends BaseComponent implements IHasNextPage, OnInit {
+
   static route: string = 'name';
+  static title: string = "";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   blockNameHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   sections: SectionModel[] = [];
   ngOnInit(): void {
-    this.sections = this.applicationService.model.Sections.slice(0, this.applicationService.model.Sections.length-1);
+    this.sections = this.applicationService.model.Sections.slice(0, this.applicationService.model.Sections.length - 1);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

@@ -1,4 +1,5 @@
 import { QueryList } from "@angular/core";
+import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { ApplicationService } from "../services/application.service";
@@ -11,7 +12,7 @@ export abstract class BaseComponent implements CanActivate {
 
   returnUrl?: string;
   updateOnSave: boolean = true;
-  constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute) {
+  constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute, protected titleService: Title) {
     this.activatedRoute.queryParams.subscribe(params => {
       this.returnUrl = params['return'];
     });
@@ -34,6 +35,7 @@ export abstract class BaseComponent implements CanActivate {
       await this.runInheritances();
     } else {
       this.summaryError?.first?.focus();
+      this.titleService.setTitle(`Error: ${this.titleService.getTitle()}`);
     }
   }
 

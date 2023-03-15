@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
@@ -13,8 +14,8 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
   static route: string = 'declaration';
 
   loading = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, public paymentService: PaymentService) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, public paymentService: PaymentService, titleService: Title) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   async ngOnInit() {

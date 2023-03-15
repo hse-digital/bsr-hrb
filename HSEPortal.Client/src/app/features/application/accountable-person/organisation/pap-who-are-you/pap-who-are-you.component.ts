@@ -7,6 +7,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { PapNamedRoleComponent } from '../pap-named-role/pap-named-role.component';
 import { ActingForSameAddressComponent } from '../acting-for-same-address/acting-for-same-address.component';
 import { GovukErrorSummaryComponent } from 'hse-angular';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   templateUrl: './pap-who-are-you.component.html'
@@ -17,8 +18,8 @@ export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   roleHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   previousAnswer?: string;

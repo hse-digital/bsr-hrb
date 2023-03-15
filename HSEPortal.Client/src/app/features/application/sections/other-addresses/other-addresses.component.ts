@@ -1,4 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
@@ -16,14 +17,15 @@ import { SectionNameComponent } from "../name/name.component";
 })
 export class SectionOtherAddressesComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'other-addresses';
+  static title: string = "Does the section have another address? - Register a high-rise building - GOV.UK";
 
   hasMoreAddressesError = false;
   hasMoreAddresses?: string;
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   private previousAnswer?: string;
