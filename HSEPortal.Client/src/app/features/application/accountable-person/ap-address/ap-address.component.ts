@@ -9,6 +9,7 @@ import { ApAccountableForComponent } from "../accountable-for/accountable-for.co
 import { AddAccountablePersonComponent } from "../add-accountable-person/add-accountable-person.component";
 import { PapNameComponent } from "../ap-name/pap-name.component";
 import { PapWhoAreYouComponent } from "../organisation/pap-who-are-you/pap-who-are-you.component";
+import { PapAddressComponent } from "./pap-address.component";
 
 @Component({
   selector: 'ap-address',
@@ -16,7 +17,10 @@ import { PapWhoAreYouComponent } from "../organisation/pap-who-are-you/pap-who-a
 })
 export class ApAddressComponent implements OnInit {
   static route: string = 'address';
-  static title: string = '';
+
+  static title: string = "Find the address of the AP - Register a high-rise building - GOV.UK";
+  static selectTitle: string = "Select the AP's address - Register a high-rise building - GOV.UK";
+  static confirmTitle: string = "Confirm the AP's address - Register a high-rise building - GOV.UK";
 
   searchMode = AddressSearchMode.PostalAddress;
 
@@ -80,35 +84,15 @@ export class ApAddressComponent implements OnInit {
     this.navigationService.navigateRelative(ApAccountableForComponent.route, this.activatedRoute);
   }
 
-
-  private titles = {
-    ap: {
-      title: "Find the address of the AP - Register a high-rise building - GOV.UK",
-      selectTitle: "Select the AP's address - Register a high-rise building - GOV.UK",
-      confirmTitle: "Confirm the AP's address - Register a high-rise building - GOV.UK"
-    },
-    pap: {
-      title: "Find the address of the PAP - Register a high-rise building - GOV.UK",
-      selectTitle: "Select the PAP's address - Register a high-rise building - GOV.UK",
-      confirmTitle: "Confirm the PAP's address - Register a high-rise building - GOV.UK"
-    }
-  }
-
   changeStep(event: any) {
     switch (event) {
       case "select":
-        this.titleService.setTitle(this.pap
-          ? this.titles.pap.selectTitle
-          : this.titles.ap.selectTitle);
+        this.titleService.setTitle(this.pap ? PapAddressComponent.selectTitle : ApAddressComponent.selectTitle);
         return;
-      case "confirm": this.titleService.setTitle(this.pap
-        ? this.titles.pap.confirmTitle
-        : this.titles.ap.confirmTitle);
+      case "confirm": this.titleService.setTitle(this.pap ? PapAddressComponent.confirmTitle : ApAddressComponent.confirmTitle);
         return;
     }
-    this.titleService.setTitle(this.pap
-      ? this.titles.pap.title
-      : this.titles.ap.title);
+    this.titleService.setTitle(this.pap ? PapAddressComponent.title : ApAddressComponent.title);
   }
 
 }
