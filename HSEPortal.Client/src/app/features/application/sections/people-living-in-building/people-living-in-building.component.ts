@@ -14,8 +14,9 @@ import { TitleService } from 'src/app/services/title.service';
 })
 export class SectionPeopleLivingInBuildingComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'people-living';
-    @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-    static title: string | undefined;
+  static title: string = "Is people living in building? - Register a high-rise building - GOV.UK";
+
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
