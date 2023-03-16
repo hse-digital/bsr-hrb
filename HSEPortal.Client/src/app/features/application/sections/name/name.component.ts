@@ -7,7 +7,7 @@ import { ApplicationService, SectionModel } from 'src/app/services/application.s
 import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { GovukErrorSummaryComponent } from 'hse-angular';
-import { Title } from '@angular/platform-browser';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './name.component.html'
@@ -20,7 +20,7 @@ export class SectionNameComponent extends BaseComponent implements IHasNextPage,
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   blockNameHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

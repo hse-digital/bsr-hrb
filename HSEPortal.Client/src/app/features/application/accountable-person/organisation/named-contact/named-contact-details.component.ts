@@ -1,5 +1,5 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
-import { Title } from "@angular/platform-browser";
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
@@ -15,10 +15,11 @@ import { AddAccountablePersonComponent } from "../../add-accountable-person/add-
 })
 export class OrganisationNamedContactDetailsComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'named-contact-details';
+  static title: string = "";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

@@ -7,18 +7,19 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { PapNamedRoleComponent } from '../pap-named-role/pap-named-role.component';
 import { ActingForSameAddressComponent } from '../acting-for-same-address/acting-for-same-address.component';
 import { GovukErrorSummaryComponent } from 'hse-angular';
-import { Title } from '@angular/platform-browser';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './pap-who-are-you.component.html'
 })
 export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'who-are-you';
+  static title: string = "What is your role at PAP organisation? - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   roleHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

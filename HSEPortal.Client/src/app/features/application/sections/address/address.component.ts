@@ -8,7 +8,7 @@ import { SectionOtherAddressesComponent } from "../other-addresses/other-address
 import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
 import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
 import { SectionNameComponent } from "../name/name.component";
-import { Title } from "@angular/platform-browser";
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './address.component.html'
@@ -21,7 +21,7 @@ export class SectionAddressComponent implements OnInit {
 
   searchMode = AddressSearchMode.Building;
 
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, titleService: TitleService) {
   }
 
   private addressIndex?: number;

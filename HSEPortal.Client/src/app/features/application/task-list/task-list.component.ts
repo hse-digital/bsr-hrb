@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList, Type, ViewChildren } from "@angular/core";
-import { Title } from "@angular/platform-browser";
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
@@ -17,13 +17,14 @@ import { PaymentModule } from "../payment/payment.module";
 export class ApplicationTaskListComponent extends BaseComponent implements OnInit {
 
   static route: string = '';
+  static title: string = "Registration task list - Register a high-rise building - GOV.UK";
 
   applicationStatus = BuildingApplicationStatus;
   completedSections: number = 0;
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

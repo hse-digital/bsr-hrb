@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 })
 export class HomeComponent  {
   public static route: string = "";
+  static title: string = "Start - Register a high-rise building - GOV.UK";
 
   constructor() { }
 

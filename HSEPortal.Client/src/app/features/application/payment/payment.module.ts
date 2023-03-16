@@ -9,8 +9,8 @@ import { PaymentDeclarationComponent } from './payment-declaration/payment-decla
 import { ComponentsModule } from "src/app/components/components.module";
 
 const routes = new HseRoutes([
-  HseRoute.unsafe(PaymentDeclarationComponent.route, PaymentDeclarationComponent),
-  HseRoute.unsafe(PaymentConfirmationComponent.route, PaymentConfirmationComponent),  
+  HseRoute.unsafe(PaymentDeclarationComponent.route, PaymentDeclarationComponent, undefined, PaymentDeclarationComponent.title),
+  HseRoute.unsafe(PaymentConfirmationComponent.route, PaymentConfirmationComponent, undefined, PaymentConfirmationComponent.title),  
 ]);
 
 @NgModule({

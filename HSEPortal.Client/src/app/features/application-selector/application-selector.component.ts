@@ -9,6 +9,7 @@ export class ApplicationSelectorComponent {
 
   constructor(private applicationService: ApplicationService, private router: Router){}
   static route: string = "select";
+  static title: string = "Your application - Register a high-rise building - GOV.UK";
   
   continueLink?: string;
   showError: boolean = false;

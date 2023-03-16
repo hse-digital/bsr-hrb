@@ -1,11 +1,11 @@
 import { Component, QueryList, ViewChildren, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { AccountablePersonModel, ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { IHasNextPage } from '../../../../helpers/has-next-page.interface';
+import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApNameComponent } from '../ap-name/ap-name.component';
 import { OrganisationTypeComponent } from '../organisation/organisation-type/organisation-type.component';
 
@@ -14,11 +14,12 @@ import { OrganisationTypeComponent } from '../organisation/organisation-type/org
 })
 export class AccountablePersonTypeComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'accountable-person-type';
+  static title: string = "AP Type - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   otherAccountablePersonHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

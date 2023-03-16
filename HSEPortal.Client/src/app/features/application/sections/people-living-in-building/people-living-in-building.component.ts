@@ -7,7 +7,7 @@ import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
 import { GovukErrorSummaryComponent } from "hse-angular";
-import { Title } from "@angular/platform-browser";
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
@@ -17,7 +17,7 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
     @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
     static title: string | undefined;
 
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

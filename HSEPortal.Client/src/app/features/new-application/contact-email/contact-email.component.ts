@@ -6,7 +6,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { EmailValidator } from 'src/app/helpers/validators/email-validator';
 import { GovukErrorSummaryComponent } from 'hse-angular';
-import { Title } from '@angular/platform-browser';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './contact-email.component.html'
@@ -17,7 +17,7 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
     this.updateOnSave = false;
   }
@@ -42,6 +42,7 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
       await this.navigateToNextPage(this.navigationService, this.activatedRoute);
     } else {
       this.summaryError?.first?.focus();
+      this.titleService.setTitleError();
     }
   }
 

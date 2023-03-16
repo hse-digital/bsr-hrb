@@ -16,10 +16,10 @@ import { PaymentModule } from "./payment/payment.module";
 import { ComponentsModule } from "src/app/components/components.module";
 
 const routes = new HseRoutes([
-  HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent),
-  HseRoute.protected(NumberOfSectionsComponment.route, NumberOfSectionsComponment),
-  HseRoute.unsafe(BuildingOutOfScopeComponent.route, BuildingOutOfScopeComponent),
-  HseRoute.unsafe(ContinueAnywayComponent.route, ContinueAnywayComponent),
+  HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent, ApplicationTaskListComponent.title),
+  HseRoute.protected(NumberOfSectionsComponment.route, NumberOfSectionsComponment, NumberOfSectionsComponment.title),
+  HseRoute.unsafe(BuildingOutOfScopeComponent.route, BuildingOutOfScopeComponent, undefined, BuildingOutOfScopeComponent.title),
+  HseRoute.unsafe(ContinueAnywayComponent.route, ContinueAnywayComponent, undefined, ContinueAnywayComponent.title),
   HseRoute.forLoadChildren(SectionsModule.baseRoute, () => import('./sections/sections.module').then(m => m.SectionsModule)),
   HseRoute.forLoadChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
   HseRoute.forLoadChildren(PaymentModule.baseRoute, () => import('./payment/payment.module').then(m => m.PaymentModule)),

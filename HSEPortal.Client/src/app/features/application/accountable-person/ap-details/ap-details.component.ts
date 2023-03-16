@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
-import { Title } from "@angular/platform-browser";
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
@@ -11,20 +11,21 @@ import { NavigationService } from "src/app/services/navigation.service";
 import { ApAddressComponent } from "../ap-address/ap-address.component";
 
 @Component({
-    selector: 'ap-details',
-    templateUrl: './ap-details.component.html'
+  selector: 'ap-details',
+  templateUrl: './ap-details.component.html'
 })
 export class ApDetailsComponent extends BaseComponent implements IHasNextPage, OnInit {
-    static route: string = 'details';
+  static route: string = 'details';
+  static title: string = "AP individual contact details - Register a high-rise building - GOV.UK";
 
-    @Input() nextRoute?: string;
-    @Input() pap: boolean = false;
+  @Input() nextRoute?: string;
+  @Input() pap: boolean = false;
 
-    @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
-    }
+  }
 
   papName?: string;
   ngOnInit(): void {
@@ -81,7 +82,7 @@ export class ApDetailsComponent extends BaseComponent implements IHasNextPage, O
     return !this.errors.phoneNumber.hasErrors;
   }
 
-    navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-        return navigationService.navigateRelative(this.nextRoute ?? ApAddressComponent.route, activatedRoute);
-    }
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return navigationService.navigateRelative(this.nextRoute ?? ApAddressComponent.route, activatedRoute);
+  }
 }

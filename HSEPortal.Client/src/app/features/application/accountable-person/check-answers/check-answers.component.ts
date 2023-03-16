@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
@@ -15,9 +15,10 @@ import { PaymentModule } from 'src/app/features/application/payment/payment.modu
 })
 export class AccountablePersonCheckAnswersComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'check-answers';
+  static title: string = "Check your answers for PAP and AP - Register a high-rise building - GOV.UK";
 
   aps: AccountablePersonModel[] = [];
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

@@ -9,18 +9,18 @@ import { SectionCheckAnswersComponent } from '../check-answers/check-answers.com
 import { SectionNameComponent } from '../name/name.component';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { GovukErrorSummaryComponent } from 'hse-angular';
-import { Title } from '@angular/platform-browser';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './add-more-sections.component.html'
 })
 export class AddMoreSectionsComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'add-more'
-  static title: string = "Count the number of sections in your building - Register a high-rise building - GOV.UK";
+  static title: string = "";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
     
   }

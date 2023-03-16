@@ -17,7 +17,7 @@ import { AccountablePersonModule } from '../../accountable-person/accountable-pe
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { SectionYearOfCompletionComponent } from '../year-of-completion/year-of-completion.component';
 import { GovukErrorSummaryComponent } from 'hse-angular';
-import { Title } from '@angular/platform-browser';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'hse-check-answers',
@@ -27,6 +27,7 @@ import { Title } from '@angular/platform-browser';
 })
 export class SectionCheckAnswersComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'check-answers';
+  static title: string = "Registration task list - Register a high-rise building - GOV.UK";
 
   URLs = {
     floorsAbove: SectionFloorsAboveComponent.route,
@@ -42,9 +43,8 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   sections: SectionModel[] = [];
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-    static title: string | undefined;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

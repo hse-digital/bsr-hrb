@@ -8,18 +8,19 @@ import { GovukErrorSummaryComponent } from 'hse-angular';
 import { PrincipleAccountableSelection } from '../principal/principal.component';
 import { OrganisationTypeComponent } from '../organisation/organisation-type/organisation-type.component';
 import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
-import { Title } from '@angular/platform-browser';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './accountable-person.component.html'
 })
 export class AccountablePersonComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = '';
+  static title: string = "Is the principal accountable person for an organisation or an individual? - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   accountablePersonHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

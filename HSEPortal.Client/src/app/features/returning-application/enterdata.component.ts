@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, QueryList, ViewChildren } from "@angular/core";
+import { TitleService } from 'src/app/services/title.service';
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { ApplicationService } from "src/app/services/application.service";
 
@@ -26,7 +27,7 @@ export class ReturningApplicationEnterDataComponent {
 
   @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(private applicationService: ApplicationService) { }
+  constructor(private applicationService: ApplicationService, private titleService: TitleService) { }
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
     return this.hasErrors && showError ? errorMessage : undefined;
@@ -45,6 +46,7 @@ export class ReturningApplicationEnterDataComponent {
       this.onContinue.emit({ emailAddress: this.emailAddress!, applicationNumber: this.applicationNumber! });
     } else {
       this.summaryError?.first?.focus();
+      this.titleService.setTitleError();      
     }
 
     this.sendingRequest = false;

@@ -11,6 +11,8 @@ import { LeadNameComponent } from "../lead-name/lead-name.component";
 })
 export class ActingForAddressComponent implements OnInit {
   static route: string = 'acting-for-address';
+  static title: string = "";
+
   searchMode = AddressSearchMode.PostalAddress;
 
   constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {

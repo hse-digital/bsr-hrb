@@ -6,7 +6,7 @@ import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { GovukErrorSummaryComponent } from "hse-angular";
-import { Title } from "@angular/platform-browser";
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './floors-above.component.html'
@@ -18,7 +18,7 @@ export class SectionFloorsAboveComponent extends BaseComponent implements IHasNe
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, private captionService: CaptionService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: Title) {
+  constructor(router: Router, applicationService: ApplicationService, private captionService: CaptionService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
