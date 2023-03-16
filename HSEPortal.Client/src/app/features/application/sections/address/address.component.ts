@@ -16,12 +16,13 @@ import { TitleService } from 'src/app/services/title.service';
 export class SectionAddressComponent implements OnInit {
   static route: string = 'address';
 
-  // Move to Address component
-  static title: string = "Find the address of the section - Register a high-rise building - GOV.UK";
+  static title: string = 'Find the address of the section - Register a high-rise building - GOV.UK';
+  static selectTitle: string = 'Select the section address - Register a high-rise building - GOV.UK';
+  static confirmTitle: string = 'Confirm the section address - Register a high-rise building - GOV.UK';
 
   searchMode = AddressSearchMode.Building;
 
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, titleService: TitleService) {
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private titleService: TitleService) {
   }
 
   private addressIndex?: number;
@@ -70,6 +71,16 @@ export class SectionAddressComponent implements OnInit {
       return this.applicationService.model.BuildingName!;
 
     return this.applicationService.currentSection.Name!;
+  }
+
+  changeStep(event: any) {
+    switch (event) {
+      case "select": this.titleService.setTitle(SectionAddressComponent.selectTitle);
+        return;
+      case "confirm": this.titleService.setTitle(SectionAddressComponent.confirmTitle);
+        return;
+    }
+    this.titleService.setTitle(SectionAddressComponent.title);
   }
 
 }

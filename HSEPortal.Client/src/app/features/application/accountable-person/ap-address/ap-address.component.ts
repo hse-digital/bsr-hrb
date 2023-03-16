@@ -4,6 +4,7 @@ import { AddressSearchMode } from "src/app/components/address/address.component"
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from "src/app/services/title.service";
 import { ApAccountableForComponent } from "../accountable-for/accountable-for.component";
 import { AddAccountablePersonComponent } from "../add-accountable-person/add-accountable-person.component";
 import { PapNameComponent } from "../ap-name/pap-name.component";
@@ -15,13 +16,13 @@ import { PapWhoAreYouComponent } from "../organisation/pap-who-are-you/pap-who-a
 })
 export class ApAddressComponent implements OnInit {
   static route: string = 'address';
-  static title: string = "Find the address of the AP - Register a high-rise building - GOV.UK";
+  static title: string = '';
 
   searchMode = AddressSearchMode.PostalAddress;
 
   @Input() addressName?: string;
   @Input() pap: boolean = false;
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) { }
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private titleService: TitleService) { }
 
   private returnUrl?: string;
   address?: AddressModel;
@@ -78,4 +79,36 @@ export class ApAddressComponent implements OnInit {
   private navigateOtherAccountablePersons() {
     this.navigationService.navigateRelative(ApAccountableForComponent.route, this.activatedRoute);
   }
+
+
+  private titles = {
+    ap: {
+      title: "Find the address of the AP - Register a high-rise building - GOV.UK",
+      selectTitle: "Select the AP's address - Register a high-rise building - GOV.UK",
+      confirmTitle: "Confirm the AP's address - Register a high-rise building - GOV.UK"
+    },
+    pap: {
+      title: "Find the address of the PAP - Register a high-rise building - GOV.UK",
+      selectTitle: "Select the PAP's address - Register a high-rise building - GOV.UK",
+      confirmTitle: "Confirm the PAP's address - Register a high-rise building - GOV.UK"
+    }
+  }
+
+  changeStep(event: any) {
+    switch (event) {
+      case "select":
+        this.titleService.setTitle(this.pap
+          ? this.titles.pap.selectTitle
+          : this.titles.ap.selectTitle);
+        return;
+      case "confirm": this.titleService.setTitle(this.pap
+        ? this.titles.pap.confirmTitle
+        : this.titles.ap.confirmTitle);
+        return;
+    }
+    this.titleService.setTitle(this.pap
+      ? this.titles.pap.title
+      : this.titles.ap.title);
+  }
+
 }

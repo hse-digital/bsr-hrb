@@ -1,1 +1,6 @@
-<hse-address addressName="Your address" [selfAddress]=true [address]="address" [searchMode]="searchMode" (onAddressConfirmed)="updateActingForAddress($event)"/>
+<hse-address addressName="Your address"
+             [selfAddress]=true
+             [address]="address"
+             [searchMode]="searchMode"
+             (onAddressConfirmed)="updateActingForAddress($event)"
+             (onChangeStep)="changeStep($event)"/>
