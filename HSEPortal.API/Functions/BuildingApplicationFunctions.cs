@@ -79,11 +79,6 @@ public class BuildingApplicationFunctions
             HttpResponse = request.CreateResponse(HttpStatusCode.OK)
         };
     }
-
-    public void SaveStructures()
-    {
-        throw new NotImplementedException();
-    }
 }
 
 public class CustomHttpResponseData
