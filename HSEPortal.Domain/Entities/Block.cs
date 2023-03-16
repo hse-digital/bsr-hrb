@@ -11,7 +11,7 @@ public record DynamicsBlock(string bsr_name, int bsr_nooffloorsabovegroundlevel,
 
 public enum PeopleLivingInBuilding
 {
-    Yes = 760810000,
-    NoReadyToMove = 760810001,
-    NoPeopleWontMove = 760810002
+    Yes = 760_810_000,
+    NoReadyToMove = 760_810_001,
+    NoPeopleWontMove = 760_810_002
 }
