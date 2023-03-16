@@ -10,8 +10,7 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
         var peopleLivingInStructure = GetPeopleLivingInStructure(entity.PeopleLivingInStructure);
         var constructionYearOption = GetConstructionYearOption(entity.ConstructionYearOption);
 
-        return new DynamicsStructure(entity.Name, int.Parse(entity.FloorsAboveGround), double.Parse(entity.HeightInMeters),
-             int.Parse(entity.NumberOfResidentialUnits), peopleLivingInStructure, constructionYearOption);
+        return new DynamicsStructure(entity.Name, int.Parse(entity.FloorsAboveGround), double.Parse(entity.HeightInMeters), int.Parse(entity.NumberOfResidentialUnits), peopleLivingInStructure, constructionYearOption);
     }
 
     public override Structure BuildEntity(DynamicsStructure dynamicsEntity)
