@@ -7,6 +7,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { PapNamedRoleComponent } from '../pap-named-role/pap-named-role.component';
 import { ActingForSameAddressComponent } from '../acting-for-same-address/acting-for-same-address.component';
 import { GovukErrorSummaryComponent } from 'hse-angular';
+import { LeadNameComponent } from '../lead-name/lead-name.component';
 
 @Component({
   templateUrl: './pap-who-are-you.component.html'
@@ -59,7 +60,16 @@ export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage
       return navigationService.navigateRelative(PapNamedRoleComponent.route, activatedRoute);
     }
 
+    if (this.applicationService.currentAccountablePerson.Role == 'employee') {
+      return navigationService.navigateRelative(LeadNameComponent.route, activatedRoute);
+    }
+
     return navigationService.navigateRelative(ActingForSameAddressComponent.route, activatedRoute);
+  }
+
+  sectionBuildingName() {
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+      this.applicationService.currentSection.Name;
   }
 
 }
