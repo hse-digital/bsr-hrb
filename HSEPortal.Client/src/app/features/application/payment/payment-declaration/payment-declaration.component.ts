@@ -25,6 +25,7 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
   override async saveAndContinue() {
     this.loading = true;
 
+    await this.applicationService.syncDeclaration();
     var paymentResponse = await this.paymentService.InitialisePayment(this.applicationService.model);
     this.applicationService.model.Payment = paymentResponse;
     this.applicationService.updateApplication();

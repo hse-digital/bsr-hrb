@@ -11,6 +11,7 @@ public record DynamicsBuildingApplication(string bsr_applicationreturncode = nul
     [property: JsonPropertyName("bsr_Building@odata.bind")]
     string buildingReferenceId = null,
     BuildingApplicationStage? bsr_applicationstage = null,
+    bool? bsr_declarationconfirmed = null,
     bool? bsr_continuedanyway = null,
     string bsr_reasonforcontinuing = null,
     [property: JsonPropertyName("bsr_papid@odata.bind")]

@@ -19,6 +19,7 @@ export class PaymentConfirmationComponent implements OnInit {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
 
     await this.applicationService.updateApplication();
+    await this.applicationService.syncPayment();
   }
 
   canContinue(): boolean {

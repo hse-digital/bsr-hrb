@@ -62,9 +62,9 @@ public class DynamicsService
         return response.value.FirstOrDefault();
     }
 
-    public async Task UpdateBuildingApplicationStage(DynamicsBuildingApplication dynamicsBuildingApplication, BuildingApplicationStage stage)
+    public async Task UpdateBuildingApplication(DynamicsBuildingApplication dynamicsBuildingApplication, DynamicsBuildingApplication buildingApplication)
     {
-        await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", new DynamicsBuildingApplication(bsr_applicationstage: stage));
+        await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", buildingApplication);
     }
 
     public async Task CreateBuildingStructures(Structures structures)
@@ -91,6 +91,25 @@ public class DynamicsService
         }
     }
 
+    public async Task CreatePayment(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication)
+    {
+        var payment = model.Payment;
+        await dynamicsApi.Create("bsr_payments", new DynamicsPayment
+        {
+            buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
+            bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
+            bsr_timeanddateoftransaction = payment.CreatedDate,
+            bsr_transactionid = payment.PaymentId,
+            bsr_service = "HRB",
+            bsr_cardexpirydate = payment.CardExpiryDate,
+            bsr_billingaddress = $"{payment.AddressLineOne}, {payment.AddressLineTwo}, {payment.Postcode}, {payment.City}, {payment.Country}",
+            bsr_cardbrandegvisa = payment.CardBrand,
+            bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
+            bsr_amountpaid = payment.Amount,
+            bsr_govukpaystatus = payment.Status,
+        });
+    }
+
     private async Task<string> CreateAccountablePerson(AccountablePerson accountablePerson, DynamicsBuildingApplication dynamicsBuildingApplication, bool pap = false)
     {
         var apAddress = accountablePerson.PapAddress ?? accountablePerson.Address;
@@ -100,6 +119,7 @@ public class DynamicsService
             if (pap)
             {
                 #region PAP
+
                 if (accountablePerson.Role is "employee" or "registering_for")
                 {
                     var existingLeadContact = await FindExistingContactAsync(accountablePerson.LeadFirstName, accountablePerson.LeadLastName, accountablePerson.LeadEmail, accountablePerson.LeadPhoneNumber);
@@ -140,6 +160,7 @@ public class DynamicsService
                     var leadContactId = ExtractEntityIdFromHeader(leadContact.Headers);
                     await AssignContactType(leadContactId, DynamicsContactTypes.PAPOrganisationLeadContact);
                 }
+
                 #endregion
             }
             else
