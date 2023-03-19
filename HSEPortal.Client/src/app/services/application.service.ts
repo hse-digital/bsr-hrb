@@ -122,6 +122,18 @@ export class ApplicationService {
   async syncBuildingStructures(): Promise<void> {
     await firstValueFrom(this.httpClient.post(`api/SyncBuildingStructures`, this.model));
   }
+
+  async syncAccountablePersons(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncAccountablePersons`, this.model));
+  }
+
+  async syncDeclaration(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncDeclaration`, this.model));
+  }
+
+  async syncPayment(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
+  }
 }
 
 export class BuildingRegistrationModel {
