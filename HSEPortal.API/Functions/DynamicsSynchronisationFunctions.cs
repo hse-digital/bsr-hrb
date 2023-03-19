@@ -36,8 +36,30 @@ public class DynamicsSynchronisationFunctions
         var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
         if (dynamicsBuildingApplication != null)
         {
-            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication));
+            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.BuildingSummary));
             await orchestrationContext.CallActivityAsync(nameof(CreateBuildingStructures), new Structures(buildingApplicationModel.Sections, dynamicsBuildingApplication));
+        }
+    }
+
+    [Function(nameof(SyncAccountablePersons))]
+    public async Task<HttpResponseData> SyncAccountablePersons([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request, [DurableClient] DurableTaskClient durableTaskClient)
+    {
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        await durableTaskClient.ScheduleNewOrchestrationInstanceAsync(nameof(SynchroniseAccountablePersons), buildingApplicationModel);
+
+        return request.CreateResponse();
+    }
+
+    [Function(nameof(SynchroniseAccountablePersons))]
+    public async Task SynchroniseAccountablePersons([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
+    {
+        var buildingApplicationModel = orchestrationContext.GetInput<BuildingApplicationModel>();
+
+        var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
+        if (dynamicsBuildingApplication != null)
+        {
+            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.AccountablePersons));
+            await orchestrationContext.CallActivityAsync(nameof(CreateAccountablePersons), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.AccountablePersons));
         }
     }
 
@@ -50,12 +72,18 @@ public class DynamicsSynchronisationFunctions
     [Function(nameof(UpdateBuildingApplication))]
     public Task UpdateBuildingApplication([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
     {
-        return dynamicsService.UpdateBuildingApplication(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication, BuildingApplicationStage.BuildingSummary);
+        return dynamicsService.UpdateBuildingApplicationStage(buildingApplicationWrapper.DynamicsBuildingApplication, buildingApplicationWrapper.Stage);
     }
 
     [Function(nameof(CreateBuildingStructures))]
     public Task CreateBuildingStructures([ActivityTrigger] Structures structures)
     {
         return dynamicsService.CreateBuildingStructures(structures);
+    }
+
+    [Function(nameof(CreateAccountablePersons))]
+    public Task CreateAccountablePersons([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
+    {
+        return dynamicsService.CreateAccountablePersons(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);
     }
 }

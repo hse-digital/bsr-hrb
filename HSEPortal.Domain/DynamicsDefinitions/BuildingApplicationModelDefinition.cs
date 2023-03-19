@@ -13,6 +13,6 @@ public class BuildingApplicationModelDefinition : DynamicsModelDefinition<Buildi
 
     public override BuildingApplication BuildEntity(DynamicsBuildingApplication dynamicsEntity)
     {
-        return new BuildingApplication(dynamicsEntity.bsr_applicationreturncode, dynamicsEntity.bsr_registreeId, dynamicsEntity._bsr_building_value, dynamicsEntity.bsr_buildingapplicationid);
+        return new BuildingApplication(dynamicsEntity.bsr_applicationreturncode, dynamicsEntity._bsr_registreeid_value, dynamicsEntity._bsr_building_value, dynamicsEntity.bsr_buildingapplicationid);
     }
 }

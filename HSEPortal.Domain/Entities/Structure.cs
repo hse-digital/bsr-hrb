@@ -19,6 +19,17 @@ public record DynamicsStructure(string bsr_name, int bsr_nooffloorsabovegroundle
     [property: JsonPropertyName("bsr_BuildingId@odata.bind")]
     string buildingReferenceId = null) : DynamicsEntity<Structure>;
 
+public static class DynamicsSectionArea
+{
+    public static readonly IDictionary<string, string> Ids = new Dictionary<string, string>
+    {
+        ["external_walls"] = "5d36620b-04b1-ed11-83ff-0022481b5e4f",
+        ["routes"] = "1441d018-04b1-ed11-83ff-0022481b5e4f",
+        ["maintenance"] = "2e3f1d2b-04b1-ed11-83ff-0022481b5e4f",
+        ["facilities"] = "67916f37-04b1-ed11-83ff-0022481b5e4f"
+    };
+}
+
 public enum PeopleLivingInStructure
 {
     Yes = 760_810_000,
