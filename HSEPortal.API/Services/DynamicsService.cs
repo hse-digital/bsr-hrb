@@ -318,13 +318,13 @@ public class DynamicsService
             buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
             bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
             bsr_timeanddateoftransaction = payment.CreatedDate,
-            bsr_transactionid = payment.PaymentId,
+            bsr_transactionid = payment.Reference,
             bsr_service = "HRB Registration",
             bsr_cardexpirydate = payment.CardExpiryDate,
             bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
             bsr_cardbrandegvisa = payment.CardBrand,
             bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
-            bsr_amountpaid = payment.Amount,
+            bsr_amountpaid = payment.Amount / 100,
             bsr_govukpaystatus = payment.Status,
         });
     }
