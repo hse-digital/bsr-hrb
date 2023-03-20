@@ -72,7 +72,7 @@ const routes = new HseRoutes([
   ],
   providers: [
     CaptionService,
-    ...routes.getProviders()
+    ...routes.getProviders(),
   ]
 })
 export class SectionsModule {

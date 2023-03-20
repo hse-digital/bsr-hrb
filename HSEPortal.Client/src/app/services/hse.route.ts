@@ -46,6 +46,12 @@ export class HseRoutes {
   }
 
   getProviders(): Type<any>[] {
-    return this.routes.filter(r => r.isProtected).map(r => r.component!);
+    let providers: any[] = this.routes.filter(r => r.isProtected).map(r => r.component!);
+    providers.push(...this.routes.filter(r => (<Route>r).children)
+      .flatMap(r => (<Route>r).children!
+        .filter(c => (<HseRoute>c).isProtected)
+        .map(c => c.component!)
+      ));
+    return providers;
   }
 }

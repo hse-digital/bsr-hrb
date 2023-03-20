@@ -1,10 +1,10 @@
 import { Component, QueryList, ViewChildren, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { AccountablePersonModel, ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { IHasNextPage } from '../../../../helpers/has-next-page.interface';
+import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApNameComponent } from '../ap-name/ap-name.component';
 import { OrganisationTypeComponent } from '../organisation/organisation-type/organisation-type.component';
 
@@ -43,5 +43,9 @@ export class AccountablePersonTypeComponent extends BaseComponent implements IHa
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let route = this.applicationService.currentAccountablePerson.Type == 'organisation' ? OrganisationTypeComponent.route : ApNameComponent.route;
     return navigationService.navigateRelative(route, activatedRoute);
+  }
+
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'no'
   }
 }
