@@ -17,7 +17,10 @@ public record DynamicsBuildingApplication(string bsr_applicationreturncode = nul
     [property: JsonPropertyName("bsr_papid@odata.bind")]
     string bsrPapReferenceId = null,
     DynamicsBuilding bsr_Building = null,
-    DynamicsContact bsr_RegistreeId = null) : DynamicsEntity<BuildingApplication>;
+    DynamicsContact bsr_RegistreeId = null,
+    BuildingApplicationWhoAreYou? bsr_whoareyou = null,
+    [property: JsonPropertyName("bsr_paporgleadcontactid@odata.bind")]
+    string papLeadContactReferenceId = null) : DynamicsEntity<BuildingApplication>;
 
 public enum BuildingApplicationStage
 {
@@ -31,4 +34,11 @@ public enum ContinuedAnywaysOptions
 {
     No = 0,
     Yes = 1
+}
+
+public enum BuildingApplicationWhoAreYou
+{
+    NamedContact = 760_810_000,
+    RegisteringFor = 760_810_001,
+    Employee = 760_810_002
 }

@@ -119,6 +119,10 @@ export class ApplicationService {
     await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
   }
 
+  async updateDynamicsBuildingSummaryStage(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/UpdateDynamicsBuildingSummaryStage`, this.model));
+  }
+
   async syncBuildingStructures(): Promise<void> {
     await firstValueFrom(this.httpClient.post(`api/SyncBuildingStructures`, this.model));
   }
