@@ -55,6 +55,22 @@ public class DynamicsSynchronisationFunctions
         return request.CreateResponse();
     }
 
+    [Function(nameof(UpdateDynamicsBuildingSummaryStage))]
+    public async Task<HttpResponseData> UpdateDynamicsBuildingSummaryStage([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request, [DurableClient] DurableTaskClient durableTaskClient)
+    {
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        var application = await dynamicsService.GetBuildingApplicationUsingId(buildingApplicationModel.Id);
+        if (application is { bsr_applicationstage: null })
+        {
+            await dynamicsService.UpdateBuildingApplication(application, new DynamicsBuildingApplication
+            {
+                bsr_applicationstage = BuildingApplicationStage.AccountablePersons,
+            });
+        }
+
+        return request.CreateResponse();
+    }
+
     [Function(nameof(SynchroniseBuildingStructures))]
     public async Task SynchroniseBuildingStructures([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
     {
@@ -63,7 +79,6 @@ public class DynamicsSynchronisationFunctions
         var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
         if (dynamicsBuildingApplication != null)
         {
-            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.BuildingSummary));
             await orchestrationContext.CallActivityAsync(nameof(CreateBuildingStructures), new Structures(buildingApplicationModel.Sections, dynamicsBuildingApplication));
         }
     }

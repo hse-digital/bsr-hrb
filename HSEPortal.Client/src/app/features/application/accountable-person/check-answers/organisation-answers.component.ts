@@ -45,6 +45,7 @@ export class OrganisationAnswersComponent {
         switch (this.ap.Role) {
             case 'named_contact': return 'I am the named contact';
             case 'registering_for': return 'I am registering for the named contact';
+            case 'employee': return 'I am an employee';
         }
 
         return undefined;

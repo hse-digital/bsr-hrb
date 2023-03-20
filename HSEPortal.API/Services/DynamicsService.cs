@@ -83,31 +83,12 @@ public class DynamicsService
     {
         var pap = model.AccountablePersons[0];
         var papId = await CreateAccountablePerson(pap, dynamicsBuildingApplication, pap: true);
-        await UpdateBuildingApplicationPap(papId, pap.Type == "organisation", dynamicsBuildingApplication, pap.IsPrincipal == "yes");
+        await UpdateBuildingApplicationPap(papId, pap.Type == "organisation", dynamicsBuildingApplication, pap.IsPrincipal == "yes", pap.Role);
 
         foreach (var ap in model.AccountablePersons.Skip(1))
         {
             await CreateAccountablePerson(ap, dynamicsBuildingApplication);
         }
-    }
-
-    public async Task CreatePayment(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication)
-    {
-        var payment = model.Payment;
-        await dynamicsApi.Create("bsr_payments", new DynamicsPayment
-        {
-            buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
-            bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
-            bsr_timeanddateoftransaction = payment.CreatedDate,
-            bsr_transactionid = payment.PaymentId,
-            bsr_service = "HRB",
-            bsr_cardexpirydate = payment.CardExpiryDate,
-            bsr_billingaddress = $"{payment.AddressLineOne}, {payment.AddressLineTwo}, {payment.Postcode}, {payment.City}, {payment.Country}",
-            bsr_cardbrandegvisa = payment.CardBrand,
-            bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
-            bsr_amountpaid = payment.Amount,
-            bsr_govukpaystatus = payment.Status,
-        });
     }
 
     private async Task<string> CreateAccountablePerson(AccountablePerson accountablePerson, DynamicsBuildingApplication dynamicsBuildingApplication, bool pap = false)
@@ -122,42 +103,55 @@ public class DynamicsService
 
                 if (accountablePerson.Role is "employee" or "registering_for")
                 {
+                    string leadContactId;
                     var existingLeadContact = await FindExistingContactAsync(accountablePerson.LeadFirstName, accountablePerson.LeadLastName, accountablePerson.LeadEmail, accountablePerson.LeadPhoneNumber);
                     if (existingLeadContact == null)
                     {
-                        var newLeadContact = await dynamicsApi.Create("contacts", new DynamicsContact
+                        var dynamicsContact = new DynamicsContact
                         {
                             firstname = accountablePerson.LeadFirstName,
                             lastname = accountablePerson.LeadLastName,
                             emailaddress1 = accountablePerson.LeadEmail,
                             telephone1 = accountablePerson.LeadPhoneNumber,
                             jobRoleReferenceId = $"/bsr_jobroles({DynamicsJobRole.Ids[accountablePerson.LeadJobRole]})"
-                        });
+                        };
 
-                        var leadContactId = ExtractEntityIdFromHeader(newLeadContact.Headers);
+                        if (accountablePerson.Role == "registering_for")
+                        {
+                            var actingForAddress = accountablePerson.ActingForSameAddress == "yes" ? apAddress : accountablePerson.ActingForAddress;
+                            dynamicsContact = dynamicsContact with
+                            {
+                                address1_line1 = string.Join(", ", actingForAddress.Address.Split(',').Take(3)),
+                                address1_line2 = actingForAddress.AddressLineTwo,
+                                address1_city = actingForAddress.Town,
+                                address1_postalcode = actingForAddress.Postcode,
+                            };
+                        }
+
+                        var newLeadContact = await dynamicsApi.Create("contacts", dynamicsContact);
+                        leadContactId = ExtractEntityIdFromHeader(newLeadContact.Headers);
                         await AssignContactType(leadContactId, DynamicsContactTypes.PAPOrganisationLeadContact);
                     }
                     else
                     {
+                        leadContactId = existingLeadContact.contactid;
                         if (existingLeadContact.bsr_contacttype_contact.All(x => x.bsr_contacttypeid != DynamicsContactTypes.PAPOrganisationLeadContact))
                         {
-                            await AssignContactType(existingLeadContact.contactid, DynamicsContactTypes.PAPOrganisationLeadContact);
+                            await AssignContactType(leadContactId, DynamicsContactTypes.PAPOrganisationLeadContact);
                         }
                     }
+
+                    await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", new DynamicsBuildingApplication { papLeadContactReferenceId = $"/contacts({leadContactId})" });
                 }
                 else if (accountablePerson.Role == "named_contact")
                 {
-                    var actingForAddress = accountablePerson.ActingForSameAddress == "yes" ? apAddress : accountablePerson.ActingForAddress;
                     var leadContact = await dynamicsApi.Update($"contacts({dynamicsBuildingApplication._bsr_registreeid_value})", new DynamicsContact
                     {
-                        address1_line1 = string.Join(", ", actingForAddress.Address.Split(',').Take(3)),
-                        address1_line2 = actingForAddress.AddressLineTwo,
-                        address1_city = actingForAddress.Town,
-                        address1_postalcode = actingForAddress.Postcode,
                         jobRoleReferenceId = $"/bsr_jobroles({DynamicsJobRole.Ids[accountablePerson.LeadJobRole]})"
                     });
 
                     var leadContactId = ExtractEntityIdFromHeader(leadContact.Headers);
+                    await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", new DynamicsBuildingApplication { papLeadContactReferenceId = $"/contacts({leadContactId})" });
                     await AssignContactType(leadContactId, DynamicsContactTypes.PAPOrganisationLeadContact);
                 }
 
@@ -253,7 +247,7 @@ public class DynamicsService
                     }
                 }
 
-                foreach (var accountability in accountablePerson.SectionsAccountability)
+                foreach (var accountability in accountablePerson.SectionsAccountability ?? Array.Empty<SectionAccountability>())
                 {
                     var sectionName = accountability.SectionName ?? dynamicsBuildingApplication.bsr_Building.bsr_name;
                     var areas = accountability.Accountability;
@@ -284,7 +278,7 @@ public class DynamicsService
         return $"/contacts({dynamicsBuildingApplication._bsr_registreeid_value})";
     }
 
-    private async Task UpdateBuildingApplicationPap(string papId, bool organisation, DynamicsBuildingApplication dynamicsBuildingApplication, bool individualIsPap)
+    private async Task UpdateBuildingApplicationPap(string papId, bool organisation, DynamicsBuildingApplication dynamicsBuildingApplication, bool individualIsPap, string papRole)
     {
         var lookup = new DynamicsPapLookup();
         int? papType;
@@ -292,6 +286,18 @@ public class DynamicsService
         {
             papType = 760810001;
             lookup = lookup with { papAccountReferenceId = papId };
+            switch (papRole)
+            {
+                case "employee":
+                    lookup = lookup with { bsr_whoareyou = BuildingApplicationWhoAreYou.Employee };
+                    break;
+                case "registering_for":
+                    lookup = lookup with { bsr_whoareyou = BuildingApplicationWhoAreYou.RegisteringFor };
+                    break;
+                case "named_contact":
+                    lookup = lookup with { bsr_whoareyou = BuildingApplicationWhoAreYou.NamedContact };
+                    break;
+            }
         }
         else
         {
@@ -301,7 +307,26 @@ public class DynamicsService
 
         var areTouThePap = !organisation && individualIsPap;
         await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", lookup with { bsr_paptype = papType, bsr_areyouthepap = areTouThePap });
-        await dynamicsApi.Update($"bsr_buildings({dynamicsBuildingApplication._bsr_building_value})", lookup with { bsr_paptypecode = papType });
+        await dynamicsApi.Update($"bsr_buildings({dynamicsBuildingApplication._bsr_building_value})", lookup with { bsr_paptypecode = papType, bsr_whoareyou = null });
+    }
+
+    public async Task CreatePayment(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication)
+    {
+        var payment = model.Payment;
+        await dynamicsApi.Create("bsr_payments", new DynamicsPayment
+        {
+            buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
+            bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
+            bsr_timeanddateoftransaction = payment.CreatedDate,
+            bsr_transactionid = payment.PaymentId,
+            bsr_service = "HRB Registration",
+            bsr_cardexpirydate = payment.CardExpiryDate,
+            bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
+            bsr_cardbrandegvisa = payment.CardBrand,
+            bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
+            bsr_amountpaid = payment.Amount,
+            bsr_govukpaystatus = payment.Status,
+        });
     }
 
     private async Task<DynamicsAccountablePerson> FindExistingAp(string sectionId, string accountId, string area)
