@@ -43,8 +43,10 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
     return this.captionService.caption;
   }
 
+  // To access this page there must be more than one section and the last section should have been completed (address exist).
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentSection.PeopleLivingInBuilding;
+    return !!this.applicationService.model.Sections && this.applicationService.model.Sections.length > 1
+      && !!this.applicationService.currentSection.Addresses && this.applicationService.currentSection.Addresses.length > 0;
   }
 
   async navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

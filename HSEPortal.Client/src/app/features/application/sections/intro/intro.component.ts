@@ -27,4 +27,8 @@ export class SectionsIntroComponent extends BaseComponent implements IHasNextPag
     return navigationService.navigateAppend('name', activatedRoute);
   }
 
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.model.NumberOfSections && this.applicationService.model.NumberOfSections === "two_or_more";
+  }
+
 }

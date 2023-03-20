@@ -32,7 +32,7 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentSection.ResidentialUnits;
+    return !!this.applicationService.currentSection.ResidentialUnits && this.applicationService.currentSection.ResidentialUnits > 0;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

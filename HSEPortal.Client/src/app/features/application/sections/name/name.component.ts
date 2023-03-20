@@ -1,5 +1,5 @@
 import { Component, QueryList, ViewChildren, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { NavigationService } from 'src/app/services/navigation.service';
@@ -49,5 +49,9 @@ export class SectionNameComponent extends BaseComponent implements IHasNextPage,
   public canContinue(): boolean {
     this.blockNameHasErrors = !this.applicationService.currentSection?.Name;
     return !this.blockNameHasErrors;
+  }
+
+  public override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return (!!this.applicationService.model.NumberOfSections && this.applicationService.model.NumberOfSections === "two_or_more");
   }
 }

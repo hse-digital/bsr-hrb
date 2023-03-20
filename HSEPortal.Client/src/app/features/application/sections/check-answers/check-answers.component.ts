@@ -1,22 +1,22 @@
 import { Component, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { SectionHelper } from 'src/app/helpers/section-name-helper';
+import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
-import { SectionHeightComponent } from '../height/height.component';
-import { SectionResidentialUnitsComponent } from '../residential-units/residential-units.component';
-import { SectionPeopleLivingInBuildingComponent } from '../people-living-in-building/people-living-in-building.component';
-import { MoreInformationComponent } from '../more-information/more-information.component';
-import { SectionAddressComponent } from '../address/address.component';
+import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
+import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
 import { NumberOfSectionsComponment } from '../../number-of-sections/number-of-sections.component';
 import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
-import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
-import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
-import { SectionHelper } from 'src/app/helpers/section-name-helper';
+import { SectionAddressComponent } from '../address/address.component';
+import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
+import { SectionHeightComponent } from '../height/height.component';
+import { MoreInformationComponent } from '../more-information/more-information.component';
+import { SectionPeopleLivingInBuildingComponent } from '../people-living-in-building/people-living-in-building.component';
+import { SectionResidentialUnitsComponent } from '../residential-units/residential-units.component';
 import { SectionYearOfCompletionComponent } from '../year-of-completion/year-of-completion.component';
-import { GovukErrorSummaryComponent } from 'hse-angular';
 
 @Component({
   selector: 'hse-check-answers',
@@ -84,5 +84,9 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   private getOutOfScopeSections() {
     return this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
+  }
+
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.currentSection.Addresses && this.applicationService.currentSection.Addresses.length > 0;
   }
 }

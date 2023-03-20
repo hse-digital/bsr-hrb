@@ -14,8 +14,8 @@ import { ContactPhoneComponent } from "./contact-phone/contact-phone.component";
 const routes = new HseRoutes([
   HseRoute.unsafe(BuildingNameComponent.route, BuildingNameComponent),
   HseRoute.protected(ContactNameComponent.route, ContactNameComponent),
-  HseRoute.protected(ContactEmailComponent.route, ContactEmailComponent),
   HseRoute.protected(ContactPhoneComponent.route, ContactPhoneComponent),
+  HseRoute.protected(ContactEmailComponent.route, ContactEmailComponent),
   HseRoute.protected(ContactEmailValidationComponent.route, ContactEmailValidationComponent),
 ]);
 

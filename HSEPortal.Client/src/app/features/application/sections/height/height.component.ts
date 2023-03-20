@@ -12,9 +12,9 @@ import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 })
 export class SectionHeightComponent extends BaseComponent implements IHasNextPage {
 
-    static route: string = 'height';
+  static route: string = 'height';
 
-    @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
     super(router, applicationService, navigationService, activatedRoute);

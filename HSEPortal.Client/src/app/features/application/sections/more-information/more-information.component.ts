@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
@@ -51,5 +51,11 @@ export class MoreInformationComponent extends BaseComponent implements IHasNextP
 
   getSectionName(section: SectionModel, index: number) {
     return section.Name ?? SectionHelper.getSectionCardinalName(index);
+  }
+
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    let outOfScope = this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
+    return (outOfScope.length == this.applicationService.model.Sections.length && !!this.applicationService.model.OutOfScopeContinueReason)
+      || outOfScope.length > 0;
   }
 }

@@ -46,7 +46,8 @@ export class SectionFloorsAboveComponent extends BaseComponent implements IHasNe
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentSection.Name;
+    return (!!this.applicationService.model.NumberOfSections && this.applicationService.model.NumberOfSections === "one")
+            || !!this.applicationService.currentSection.Name;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
