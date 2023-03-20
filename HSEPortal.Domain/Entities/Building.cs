@@ -15,4 +15,5 @@ public record DynamicsPapLookup(
     string papContactReferenceId = null,
     int? bsr_paptypecode = null,
     int? bsr_paptype = null,
-    bool? bsr_areyouthepap = null);
+    bool? bsr_areyouthepap = null,
+    BuildingApplicationWhoAreYou? bsr_whoareyou = null);

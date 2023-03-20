@@ -26,8 +26,8 @@
     </govuk-summary-list-row>
   </ng-container>
 
-  <govuk-summary-list-row *ngIf="notLead()" (onKeyupEnter)="navigateTo('lead-name')" (onClick)="navigateTo('lead-name')" key="Named contact" [showAction]=true>{{ap.LeadFirstName}} {{ap.LeadLastName}}</govuk-summary-list-row>
-  <govuk-summary-list-row *ngIf="notLead()" (onKeyupEnter)="navigateTo('lead-details')" (onClick)="navigateTo('lead-details')" key="Named contact's details" [showAction]=true>
+  <govuk-summary-list-row *ngIf="notLead() || ap.Role == 'employee'" (onKeyupEnter)="navigateTo('lead-name')" (onClick)="navigateTo('lead-name')" key="Named contact" [showAction]=true>{{ap.LeadFirstName}} {{ap.LeadLastName}}</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="notLead() || ap.Role == 'employee'" (onKeyupEnter)="navigateTo('lead-details')" (onClick)="navigateTo('lead-details')" key="Named contact's details" [showAction]=true>
     {{leadJobRoleDescription()}}<br>
     {{ap.LeadEmail}}<br>
     {{ap.LeadPhoneNumber}}
