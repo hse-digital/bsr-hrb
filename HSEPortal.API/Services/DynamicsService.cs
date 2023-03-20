@@ -100,7 +100,7 @@ public class DynamicsService
             bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
             bsr_timeanddateoftransaction = payment.CreatedDate,
             bsr_transactionid = payment.PaymentId,
-            bsr_service = "HRB",
+            bsr_service = "HRB Registration",
             bsr_cardexpirydate = payment.CardExpiryDate,
             bsr_billingaddress = $"{payment.AddressLineOne}, {payment.AddressLineTwo}, {payment.Postcode}, {payment.City}, {payment.Country}",
             bsr_cardbrandegvisa = payment.CardBrand,
