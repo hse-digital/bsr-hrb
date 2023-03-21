@@ -1,74 +1,13 @@
 trigger:
-  - main
+- production
 
 pool:
   vmImage: ubuntu-latest
 
-stages:
-- stage: UnitTest
-  jobs:
-  - job: 
-    steps:
-      - task: DotNetCoreCLI@2
-        displayName: 'Run Unit Tests'
-        inputs:
-          command: 'test'
-          projects: '**/HSEPortal.API.UnitTests.csproj'
-      - task: DotNetCoreCLI@2
-        displayName: 'Build API'
-        inputs:
-          command: 'build'
-          projects: 'HSEPortal.API/HSEPortal.API.csproj'
-          arguments: '--output publish_output --configuration Release'
-      - task: ArchiveFiles@2
-        displayName: 'Archive API files'
-        inputs:
-          rootFolderOrFile: 'publish_output/'
-          includeRootFolder: false 
-          archiveFile: '$(Build.ArtifactStagingDirectory)/HSEPortalAPI.zip'
-      - task: PublishBuildArtifacts@1
-        displayName: 'Publish API artifact'
-        inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)/HSEPortalAPI.zip'
-          ArtifactName: HSEPortalAPI
+steps:
 
-- stage: DEV
-  dependsOn: UnitTest
-  variables: 
-  - group: HSEPortal-DEV
-  jobs:
-    - template: deploy.yml
-      parameters:
-        subscription: 's118-dev-bsr-acs-services'
-    - job: IntegrationTesting
-      dependsOn: Deploy
-      steps:
-      - task: FileTransform@1
-        displayName: 'Set variables for integration testing'
-        inputs:
-          folderPath: '**/HSEPortal.API.IntegrationTests'
-          fileType: 'json'
-          targetFiles: 'appsettings.json'
-      - task: DotNetCoreCLI@2
-        displayName: 'Run Integration Tests'
-        inputs:
-          command: 'test'
-          projects: '**/HSEPortal.API.IntegrationTests.csproj'
-        
-- stage: QA
-  dependsOn: DEV
-  variables: 
-  - group: HSEPortal-QA
-  jobs:
-    - template: deploy.yml
-      parameters:
-        subscription: 's118-test-bsr-acs-services'
-        
-- stage: UAT
-  dependsOn: QA
-  variables: 
-  - group: HSEPortal-UAT
-  jobs:
-    - template: deploy.yml
-      parameters:
-        subscription: 's118-test-bsr-acs-services'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)/s'
+    artifact: 'source'
+    publishLocation: 'pipeline'
