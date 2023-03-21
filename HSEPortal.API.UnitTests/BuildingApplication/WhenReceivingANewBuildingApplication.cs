@@ -87,7 +87,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
         request.Should().NotBeNull();
         
         request!.Request.Headers.Should().Contain(("Authorization", $"Bearer {DynamicsAuthToken}"));
-        request.RequestBody.Should().MatchRegex($"{{\"bsr_applicationreturncode\":\"HRB\\d{{9}}\",\"bsr_RegistreeId@odata.bind\":\"\\/contacts\\({ContactReturnId}\\)\",\"bsr_Building@odata.bind\":\"\\/bsr_buildings\\({BuildingReturnId}\\)\"}}");
+        request.RequestBody.Should().MatchRegex($"{{\"bsr_applicationid\":\"HRB\\.{{9}}\",\"bsr_RegistreeId@odata.bind\":\"\\/contacts\\({ContactReturnId}\\)\",\"bsr_Building@odata.bind\":\"\\/bsr_buildings\\({BuildingReturnId}\\)\"}}");
     }
 
     [Fact(Skip = "token setup")]
