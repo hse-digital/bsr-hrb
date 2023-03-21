@@ -30,7 +30,7 @@ export class PapNamedRoleComponent extends BaseComponent implements IHasNextPage
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'yes'
+    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'no'
       && this.applicationService.currentAccountablePerson.Role == 'named_contact';
   }
 

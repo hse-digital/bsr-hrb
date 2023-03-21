@@ -1,5 +1,5 @@
 import { Component, QueryList, ViewChildren, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
@@ -72,4 +72,8 @@ export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage
       this.applicationService.currentSection.Name;
   }
 
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == "no"
+      && !!this.applicationService.currentAccountablePerson.Type && this.applicationService.currentAccountablePerson.Type == "organisation"
+  }
 }

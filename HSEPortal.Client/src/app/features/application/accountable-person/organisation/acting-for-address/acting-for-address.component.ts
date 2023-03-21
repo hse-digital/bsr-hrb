@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
 import { AddressSearchMode } from "src/app/components/address/address.component";
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
@@ -9,7 +9,7 @@ import { LeadNameComponent } from "../lead-name/lead-name.component";
 @Component({
   templateUrl: './acting-for-address.component.html'
 })
-export class ActingForAddressComponent implements OnInit {
+export class ActingForAddressComponent implements OnInit, CanActivate {
   static route: string = 'acting-for-address';
   searchMode = AddressSearchMode.PostalAddress;
 
@@ -37,4 +37,8 @@ export class ActingForAddressComponent implements OnInit {
     this.navigationService.navigateRelative(route, this.activatedRoute);
   }
 
+  canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'no' &&
+      !!this.applicationService.currentAccountablePerson.Role && this.applicationService.currentAccountablePerson.Role == "registering_for";
+  }
 }

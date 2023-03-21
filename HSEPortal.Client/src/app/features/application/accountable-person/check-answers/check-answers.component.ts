@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { PaymentDeclarationComponent } from 'src/app/features/application/payment/payment-declaration/payment-declaration.component';
+import { PaymentModule } from 'src/app/features/application/payment/payment.module';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { PaymentDeclarationComponent } from '../../payment/payment-declaration/payment-declaration.component';
-import { PaymentModule } from '../../payment/payment.module';
 
 @Component({
   templateUrl: './check-answers.component.html',
@@ -41,5 +41,9 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
     }
 
     return navigationService.navigateRelative(`../${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`, activatedRoute);
+  }
+
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.model.AccountablePersons && this.applicationService.model.AccountablePersons.length > 0;
   }
 }

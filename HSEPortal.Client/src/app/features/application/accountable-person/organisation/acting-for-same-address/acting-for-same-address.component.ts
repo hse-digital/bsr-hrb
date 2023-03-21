@@ -26,9 +26,9 @@ export class ActingForSameAddressComponent extends BaseComponent implements IHas
     return `Select Yes, use this address if we should use ${this.getOrganisationAddress()} to contact you`;
   }
 
-    getOrganisationAddress() {
-        var address = this.applicationService.currentAccountablePerson.PapAddress ?? this.applicationService.currentAccountablePerson.Address;
-        var addressLine = this.getAddressLineOne(address);
+  getOrganisationAddress() {
+    var address = this.applicationService.currentAccountablePerson.PapAddress ?? this.applicationService.currentAccountablePerson.Address;
+    var addressLine = this.getAddressLineOne(address);
 
     if (address?.AddressLineTwo) {
       addressLine = `${addressLine}, ${address.AddressLineTwo}`;
@@ -37,17 +37,17 @@ export class ActingForSameAddressComponent extends BaseComponent implements IHas
     return `${addressLine}, ${address?.Postcode}`;
   }
 
-    getAddressLineOne(address?: AddressModel) {
-      if (!address) return undefined;
+  getAddressLineOne(address?: AddressModel) {
+    if (!address) return undefined;
 
-      if (address?.IsManual)
-        return address.Address;
-  
-      var address2 = address.Address?.replace(address.Town!, '')!;
-      address2 = address2.replace(address?.Postcode!, '');
-  
-      return address2.split(',').filter(x => x.trim().length > 0).join(', ');
-    }
+    if (address?.IsManual)
+      return address.Address;
+
+    var address2 = address.Address?.replace(address.Town!, '')!;
+    address2 = address2.replace(address?.Postcode!, '');
+
+    return address2.split(',').filter(x => x.trim().length > 0).join(', ');
+  }
 
   canContinue(): boolean {
     this.sameAddressHasErrors = !this.applicationService.currentAccountablePerson.ActingForSameAddress;

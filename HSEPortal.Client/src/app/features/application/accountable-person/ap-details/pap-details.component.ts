@@ -4,10 +4,10 @@ import { ApplicationService } from "src/app/services/application.service";
 import { PapAddressComponent } from "../ap-address/pap-address.component";
 
 @Component({
-    template: `<ap-details [pap]=true [nextRoute]="nextRoute" />`,
+  template: `<ap-details [pap]=true [nextRoute]="nextRoute" />`,
 })
 export class PapDetailsComponent implements CanActivate {
-    static route: string = 'pap-details';
+  static route: string = 'pap-details';
 
   nextRoute = PapAddressComponent.route;
 

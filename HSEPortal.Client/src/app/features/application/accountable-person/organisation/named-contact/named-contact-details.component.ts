@@ -1,5 +1,5 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
@@ -71,4 +71,8 @@ export class OrganisationNamedContactDetailsComponent extends BaseComponent impl
     return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
   }
 
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.currentAccountablePerson.SectionsAccountability && this.applicationService.currentAccountablePerson.Type == "organisation"
+      && !!this.applicationService.currentAccountablePerson.NamedContactFirstName && !!this.applicationService.currentAccountablePerson.NamedContactLastName;
+  }
 }
