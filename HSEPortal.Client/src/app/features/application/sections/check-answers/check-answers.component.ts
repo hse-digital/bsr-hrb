@@ -81,6 +81,7 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   override async onSave(): Promise<void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.BlocksInBuildingComplete;
+    await this.applicationService.syncBuildingStructures();
   }
 
   private getOutOfScopeSections() {

@@ -30,6 +30,10 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
     return true;
   }
 
+  override async onSave(): Promise<void> {
+    await this.applicationService.syncAccountablePersons();
+  }
+
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsComplete;
     this.applicationService.updateApplication();

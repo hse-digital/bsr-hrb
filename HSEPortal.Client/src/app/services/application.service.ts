@@ -119,6 +119,25 @@ export class ApplicationService {
     await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
   }
 
+  async updateDynamicsBuildingSummaryStage(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/UpdateDynamicsBuildingSummaryStage`, this.model));
+  }
+
+  async syncBuildingStructures(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncBuildingStructures`, this.model));
+  }
+
+  async syncAccountablePersons(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncAccountablePersons`, this.model));
+  }
+
+  async syncDeclaration(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncDeclaration`, this.model));
+  }
+
+  async syncPayment(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
+  }
 }
 
 export class BuildingRegistrationModel {

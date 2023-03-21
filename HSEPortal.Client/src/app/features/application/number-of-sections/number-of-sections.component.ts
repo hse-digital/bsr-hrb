@@ -21,9 +21,10 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
   }
 
   private previousAnswer?: string;
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.previousAnswer = this.applicationService.model.NumberOfSections;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.BlocksInBuildingInProgress;
+    await this.applicationService.updateDynamicsBuildingSummaryStage();
   }
 
   numberOfSectionsHasErrors = false;

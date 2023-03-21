@@ -46,16 +46,16 @@ export class CookiesBannerService {
   }
 
   private getCookie(cookieKey: string) {
-    let cookie: string = Cookies.get(cookieKey);
+    let cookie = Cookies.get(cookieKey);
     if (cookie) {
       let value = cookie.substring(cookie.indexOf('=') + 1, cookie.length - 1);
-      return { 
+      return {
         showCookies: false,
         cookiesAccepted: value === "true"
       };
     }
     return undefined;
-  }  
+  }
 }
 
 export class Cookies {
@@ -65,13 +65,19 @@ export class Cookies {
     this.add(key, value, expires);
   }
 
-  static get(key: string): string {
-    return document.cookie.split(' ').find(x => x.trim().startsWith(`${key}=`)) ?? "";
+  static get(key: string): string | undefined {
+    if (typeof document !== 'undefined') {
+      return document.cookie.split(' ').find(x => x.trim().startsWith(`${key}=`)) ?? "";
+    }
+
+    return undefined;
   }
 
   private static add(key: string, value: string, expires?: string) {
-    let newCookie = `${key}=${value}${expires ? "; expires=" + expires : ""}`;
-    document.cookie = newCookie;
+    if (typeof document !== 'undefined') {
+      let newCookie = `${key}=${value}${expires ? "; expires=" + expires : ""}`;
+      document.cookie = newCookie;
+    }
   }
 
   private static createExpiresValue(expiresDays: number) {

@@ -36,7 +36,7 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
     for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
       var section = this.applicationService.model.Sections[i];
       if (!this.applicationService.currentAccountablePerson.SectionsAccountability[i]) {
-        this.applicationService.currentAccountablePerson.SectionsAccountability[i] = { SectionName: section.Name!, Accountability: [] };
+        this.applicationService.currentAccountablePerson.SectionsAccountability[i] = { SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: [] };
       }
     }
   }
