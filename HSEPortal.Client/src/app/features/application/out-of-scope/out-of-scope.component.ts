@@ -13,7 +13,7 @@ import { ContinueAnywayComponent } from "./continue-anyway.component";
 })
 export class BuildingOutOfScopeComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'out-of-scope';
-  static title: string = "";
+  static title: string = "You do not need to register this building - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 

@@ -5,5 +5,5 @@ import { Component } from '@angular/core';
 })
 export class TimeoutComponent {
   static route: string = 'timeout';
-  static title: string = "";
+  static title: string = "Page timeout - Register a high-rise building - GOV.UK";
 }

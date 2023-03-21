@@ -15,7 +15,7 @@ import { AddAccountablePersonComponent } from "../../add-accountable-person/add-
 })
 export class OrganisationNamedContactDetailsComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'named-contact-details';
-  static title: string = "";
+  static title: string = "AP organisation named contact details - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 

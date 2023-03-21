@@ -13,7 +13,7 @@ import { OrganisationNamedContactDetailsComponent } from "./named-contact-detail
 })
 export class OrganisationNamedContactComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'named-contact';
-  static title: string = "";
+  static title: string = "Who is the AP organisation named contact? - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 

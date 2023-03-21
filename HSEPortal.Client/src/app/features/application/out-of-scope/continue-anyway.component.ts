@@ -14,7 +14,7 @@ import { AccountablePersonComponent } from "../accountable-person/accountable-pe
 })
 export class ContinueAnywayComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'continue-anyway';
-  static title: string = "";
+  static title: string = "Why you still want to register this building? - Register a high-rise building - GOV.UK";
 
   maxCharacters = 300;
   tooManyCharacters: boolean = false;

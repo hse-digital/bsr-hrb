@@ -15,7 +15,7 @@ import { TitleService } from 'src/app/services/title.service';
 export class SectionNameComponent extends BaseComponent implements IHasNextPage, OnInit {
 
   static route: string = 'name';
-  static title: string = "";
+  static title: string = "High-rise residential structure name - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 

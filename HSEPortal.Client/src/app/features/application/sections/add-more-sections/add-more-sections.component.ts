@@ -16,7 +16,7 @@ import { TitleService } from 'src/app/services/title.service';
 })
 export class AddMoreSectionsComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'add-more'
-  static title: string = "";
+  static title: string = "Add another high-rise residential structure - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
