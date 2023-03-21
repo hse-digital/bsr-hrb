@@ -5,10 +5,11 @@ import { RouterModule } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
 import { ComponentsModule } from "src/app/components/components.module";
 import { PipesModule } from "src/app/pipes/pipes.module";
-import { CaptionService } from "src/app/services/caption.service";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
 import { SectionAddressComponent } from "./address/address.component";
+import { CertificateIssuerComponent } from "./certificate-issuer/certificate-issuer.component";
+import { CertificateNumberComponent } from "./certificate-number/certificate-number.component";
 import { SectionCheckAnswersComponent } from "./check-answers/check-answers.component";
 import { SectionAnswersComponent } from "./check-answers/section-answers.component";
 import { SectionFloorsAboveComponent } from "./floors-above/floors-above.component";
@@ -36,6 +37,8 @@ const routes = new HseRoutes([
       HseRoute.unsafe(SectionHeightComponent.route, SectionHeightComponent, undefined, SectionHeightComponent.title),
       HseRoute.unsafe(SectionResidentialUnitsComponent.route, SectionResidentialUnitsComponent, undefined, SectionResidentialUnitsComponent.title),
       HseRoute.unsafe(SectionYearOfCompletionComponent.route, SectionYearOfCompletionComponent, undefined, SectionYearOfCompletionComponent.title),
+      HseRoute.unsafe(CertificateIssuerComponent.route, CertificateIssuerComponent, undefined, CertificateIssuerComponent.title),
+      HseRoute.unsafe(CertificateNumberComponent.route, CertificateNumberComponent, undefined, CertificateNumberComponent.title),
       HseRoute.unsafe(SectionYearRangeComponent.route, SectionYearRangeComponent, undefined, SectionYearRangeComponent.title),
       HseRoute.unsafe(SectionAddressComponent.route, SectionAddressComponent, undefined, SectionAddressComponent.title),
       HseRoute.unsafe(SectionOtherAddressesComponent.route, SectionOtherAddressesComponent, undefined, SectionOtherAddressesComponent.title),
@@ -60,7 +63,9 @@ const routes = new HseRoutes([
         SectionAddressComponent,
         SectionOtherAddressesComponent,
         NameAllBlocksComponent,
-        SectionAnswersComponent
+        SectionAnswersComponent,
+        CertificateIssuerComponent,
+        CertificateNumberComponent
     ],
     imports: [
         RouterModule.forChild(routes.getRoutes()),
@@ -71,7 +76,6 @@ const routes = new HseRoutes([
         ComponentsModule
     ],
     providers: [
-        CaptionService,
         ...routes.getProviders()
     ]
 })

@@ -2,7 +2,6 @@ import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService, SectionModel } from 'src/app/services/application.service';
-import { CaptionService } from 'src/app/services/caption.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionCheckAnswersComponent } from '../check-answers/check-answers.component';
@@ -20,9 +19,9 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
-    
+
   }
 
   sections: SectionModel[] = [];
@@ -40,10 +39,6 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
   get blockNames(): string | undefined {
     let blockNames = this.applicationService.model.Sections!.map(x => x.Name);
     return blockNames.join(', ');
-  }
-
-  get captionText(): string | undefined {
-    return this.captionService.caption;
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {

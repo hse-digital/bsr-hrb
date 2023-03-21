@@ -6,6 +6,7 @@ import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 
 @Component({
   templateUrl: './year-of-completion.component.html'
@@ -57,7 +58,7 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let route = 'address';
+    let route = CertificateIssuerComponent.route;
     if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
       route = 'year-range';
     }

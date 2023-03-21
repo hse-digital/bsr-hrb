@@ -2,7 +2,6 @@ import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService } from "src/app/services/application.service";
-import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
@@ -18,7 +17,7 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
@@ -28,10 +27,6 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
     let peopleLivingInBuilding = this.applicationService.currentSection.PeopleLivingInBuilding;
     this.peopleLivingHasErrors = !peopleLivingInBuilding;
     return !this.peopleLivingHasErrors;
-  }
-
-  get captionText(): string | undefined {
-    return this.captionService.caption;
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
