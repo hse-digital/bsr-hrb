@@ -1,6 +1,6 @@
-import { Component, OnInit, QueryList, Type, ViewChildren } from "@angular/core";
+import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService, BuildingApplicationStatus } from "src/app/services/application.service";
