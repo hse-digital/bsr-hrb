@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { PaymentService } from 'src/app/services/payment.service';
@@ -8,7 +8,7 @@ import { PaymentService } from 'src/app/services/payment.service';
   selector: 'hse-confirmation',
   templateUrl: './payment-confirmation.component.html',
 })
-export class PaymentConfirmationComponent implements OnInit {
+export class PaymentConfirmationComponent implements OnInit, CanActivate {
   static route: string = "confirm";
 
   constructor(public applicationService: ApplicationService, public paymentService: PaymentService, private navigationService: NavigationService) {
@@ -37,6 +37,10 @@ export class PaymentConfirmationComponent implements OnInit {
 
   registerAnotherBuilding() {
     this.navigationService.navigate('');
+  }
+
+  canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.model.Payment;
   }
 
 }
