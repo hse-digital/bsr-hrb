@@ -46,6 +46,6 @@ export class AccountablePersonTypeComponent extends BaseComponent implements IHa
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'no'
+    return !!this.applicationService.model.AccountablePersons && this.applicationService.model.AccountablePersons.length > 1;
   }
 }

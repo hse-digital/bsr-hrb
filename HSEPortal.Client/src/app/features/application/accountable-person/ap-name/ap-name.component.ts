@@ -38,7 +38,6 @@ export class ApNameComponent extends BaseComponent implements IHasNextPage {
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'yes'
-      && !!this.applicationService.currentAccountablePerson.PapAddress;
+    return !this.pap && !!this.applicationService.currentAccountablePerson.Type && this.applicationService.currentAccountablePerson.Type == "individual";
   }
 }

@@ -38,7 +38,7 @@ export class ActingForAddressComponent implements OnInit, CanActivate {
   }
 
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'no' &&
-      !!this.applicationService.currentAccountablePerson.Role && this.applicationService.currentAccountablePerson.Role == "registering_for";
+      return !!this.applicationService.currentAccountablePerson.Role && this.applicationService.currentAccountablePerson.Role == "registering_for"
+        && !!this.applicationService.currentAccountablePerson.ActingForSameAddress && this.applicationService.currentAccountablePerson.ActingForSameAddress == "no";
   }
 }

@@ -85,7 +85,6 @@ export class ApDetailsComponent extends BaseComponent implements IHasNextPage, O
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'yes'
-      && !!this.applicationService.currentAccountablePerson.FirstName && !!this.applicationService.currentAccountablePerson.LastName;
+    return !!this.applicationService.currentAccountablePerson.FirstName && !!this.applicationService.currentAccountablePerson.LastName;
   }
 }

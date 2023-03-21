@@ -11,6 +11,7 @@ export class PapAddressComponent implements CanActivate {
   constructor(private applicationService: ApplicationService) { }
 
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'yes'
+    return (!!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'yes')
+      || !!this.applicationService.currentAccountablePerson.OrganisationName;
   }
 }

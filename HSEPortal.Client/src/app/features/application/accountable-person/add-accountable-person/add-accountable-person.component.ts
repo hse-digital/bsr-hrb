@@ -34,7 +34,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
     return (!!this.applicationService.currentAccountablePerson.LeadJobRole)
       || (!!this.applicationService.currentAccountablePerson.LeadEmail && !!this.applicationService.currentAccountablePerson.LeadPhoneNumber && !!this.applicationService.currentAccountablePerson.LeadJobRole)
       || (!!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'yes')
-      || (!!this.applicationService.currentAccountablePerson.Type && this.applicationService.currentAccountablePerson.Type == 'individual' && !!this.applicationService.currentAccountablePerson.PapAddress)  
+      || (!!this.applicationService.currentAccountablePerson.Type && (!!this.applicationService.currentAccountablePerson.Address || !!this.applicationService.currentAccountablePerson.PapAddress))  
   }
 
   canContinue(): boolean {

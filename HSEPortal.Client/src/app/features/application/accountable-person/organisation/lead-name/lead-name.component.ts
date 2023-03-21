@@ -34,7 +34,9 @@ export class LeadNameComponent extends BaseComponent implements IHasNextPage {
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.Role && this.applicationService.currentAccountablePerson.Role == "employee";
+    return !!this.applicationService.currentAccountablePerson.Role && (this.applicationService.currentAccountablePerson.Role == "employee"
+      || (this.applicationService.currentAccountablePerson.Role == "registering_for"
+        && (!!this.applicationService.currentAccountablePerson.ActingForAddress || !!this.applicationService.currentAccountablePerson.PapAddress)));
   }
 
 }

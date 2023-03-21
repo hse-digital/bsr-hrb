@@ -79,7 +79,6 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'no'
-      && !!this.applicationService.currentAccountablePerson.Address;
+    return !!this.applicationService.currentAccountablePerson.Address || !!this.applicationService.currentAccountablePerson.PapAddress;
   }
 }
