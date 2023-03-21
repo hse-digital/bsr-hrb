@@ -27,7 +27,7 @@ import { TitleService } from 'src/app/services/title.service';
 })
 export class SectionCheckAnswersComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'check-answers';
-  static title: string = "Registration task list - Register a high-rise building - GOV.UK";
+  static title: string = "Check your answers - Register a high-rise building - GOV.UK";
 
   URLs = {
     floorsAbove: SectionFloorsAboveComponent.route,
