@@ -20,10 +20,10 @@ import { ApplicationModule } from './features/application/application.module';
 import { TimeoutModalComponent } from './features/timeout/timeout.modal';
 
 const routes = new HseRoutes([
-  HseRoute.unsafe(HomeComponent.route, HomeComponent),
-  HseRoute.unsafe(TimeoutComponent.route, TimeoutComponent),
-  HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent),
-  HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent),
+  HseRoute.unsafe(HomeComponent.route, HomeComponent, undefined, HomeComponent.title),
+  HseRoute.unsafe(TimeoutComponent.route, TimeoutComponent, undefined, TimeoutComponent.title),
+  HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
+  HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent, undefined, ReturningApplicationComponent.title),
   HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forLoadChildren(ApplicationModule.baseRoute, () => import('./features/application/application.module').then(m => m.ApplicationModule)),
 ]);

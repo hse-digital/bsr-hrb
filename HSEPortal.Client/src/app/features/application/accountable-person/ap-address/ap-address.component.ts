@@ -4,82 +4,100 @@ import { AddressSearchMode } from "src/app/components/address/address.component"
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from "src/app/services/title.service";
 import { ApAccountableForComponent } from "../accountable-for/accountable-for.component";
 import { AddAccountablePersonComponent } from "../add-accountable-person/add-accountable-person.component";
 import { PapNameComponent } from "../ap-name/pap-name.component";
 import { PapWhoAreYouComponent } from "../organisation/pap-who-are-you/pap-who-are-you.component";
+import { PapAddressComponent } from "./pap-address.component";
 
 @Component({
-  selector: 'ap-address',
-  templateUrl: './ap-address.component.html'
+    selector: 'ap-address',
+    templateUrl: './ap-address.component.html'
 })
 export class ApAddressComponent implements OnInit, CanActivate {
-  static route: string = 'address';
-  searchMode = AddressSearchMode.PostalAddress;
+    static route: string = 'address';
 
-  @Input() addressName?: string;
-  @Input() pap: boolean = false;
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) { }
+    static title: string = "Find the address of the AP - Register a high-rise building - GOV.UK";
+    static selectTitle: string = "Select the AP's address - Register a high-rise building - GOV.UK";
+    static confirmTitle: string = "Confirm the AP's address - Register a high-rise building - GOV.UK";
 
-  private returnUrl?: string;
-  address?: AddressModel;
-  ngOnInit(): void {
-    this.address = this.pap ? this.applicationService.currentAccountablePerson.PapAddress : this.applicationService.currentAccountablePerson.Address;
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.returnUrl = params['return'];
-    });
-  }
+    searchMode = AddressSearchMode.PostalAddress;
 
-  getApName() {
-    var currentAccountablePerson = this.applicationService.currentAccountablePerson;
-    if ((currentAccountablePerson.Type == 'individual' && this.applicationService._currentAccountablePersonIndex > 0) || (this.applicationService._currentAccountablePersonIndex == 0 && this.applicationService.model.PrincipalAccountableType == 'individual')) {
-      return `${currentAccountablePerson.FirstName} ${currentAccountablePerson.LastName}`;
+    @Input() addressName?: string;
+    @Input() pap: boolean = false;
+    constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private titleService: TitleService) { }
+
+    private returnUrl?: string;
+    address?: AddressModel;
+    ngOnInit(): void {
+        this.address = this.pap ? this.applicationService.currentAccountablePerson.PapAddress : this.applicationService.currentAccountablePerson.Address;
+        this.activatedRoute.queryParams.subscribe(params => {
+            this.returnUrl = params['return'];
+        });
     }
 
-    return currentAccountablePerson.OrganisationName!;
-  }
+    getApName() {
+        var currentAccountablePerson = this.applicationService.currentAccountablePerson;
+        if ((currentAccountablePerson.Type == 'individual' && this.applicationService._currentAccountablePersonIndex > 0) || (this.applicationService._currentAccountablePersonIndex == 0 && this.applicationService.model.PrincipalAccountableType == 'individual')) {
+            return `${currentAccountablePerson.FirstName} ${currentAccountablePerson.LastName}`;
+        }
 
-  isSelfAddress() {
-    return !this.pap && this.applicationService._currentAccountablePersonIndex == 0;
-  }
-
-  async updateAddress(address: AddressModel) {
-    if (this.pap) {
-      this.applicationService.currentAccountablePerson.PapAddress = address;
-    } else {
-      this.applicationService.currentAccountablePerson.Address = address;
+        return currentAccountablePerson.OrganisationName!;
     }
 
-    await this.applicationService.updateApplication();
-
-    if (this.returnUrl) {
-      this.navigationService.navigateRelative(`../${this.returnUrl}`, this.activatedRoute);
-    } else if (this.applicationService._currentAccountablePersonIndex == 0) {
-      this.navigateFirstAccountablePerson();
-    } else {
-      this.navigateOtherAccountablePersons();
+    isSelfAddress() {
+        return !this.pap && this.applicationService._currentAccountablePersonIndex == 0;
     }
-  }
 
-  private navigateFirstAccountablePerson() {
-    if (this.pap || this.applicationService.currentAccountablePerson.IsPrincipal == 'yes') {
-      if (this.applicationService.currentAccountablePerson.Type == 'organisation') {
-        this.navigationService.navigateRelative(PapWhoAreYouComponent.route, this.activatedRoute);
-      } else {
-        this.navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, this.activatedRoute);
-      }
-    } else {
-      this.navigationService.navigateRelative(PapNameComponent.route, this.activatedRoute);
+    async updateAddress(address: AddressModel) {
+        if (this.pap) {
+            this.applicationService.currentAccountablePerson.PapAddress = address;
+        } else {
+            this.applicationService.currentAccountablePerson.Address = address;
+        }
+
+        await this.applicationService.updateApplication();
+
+        if (this.returnUrl) {
+            this.navigationService.navigateRelative(`../${this.returnUrl}`, this.activatedRoute);
+        } else if (this.applicationService._currentAccountablePersonIndex == 0) {
+            this.navigateFirstAccountablePerson();
+        } else {
+            this.navigateOtherAccountablePersons();
+        }
     }
-  }
 
-  private navigateOtherAccountablePersons() {
-    this.navigationService.navigateRelative(ApAccountableForComponent.route, this.activatedRoute);
-  }
+    private navigateFirstAccountablePerson() {
+        if (this.pap || this.applicationService.currentAccountablePerson.IsPrincipal == 'yes') {
+            if (this.applicationService.currentAccountablePerson.Type == 'organisation') {
+                this.navigationService.navigateRelative(PapWhoAreYouComponent.route, this.activatedRoute);
+            } else {
+                this.navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, this.activatedRoute);
+            }
+        } else {
+            this.navigationService.navigateRelative(PapNameComponent.route, this.activatedRoute);
+        }
+    }
 
-  canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return (!!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == "no")
-      || (this.applicationService.currentAccountablePerson.Type == "individual" && !!this.applicationService.currentAccountablePerson.Email && !!this.applicationService.currentAccountablePerson.PhoneNumber)
-      || (this.applicationService.currentAccountablePerson.Type == "organisation" && !!this.applicationService.currentAccountablePerson.OrganisationName);
-  }
+    private navigateOtherAccountablePersons() {
+        this.navigationService.navigateRelative(ApAccountableForComponent.route, this.activatedRoute);
+    }
+
+    changeStep(event: any) {
+        switch (event) {
+            case "select":
+                this.titleService.setTitle(this.pap ? PapAddressComponent.selectTitle : ApAddressComponent.selectTitle);
+                return;
+            case "confirm": this.titleService.setTitle(this.pap ? PapAddressComponent.confirmTitle : ApAddressComponent.confirmTitle);
+                return;
+        }
+        this.titleService.setTitle(this.pap ? PapAddressComponent.title : ApAddressComponent.title);
+    }
+
+    canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+        return (!!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == "no")
+            || (this.applicationService.currentAccountablePerson.Type == "individual" && !!this.applicationService.currentAccountablePerson.Email && !!this.applicationService.currentAccountablePerson.PhoneNumber)
+            || (this.applicationService.currentAccountablePerson.Type == "organisation" && !!this.applicationService.currentAccountablePerson.OrganisationName);
+    }
 }

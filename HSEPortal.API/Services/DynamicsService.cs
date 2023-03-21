@@ -25,12 +25,11 @@ public class DynamicsService
 
     public async Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel)
     {
-        var applicationId = $"HRB{GenerateApplicationId()}";
         var building = await CreateBuildingAsync(buildingApplicationModel);
         var contact = await CreateContactAsync(buildingApplicationModel);
-        await CreateBuildingApplicationAsync(applicationId, contact, building);
+        var dynamicsBuildingApplication = await CreateBuildingApplicationAsync(contact, building);
 
-        return buildingApplicationModel with { Id = applicationId };
+        return buildingApplicationModel with { Id = dynamicsBuildingApplication.bsr_applicationid };
     }
 
     public async Task SendVerificationEmail(EmailVerificationModel emailVerificationModel, string otpToken)
@@ -55,7 +54,7 @@ public class DynamicsService
     {
         var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplication>>("bsr_buildingapplications", new[]
         {
-            ("$filter", $"bsr_applicationreturncode eq '{applicationId}'"),
+            ("$filter", $"bsr_applicationid eq '{applicationId}' or bsr_applicationreturncode eq '{applicationId}'"),
             ("$expand", "bsr_Building,bsr_RegistreeId")
         });
 
@@ -318,13 +317,13 @@ public class DynamicsService
             buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
             bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
             bsr_timeanddateoftransaction = payment.CreatedDate,
-            bsr_transactionid = payment.PaymentId,
+            bsr_transactionid = payment.Reference,
             bsr_service = "HRB Registration",
             bsr_cardexpirydate = payment.CardExpiryDate,
             bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
             bsr_cardbrandegvisa = payment.CardBrand,
             bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
-            bsr_amountpaid = payment.Amount,
+            bsr_amountpaid = payment.Amount / 100,
             bsr_govukpaystatus = payment.Status,
         });
     }
@@ -434,13 +433,14 @@ public class DynamicsService
         return dynamicsStructure with { bsr_blockid = structureId };
     }
 
-    private async Task CreateBuildingApplicationAsync(string applicationId, Contact contact, Building building)
+    private async Task<DynamicsBuildingApplication> CreateBuildingApplicationAsync(Contact contact, Building building)
     {
         var modelDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<BuildingApplication, DynamicsBuildingApplication>();
-        var buildingApplication = new BuildingApplication(applicationId, contact.Id, building.Id);
+        var buildingApplication = new BuildingApplication(contact.Id, building.Id);
         var dynamicsBuildingApplication = modelDefinition.BuildDynamicsEntity(buildingApplication);
 
-        await dynamicsApi.Create(modelDefinition.Endpoint, dynamicsBuildingApplication);
+        var response = await dynamicsApi.Create(modelDefinition.Endpoint, dynamicsBuildingApplication, returnObjectResponse: true);
+        return await response.GetJsonAsync<DynamicsBuildingApplication>();
     }
 
     private async Task<Building> CreateBuildingAsync(BuildingApplicationModel model)
@@ -512,11 +512,5 @@ public class DynamicsService
         var id = Regex.Match(header.Value, @"\((.+)\)");
 
         return id.Groups[1].Value;
-    }
-
-    private static string GenerateApplicationId()
-    {
-        var uniqueCode = $"{DateTime.Now.Ticks / 10 % 1000000000:d9}";
-        return uniqueCode.PadLeft(9, '0');
     }
 }

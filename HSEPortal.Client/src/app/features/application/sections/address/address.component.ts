@@ -1,22 +1,28 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
+import { AddressSearchMode } from "src/app/components/address/address.component";
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
-import { AddressSearchMode } from "src/app/components/address/address.component";
-import { SectionOtherAddressesComponent } from "../other-addresses/other-addresses.component";
-import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
+import { TitleService } from 'src/app/services/title.service';
 import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
+import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
 import { SectionNameComponent } from "../name/name.component";
+import { SectionOtherAddressesComponent } from "../other-addresses/other-addresses.component";
 
 @Component({
   templateUrl: './address.component.html'
 })
 export class SectionAddressComponent implements OnInit, CanActivate {
   static route: string = 'address';
+
+  static title: string = 'Find the address of the section - Register a high-rise building - GOV.UK';
+  static selectTitle: string = 'Select the section address - Register a high-rise building - GOV.UK';
+  static confirmTitle: string = 'Confirm the section address - Register a high-rise building - GOV.UK';
+
   searchMode = AddressSearchMode.Building;
 
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private titleService: TitleService) {
   }
 
   private addressIndex?: number;
@@ -65,6 +71,16 @@ export class SectionAddressComponent implements OnInit, CanActivate {
       return this.applicationService.model.BuildingName!;
 
     return this.applicationService.currentSection.Name!;
+  }
+
+  changeStep(event: any) {
+    switch (event) {
+      case "select": this.titleService.setTitle(SectionAddressComponent.selectTitle);
+        return;
+      case "confirm": this.titleService.setTitle(SectionAddressComponent.confirmTitle);
+        return;
+    }
+    this.titleService.setTitle(SectionAddressComponent.title);
   }
 
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {

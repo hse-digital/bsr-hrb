@@ -14,6 +14,7 @@ export class AddressComponent implements OnInit {
   @Input() addressName!: string;
   @Input() selfAddress = false;
   @Output() onAddressConfirmed = new EventEmitter();
+  @Output() onChangeStep = new EventEmitter();
 
   searchModel: { postcode?: string, addressLine1?: string } = {};
   addressResponse?: AddressResponseModel;
@@ -70,6 +71,7 @@ export class AddressComponent implements OnInit {
       history.back();
     } else {
       this.step = previousStep;
+      this.onChangeStep.emit(this.step);
     }
   }
 
@@ -77,6 +79,7 @@ export class AddressComponent implements OnInit {
     this.history.push(this.step);
     this.step = step;
     this.backButton?.nativeElement?.focus();
+    this.onChangeStep.emit(this.step);
   }
 
 }

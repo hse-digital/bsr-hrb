@@ -3,6 +3,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { AddressResponseModel, AddressService } from 'src/app/services/address.service';
 import { AddressSearchMode } from './address.component';
 import { GovukErrorSummaryComponent } from 'hse-angular';
+import { TitleService } from 'src/app/services/title.service';
 @Component({
   selector: 'find-address',
   templateUrl: './find-address.component.html'
@@ -22,7 +23,7 @@ export class FindAddressComponent {
 
   @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(public applicationService: ApplicationService, private addressService: AddressService) { }
+  constructor(public applicationService: ApplicationService, private addressService: AddressService, private titleService: TitleService) { }
 
   async findAddress() {
     if (this.isPostcodeValid()) {
@@ -36,6 +37,7 @@ export class FindAddressComponent {
       this.onSearchPerformed.emit(addressResponse);
     } else {
       this.summaryError?.first?.focus();
+      this.titleService.setTitleError();
     }
   }
 

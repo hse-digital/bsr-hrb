@@ -62,12 +62,12 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
     private async Task ThenShouldCreateBuildingApplicationRecord(BuildingApplicationModel buildingApplicationModel)
     {
         var buildApplications = await dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", "bsr_buildingapplications")
-            .SetQueryParam("$filter", $"bsr_applicationreturncode eq '{buildingApplicationModel.Id}'")
+            .SetQueryParam("$filter", $"bsr_applicationid eq '{buildingApplicationModel.Id}'")
             .WithOAuthBearerToken(token)
             .GetJsonAsync<DynamicsResponse<DynamicsBuildingApplication>>();
 
         newBuildingApplication = buildApplications.Value.Single();
-        newBuildingApplication.bsr_applicationreturncode.Should().Be(buildingApplicationModel.Id);
+        newBuildingApplication.bsr_applicationid.Should().Be(buildingApplicationModel.Id);
     }
 
     private DynamicsBuilding newBuilding = null!;

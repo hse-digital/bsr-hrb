@@ -6,6 +6,7 @@ import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionHelper } from "src/app/helpers/section-name-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from 'src/app/services/title.service';
 import { AccountablePersonModule } from "../accountable-person/accountable-person.module";
 import { AccountablePersonComponent } from "../accountable-person/accountable-person/accountable-person.component";
 
@@ -14,6 +15,7 @@ import { AccountablePersonComponent } from "../accountable-person/accountable-pe
 })
 export class ContinueAnywayComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'continue-anyway';
+  static title: string = "Why you still want to register this building? - Register a high-rise building - GOV.UK";
 
   maxCharacters = 300;
   tooManyCharacters: boolean = false;
@@ -21,8 +23,8 @@ export class ContinueAnywayComponent extends BaseComponent implements IHasNextPa
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   updateCharacters() {

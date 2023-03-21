@@ -4,6 +4,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { PaymentService } from 'src/app/services/payment.service';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'hse-payment-declaration',
@@ -11,10 +12,11 @@ import { PaymentService } from 'src/app/services/payment.service';
 })
 export class PaymentDeclarationComponent extends BaseComponent implements OnInit {
   static route: string = 'declaration';
+  static title: string = "Registration declaration - Register a high-rise building - GOV.UK";
 
   loading = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, public paymentService: PaymentService) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, public paymentService: PaymentService, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   async ngOnInit() {

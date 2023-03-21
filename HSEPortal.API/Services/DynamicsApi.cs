@@ -8,26 +8,32 @@ namespace HSEPortal.API.Services;
 public class DynamicsApi
 {
     private readonly DynamicsOptions dynamicsOptions;
-    
+
     public DynamicsApi(IOptions<DynamicsOptions> dynamicsOptions)
     {
         this.dynamicsOptions = dynamicsOptions.Value;
     }
 
-    public async Task<IFlurlResponse> Create(string endpoint, object entity)
+    public async Task<IFlurlResponse> Create(string endpoint, object entity, bool returnObjectResponse = false)
     {
         var token = await GetAuthenticationTokenAsync();
-        
-        return await dynamicsOptions.EnvironmentUrl
+
+        var request = dynamicsOptions.EnvironmentUrl
             .AppendPathSegments("api", "data", "v9.2", endpoint)
-            .WithOAuthBearerToken(token)
-            .PostJsonAsync(entity);
+            .WithOAuthBearerToken(token);
+
+        if (returnObjectResponse)
+        {
+            request = request.WithHeader("Prefer", "return=representation");
+        }
+
+        return await request.PostJsonAsync(entity);
     }
 
     public async Task<IFlurlResponse> Update(string endpoint, object entity)
     {
         var token = await GetAuthenticationTokenAsync();
-        
+
         return await dynamicsOptions.EnvironmentUrl
             .AppendPathSegments("api", "data", "v9.2", endpoint)
             .WithOAuthBearerToken(token)
@@ -37,8 +43,8 @@ public class DynamicsApi
     public async Task<T> Get<T>(string endpoint, params (string, string)[] filters)
     {
         var token = await GetAuthenticationTokenAsync();
-        
-        var request =  dynamicsOptions.EnvironmentUrl
+
+        var request = dynamicsOptions.EnvironmentUrl
             .AppendPathSegments("api", "data", "v9.2", endpoint)
             .WithOAuthBearerToken(token);
 

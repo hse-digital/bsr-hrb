@@ -5,6 +5,7 @@ import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from 'src/app/services/title.service';
 import { OrganisationNamedContactDetailsComponent } from "./named-contact-details.component";
 
 @Component({
@@ -12,11 +13,12 @@ import { OrganisationNamedContactDetailsComponent } from "./named-contact-detail
 })
 export class OrganisationNamedContactComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'named-contact';
+  static title: string = "Who is the AP organisation named contact? - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   firstNameInError: boolean = false;

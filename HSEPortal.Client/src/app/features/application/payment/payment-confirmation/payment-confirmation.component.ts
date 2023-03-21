@@ -10,6 +10,7 @@ import { PaymentService } from 'src/app/services/payment.service';
 })
 export class PaymentConfirmationComponent implements OnInit, CanActivate {
   static route: string = "confirm";
+  static title: string = "Registration complete confirmation - Register a high-rise building - GOV.UK";
 
   constructor(public applicationService: ApplicationService, public paymentService: PaymentService, private navigationService: NavigationService) {
   }

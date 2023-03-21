@@ -6,6 +6,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './check-answers.component.html',
@@ -14,10 +15,11 @@ import { NavigationService } from 'src/app/services/navigation.service';
 })
 export class AccountablePersonCheckAnswersComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'check-answers';
+  static title: string = "Check your answers for PAP and AP - Register a high-rise building - GOV.UK";
 
   aps: AccountablePersonModel[] = [];
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {

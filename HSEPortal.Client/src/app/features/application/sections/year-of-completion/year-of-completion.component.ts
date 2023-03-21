@@ -5,12 +5,15 @@ import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from 'src/app/services/title.service';
+import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 
 @Component({
   templateUrl: './year-of-completion.component.html'
 })
 export class SectionYearOfCompletionComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'year-of-completion';
+  static title: string = "When was the section originally built? - Register a high-rise building - GOV.UK";
 
   yearOfCompletionHasErrors = false;
   exactYearHasErrors = false;
@@ -18,8 +21,8 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   canContinue(): boolean {
@@ -55,7 +58,7 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let route = 'address';
+    let route = CertificateIssuerComponent.route;
     if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
       route = 'year-range';
     }

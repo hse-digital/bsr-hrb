@@ -12,11 +12,11 @@ import { ContactNameComponent } from "./contact-name/contact-name.component";
 import { ContactPhoneComponent } from "./contact-phone/contact-phone.component";
 
 const routes = new HseRoutes([
-  HseRoute.unsafe(BuildingNameComponent.route, BuildingNameComponent),
-  HseRoute.protected(ContactNameComponent.route, ContactNameComponent),
-  HseRoute.protected(ContactPhoneComponent.route, ContactPhoneComponent),
-  HseRoute.protected(ContactEmailComponent.route, ContactEmailComponent),
-  HseRoute.protected(ContactEmailValidationComponent.route, ContactEmailValidationComponent),
+  HseRoute.unsafe(BuildingNameComponent.route, BuildingNameComponent, undefined, BuildingNameComponent.title),
+  HseRoute.protected(ContactNameComponent.route, ContactNameComponent, ContactNameComponent.title),
+  HseRoute.protected(ContactEmailComponent.route, ContactEmailComponent, ContactEmailComponent.title),
+  HseRoute.protected(ContactPhoneComponent.route, ContactPhoneComponent, ContactPhoneComponent.title),
+  HseRoute.protected(ContactEmailValidationComponent.route, ContactEmailValidationComponent, ContactEmailValidationComponent.title),
 ]);
 
 @NgModule({

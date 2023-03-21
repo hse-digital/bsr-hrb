@@ -6,17 +6,19 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { ApplicationService, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './more-information.component.html'
 })
 export class MoreInformationComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'more-information';
+  static title: string = "Which high-rise residential structure are in scope - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   inScopeSections?: SectionModel[];

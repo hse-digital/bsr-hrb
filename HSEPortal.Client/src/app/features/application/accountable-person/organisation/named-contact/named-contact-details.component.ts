@@ -7,6 +7,7 @@ import { EmailValidator } from "src/app/helpers/validators/email-validator";
 import { PhoneNumberValidator } from "src/app/helpers/validators/phone-number-validator";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from 'src/app/services/title.service';
 import { AddAccountablePersonComponent } from "../../add-accountable-person/add-accountable-person.component";
 
 @Component({
@@ -14,11 +15,12 @@ import { AddAccountablePersonComponent } from "../../add-accountable-person/add-
 })
 export class OrganisationNamedContactDetailsComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'named-contact-details';
+  static title: string = "AP organisation named contact details - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   errors = {

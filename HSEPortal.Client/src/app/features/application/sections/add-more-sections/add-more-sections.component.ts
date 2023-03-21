@@ -1,25 +1,27 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
-import { ApplicationService, SectionModel } from 'src/app/services/application.service';
-import { CaptionService } from 'src/app/services/caption.service';
-import { NavigationService } from 'src/app/services/navigation.service';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { SectionHelper } from 'src/app/helpers/section-name-helper';
+import { ApplicationService, SectionModel } from 'src/app/services/application.service';
+import { NavigationService } from 'src/app/services/navigation.service';
+import { TitleService } from 'src/app/services/title.service';
 import { SectionCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { SectionNameComponent } from '../name/name.component';
-import { SectionHelper } from 'src/app/helpers/section-name-helper';
-import { GovukErrorSummaryComponent } from 'hse-angular';
 
 @Component({
   templateUrl: './add-more-sections.component.html'
 })
 export class AddMoreSectionsComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'add-more'
+  static title: string = "Add another high-rise residential structure - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
+
   }
 
   sections: SectionModel[] = [];
@@ -39,11 +41,6 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
     return blockNames.join(', ');
   }
 
-  get captionText(): string | undefined {
-    return this.captionService.caption;
-  }
-
-  // To access this page there must be more than one section and the last section should have been completed (address exist).
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
     return !!this.applicationService.model.Sections && this.applicationService.model.Sections.length > 1
       && !!this.applicationService.currentSection.Addresses && this.applicationService.currentSection.Addresses.length > 0;

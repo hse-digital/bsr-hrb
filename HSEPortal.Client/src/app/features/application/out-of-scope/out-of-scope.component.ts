@@ -6,6 +6,7 @@ import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionHelper } from "src/app/helpers/section-name-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from 'src/app/services/title.service';
 import { ContinueAnywayComponent } from "./continue-anyway.component";
 
 @Component({
@@ -13,11 +14,12 @@ import { ContinueAnywayComponent } from "./continue-anyway.component";
 })
 export class BuildingOutOfScopeComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'out-of-scope';
+  static title: string = "You do not need to register this building - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   canContinue(): boolean {

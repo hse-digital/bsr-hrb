@@ -1,4 +1,6 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
+import { TitleService } from 'src/app/services/title.service';
+import { ActivatedRoute, Router } from "@angular/router";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
@@ -12,12 +14,13 @@ import { ApAddressComponent } from "../ap-address/ap-address.component";
 })
 export class PrincipleAccountableSelection extends BaseComponent implements IHasNextPage {
   static route: string = 'principal';
+  static title: string = "Are you the PAP? - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   principalHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   canContinue(): boolean {

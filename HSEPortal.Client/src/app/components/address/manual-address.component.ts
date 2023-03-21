@@ -3,6 +3,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { AddressModel } from 'src/app/services/address.service';
 import { AddressSearchMode } from './address.component';
 import { GovukErrorSummaryComponent } from 'hse-angular';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'manual-address',
@@ -27,13 +28,14 @@ export class ManualAddressComponent {
 
   @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(public applicationService: ApplicationService) { }
+  constructor(public applicationService: ApplicationService, private titleService: TitleService) { }
 
   confirmAddress() {
     if (this.isModelValid()) {
       this.onAddressEntered.emit(this.model);
     } else {
       this.summaryError?.first?.focus();
+      this.titleService.setTitleError();
     }
   }
 
