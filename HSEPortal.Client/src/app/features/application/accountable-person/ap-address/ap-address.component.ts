@@ -77,8 +77,9 @@ export class ApAddressComponent implements OnInit, CanActivate {
     this.navigationService.navigateRelative(ApAccountableForComponent.route, this.activatedRoute);
   }
 
-  canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {    
-    return (this.applicationService.currentAccountablePerson.Type == "individual" && !!this.applicationService.currentAccountablePerson.Email && !!this.applicationService.currentAccountablePerson.PhoneNumber)
+  canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return (!!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == "no")
+      || (this.applicationService.currentAccountablePerson.Type == "individual" && !!this.applicationService.currentAccountablePerson.Email && !!this.applicationService.currentAccountablePerson.PhoneNumber)
       || (this.applicationService.currentAccountablePerson.Type == "organisation" && !!this.applicationService.currentAccountablePerson.OrganisationName);
   }
 }
