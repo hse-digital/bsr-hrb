@@ -34,94 +34,94 @@ import { PapNamedRoleComponent } from "./organisation/pap-named-role/pap-named-r
 import { PrincipleAccountableSelection } from "./principal/principal.component";
 
 @Component({
-    template: '<router-outlet></router-outlet>'
+  template: '<router-outlet></router-outlet>'
 })
 export class IdCaptureComponent implements OnInit {
 
-    constructor(private applicationService: ApplicationService, private activatedRoute: ActivatedRoute) {
-    }
+  constructor(private applicationService: ApplicationService, private activatedRoute: ActivatedRoute) {
+  }
 
-    ngOnInit(): void {
-        this.activatedRoute.params.subscribe(params => {
-            var accountablePersonId = params['id'];
-            this.applicationService.selectAccountablePerson(accountablePersonId);
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.params.subscribe(params => {
+      var accountablePersonId = params['id'];
+      this.applicationService.selectAccountablePerson(accountablePersonId);
+    });
+  }
 
 }
 
 const routes = new HseRoutes([
-    HseRoute.protected(AccountablePersonComponent.route, AccountablePersonComponent, undefined, AccountablePersonComponent.title),
-    HseRoute.protected(AddAccountablePersonComponent.route, AddAccountablePersonComponent, undefined, AddAccountablePersonComponent.title),
-    HseRoute.protected(AccountablePersonCheckAnswersComponent.route, AccountablePersonCheckAnswersComponent, undefined, AccountablePersonCheckAnswersComponent.title),
-    HseRoute.forChildren(':id', IdCaptureComponent, new HseRoutes([
-        HseRoute.protected(PrincipleAccountableSelection.route, PrincipleAccountableSelection, undefined, PrincipleAccountableSelection.title),
-        HseRoute.protected(PapNamedRoleComponent.route, PapNamedRoleComponent, undefined, PapNamedRoleComponent.title),
-        HseRoute.protected(ActingForSameAddressComponent.route, ActingForSameAddressComponent, undefined, ActingForSameAddressComponent.title),
-        HseRoute.protected(ActingForAddressComponent.route, ActingForAddressComponent, undefined, ActingForAddressComponent.title),
-        HseRoute.protected(AccountablePersonTypeComponent.route, AccountablePersonTypeComponent, undefined, AccountablePersonTypeComponent.title),
-        HseRoute.protected(LeadNameComponent.route, LeadNameComponent, undefined, LeadNameComponent.title),
-        HseRoute.protected(LeadDetailsComponent.route, LeadDetailsComponent, undefined, LeadDetailsComponent.title),
-        HseRoute.protected(ApNameComponent.route, ApNameComponent, undefined, ApNameComponent.title),
-        HseRoute.protected(PapNameComponent.route, PapNameComponent, undefined, PapNameComponent.title),
-        HseRoute.protected(ApAddressComponent.route, ApAddressComponent, undefined, ApAddressComponent.title),
-        HseRoute.protected(PapAddressComponent.route, PapAddressComponent, undefined, PapAddressComponent.title),
-        HseRoute.protected(ApDetailsComponent.route, ApDetailsComponent, undefined, ApDetailsComponent.title),
-        HseRoute.protected(PapDetailsComponent.route, PapDetailsComponent, undefined, PapDetailsComponent.title),
-        HseRoute.protected(ApAccountableForComponent.route, ApAccountableForComponent, undefined, ApAccountableForComponent.title),
-        HseRoute.protected(OrganisationNamedContactComponent.route, OrganisationNamedContactComponent, undefined, OrganisationNamedContactComponent.title),
-        HseRoute.protected(OrganisationNamedContactDetailsComponent.route, OrganisationNamedContactDetailsComponent, undefined, OrganisationNamedContactDetailsComponent.title),
+  HseRoute.protected(AccountablePersonComponent.route, AccountablePersonComponent, AccountablePersonComponent.title),
+  HseRoute.protected(AddAccountablePersonComponent.route, AddAccountablePersonComponent, AddAccountablePersonComponent.title),
+  HseRoute.protected(AccountablePersonCheckAnswersComponent.route, AccountablePersonCheckAnswersComponent, AccountablePersonCheckAnswersComponent.title),
+  HseRoute.forChildren(':id', IdCaptureComponent, new HseRoutes([
+    HseRoute.protected(PrincipleAccountableSelection.route, PrincipleAccountableSelection, PrincipleAccountableSelection.title),
+    HseRoute.protected(PapNamedRoleComponent.route, PapNamedRoleComponent, PapNamedRoleComponent.title),
+    HseRoute.protected(ActingForSameAddressComponent.route, ActingForSameAddressComponent, ActingForSameAddressComponent.title),
+    HseRoute.protected(ActingForAddressComponent.route, ActingForAddressComponent, ActingForAddressComponent.title),
+    HseRoute.protected(AccountablePersonTypeComponent.route, AccountablePersonTypeComponent, AccountablePersonTypeComponent.title),
+    HseRoute.protected(LeadNameComponent.route, LeadNameComponent, LeadNameComponent.title),
+    HseRoute.protected(LeadDetailsComponent.route, LeadDetailsComponent, LeadDetailsComponent.title),
+    HseRoute.protected(ApNameComponent.route, ApNameComponent, ApNameComponent.title),
+    HseRoute.protected(PapNameComponent.route, PapNameComponent, PapNameComponent.title),
+    HseRoute.protected(ApAddressComponent.route, ApAddressComponent, ApAddressComponent.title),
+    HseRoute.protected(PapAddressComponent.route, PapAddressComponent, PapAddressComponent.title),
+    HseRoute.protected(ApDetailsComponent.route, ApDetailsComponent, ApDetailsComponent.title),
+    HseRoute.protected(PapDetailsComponent.route, PapDetailsComponent, PapDetailsComponent.title),
+    HseRoute.protected(ApAccountableForComponent.route, ApAccountableForComponent, ApAccountableForComponent.title),
+    HseRoute.protected(OrganisationNamedContactComponent.route, OrganisationNamedContactComponent, OrganisationNamedContactComponent.title),
+    HseRoute.protected(OrganisationNamedContactDetailsComponent.route, OrganisationNamedContactDetailsComponent, OrganisationNamedContactDetailsComponent.title),
 
-        HseRoute.protected(OrganisationTypeComponent.route, OrganisationTypeComponent, undefined, OrganisationTypeComponent.title),
-        HseRoute.protected(OrganisationNameComponent.route, OrganisationNameComponent, undefined, OrganisationNameComponent.title),
-        HseRoute.protected(PapWhoAreYouComponent.route, PapWhoAreYouComponent, undefined, PapWhoAreYouComponent.title),
-    ]))
+    HseRoute.protected(OrganisationTypeComponent.route, OrganisationTypeComponent, OrganisationTypeComponent.title),
+    HseRoute.protected(OrganisationNameComponent.route, OrganisationNameComponent, OrganisationNameComponent.title),
+    HseRoute.protected(PapWhoAreYouComponent.route, PapWhoAreYouComponent, PapWhoAreYouComponent.title),
+  ]))
 ]);
 
 @NgModule({
-    declarations: [
-        AccountablePersonComponent,
-        AddAccountablePersonComponent,
-        AccountablePersonTypeComponent,
-        IdCaptureComponent,
+  declarations: [
+    AccountablePersonComponent,
+    AddAccountablePersonComponent,
+    AccountablePersonTypeComponent,
+    IdCaptureComponent,
 
-        ApNameComponent,
-        PapNameComponent,
-        ApAddressComponent,
-        ApDetailsComponent,
-        PapAddressComponent,
-        PapDetailsComponent,
+    ApNameComponent,
+    PapNameComponent,
+    ApAddressComponent,
+    ApDetailsComponent,
+    PapAddressComponent,
+    PapDetailsComponent,
 
-        PrincipleAccountableSelection,
-        PapWhoAreYouComponent,
-        PapNamedRoleComponent,
-        ActingForSameAddressComponent,
-        ActingForAddressComponent,
-        LeadNameComponent,
-        LeadDetailsComponent,
-        ApAccountableForComponent,
+    PrincipleAccountableSelection,
+    PapWhoAreYouComponent,
+    PapNamedRoleComponent,
+    ActingForSameAddressComponent,
+    ActingForAddressComponent,
+    LeadNameComponent,
+    LeadDetailsComponent,
+    ApAccountableForComponent,
 
-        AccountablePersonCheckAnswersComponent,
-        IndividualAnswersComponent,
-        OrganisationAnswersComponent,
+    AccountablePersonCheckAnswersComponent,
+    IndividualAnswersComponent,
+    OrganisationAnswersComponent,
 
-        OrganisationNamedContactComponent,
-        OrganisationNamedContactDetailsComponent,
+    OrganisationNamedContactComponent,
+    OrganisationNamedContactDetailsComponent,
 
-        OrganisationTypeComponent,
-        OrganisationNameComponent,
-    ],
-    providers: [HttpClient, ...routes.getProviders()],
-    imports: [
-        RouterModule.forChild(routes.getRoutes()),
-        HseAngularModule,
-        CommonModule,
-        HttpClientModule,
-        ComponentsModule,
-        FormsModule
-    ]
+    OrganisationTypeComponent,
+    OrganisationNameComponent,
+  ],
+  providers: [HttpClient, ...routes.getProviders()],
+  imports: [
+    RouterModule.forChild(routes.getRoutes()),
+    HseAngularModule,
+    CommonModule,
+    HttpClientModule,
+    ComponentsModule,
+    FormsModule
+  ]
 })
 export class AccountablePersonModule {
-    static baseRoute: string = 'accountable-person';
+  static baseRoute: string = 'accountable-person';
 
 }

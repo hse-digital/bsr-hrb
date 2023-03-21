@@ -20,7 +20,7 @@ export class HseRoute implements Route {
     var hseRoute = new HseRoute(path, component, undefined, undefined, title);
     hseRoute._isProtected = true;
     (<Route>hseRoute).canActivate = [component];
-    
+
     return hseRoute;
   }
 
@@ -40,7 +40,7 @@ export class HseRoute implements Route {
 
 export class HseRoutes {
 
-  constructor(public routes: HseRoute[]) {}
+  constructor(public routes: HseRoute[]) { }
 
   getRoutes(): Routes {
     return this.routes;

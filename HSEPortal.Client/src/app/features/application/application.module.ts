@@ -18,8 +18,8 @@ import { ApplicationTaskListComponent } from "./task-list/task-list.component";
 const routes = new HseRoutes([
     HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent, ApplicationTaskListComponent.title),
     HseRoute.protected(NumberOfSectionsComponment.route, NumberOfSectionsComponment, NumberOfSectionsComponment.title),
-    HseRoute.protected(BuildingOutOfScopeComponent.route, BuildingOutOfScopeComponent, undefined, BuildingOutOfScopeComponent.title),
-    HseRoute.protected(ContinueAnywayComponent.route, ContinueAnywayComponent, undefined, ContinueAnywayComponent.title),
+    HseRoute.protected(BuildingOutOfScopeComponent.route, BuildingOutOfScopeComponent, BuildingOutOfScopeComponent.title),
+    HseRoute.protected(ContinueAnywayComponent.route, ContinueAnywayComponent, ContinueAnywayComponent.title),
     HseRoute.forLoadChildren(SectionsModule.baseRoute, () => import('./sections/sections.module').then(m => m.SectionsModule)),
     HseRoute.forLoadChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
     HseRoute.forLoadChildren(PaymentModule.baseRoute, () => import('./payment/payment.module').then(m => m.PaymentModule)),

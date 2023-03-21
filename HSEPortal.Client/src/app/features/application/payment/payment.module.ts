@@ -9,23 +9,23 @@ import { PaymentConfirmationComponent } from './payment-confirmation/payment-con
 import { PaymentDeclarationComponent } from './payment-declaration/payment-declaration.component';
 
 const routes = new HseRoutes([
-    HseRoute.protected(PaymentDeclarationComponent.route, PaymentDeclarationComponent, undefined, PaymentDeclarationComponent.title),
-    HseRoute.protected(PaymentConfirmationComponent.route, PaymentConfirmationComponent, undefined, PaymentConfirmationComponent.title),
+  HseRoute.protected(PaymentDeclarationComponent.route, PaymentDeclarationComponent, PaymentDeclarationComponent.title),
+  HseRoute.protected(PaymentConfirmationComponent.route, PaymentConfirmationComponent, PaymentConfirmationComponent.title),
 ]);
 
 @NgModule({
-    declarations: [
-        PaymentConfirmationComponent, PaymentDeclarationComponent
-    ],
-    imports: [
-        RouterModule.forChild(routes.getRoutes()),
-        HseAngularModule,
-        CommonModule,
-        HttpClientModule,
-        ComponentsModule
-    ],
-    providers: [HttpClient, ...routes.getProviders()]
+  declarations: [
+    PaymentConfirmationComponent, PaymentDeclarationComponent
+  ],
+  imports: [
+    RouterModule.forChild(routes.getRoutes()),
+    HseAngularModule,
+    CommonModule,
+    HttpClientModule,
+    ComponentsModule
+  ],
+  providers: [HttpClient, ...routes.getProviders()]
 })
 export class PaymentModule {
-    public static baseRoute: string = "payment";
+  public static baseRoute: string = "payment";
 }
