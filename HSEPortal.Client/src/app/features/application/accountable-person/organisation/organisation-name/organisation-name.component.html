@@ -6,7 +6,7 @@
       <div class="govuk-form-group">
 
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link *ngIf="organisationNameHasErrors" anchorId="input-organisation-name" message="Enter the organisation name" />
         </govuk-error-summary>
 
@@ -15,7 +15,7 @@
 
           <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
                                     hint="This is the name of the organisation that is an accountable person."
-                                    [model]="applicationService.currentAccountablePerson.OrganisationName"
+                                    [(model)]="applicationService.currentAccountablePerson.OrganisationName"
                                     [values]="companies" (onDebounce)="searchCompanies($event)" (onSelectedValue)="selectCompanyName($event)"
                                     [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/>
 

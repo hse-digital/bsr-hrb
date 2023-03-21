@@ -5,7 +5,7 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
 
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
                     <govuk-error-link *ngIf="errors.email.hasErrors" anchorId="input-email" message="{{errors.email.errorText}}" />
                     <govuk-error-link *ngIf="errors.phoneNumber.hasErrors" anchorId="input-phone-number" message="{{errors.phoneNumber.errorText}}" />
                 </govuk-error-summary>
@@ -18,12 +18,14 @@
                     <govuk-input id="email" label="Email address"
                                  [(model)]="applicationService.currentAccountablePerson.NamedContactEmail"
                                  [errorText]="getErrorDescription(errors.email.hasErrors, errors.email.errorText)"
-                                 class="govuk-!-margin-bottom-5" />
+                                 class="govuk-!-margin-bottom-5"
+                                 (onKeyupEnter)="saveAndContinue()"/>
           
                     <govuk-input id="phone-number" label="Telephone number"
                                  hint="Enter a UK phone number with or without spaces. For example, '012 3456 7890' or '+4407654321098'"
                                  [(model)]="applicationService.currentAccountablePerson.NamedContactPhoneNumber"
-                                 [errorText]="getErrorDescription(errors.phoneNumber.hasErrors, errors.phoneNumber.errorText)" />
+                                 [errorText]="getErrorDescription(errors.phoneNumber.hasErrors, errors.phoneNumber.errorText)"
+                                 (onKeyupEnter)="saveAndContinue()"/>
                 </govuk-fieldset>
             </div>
 

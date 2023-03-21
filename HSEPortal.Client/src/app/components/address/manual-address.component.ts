@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application.service';
 import { AddressModel } from 'src/app/services/address.service';
 import { AddressSearchMode } from './address.component';
+import { GovukErrorSummaryComponent } from 'hse-angular';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'manual-address',
@@ -24,11 +26,16 @@ export class ManualAddressComponent {
 
   model: AddressModel = { IsManual: true }
 
-  constructor(public applicationService: ApplicationService) { }
+  @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
+
+  constructor(public applicationService: ApplicationService, private titleService: TitleService) { }
 
   confirmAddress() {
     if (this.isModelValid()) {
       this.onAddressEntered.emit(this.model);
+    } else {
+      this.summaryError?.first?.focus();
+      this.titleService.setTitleError();
     }
   }
 
@@ -43,11 +50,11 @@ export class ManualAddressComponent {
   }
 
   private isPostcodeValid(): boolean {
-    let postcode = this.model.Postcode;
+    let postcode = this.model.Postcode?.replace(' ', '');
     this.errors.postcode.hasErrors = true;
     if (!postcode) {
       this.errors.postcode.errorText = 'Enter a postcode';
-    } else if (postcode.replace(' ', '').length != 7) {
+    } else if (postcode.length < 5 || postcode.length > 7) {
       this.errors.postcode.errorText = "Enter a real postcode, like 'EC3A 8BF'.";
     } else {
       this.errors.postcode.hasErrors = false;

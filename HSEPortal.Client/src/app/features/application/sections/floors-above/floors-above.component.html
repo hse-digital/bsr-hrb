@@ -5,7 +5,7 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
 
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
                   <govuk-error-link anchorId="input-floors-above" [message]="errorMessage" />
                 </govuk-error-summary>
 
@@ -30,7 +30,7 @@
 
 
                     <govuk-details summaryText="Help with ground level">
-                        <p>Ground level is the level of land immediately next to the section. If the section is on uneven land, count floors from the lowest part of the land immediately next to the section.</p>
+                        <p>Ground level is the level of the land immediately next to {{sectionBuildingName()}}. If that land is uneven, count from the lowest part of the land immediately next to {{sectionBuildingName()}}.</p>
                         <p>Any ceiling below that level is below ground level.</p>
                     </govuk-details>
 
@@ -38,7 +38,8 @@
                                  labelClass="govuk-label--s" id="floors-above"
                                  [(model)]="applicationService.currentSection.FloorsAbove"
                                  [errorText]="getErrorDescription(floorsHasError, errorMessage)"
-                                 class="govuk-input--width-3"/>
+                                 class="govuk-input--width-3"
+                                 (onKeyupEnter)="saveAndContinue()"/>
 
                 </govuk-fieldset>
             </div>

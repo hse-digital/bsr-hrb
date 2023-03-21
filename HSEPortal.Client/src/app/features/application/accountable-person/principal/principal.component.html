@@ -5,15 +5,15 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link anchorId="principal" message="Select 'Yes' if you are the principal accountable person" />
         </govuk-error-summary>
 
         <govuk-fieldset title="Are you the principal accountable person for {{applicationService.model.BuildingName}}?" [isPageHeading]=true id="principal" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
                         [errorText]="getErrorDescription(principalHasErrors, 'Select \'Yes\' if you are the principal accountable person')">
             <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.IsPrincipal">
-                <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-yes" value="yes" label="Yes"/>
-                <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-no" value="no" label="No" class="govuk-radio-no-margin-bottom"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()"/>
+                <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-no" value="no" label="No" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()"/>
               </govuk-radio-group>
         </govuk-fieldset>
       </div>

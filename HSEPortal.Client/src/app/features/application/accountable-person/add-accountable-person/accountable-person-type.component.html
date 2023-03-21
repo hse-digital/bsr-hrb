@@ -5,7 +5,7 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link anchorId="radios-accountable-person"
                             message="Select if the accountable person is an organisation or an individual" />
         </govuk-error-summary>
@@ -15,8 +15,8 @@
 
           <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.Type" id="radios-accountable-person"
                              [errorText]="getErrorDescription(hasErrors, 'Select if the accountable person is an organisation or an individual')">
-            <govuk-radio [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="organisation" value="organisation" label="An organisation"/>
-            <govuk-radio [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="individual" value="individual" label="An individual"/>
+            <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="organisation" value="organisation" label="An organisation"/>
+            <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="individual" value="individual" label="An individual"/>
           </govuk-radio-group>
 
         </govuk-fieldset>

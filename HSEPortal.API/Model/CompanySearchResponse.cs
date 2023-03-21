@@ -2,6 +2,11 @@ namespace HSEPortal.API.Model;
 
 public class CompanySearchResponse
 {
+    public CompanySearchResponse()
+    {
+        Companies = new List<Company>();
+    }
+    
     public List<Company> Companies { get; set; }
     public int Results { get; set; }
 }

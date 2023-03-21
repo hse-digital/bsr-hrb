@@ -11,4 +11,5 @@ public class IntegrationsOptions
     public string PaymentEndpoint { get; set; }
     public string PaymentApiKey { get; set; }
     public double PaymentAmount { get; set; }
+    public string SocialHousingFilePath { get; set; }
 }

@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
@@ -11,9 +13,12 @@ import { NavigationService } from 'src/app/services/navigation.service';
 })
 export class MoreInformationComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'more-information';
+  static title: string = "Which high-rise residential structure are in scope - Register a high-rise building - GOV.UK";
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   inScopeSections?: SectionModel[];
@@ -40,6 +45,9 @@ export class MoreInformationComponent extends BaseComponent implements IHasNextP
   }
 
   getSectionNames(sections: SectionModel[]) {
+    if (sections.length == 1)
+      return sections.map(x => this.getSectionName(x, 0));
+
     return sections.slice(0, sections.length - 1).map((section, index) => this.getSectionName(section, index)).join(', ');
   }
 

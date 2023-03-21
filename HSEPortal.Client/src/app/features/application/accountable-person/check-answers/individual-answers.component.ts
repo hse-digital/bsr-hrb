@@ -15,10 +15,32 @@ export class IndividualAnswersComponent {
     @Input() apIndex!: number;
     @Input() hasMoreAp = false;
 
+    addMore() {
+        this.navigationService.navigateRelative('add-more', this.activatedRoute);
+    }
+
+    goToApType() {
+        if (this.apIndex == 0) {
+            this.navigationService.navigateRelative('', this.activatedRoute);
+        } else {
+            this.navigateTo('accountable-person-type');
+        }
+    }
+
     navigateTo(url: string, query?: string) {
         this.navigationService.navigateRelative(`accountable-person-${this.apIndex + 1}/${url}`, this.activatedRoute, {
             return: 'check-answers'
         });
+    }
+
+    getYourAddress() {
+        return this.apIndex == 0 && this.ap.IsPrincipal == 'yes' ? 
+            this.ap.PapAddress : this.ap.Address;
+    }
+
+    getPapAddress() {
+        return this.apIndex == 0 && this.ap.IsPrincipal == 'no' ? 
+            this.ap.PapAddress : this.ap.Address;
     }
 
     notPap() {
@@ -39,7 +61,12 @@ export class IndividualAnswersComponent {
     }
 
     useSameAddressDescription() {
-        return this.ap.ActingForSameAddress == 'yes' ? 'Yes, use the same address' : 'No, use a different address';
+        switch(this.ap.ActingForSameAddress) {
+            case 'yes': return 'Yes, use the same address';
+            case 'no': return 'No, use a different address';
+        }
+
+        return undefined;
     }
 
     organisationTypeDescription() {

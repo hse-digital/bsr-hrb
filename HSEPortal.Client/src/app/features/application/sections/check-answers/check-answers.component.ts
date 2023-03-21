@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -16,6 +16,8 @@ import { AccountablePersonComponent } from '../../accountable-person/accountable
 import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { SectionYearOfCompletionComponent } from '../year-of-completion/year-of-completion.component';
+import { GovukErrorSummaryComponent } from 'hse-angular';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'hse-check-answers',
@@ -25,6 +27,7 @@ import { SectionYearOfCompletionComponent } from '../year-of-completion/year-of-
 })
 export class SectionCheckAnswersComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'check-answers';
+  static title: string = "Check your answers - Register a high-rise building - GOV.UK";
 
   URLs = {
     floorsAbove: SectionFloorsAboveComponent.route,
@@ -39,8 +42,10 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   sections: SectionModel[] = [];
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   async ngOnInit() {
@@ -71,23 +76,12 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   getSectionName(sectionIndex: number, section?: SectionModel) {
-    return section?.Name ?? `${this.getBlockIndex(sectionIndex + 1)} section`;
-  }
-
-  getBlockIndex(index: number) {
-    switch (index) {
-      case 1: return 'First';
-      case 2: return 'Second';
-      case 3: return 'Third';
-      case 4: return 'Fourth';
-      case 5: return 'Fifth';
-    }
-
-    return "Last";
+    return section?.Name ?? `${SectionHelper.getSectionCardinalName(sectionIndex)} high-rise residential structure`;
   }
 
   override async onSave(): Promise<void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.BlocksInBuildingComplete;
+    await this.applicationService.syncBuildingStructures();
   }
 
   private getOutOfScopeSections() {

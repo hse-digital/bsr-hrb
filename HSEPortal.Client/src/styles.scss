@@ -1,15 +1,15 @@
 @import "node_modules/govuk-frontend/govuk/all";
 
 .govuk-header__logotype-text {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .hljs {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .govuk-checkboxes__item {
-    margin-bottom: 10px !important;
+  margin-bottom: 10px !important;
 }
 
 // GOVUK-RADIO
@@ -18,12 +18,13 @@
 }
 
 .govuk-error-summary__list a {
-    color: #d4351c;
-    cursor: pointer;
+  color: #d4351c;
+  cursor: pointer;
 }
 
-a.govuk-link, a.govuk-back-link {
-  text-decoration-thickness: max(1px, .0625rem);
+a.govuk-link,
+a.govuk-back-link {
+  text-decoration-thickness: max(1px, 0.0625rem);
   text-underline-offset: 0.1em;
 }
 

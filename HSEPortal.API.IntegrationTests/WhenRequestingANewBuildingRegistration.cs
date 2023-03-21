@@ -29,11 +29,12 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
     {
         var buildingRegistrationModel = GivenABuildingRegistrationModel();
         await GivenAnAuthenticationToken();
-        await WhenSendingTheRequestForANewBuildingRegistration(buildingRegistrationModel);
+        
+        var responseApplication = await WhenSendingTheRequestForANewBuildingRegistration(buildingRegistrationModel);
 
-        await ThenShouldCreateBuildingApplicationRecord(buildingRegistrationModel);
         await ThenShouldCreateBuildingRecord(buildingRegistrationModel);
         await ThenShouldCreateContactRecord(buildingRegistrationModel);
+        await ThenShouldCreateBuildingApplicationRecord(responseApplication);
     }
 
     private static BuildingApplicationModel GivenABuildingRegistrationModel()
@@ -49,10 +50,11 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
         token = await dynamicsService.GetAuthenticationTokenAsync();
     }
 
-    private async Task WhenSendingTheRequestForANewBuildingRegistration(BuildingApplicationModel buildingApplicationModel)
+    private async Task<BuildingApplicationModel> WhenSendingTheRequestForANewBuildingRegistration(BuildingApplicationModel buildingApplicationModel)
     {
-        await swaOptions.Value.Url.AppendPathSegments("api", nameof(BuildingApplicationFunctions.NewBuildingApplication))
-            .PostJsonAsync(buildingApplicationModel);
+        return await swaOptions.Value.Url.AppendPathSegments("api", nameof(BuildingApplicationFunctions.NewBuildingApplication))
+            .PostJsonAsync(buildingApplicationModel)
+            .ReceiveJson<BuildingApplicationModel>();
     }
 
     private DynamicsBuildingApplication newBuildingApplication = null!;
@@ -60,12 +62,12 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
     private async Task ThenShouldCreateBuildingApplicationRecord(BuildingApplicationModel buildingApplicationModel)
     {
         var buildApplications = await dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", "bsr_buildingapplications")
-            .SetQueryParam("$filter", $"bsr_name eq '{buildingApplicationModel.BuildingName}'")
+            .SetQueryParam("$filter", $"bsr_applicationid eq '{buildingApplicationModel.Id}'")
             .WithOAuthBearerToken(token)
             .GetJsonAsync<DynamicsResponse<DynamicsBuildingApplication>>();
 
         newBuildingApplication = buildApplications.Value.Single();
-        newBuildingApplication.bsr_name.Should().Be(buildingApplicationModel.BuildingName);
+        newBuildingApplication.bsr_applicationid.Should().Be(buildingApplicationModel.Id);
     }
 
     private DynamicsBuilding newBuilding = null!;
@@ -99,8 +101,8 @@ public class WhenRequestingANewBuildingRegistration : IntegrationTestBase, IDisp
 
     public void Dispose()
     {
-        dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", $"bsr_buildingapplications({newBuildingApplication.bsr_buildingapplicationid})").WithOAuthBearerToken(token).DeleteAsync().GetAwaiter().GetResult();
         dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", $"bsr_buildings({newBuilding.bsr_buildingid})").WithOAuthBearerToken(token).DeleteAsync().GetAwaiter().GetResult();
         dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", $"contacts({newContact.contactid})").WithOAuthBearerToken(token).DeleteAsync().GetAwaiter().GetResult();
+        dynamicsOptions.Value.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", $"bsr_buildingapplications({newBuildingApplication.bsr_buildingapplicationid})").WithOAuthBearerToken(token).DeleteAsync().GetAwaiter().GetResult();
     }
 }

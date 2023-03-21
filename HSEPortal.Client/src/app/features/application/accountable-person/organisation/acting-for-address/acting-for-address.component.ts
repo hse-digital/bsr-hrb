@@ -4,6 +4,7 @@ import { AddressSearchMode } from "src/app/components/address/address.component"
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from "src/app/services/title.service";
 import { LeadNameComponent } from "../lead-name/lead-name.component";
 
 @Component({
@@ -11,9 +12,14 @@ import { LeadNameComponent } from "../lead-name/lead-name.component";
 })
 export class ActingForAddressComponent implements OnInit {
   static route: string = 'acting-for-address';
+
+  static title: string = "Find your address - Register a high-rise building - GOV.UK";
+  static selectTitle: string = "Select your address - Register a high-rise building - GOV.UK";
+  static confirmTitle: string = "Confirm your address - Register a high-rise building - GOV.UK";
+  
   searchMode = AddressSearchMode.PostalAddress;
 
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private titleService: TitleService) {
   }
 
   address?: AddressModel
@@ -35,6 +41,16 @@ export class ActingForAddressComponent implements OnInit {
     }
 
     this.navigationService.navigateRelative(route, this.activatedRoute);
+  }
+
+  changeStep(event: any) {
+    switch (event) {
+      case "select": this.titleService.setTitle(ActingForAddressComponent.selectTitle);
+        return;
+      case "confirm": this.titleService.setTitle(ActingForAddressComponent.confirmTitle);
+        return;
+    }
+    this.titleService.setTitle(ActingForAddressComponent.title);
   }
 
 }

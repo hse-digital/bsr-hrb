@@ -1,7 +1,9 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ViewChildren, QueryList } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application.service';
 import { AddressResponseModel, AddressService } from 'src/app/services/address.service';
 import { AddressSearchMode } from './address.component';
+import { GovukErrorSummaryComponent } from 'hse-angular';
+import { TitleService } from 'src/app/services/title.service';
 @Component({
   selector: 'find-address',
   templateUrl: './find-address.component.html'
@@ -18,7 +20,10 @@ export class FindAddressComponent {
   postcodeErrorText: string = '';
 
   loading = false;
-  constructor(public applicationService: ApplicationService, private addressService: AddressService) { }
+
+  @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
+
+  constructor(public applicationService: ApplicationService, private addressService: AddressService, private titleService: TitleService) { }
 
   async findAddress() {
     if (this.isPostcodeValid()) {
@@ -30,15 +35,18 @@ export class FindAddressComponent {
       }
 
       this.onSearchPerformed.emit(addressResponse);
+    } else {
+      this.summaryError?.first?.focus();
+      this.titleService.setTitleError();
     }
   }
 
   isPostcodeValid(): boolean {
-    let postcode = this.searchModel.postcode;
+    let postcode = this.searchModel.postcode?.replace(' ', '');
     this.postcodeHasErrors = true;
     if (!postcode) {
       this.postcodeErrorText = 'Enter a postcode';
-    } else if (postcode.replace(' ', '').length != 6 && postcode.replace(' ', '').length != 7) {
+    } else if (postcode.length < 5 || postcode.length > 7) {
       this.postcodeErrorText = "Enter a real postcode, like 'EC3A 8BF'.";
     } else {
       this.postcodeHasErrors = false;

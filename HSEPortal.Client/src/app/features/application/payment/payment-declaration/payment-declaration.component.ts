@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
@@ -11,10 +12,11 @@ import { PaymentService } from 'src/app/services/payment.service';
 })
 export class PaymentDeclarationComponent extends BaseComponent implements OnInit {
   static route: string = 'declaration';
+  static title: string = "Registration declaration - Register a high-rise building - GOV.UK";
 
   loading = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, public paymentService: PaymentService) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, public paymentService: PaymentService, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   async ngOnInit() {
@@ -25,7 +27,11 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
   override async saveAndContinue() {
     this.loading = true;
 
-    var paymentResponse = await this.paymentService.InitialisePayment();
+    await this.applicationService.syncDeclaration();
+    var paymentResponse = await this.paymentService.InitialisePayment(this.applicationService.model);
+    this.applicationService.model.Payment = paymentResponse;
+    this.applicationService.updateApplication();
+
     if (typeof window !== 'undefined') {
       window.location.href = paymentResponse.PaymentLink;
     }

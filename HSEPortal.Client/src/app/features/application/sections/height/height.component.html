@@ -5,7 +5,7 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
 
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem">
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
                   <govuk-error-link anchorId="input-height" [message]="errorMessage" />
                 </govuk-error-summary>
 
@@ -15,7 +15,7 @@
                     <govuk-body>Do not measure the roof, unless there is a residential unit on it.</govuk-body>
 
                     <govuk-details summaryText="Help with ground level">
-                        <p>Ground level is the level of land immediately next to the section. If the section is on uneven land, count from the lowest part of the land immediately next to the section.</p>
+                        <p>Ground level is the level of the land immediately next to {{sectionBuildingName()}}. If that land is uneven, count from the lowest part of the land immediately next to {{sectionBuildingName()}}.</p>
                     </govuk-details>
 
                     <govuk-input label="Height in metres"
@@ -23,7 +23,8 @@
                                  labelClass="govuk-label--s" id="height"
                                  [(model)]="applicationService.currentSection.Height"
                                  [errorText]="getErrorDescription(heightHasErrors, errorMessage)" suffix="m"
-                                 class="govuk-input--width-4" #height />
+                                 class="govuk-input--width-4" #height
+                                 (onKeyupEnter)="saveAndContinue()"/>
 
                 </govuk-fieldset>
             </div>

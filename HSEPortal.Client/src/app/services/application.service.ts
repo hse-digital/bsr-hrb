@@ -63,7 +63,7 @@ export class ApplicationService {
     this._currentAccountablePersonIndex = index - 1;
   }
 
-  startAccountablePersonEdit(): string {
+  async startAccountablePersonEdit(): Promise<void> {
     this._currentAccountablePersonIndex = 0;
 
     if (!this.model.AccountablePersons || this.model.AccountablePersons.length <= 1) {
@@ -71,9 +71,8 @@ export class ApplicationService {
       accountablePerson.Type = this.model.PrincipalAccountableType;
 
       this.model.AccountablePersons = [accountablePerson];
+      await this.updateApplication();
     }
-
-    return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
   startNewAccountablePerson(): string {
@@ -120,6 +119,25 @@ export class ApplicationService {
     await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
   }
 
+  async updateDynamicsBuildingSummaryStage(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/UpdateDynamicsBuildingSummaryStage`, this.model));
+  }
+
+  async syncBuildingStructures(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncBuildingStructures`, this.model));
+  }
+
+  async syncAccountablePersons(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncAccountablePersons`, this.model));
+  }
+
+  async syncDeclaration(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncDeclaration`, this.model));
+  }
+
+  async syncPayment(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
+  }
 }
 
 export class BuildingRegistrationModel {

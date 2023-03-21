@@ -1,5 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from "@angular/router";
+import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { ApplicationService } from "src/app/services/application.service";
@@ -11,42 +13,45 @@ import { SectionFloorsAboveComponent } from "../floors-above/floors-above.compon
 import { SectionNameComponent } from "../name/name.component";
 
 @Component({
-    templateUrl: './other-addresses.component.html',
+  templateUrl: './other-addresses.component.html',
 })
 export class SectionOtherAddressesComponent extends BaseComponent implements IHasNextPage, OnInit {
-    static route: string = 'other-addresses';
+  static route: string = 'other-addresses';
+  static title: string = "Does the section have another address? - Register a high-rise building - GOV.UK";
 
-    hasMoreAddressesError = false;
-    hasMoreAddresses?: string;
+  hasMoreAddressesError = false;
+  hasMoreAddresses?: string;
 
-    constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-        super(router, applicationService, navigationService, activatedRoute);
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
+  }
+
+  private previousAnswer?: string;
+  private addressIndex?: number;
+  ngOnInit(): void {
+    this.activatedRoute.queryParams.subscribe(query => {
+      this.addressIndex = query['address'];
+      if (this.addressIndex) {
+        this.hasMoreAddresses = this.applicationService.currentSection.Addresses.length > this.addressIndex ? 'yes' : 'no';
+        this.previousAnswer = this.hasMoreAddresses;
+      }
+    });
+  }
+
+  updateReturnUrl() {
+    if (this.hasMoreAddresses != this.previousAnswer) {
+      this.returnUrl = undefined;
     }
+  }
 
-    private previousAnswer?: string;
-    private addressIndex?: number;
-    ngOnInit(): void {
-        this.activatedRoute.queryParams.subscribe(query => {
-            this.addressIndex = query['address'];
-            if (this.addressIndex) {
-                this.hasMoreAddresses = this.applicationService.currentSection.Addresses.length > this.addressIndex ? 'yes' : 'no';
-                this.previousAnswer = this.hasMoreAddresses;
-            }
-        });
-    }
+  canContinue(): boolean {
+    this.hasMoreAddressesError = !this.hasMoreAddresses;
+    return !this.hasMoreAddressesError;
+  }
 
-    updateReturnUrl() {
-        if (this.hasMoreAddresses != this.previousAnswer) {
-            this.returnUrl = undefined;
-        }
-    }
-
-    canContinue(): boolean {
-        this.hasMoreAddressesError = !this.hasMoreAddresses;
-        return !this.hasMoreAddressesError;
-    }
-
-    navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    async navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
         // section has a single address
         if (this.hasMoreAddresses == 'no') {
             if (this.previousAnswer && this.hasMoreAddresses != this.previousAnswer) {
@@ -55,19 +60,20 @@ export class SectionOtherAddressesComponent extends BaseComponent implements IHa
                 return navigationService.navigateRelative(`../${SectionCheckAnswersComponent.route}`, activatedRoute);
             }
 
-            // user said there is only a single section in the building - go for check answers
-            if (this.applicationService.model.NumberOfSections == 'one') {
-                return navigationService.navigateRelative(`../${SectionCheckAnswersComponent.route}`, activatedRoute);
-            }
+      // user said there is only a single section in the building - go for check answers
+      if (this.applicationService.model.NumberOfSections == 'one') {
+        return navigationService.navigateRelative(`../${SectionCheckAnswersComponent.route}`, activatedRoute);
+      }
 
-            // user said there are two or more sections in the building
-            // if the user entered more than one already, ask if there are more
-            if (this.applicationService.model.Sections.length > 1) {
-                return navigationService.navigateRelative(`../${AddMoreSectionsComponent.route}`, activatedRoute);
-            }
+      // user said there are two or more sections in the building
+      // if the user entered more than one already, ask if there are more
+      if (this.applicationService.model.Sections.length > 1) {
+        return navigationService.navigateRelative(`../${AddMoreSectionsComponent.route}`, activatedRoute);
+      }
 
             // user only entered one section so far, create a new one and navigate to floors
             var nextSection = this.applicationService.startNewSection();
+            await this.applicationService.updateApplication();
             return navigationService.navigateRelative(`../${nextSection}/${SectionNameComponent.route}`, activatedRoute);
         }
 

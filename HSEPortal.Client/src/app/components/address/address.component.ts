@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AddressModel, AddressResponseModel } from 'src/app/services/address.service';
 
 @Component({
@@ -7,11 +7,14 @@ import { AddressModel, AddressResponseModel } from 'src/app/services/address.ser
 })
 export class AddressComponent implements OnInit {
 
+  @ViewChild("backButton") public backButton?: ElementRef;
+
   @Input() searchMode: AddressSearchMode = AddressSearchMode.Building;
   @Input() address?: AddressModel;
   @Input() addressName!: string;
   @Input() selfAddress = false;
   @Output() onAddressConfirmed = new EventEmitter();
+  @Output() onChangeStep = new EventEmitter();
 
   searchModel: { postcode?: string, addressLine1?: string } = {};
   addressResponse?: AddressResponseModel;
@@ -68,12 +71,15 @@ export class AddressComponent implements OnInit {
       history.back();
     } else {
       this.step = previousStep;
+      this.onChangeStep.emit(this.step);
     }
   }
 
   private changeStepTo(step: string) {
     this.history.push(this.step);
     this.step = step;
+    this.backButton?.nativeElement?.focus();
+    this.onChangeStep.emit(this.step);
   }
 
 }

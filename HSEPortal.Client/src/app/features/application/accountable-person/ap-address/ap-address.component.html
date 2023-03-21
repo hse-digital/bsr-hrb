@@ -2,4 +2,5 @@
              [selfAddress]="isSelfAddress()"
              [address]="address" 
              [searchMode]="searchMode" 
-             (onAddressConfirmed)="updateAddress($event)"/>
+             (onAddressConfirmed)="updateAddress($event)"
+             (onChangeStep)="changeStep($event)"/>

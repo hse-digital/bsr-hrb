@@ -8,6 +8,10 @@ export class SectionHelper {
             case 2: return 'Third';
             case 3: return 'Fourth';
             case 4: return 'Fifth';
+            case 5: return 'Sixth';
+            case 6: return 'Seventh';
+            case 7: return 'Eighth';
+            case 8: return 'Ninth';
         }
 
         return "Last";

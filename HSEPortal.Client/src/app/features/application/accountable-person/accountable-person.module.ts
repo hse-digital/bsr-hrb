@@ -12,7 +12,6 @@ import { OrganisationTypeComponent } from 'src/app/features/application/accounta
 import { OrganisationNameComponent } from 'src/app/features/application/accountable-person/organisation/organisation-name/organisation-name.component';
 import { PapWhoAreYouComponent } from 'src/app/features/application/accountable-person/organisation/pap-who-are-you/pap-who-are-you.component';
 import { AccountablePersonCheckAnswersComponent } from 'src/app/features/application/accountable-person/check-answers/check-answers.component';
-import { OrganisationAddressComponent } from 'src/app/features/application/accountable-person/organisation/organisation-address/organisation-address.component';
 import { PrincipleAccountableSelection } from "./principal/principal.component";
 import { ComponentsModule } from "../../../components/components.module";
 import { ApDetailsComponent } from "./ap-details/ap-details.component";
@@ -25,7 +24,6 @@ import { LeadDetailsComponent } from "./organisation/lead-details/lead-details.c
 import { FormsModule } from "@angular/forms";
 import { ApNameComponent } from "./ap-name/ap-name.component";
 import { PapNameComponent } from "./ap-name/pap-name.component";
-import { PapAddressComponent } from "./ap-address/pap-address.component";
 import { PapDetailsComponent } from "./ap-details/pap-details.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { ApAccountableForComponent } from "./accountable-for/accountable-for.component";
@@ -33,6 +31,7 @@ import { OrganisationNamedContactComponent } from "./organisation/named-contact/
 import { OrganisationNamedContactDetailsComponent } from "./organisation/named-contact/named-contact-details.component";
 import { IndividualAnswersComponent } from "./check-answers/individual-answers.component";
 import { OrganisationAnswersComponent } from "./check-answers/organisation-answers.component";
+import { PapAddressComponent } from "./ap-address/pap-address.component";
 
 @Component({
   template: '<router-outlet></router-outlet>'
@@ -52,31 +51,30 @@ export class IdCaptureComponent implements OnInit {
 }
 
 const routes = new HseRoutes([
-  HseRoute.unsafe(AccountablePersonComponent.route, AccountablePersonComponent),
-  HseRoute.unsafe(AddAccountablePersonComponent.route, AddAccountablePersonComponent),
-  HseRoute.unsafe(AccountablePersonCheckAnswersComponent.route, AccountablePersonCheckAnswersComponent),
+  HseRoute.unsafe(AccountablePersonComponent.route, AccountablePersonComponent, undefined, AccountablePersonComponent.title),
+  HseRoute.unsafe(AddAccountablePersonComponent.route, AddAccountablePersonComponent, undefined, AddAccountablePersonComponent.title),
+  HseRoute.unsafe(AccountablePersonCheckAnswersComponent.route, AccountablePersonCheckAnswersComponent, undefined, AccountablePersonCheckAnswersComponent.title),
   HseRoute.forChildren(':id', IdCaptureComponent, new HseRoutes([
-    HseRoute.unsafe(PrincipleAccountableSelection.route, PrincipleAccountableSelection),
-    HseRoute.unsafe(PapNamedRoleComponent.route, PapNamedRoleComponent),
-    HseRoute.unsafe(ActingForSameAddressComponent.route, ActingForSameAddressComponent),
-    HseRoute.unsafe(ActingForAddressComponent.route, ActingForAddressComponent),
-    HseRoute.unsafe(AccountablePersonTypeComponent.route, AccountablePersonTypeComponent),
-    HseRoute.unsafe(LeadNameComponent.route, LeadNameComponent),
-    HseRoute.unsafe(LeadDetailsComponent.route, LeadDetailsComponent),
-    HseRoute.unsafe(ApNameComponent.route, ApNameComponent),
-    HseRoute.unsafe(PapNameComponent.route, PapNameComponent),
-    HseRoute.unsafe(ApAddressComponent.route, ApAddressComponent),
-    HseRoute.unsafe(PapAddressComponent.route, PapAddressComponent),
-    HseRoute.unsafe(ApDetailsComponent.route, ApDetailsComponent),
-    HseRoute.unsafe(PapDetailsComponent.route, PapDetailsComponent),
-    HseRoute.unsafe(ApAccountableForComponent.route, ApAccountableForComponent),
-    HseRoute.unsafe(OrganisationNamedContactComponent.route, OrganisationNamedContactComponent),
-    HseRoute.unsafe(OrganisationNamedContactDetailsComponent.route, OrganisationNamedContactDetailsComponent),
+    HseRoute.unsafe(PrincipleAccountableSelection.route, PrincipleAccountableSelection, undefined, PrincipleAccountableSelection.title),
+    HseRoute.unsafe(PapNamedRoleComponent.route, PapNamedRoleComponent, undefined, PapNamedRoleComponent.title),
+    HseRoute.unsafe(ActingForSameAddressComponent.route, ActingForSameAddressComponent, undefined, ActingForSameAddressComponent.title),
+    HseRoute.unsafe(ActingForAddressComponent.route, ActingForAddressComponent, undefined, ActingForAddressComponent.title),
+    HseRoute.unsafe(AccountablePersonTypeComponent.route, AccountablePersonTypeComponent, undefined, AccountablePersonTypeComponent.title),
+    HseRoute.unsafe(LeadNameComponent.route, LeadNameComponent, undefined, LeadNameComponent.title),
+    HseRoute.unsafe(LeadDetailsComponent.route, LeadDetailsComponent, undefined, LeadDetailsComponent.title),
+    HseRoute.unsafe(ApNameComponent.route, ApNameComponent, undefined, ApNameComponent.title),
+    HseRoute.unsafe(PapNameComponent.route, PapNameComponent, undefined, PapNameComponent.title),
+    HseRoute.unsafe(ApAddressComponent.route, ApAddressComponent, undefined, ApAddressComponent.title),
+    HseRoute.unsafe(PapAddressComponent.route, PapAddressComponent, undefined, PapAddressComponent.title),
+    HseRoute.unsafe(ApDetailsComponent.route, ApDetailsComponent, undefined, ApDetailsComponent.title),
+    HseRoute.unsafe(PapDetailsComponent.route, PapDetailsComponent, undefined, PapDetailsComponent.title),
+    HseRoute.unsafe(ApAccountableForComponent.route, ApAccountableForComponent, undefined, ApAccountableForComponent.title),
+    HseRoute.unsafe(OrganisationNamedContactComponent.route, OrganisationNamedContactComponent, undefined, OrganisationNamedContactComponent.title),
+    HseRoute.unsafe(OrganisationNamedContactDetailsComponent.route, OrganisationNamedContactDetailsComponent, undefined, OrganisationNamedContactDetailsComponent.title),
 
-    HseRoute.unsafe(OrganisationTypeComponent.route, OrganisationTypeComponent),
-    HseRoute.unsafe(OrganisationNameComponent.route, OrganisationNameComponent),
-    HseRoute.unsafe(OrganisationAddressComponent.route, OrganisationAddressComponent),
-    HseRoute.unsafe(PapWhoAreYouComponent.route, PapWhoAreYouComponent),
+    HseRoute.unsafe(OrganisationTypeComponent.route, OrganisationTypeComponent, undefined, OrganisationTypeComponent.title),
+    HseRoute.unsafe(OrganisationNameComponent.route, OrganisationNameComponent, undefined, OrganisationNameComponent.title),
+    HseRoute.unsafe(PapWhoAreYouComponent.route, PapWhoAreYouComponent, undefined, PapWhoAreYouComponent.title),
   ]))
 ]);
 
@@ -90,8 +88,8 @@ const routes = new HseRoutes([
     ApNameComponent,
     PapNameComponent,
     ApAddressComponent,
-    PapAddressComponent,
     ApDetailsComponent,
+    PapAddressComponent,
     PapDetailsComponent,
 
     PrincipleAccountableSelection,
@@ -112,7 +110,6 @@ const routes = new HseRoutes([
 
     OrganisationTypeComponent,
     OrganisationNameComponent,
-    OrganisationAddressComponent,
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

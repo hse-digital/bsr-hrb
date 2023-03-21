@@ -16,7 +16,7 @@
             <govuk-list-item text="what they're accountable for" />
           </govuk-list>
 
-          <govuk-body *ngIf="outOfScopeSections">Based on the information you have given us, you do not need to tell us anything more about <b>{{getSectionNames(outOfScopeSections!)}}</b> <span *ngIf="outOfScopeSections!.length > 1"> and <b>{{getSectionName(outOfScopeSections!.at(-1)!, outOfScopeSections!.length-1)}}</b></span>.</govuk-body>
+          <govuk-body *ngIf="outOfScopeSections">We do not need any more information about <b>{{getSectionNames(outOfScopeSections!)}}</b><span *ngIf="outOfScopeSections!.length > 1"> and <b>{{getSectionName(outOfScopeSections!.at(-1)!, outOfScopeSections!.length-1)}}</b></span>. Based on the information you have given, they are not high-rise residential structures.</govuk-body>
 
         </govuk-fieldset>
       </div>

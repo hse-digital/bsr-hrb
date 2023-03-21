@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService, SectionModel } from 'src/app/services/application.service';
@@ -7,15 +7,21 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { SectionNameComponent } from '../name/name.component';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
+import { GovukErrorSummaryComponent } from 'hse-angular';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './add-more-sections.component.html'
 })
 export class AddMoreSectionsComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'add-more'
+  static title: string = "Add another high-rise residential structure - Register a high-rise building - GOV.UK";
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
+
   }
 
   sections: SectionModel[] = [];
@@ -39,12 +45,13 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
     return !!this.applicationService.currentSection.PeopleLivingInBuilding;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+  async navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let nextPage = 'more-information';
 
     if (this.addAnotherSectionLink === 'yes') {
       let section = this.applicationService.startNewSection();
       nextPage = `${section}/${SectionNameComponent.route}`;
+      await this.applicationService.updateApplication();
       return navigationService.navigateRelative(nextPage, activatedRoute);
     }
 

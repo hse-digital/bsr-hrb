@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
@@ -13,12 +15,15 @@ import { AccountablePersonTypeComponent } from './accountable-person-type.compon
 })
 export class AddAccountablePersonComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'add-more';
+  static title: string = "Add another accountable person - Register a high-rise building - GOV.UK";
+
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   addAccountablePerson?: string;
   addAccountablePersonHasError = false;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {

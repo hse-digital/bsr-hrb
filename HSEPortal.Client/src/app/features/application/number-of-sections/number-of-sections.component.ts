@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
@@ -10,21 +12,31 @@ import { NavigationService } from 'src/app/services/navigation.service';
 })
 export class NumberOfSectionsComponment extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'number-of-sections';
+  static title: string = "Count the number of sections in your building - Register a high-rise building - GOV.UK";
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   private previousAnswer?: string;
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.previousAnswer = this.applicationService.model.NumberOfSections;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.BlocksInBuildingInProgress;
+    await this.applicationService.updateDynamicsBuildingSummaryStage();
   }
 
   numberOfSectionsHasErrors = false;
   canContinue(): boolean {
     this.numberOfSectionsHasErrors = !this.applicationService.model.NumberOfSections;
     return !this.numberOfSectionsHasErrors;
+  }
+
+  override async onSave(): Promise<void> {
+    if (!this.applicationService.model.Sections || this.applicationService.model.Sections.length == 0) {
+      this.applicationService.startSectionsEdit();
+    }
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
@@ -45,10 +57,6 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
       return navigationService.navigateRelative(`/sections/check-answers`, activatedRoute);
 
     let route = '';
-    if (!this.applicationService.model.Sections || this.applicationService.model.Sections.length == 0) {
-      this.applicationService.startSectionsEdit();
-    }
-
     if (this.applicationService.model.NumberOfSections == "one") {
       route = `floors`;
     }
