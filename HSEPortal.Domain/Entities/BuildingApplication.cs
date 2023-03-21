@@ -2,9 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace HSEPortal.Domain.Entities;
 
-public record BuildingApplication(string ApplicationId, string ContactId, string BuildingId, string Id = null) : Entity(Id);
+public record BuildingApplication(string ContactId, string BuildingId, string Id = null) : Entity(Id);
 
-public record DynamicsBuildingApplication(string bsr_applicationreturncode = null, string bsr_buildingapplicationid = null,
+public record DynamicsBuildingApplication(string bsr_buildingapplicationid = null,
     string _bsr_registreeid_value = null, string _bsr_building_value = null,
     [property: JsonPropertyName("bsr_RegistreeId@odata.bind")]
     string contactReferenceId = null,
@@ -20,7 +20,8 @@ public record DynamicsBuildingApplication(string bsr_applicationreturncode = nul
     DynamicsContact bsr_RegistreeId = null,
     BuildingApplicationWhoAreYou? bsr_whoareyou = null,
     [property: JsonPropertyName("bsr_paporgleadcontactid@odata.bind")]
-    string papLeadContactReferenceId = null) : DynamicsEntity<BuildingApplication>;
+    string papLeadContactReferenceId = null,
+    string bsr_applicationid = null) : DynamicsEntity<BuildingApplication>;
 
 public enum BuildingApplicationStage
 {

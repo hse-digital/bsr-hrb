@@ -8,11 +8,11 @@ public class BuildingApplicationModelDefinition : DynamicsModelDefinition<Buildi
 
     public override DynamicsBuildingApplication BuildDynamicsEntity(BuildingApplication entity)
     {
-        return new DynamicsBuildingApplication(entity.ApplicationId, entity.Id, contactReferenceId: $"/contacts({entity.ContactId})", buildingReferenceId: $"/bsr_buildings({entity.BuildingId})");
+        return new DynamicsBuildingApplication(entity.Id, contactReferenceId: $"/contacts({entity.ContactId})", buildingReferenceId: $"/bsr_buildings({entity.BuildingId})");
     }
 
     public override BuildingApplication BuildEntity(DynamicsBuildingApplication dynamicsEntity)
     {
-        return new BuildingApplication(dynamicsEntity.bsr_applicationreturncode, dynamicsEntity._bsr_registreeid_value, dynamicsEntity._bsr_building_value, dynamicsEntity.bsr_buildingapplicationid);
+        return new BuildingApplication(dynamicsEntity._bsr_registreeid_value, dynamicsEntity._bsr_building_value, dynamicsEntity.bsr_buildingapplicationid);
     }
 }
