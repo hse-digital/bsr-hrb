@@ -1,22 +1,32 @@
+using System.Net;
+using AutoMapper;
+using Flurl;
+using Flurl.Http;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Model.DynamicsSynchronisation;
+using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.DurableTask;
 using Microsoft.DurableTask.Client;
+using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions;
 
 public class DynamicsSynchronisationFunctions
 {
     private readonly DynamicsService dynamicsService;
+    private readonly IMapper mapper;
+    private readonly IntegrationsOptions integrationOptions;
 
-    public DynamicsSynchronisationFunctions(DynamicsService dynamicsService)
+    public DynamicsSynchronisationFunctions(DynamicsService dynamicsService, IOptions<IntegrationsOptions> integrationOptions, IMapper mapper)
     {
         this.dynamicsService = dynamicsService;
+        this.mapper = mapper;
+        this.integrationOptions = integrationOptions.Value;
     }
 
     [Function(nameof(SyncBuildingStructures))]
@@ -104,6 +114,13 @@ public class DynamicsSynchronisationFunctions
         if (dynamicsBuildingApplication != null)
         {
             var buildingApplicationWrapper = new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.ApplicationSubmitted);
+
+            var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), buildingApplicationWrapper);
+            if (paymentResponse != null)
+            {
+                buildingApplicationWrapper = buildingApplicationWrapper with { Model = buildingApplicationWrapper.Model with { Payment = paymentResponse } };
+            }
+
             await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), buildingApplicationWrapper);
             await orchestrationContext.CallActivityAsync(nameof(CreatePayment), buildingApplicationWrapper);
         }
@@ -155,5 +172,16 @@ public class DynamicsSynchronisationFunctions
     public Task CreatePayment([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
     {
         return dynamicsService.CreatePayment(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);
+    }
+
+    [Function(nameof(GetPaymentStatus))]
+    public async Task<PaymentResponseModel> GetPaymentStatus([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
+    {
+        var response = await integrationOptions.PaymentEndpoint
+            .AppendPathSegments("v1", "payments", buildingApplicationWrapper.Model.Payment.PaymentId)
+            .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
+            .GetJsonAsync<PaymentApiResponseModel>();
+
+        return mapper.Map<PaymentResponseModel>(response);
     }
 }
