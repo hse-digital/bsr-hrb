@@ -1,4 +1,5 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, QueryList, ViewChildren } from '@angular/core';
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -11,15 +12,21 @@ import { PapAddressComponent } from '../../ap-address/pap-address.component';
 @Component({
   templateUrl: './organisation-name.component.html'
 })
-export class OrganisationNameComponent extends BaseComponent implements IHasNextPage {
+export class OrganisationNameComponent extends BaseComponent implements IHasNextPage, AfterViewInit {
   static route: string = 'organisation-name';
+  static title: string = "What is the PAP Organisation Name? - Register a high-rise building - GOV.UK";
+  static apTitle: string = "AP Organisation Name - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   organisationNameHasErrors = false;
   organisationName?: string;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, private companiesService: CompaniesService) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, private companiesService: CompaniesService, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
+  }
+
+  ngAfterViewInit() {
+    if (this.applicationService._currentAccountablePersonIndex > 0) this.titleService.setTitle(OrganisationNameComponent.apTitle);
   }
 
   canContinue(): boolean {

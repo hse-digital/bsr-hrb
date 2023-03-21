@@ -6,18 +6,20 @@ import { ApplicationService } from "src/app/services/application.service";
 import { CaptionService } from "src/app/services/caption.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './height.component.html',
 })
 export class SectionHeightComponent extends BaseComponent implements IHasNextPage {
 
-    static route: string = 'height';
+  static route: string = 'height';
+  static title: string = "What is the section height - Register a high-rise building - GOV.UK";
 
-    @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   heightHasErrors = false;

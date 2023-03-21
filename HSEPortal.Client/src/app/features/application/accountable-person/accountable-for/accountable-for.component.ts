@@ -1,4 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
@@ -13,14 +14,15 @@ import { OrganisationNamedContactComponent } from "../organisation/named-contact
 })
 export class ApAccountableForComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'accountable-for';
+  static title: string = "What areas is the AP accountable for? - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   multi: boolean = false;
   anySelected = false;
   errorMessage?: string;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {

@@ -18,7 +18,6 @@ import { MoreInformationComponent } from "./more-information/more-information.co
 import { NameAllBlocksComponent } from "./name-all-blocks/name-all-blocks.component";
 import { SectionNameComponent } from "./name/name.component";
 import { SectionOtherAddressesComponent } from "./other-addresses/other-addresses.component";
-import { BuildingOutOfScopeComponent } from "../out-of-scope/out-of-scope.component";
 import { SectionPeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
 import { SectionResidentialUnitsComponent } from "./residential-units/residential-units.component";
 import { SectionsComponent } from "./sections.component";
@@ -26,21 +25,21 @@ import { SectionYearOfCompletionComponent } from "./year-of-completion/year-of-c
 import { SectionYearRangeComponent } from "./year-range/year-range.component";
 
 const routes = new HseRoutes([
-    HseRoute.unsafe(AddMoreSectionsComponent.route, AddMoreSectionsComponent),
-    HseRoute.unsafe(MoreInformationComponent.route, MoreInformationComponent),
-    HseRoute.unsafe(NameAllBlocksComponent.route, NameAllBlocksComponent),
-    HseRoute.unsafe(SectionCheckAnswersComponent.route, SectionCheckAnswersComponent),
+  HseRoute.unsafe(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
+  HseRoute.unsafe(MoreInformationComponent.route, MoreInformationComponent, undefined, MoreInformationComponent.title),
+  HseRoute.unsafe(NameAllBlocksComponent.route, NameAllBlocksComponent, undefined, NameAllBlocksComponent.title),
+  HseRoute.unsafe(SectionCheckAnswersComponent.route, SectionCheckAnswersComponent, undefined, SectionCheckAnswersComponent.title),
     HseRoute.forChildren(':id', SectionsComponent, new HseRoutes([
-        HseRoute.unsafe(SectionsIntroComponent.route, SectionsIntroComponent),
-        HseRoute.unsafe(SectionFloorsAboveComponent.route, SectionFloorsAboveComponent),
-        HseRoute.unsafe(SectionNameComponent.route, SectionNameComponent),
-        HseRoute.unsafe(SectionHeightComponent.route, SectionHeightComponent),
-        HseRoute.unsafe(SectionResidentialUnitsComponent.route, SectionResidentialUnitsComponent),
-        HseRoute.unsafe(SectionYearOfCompletionComponent.route, SectionYearOfCompletionComponent),
-        HseRoute.unsafe(SectionYearRangeComponent.route, SectionYearRangeComponent),
-        HseRoute.unsafe(SectionAddressComponent.route, SectionAddressComponent),
-        HseRoute.unsafe(SectionOtherAddressesComponent.route, SectionOtherAddressesComponent),
-        HseRoute.unsafe(SectionPeopleLivingInBuildingComponent.route, SectionPeopleLivingInBuildingComponent),
+      HseRoute.unsafe(SectionsIntroComponent.route, SectionsIntroComponent, undefined, SectionsIntroComponent.title),
+      HseRoute.unsafe(SectionFloorsAboveComponent.route, SectionFloorsAboveComponent, undefined, SectionFloorsAboveComponent.title),
+      HseRoute.unsafe(SectionNameComponent.route, SectionNameComponent, undefined, SectionNameComponent.title),
+      HseRoute.unsafe(SectionHeightComponent.route, SectionHeightComponent, undefined, SectionHeightComponent.title),
+      HseRoute.unsafe(SectionResidentialUnitsComponent.route, SectionResidentialUnitsComponent, undefined, SectionResidentialUnitsComponent.title),
+      HseRoute.unsafe(SectionYearOfCompletionComponent.route, SectionYearOfCompletionComponent, undefined, SectionYearOfCompletionComponent.title),
+      HseRoute.unsafe(SectionYearRangeComponent.route, SectionYearRangeComponent, undefined, SectionYearRangeComponent.title),
+      HseRoute.unsafe(SectionAddressComponent.route, SectionAddressComponent, undefined, SectionAddressComponent.title),
+      HseRoute.unsafe(SectionOtherAddressesComponent.route, SectionOtherAddressesComponent, undefined, SectionOtherAddressesComponent.title),
+      HseRoute.unsafe(SectionPeopleLivingInBuildingComponent.route, SectionPeopleLivingInBuildingComponent, undefined, SectionPeopleLivingInBuildingComponent.title),
     ])),
 ]);
 

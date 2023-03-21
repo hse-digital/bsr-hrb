@@ -1,4 +1,5 @@
 import { Component, QueryList, ViewChildren } from '@angular/core';
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -10,6 +11,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 })
 export class ContactEmailValidationComponent extends BaseComponent {
   static route: string = "verify";
+  static title: string = "Verify your email address - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
@@ -17,8 +19,8 @@ export class ContactEmailValidationComponent extends BaseComponent {
   otpError = false;
   sendingRequest = false;
 
-    constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-        super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+        super(router, applicationService, navigationService, activatedRoute, titleService);
         this.updateOnSave = false;
     }
 
@@ -47,7 +49,8 @@ export class ContactEmailValidationComponent extends BaseComponent {
         this.hasErrors = true;
         this.otpError = true;
       }
-
+    } else {
+      this.summaryError?.first?.focus();
     }
   }
 }

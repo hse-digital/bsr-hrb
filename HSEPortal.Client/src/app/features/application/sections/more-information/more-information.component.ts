@@ -1,4 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -12,11 +13,12 @@ import { NavigationService } from 'src/app/services/navigation.service';
 })
 export class MoreInformationComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'more-information';
+  static title: string = "Which high-rise residential structure are in scope - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   inScopeSections?: SectionModel[];

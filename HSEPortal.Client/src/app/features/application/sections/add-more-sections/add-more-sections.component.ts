@@ -9,17 +9,20 @@ import { SectionCheckAnswersComponent } from '../check-answers/check-answers.com
 import { SectionNameComponent } from '../name/name.component';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
 import { GovukErrorSummaryComponent } from 'hse-angular';
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: './add-more-sections.component.html'
 })
 export class AddMoreSectionsComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'add-more'
+  static title: string = "Add another high-rise residential structure - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, private captionService: CaptionService, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
+    
   }
 
   sections: SectionModel[] = [];

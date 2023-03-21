@@ -1,4 +1,5 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, QueryList, ViewChildren } from '@angular/core';
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -10,14 +11,24 @@ import { OrganisationNameComponent } from '../organisation-name/organisation-nam
 @Component({
   templateUrl: './organisation-type.component.html'
 })
-export class OrganisationTypeComponent extends BaseComponent implements IHasNextPage {
+export class OrganisationTypeComponent extends BaseComponent implements IHasNextPage, AfterViewInit {
   static route: string = 'organisation-type';
+
+  static title: string = "What is the PAP Organisation Type? - Register a high-rise building - GOV.UK";
+  static apTitle: string = "AP Organisation Type - Register a high-rise building - GOV.UK";
+
   organisationTypeHasErrors = false;
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
+  }
+
+  ngAfterViewInit() {
+    if (this.applicationService._currentAccountablePersonIndex > 0) {
+      this.titleService.setTitle(OrganisationTypeComponent.apTitle);
+    }
   }
 
   canContinue(): boolean {
@@ -37,4 +48,3 @@ export class OrganisationTypeComponent extends BaseComponent implements IHasNext
     return `${this.applicationService._currentAccountablePersonIndex == 0 ? 'Principal' : 'Other'} accountable person for ${this.applicationService.model.BuildingName}`;
   }
 }
-   

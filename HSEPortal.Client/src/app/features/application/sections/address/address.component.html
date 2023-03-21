@@ -1,1 +1,5 @@
-<hse-address [addressName]="getAddressSectionName()" [searchMode]="searchMode" [address]="address" (onAddressConfirmed)="updateSectionAddress($event)"/>
+<hse-address [addressName]="getAddressSectionName()"
+             [searchMode]="searchMode"
+             [address]="address"
+             (onAddressConfirmed)="updateSectionAddress($event)"
+             (onChangeStep)="changeStep($event)"/>

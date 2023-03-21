@@ -1,4 +1,5 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
@@ -12,12 +13,13 @@ import { SectionAddressComponent } from "../address/address.component";
 })
 export class SectionYearRangeComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'year-range';
+  static title: string = "What year range was the section originally built?- Register a high-rise building - GOV.UK";
 
   yearRangeHasErrors = false;
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   canContinue(): boolean {
@@ -25,12 +27,12 @@ export class SectionYearRangeComponent extends BaseComponent implements IHasNext
     return !this.yearRangeHasErrors;
   }
 
-    navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-        return navigationService.navigateRelative(SectionAddressComponent.route, activatedRoute);
-    }
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return navigationService.navigateRelative(SectionAddressComponent.route, activatedRoute);
+  }
 
-    sectionBuildingName() {
-      return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-        this.applicationService.currentSection.Name;
-    }
+  sectionBuildingName() {
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+      this.applicationService.currentSection.Name;
+  }
 }

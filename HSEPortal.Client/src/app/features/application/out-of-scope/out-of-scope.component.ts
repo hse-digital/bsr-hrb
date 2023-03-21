@@ -1,4 +1,5 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
+import { TitleService } from 'src/app/services/title.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
@@ -12,11 +13,12 @@ import { ContinueAnywayComponent } from "./continue-anyway.component";
 })
 export class BuildingOutOfScopeComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'out-of-scope';
+  static title: string = "You do not need to register this building - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   canContinue(): boolean {
