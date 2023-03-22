@@ -1,6 +1,6 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
 import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
@@ -9,6 +9,7 @@ import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { ActingForAddressComponent } from "../acting-for-address/acting-for-address.component";
 import { LeadNameComponent } from "../lead-name/lead-name.component";
+import { ApHelper } from "src/app/helpers/ap-helper";
 
 @Component({
   templateUrl: './acting-for-same-address.component.html'
@@ -62,6 +63,12 @@ export class ActingForSameAddressComponent extends BaseComponent implements IHas
     }
 
     return navigationService.navigateRelative(LeadNameComponent.route, activatedRoute);
+  }
+
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+      && ApHelper.isOrganisation(this.applicationService)
+      && this.applicationService.currentAccountablePerson.Role == "registering_for";
   }
 
 }

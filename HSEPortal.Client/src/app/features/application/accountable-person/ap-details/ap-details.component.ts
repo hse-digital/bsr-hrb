@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { EmailValidator } from "src/app/helpers/validators/email-validator";
@@ -39,8 +40,8 @@ export class ApDetailsComponent extends BaseComponent implements IHasNextPage, O
   };
 
   canContinue(): boolean {
-    let email = this.applicationService.currentAccountablePerson.Email ?? '';
-    let phone = this.applicationService.currentAccountablePerson.PhoneNumber ?? '';
+    let email = this.applicationService.currentAccountablePerson.Email;
+    let phone = this.applicationService.currentAccountablePerson.PhoneNumber;
     let canContinue = false;
 
     if (!email && !phone) {
@@ -55,7 +56,7 @@ export class ApDetailsComponent extends BaseComponent implements IHasNextPage, O
     return canContinue;
   }
 
-  isEmailValid(email: string): boolean {
+  isEmailValid(email: string | undefined): boolean {
     this.errors.email.hasErrors = true;
     if (!email) {
       this.errors.email.errorText = 'Enter your email address';
@@ -68,7 +69,7 @@ export class ApDetailsComponent extends BaseComponent implements IHasNextPage, O
     return !this.errors.email.hasErrors;
   }
 
-  isPhoneNumberValid(phone: string) {
+  isPhoneNumberValid(phone: string | undefined) {
     this.errors.phoneNumber.hasErrors = true;
     if (!phone) {
       this.errors.phoneNumber.errorText = 'Enter your telephone number';
@@ -84,7 +85,7 @@ export class ApDetailsComponent extends BaseComponent implements IHasNextPage, O
     return navigationService.navigateRelative(this.nextRoute ?? ApAddressComponent.route, activatedRoute);
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.FirstName && !!this.applicationService.currentAccountablePerson.LastName;
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
   }
 }

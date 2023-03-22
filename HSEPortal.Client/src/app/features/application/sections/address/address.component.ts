@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
 import { AddressSearchMode } from "src/app/components/address/address.component";
-import { SectionHelper } from "src/app/helpers/section-name-helper";
+import { SectionHelper } from "src/app/helpers/section-helper";
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";

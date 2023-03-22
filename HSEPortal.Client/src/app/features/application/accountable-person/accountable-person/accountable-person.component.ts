@@ -62,6 +62,6 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.model.Sections && this.applicationService.model.Sections.length > 0;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingComplete) == BuildingApplicationStatus.BlocksInBuildingComplete;
   }
 }

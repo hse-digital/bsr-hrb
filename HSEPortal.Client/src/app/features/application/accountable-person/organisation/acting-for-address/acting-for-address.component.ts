@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
 import { AddressSearchMode } from "src/app/components/address/address.component";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
@@ -53,8 +54,10 @@ export class ActingForAddressComponent implements OnInit, CanActivate {
         this.titleService.setTitle(ActingForAddressComponent.title);
     }
 
-    canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-        return !!this.applicationService.currentAccountablePerson.Role && this.applicationService.currentAccountablePerson.Role == "registering_for"
-            && !!this.applicationService.currentAccountablePerson.ActingForSameAddress && this.applicationService.currentAccountablePerson.ActingForSameAddress == "no";
+    canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+        return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+            && ApHelper.isOrganisation(this.applicationService)
+            && this.applicationService.currentAccountablePerson.Role == "registering_for"
+            && this.applicationService.currentAccountablePerson.ActingForSameAddress == "no";
     }
 }

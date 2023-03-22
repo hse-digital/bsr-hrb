@@ -1,9 +1,9 @@
 import { Component, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { SectionHelper } from 'src/app/helpers/section-name-helper';
+import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
@@ -86,5 +86,9 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   private getOutOfScopeSections() {
     return this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
+  }
+
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingInProgress) == BuildingApplicationStatus.BlocksInBuildingInProgress;
   }
 }

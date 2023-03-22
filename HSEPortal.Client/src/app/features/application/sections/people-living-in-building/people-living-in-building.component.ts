@@ -7,7 +7,7 @@ import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from 'src/app/services/title.service';
-import { SectionHelper } from "src/app/helpers/section-name-helper";
+import { SectionHelper } from "src/app/helpers/section-helper";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'

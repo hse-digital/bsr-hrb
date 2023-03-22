@@ -5,7 +5,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { ApplicationService, SectionModel } from 'src/app/services/application.service';
 import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
-import { SectionHelper } from 'src/app/helpers/section-name-helper';
+import { SectionHelper } from 'src/app/helpers/section-helper';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { TitleService } from 'src/app/services/title.service';
 

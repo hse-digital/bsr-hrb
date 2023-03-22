@@ -1,8 +1,10 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from 'src/app/services/title.service';
@@ -25,8 +27,8 @@ export class LeadNameComponent extends BaseComponent implements IHasNextPage {
     lastNameInError: boolean = false;
 
     canContinue() {
-        this.firstNameInError = !this.applicationService.currentAccountablePerson.LeadFirstName;
-        this.lastNameInError = !this.applicationService.currentAccountablePerson.LeadLastName;
+        this.firstNameInError = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentAccountablePerson.LeadFirstName);
+        this.lastNameInError = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentAccountablePerson.LeadLastName);
 
         return !this.firstNameInError && !this.lastNameInError;
     }
@@ -35,10 +37,9 @@ export class LeadNameComponent extends BaseComponent implements IHasNextPage {
         return navigationService.navigateRelative(LeadDetailsComponent.route, activatedRoute);
     }
 
-    override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-        return !!this.applicationService.currentAccountablePerson.Role && (this.applicationService.currentAccountablePerson.Role == "employee"
-            || (this.applicationService.currentAccountablePerson.Role == "registering_for"
-                && (!!this.applicationService.currentAccountablePerson.ActingForAddress || !!this.applicationService.currentAccountablePerson.PapAddress)));
+    override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+        return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+            && ApHelper.isOrganisation(this.applicationService);
     }
 
 }

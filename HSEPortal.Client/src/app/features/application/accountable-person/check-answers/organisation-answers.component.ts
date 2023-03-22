@@ -37,8 +37,16 @@ export class OrganisationAnswersComponent {
         return this.ap.IsPrincipal == 'no';
     }
 
-    notLead() {
+    registeringFor() {
         return this.ap.Role == 'registering_for';
+    }
+
+    namedContact() {
+        return this.ap.Role == 'named_contact';
+    }
+
+    employee() {
+        return this.ap.Role == 'employee';
     }
 
     whoAreYouDescription() {

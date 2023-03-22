@@ -1,6 +1,7 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
+import { ApHelper } from 'src/app/helpers/ap-helper';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { AccountablePersonModel, ApplicationService } from 'src/app/services/application.service';
@@ -47,7 +48,7 @@ export class AccountablePersonTypeComponent extends BaseComponent implements IHa
     return navigationService.navigateRelative(route, activatedRoute);
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.model.AccountablePersons && this.applicationService.model.AccountablePersons.length > 1;
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService) && this.applicationService._currentAccountablePersonIndex > 0;
   }
 }

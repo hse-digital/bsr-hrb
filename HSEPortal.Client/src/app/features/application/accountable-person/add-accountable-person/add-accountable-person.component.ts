@@ -32,13 +32,6 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
     this.applicationService.updateApplication();
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return (!!this.applicationService.currentAccountablePerson.LeadJobRole)
-      || (!!this.applicationService.currentAccountablePerson.LeadEmail && !!this.applicationService.currentAccountablePerson.LeadPhoneNumber && !!this.applicationService.currentAccountablePerson.LeadJobRole)
-      || (!!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'yes')
-      || (!!this.applicationService.currentAccountablePerson.Type && (!!this.applicationService.currentAccountablePerson.Address || !!this.applicationService.currentAccountablePerson.PapAddress))  
-  }
-
   canContinue(): boolean {
     this.addAccountablePersonHasError = !this.addAccountablePerson;
     return !this.addAccountablePersonHasError;
@@ -82,4 +75,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
     return `${ap.FirstName} ${ap.LastName}`;
   }
 
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return this.applicationService.model.AccountablePersons?.length >= 1;
+  }
 }

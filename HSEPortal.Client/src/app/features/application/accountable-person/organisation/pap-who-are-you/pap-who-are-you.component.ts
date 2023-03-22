@@ -9,6 +9,7 @@ import { ActingForSameAddressComponent } from '../acting-for-same-address/acting
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { LeadNameComponent } from '../lead-name/lead-name.component';
 import { TitleService } from 'src/app/services/title.service';
+import { ApHelper } from 'src/app/helpers/ap-helper';
 
 @Component({
   templateUrl: './pap-who-are-you.component.html'
@@ -74,8 +75,8 @@ export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage
       this.applicationService.currentSection.Name;
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return (!!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == "no")
-        || !!this.applicationService.currentAccountablePerson.Type && this.applicationService.currentAccountablePerson.Type == "organisation"
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+      && ApHelper.isOrganisation(this.applicationService);
   }
 }

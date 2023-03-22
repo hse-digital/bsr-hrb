@@ -1,6 +1,7 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { ApplicationService } from "src/app/services/application.service";
@@ -31,7 +32,7 @@ export class PrincipleAccountableSelection extends BaseComponent implements IHas
     return navigationService.navigateRelative(ApAddressComponent.route, activatedRoute);
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.Type && this.applicationService.currentAccountablePerson.Type == "individual";
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService) && this.applicationService.currentAccountablePerson.Type == "individual";
   }
 }

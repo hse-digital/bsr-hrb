@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { PapAddressComponent } from "../ap-address/pap-address.component";
 
@@ -16,8 +17,7 @@ export class PapDetailsComponent implements CanActivate {
 
     }
 
-    canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-        return !!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == 'no'
-            && !!this.applicationService.currentAccountablePerson.FirstName && !!this.applicationService.currentAccountablePerson.LastName;
+    canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+        return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
     }
 }

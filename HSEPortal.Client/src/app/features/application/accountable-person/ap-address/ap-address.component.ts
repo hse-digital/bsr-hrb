@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
 import { AddressSearchMode } from "src/app/components/address/address.component";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
@@ -95,9 +96,7 @@ export class ApAddressComponent implements OnInit, CanActivate {
         this.titleService.setTitle(this.pap ? PapAddressComponent.title : ApAddressComponent.title);
     }
 
-    canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-        return (!!this.applicationService.currentAccountablePerson.IsPrincipal && this.applicationService.currentAccountablePerson.IsPrincipal == "no")
-            || (this.applicationService.currentAccountablePerson.Type == "individual" && !!this.applicationService.currentAccountablePerson.Email && !!this.applicationService.currentAccountablePerson.PhoneNumber)
-            || (this.applicationService.currentAccountablePerson.Type == "organisation" && !!this.applicationService.currentAccountablePerson.OrganisationName);
+    canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+        return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
     }
 }

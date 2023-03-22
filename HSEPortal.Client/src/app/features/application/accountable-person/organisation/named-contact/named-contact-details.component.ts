@@ -1,6 +1,7 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { EmailValidator } from "src/app/helpers/validators/email-validator";
@@ -71,8 +72,8 @@ export class OrganisationNamedContactDetailsComponent extends BaseComponent impl
     return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.SectionsAccountability && this.applicationService.currentAccountablePerson.Type == "organisation"
-      && !!this.applicationService.currentAccountablePerson.NamedContactFirstName && !!this.applicationService.currentAccountablePerson.NamedContactLastName;
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+      && ApHelper.isOrganisation(this.applicationService);
   }
 }

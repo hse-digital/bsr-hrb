@@ -6,7 +6,7 @@ import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from 'src/app/services/title.service';
-import { SectionHelper } from "src/app/helpers/section-name-helper";
+import { SectionHelper } from "src/app/helpers/section-helper";
 
 @Component({
   templateUrl: './floors-above.component.html'

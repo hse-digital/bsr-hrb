@@ -1,9 +1,11 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { EmailValidator } from "src/app/helpers/validators/email-validator";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { PhoneNumberValidator } from "src/app/helpers/validators/phone-number-validator";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
@@ -35,7 +37,7 @@ export class LeadDetailsComponent extends BaseComponent implements IHasNextPage 
 
     let emailValid = this.isEmailValid(email);
     let phoneValid = this.isPhoneNumberValid(phone);
-    let jobRoleValid = this.applicationService.currentAccountablePerson.LeadJobRole != undefined;
+    let jobRoleValid = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentAccountablePerson.LeadJobRole);
     this.errors.jobRole.hasErrors = !jobRoleValid;
 
     return emailValid && phoneValid && jobRoleValid;
@@ -70,8 +72,9 @@ export class LeadDetailsComponent extends BaseComponent implements IHasNextPage 
     return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.LeadFirstName && !!this.applicationService.currentAccountablePerson.LeadLastName;
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+      && ApHelper.isOrganisation(this.applicationService);
   }
 
 } 
