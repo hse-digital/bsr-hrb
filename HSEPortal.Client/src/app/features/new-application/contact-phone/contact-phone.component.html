@@ -9,7 +9,6 @@
           <govuk-error-link anchorId="input-phone-number" message="You must enter a UK telephone number. For example, 01632 960 001, 07700 900 982 or +44 808 157 0192" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-l">Your contact details</span>
         <govuk-fieldset title="Your telephone number" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
 
           <govuk-body>We will use this if we need to check anything you have recorded in this application.</govuk-body>
@@ -23,7 +22,7 @@
         </govuk-fieldset>
       </div>
 
-      <govuk-button (onClick)="saveAndContinue()">Continue</govuk-button>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>
     </div>
   </div>
 </div>

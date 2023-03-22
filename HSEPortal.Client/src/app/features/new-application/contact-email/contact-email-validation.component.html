@@ -9,7 +9,6 @@
           <govuk-error-link anchorId="input-security-code" [message]="getOtpError()" />
         </govuk-error-summary>
 
-        <span class="govuk-caption-xl">Your contact details</span>
         <govuk-fieldset title="Verify your email address" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
 
           <govuk-body>We have sent a 6-digit security code to: <b>{{ applicationService.model.ContactEmailAddress}}</b>.</govuk-body>
@@ -24,7 +23,7 @@
         </govuk-fieldset>
       </div>
 
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="sendingRequest">Save and continue</govuk-button>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
     </div>
   </div>
 </div>

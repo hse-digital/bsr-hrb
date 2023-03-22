@@ -10,7 +10,6 @@
         </govuk-error-summary>
 
         <govuk-fieldset title="What is this building's name?" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-5' class='govuk-!-margin-bottom-4'>
-
           <govuk-body>When your building is registered, this is the name that will appear on the public register of high-rise buildings in England.</govuk-body>
 
           <govuk-input id="building-name" label="Building name" labelClass="govuk-label--s"
@@ -23,7 +22,7 @@
         </govuk-fieldset>
       </div>
 
-      <govuk-button (onClick)="saveAndContinue()">Continue</govuk-button>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>
     </div>
   </div>
 </div>

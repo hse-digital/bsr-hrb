@@ -42,11 +42,10 @@ export class LeadDetailsComponent extends BaseComponent implements IHasNextPage 
   }
 
   isEmailValid(email: string): boolean {
-    let emailValidator = new EmailValidator();
     this.errors.email.hasErrors = true;
     if (!email) {
       this.errors.email.errorText = 'Enter your email address';
-    } else if (!emailValidator.isValid(email)) {
+    } else if (!EmailValidator.isValid(email)) {
       this.errors.email.errorText = 'You must enter an email address in the correct format, for example \'name@example.com\'';
     } else {
       this.errors.email.hasErrors = false;
@@ -56,11 +55,10 @@ export class LeadDetailsComponent extends BaseComponent implements IHasNextPage 
   }
 
   isPhoneNumberValid(phone: string) {
-    let phoneValidator = new PhoneNumberValidator();
     this.errors.phoneNumber.hasErrors = true;
     if (!phone) {
       this.errors.phoneNumber.errorText = 'Enter your telephone number';
-    } else if (!phoneValidator.isValid(phone)) {
+    } else if (!PhoneNumberValidator.isValid(phone)) {
       this.errors.phoneNumber.errorText = 'You must enter a UK telephone number. For example, \'01632 960 001\', \'07700 900 982\' or \'+44 808 157 0192\'';
     } else {
       this.errors.phoneNumber.hasErrors = false;
