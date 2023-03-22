@@ -55,9 +55,8 @@ export class MoreInformationComponent extends BaseComponent implements IHasNextP
     return section.Name ?? SectionHelper.getSectionCardinalName(index);
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
     let outOfScope = this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
-    return (outOfScope.length == this.applicationService.model.Sections.length && !!this.applicationService.model.OutOfScopeContinueReason)
-      || outOfScope.length > 0;
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && outOfScope?.length > 0;
   }
 }

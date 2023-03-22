@@ -16,7 +16,6 @@ import { SectionFloorsAboveComponent } from "./floors-above/floors-above.compone
 import { SectionHeightComponent } from "./height/height.component";
 import { SectionsIntroComponent } from "./intro/intro.component";
 import { MoreInformationComponent } from "./more-information/more-information.component";
-import { NameAllBlocksComponent } from "./name-all-blocks/name-all-blocks.component";
 import { SectionNameComponent } from "./name/name.component";
 import { SectionOtherAddressesComponent } from "./other-addresses/other-addresses.component";
 import { SectionPeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
@@ -28,7 +27,6 @@ import { SectionYearRangeComponent } from "./year-range/year-range.component";
 const routes = new HseRoutes([
   HseRoute.protected(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
   HseRoute.protected(MoreInformationComponent.route, MoreInformationComponent, MoreInformationComponent.title),
-  HseRoute.protected(NameAllBlocksComponent.route, NameAllBlocksComponent, NameAllBlocksComponent.title),
   HseRoute.protected(SectionCheckAnswersComponent.route, SectionCheckAnswersComponent, SectionCheckAnswersComponent.title),
   HseRoute.forChildren(':id', SectionsComponent, new HseRoutes([
     HseRoute.protected(SectionsIntroComponent.route, SectionsIntroComponent, SectionsIntroComponent.title),
@@ -62,7 +60,6 @@ const routes = new HseRoutes([
     SectionYearRangeComponent,
     SectionAddressComponent,
     SectionOtherAddressesComponent,
-    NameAllBlocksComponent,
     SectionAnswersComponent,
     CertificateIssuerComponent,
     CertificateNumberComponent

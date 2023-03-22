@@ -37,10 +37,6 @@ export class SectionNameComponent extends BaseComponent implements IHasNextPage,
     return this.sections.slice(0, this.sections.length - 1).map((section, index) => this.getSectionName(section, index)).join(', ');
   }
 
-  getAndName() {
-    return 'oi';
-  }
-
   getSectionName(section: SectionModel, index: number) {
     return section?.Name ?? SectionHelper.getSectionCardinalName(index);
   }
@@ -54,7 +50,7 @@ export class SectionNameComponent extends BaseComponent implements IHasNextPage,
     return !this.blockNameHasErrors;
   }
 
-  public override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return (!!this.applicationService.model.NumberOfSections && this.applicationService.model.NumberOfSections === "two_or_more");
+  public override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && this.applicationService.model.NumberOfSections === "two_or_more";
   }
 }
