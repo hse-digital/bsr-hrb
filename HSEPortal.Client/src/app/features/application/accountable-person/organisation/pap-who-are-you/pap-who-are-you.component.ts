@@ -1,5 +1,5 @@
 import { Component, QueryList, ViewChildren, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
@@ -8,18 +8,21 @@ import { PapNamedRoleComponent } from '../pap-named-role/pap-named-role.componen
 import { ActingForSameAddressComponent } from '../acting-for-same-address/acting-for-same-address.component';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { LeadNameComponent } from '../lead-name/lead-name.component';
+import { TitleService } from 'src/app/services/title.service';
+import { ApHelper } from 'src/app/helpers/ap-helper';
 
 @Component({
   templateUrl: './pap-who-are-you.component.html'
 })
 export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'who-are-you';
+  static title: string = "What is your role at PAP organisation? - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   roleHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   previousAnswer?: string;
@@ -72,4 +75,8 @@ export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage
       this.applicationService.currentSection.Name;
   }
 
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+      && ApHelper.isOrganisation(this.applicationService);
+  }
 }

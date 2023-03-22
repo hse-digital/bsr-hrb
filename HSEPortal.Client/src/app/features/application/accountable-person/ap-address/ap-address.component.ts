@@ -1,25 +1,33 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
 import { AddressSearchMode } from "src/app/components/address/address.component";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from "src/app/services/title.service";
 import { ApAccountableForComponent } from "../accountable-for/accountable-for.component";
 import { AddAccountablePersonComponent } from "../add-accountable-person/add-accountable-person.component";
 import { PapNameComponent } from "../ap-name/pap-name.component";
 import { PapWhoAreYouComponent } from "../organisation/pap-who-are-you/pap-who-are-you.component";
+import { PapAddressComponent } from "./pap-address.component";
 
 @Component({
     selector: 'ap-address',
     templateUrl: './ap-address.component.html'
 })
-export class ApAddressComponent implements OnInit {
+export class ApAddressComponent implements OnInit, CanActivate {
     static route: string = 'address';
+
+    static title: string = "Find the address of the AP - Register a high-rise building - GOV.UK";
+    static selectTitle: string = "Select the AP's address - Register a high-rise building - GOV.UK";
+    static confirmTitle: string = "Confirm the AP's address - Register a high-rise building - GOV.UK";
+
     searchMode = AddressSearchMode.PostalAddress;
 
     @Input() addressName?: string;
     @Input() pap: boolean = false;
-    constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {}
+    constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private titleService: TitleService) { }
 
     private returnUrl?: string;
     address?: AddressModel;
@@ -75,5 +83,20 @@ export class ApAddressComponent implements OnInit {
 
     private navigateOtherAccountablePersons() {
         this.navigationService.navigateRelative(ApAccountableForComponent.route, this.activatedRoute);
+    }
+
+    changeStep(event: any) {
+        switch (event) {
+            case "select":
+                this.titleService.setTitle(this.pap ? PapAddressComponent.selectTitle : ApAddressComponent.selectTitle);
+                return;
+            case "confirm": this.titleService.setTitle(this.pap ? PapAddressComponent.confirmTitle : ApAddressComponent.confirmTitle);
+                return;
+        }
+        this.titleService.setTitle(this.pap ? PapAddressComponent.title : ApAddressComponent.title);
+    }
+
+    canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+        return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
     }
 }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SectionHelper } from 'src/app/helpers/section-name-helper';
+import { SectionHelper } from 'src/app/helpers/section-helper';
 import { AddressModel } from 'src/app/services/address.service';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';

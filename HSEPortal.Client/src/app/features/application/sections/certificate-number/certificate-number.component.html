@@ -1,0 +1,20 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-fieldset title="Completion certificate number for {{sectionBuildingName()}} (optional)" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+
+          <govuk-input hint="This should be on the completion certificate for the building. Do not user the Unique Property Reference Number (UPRN) instead. If you do not have the completion certificate number, leave this blank."
+            id="certificate-reference" [(model)]="applicationService.currentSection.CompletionCertificateReference"
+            s="govuk-input--width-3" />
+        </govuk-fieldset>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back />
+    </div>
+  </div>
+</div>

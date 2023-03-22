@@ -1,14 +1,16 @@
-import { Component, EventEmitter, Input, Output, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'application-verify',
   templateUrl: './verify.component.html'
 })
-export class ReturningApplicationVerifyComponent {
+export class ReturningApplicationVerifyComponent implements OnInit {
+
+  static title: string = "Enter security code - Register a high-rise building - GOV.UK";
 
   @Input() emailAddress!: string;
   @Input() applicationNumber!: string;
@@ -23,7 +25,11 @@ export class ReturningApplicationVerifyComponent {
 
   @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService) { }
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private titleService: TitleService) { }
+
+  ngOnInit() {
+    this.titleService.setTitle(ReturningApplicationVerifyComponent.title);
+  }
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
     return this.hasErrors && showError ? errorMessage : undefined;
@@ -47,6 +53,7 @@ export class ReturningApplicationVerifyComponent {
 
     if (this.hasErrors) {
       this.summaryError?.first?.focus();
+      this.titleService.setTitleError();
     }
 
     this.sendingRequest = false;

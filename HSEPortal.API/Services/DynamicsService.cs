@@ -54,7 +54,7 @@ public class DynamicsService
     {
         var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplication>>("bsr_buildingapplications", new[]
         {
-            ("$filter", $"bsr_applicationid eq '{applicationId}'"),
+            ("$filter", $"bsr_applicationid eq '{applicationId}' or bsr_applicationreturncode eq '{applicationId}'"),
             ("$expand", "bsr_Building,bsr_RegistreeId")
         });
 

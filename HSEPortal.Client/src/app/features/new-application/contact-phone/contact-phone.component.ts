@@ -6,31 +6,34 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { PhoneNumberValidator } from 'src/app/helpers/validators/phone-number-validator';
 import { GovukErrorSummaryComponent } from 'hse-angular';
+import { TitleService } from 'src/app/services/title.service';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   templateUrl: './contact-phone.component.html'
 })
 export class ContactPhoneComponent extends BaseComponent implements IHasNextPage {
   static route: string = "contact-phone";
+  static title: string = "Your telephone number - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
-    super(router, applicationService, navigationService, activatedRoute);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService);
     this.updateOnSave = false;
   }
 
   phoneNumberHasErrors = false;
   canContinue(): boolean {
     let phone = this.applicationService.model.ContactPhoneNumber;
-    let phoneValidator = new PhoneNumberValidator();
-    this.phoneNumberHasErrors = !phoneValidator.isValid(phone?.toString() ?? '');
+    this.phoneNumberHasErrors = !PhoneNumberValidator.isValid(phone?.toString() ?? '');
+
     return !this.phoneNumberHasErrors;
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    let hasFirstName: boolean = !!this.applicationService.model.ContactFirstName;
-    let hasLastName: boolean = !!this.applicationService.model.ContactLastName;
+    let hasFirstName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactFirstName);
+    let hasLastName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactLastName);
 
     return hasFirstName && hasLastName;
   }

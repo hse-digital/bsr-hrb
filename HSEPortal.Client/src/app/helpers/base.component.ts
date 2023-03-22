@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStat
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { ApplicationService } from "../services/application.service";
 import { NavigationService } from "../services/navigation.service";
+import { TitleService } from "../services/title.service";
 import { IHasNextPage } from "./has-next-page.interface";
 
 export abstract class BaseComponent implements CanActivate {
@@ -11,7 +12,7 @@ export abstract class BaseComponent implements CanActivate {
 
   returnUrl?: string;
   updateOnSave: boolean = true;
-  constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute) {
+  constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute, protected titleService: TitleService) {
     this.activatedRoute.queryParams.subscribe(params => {
       this.returnUrl = params['return'];
     });
@@ -23,18 +24,25 @@ export abstract class BaseComponent implements CanActivate {
   }
 
   hasErrors = false;
+  processing = false;
   async saveAndContinue(): Promise<any> {
+    this.processing = true;
+    
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       await this.onSave();
 
+      this.applicationService.updateLocalStorage();
       if (this.updateOnSave)
         await this.applicationService.updateApplication();
 
       await this.runInheritances();
     } else {
       this.summaryError?.first?.focus();
+      this.titleService.setTitleError();
     }
+
+    this.processing = false;
   }
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
