@@ -16,7 +16,7 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   }
 
   async ngOnInit() {
-    this.applicationService.model.Payment =  await this.paymentService.GetPayment(this.applicationService.model.Payment!.PaymentId!)
+    this.applicationService.model.Payment = await this.paymentService.GetPayment(this.applicationService.model.Payment!.PaymentId!)
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
 
     await this.applicationService.updateApplication();
@@ -41,7 +41,8 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   }
 
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.model.Payment;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentInProgress) == BuildingApplicationStatus.PaymentInProgress
+      && this.applicationService.model.Payment != null;
   }
 
 }

@@ -42,6 +42,6 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.model.AccountablePersons && this.applicationService.model.AccountablePersons.length > 0;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsComplete) == BuildingApplicationStatus.AccountablePersonsComplete;
   }
 }
