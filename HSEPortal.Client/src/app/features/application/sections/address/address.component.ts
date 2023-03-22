@@ -84,8 +84,9 @@ export class SectionAddressComponent implements OnInit, CanActivate {
   }
 
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return (this.applicationService.currentSection.YearOfCompletionOption || !!this.applicationService.currentSection.YearOfCompletionRange)
-      && this.applicationService.currentSection.Addresses.length < 5;
+    return !!this.applicationService.currentSection.YearOfCompletionOption && this.applicationService.currentSection.Addresses.length < 5 &&
+      ((this.applicationService.currentSection.YearOfCompletionOption == "year-not-exact" && !!this.applicationService.currentSection.YearOfCompletionRange)
+        || (this.applicationService.currentSection.YearOfCompletionOption != "year-not-exact"));
   }
 
 }

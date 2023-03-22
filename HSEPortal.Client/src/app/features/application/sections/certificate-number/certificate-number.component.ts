@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { ApplicationService } from "src/app/services/application.service";
@@ -29,5 +29,11 @@ export class CertificateNumberComponent extends BaseComponent implements IHasNex
   sectionBuildingName() {
     return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
       this.applicationService.currentSection.Name;
+  }
+
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return !!this.applicationService.currentSection.YearOfCompletionOption &&
+      ((this.applicationService.currentSection.YearOfCompletionOption == "year-not-exact" && !!this.applicationService.currentSection.YearOfCompletionRange)
+        || (this.applicationService.currentSection.YearOfCompletionOption != "year-not-exact"));
   }
 }
