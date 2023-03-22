@@ -5,8 +5,8 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem"  #summaryError>
-          <govuk-error-link anchorId="input-email" message="You must enter an email address in the correct format, like name@example.com" /> 
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="input-email" message="You must enter an email address in the correct format, like name@example.com" />
         </govuk-error-summary>
 
         <govuk-fieldset title="Your email address" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
@@ -26,6 +26,9 @@
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="sendingRequest" loadingText="Sending...">Send verification email</govuk-button>
+
+      <div id="hiddenAlertContainer" role="alert" class="visually-hidden"></div>
+
     </div>
   </div>
 </div>

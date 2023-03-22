@@ -9,7 +9,8 @@ import { GovukErrorSummaryComponent } from 'hse-angular';
 import { TitleService } from 'src/app/services/title.service';
 
 @Component({
-  templateUrl: './contact-email.component.html'
+  templateUrl: './contact-email.component.html',
+  styleUrls: ['./contact-email.component.scss']
 })
 export class ContactEmailComponent extends BaseComponent implements IHasNextPage {
   static route: string = "contact-email";
@@ -37,6 +38,7 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       this.sendingRequest = true;
+      this.screenReaderNotification();
 
       await this.applicationService.sendVerificationEmail(this.applicationService.model.ContactEmailAddress!);
       await this.navigateToNextPage(this.navigationService, this.activatedRoute);
@@ -52,5 +54,9 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative('verify', activatedRoute);
+  }
+
+  screenReaderNotification() {
+    document!.getElementById("hiddenAlertContainer")!.innerHTML = "Sending success";
   }
 }
