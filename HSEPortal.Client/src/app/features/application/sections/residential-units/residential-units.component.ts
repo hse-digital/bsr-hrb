@@ -8,6 +8,7 @@ import { SectionPeopleLivingInBuildingComponent } from "../people-living-in-buil
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from 'src/app/services/title.service';
+import { SectionHelper } from "src/app/helpers/section-name-helper";
 
 @Component({
   templateUrl: './residential-units.component.html'
@@ -42,8 +43,8 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
     return !this.residentialUnitsHasErrors;
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentSection.Height;
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

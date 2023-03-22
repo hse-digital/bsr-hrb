@@ -1,9 +1,10 @@
 import { Component, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionHelper } from 'src/app/helpers/section-name-helper';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
@@ -11,13 +12,7 @@ import { AccountablePersonModule } from '../../accountable-person/accountable-pe
 import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
 import { NumberOfSectionsComponment } from '../../number-of-sections/number-of-sections.component';
 import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
-import { SectionAddressComponent } from '../address/address.component';
-import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
-import { SectionHeightComponent } from '../height/height.component';
 import { MoreInformationComponent } from '../more-information/more-information.component';
-import { SectionPeopleLivingInBuildingComponent } from '../people-living-in-building/people-living-in-building.component';
-import { SectionResidentialUnitsComponent } from '../residential-units/residential-units.component';
-import { SectionYearOfCompletionComponent } from '../year-of-completion/year-of-completion.component';
 
 @Component({
   selector: 'hse-check-answers',
@@ -28,17 +23,6 @@ import { SectionYearOfCompletionComponent } from '../year-of-completion/year-of-
 export class SectionCheckAnswersComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'check-answers';
   static title: string = "Check your answers - Register a high-rise building - GOV.UK";
-
-  URLs = {
-    floorsAbove: SectionFloorsAboveComponent.route,
-    height: SectionHeightComponent.route,
-    residentialUnits: SectionResidentialUnitsComponent.route,
-    peopleLivingInBuilding: SectionPeopleLivingInBuildingComponent.route,
-    yearCompletition: SectionYearOfCompletionComponent.route, // TO-DO
-    completitionCertificateIssuer: "check-answers", // TO-DO
-    completitionCertificateReference: "check-answers", // TO-DO
-    address: SectionAddressComponent.route // TO-DO
-  }
 
   sections: SectionModel[] = [];
 
@@ -52,8 +36,24 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     this.sections = this.applicationService.model.Sections;
   }
 
+  hasIncompleteData = false;
   canContinue(): boolean {
-    return true;
+    var canContinue = true;
+    for (var section of this.sections) {
+      if (this.applicationService.model.NumberOfSections == "two_or_more") {
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.Name);
+      }
+
+      canContinue &&= FieldValidations.IsGreaterThanZero(section.FloorsAbove);
+      canContinue &&= FieldValidations.IsGreaterThanZero(section.Height);
+      canContinue &&= FieldValidations.IsGreaterThanZero(section.ResidentialUnits);
+      canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
+      canContinue &&= (section.YearOfCompletionOption == "not-completed") || (section.YearOfCompletionOption == "year-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletion)) || (section.YearOfCompletionOption == "year-not-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletionRange));
+      canContinue &&= section.Addresses?.length > 0;
+    }
+
+    this.hasIncompleteData = !canContinue;
+    return canContinue;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
@@ -86,9 +86,5 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   private getOutOfScopeSections() {
     return this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
-  }
-
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentSection.Addresses && this.applicationService.currentSection.Addresses.length > 0;
   }
 }

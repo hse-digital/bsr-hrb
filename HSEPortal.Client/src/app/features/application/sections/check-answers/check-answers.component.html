@@ -5,6 +5,10 @@
     <div class="govuk-grid-column-two-thirds">
       <govuk-fieldset title="Check your building summary answers for {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
 
+        <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="input-floors-above" message="Please check if all structures have data correctly entered" />
+        </govuk-error-summary>
+
         <govuk-summary-list classes="govuk-summary-list--no-border answers-heading-border {{applicationService.model.NumberOfSections == 'one' ? 'no-margin-bottom' : ''}}">
           <govuk-summary-list-row (onClick)="navigateToMultipleSections()" (onKeyupEnter)="navigateToMultipleSections()" key="Is the building made up of multiple independent sections?" [showAction]=true>
             {{applicationService.model.NumberOfSections == 'one' ? 'Single independent section' : 'Multiple independent sections'}}
@@ -23,7 +27,7 @@
         </div>
 
       </govuk-fieldset>
-      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
       <save-and-come-back/>
     </div>
   </div>
