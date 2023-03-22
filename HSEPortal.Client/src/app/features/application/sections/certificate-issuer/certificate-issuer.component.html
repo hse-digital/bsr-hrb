@@ -11,10 +11,10 @@
             <p>A building control body or authority issues a completion certificate as proof that the building work has been inspected and complies with building regulations.</p>
           </govuk-details>
 
-          <govuk-input label="Issuer name (optional)" labelClass="govuk-label--s" 
-            hint="Enter the full name of the building control body or authority that issued the completion certificate. If you do not have access to the completion certificate, leave this blank."
-            id="certificate-issuer" [(model)]="applicationService.currentSection.CompletionCertificateIssuer"
-            s="govuk-input--width-3" />
+          <govuk-input label="Issuer name (optional)" labelClass="govuk-label--s"
+                       hint="Enter the full name of the building control body or authority that issued the completion certificate. If you do not have access to the completion certificate, leave this blank."
+                       id="certificate-issuer" [(model)]="applicationService.currentSection.CompletionCertificateIssuer"
+                       s="govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
         </govuk-fieldset>
       </div>
 
