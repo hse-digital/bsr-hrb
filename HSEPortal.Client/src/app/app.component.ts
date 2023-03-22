@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from './services/application.service';
 import { HeaderTitleService } from './services/headertitle.service';
@@ -11,7 +11,7 @@ import { GovukCookieBannerComponent } from 'hse-angular';
   templateUrl: './app.component.html',
   providers: [CookiesBannerService]
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
 
   showTimeoutDialog = false;
 
@@ -57,6 +57,13 @@ export class AppComponent {
   }
 
   @ViewChild(GovukCookieBannerComponent) cookieBanner?: GovukCookieBannerComponent;
+  ngAfterViewInit(): void {
+    this.cookieBanner?.onHideCookieBannerConfirmation.subscribe(() => {
+      if (typeof window !== 'undefined') {
+        window.location.href = window.location.href;
+      }
+    })
+  }
 
   showCookieBanner: boolean = true;
   initCookiesBanner() {
