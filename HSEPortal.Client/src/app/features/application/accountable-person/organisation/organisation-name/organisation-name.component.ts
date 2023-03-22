@@ -59,6 +59,6 @@ export class OrganisationNameComponent extends BaseComponent implements IHasNext
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentAccountablePerson.OrganisationType;
+    return !!this.applicationService.currentAccountablePerson.Type && this.applicationService.currentAccountablePerson.Type == "organisation" && !!this.applicationService.currentAccountablePerson.OrganisationType;
   }
 }

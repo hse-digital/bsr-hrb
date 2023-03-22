@@ -8,8 +8,8 @@ import { AddressModel } from "./address.service";
 export class ApplicationService {
   model: BuildingRegistrationModel;
 
-  _currentSectionIndex = 0;
-  _currentAccountablePersonIndex = 0;
+  _currentSectionIndex;
+  _currentAccountablePersonIndex;
 
   get currentSection(): SectionModel {
     return this.model.Sections[this._currentSectionIndex];
@@ -21,6 +21,8 @@ export class ApplicationService {
 
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('HSE_MODEL') ?? {};
+    this._currentSectionIndex = this.model?.Sections?.length - 1 ?? 0;
+    this._currentAccountablePersonIndex = this.model?.AccountablePersons?.length - 1 ?? 0;
   }
 
   newApplication() {
