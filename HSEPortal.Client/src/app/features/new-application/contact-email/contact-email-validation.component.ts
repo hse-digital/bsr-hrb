@@ -34,13 +34,29 @@ export class ContactEmailValidationComponent extends BaseComponent implements IH
     return this.otpError ? 'Enter the correct security code' : 'You must enter your 6 digit security code';
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
-    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactEmailAddress);
+  override async saveAndContinue(): Promise<any> {
+    this.processing = true;
+    this.hasErrors = !this.canContinue();
+    if (!this.hasErrors) {
+      try {
+        this.sendingRequest = true;
+        await this.applicationService.validateOTPToken(this.otpToken, this.applicationService.model.ContactEmailAddress!);
+        await this.applicationService.registerNewBuildingApplication();
+        await this.navigationService.navigate(`application/${this.applicationService.model.id}`);
+      } catch {
+        this.sendingRequest = false;
+        this.hasErrors = true;
+        this.otpError = true;
+      }
+    } else {
+      this.summaryError?.first?.focus();
+    }
+
+    this.processing = false;
   }
 
-  override async onSave(): Promise<void> {
-    await this.applicationService.validateOTPToken(this.otpToken, this.applicationService.model.ContactEmailAddress!);
-    await this.applicationService.registerNewBuildingApplication();
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactEmailAddress);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
