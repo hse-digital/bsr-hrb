@@ -24,11 +24,15 @@ export abstract class BaseComponent implements CanActivate {
   }
 
   hasErrors = false;
+  processing = false;
   async saveAndContinue(): Promise<any> {
+    this.processing = true;
+    
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       await this.onSave();
 
+      this.applicationService.updateLocalStorage();
       if (this.updateOnSave)
         await this.applicationService.updateApplication();
 
@@ -37,6 +41,8 @@ export abstract class BaseComponent implements CanActivate {
       this.summaryError?.first?.focus();
       this.titleService.setTitleError();
     }
+
+    this.processing = false;
   }
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {

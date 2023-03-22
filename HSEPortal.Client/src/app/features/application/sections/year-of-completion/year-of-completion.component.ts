@@ -1,11 +1,12 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
-import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
+import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from 'src/app/services/title.service';
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 
 @Component({
@@ -75,5 +76,9 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
   sectionBuildingName() {
     return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
       this.applicationService.currentSection.Name;
+  }
+
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 }

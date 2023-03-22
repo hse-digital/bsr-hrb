@@ -6,6 +6,7 @@ import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from 'src/app/services/title.service';
+import { SectionHelper } from "src/app/helpers/section-helper";
 
 @Component({
   templateUrl: './floors-above.component.html'
@@ -24,7 +25,6 @@ export class SectionFloorsAboveComponent extends BaseComponent implements IHasNe
   floorsHasError = false;
 
   errorMessage: string = 'Enter the number of floors at or above ground level';
-
   canContinue(): boolean {
     this.floorsHasError = true;
     let floorsAbove = this.applicationService.currentSection.FloorsAbove;
@@ -42,8 +42,8 @@ export class SectionFloorsAboveComponent extends BaseComponent implements IHasNe
     return !this.floorsHasError;
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentSection.Name;
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

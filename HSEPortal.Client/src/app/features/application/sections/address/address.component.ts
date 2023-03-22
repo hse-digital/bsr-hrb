@@ -1,19 +1,20 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
+import { AddressSearchMode } from "src/app/components/address/address.component";
+import { SectionHelper } from "src/app/helpers/section-helper";
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
-import { AddressSearchMode } from "src/app/components/address/address.component";
-import { SectionOtherAddressesComponent } from "../other-addresses/other-addresses.component";
-import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
-import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
-import { SectionNameComponent } from "../name/name.component";
 import { TitleService } from 'src/app/services/title.service';
+import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
+import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
+import { SectionNameComponent } from "../name/name.component";
+import { SectionOtherAddressesComponent } from "../other-addresses/other-addresses.component";
 
 @Component({
   templateUrl: './address.component.html'
 })
-export class SectionAddressComponent implements OnInit {
+export class SectionAddressComponent implements OnInit, CanActivate {
   static route: string = 'address';
 
   static title: string = 'Find the address of the section - Register a high-rise building - GOV.UK';
@@ -81,6 +82,10 @@ export class SectionAddressComponent implements OnInit {
         return;
     }
     this.titleService.setTitle(SectionAddressComponent.title);
+  }
+
+  canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 
 }

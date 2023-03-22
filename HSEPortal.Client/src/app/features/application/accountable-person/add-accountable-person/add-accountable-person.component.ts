@@ -32,10 +32,6 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
     this.applicationService.updateApplication();
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return true;
-  }
-
   canContinue(): boolean {
     this.addAccountablePersonHasError = !this.addAccountablePerson;
     return !this.addAccountablePersonHasError;
@@ -79,4 +75,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
     return `${ap.FirstName} ${ap.LastName}`;
   }
 
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return this.applicationService.model.AccountablePersons?.length >= 1;
+  }
 }

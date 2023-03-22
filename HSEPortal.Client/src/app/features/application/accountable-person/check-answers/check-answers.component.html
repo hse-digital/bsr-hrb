@@ -7,6 +7,10 @@
 
         <govuk-fieldset title="Check your accountable persons answers for {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8'>
 
+          <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
+            <govuk-error-link anchorId="input-floors-above" message="Please check if all accountable persons have data correctly entered" />
+          </govuk-error-summary>
+
           <ng-container *ngIf="aps.length == 1">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Principal accountable person</legend>
             <organisation-answers *ngIf="aps[0].Type == 'organisation'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
@@ -27,8 +31,8 @@
         </govuk-fieldset>
       </div>
 
-      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
-      <save-and-come-back/>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back />
     </div>
   </div>
 </div>
