@@ -5,12 +5,10 @@ import { AddressModel } from "../services/address.service";
     selector: 'address-description',
     template: `
         <div *ngIf="address">
-            {{getAddressLineOne()}}
-            <br>
-            <span *ngIf="address.AddressLineTwo">{{address.AddressLineTwo}}<br></span>
-            {{address.Town}}
-            <br>
-            {{address.Postcode}}
+            <div>{{getAddressLineOne()}}</div>
+            <span *ngIf="address.AddressLineTwo"><div>{{address.AddressLineTwo}}</div></span>
+            <div>{{address.Town}}</div>
+            <div>{{address.Postcode}}</div>
         </div>`
 })
 export class AddressDescriptionComponent {
