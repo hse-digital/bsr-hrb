@@ -8,7 +8,7 @@
         <govuk-fieldset title="Check your accountable persons answers for {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8'>
 
           <ng-container *ngIf="aps.length == 1">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Principal accountable person</legend>
+            <h2 class="govuk-heading-m">Principal accountable person</h2>
             <organisation-answers *ngIf="aps[0].Type == 'organisation'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
             <individual-answers *ngIf="aps[0].Type == 'individual'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
           </ng-container>

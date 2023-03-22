@@ -72,6 +72,10 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
     return this.getErrorDescription(false, '');
   }
 
+  getCheckboxTitle(section: any) {
+    return this.applicationService.model.NumberOfSections == 'two_or_more' ? section?.Name ?? "First section" : "";
+  }
+
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     if (this.applicationService.currentAccountablePerson.Type == 'individual') {
       return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);

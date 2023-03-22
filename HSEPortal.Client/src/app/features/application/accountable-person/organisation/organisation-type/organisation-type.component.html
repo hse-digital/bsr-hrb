@@ -13,9 +13,9 @@
         <govuk-fieldset [title]="title()" [isPageHeading]=true id="application"
                         titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-3'>
 
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Type of organisation</legend>
           <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.OrganisationType" id="radios-accountable-person"
-                             [errorText]="getErrorDescription(hasErrors, 'Enter the type of organisation')">
+                             [errorText]="getErrorDescription(hasErrors, 'Enter the type of organisation')"
+                             title="Type of organisation" fieldsetClass='govuk-fieldset__legend--s govuk-!-margin-bottom-3'>
             <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="commonhold-association" value="commonhold-association" label="Commonhold association"
               hint="A non-profit company formed by freeholders who manage and maintain the building they line in."/>
             <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="housing-association" value="housing-association" label="Housing association or other company operating under section 27 of the Housing Act 1985"

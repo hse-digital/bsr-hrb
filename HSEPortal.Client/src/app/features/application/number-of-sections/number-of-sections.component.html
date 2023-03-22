@@ -16,9 +16,9 @@
 
           <govuk-inset-text>For example, The Gherkin in London is a single high-rise residential structure</govuk-inset-text>
 
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Is it a single structure?</legend>
           <govuk-radio-group (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(numberOfSectionsHasErrors, 'Select how many blocks are in this building')"
-                             [(model)]="applicationService.model.NumberOfSections">
+                             [(model)]="applicationService.model.NumberOfSections"
+                             title="Is it a single structure?" fieldsetClass='govuk-fieldset__legend--s govuk-!-margin-bottom-3'>
             <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.model.NumberOfSections" name="application-group" id="application-yes" value="one" label="Yes" />
             <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.model.NumberOfSections" name="application-group" id="application-no" value="two_or_more" label="No" />
           </govuk-radio-group>
