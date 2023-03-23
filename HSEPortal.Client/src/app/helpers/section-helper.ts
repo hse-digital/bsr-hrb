@@ -1,4 +1,5 @@
-import { SectionModel } from "../services/application.service";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { ApplicationService, SectionModel } from "../services/application.service";
 
 export class SectionHelper {
     static getSectionCardinalName(sectionIndex: number): string {
@@ -25,5 +26,15 @@ export class SectionHelper {
         var criteria2 = Number(section.ResidentialUnits) < 2;
 
         return criteria1 || criteria2;
+    }
+
+    static isSectionAvailable(routeSnapshot: ActivatedRouteSnapshot, applicationService: ApplicationService) {
+        var requestedSectionIndex = routeSnapshot.parent?.params["id"];
+        if (requestedSectionIndex) {
+            let index = Number(requestedSectionIndex.split('-').at(-1)) - 1;
+            return applicationService.model.Sections.length > index;
+        }
+
+        return false;
     }
 }

@@ -1,13 +1,15 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
-import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { EmailValidator } from "src/app/helpers/validators/email-validator";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { PhoneNumberValidator } from "src/app/helpers/validators/phone-number-validator";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from 'src/app/services/title.service';
 import { AddAccountablePersonComponent } from "../../add-accountable-person/add-accountable-person.component";
 
 @Component({
@@ -35,18 +37,17 @@ export class LeadDetailsComponent extends BaseComponent implements IHasNextPage 
 
     let emailValid = this.isEmailValid(email);
     let phoneValid = this.isPhoneNumberValid(phone);
-    let jobRoleValid = this.applicationService.currentAccountablePerson.LeadJobRole != undefined;
+    let jobRoleValid = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentAccountablePerson.LeadJobRole);
     this.errors.jobRole.hasErrors = !jobRoleValid;
 
     return emailValid && phoneValid && jobRoleValid;
   }
 
   isEmailValid(email: string): boolean {
-    let emailValidator = new EmailValidator();
     this.errors.email.hasErrors = true;
     if (!email) {
       this.errors.email.errorText = 'Enter your email address';
-    } else if (!emailValidator.isValid(email)) {
+    } else if (!EmailValidator.isValid(email)) {
       this.errors.email.errorText = 'You must enter an email address in the correct format, for example \'name@example.com\'';
     } else {
       this.errors.email.hasErrors = false;
@@ -56,11 +57,10 @@ export class LeadDetailsComponent extends BaseComponent implements IHasNextPage 
   }
 
   isPhoneNumberValid(phone: string) {
-    let phoneValidator = new PhoneNumberValidator();
     this.errors.phoneNumber.hasErrors = true;
     if (!phone) {
       this.errors.phoneNumber.errorText = 'Enter your telephone number';
-    } else if (!phoneValidator.isValid(phone)) {
+    } else if (!PhoneNumberValidator.isValid(phone)) {
       this.errors.phoneNumber.errorText = 'You must enter a UK telephone number. For example, \'01632 960 001\', \'07700 900 982\' or \'+44 808 157 0192\'';
     } else {
       this.errors.phoneNumber.hasErrors = false;
@@ -70,6 +70,11 @@ export class LeadDetailsComponent extends BaseComponent implements IHasNextPage 
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
+  }
+
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+      && ApHelper.isOrganisation(this.applicationService);
   }
 
 } 

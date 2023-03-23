@@ -7,6 +7,7 @@ import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from 'src/app/services/title.service';
+import { SectionHelper } from "src/app/helpers/section-helper";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
@@ -29,8 +30,8 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
     return !this.peopleLivingHasErrors;
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.currentSection.ResidentialUnits;
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

@@ -7,6 +7,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { EmailValidator } from 'src/app/helpers/validators/email-validator';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { TitleService } from 'src/app/services/title.service';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   templateUrl: './contact-email.component.html',
@@ -24,32 +25,17 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
   }
 
   emailHasErrors = false;
-
-  sendingRequest = false;
-
   canContinue(): boolean {
-    let emailValidator = new EmailValidator();
-    let email = this.applicationService.model.ContactEmailAddress;
-    this.emailHasErrors = !email || !emailValidator.isValid(email);
+    this.emailHasErrors = !EmailValidator.isValid(this.applicationService.model.ContactEmailAddress ?? '');
     return !this.emailHasErrors;
   }
 
-  override async saveAndContinue(): Promise<any> {
-    this.hasErrors = !this.canContinue();
-    if (!this.hasErrors) {
-      this.sendingRequest = true;
-      this.screenReaderNotification();
-
-      await this.applicationService.sendVerificationEmail(this.applicationService.model.ContactEmailAddress!);
-      await this.navigateToNextPage(this.navigationService, this.activatedRoute);
-    } else {
-      this.summaryError?.first?.focus();
-      this.titleService.setTitleError();
-    }
+  override async onSave(): Promise<void> {
+    await this.applicationService.sendVerificationEmail(this.applicationService.model.ContactEmailAddress!);
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return !!this.applicationService.model.ContactPhoneNumber;
+    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactPhoneNumber);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

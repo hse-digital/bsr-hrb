@@ -10,7 +10,7 @@
           <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter your last name" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Your name" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+        <govuk-fieldset title="Your name" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
 
           <govuk-body>We will use this if we need to contact you about your application</govuk-body>
 
@@ -27,7 +27,7 @@
         </govuk-fieldset>
       </div>
 
-      <govuk-button (onClick)="saveAndContinue()">Continue</govuk-button>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>
     </div>
   </div>
 </div>

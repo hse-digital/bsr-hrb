@@ -7,6 +7,14 @@
     <govuk-summary-list-row (onKeyupEnter)="navigateTo('year-of-completion')" (onClick)="navigateTo('year-of-completion')" key="When was the building originally built?" [showAction]=true>{{section.YearOfCompletionOption == 'year-exact' ? section.YearOfCompletion : section.YearOfCompletionOption | yearOfCompletionOptionDescription}}</govuk-summary-list-row>
     <govuk-summary-list-row (onKeyupEnter)="navigateTo('year-range')" (onClick)="navigateTo('year-range')" *ngIf="section.YearOfCompletionOption == 'year-not-exact'" key="Completion year range" [showAction]=true>{{section.YearOfCompletionRange | yearOfCompletionDescription}}</govuk-summary-list-row>
 
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('certificate-issuer')" (onClick)="navigateTo('certificate-issuer')" key="Completion certificate issuer" [showAction]=true>{{section.CompletionCertificateIssuer}} </govuk-summary-list-row>
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('certificate-number')" (onClick)="navigateTo('certificate-number')" key="Completion certificate number" [showAction]=true>{{section.CompletionCertificateReference}} </govuk-summary-list-row>
+
+    <ng-container *ngIf="section.Addresses == undefined || section.Addresses.length == 0">
+        <govuk-summary-list-row (onClick)="navigateTo('address')" (onKeyupEnter)="navigateTo('address')" key="Address" [showAction]=true>
+        </govuk-summary-list-row>
+    </ng-container>
+
     <ng-container *ngFor="let address of section.Addresses; let i = index">
         <govuk-summary-list-row (onClick)="navigateToAddress('address', i)" (onKeyupEnter)="navigateToAddress('address', i)" key="Address" [showAction]=true>
             <address-description [address]="address" />

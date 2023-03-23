@@ -1,13 +1,13 @@
-import { AfterViewInit, Component, Input, QueryList, ViewChildren } from "@angular/core";
-import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, Input, QueryList, ViewChildren } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
+import { ApHelper } from "src/app/helpers/ap-helper";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { TitleService } from 'src/app/services/title.service';
 import { ApDetailsComponent } from "../ap-details/ap-details.component";
-import { PapNameComponent } from "./pap-name.component";
 
 @Component({
   selector: 'ap-name',
@@ -38,5 +38,9 @@ export class ApNameComponent extends BaseComponent implements IHasNextPage {
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(this.nextRoute ?? ApDetailsComponent.route, activatedRoute);
+  }
+
+  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
   }
 }

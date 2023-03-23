@@ -16,7 +16,6 @@ import { SectionFloorsAboveComponent } from "./floors-above/floors-above.compone
 import { SectionHeightComponent } from "./height/height.component";
 import { SectionsIntroComponent } from "./intro/intro.component";
 import { MoreInformationComponent } from "./more-information/more-information.component";
-import { NameAllBlocksComponent } from "./name-all-blocks/name-all-blocks.component";
 import { SectionNameComponent } from "./name/name.component";
 import { SectionOtherAddressesComponent } from "./other-addresses/other-addresses.component";
 import { SectionPeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
@@ -26,59 +25,57 @@ import { SectionYearOfCompletionComponent } from "./year-of-completion/year-of-c
 import { SectionYearRangeComponent } from "./year-range/year-range.component";
 
 const routes = new HseRoutes([
-  HseRoute.unsafe(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
-  HseRoute.unsafe(MoreInformationComponent.route, MoreInformationComponent, undefined, MoreInformationComponent.title),
-  HseRoute.unsafe(NameAllBlocksComponent.route, NameAllBlocksComponent, undefined, NameAllBlocksComponent.title),
-  HseRoute.unsafe(SectionCheckAnswersComponent.route, SectionCheckAnswersComponent, undefined, SectionCheckAnswersComponent.title),
-    HseRoute.forChildren(':id', SectionsComponent, new HseRoutes([
-      HseRoute.unsafe(SectionsIntroComponent.route, SectionsIntroComponent, undefined, SectionsIntroComponent.title),
-      HseRoute.unsafe(SectionFloorsAboveComponent.route, SectionFloorsAboveComponent, undefined, SectionFloorsAboveComponent.title),
-      HseRoute.unsafe(SectionNameComponent.route, SectionNameComponent, undefined, SectionNameComponent.title),
-      HseRoute.unsafe(SectionHeightComponent.route, SectionHeightComponent, undefined, SectionHeightComponent.title),
-      HseRoute.unsafe(SectionResidentialUnitsComponent.route, SectionResidentialUnitsComponent, undefined, SectionResidentialUnitsComponent.title),
-      HseRoute.unsafe(SectionYearOfCompletionComponent.route, SectionYearOfCompletionComponent, undefined, SectionYearOfCompletionComponent.title),
-      HseRoute.unsafe(CertificateIssuerComponent.route, CertificateIssuerComponent, undefined, CertificateIssuerComponent.title),
-      HseRoute.unsafe(CertificateNumberComponent.route, CertificateNumberComponent, undefined, CertificateNumberComponent.title),
-      HseRoute.unsafe(SectionYearRangeComponent.route, SectionYearRangeComponent, undefined, SectionYearRangeComponent.title),
-      HseRoute.unsafe(SectionAddressComponent.route, SectionAddressComponent, undefined, SectionAddressComponent.title),
-      HseRoute.unsafe(SectionOtherAddressesComponent.route, SectionOtherAddressesComponent, undefined, SectionOtherAddressesComponent.title),
-      HseRoute.unsafe(SectionPeopleLivingInBuildingComponent.route, SectionPeopleLivingInBuildingComponent, undefined, SectionPeopleLivingInBuildingComponent.title),
-    ])),
+  HseRoute.protected(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
+  HseRoute.protected(MoreInformationComponent.route, MoreInformationComponent, MoreInformationComponent.title),
+  HseRoute.protected(SectionCheckAnswersComponent.route, SectionCheckAnswersComponent, SectionCheckAnswersComponent.title),
+  HseRoute.forChildren(':id', SectionsComponent, new HseRoutes([
+    HseRoute.protected(SectionsIntroComponent.route, SectionsIntroComponent, SectionsIntroComponent.title),
+    HseRoute.protected(SectionFloorsAboveComponent.route, SectionFloorsAboveComponent, SectionFloorsAboveComponent.title),
+    HseRoute.protected(SectionNameComponent.route, SectionNameComponent, SectionNameComponent.title),
+    HseRoute.protected(SectionHeightComponent.route, SectionHeightComponent, SectionHeightComponent.title),
+    HseRoute.protected(SectionResidentialUnitsComponent.route, SectionResidentialUnitsComponent, SectionResidentialUnitsComponent.title),
+    HseRoute.protected(SectionYearOfCompletionComponent.route, SectionYearOfCompletionComponent, SectionYearOfCompletionComponent.title),
+    HseRoute.protected(CertificateIssuerComponent.route, CertificateIssuerComponent, CertificateIssuerComponent.title),
+    HseRoute.protected(CertificateNumberComponent.route, CertificateNumberComponent, CertificateNumberComponent.title),
+    HseRoute.protected(SectionYearRangeComponent.route, SectionYearRangeComponent, SectionYearRangeComponent.title),
+    HseRoute.protected(SectionAddressComponent.route, SectionAddressComponent, SectionAddressComponent.title),
+    HseRoute.protected(SectionOtherAddressesComponent.route, SectionOtherAddressesComponent, SectionOtherAddressesComponent.title),
+    HseRoute.protected(SectionPeopleLivingInBuildingComponent.route, SectionPeopleLivingInBuildingComponent, SectionPeopleLivingInBuildingComponent.title),
+  ])),
 ]);
 
 @NgModule({
-    declarations: [
-        SectionsComponent,
-        SectionsIntroComponent,
-        SectionFloorsAboveComponent,
-        SectionNameComponent,
-        SectionHeightComponent,
-        SectionResidentialUnitsComponent,
-        SectionPeopleLivingInBuildingComponent,
-        SectionCheckAnswersComponent,
-        AddMoreSectionsComponent,
-        MoreInformationComponent,
-        SectionYearOfCompletionComponent,
-        SectionYearRangeComponent,
-        SectionAddressComponent,
-        SectionOtherAddressesComponent,
-        NameAllBlocksComponent,
-        SectionAnswersComponent,
-        CertificateIssuerComponent,
-        CertificateNumberComponent
-    ],
-    imports: [
-        RouterModule.forChild(routes.getRoutes()),
-        HseAngularModule,
-        CommonModule,
-        HttpClientModule,
-        PipesModule,
-        ComponentsModule
-    ],
-    providers: [
-        ...routes.getProviders()
-    ]
+  declarations: [
+    SectionsComponent,
+    SectionsIntroComponent,
+    SectionFloorsAboveComponent,
+    SectionNameComponent,
+    SectionHeightComponent,
+    SectionResidentialUnitsComponent,
+    SectionPeopleLivingInBuildingComponent,
+    SectionCheckAnswersComponent,
+    AddMoreSectionsComponent,
+    MoreInformationComponent,
+    SectionYearOfCompletionComponent,
+    SectionYearRangeComponent,
+    SectionAddressComponent,
+    SectionOtherAddressesComponent,
+    SectionAnswersComponent,
+    CertificateIssuerComponent,
+    CertificateNumberComponent
+  ],
+  imports: [
+    RouterModule.forChild(routes.getRoutes()),
+    HseAngularModule,
+    CommonModule,
+    HttpClientModule,
+    PipesModule,
+    ComponentsModule
+  ],
+  providers: [
+    ...routes.getProviders()
+  ]
 })
 export class SectionsModule {
-    public static baseRoute: string = "sections";
+  public static baseRoute: string = "sections";
 }

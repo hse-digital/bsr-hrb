@@ -6,6 +6,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   templateUrl: './contact-name.component.html'
@@ -25,14 +26,14 @@ export class ContactNameComponent extends BaseComponent implements IHasNextPage 
   lastNameInError: boolean = false;
 
   canContinue() {
-    this.firstNameInError = !this.applicationService.model.ContactFirstName;
-    this.lastNameInError = !this.applicationService.model.ContactLastName;
+    this.firstNameInError = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactFirstName);
+    this.lastNameInError = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactLastName);
 
     return !this.firstNameInError && !this.lastNameInError;
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot){
-    return !!this.applicationService.model.BuildingName;
+    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
