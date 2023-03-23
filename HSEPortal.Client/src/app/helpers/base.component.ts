@@ -13,6 +13,7 @@ export abstract class BaseComponent implements CanActivate {
   returnUrl?: string;
   updateOnSave: boolean = true;
   constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute, protected titleService: TitleService) {
+    this.screenReaderNotification("");
     this.activatedRoute.queryParams.subscribe(params => {
       this.returnUrl = params['return'];
     });
