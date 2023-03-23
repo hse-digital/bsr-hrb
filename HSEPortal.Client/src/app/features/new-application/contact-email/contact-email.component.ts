@@ -41,8 +41,4 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative('verify', activatedRoute);
   }
-
-  screenReaderNotification() {
-    document!.getElementById("hiddenAlertContainer")!.innerHTML = "Sending success";
-  }
 }

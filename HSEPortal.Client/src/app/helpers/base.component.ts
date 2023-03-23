@@ -30,6 +30,8 @@ export abstract class BaseComponent implements CanActivate {
     
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
+      this.screenReaderNotification();
+
       await this.onSave();
 
       this.applicationService.updateLocalStorage();
@@ -62,5 +64,9 @@ export abstract class BaseComponent implements CanActivate {
     if (hasNextPage) {
       await hasNextPage.navigateToNextPage(this.navigationService, this.activatedRoute);
     }
+  }
+
+  protected screenReaderNotification(message: string = "Sending success") {
+    document!.getElementById("hiddenAlertContainer")!.innerHTML = message;
   }
 }
