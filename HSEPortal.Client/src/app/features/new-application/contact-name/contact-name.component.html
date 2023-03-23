@@ -10,21 +10,27 @@
           <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter your last name" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Your name" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+        <h1 class="govuk-heading-l">Your name</h1>
 
-          <govuk-body>We will use this if we need to contact you about your application</govuk-body>
+        <govuk-body>We will use this if we need to contact you about your application</govuk-body>
 
-          <govuk-input id="first-name" label="First name" 
-                       [(model)]="applicationService.model.ContactFirstName"
-                       [errorText]="getErrorDescription(firstNameInError, 'Enter your first name')"
-                       class="govuk-!-margin-bottom-5"
-                       (onKeyupEnter)="saveAndContinue()" />
+        <form class="form">
+          <fieldset class="govuk-fieldset">
 
-          <govuk-input id="last-name" label="Last name" 
-                       [(model)]="applicationService.model.ContactLastName"
-                       [errorText]="getErrorDescription(lastNameInError, 'Enter your last name')"
-                       (onKeyupEnter)="saveAndContinue()" />
-        </govuk-fieldset>
+            <govuk-input id="first-name" label="First name"
+                         [(model)]="applicationService.model.ContactFirstName"
+                         [errorText]="getErrorDescription(firstNameInError, 'Enter your first name')"
+                         class="govuk-!-margin-bottom-5"
+                         (onKeyupEnter)="saveAndContinue()" />
+
+            <govuk-input id="last-name" label="Last name"
+                         [(model)]="applicationService.model.ContactLastName"
+                         [errorText]="getErrorDescription(lastNameInError, 'Enter your last name')"
+                         (onKeyupEnter)="saveAndContinue()" />
+
+          </fieldset>
+        </form>
+
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>

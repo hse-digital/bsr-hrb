@@ -1,19 +1,22 @@
 <div class="govuk-form-group">
-    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-        <govuk-error-link *ngIf="errors.securityCode.hasError" anchorId="input-security-code" message="{{errors.securityCode.errorText}}" />
-    </govuk-error-summary>
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link *ngIf="errors.securityCode.hasError" anchorId="input-security-code" message="{{errors.securityCode.errorText}}" />
+  </govuk-error-summary>
 
-    <govuk-fieldset title="Enter security code" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+  <h1 class="govuk-heading-l">Enter security code</h1>
 
-        <govuk-body>We have sent a 6-digit security code to: <b>{{ emailAddress }}</b>.</govuk-body>
-        <govuk-body>If you cannot find the email, please check your junk or spam folders.</govuk-body>
-        <govuk-body>If you still cannot find it, or it has timed out <a (click)="showResendStep()" (keyup.enter)="showResendStep()" class="govuk-link cursor" role="link" tabindex="0">generate a new security code</a>.</govuk-body>
+  <govuk-body>We have sent a 6-digit security code to: <b>{{ emailAddress }}</b>.</govuk-body>
+  <govuk-body>If you cannot find the email, please check your junk or spam folders.</govuk-body>
+  <govuk-body>If you still cannot find it, or it has timed out <a (click)="showResendStep()" (keyup.enter)="showResendStep()" class="govuk-link cursor" role="link" tabindex="0">generate a new security code</a>.</govuk-body>
 
-        <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s" 
-                     hint="For example, '123456'." [(model)]="securityCode" class="govuk-input--width-10" 
-                     [errorText]="getErrorDescription(errors.securityCode.hasError, errors.securityCode.errorText)"
-                     (onKeyupEnter)="validateAndContinue()" />
-    </govuk-fieldset>
+  <form class="form">
+    <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
+                 hint="For example, '123456'." [(model)]="securityCode" class="govuk-input--width-10"
+                 [errorText]="getErrorDescription(errors.securityCode.hasError, errors.securityCode.errorText)"
+                 (onKeyupEnter)="validateAndContinue()" />
+  </form>
+
+
 </div>
 
 <govuk-button (onClick)="validateAndContinue()" [isLoading]="sendingRequest" [disabled]="sendingRequest">Save and continue</govuk-button>

@@ -1,7 +1,8 @@
 <div class="govuk-form-group">
-    <govuk-fieldset title="Generate a new security code" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
-        <govuk-body>We will send a 6-digit security code to: <b>{{emailAddress}}</b>.</govuk-body>
-    </govuk-fieldset>
+
+  <h1 class="govuk-heading-l">Generate a new security code</h1>
+  <govuk-body>We will send a 6-digit security code to: <b>{{emailAddress}}</b>.</govuk-body>
+
 </div>
 
 <govuk-button (onClick)="sendNewCode()" [isLoading]="sendingRequest" loadingText="Sending..." [disabled]="sendingRequest">Send new security code</govuk-button>

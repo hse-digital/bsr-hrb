@@ -9,12 +9,13 @@
           <govuk-error-link anchorId="input-email" message="You must enter an email address in the correct format, like name@example.com" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Your email address" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+        <h1 class="govuk-heading-l">Your email address</h1>
 
-          <govuk-body>To secure your application and allow you to return to it later, we need to verify your email address. To do this, we will send you a 6 digit security code.</govuk-body>
+        <govuk-body>To secure your application and allow you to return to it later, we need to verify your email address. To do this, we will send you a 6 digit security code.</govuk-body>
 
-          <govuk-body>If you do not have an email address, contact us to apply to register a high-rise building.</govuk-body>
+        <govuk-body>If you do not have an email address, contact us to apply to register a high-rise building.</govuk-body>
 
+        <form class="form">
           <govuk-input id="email"
                        [(model)]="applicationService.model.ContactEmailAddress"
                        label="Enter your email address" labelClass="govuk-label--s"
@@ -22,7 +23,8 @@
                        hint="We will use this to confirm when your application has been submitted and contact you in the future about your applicaton"
                        class="govuk-!-margin-bottom-1"
                        (onKeyupEnter)="saveAndContinue()" />
-        </govuk-fieldset>
+        </form>
+
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing" loadingText="Sending...">Send verification email</govuk-button>

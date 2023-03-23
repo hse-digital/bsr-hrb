@@ -10,28 +10,27 @@
                             message="Select yes if you want to add another accountable person" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Add another accountable person for {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-3'>
+        <h1 class="govuk-heading-l">Add another accountable person for {{applicationService.model.BuildingName}}</h1>
 
-          <govuk-body>An accountable person is an organisation or individual who is accountable for the safety of part of <b>{{applicationService.model.BuildingName}}</b>. We'll ask which parts they're accountable for later.</govuk-body>
-          <govuk-body>If an accountable person is an organisation, individuals within that organisation are not accountable persons, but we will ask you for the name and contact details of someone in the organisation we can contact.</govuk-body>
-          <govuk-body>You have told us that <b>{{principalName()}}</b> is the principal accountable person.</govuk-body>
+        <govuk-body>An accountable person is an organisation or individual who is accountable for the safety of part of <b>{{applicationService.model.BuildingName}}</b>. We'll ask which parts they're accountable for later.</govuk-body>
+        <govuk-body>If an accountable person is an organisation, individuals within that organisation are not accountable persons, but we will ask you for the name and contact details of someone in the organisation we can contact.</govuk-body>
+        <govuk-body>You have told us that <b>{{principalName()}}</b> is the principal accountable person.</govuk-body>
 
-          <ng-container *ngIf="applicationService.model.AccountablePersons.length > 1">
-            <govuk-body>You have also told us about these accountable persons:</govuk-body>
-            <govuk-list classes='govuk-list--bullet govuk-!-margin-bottom-6'>
-              <govuk-list-item [text]="apName(ap)" *ngFor="let ap of otherAps()" />
-            </govuk-list>
-          </ng-container>
+        <ng-container *ngIf="applicationService.model.AccountablePersons.length > 1">
+          <govuk-body>You have also told us about these accountable persons:</govuk-body>
+          <govuk-list classes='govuk-list--bullet govuk-!-margin-bottom-6'>
+            <govuk-list-item [text]="apName(ap)" *ngFor="let ap of otherAps()" />
+          </govuk-list>
+        </ng-container>
 
-          <govuk-radio-group title="Is anyone else accountable for any residential part of {{applicationService.model.BuildingName}}?" fieldsetClass="govuk-fieldset__legend--s" id="radios-add-accountable-person" [(model)]="addAccountablePerson" [errorText]="getErrorDescription(hasErrors, 'Select yes if you want to add another accountable person')" hintText="We do not need to know about responsible persons, like those under the Fire Safety Order, unless they are also accountable.">
-            <govuk-radio name="application-group" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()"/>
-            <govuk-radio name="application-group" id="no" value="no" label="No" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()"/>
-          </govuk-radio-group>
+        <govuk-radio-group title="Is anyone else accountable for any residential part of {{applicationService.model.BuildingName}}?" fieldsetClass="govuk-fieldset__legend--s" id="radios-add-accountable-person" [(model)]="addAccountablePerson" [errorText]="getErrorDescription(hasErrors, 'Select yes if you want to add another accountable person')" hintText="We do not need to know about responsible persons, like those under the Fire Safety Order, unless they are also accountable.">
+          <govuk-radio name="application-group" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio name="application-group" id="no" value="no" label="No" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
+        </govuk-radio-group>
 
-        </govuk-fieldset>
       </div>
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back/>
+      <save-and-come-back />
     </div>
   </div>
 </div>

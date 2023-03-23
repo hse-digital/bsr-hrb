@@ -10,24 +10,27 @@
           <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter their last name" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Named contact at {{getOrganisationName()}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-4'>
+        <h1 class="govuk-heading-l">Named contact at {{getOrganisationName()}}</h1>
 
-          <govuk-body>This is who we will talk to about building safety issues for the parts of <b>{{applicationService.model.BuildingName}}</b> that <b>{{applicationService.currentAccountablePerson.OrganisationName}}</b> is accountable for.</govuk-body>
-          <govuk-input id="first-name" label="First name" 
+        <govuk-body>This is who we will talk to about building safety issues for the parts of <b>{{applicationService.model.BuildingName}}</b> that <b>{{applicationService.currentAccountablePerson.OrganisationName}}</b> is accountable for.</govuk-body>
+
+        <fieldset class="govuk-fieldset">
+          <govuk-input id="first-name" label="First name"
                        [(model)]="applicationService.currentAccountablePerson.NamedContactFirstName"
                        [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
                        class="govuk-!-margin-bottom-5"
-                       (onKeyupEnter)="saveAndContinue()"/>
+                       (onKeyupEnter)="saveAndContinue()" />
 
-          <govuk-input id="last-name" label="Last name" 
+          <govuk-input id="last-name" label="Last name"
                        [(model)]="applicationService.currentAccountablePerson.NamedContactLastName"
                        [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
-                       (onKeyupEnter)="saveAndContinue()"/>
-        </govuk-fieldset>
+                       (onKeyupEnter)="saveAndContinue()" />
+        </fieldset>
+
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back/>
+      <save-and-come-back />
     </div>
   </div>
 </div>

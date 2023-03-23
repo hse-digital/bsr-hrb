@@ -1,29 +1,30 @@
 <govuk-back-link>Back</govuk-back-link>
 
 <div class="govuk-main-wrapper">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-form-group">
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-                    <govuk-error-link anchorId="year-exact-input" [message]="errorMessage" />
-                </govuk-error-summary>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="year-exact-input" [message]="errorMessage" />
+        </govuk-error-summary>
 
-                <govuk-fieldset title="When was {{sectionBuildingName()}} originally built?" [isPageHeading]=true id="number-of-sections" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+        <h1 class="govuk-heading-l">When was {{sectionBuildingName()}} originally built?</h1>
 
-                    <govuk-body>This is the year when it was originally ready for people to live in it.</govuk-body>
+        <govuk-body>This is the year when it was originally ready for people to live in it.</govuk-body>
 
-                    <govuk-radio-group (onRadioSelected)="radioChange()" [errorText]="getErrorDescription(yearOfCompletionHasErrors && !exactYearHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletionOption">
-                        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-exact" value="year-exact" label="I know the exact year">
-                            <govuk-input (onKeyupEnter)="saveAndContinue()" [errorText]="getErrorDescription(exactYearHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletion" class="govuk-input--width-4" labelClass="govuk-label--s" label="Exact Year" hint="For example '1983'." />
-                        </govuk-radio>
-                        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-not-exact" value="year-not-exact" label="I do not know the exact year" hint="Select this option if you know a general range" />
-                        <div class="govuk-radios__divider">or</div>
-                        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="not-completed" value="not-completed" label="Not yet built" />
-                    </govuk-radio-group>
-                </govuk-fieldset>
-            </div>
-            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-            <save-and-come-back/>
-        </div>
+        <govuk-radio-group (onRadioSelected)="radioChange()" [errorText]="getErrorDescription(yearOfCompletionHasErrors && !exactYearHasErrors, errorMessage)"
+                           [(model)]="applicationService.currentSection.YearOfCompletionOption">
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-exact" value="year-exact" label="I know the exact year">
+            <govuk-input (onKeyupEnter)="saveAndContinue()" [errorText]="getErrorDescription(exactYearHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletion" class="govuk-input--width-4" labelClass="govuk-label--s" label="Exact Year" hint="For example '1983'." />
+          </govuk-radio>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-not-exact" value="year-not-exact" label="I do not know the exact year" hint="Select this option if you know a general range" />
+          <div class="govuk-radios__divider">or</div>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="not-completed" value="not-completed" label="Not yet built" />
+        </govuk-radio-group>
+
+      </div>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back />
     </div>
+  </div>
 </div>
