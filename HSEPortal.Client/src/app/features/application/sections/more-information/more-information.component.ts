@@ -57,6 +57,6 @@ export class MoreInformationComponent extends BaseComponent implements IHasNextP
 
   override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
     let outOfScope = this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
-    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && outOfScope?.length > 0;
+    return outOfScope?.length > 0;
   }
 }
