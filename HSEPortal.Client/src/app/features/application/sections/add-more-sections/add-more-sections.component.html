@@ -6,7 +6,7 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="fieldset-another-block" message="Select yes if there are more blocks in the building" />
+          <govuk-error-link anchorId="yes-input" message="Select yes if there are more blocks in the building" />
         </govuk-error-summary>
 
         <govuk-fieldset [errorText]="getErrorDescription(anotherBlockHasErrors, 'Select yes if there are more blocks in the building')"

@@ -6,7 +6,7 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="principal" message="Select 'Yes' if you are the principal accountable person" />
+          <govuk-error-link anchorId="isPrincipal-yes-input" message="Select 'Yes' if you are the principal accountable person" />
         </govuk-error-summary>
 
         <govuk-fieldset title="Are you the principal accountable person for {{applicationService.model.BuildingName}}?" [isPageHeading]=true id="principal" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'

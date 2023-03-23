@@ -5,7 +5,7 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="fieldset-number-of-sections" message="Select if this building is a single structure" />
+          <govuk-error-link anchorId="application-yes-input" message="Select if this building is a single structure" />
         </govuk-error-summary>
 
         <govuk-fieldset title="Is {{applicationService.model.BuildingName}} a single high-rise residential structure?"

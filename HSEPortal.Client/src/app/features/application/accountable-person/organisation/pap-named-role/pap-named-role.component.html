@@ -6,7 +6,7 @@
             <div class="govuk-form-group">
 
                 <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-                    <govuk-error-link anchorId="job_role" message="Select your job role" />
+                    <govuk-error-link anchorId="job_role-director-input" message="Select your job role" />
                 </govuk-error-summary>
 
                 <govuk-fieldset title="What is your job role at {{applicationService.currentAccountablePerson.OrganisationName}}?" [isPageHeading]=true id="who_are_you" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4' [errorText]="getErrorDescription(namedRoleHasErrors, 'Select your job role')">

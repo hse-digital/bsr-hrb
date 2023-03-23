@@ -6,7 +6,7 @@
             <div class="govuk-form-group">
 
                 <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-                    <govuk-error-link anchorId="fieldset-peopleLivingInBuilding" [message]="getErrorMessage()" />
+                    <govuk-error-link anchorId="yes-input" [message]="getErrorMessage()" />
                 </govuk-error-summary>
 
                 <govuk-fieldset [errorText]="getErrorDescription(peopleLivingHasErrors, getErrorMessage())" 

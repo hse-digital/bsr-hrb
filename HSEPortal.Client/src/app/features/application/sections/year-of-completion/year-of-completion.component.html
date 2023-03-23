@@ -5,7 +5,7 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
                 <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-                    <govuk-error-link anchorId="fieldset-number-of-sections" [message]="errorMessage" />
+                    <govuk-error-link anchorId="year-exact-input" [message]="errorMessage" />
                 </govuk-error-summary>
 
                 <govuk-fieldset title="When was {{sectionBuildingName()}} originally built?" [isPageHeading]=true id="number-of-sections" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>

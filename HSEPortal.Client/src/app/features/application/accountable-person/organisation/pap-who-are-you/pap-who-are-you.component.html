@@ -6,7 +6,7 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="who_are_you" [message]="getErrorMessage()" />
+          <govuk-error-link anchorId="who_are_you-named_contact-input" [message]="getErrorMessage()" />
         </govuk-error-summary>
 
         <govuk-fieldset title="Are you the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}?" [isPageHeading]=true id="who_are_you" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
