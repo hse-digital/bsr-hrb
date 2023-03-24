@@ -11,9 +11,9 @@
 
         <h1 class="govuk-heading-l">Verify your email address</h1>
 
-        <govuk-body>We have sent a 6-digit security code to: <b>{{ applicationService.model.ContactEmailAddress}}</b>.</govuk-body>
-        <govuk-body>If you cannot find the email, please check your junk or spam folders.</govuk-body>
-        <govuk-body>If you did not get an email, or wish to use a different email address, you can resend the email or enter a different email address.</govuk-body>
+          <govuk-body>We have sent a 6-digit security code to: <b>{{ applicationService.model.ContactEmailAddress}}</b>.</govuk-body>
+          <govuk-body>If you cannot find the email, please check your junk or spam folders.</govuk-body>
+          <govuk-body>If you did not get an email, or wish to use a different email address, you can <a class="govuk-link" [routerLink]="['/new-application/contact-email']">resend the email or enter a different email address.</a></govuk-body>
 
         <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
                      hint="For example, '123456'."
