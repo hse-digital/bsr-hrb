@@ -15,13 +15,12 @@
         <govuk-body>If you cannot find the email, please check your junk or spam folders.</govuk-body>
         <govuk-body>If you did not get an email, or wish to use a different email address, you can resend the email or enter a different email address.</govuk-body>
 
-        <form class="form">
-          <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
-                       hint="For example, '123456'."
-                       [(model)]="otpToken" class="govuk-input--width-10"
-                       [errorText]="getErrorDescription(hasErrors, getOtpError())"
-                       (onKeyupEnter)="saveAndContinue()" />
-        </form>
+        <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
+                     hint="For example, '123456'."
+                     [(model)]="otpToken" class="govuk-input--width-10"
+                     [errorText]="getErrorDescription(hasErrors, getOtpError())"
+                     (onKeyupEnter)="saveAndContinue()" />
+
 
       </div>
 

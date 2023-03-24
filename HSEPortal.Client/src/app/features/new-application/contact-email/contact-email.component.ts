@@ -11,7 +11,6 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   templateUrl: './contact-email.component.html',
-  styleUrls: ['./contact-email.component.scss']
 })
 export class ContactEmailComponent extends BaseComponent implements IHasNextPage {
   static route: string = "contact-email";

@@ -6,7 +6,7 @@
 
   <h1 class="govuk-heading-l">Continue a saved application</h1>
 
-  <form class="form">
+  <fieldset class="govuk-fieldset">
     <govuk-input id="email-address" label="Email address" labelClass="govuk-label--s"
                  hint="This is the email address you used when you began this application."
                  [(model)]="emailAddress"
@@ -21,7 +21,7 @@
                  (modelChange)="applicationNumberChange.emit(applicationNumber)"
                  [errorText]="getErrorDescription(errors.applicationNumber.hasError, errors.applicationNumber.errorText)"
                  (onKeyupEnter)="validateAndContinue()" />
-  </form>
+  </fieldset>
 
 </div>
 

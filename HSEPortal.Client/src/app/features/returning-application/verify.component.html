@@ -9,12 +9,11 @@
   <govuk-body>If you cannot find the email, please check your junk or spam folders.</govuk-body>
   <govuk-body>If you still cannot find it, or it has timed out <a (click)="showResendStep()" (keyup.enter)="showResendStep()" class="govuk-link cursor" role="link" tabindex="0">generate a new security code</a>.</govuk-body>
 
-  <form class="form">
-    <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
-                 hint="For example, '123456'." [(model)]="securityCode" class="govuk-input--width-10"
-                 [errorText]="getErrorDescription(errors.securityCode.hasError, errors.securityCode.errorText)"
-                 (onKeyupEnter)="validateAndContinue()" />
-  </form>
+
+  <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
+               hint="For example, '123456'." [(model)]="securityCode" class="govuk-input--width-10"
+               [errorText]="getErrorDescription(errors.securityCode.hasError, errors.securityCode.errorText)"
+               (onKeyupEnter)="validateAndContinue()" />
 
 
 </div>
