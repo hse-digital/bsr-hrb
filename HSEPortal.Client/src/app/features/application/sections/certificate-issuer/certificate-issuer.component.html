@@ -14,7 +14,7 @@
         <govuk-input label="Issuer name (optional)" labelClass="govuk-label--s"
                      hint="Enter the full name of the building control body or authority that issued the completion certificate. If you do not have access to the completion certificate, leave this blank."
                      id="certificate-issuer" [(model)]="applicationService.currentSection.CompletionCertificateIssuer"
-                     class="govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+                     (onKeyupEnter)="saveAndContinue()" />
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
