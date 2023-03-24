@@ -9,17 +9,18 @@
           <govuk-error-link *ngIf="nameHasErrors" anchorId="input-building-name" message="Enter this building's name" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="What is this building's name?" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-5' class='govuk-!-margin-bottom-4'>
-          <govuk-body>When your building is registered, this is the name that will appear on the public register of high-rise buildings in England.</govuk-body>
+        <h1 class="govuk-heading-l">What is this building's name?</h1>
 
-          <govuk-input id="building-name" label="Building name" labelClass="govuk-label--s"
-                       [(model)]="applicationService.model.BuildingName"
-                       [errorText]="getErrorDescription(nameHasErrors, 'Enter this building\'s name')"
-                       hint="For example 'The Gherkin'."
-                       hintClass="no-margin-top"
-                       (onKeyupEnter)="saveAndContinue()"/>
+        <govuk-body>When your building is registered, this is the name that will appear on the public register of high-rise buildings in England.</govuk-body>
 
-        </govuk-fieldset>
+        <govuk-input id="building-name" label="Building name" labelClass="govuk-label--s"
+                     [(model)]="applicationService.model.BuildingName"
+                     [errorText]="getErrorDescription(nameHasErrors, 'Enter this building\'s name')"
+                     hint="For example 'The Gherkin'."
+                     hintClass="no-margin-top"
+                     (onKeyupEnter)="saveAndContinue()" />
+
+
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>

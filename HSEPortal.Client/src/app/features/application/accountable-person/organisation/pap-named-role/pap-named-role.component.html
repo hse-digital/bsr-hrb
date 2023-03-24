@@ -1,27 +1,30 @@
 <govuk-back-link>Back</govuk-back-link>
 
 <div class="govuk-main-wrapper">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-form-group">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
 
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-                    <govuk-error-link anchorId="job_role" message="Select your job role" />
-                </govuk-error-summary>
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="job_role-director-input" message="Select your job role" />
+        </govuk-error-summary>
 
-                <govuk-fieldset title="What is your job role at {{applicationService.currentAccountablePerson.OrganisationName}}?" [isPageHeading]=true id="who_are_you" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4' [errorText]="getErrorDescription(namedRoleHasErrors, 'Select your job role')">
-                    <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.LeadJobRole" id="job_role">
-                        <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-director" value="director" label="Director" (onKeyupEnter)="saveAndContinue()"/>
-                        <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-administrative_worker" value="administrative_worker" label="Administrative or office worker" (onKeyupEnter)="saveAndContinue()"/>
-                        <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_manager" value="building_manager" label="Building or facilities manager" (onKeyupEnter)="saveAndContinue()" />
-                        <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_director" value="building_director" label="Building safety director" (onKeyupEnter)="saveAndContinue()"/>
-                        <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-other" value="other" label="Other" (onKeyupEnter)="saveAndContinue()" />
-                    </govuk-radio-group>
-                </govuk-fieldset>
-            </div>
+        <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.LeadJobRole" id="job_role"
+                           title="What is your job role at {{applicationService.currentAccountablePerson.OrganisationName}}?"
+                           [isPageHeading]=true fieldsetClass='govuk-fieldset__legend--l'
+                           fieldsetMarginBottom='govuk-!-margin-bottom-4'
+                           [errorText]="getErrorDescription(namedRoleHasErrors, 'Select your job role')">
+          <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-director" value="director" label="Director" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-administrative_worker" value="administrative_worker" label="Administrative or office worker" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_manager" value="building_manager" label="Building or facilities manager" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_director" value="building_director" label="Building safety director" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-other" value="other" label="Other" (onKeyupEnter)="saveAndContinue()" />
+        </govuk-radio-group>
 
-            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-            <save-and-come-back/>
-        </div>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back />
     </div>
+  </div>
 </div>

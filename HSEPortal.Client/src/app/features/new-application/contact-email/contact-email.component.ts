@@ -10,7 +10,7 @@ import { TitleService } from 'src/app/services/title.service';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
-  templateUrl: './contact-email.component.html'
+  templateUrl: './contact-email.component.html',
 })
 export class ContactEmailComponent extends BaseComponent implements IHasNextPage {
   static route: string = "contact-email";

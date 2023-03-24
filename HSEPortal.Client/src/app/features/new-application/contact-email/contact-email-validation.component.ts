@@ -39,6 +39,7 @@ export class ContactEmailValidationComponent extends BaseComponent implements IH
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       try {
+        this.screenReaderNotification();
         this.sendingRequest = true;
         await this.applicationService.validateOTPToken(this.otpToken, this.applicationService.model.ContactEmailAddress!);
         await this.applicationService.registerNewBuildingApplication();

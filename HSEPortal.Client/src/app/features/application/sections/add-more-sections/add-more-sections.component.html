@@ -6,27 +6,23 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="fieldset-another-block" message="Select yes if there are more blocks in the building" />
+          <govuk-error-link anchorId="yes-input" message="Select yes if there are more blocks in the building" />
         </govuk-error-summary>
 
-        <govuk-fieldset [errorText]="getErrorDescription(anotherBlockHasErrors, 'Select yes if there are more blocks in the building')"
-                        title="High-rise residential structures of {{applicationService.model.BuildingName}}"
-                        [isPageHeading]=true id="application"
-                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'>
-                        
-          <govuk-body>So far you have told us about <b>{{getSectionNames()}}</b> <span *ngIf="sections!.length > 1"> and <b>{{getSectionName(sections!.at(-1)!, sections!.length-1)}}</b></span>.</govuk-body>
+        <h1 class="govuk-heading-l">High-rise residential structures of {{applicationService.model.BuildingName}}</h1>
 
-          <govuk-radio-group id="another-block"
-                             [(model)]="addAnotherSectionLink"
-                             title="Add another high-rise residential structure?" fieldsetClass="govuk-fieldset__legend--s">
-            <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="yes" value="yes" label="Yes" />
-            <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="no" value="no" label="No" />
-          </govuk-radio-group>
-        </govuk-fieldset>
+        <govuk-body>So far you have told us about <b>{{getSectionNames()}}</b> <span *ngIf="sections!.length > 1"> and <b>{{getSectionName(sections!.at(-1)!, sections!.length-1)}}</b></span>.</govuk-body>
+
+        <govuk-radio-group id="another-block" [(model)]="addAnotherSectionLink" title="Add another high-rise residential structure?" fieldsetClass="govuk-fieldset__legend--s"
+                           [errorText]="getErrorDescription(anotherBlockHasErrors, 'Select yes if there are more blocks in the building')">
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="yes" value="yes" label="Yes" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="no" value="no" label="No" />
+        </govuk-radio-group>
+
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back/>
+      <save-and-come-back />
     </div>
   </div>
 </div>

@@ -6,24 +6,24 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="acting_for_same_address" [message]="getErrorMessage()" />
+          <govuk-error-link anchorId="acting_for_same_address-yes-input" [message]="getErrorMessage()" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Your address" [isPageHeading]=true id="acting_for_same_address" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
-                        [errorText]="getErrorDescription(sameAddressHasErrors, getErrorMessage())">
+        <h1 class="govuk-heading-l">Your address</h1>
 
-            <govuk-body>You have told us that the address of {{applicationService.currentAccountablePerson.OrganisationName}} is <b>{{getOrganisationAddress()}}</b>.</govuk-body>
-            <govuk-body class="govuk-!-margin-0"><b>Should we use the same address to contact you?</b></govuk-body>
+        <govuk-body>You have told us that the address of {{applicationService.currentAccountablePerson.OrganisationName}} is <b>{{getOrganisationAddress()}}</b>.</govuk-body>
+        <govuk-body class="govuk-!-margin-0"><b>Should we use the same address to contact you?</b></govuk-body>
 
-            <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.ActingForSameAddress">
-                <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-yes" value="yes" label="Yes, use this address" (onKeyupEnter)="saveAndContinue()"/>
-                <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-no" value="no" label="No, use a different address" (onKeyupEnter)="saveAndContinue()"/>
-              </govuk-radio-group>
-        </govuk-fieldset> 
+        <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.ActingForSameAddress"
+                           [errorText]="getErrorDescription(sameAddressHasErrors, getErrorMessage())">
+          <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-yes" value="yes" label="Yes, use this address" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-no" value="no" label="No, use a different address" (onKeyupEnter)="saveAndContinue()" />
+        </govuk-radio-group>
+
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back/>
+      <save-and-come-back />
     </div>
   </div>
 </div>

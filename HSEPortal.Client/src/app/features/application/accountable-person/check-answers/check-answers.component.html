@@ -5,30 +5,28 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-fieldset title="Check your accountable persons answers for {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8'>
+        <h1 class="govuk-heading-l">Check your accountable persons answers for {{applicationService.model.BuildingName}}</h1>
 
-          <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
-            <govuk-error-link anchorId="input-floors-above" message="Please check if all accountable persons have data correctly entered" />
-          </govuk-error-summary>
+        <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="input-floors-above" message="Please check if all accountable persons have data correctly entered" />
+        </govuk-error-summary>
 
-          <ng-container *ngIf="aps.length == 1">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Principal accountable person</legend>
-            <organisation-answers *ngIf="aps[0].Type == 'organisation'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
-            <individual-answers *ngIf="aps[0].Type == 'individual'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
-          </ng-container>
+        <ng-container *ngIf="aps.length == 1">
+          <h2 class="govuk-heading-m">Principal accountable person</h2>
+          <organisation-answers *ngIf="aps[0].Type == 'organisation'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
+          <individual-answers *ngIf="aps[0].Type == 'individual'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
+        </ng-container>
 
-          <div *ngIf="aps.length > 1">
-            <div *ngFor="let ap of aps; let i = index" class="section-wrapper">
-              <div class="section-header" *ngIf="i == 0">Principal accountable person</div>
-              <div class="section-header" *ngIf="i > 0">Other accountable person {{ i }}</div>
-              <div class="section-content">
-                <organisation-answers *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
-                <individual-answers *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
-              </div>
+        <div *ngIf="aps.length > 1">
+          <div *ngFor="let ap of aps; let i = index" class="section-wrapper">
+            <div class="section-header" *ngIf="i == 0">Principal accountable person</div>
+            <div class="section-header" *ngIf="i > 0">Other accountable person {{ i }}</div>
+            <div class="section-content">
+              <organisation-answers *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+              <individual-answers *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
             </div>
           </div>
-
-        </govuk-fieldset>
+        </div>
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>

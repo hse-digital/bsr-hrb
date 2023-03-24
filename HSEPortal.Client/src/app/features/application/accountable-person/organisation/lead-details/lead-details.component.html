@@ -6,10 +6,11 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link *ngIf="errors.jobRole.hasErrors" anchorId="job_role" message="{{errors.jobRole.errorText}}" />
+          <govuk-error-link *ngIf="errors.jobRole.hasErrors" anchorId="job_role-director-input" message="{{errors.jobRole.errorText}}" />
           <govuk-error-link *ngIf="errors.email.hasErrors" anchorId="input-email" message="{{errors.email.errorText}}" />
           <govuk-error-link *ngIf="errors.phoneNumber.hasErrors" anchorId="input-phone-number" message="{{errors.phoneNumber.errorText}}" />
         </govuk-error-summary>
+
         <govuk-fieldset title="{{applicationService.currentAccountablePerson.LeadFirstName}} {{applicationService.currentAccountablePerson.LeadLastName}}'s details" [isPageHeading]=true id="job_role" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'
                         [errorText]="getErrorDescription(false, 'Select your job role')">
           <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.LeadJobRole" id="job_role" class="govuk-!-margin-bottom-6" title="Job role">

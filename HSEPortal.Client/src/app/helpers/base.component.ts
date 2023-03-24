@@ -13,6 +13,7 @@ export abstract class BaseComponent implements CanActivate {
   returnUrl?: string;
   updateOnSave: boolean = true;
   constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute, protected titleService: TitleService) {
+    this.screenReaderNotification("");
     this.activatedRoute.queryParams.subscribe(params => {
       this.returnUrl = params['return'];
     });
@@ -30,6 +31,8 @@ export abstract class BaseComponent implements CanActivate {
     
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
+      this.screenReaderNotification();
+
       await this.onSave();
 
       this.applicationService.updateLocalStorage();
@@ -62,5 +65,9 @@ export abstract class BaseComponent implements CanActivate {
     if (hasNextPage) {
       await hasNextPage.navigateToNextPage(this.navigationService, this.activatedRoute);
     }
+  }
+
+  protected screenReaderNotification(message: string = "Sending success") {
+    document!.getElementById("hiddenAlertContainer")!.innerHTML = message;
   }
 }
