@@ -18,6 +18,7 @@ import { ReturningApplicationResendCodeComponent } from './features/returning-ap
 import { ReturningApplicationVerifyComponent } from './features/returning-application/verify.component';
 import { ApplicationModule } from './features/application/application.module';
 import { TimeoutModalComponent } from './features/timeout/timeout.modal';
+import { HelpPagesModule } from './features/footer/help-pages.module';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(HomeComponent.route, HomeComponent, undefined, HomeComponent.title),
@@ -25,6 +26,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
   HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent, undefined, ReturningApplicationComponent.title),
   HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
+  HseRoute.forLoadChildren(HelpPagesModule.baseRoute, () => import('./features/footer/help-pages.module').then(m => m.HelpPagesModule)),
   HseRoute.forLoadChildren(ApplicationModule.baseRoute, () => import('./features/application/application.module').then(m => m.ApplicationModule)),
 ]);
 
