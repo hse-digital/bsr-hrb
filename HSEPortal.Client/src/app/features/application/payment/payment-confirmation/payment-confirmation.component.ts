@@ -17,16 +17,19 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
 
   async ngOnInit() {
     var applicationStatus = this.applicationService.model.ApplicationStatus;
+    this.applicationService.model.Payment = await this.paymentService.GetPayment(this.applicationService.model.Payment!.PaymentId!)
     if ((applicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
       // already completed/payed/synced
       return;
     }
 
-    this.applicationService.model.Payment = await this.paymentService.GetPayment(this.applicationService.model.Payment!.PaymentId!)
-    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
-
-    await this.applicationService.updateApplication();
-    await this.applicationService.syncPayment();
+    if (this.applicationService.model.Payment.Status == 'success') {
+      this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
+      await this.applicationService.updateApplication();
+      await this.applicationService.syncPayment();
+    } else {
+      this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
+    }
   }
 
   canContinue(): boolean {
