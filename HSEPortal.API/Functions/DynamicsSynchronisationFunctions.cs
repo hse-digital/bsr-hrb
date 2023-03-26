@@ -13,6 +13,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.DurableTask;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Options;
+using BuildingApplicationStatus = HSEPortal.Domain.Entities.BuildingApplicationStatus;
 
 namespace HSEPortal.API.Functions;
 
@@ -70,11 +71,12 @@ public class DynamicsSynchronisationFunctions
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var application = await dynamicsService.GetBuildingApplicationUsingId(buildingApplicationModel.Id);
-        if (application is { bsr_applicationstage: null })
+        if (application is { bsr_applicationstage: null, statuscode: BuildingApplicationStatus.New })
         {
             await dynamicsService.UpdateBuildingApplication(application, new DynamicsBuildingApplication
             {
-                bsr_applicationstage = BuildingApplicationStage.AccountablePersons,
+                bsr_applicationstage = BuildingApplicationStage.BuildingSummary,
+                statuscode = BuildingApplicationStatus.InProgress
             });
         }
 

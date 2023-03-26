@@ -428,6 +428,16 @@ public class DynamicsService
 
     private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure)
     {
+        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", new[]
+        {
+            ("$filter", $"bsr_name eq '{dynamicsStructure.bsr_name}' and bsr_postcode eq '{dynamicsStructure.bsr_postcode}'"),
+        });
+
+        if (existingStructure.value.Any())
+        {
+            return existingStructure.value[0];
+        }
+
         var response = await dynamicsApi.Create(structureDefinition.Endpoint, dynamicsStructure);
         var structureId = ExtractEntityIdFromHeader(response.Headers);
         return dynamicsStructure with { bsr_blockid = structureId };

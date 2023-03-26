@@ -21,7 +21,8 @@ public record DynamicsBuildingApplication(string bsr_buildingapplicationid = nul
     BuildingApplicationWhoAreYou? bsr_whoareyou = null,
     [property: JsonPropertyName("bsr_paporgleadcontactid@odata.bind")]
     string papLeadContactReferenceId = null,
-    string bsr_applicationid = null) : DynamicsEntity<BuildingApplication>;
+    string bsr_applicationid = null,
+    BuildingApplicationStatus? statuscode = null) : DynamicsEntity<BuildingApplication>;
 
 public enum BuildingApplicationStage
 {
@@ -42,4 +43,10 @@ public enum BuildingApplicationWhoAreYou
     NamedContact = 760_810_000,
     RegisteringFor = 760_810_001,
     Employee = 760_810_002
+}
+
+public enum BuildingApplicationStatus
+{
+    New = 760_810_001,
+    InProgress = 760_810_002,
 }
