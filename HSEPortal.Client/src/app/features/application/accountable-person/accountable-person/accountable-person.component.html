@@ -25,7 +25,7 @@
         </govuk-radio-group>
 
       </div>
-      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
       <save-and-come-back />
     </div>
   </div>

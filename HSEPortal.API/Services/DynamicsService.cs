@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Flurl.Http;
 using Flurl.Util;
@@ -312,20 +313,29 @@ public class DynamicsService
     public async Task CreatePayment(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication)
     {
         var payment = model.Payment;
-        await dynamicsApi.Create("bsr_payments", new DynamicsPayment
+        
+        var existingPayment = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_service eq 'HRB Registration' and bsr_transactionid eq '{payment.Reference}'"));
+        if (!existingPayment.value.Any())
         {
-            buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
-            bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
-            bsr_timeanddateoftransaction = payment.CreatedDate,
-            bsr_transactionid = payment.Reference,
-            bsr_service = "HRB Registration",
-            bsr_cardexpirydate = payment.CardExpiryDate,
-            bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
-            bsr_cardbrandegvisa = payment.CardBrand,
-            bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
-            bsr_amountpaid = payment.Amount / 100,
-            bsr_govukpaystatus = payment.Status,
-        });
+            await UpdateBuildingApplication(dynamicsBuildingApplication, new DynamicsBuildingApplication
+            {
+                bsr_submittedon = DateTime.Now.ToString(CultureInfo.InvariantCulture)
+            });
+            await dynamicsApi.Create("bsr_payments", new DynamicsPayment
+            {
+                buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
+                bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
+                bsr_timeanddateoftransaction = payment.CreatedDate,
+                bsr_transactionid = payment.Reference,
+                bsr_service = "HRB Registration",
+                bsr_cardexpirydate = payment.CardExpiryDate,
+                bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                bsr_cardbrandegvisa = payment.CardBrand,
+                bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
+                bsr_amountpaid = payment.Amount / 100,
+                bsr_govukpaystatus = payment.Status,
+            });
+        }
     }
 
     private async Task<DynamicsAccountablePerson> FindExistingAp(string sectionId, string accountId, string area)

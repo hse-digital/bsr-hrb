@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using AutoMapper;
 using Flurl;
@@ -171,9 +172,9 @@ public class DynamicsSynchronisationFunctions
     }
 
     [Function(nameof(CreatePayment))]
-    public Task CreatePayment([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
+    public async Task CreatePayment([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
     {
-        return dynamicsService.CreatePayment(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);
+        await dynamicsService.CreatePayment(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);
     }
 
     [Function(nameof(GetPaymentStatus))]
