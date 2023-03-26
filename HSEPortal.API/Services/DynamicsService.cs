@@ -275,6 +275,12 @@ public class DynamicsService
             }
         }
 
+        var principalContact = await dynamicsApi.Get<DynamicsContact>($"contacts({dynamicsBuildingApplication._bsr_registreeid_value})", ("$expand", "bsr_contacttype_contact"));
+        if (principalContact.bsr_contacttype_contact.All(x => x.bsr_contacttypeid != DynamicsContactTypes.PrincipalAccountablePerson))
+        {
+            await AssignContactType(dynamicsBuildingApplication._bsr_registreeid_value, DynamicsContactTypes.PrincipalAccountablePerson);
+        }
+
         return $"/contacts({dynamicsBuildingApplication._bsr_registreeid_value})";
     }
 
