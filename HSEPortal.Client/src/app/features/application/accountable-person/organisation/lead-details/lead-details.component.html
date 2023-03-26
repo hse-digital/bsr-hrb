@@ -34,9 +34,8 @@
                        (onKeyupEnter)="saveAndContinue()" />
         </govuk-fieldset>
       </div>
-
             <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-            <save-and-come-back/>
+            <save-and-come-back (onClick)="saveAndComeBack()"/>
         </div>
     </div>
 </div>
