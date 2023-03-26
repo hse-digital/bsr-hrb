@@ -80,7 +80,8 @@ public class AddressFunctions
         else
         {
             var postcodeResponse = await response.GetJsonAsync<OrdnanceSurveyPostcodeResponse>();
-            searchResponse = mapper.Map<BuildingAddressSearchResponse>(postcodeResponse);
+            var englandAndWalesResponse = GetEnglandOrWalesResponses(postcodeResponse);
+            searchResponse = mapper.Map<BuildingAddressSearchResponse>(englandAndWalesResponse);
         }
 
         return searchResponse;
@@ -93,5 +94,21 @@ public class AddressFunctions
             .SetQueryParams(queryParams)
             .AllowHttpStatus(HttpStatusCode.BadRequest)
             .GetAsync();
+    }
+
+    private OrdnanceSurveyPostcodeResponse GetEnglandOrWalesResponses(OrdnanceSurveyPostcodeResponse postcodeResponse)
+    {
+        var eOrW = postcodeResponse.results.Where(x => x.LPI?.COUNTRY_CODE is "E" or "W" || x.DPA?.COUNTRY_CODE is "E" or "W").ToList();
+
+        return new OrdnanceSurveyPostcodeResponse
+        {
+            header = new Header
+            {
+                maxresults = postcodeResponse.header.maxresults,
+                offset = postcodeResponse.header.offset,
+                totalresults = eOrW.Count
+            },
+            results = eOrW
+        };
     }
 }
