@@ -84,6 +84,11 @@ export class ApplicationService {
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
+  async removeAp(index: number) {
+    this.model.AccountablePersons.splice(index, 1);
+    await this.updateApplication();
+  }
+
   async sendVerificationEmail(emailAddress: string): Promise<void> {
     await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": emailAddress }));
   }
