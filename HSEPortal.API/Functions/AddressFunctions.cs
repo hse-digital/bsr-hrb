@@ -30,7 +30,7 @@ public class AddressFunctions
         {
             postcode = postcode,
             dataset = "LPI",
-            fq = new[] { "CLASSIFICATION_CODE:PP", "COUNTRY_CODE:E" },
+            fq = "CLASSIFICATION_CODE:PP",
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
