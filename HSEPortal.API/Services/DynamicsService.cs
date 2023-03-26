@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Flurl.Http;
 using Flurl.Util;
@@ -274,6 +275,12 @@ public class DynamicsService
             }
         }
 
+        var principalContact = await dynamicsApi.Get<DynamicsContact>($"contacts({dynamicsBuildingApplication._bsr_registreeid_value})", ("$expand", "bsr_contacttype_contact"));
+        if (principalContact.bsr_contacttype_contact.All(x => x.bsr_contacttypeid != DynamicsContactTypes.PrincipalAccountablePerson))
+        {
+            await AssignContactType(dynamicsBuildingApplication._bsr_registreeid_value, DynamicsContactTypes.PrincipalAccountablePerson);
+        }
+
         return $"/contacts({dynamicsBuildingApplication._bsr_registreeid_value})";
     }
 
@@ -312,20 +319,29 @@ public class DynamicsService
     public async Task CreatePayment(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication)
     {
         var payment = model.Payment;
-        await dynamicsApi.Create("bsr_payments", new DynamicsPayment
+
+        var existingPayment = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_service eq 'HRB Registration' and bsr_transactionid eq '{payment.Reference}'"));
+        if (!existingPayment.value.Any())
         {
-            buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
-            bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
-            bsr_timeanddateoftransaction = payment.CreatedDate,
-            bsr_transactionid = payment.Reference,
-            bsr_service = "HRB Registration",
-            bsr_cardexpirydate = payment.CardExpiryDate,
-            bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
-            bsr_cardbrandegvisa = payment.CardBrand,
-            bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
-            bsr_amountpaid = payment.Amount / 100,
-            bsr_govukpaystatus = payment.Status,
-        });
+            await UpdateBuildingApplication(dynamicsBuildingApplication, new DynamicsBuildingApplication
+            {
+                bsr_submittedon = DateTime.Now.ToString(CultureInfo.InvariantCulture)
+            });
+            await dynamicsApi.Create("bsr_payments", new DynamicsPayment
+            {
+                buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
+                bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
+                bsr_timeanddateoftransaction = payment.CreatedDate,
+                bsr_transactionid = payment.Reference,
+                bsr_service = "HRB Registration",
+                bsr_cardexpirydate = payment.CardExpiryDate,
+                bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                bsr_cardbrandegvisa = payment.CardBrand,
+                bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
+                bsr_amountpaid = payment.Amount / 100,
+                bsr_govukpaystatus = payment.Status,
+            });
+        }
     }
 
     private async Task<DynamicsAccountablePerson> FindExistingAp(string sectionId, string accountId, string area)
@@ -420,7 +436,7 @@ public class DynamicsService
             bsr_postcode = primaryAddress.Postcode,
             bsr_uprn = primaryAddress.UPRN,
             bsr_usrn = primaryAddress.USRN,
-            bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No
+            bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
         };
 
         return dynamicsStructure;
@@ -428,6 +444,14 @@ public class DynamicsService
 
     private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure)
     {
+        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{dynamicsStructure.bsr_name}' and bsr_postcode eq '{dynamicsStructure.bsr_postcode}'"));
+        if (existingStructure.value.Any())
+        {
+            dynamicsStructure = dynamicsStructure with { bsr_blockid = existingStructure.value[0].bsr_blockid };
+            await dynamicsApi.Update($"{structureDefinition.Endpoint}({dynamicsStructure.bsr_blockid})", dynamicsStructure);
+            return dynamicsStructure;
+        }
+
         var response = await dynamicsApi.Create(structureDefinition.Endpoint, dynamicsStructure);
         var structureId = ExtractEntityIdFromHeader(response.Headers);
         return dynamicsStructure with { bsr_blockid = structureId };

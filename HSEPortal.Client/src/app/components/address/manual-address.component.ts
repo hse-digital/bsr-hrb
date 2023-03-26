@@ -68,10 +68,6 @@ export class ManualAddressComponent {
   }
 
   addressTypeDescription() {
-    if (this.searchMode == AddressSearchMode.Building) {
-      return 'This address must be in England.';
-    }
-
     return 'This address must be in England or Wales.';
   }
 

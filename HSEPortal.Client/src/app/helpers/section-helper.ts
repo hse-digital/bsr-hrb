@@ -32,7 +32,7 @@ export class SectionHelper {
         var requestedSectionIndex = routeSnapshot.parent?.params["id"];
         if (requestedSectionIndex) {
             let index = Number(requestedSectionIndex.split('-').at(-1)) - 1;
-            return applicationService.model.Sections.length > index;
+            return applicationService.model.Sections?.length > index;
         }
 
         return false;

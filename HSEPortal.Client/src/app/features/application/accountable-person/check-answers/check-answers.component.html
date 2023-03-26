@@ -20,7 +20,9 @@
         <div *ngIf="aps.length > 1">
           <div *ngFor="let ap of aps; let i = index" class="section-wrapper">
             <div class="section-header" *ngIf="i == 0">Principal accountable person</div>
-            <div class="section-header" *ngIf="i > 0">Other accountable person {{ i }}</div>
+            <div class="section-header" *ngIf="i > 0">
+              <span>Other accountable person {{ i }}</span>
+              <a class="govuk-link" (click)="removeAp(ap, i)">Remove</a></div>
             <div class="section-content">
               <organisation-answers *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
               <individual-answers *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
@@ -30,7 +32,7 @@
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back />
+      <save-and-come-back (onClick)="saveAndComeBack()" />
     </div>
   </div>
 </div>

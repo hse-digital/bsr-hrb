@@ -109,4 +109,8 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsInProgress) == BuildingApplicationStatus.AccountablePersonsInProgress;
   }
+
+  removeAp(ap: AccountablePersonModel, index: number) {
+    this.applicationService.removeAp(index);
+  }
 }

@@ -22,7 +22,7 @@
       <govuk-body>We may ask you for written evidence that the principal accountable person has authorised you to act for them.</govuk-body>
 
       <govuk-button (onClick)="saveAndContinue()" [disabled]="loading" [isLoading]="loading">Declare and continue</govuk-button>
-      <save-and-come-back />
+      <save-and-come-back (onClick)="saveAndComeBack()" />
     </div>
   </div>
 </div>

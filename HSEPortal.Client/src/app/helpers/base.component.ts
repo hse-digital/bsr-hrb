@@ -28,7 +28,7 @@ export abstract class BaseComponent implements CanActivate {
   processing = false;
   async saveAndContinue(): Promise<any> {
     this.processing = true;
-    
+
     this.hasErrors = !this.canContinue();
     if (!this.hasErrors) {
       this.screenReaderNotification();
@@ -46,6 +46,18 @@ export abstract class BaseComponent implements CanActivate {
     }
 
     this.processing = false;
+  }
+
+  async saveAndComeBack(): Promise<any> {
+    this.hasErrors = !this.canContinue();
+    if (this.hasErrors) {
+      this.summaryError?.first?.focus();
+      this.titleService.setTitleError();
+    } else {
+      this.screenReaderNotification();
+      await this.applicationService.updateApplication();
+      this.navigationService.navigate(`application/${this.applicationService.model.id}`);
+    }
   }
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
@@ -68,6 +80,9 @@ export abstract class BaseComponent implements CanActivate {
   }
 
   protected screenReaderNotification(message: string = "Sending success") {
-    document!.getElementById("hiddenAlertContainer")!.innerHTML = message;
+    var alertContainer = document!.getElementById("hiddenAlertContainer");
+    if (alertContainer) {
+      alertContainer.innerHTML = message;
+    }
   }
 }

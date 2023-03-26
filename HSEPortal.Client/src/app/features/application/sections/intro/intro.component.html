@@ -28,7 +28,7 @@
       </govuk-list>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>
-      <save-and-come-back />
+      <save-and-come-back (onClick)="saveAndComeBack()" />
     </div>
   </div>
 </div>
