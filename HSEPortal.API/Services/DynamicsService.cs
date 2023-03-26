@@ -313,7 +313,7 @@ public class DynamicsService
     public async Task CreatePayment(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication)
     {
         var payment = model.Payment;
-        
+
         var existingPayment = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_service eq 'HRB Registration' and bsr_transactionid eq '{payment.Reference}'"));
         if (!existingPayment.value.Any())
         {
@@ -430,7 +430,7 @@ public class DynamicsService
             bsr_postcode = primaryAddress.Postcode,
             bsr_uprn = primaryAddress.UPRN,
             bsr_usrn = primaryAddress.USRN,
-            bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No
+            bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
         };
 
         return dynamicsStructure;
@@ -438,14 +438,12 @@ public class DynamicsService
 
     private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure)
     {
-        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", new[]
-        {
-            ("$filter", $"bsr_name eq '{dynamicsStructure.bsr_name}' and bsr_postcode eq '{dynamicsStructure.bsr_postcode}'"),
-        });
-
+        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{dynamicsStructure.bsr_name}' and bsr_postcode eq '{dynamicsStructure.bsr_postcode}'"));
         if (existingStructure.value.Any())
         {
-            return existingStructure.value[0];
+            dynamicsStructure = dynamicsStructure with { bsr_blockid = existingStructure.value[0].bsr_blockid };
+            await dynamicsApi.Update($"{structureDefinition.Endpoint}({dynamicsStructure.bsr_blockid})", dynamicsStructure);
+            return dynamicsStructure;
         }
 
         var response = await dynamicsApi.Create(structureDefinition.Endpoint, dynamicsStructure);
