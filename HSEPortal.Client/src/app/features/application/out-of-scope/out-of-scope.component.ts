@@ -26,7 +26,7 @@ export class BuildingOutOfScopeComponent extends BaseComponent {
 
   async registerAnother() {
     this.applicationService.clearApplication();
-    await this.navigationService.navigate('');
+    await this.navigationService.navigate('select');
   }
 
   override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
