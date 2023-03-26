@@ -43,7 +43,7 @@ const routes = new HseRoutes([
     TimeoutModalComponent,
   ],
   imports: [
-    RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking' }),
+    RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking', scrollPositionRestoration: 'enabled' }),
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     FormsModule,
     HseAngularModule,
