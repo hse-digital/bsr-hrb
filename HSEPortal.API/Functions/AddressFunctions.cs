@@ -30,7 +30,7 @@ public class AddressFunctions
         {
             postcode = postcode,
             dataset = "LPI",
-            fq = "CLASSIFICATION_CODE:PP",
+            fq = new[] { "CLASSIFICATION_CODE:PP", "COUNTRY_CODE:E" },
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
@@ -88,10 +88,11 @@ public class AddressFunctions
 
     private Task<IFlurlResponse> GetDataFromOrdnanceSurvey(string endpoint, object queryParams)
     {
-        return integrationOptions.OrdnanceSurveyEndpoint
+        var allowHttpStatus = integrationOptions.OrdnanceSurveyEndpoint
             .AppendPathSegment(endpoint)
             .SetQueryParams(queryParams)
-            .AllowHttpStatus(HttpStatusCode.BadRequest)
+            .AllowHttpStatus(HttpStatusCode.BadRequest);
+        return allowHttpStatus
             .GetAsync();
     }
 }

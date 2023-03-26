@@ -26,7 +26,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
     public async Task ShouldCallPostcodeEndpoint()
     {
         HttpTest.RespondWithJson(BuildPostcodeResponseJson());
-        
+
         await addressFunctions.SearchBuildingByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
 
         HttpTest.ShouldHaveCalled($"{integrationsOptions.OrdnanceSurveyEndpoint}/postcode")
@@ -34,7 +34,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
             {
                 postcode = buckinghamPalacePostcode,
                 dataset = "LPI",
-                fq = "CLASSIFICATION_CODE:PP",
+                fq = new[] { "CLASSIFICATION_CODE:PP", "COUNTRY_CODE:E" },
                 key = integrationsOptions.OrdnanceSurveyApiKey
             })
             .WithVerb(HttpMethod.Get);
@@ -60,6 +60,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
         responseAddress.Results[0].BuildingName.Should().Be(postcodeResponse.results[0].LPI.PAO_TEXT);
         responseAddress.Results[0].Street.Should().Be(postcodeResponse.results[0].LPI.STREET_DESCRIPTION);
         responseAddress.Results[0].Town.Should().Be(postcodeResponse.results[0].LPI.TOWN_NAME);
+        responseAddress.Results[0].Country.Should().Be(postcodeResponse.results[0].LPI.COUNTRY_CODE);
         responseAddress.Results[0].AdministrativeArea.Should().Be(postcodeResponse.results[0].LPI.ADMINISTRATIVE_AREA);
         responseAddress.Results[0].Postcode.Should().Be(postcodeResponse.results[0].LPI.POSTCODE_LOCATOR);
     }
@@ -68,11 +69,11 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
     public async Task ShouldReturnEmptyResultsIfPostcodeIsNotFound()
     {
         HttpTest.RespondWith(status: (int)HttpStatusCode.BadRequest);
-        
+
         var response = await addressFunctions.SearchBuildingByPostcode(BuildHttpRequestData<object>(default, "invalid"), "invalid");
-        
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        
+
         var responseAddress = await response.ReadAsJsonAsync<BuildingAddressSearchResponse>();
         responseAddress.MaxResults.Should().Be(0);
         responseAddress.Offset.Should().Be(0);
@@ -87,7 +88,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
             header = new Header
             {
                 offset = 0,
-                totalresults = 1,
+                totalresults = 2,
                 maxresults = 100,
             },
             results = new List<Result>
@@ -104,9 +105,34 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
                         PAO_START_NUMBER = "123",
                         STREET_DESCRIPTION = "THE MALL",
                         TOWN_NAME = "LONDON",
+                        COUNTRY_CODE = "E",
                         ADMINISTRATIVE_AREA = "CITY OF WESTMINSTER",
                         POSTCODE_LOCATOR = "SW1A 1AA",
                         STATUS = "APPROVED",
+                        LOGICAL_STATUS_CODE = "1",
+                        CLASSIFICATION_CODE = "PP",
+                        CLASSIFICATION_CODE_DESCRIPTION = "Property Shell",
+                        LOCAL_CUSTODIAN_CODE = 5990,
+                        LOCAL_CUSTODIAN_CODE_DESCRIPTION = "CITY OF WESTMINSTER",
+                        MATCH = 1.0,
+                    }
+                },
+                new()
+                {
+                    LPI = new LPI
+                    {
+                        UPRN = "123123123123",
+                        ADDRESS = "BUCKINGHAM PALACE, THE MALL, LONDON, CITY OF WESTMINSTER, SW1A 1AA",
+                        USRN = "8401058",
+                        LPI_KEY = "5990L 000016069",
+                        PAO_TEXT = "BUCKINGHAM PALACE",
+                        PAO_START_NUMBER = "123",
+                        STREET_DESCRIPTION = "THE MALL",
+                        TOWN_NAME = "LONDON",
+                        ADMINISTRATIVE_AREA = "CITY OF WESTMINSTER",
+                        POSTCODE_LOCATOR = "SW1A 1AA",
+                        STATUS = "APPROVED",
+                        COUNTRY_CODE = "NOTE",
                         LOGICAL_STATUS_CODE = "1",
                         CLASSIFICATION_CODE = "PP",
                         CLASSIFICATION_CODE_DESCRIPTION = "Property Shell",
