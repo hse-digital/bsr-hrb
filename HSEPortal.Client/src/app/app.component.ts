@@ -5,6 +5,7 @@ import { HeaderTitleService } from './services/headertitle.service';
 import { IdleTimerService } from './services/idle-timer.service';
 import { CookiesBannerService } from './services/cookies-banner.service';
 import { GovukCookieBannerComponent } from 'hse-angular';
+import { HelpPagesModule } from './features/footer/help-pages.module';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ import { GovukCookieBannerComponent } from 'hse-angular';
 export class AppComponent implements AfterViewInit {
 
   showTimeoutDialog = false;
+  footerLinks = HelpPagesModule.footerLinks;
 
   constructor(private applicationService: ApplicationService,
     private router: Router, private headerTitleService: HeaderTitleService, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute, private cookiesBannerService: CookiesBannerService) {

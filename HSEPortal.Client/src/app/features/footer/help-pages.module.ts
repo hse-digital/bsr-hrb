@@ -31,4 +31,12 @@ const routes = new HseRoutes([
 })
 export class HelpPagesModule {
   static baseRoute: string = 'help';
+
+  static footerLinks = [
+    { title: "Acessibility", href: `/${HelpPagesModule.baseRoute}/${AccessibilityComponent.route}` },
+    { title: "Cookies", href: `/${HelpPagesModule.baseRoute}/${CookiesComponent.route}` },
+    { title: "Feedback", href: "#" },
+    { title: "Privacy", href: `/${HelpPagesModule.baseRoute}/${PrivacyNoticeComponent.route}` },
+    { title: "Terms and conditions", href: `/${HelpPagesModule.baseRoute}/${TermsConditionsComponent.route}` },
+  ];
 }
