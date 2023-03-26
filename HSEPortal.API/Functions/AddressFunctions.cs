@@ -89,17 +89,16 @@ public class AddressFunctions
 
     private Task<IFlurlResponse> GetDataFromOrdnanceSurvey(string endpoint, object queryParams)
     {
-        var allowHttpStatus = integrationOptions.OrdnanceSurveyEndpoint
+        return integrationOptions.OrdnanceSurveyEndpoint
             .AppendPathSegment(endpoint)
             .SetQueryParams(queryParams)
-            .AllowHttpStatus(HttpStatusCode.BadRequest);
-        return allowHttpStatus
+            .AllowHttpStatus(HttpStatusCode.BadRequest)
             .GetAsync();
     }
 
     private OrdnanceSurveyPostcodeResponse GetEnglandOrWalesResponses(OrdnanceSurveyPostcodeResponse postcodeResponse)
     {
-        var eOrW = postcodeResponse.results.Where(x => x.LPI?.COUNTRY_CODE is "E" or "W" || x.DPA?.COUNTRY_CODE is "E" or "W").ToList();
+        var eOrW = postcodeResponse.results?.Where(x => x.LPI?.COUNTRY_CODE is "E" or "W" || x.DPA?.COUNTRY_CODE is "E" or "W").ToList() ?? new List<Result>();
 
         return new OrdnanceSurveyPostcodeResponse
         {
