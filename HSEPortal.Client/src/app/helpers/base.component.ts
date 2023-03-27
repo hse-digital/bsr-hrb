@@ -1,6 +1,7 @@
 import { QueryList } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
+import { NotFoundComponent } from "../components/not-found/not-found.component";
 import { ApplicationService } from "../services/application.service";
 import { NavigationService } from "../services/navigation.service";
 import { TitleService } from "../services/title.service";
@@ -20,7 +21,13 @@ export abstract class BaseComponent implements CanActivate {
   }
 
   abstract canContinue(): boolean;
-  canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean { return true; }
+  canActivate(routeSnapshot: ActivatedRouteSnapshot) {
+    if (!this.canAccess(routeSnapshot)) {
+      this.navigationService.navigate(NotFoundComponent.route);
+      return false;
+    }
+
     return true;
   }
 

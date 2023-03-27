@@ -48,7 +48,7 @@ export class AccountablePersonTypeComponent extends BaseComponent implements IHa
     return navigationService.navigateRelative(route, activatedRoute);
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService) && this.applicationService._currentAccountablePersonIndex > 0;
   }
 }

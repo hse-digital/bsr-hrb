@@ -37,7 +37,7 @@ export class LeadNameComponent extends BaseComponent implements IHasNextPage {
         return navigationService.navigateRelative(LeadDetailsComponent.route, activatedRoute);
     }
 
-    override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
         return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
             && ApHelper.isOrganisation(this.applicationService);
     }

@@ -50,7 +50,7 @@ export class SectionNameComponent extends BaseComponent implements IHasNextPage,
     return !this.blockNameHasErrors;
   }
 
-  public override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  public override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && this.applicationService.model.NumberOfSections === "two_or_more";
   }
 }

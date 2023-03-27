@@ -30,7 +30,7 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
     return !this.peopleLivingHasErrors;
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 

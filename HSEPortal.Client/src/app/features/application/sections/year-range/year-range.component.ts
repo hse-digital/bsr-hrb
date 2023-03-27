@@ -37,7 +37,7 @@ export class SectionYearRangeComponent extends BaseComponent implements IHasNext
             this.applicationService.currentSection.Name;
     }
 
-    override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
         return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && 
             this.applicationService.currentSection.YearOfCompletionOption == "year-not-exact";
     }

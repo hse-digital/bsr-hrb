@@ -43,7 +43,7 @@ export class SectionHeightComponent extends BaseComponent implements IHasNextPag
     return !this.heightHasErrors;
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 

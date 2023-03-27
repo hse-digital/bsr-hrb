@@ -31,7 +31,7 @@ export class ContactPhoneComponent extends BaseComponent implements IHasNextPage
     return !this.phoneNumberHasErrors;
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(_: ActivatedRouteSnapshot) {
     let hasFirstName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactFirstName);
     let hasLastName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactLastName);
 

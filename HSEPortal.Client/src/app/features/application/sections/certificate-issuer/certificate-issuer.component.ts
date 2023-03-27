@@ -32,7 +32,7 @@ export class CertificateIssuerComponent extends BaseComponent implements IHasNex
       this.applicationService.currentSection.Name;
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
   

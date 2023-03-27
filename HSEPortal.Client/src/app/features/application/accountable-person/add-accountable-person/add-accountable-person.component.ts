@@ -75,7 +75,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
     return `${ap.FirstName} ${ap.LastName}`;
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(_: ActivatedRouteSnapshot) {
     return this.applicationService.model.AccountablePersons?.length >= 1;
   }
 }
