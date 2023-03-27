@@ -1,0 +1,24 @@
+<govuk-summary-list>
+  <govuk-summary-list-row *ngIf="hasMoreSections" key="Name">{{section.Name}}</govuk-summary-list-row>
+  <govuk-summary-list-row key="Number of floors">{{section.FloorsAbove}}</govuk-summary-list-row>
+  <govuk-summary-list-row key="Height">{{section.Height}} metres</govuk-summary-list-row>
+  <govuk-summary-list-row key="Number of residential units">{{section.ResidentialUnits}} </govuk-summary-list-row>
+  <govuk-summary-list-row key="Are people living in the block?">{{section.PeopleLivingInBuilding | peopleLivingInSectionDescription}}</govuk-summary-list-row>
+  <govuk-summary-list-row key="When was the building originally built?">{{section.YearOfCompletionOption == 'year-exact' ? section.YearOfCompletion : section.YearOfCompletionOption | yearOfCompletionOptionDescription}}</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="section.YearOfCompletionOption == 'year-not-exact'" key="Completion year range">{{section.YearOfCompletionRange | yearOfCompletionDescription}}</govuk-summary-list-row>
+
+  <govuk-summary-list-row key="Completion certificate issuer">{{section.CompletionCertificateIssuer}} </govuk-summary-list-row>
+  <govuk-summary-list-row key="Completion certificate number">{{section.CompletionCertificateReference}} </govuk-summary-list-row>
+
+  <ng-container *ngIf="section.Addresses == undefined || section.Addresses.length == 0">
+    <govuk-summary-list-row key="Address">
+    </govuk-summary-list-row>
+  </ng-container>
+
+  <ng-container *ngFor="let address of section.Addresses; let i = index">
+    <govuk-summary-list-row key="Address">
+      <address-description [address]="address" />
+    </govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="section.Addresses.length < 5 || i < section.Addresses.length-1" key="Add another address?">{{i < section.Addresses.length-1 ? 'Yes' : 'No' }}</govuk-summary-list-row>
+  </ng-container>
+</govuk-summary-list>

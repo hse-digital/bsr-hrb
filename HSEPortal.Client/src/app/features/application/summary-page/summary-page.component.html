@@ -1,0 +1,41 @@
+<div class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">Your completed application</h1>
+
+      <h1 class="govuk-heading-m">Application details</h1>
+      <govuk-summary-list>
+        <govuk-summary-list-row key="Application reference">{{applicationService.model.id}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Building name">{{applicationService.model.BuildingName}}</govuk-summary-list-row>
+      </govuk-summary-list>
+
+      <h1 class="govuk-heading-m govuk-!-margin-top-8">Contact details</h1>
+      <govuk-summary-list>
+        <govuk-summary-list-row key="Name">{{applicationService.model.ContactFirstName + " " + applicationService.model.ContactLastName}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Telephone number">{{applicationService.model.ContactPhoneNumber}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Email address">{{applicationService.model.ContactEmailAddress}}</govuk-summary-list-row>
+      </govuk-summary-list>
+
+      <h1 class="govuk-heading-m govuk-!-margin-top-8">Building summary</h1>
+      <govuk-summary-list classes="govuk-summary-list--no-border answers-heading-border {{applicationService.model.NumberOfSections == 'one' ? 'no-margin-bottom' : ''}}">
+        <govuk-summary-list-row key="Is the building made up of multiple independent sections?">
+          {{applicationService.model.NumberOfSections == 'one' ? 'Single independent section' : 'Multiple independent sections'}}
+        </govuk-summary-list-row>
+      </govuk-summary-list>
+
+      <section-summary *ngIf="applicationService.model.NumberOfSections == 'one'" [section]="sections[0]" />
+
+      <ng-container *ngIf="applicationService.model.NumberOfSections == 'two_or_more'">
+        <ng-container *ngFor="let section of sections; let i = index">
+          <h1 class="govuk-heading-m govuk-!-margin-top-8">{{ getSectionName(i, undefined) }}</h1>
+          <div>
+            <section-summary [section]="section" [hasMoreSections]="i < sections.length" />
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <accountable-person-summary></accountable-person-summary>
+    </div>
+  </div>
+</div>
