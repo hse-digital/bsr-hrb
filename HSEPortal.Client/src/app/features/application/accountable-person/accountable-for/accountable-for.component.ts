@@ -85,7 +85,7 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
     return navigationService.navigateRelative(OrganisationNamedContactComponent.route, activatedRoute);
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
   }
 }

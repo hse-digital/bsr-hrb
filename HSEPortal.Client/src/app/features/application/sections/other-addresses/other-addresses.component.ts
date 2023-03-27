@@ -86,7 +86,7 @@ export class SectionOtherAddressesComponent extends BaseComponent implements IHa
       this.applicationService.currentSection.Name;
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && this.applicationService.currentSection.Addresses?.length < 5;
   }
 }

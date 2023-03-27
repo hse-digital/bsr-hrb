@@ -106,7 +106,7 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
     return navigationService.navigateRelative(`../${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`, activatedRoute);
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+  override canAccess(_: ActivatedRouteSnapshot): boolean {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsInProgress) == BuildingApplicationStatus.AccountablePersonsInProgress;
   }
 

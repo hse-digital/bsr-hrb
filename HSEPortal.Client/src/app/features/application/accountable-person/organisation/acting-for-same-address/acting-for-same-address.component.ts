@@ -65,7 +65,7 @@ export class ActingForSameAddressComponent extends BaseComponent implements IHas
     return navigationService.navigateRelative(LeadNameComponent.route, activatedRoute);
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
       && ApHelper.isOrganisation(this.applicationService)
       && this.applicationService.currentAccountablePerson.Role == "registering_for";

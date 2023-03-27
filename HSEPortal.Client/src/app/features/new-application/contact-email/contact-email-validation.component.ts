@@ -56,7 +56,7 @@ export class ContactEmailValidationComponent extends BaseComponent implements IH
     this.processing = false;
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+  override canAccess(_: ActivatedRouteSnapshot): boolean {
     return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactEmailAddress);
   }
 

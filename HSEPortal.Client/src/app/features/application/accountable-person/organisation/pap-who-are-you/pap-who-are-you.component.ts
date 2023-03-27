@@ -75,7 +75,7 @@ export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage
       this.applicationService.currentSection.Name;
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
       && ApHelper.isOrganisation(this.applicationService);
   }

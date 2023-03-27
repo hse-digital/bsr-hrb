@@ -78,7 +78,7 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
       this.applicationService.currentSection.Name;
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 }

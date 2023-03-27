@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
 import { AddressSearchMode } from "src/app/components/address/address.component";
+import { NotFoundComponent } from "src/app/components/not-found/not-found.component";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
@@ -84,8 +85,13 @@ export class SectionAddressComponent implements OnInit, CanActivate {
     this.titleService.setTitle(SectionAddressComponent.title);
   }
 
-  canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
+  canActivate(routeSnapshot: ActivatedRouteSnapshot) {
+    if (!SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService)) {
+      this.navigationService.navigate(NotFoundComponent.route);
+      return false;
+    }
+
+    return true;
   }
 
 }

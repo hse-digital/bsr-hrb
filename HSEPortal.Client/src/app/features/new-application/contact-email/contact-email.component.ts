@@ -33,7 +33,7 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
     await this.applicationService.sendVerificationEmail(this.applicationService.model.ContactEmailAddress!);
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(_: ActivatedRouteSnapshot) {
     return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactPhoneNumber);
   }
 

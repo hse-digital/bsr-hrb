@@ -32,7 +32,7 @@ export class ContactNameComponent extends BaseComponent implements IHasNextPage 
     return !this.firstNameInError && !this.lastNameInError;
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot){
+  override canAccess(_: ActivatedRouteSnapshot){
     return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName);
   }
 
