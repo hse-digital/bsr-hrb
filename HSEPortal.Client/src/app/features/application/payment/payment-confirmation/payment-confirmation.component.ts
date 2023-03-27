@@ -54,5 +54,4 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentInProgress) == BuildingApplicationStatus.PaymentInProgress
       && this.applicationService.model.Payment != null;
   }
-
 }

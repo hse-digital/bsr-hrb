@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'hse-application-completed',
@@ -7,7 +9,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 })
 export class ApplicationCompletedComponent {
 
-  constructor(private buildingRegistrationService: ApplicationService) {
+  constructor(private buildingRegistrationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
     
   }
 
@@ -17,5 +19,9 @@ export class ApplicationCompletedComponent {
 
   get buildingName(): string | undefined {
     return this.buildingRegistrationService.model.BuildingName ?? "[building name]";
+  }
+
+  navigateToSummary() {
+    return this.navigationService.navigateRelative('../summary', this.activatedRoute);
   }
 }

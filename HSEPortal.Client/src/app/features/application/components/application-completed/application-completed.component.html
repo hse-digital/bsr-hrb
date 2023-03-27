@@ -13,6 +13,13 @@
         <a class="govuk-link" href="/building-registration/building/name" role="link">register another building</a>.
       </govuk-body>
 
+      <govuk-body><a class="govuk-link"
+                     (keyup.enter)="navigateToSummary()"
+                     (click)="navigateToSummary()"
+                     role="link"
+                     tabindex="0">View your completed application</a>.</govuk-body>
+
+
     </div>
   </div>
 </div>

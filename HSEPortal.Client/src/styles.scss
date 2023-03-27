@@ -59,3 +59,7 @@ a.govuk-back-link {
   margin-bottom: 30px;
   margin-top: 30px;
 }
+
+.govuk-summary-list[_ngcontent-serverApp-c73]:not(.govuk-summary-list--no-border):first-child {
+  border-top: none !important;
+}
