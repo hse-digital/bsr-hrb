@@ -23,7 +23,8 @@ public record DynamicsBuildingApplication(string bsr_buildingapplicationid = nul
     string papLeadContactReferenceId = null,
     string bsr_applicationid = null,
     BuildingApplicationStatus? statuscode = null,
-    string bsr_submittedon = null) : DynamicsEntity<BuildingApplication>;
+    string bsr_submittedon = null,
+    string bsr_numberofmanuallyenteredaddresses = null) : DynamicsEntity<BuildingApplication>;
 
 public enum BuildingApplicationStage
 {
