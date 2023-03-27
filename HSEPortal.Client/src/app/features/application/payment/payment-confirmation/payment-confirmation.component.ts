@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
+import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { PaymentService } from 'src/app/services/payment.service';
@@ -50,8 +51,12 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
     this.navigationService.navigate('');
   }
 
-  canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentInProgress) == BuildingApplicationStatus.PaymentInProgress
-      && this.applicationService.model.Payment != null;
+  canActivate(_: ActivatedRouteSnapshot) {
+    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentInProgress) == BuildingApplicationStatus.PaymentInProgress && this.applicationService.model.Payment != null) {
+      this.navigationService.navigate(NotFoundComponent.route);
+      return false;
+    }
+
+    return true;
   }
 }

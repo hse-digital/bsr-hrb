@@ -88,7 +88,7 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     return this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+  override canAccess(_: ActivatedRouteSnapshot): boolean {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingInProgress) == BuildingApplicationStatus.BlocksInBuildingInProgress;
   }
 }

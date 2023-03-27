@@ -41,7 +41,7 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
     return blockNames.join(', ');
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(_: ActivatedRouteSnapshot) {
     return this.applicationService.model.Sections?.length >= 1;
   }
 

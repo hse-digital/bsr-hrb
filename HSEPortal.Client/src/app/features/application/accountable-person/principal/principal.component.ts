@@ -32,7 +32,7 @@ export class PrincipleAccountableSelection extends BaseComponent implements IHas
     return navigationService.navigateRelative(ApAddressComponent.route, activatedRoute);
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService) && this.applicationService.currentAccountablePerson.Type == "individual";
   }
 }

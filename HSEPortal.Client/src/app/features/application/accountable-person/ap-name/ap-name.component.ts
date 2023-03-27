@@ -40,7 +40,7 @@ export class ApNameComponent extends BaseComponent implements IHasNextPage {
     return navigationService.navigateRelative(this.nextRoute ?? ApDetailsComponent.route, activatedRoute);
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
   }
 }

@@ -29,7 +29,7 @@ export class BuildingOutOfScopeComponent extends BaseComponent {
     await this.navigationService.navigate('select');
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(_: ActivatedRouteSnapshot) {
     let outOfScope = this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
     return outOfScope.length == this.applicationService.model.Sections.length;
   }

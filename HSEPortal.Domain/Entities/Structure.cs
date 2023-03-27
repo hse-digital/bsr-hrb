@@ -30,6 +30,23 @@ public static class DynamicsSectionArea
     };
 }
 
+public static class DynamicsYearRangeIds
+{
+    public static readonly IDictionary<string, string> Ids = new Dictionary<string, string>
+    {
+        ["Before-1900"] = "e91e27f1-d7b2-ed11-83ff-0022481b5e4f",
+        ["1901-to-1955"] = "dcbe36fd-d7b2-ed11-83ff-0022481b5e4f",
+        ["1956-to-1969"] = "d8ac3915-d8b2-ed11-83ff-0022481b5e4f",
+        ["1970-to-1984"] = "a3503d21-d8b2-ed11-83ff-0022481b5e4f",
+        ["1985-to-2000"] = "5b90212e-d8b2-ed11-83ff-0022481b5e4f",
+        ["2001-to-2006"] = "a189123a-d8b2-ed11-83ff-0022481b5e4f",
+        ["2007-to-2018"] = "fa1a9540-d8b2-ed11-83ff-0022481b5e4f",
+        ["2019-to-2022"] = "b1ffdd4c-d8b2-ed11-83ff-0022481b5e4f",
+        ["2023-onwards"] = "2b75c692-d8b2-ed11-83ff-0022481b5e4f",
+        ["not-completed"] = "65fcfda4-d8b2-ed11-83ff-0022481b5e4f"
+    };
+}
+
 public enum PeopleLivingInStructure
 {
     Yes = 760_810_000,
