@@ -18,13 +18,14 @@
       </govuk-summary-list>
 
       <h1 class="govuk-heading-m govuk-!-margin-top-8">Building summary</h1>
-      <govuk-summary-list classes="govuk-summary-list--no-border answers-heading-border {{applicationService.model.NumberOfSections == 'one' ? 'no-margin-bottom' : ''}}">
+      
+      <section-summary *ngIf="applicationService.model.NumberOfSections == 'one'" [section]="sections[0]" />
+
+      <govuk-summary-list *ngIf="applicationService.model.NumberOfSections == 'two_or_more'" classes="answers-heading-border">
         <govuk-summary-list-row key="Is the building made up of multiple independent sections?">
-          {{applicationService.model.NumberOfSections == 'one' ? 'Single independent section' : 'Multiple independent sections'}}
+          Multiple independent sections
         </govuk-summary-list-row>
       </govuk-summary-list>
-
-      <section-summary *ngIf="applicationService.model.NumberOfSections == 'one'" [section]="sections[0]" />
 
       <ng-container *ngIf="applicationService.model.NumberOfSections == 'two_or_more'">
         <ng-container *ngFor="let section of sections; let i = index">
@@ -39,9 +40,9 @@
 
       <h1 class="govuk-heading-m govuk-!-margin-top-8">Payment details</h1>
       <govuk-summary-list>
-        <govuk-summary-list-row key="Total">{{applicationService.model.Payment.Amount}}</govuk-summary-list-row>
-        <govuk-summary-list-row key="Payment reference">{{applicationService.model.Payment.Reference}}</govuk-summary-list-row>
-        <govuk-summary-list-row key="Date">{{applicationService.model.Payment.CreatedDate | date: 'dd MM yyyy'}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Total">{{(applicationService.model.Payment?.Amount ?? 0) / 100| currency: 'GBP' }}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Payment reference">{{applicationService.model.Payment?.Reference}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Date">{{applicationService.model.Payment?.CreatedDate | date: 'dd MMMM yyyy'}}</govuk-summary-list-row>
       </govuk-summary-list>
     </div>
   </div>

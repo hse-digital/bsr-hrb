@@ -1,4 +1,5 @@
 <govuk-summary-list>
+  <govuk-summary-list-row *ngIf="!hasMoreSections" key="Is the building made up of multiple independent sections?">Single independent section</govuk-summary-list-row>
   <govuk-summary-list-row *ngIf="hasMoreSections" key="Name">{{section.Name}}</govuk-summary-list-row>
   <govuk-summary-list-row key="Number of floors">{{section.FloorsAbove}}</govuk-summary-list-row>
   <govuk-summary-list-row key="Height">{{section.Height}} metres</govuk-summary-list-row>

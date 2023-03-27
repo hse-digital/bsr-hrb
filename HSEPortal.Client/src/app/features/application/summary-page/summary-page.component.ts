@@ -30,9 +30,9 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
     return true;
   }
 
-  //override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-  //  return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete;
-  //}
+  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete;
+  }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative('', activatedRoute);
