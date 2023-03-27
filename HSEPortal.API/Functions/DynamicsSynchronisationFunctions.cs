@@ -152,11 +152,21 @@ public class DynamicsSynchronisationFunctions
     [Function(nameof(UpdateBuildingApplication))]
     public Task UpdateBuildingApplication([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
     {
+        var manualAddresses = CountManualAddresses(buildingApplicationWrapper.Model);
         return dynamicsService.UpdateBuildingApplication(buildingApplicationWrapper.DynamicsBuildingApplication, new DynamicsBuildingApplication
         {
             bsr_applicationstage = buildingApplicationWrapper.Stage,
-            bsr_declarationconfirmed = buildingApplicationWrapper.Stage is BuildingApplicationStage.ApplicationSubmitted or BuildingApplicationStage.PayAndApply
+            bsr_declarationconfirmed = buildingApplicationWrapper.Stage is BuildingApplicationStage.ApplicationSubmitted or BuildingApplicationStage.PayAndApply,
+            bsr_numberofmanuallyenteredaddresses = manualAddresses.ToString()
         });
+    }
+
+    private int CountManualAddresses(BuildingApplicationModel model)
+    {
+        var manualStructureAddresses = model.Sections?.SelectMany(x => x.Addresses).Count(x => x.IsManual) ?? 0;
+        var manualApAddresses = model.AccountablePersons?.Select(x => x.PapAddress ?? x.Address).Count(x => x.IsManual) ?? 0;
+
+        return manualStructureAddresses + manualApAddresses;
     }
 
     [Function(nameof(CreateBuildingStructures))]
