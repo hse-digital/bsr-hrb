@@ -36,6 +36,13 @@
       </ng-container>
 
       <accountable-person-summary></accountable-person-summary>
+
+      <h1 class="govuk-heading-m govuk-!-margin-top-8">Payment details</h1>
+      <govuk-summary-list>
+        <govuk-summary-list-row key="Total">{{applicationService.model.Payment.Amount}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Payment reference">{{applicationService.model.Payment.Reference}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Date">{{applicationService.model.Payment.CreatedDate | date: 'dd MM yyyy'}}</govuk-summary-list-row>
+      </govuk-summary-list>
     </div>
   </div>
 </div>

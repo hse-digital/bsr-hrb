@@ -5,7 +5,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { SectionHelper } from '../../../helpers/section-helper';
+import { SectionHelper } from 'src/app/helpers/section-helper';
 
 @Component({
   selector: 'hse-summary-page',
@@ -25,7 +25,6 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
   async ngOnInit() {
     this.sections = this.applicationService.model.Sections;
   }
-
 
   canContinue() {
     return true;
