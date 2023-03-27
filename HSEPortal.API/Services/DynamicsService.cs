@@ -407,13 +407,14 @@ public class DynamicsService
         if (dynamicsStructure.bsr_doyouknowtheblocksexactconstructionyear == ConstructionYearOption.Exact)
         {
             var yearResponse = await dynamicsApi.Get<DynamicsResponse<DynamicsYear>>("bsr_years", ("$filter", $"bsr_name eq '{section.YearOfCompletion}'"));
-            return dynamicsStructure with { exactConstructionYearReferenceId = $"/bsr_years({yearResponse.value[0].bsr_yearid})" };
+            var yearId = yearResponse.value.Count > 0 ? yearResponse.value[0].bsr_yearid : "49cbd8c7-30b8-ed11-a37f-0022481b5bf5"; // 1800
+            return dynamicsStructure with { exactConstructionYearReferenceId = $"/bsr_years({yearId})" };
         }
 
         if (dynamicsStructure.bsr_doyouknowtheblocksexactconstructionyear == ConstructionYearOption.YearRange)
         {
-            var yearRangesResponse = await dynamicsApi.Get<DynamicsResponse<DynamicsYearRange>>("bsr_sectioncompletionyearranges", ("$filter", $"bsr_name eq '{section.YearOfCompletionRange.Replace("-", " ")}'"));
-            return dynamicsStructure with { sectionCompletionYearRangeReferenceId = $"/bsr_sectioncompletionyearranges({yearRangesResponse.value[0].bsr_sectioncompletionyearrangeid})" };
+            var yearRangeId = DynamicsYearRangeIds.Ids[section.YearOfCompletionRange];
+            return dynamicsStructure with { sectionCompletionYearRangeReferenceId = $"/bsr_sectioncompletionyearranges({yearRangeId})" };
         }
 
         return dynamicsStructure;
