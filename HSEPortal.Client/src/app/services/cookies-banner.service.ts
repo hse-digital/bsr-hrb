@@ -60,9 +60,9 @@ export class CookiesBannerService {
 
 export class Cookies {
 
-  static set(key: string, value: string, expiresDays?: number) {
+  static set(key: string, value: string, expiresDays?: number, path: string = "/") {
     let expires = expiresDays ? this.createExpiresValue(expiresDays) : "";
-    this.add(key, value, expires);
+    this.add(key, value, expires, path);
   }
 
   static get(key: string): string | undefined {
@@ -73,9 +73,9 @@ export class Cookies {
     return undefined;
   }
 
-  private static add(key: string, value: string, expires?: string) {
+  private static add(key: string, value: string, expires?: string, path?: string) {
     if (typeof document !== 'undefined') {
-      let newCookie = `${key}=${value}${expires ? "; expires=" + expires : ""}`;
+      let newCookie = `${key}=${value}${expires ? "; expires=" + expires : ""}${path ? "; path=" + path : ""}`;
       document.cookie = newCookie;
     }
   }
