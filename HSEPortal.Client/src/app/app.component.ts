@@ -6,6 +6,8 @@ import { IdleTimerService } from './services/idle-timer.service';
 import { CookiesBannerService } from './services/cookies-banner.service';
 import { GovukCookieBannerComponent } from 'hse-angular';
 import { HelpPagesModule } from './features/footer/help-pages.module';
+import { NavigationService } from './services/navigation.service';
+import { CookiesComponent } from './features/footer/cookies/cookies.component';
 
 @Component({
   selector: 'app-root',
@@ -16,9 +18,10 @@ export class AppComponent implements AfterViewInit {
 
   showTimeoutDialog = false;
   footerLinks = HelpPagesModule.footerLinks;
+  viewCookiesLink!: string;
 
   constructor(private applicationService: ApplicationService,
-    private router: Router, private headerTitleService: HeaderTitleService, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute, private cookiesBannerService: CookiesBannerService) {
+    private router: Router, private headerTitleService: HeaderTitleService, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute, private cookiesBannerService: CookiesBannerService, private navigationService: NavigationService) {
     this.initTimer();
     this.initCookiesBanner();
   }
@@ -70,6 +73,7 @@ export class AppComponent implements AfterViewInit {
   showCookieBanner: boolean = true;
   initCookiesBanner() {
     this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+    this.viewCookiesLink = `/${HelpPagesModule.baseRoute}/${CookiesComponent.route}`;
   }
 
   cookiesAccepted() {
@@ -82,9 +86,8 @@ export class AppComponent implements AfterViewInit {
     this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
   }
 
-  cookiesChanged() {
+  async cookiesChanged() {
+    await this.navigationService.navigate(`/${HelpPagesModule.baseRoute}/${CookiesComponent.route}`);
     this.cookieBanner?.hideCookieBannerConfirmation();
-    this.showCookieBanner = true;
-    this.cookiesBannerService.resetCookies();
   }
 }
