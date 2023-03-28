@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace HSEPortal.Domain.Entities;
 
-public record DynamicsPayment(double? bsr_amountpaid = null, int? bsr_lastfourdigitsofnumber = null, string bsr_timeanddateoftransaction = null, string bsr_transactionid = null,
+public record DynamicsPayment(string bsr_paymentid = null, double? bsr_amountpaid = null, int? bsr_lastfourdigitsofnumber = null, string bsr_timeanddateoftransaction = null, string bsr_transactionid = null,
     [property: JsonPropertyName("bsr_buildingapplicationid@odata.bind")]
     string buildingApplicationReferenceId = null,
     string bsr_service = null,

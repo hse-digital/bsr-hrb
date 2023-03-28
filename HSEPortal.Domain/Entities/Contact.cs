@@ -29,7 +29,7 @@ public static class DynamicsJobRole
 public static class DynamicsContactTypes
 {
     public const string AccountablePerson = "6ca72c01-31b8-ed11-b597-0022481b5e4f";
-    public const string PrincipalAccountablePerson = "05aa2b0d-31b8-ed11-b597-0022481b5e4f";
+    public const string PrincipalAccountablePerson = "05aa2b0d-31b8-ed11-b597-0022481b5e4f" ;
     public const string HRBRegistrationApplicant = "e3dc7003-8bc1-ed11-b597-6045bd0d4376";
     public const string PAPOrganisationLeadContact = "e1390d10-8bc1-ed11-b597-6045bd0d4376";
     public const string APOrganisationLeadContact = "d0e58e53-67c2-ed11-b597-6045bd0d4376";
