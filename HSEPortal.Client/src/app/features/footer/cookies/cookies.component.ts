@@ -14,7 +14,9 @@ export class CookiesComponent implements OnInit {
   constructor(public cookiesBannerService: CookiesBannerService) { }
 
   async ngOnInit() {
-    this.cookieModel = String(this.cookiesBannerService.cookiesModel.cookiesAccepted);
+    this.cookieModel = !this.cookiesBannerService.cookiesModel.showCookies
+      ? String(this.cookiesBannerService.cookiesModel.cookiesAccepted)
+      : undefined;
   }
 
   saveCookieSettings() {
