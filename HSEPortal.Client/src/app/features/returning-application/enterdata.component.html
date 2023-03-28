@@ -9,7 +9,7 @@
   <fieldset class="govuk-fieldset">
     <govuk-input id="email-address" label="Email address" labelClass="govuk-label--s"
                  hint="This is the email address you used when you began this application."
-                 [(model)]="emailAddress" type="email"
+                 [(model)]="emailAddress" type="email" [maxlength]=100
                  (modelChange)="emailAddressChange.emit(emailAddress)"
                  [errorText]="getErrorDescription(errors.emailAddress.hasError, errors.emailAddress.errorText)"
                  class="govuk-!-margin-bottom-5"

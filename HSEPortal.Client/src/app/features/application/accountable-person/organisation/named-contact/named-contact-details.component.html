@@ -15,7 +15,7 @@
                               id="job_role" 
                               titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'>
 
-                    <govuk-input id="email" label="Email address" type="email"
+                    <govuk-input id="email" label="Email address" type="email" [maxlength]=100
                                  [(model)]="applicationService.currentAccountablePerson.NamedContactEmail"
                                  [errorText]="getErrorDescription(errors.email.hasErrors, errors.email.errorText)"
                                  class="govuk-!-margin-bottom-5"
