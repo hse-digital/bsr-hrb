@@ -34,14 +34,16 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
 
     this.activatedRoute.queryParams.subscribe(async query => {
       var paymentReference = query['reference'];
-      var modelPayment = this.applicationService.model.Payments?.find(x => x.Reference == paymentReference);
+      var modelPaymentIndex = this.applicationService.model.Payments?.findIndex(x => x.Reference == paymentReference);
 
-      if (!paymentReference || !modelPayment) {
+      if (!paymentReference || modelPaymentIndex == -1) {
         this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
         return;
       }
 
+      var modelPayment = this.applicationService.model.Payments![modelPaymentIndex!];
       this.payment = await this.paymentService.GetPayment(modelPayment!.PaymentId!);
+      this.applicationService.model.Payments![modelPaymentIndex!] = this.payment;
 
       if (this.payment.Status == 'success') {
         this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;

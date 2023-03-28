@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus, PaymentModel, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { SectionHelper } from 'src/app/helpers/section-helper';
@@ -17,6 +17,7 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
   static title: string = "Summary - Register a high-rise building - GOV.UK";
 
   sections: SectionModel[] = [];
+  payment?: PaymentModel;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
@@ -24,6 +25,7 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
 
   async ngOnInit() {
     this.sections = this.applicationService.model.Sections;
+    this.payment = this.applicationService.model.Payments?.find(x => x.Status == 'success');
   }
 
   canContinue() {
