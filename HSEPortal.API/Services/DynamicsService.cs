@@ -14,13 +14,15 @@ namespace HSEPortal.API.Services;
 public class DynamicsService
 {
     private readonly DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory;
+    private readonly SwaOptions swaOptions;
     private readonly DynamicsApi dynamicsApi;
     private readonly DynamicsOptions dynamicsOptions;
 
-    public DynamicsService(DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory, IOptions<DynamicsOptions> dynamicsOptions, DynamicsApi dynamicsApi)
+    public DynamicsService(DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory, IOptions<DynamicsOptions> dynamicsOptions, IOptions<SwaOptions> swaOptions, DynamicsApi dynamicsApi)
     {
         this.dynamicsModelDefinitionFactory = dynamicsModelDefinitionFactory;
         this.dynamicsApi = dynamicsApi;
+        this.swaOptions = swaOptions.Value;
         this.dynamicsOptions = dynamicsOptions.Value;
     }
 
@@ -38,7 +40,8 @@ public class DynamicsService
         await dynamicsOptions.EmailVerificationFlowUrl.PostJsonAsync(new
         {
             emailAddress = emailVerificationModel.EmailAddress,
-            otp = otpToken
+            otp = otpToken,
+            hrbRegUrl = swaOptions.Url
         });
     }
 

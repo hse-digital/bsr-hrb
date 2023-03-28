@@ -33,7 +33,7 @@ public abstract class UnitTestBase
         options.SetupGet(x => x.Value).Returns(DynamicsOptions);
 
         HttpTest = new HttpTest();
-        DynamicsService = new DynamicsService(new DynamicsModelDefinitionFactory(), options.Object, new DynamicsApi(options.Object));
+        DynamicsService = new DynamicsService(new DynamicsModelDefinitionFactory(), options.Object, new OptionsWrapper<SwaOptions>(new SwaOptions()), new DynamicsApi(options.Object));
         OtpService = new OTPService();
     }
 
