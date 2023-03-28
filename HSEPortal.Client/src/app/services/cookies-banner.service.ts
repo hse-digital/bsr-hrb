@@ -36,7 +36,7 @@ export class CookiesBannerService {
   }
 
   private initCookiesModel() {
-    let model = this.getCookie(this.cookieKey);
+    let model = this.getCookieModel(this.cookieKey);
     this.cookiesModel = model ? model
       : { showCookies: true, cookiesAccepted: false };
   }
@@ -45,10 +45,10 @@ export class CookiesBannerService {
     Cookies.set(this.cookieKey, value, this.cookieExpiresDays);
   }
 
-  private getCookie(cookieKey: string) {
+  private getCookieModel(cookieKey: string) {
     let cookie = Cookies.get(cookieKey);
     if (cookie) {
-      let value = cookie.substring(cookie.indexOf('=') + 1, cookie.length - 1);
+      let value = cookie.replace(';', '').substring(cookie.indexOf('=') + 1);
       return {
         showCookies: false,
         cookiesAccepted: value === "true"
