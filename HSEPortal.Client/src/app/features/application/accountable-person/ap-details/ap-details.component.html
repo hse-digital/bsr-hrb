@@ -16,13 +16,13 @@
                         [errorText]="getErrorDescription(errors.contactDetailsAreEmpty, 'Enter your contact details')"
                         class='govuk-!-margin-bottom-4'>
 
-          <govuk-input id="email" label="Email address"
+          <govuk-input id="email" label="Email address" type="email"
                        [(model)]="applicationService.currentAccountablePerson.Email"
                        [errorText]="getErrorDescription(errors.email.hasErrors, errors.email.errorText)"
                        class="govuk-!-margin-bottom-5"
                        (onKeyupEnter)="saveAndContinue()" />
 
-          <govuk-input id="phone-number" label="Telephone number"
+          <govuk-input id="phone-number" label="Telephone number" type="tel"
                        [(model)]="applicationService.currentAccountablePerson.PhoneNumber"
                        [errorText]="getErrorDescription(errors.phoneNumber.hasErrors, errors.phoneNumber.errorText)" 
                        (onKeyupEnter)="saveAndContinue()"/>
