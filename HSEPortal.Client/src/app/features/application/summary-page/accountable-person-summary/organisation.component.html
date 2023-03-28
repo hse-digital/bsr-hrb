@@ -1,0 +1,43 @@
+<govuk-summary-list>
+  <govuk-summary-list-row key="Type">{{ap.Type == 'individual' ? 'Individual' : 'Organisation'}}</govuk-summary-list-row>
+
+  <govuk-summary-list-row key="Organisation type">{{organisationTypeDescription()}}</govuk-summary-list-row>
+  <govuk-summary-list-row key="Organisation name">{{ap.OrganisationName}}</govuk-summary-list-row>
+
+  <govuk-summary-list-row key="Organisation address">
+    <address-description [address]="apAddress()" />
+  </govuk-summary-list-row>
+
+  <ng-container *ngIf="apIndex == 0">
+    <govuk-summary-list-row key="Who are you?">{{whoAreYouDescription()}}</govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="namedContact()" key="Job role">{{leadJobRoleDescription()}}</govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="registeringFor()" key="Should we use the same address to contact you?">{{useSameAddressDescription()}}</govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="registeringFor() && ap.ActingForSameAddress == 'no'" key="Your address">
+      <address-description [address]="ap.ActingForAddress" />
+    </govuk-summary-list-row>
+  </ng-container>
+
+  <ng-container *ngIf="apIndex > 0">
+    <govuk-summary-list-row *ngIf="apIndex > 0" key="Areas of accountability">
+      <ng-container *ngFor="let section of sectionsWithAccountability()">
+        <h2 class="govuk-heading-s">{{section.SectionName}}</h2>
+        <govuk-body class="govuk-!-margin-0" *ngFor="let acc of section.Accountability">{{_accountabilityDescription(acc)}}</govuk-body>
+      </ng-container>
+    </govuk-summary-list-row>
+  </ng-container>
+
+  <govuk-summary-list-row *ngIf="registeringFor() || employee()" key="Named contact">{{ap.LeadFirstName}} {{ap.LeadLastName}}</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="registeringFor() || employee()" key="Named contact's details">
+    <div>{{leadJobRoleDescription()}}</div>
+    <div>{{ap.LeadEmail}}</div>
+    <div>{{ap.LeadPhoneNumber}}</div>
+  </govuk-summary-list-row>
+
+  <govuk-summary-list-row *ngIf="apIndex > 0" key="Named contact">{{ap.NamedContactFirstName}} {{ap.NamedContactLastName}}</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="apIndex > 0" key="Named contact's details">
+    <div>{{ap.NamedContactEmail}}</div>
+    <div>{{ap.NamedContactPhoneNumber}}</div>
+  </govuk-summary-list-row>
+
+  <govuk-summary-list-row key="Add another accountable person?">{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
+</govuk-summary-list>

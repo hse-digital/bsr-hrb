@@ -65,3 +65,7 @@ a.govuk-back-link {
   font-size: 20px;
   color: #1d70b8;
 }
+
+.govuk-summary-list[_ngcontent-serverApp-c73]:not(.govuk-summary-list--no-border):first-child {
+  border-top: none !important;
+}

@@ -1,0 +1,39 @@
+<govuk-summary-list>
+  <govuk-summary-list-row key="Type">{{ap.Type == 'individual' ? 'Individual' : 'Organisation'}}</govuk-summary-list-row>
+
+  <ng-container *ngIf="apIndex == 0">
+    <govuk-summary-list-row key="Are you the principal accountable person?">{{ap.IsPrincipal == 'yes' ? 'Yes' : 'No'}}</govuk-summary-list-row>
+  </ng-container>
+
+  <ng-container *ngIf="apIndex > 0">
+    <govuk-summary-list-row key="Name">{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
+    <govuk-summary-list-row key="Contact Details">
+      <div>{{ap.Email}}</div>
+      <div>{{ap.PhoneNumber}}</div>
+    </govuk-summary-list-row>
+  </ng-container>
+
+  <govuk-summary-list-row key="{{apIndex == 0 ? ' Your address' : 'Address'}}">
+    <address-description [address]="ap.Address" />
+  </govuk-summary-list-row>
+
+  <ng-container *ngIf="ap.IsPrincipal == 'no'">
+    <govuk-summary-list-row key="Principal accountable person's name">{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
+    <govuk-summary-list-row key="Principal accountable person's contact details">
+      <div>{{ap.Email}}</div>
+      <div>{{ap.PhoneNumber}}</div>
+    </govuk-summary-list-row>
+    <govuk-summary-list-row key="Principal accountable person's address">
+      <address-description [address]="ap.PapAddress" />
+    </govuk-summary-list-row>
+  </ng-container>
+
+  <govuk-summary-list-row *ngIf="apIndex > 0" key="Areas of accountability">
+    <ng-container *ngFor="let section of sectionsWithAccountability()">
+      <h2 class="govuk-heading-s">{{section.SectionName}}</h2>
+      <govuk-body class="govuk-!-margin-0 govuk-!-margin-bottom-3" *ngFor="let acc of section.Accountability">{{_accountabilityDescription(acc)}}</govuk-body>
+    </ng-container>
+  </govuk-summary-list-row>
+
+  <govuk-summary-list-row key="Add another accountable person?">{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
+</govuk-summary-list>
