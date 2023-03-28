@@ -21,13 +21,13 @@
             <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-other" value="other" label="Other" (onKeyupEnter)="saveAndContinue()" />
           </govuk-radio-group>
 
-          <govuk-input id="email" label="Email address"
+          <govuk-input id="email" label="Email address" type="email"
                        [(model)]="applicationService.currentAccountablePerson.LeadEmail"
                        [errorText]="getErrorDescription(errors.email.hasErrors, errors.email.errorText)"
                        class="govuk-!-margin-bottom-5"
                        (onKeyupEnter)="saveAndContinue()" />
 
-          <govuk-input id="phone-number" label="Telephone number"
+          <govuk-input id="phone-number" label="Telephone number" type="tel"
                        hint="Enter a UK phone number with or without spaces. For example, '012 3456 7890' or '+4407654321098'"
                        [(model)]="applicationService.currentAccountablePerson.LeadPhoneNumber"
                        [errorText]="getErrorDescription(errors.phoneNumber.hasErrors, errors.phoneNumber.errorText)"
