@@ -33,7 +33,7 @@ export class HelpPagesModule {
   static baseRoute: string = 'help';
 
   static footerLinks = [
-    { title: "Acessibility", href: `/${HelpPagesModule.baseRoute}/${AccessibilityComponent.route}` },
+    { title: "Accessibility", href: `/${HelpPagesModule.baseRoute}/${AccessibilityComponent.route}` },
     { title: "Cookies", href: `/${HelpPagesModule.baseRoute}/${CookiesComponent.route}` },
     { title: "Feedback", href: "#" },
     { title: "Privacy", href: `/${HelpPagesModule.baseRoute}/${PrivacyNoticeComponent.route}` },
