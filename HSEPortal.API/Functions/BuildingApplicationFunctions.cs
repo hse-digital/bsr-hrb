@@ -57,7 +57,15 @@ public class BuildingApplicationFunctions
         {
             var application = buildingApplications[0];
             if (otpService.ValidateToken(otpToken, application.ContactEmailAddress) || featureOptions.DisableOtpValidation)
+            {
+                if (application.Payment != null && application.Payments?.Length == 0)
+                {
+                    var payment = application.Payment;
+                    application = application with { Payments = new[] { payment }, Payment = null };
+                }
+
                 return await request.CreateObjectResponseAsync(application);
+            }
         }
 
         return request.CreateResponse(HttpStatusCode.BadRequest);
@@ -72,7 +80,7 @@ public class BuildingApplicationFunctions
         {
             return await request.BuildValidationErrorResponseDataAsync(validation);
         }
-        
+
         return new CustomHttpResponseData
         {
             Application = buildingApplicationModel,

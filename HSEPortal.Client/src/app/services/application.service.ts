@@ -165,7 +165,7 @@ export class BuildingRegistrationModel {
   OutOfScopeContinueReason?: string;
   PrincipalAccountableType?: string;
   AccountablePersons: AccountablePersonModel[] = [];
-  Payment?: PaymentModel;
+  Payments?: PaymentModel[] = [];
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
 }
 

@@ -117,15 +117,22 @@ public class DynamicsSynchronisationFunctions
         if (dynamicsBuildingApplication != null)
         {
             var buildingApplicationWrapper = new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.ApplicationSubmitted);
-
-            var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), buildingApplicationWrapper);
-            if (paymentResponse != null)
-            {
-                buildingApplicationWrapper = buildingApplicationWrapper with { Model = buildingApplicationWrapper.Model with { Payment = paymentResponse } };
-            }
-
             await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), buildingApplicationWrapper);
-            await orchestrationContext.CallActivityAsync(nameof(CreatePayment), buildingApplicationWrapper);
+
+            var paymentSyncTasks = buildingApplicationModel.Payments.Select(async payment =>
+            {
+                var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), payment.PaymentId);
+                if (paymentResponse != null)
+                {
+                    await orchestrationContext.CallActivityAsync(nameof(CreatePayment), new BuildingApplicationPayment(dynamicsBuildingApplication.bsr_buildingapplicationid, paymentResponse));
+                }
+
+                return paymentResponse;
+            }).ToArray();
+
+            var updatedPayments = await Task.WhenAll(paymentSyncTasks);
+            var newApplication = buildingApplicationModel with { Payments = updatedPayments };
+            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplicationInCosmos), newApplication);
         }
     }
 
@@ -182,19 +189,48 @@ public class DynamicsSynchronisationFunctions
     }
 
     [Function(nameof(CreatePayment))]
-    public async Task CreatePayment([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
+    public async Task CreatePayment([ActivityTrigger] BuildingApplicationPayment buildingApplicationPayment)
     {
-        await dynamicsService.CreatePayment(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);
+        await dynamicsService.CreatePayment(buildingApplicationPayment);
     }
 
     [Function(nameof(GetPaymentStatus))]
-    public async Task<PaymentResponseModel> GetPaymentStatus([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
+    public async Task<PaymentResponseModel> GetPaymentStatus([ActivityTrigger] string paymentId)
     {
-        var response = await integrationOptions.PaymentEndpoint
-            .AppendPathSegments("v1", "payments", buildingApplicationWrapper.Model.Payment.PaymentId)
-            .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
-            .GetJsonAsync<PaymentApiResponseModel>();
+        PaymentApiResponseModel response;
+        var retryCount = 0;
+
+        do
+        {
+            response = await integrationOptions.PaymentEndpoint
+                .AppendPathSegments("v1", "payments", paymentId)
+                .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
+                .GetJsonAsync<PaymentApiResponseModel>();
+
+            if (ShouldRetry(response.state.status, retryCount))
+            {
+                await Task.Delay(3000);
+                retryCount++;
+            }
+        } while (ShouldRetry(response.state.status, retryCount));
 
         return mapper.Map<PaymentResponseModel>(response);
+    }
+
+    [Function(nameof(UpdateBuildingApplicationInCosmos))]
+    [CosmosDBOutput("hseportal", "building-registrations", Connection = "CosmosConnection")]
+    public BuildingApplicationModel UpdateBuildingApplicationInCosmos([ActivityTrigger] BuildingApplicationModel buildingApplicationModel)
+    {
+        return buildingApplicationModel;
+    }
+
+    private bool ShouldRetry(string status, int retryCount)
+    {
+        if (status != "success" && status != "failed" && status != "cancelled" && status != "error")
+        {
+            return retryCount < 3;
+        }
+
+        return false;
     }
 }

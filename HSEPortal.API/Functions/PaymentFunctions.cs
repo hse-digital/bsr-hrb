@@ -1,8 +1,10 @@
 using System.Net;
+using System.Text.RegularExpressions;
 using AutoMapper;
 using Flurl;
 using Flurl.Http;
 using HSEPortal.API.Extensions;
+using HSEPortal.API.Model;
 using HSEPortal.API.Model.Payment.Request;
 using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
@@ -26,9 +28,11 @@ public class PaymentFunctions
     }
 
     [Function(nameof(InitialisePayment))]
-    public async Task<HttpResponseData> InitialisePayment([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
+    public async Task<HttpResponseData> InitialisePayment([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(InitialisePayment)}/{{applicationId}}")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", Id = "{applicationId}", PartitionKey = "{applicationId}", Connection = "CosmosConnection")]
+        BuildingApplicationModel applicationModel)
     {
-        var paymentModel = await request.ReadAsJsonAsync<PaymentRequestModel>();
+        var paymentModel = BuildPaymentRequestModel(applicationModel);
         var validation = paymentModel.Validate();
         if (!validation.IsValid)
         {
@@ -37,7 +41,7 @@ public class PaymentFunctions
 
         var paymentRequestModel = mapper.Map<PaymentApiRequestModel>(paymentModel);
         paymentRequestModel.amount = integrationOptions.PaymentAmount;
-        paymentRequestModel.return_url = $"{swaOptions.Url}/application/{paymentModel.Reference}/payment/confirm";
+        paymentRequestModel.return_url = $"{swaOptions.Url}/application/{applicationModel.Id}/payment/confirm?reference={paymentModel.Reference}";
 
         var response = await integrationOptions.PaymentEndpoint
             .AppendPathSegments("v1", "payments")
@@ -51,7 +55,29 @@ public class PaymentFunctions
         var paymentFunctionResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
         return await request.CreateObjectResponseAsync(paymentFunctionResponse);
     }
- 
+
+    private static PaymentRequestModel BuildPaymentRequestModel(BuildingApplicationModel applicationModel)
+    {
+        var address = applicationModel.AccountablePersons[0].PapAddress ?? applicationModel.AccountablePersons[0].Address;
+        var paymentModel = new PaymentRequestModel
+        {
+            Reference = Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray())[..22], @"\W", "0"),
+            Email = applicationModel.ContactEmailAddress,
+            CardHolderDetails = new CardHolderDetails
+            {
+                Name = $"{applicationModel.ContactFirstName} {applicationModel.ContactLastName}",
+                Address = new CardHolderAddress
+                {
+                    Line1 = address?.Address,
+                    Line2 = address?.AddressLineTwo,
+                    Postcode = address?.Postcode,
+                    City = address?.Town
+                }
+            }
+        };
+        return paymentModel;
+    }
+
 
     [Function(nameof(GetPayment))]
     public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentId}}")] HttpRequestData request, string paymentId)

@@ -316,21 +316,24 @@ public class DynamicsService
         await dynamicsApi.Update($"bsr_buildings({dynamicsBuildingApplication._bsr_building_value})", lookup with { bsr_paptypecode = papType, bsr_whoareyou = null });
     }
 
-    public async Task CreatePayment(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication)
+    public async Task CreatePayment(BuildingApplicationPayment buildingApplicationPayment)
     {
-        var payment = model.Payment;
-
+        var payment = buildingApplicationPayment.Payment;
         var existingPayment = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_service eq 'HRB Registration' and bsr_transactionid eq '{payment.Reference}'"));
         if (!existingPayment.value.Any())
         {
-            await UpdateBuildingApplication(dynamicsBuildingApplication, new DynamicsBuildingApplication
+            if (payment.Status == "success")
             {
-                bsr_submittedon = DateTime.Now.ToString(CultureInfo.InvariantCulture)
-            });
+                await UpdateBuildingApplication(new DynamicsBuildingApplication { bsr_buildingapplicationid = buildingApplicationPayment.BuildingApplicationId }, new DynamicsBuildingApplication
+                {
+                    bsr_submittedon = DateTime.Now.ToString(CultureInfo.InvariantCulture)
+                });
+            }
+
             await dynamicsApi.Create("bsr_payments", new DynamicsPayment
             {
-                buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
-                bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
+                buildingApplicationReferenceId = $"/bsr_buildingapplications({buildingApplicationPayment.BuildingApplicationId})",
+                bsr_lastfourdigitsofnumber = string.IsNullOrWhiteSpace(payment.LastFourDigitsCardNumber) ? null : int.Parse(payment.LastFourDigitsCardNumber),
                 bsr_timeanddateoftransaction = payment.CreatedDate,
                 bsr_transactionid = payment.Reference,
                 bsr_service = "HRB Registration",
@@ -339,6 +342,15 @@ public class DynamicsService
                 bsr_cardbrandegvisa = payment.CardBrand,
                 bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
                 bsr_amountpaid = payment.Amount / 100,
+                bsr_govukpaystatus = payment.Status,
+            });
+        }
+        else
+        {
+            var dynamicsPayment = existingPayment.value[0];
+            await dynamicsApi.Update($"bsr_payments({dynamicsPayment.bsr_paymentid})", new DynamicsPayment
+            {
+                bsr_timeanddateoftransaction = payment.CreatedDate,
                 bsr_govukpaystatus = payment.Status,
             });
         }
