@@ -14,4 +14,5 @@ export class KbiService {
 
 export class KbiModel {
   roofMaterial?: string;
+  roofInsulation?: string;
 }

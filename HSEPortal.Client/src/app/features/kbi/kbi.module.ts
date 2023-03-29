@@ -6,14 +6,17 @@ import { RouterModule } from '@angular/router';
 import { HseRoute, HseRoutes } from 'src/app/services/hse.route';
 import { HseAngularModule } from 'hse-angular';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { RoofInsulationComponent } from './roof-insulation/roof-insulation.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(RoofMaterialComponent.route, RoofMaterialComponent, RoofMaterialComponent.title),
+  HseRoute.protected(RoofInsulationComponent.route, RoofInsulationComponent, RoofInsulationComponent.title),
 ]);
 
 @NgModule({
   declarations: [
-    RoofMaterialComponent
+    RoofMaterialComponent,
+    RoofInsulationComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
