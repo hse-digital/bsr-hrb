@@ -336,7 +336,7 @@ public class DynamicsService
             await dynamicsApi.Create("bsr_payments", new DynamicsPayment
             {
                 buildingApplicationReferenceId = $"/bsr_buildingapplications({buildingApplicationPayment.BuildingApplicationId})",
-                bsr_lastfourdigitsofnumber = payment.LastFourDigitsCardNumber,
+                bsr_lastfourdigitsofcardnumber = payment.LastFourDigitsCardNumber,
                 bsr_timeanddateoftransaction = payment.CreatedDate,
                 bsr_transactionid = payment.Reference,
                 bsr_service = "HRB Registration",
