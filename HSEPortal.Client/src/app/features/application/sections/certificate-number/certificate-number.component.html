@@ -7,7 +7,7 @@
 
         <h1 class="govuk-heading-l">Completion certificate number for {{sectionBuildingName()}} (optional)</h1>
 
-        <govuk-input hint="This should be on the completion certificate for the building. Do not user the Unique Property Reference Number (UPRN) instead. If you do not have the completion certificate number, leave this blank."
+        <govuk-input hint="This should be on the completion certificate for the building. Do not use the Unique Property Reference Number (UPRN) instead. If you do not have the completion certificate number, leave this blank."
                      id="certificate-reference" [(model)]="applicationService.currentSection.CompletionCertificateReference"
                      (onKeyupEnter)="saveAndContinue()" />
 
