@@ -12,6 +12,8 @@
 
         <h1 class="govuk-heading-l">{{title()}}</h1>
 
+        <govuk-body *ngIf="isPrincipal()" >This is not a complete list. It includes only the types of principal accountable person we need to know about.</govuk-body>
+
         <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.OrganisationType" id="radios-accountable-person"
                            [errorText]="getErrorDescription(hasErrors, 'Enter the type of organisation')"
                            title="Type of organisation" fieldsetClass='govuk-fieldset__legend--s govuk-!-margin-bottom-3'>

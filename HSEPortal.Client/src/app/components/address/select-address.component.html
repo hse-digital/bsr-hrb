@@ -9,7 +9,7 @@
                   titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'
                   class='govuk-!-margin-bottom-4'>
 
-    <govuk-body>{{addressResponse?.Results?.length}} {{addressResponse?.Results?.length > 1 ? "addresses" : "address"}} found for <b>{{ searchModel.postcode }}</b><span *ngIf="searchModel.addressLine1"> and <b>{{searchModel.addressLine1}}</b></span>.</govuk-body>
+    <govuk-body>{{addressResponse?.Results?.length}} {{(addressResponse?.Results?.length ?? 0) > 1 ? "addresses" : "address"}} found for <b>{{ searchModel.postcode }}</b><span *ngIf="searchModel.addressLine1"> and <b>{{searchModel.addressLine1}}</b></span>.</govuk-body>
 
     <govuk-radio-group [(model)]="selectedAddress" id="radios-addresses"
                        [errorText]="getErrorDescription(addressHasErrors, 'Select an address.')">

@@ -9,7 +9,7 @@
   </govuk-summary-list-row>
 
   <ng-container *ngIf="apIndex == 0">
-    <govuk-summary-list-row (onClick)="navigateTo('who-are-you')" (onKeyupEnter)="navigateTo('who-are-you')" key="Who are you?" [showAction]=true>{{whoAreYouDescription()}}</govuk-summary-list-row>
+    <govuk-summary-list-row (onClick)="navigateTo('who-are-you')" (onKeyupEnter)="navigateTo('who-are-you')" key="Are you the named contact?" [showAction]=true>{{whoAreYouDescription()}}</govuk-summary-list-row>
     <govuk-summary-list-row *ngIf="namedContact()" (onClick)="navigateTo('pap-named-role')" (onKeyupEnter)="navigateTo('pap-named-role')" key="Job role" [showAction]=true>{{leadJobRoleDescription()}}</govuk-summary-list-row>
     <govuk-summary-list-row *ngIf="registeringFor()" (onClick)="navigateTo('same-address')" (onKeyupEnter)="navigateTo('same-address')" key="Should we use the same address to contact you?" [showAction]=true>{{useSameAddressDescription()}}</govuk-summary-list-row>
     <govuk-summary-list-row *ngIf="registeringFor() && ap.ActingForSameAddress == 'no'" (onClick)="navigateTo('acting-for-address')" (onKeyupEnter)="navigateTo('acting-for-address')" key="Your address" [showAction]=true>

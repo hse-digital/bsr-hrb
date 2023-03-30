@@ -6,20 +6,25 @@
 
       <h1 class="govuk-heading-l">Declaration</h1>
 
-      <govuk-body>By submitting this application, you are confirming that the details you are providing are correct.</govuk-body>
+      <govuk-body>By submitting this application to register {{applicationService.model.BuildingName}}, you are confirming that the details you are providing are correct.</govuk-body>
       <govuk-body>You must not give false or misleading information to the Building Safety Regulator. Knowingly or recklessly giving false or misleading information is a criminal offence punishable by up to 2 years in prison.</govuk-body>
 
-      <h1 class="govuk-heading-m">If you are authorised to act for the principal accountable person</h1>
+      <ng-container *ngIf="isPapRegisteringFor()">
 
-      <govuk-body>By submitting this application, you are also confirming that:</govuk-body>
+        <h1 class="govuk-heading-m">If you are authorised to act for the principal accountable person</h1>
 
-      <govuk-list classes='govuk-list--bullet'>
-        <govuk-list-item text="the principal accountable person (PAP) has instructed you in writing to make this application on their behalf" />
-        <govuk-list-item text="the PAP gave you the details or they are the result of your own investigations" />
-        <govuk-list-item text="you have explained to the PAP that it is a criminal offence to give false or misleading information to the Building Safety Regulator" />
-      </govuk-list>
+        <govuk-body>By submitting this application, you are also confirming that:</govuk-body>
 
-      <govuk-body>We may ask you for written evidence that the principal accountable person has authorised you to act for them.</govuk-body>
+        <govuk-list classes='govuk-list--bullet'>
+          <govuk-list-item text="the principal accountable person (PAP) has instructed you in writing to make this application on their behalf" />
+          <govuk-list-item text="the PAP gave you the details or they are the result of your own investigations" />
+          <govuk-list-item text="you have explained to the PAP that it is a criminal offence to give false or misleading information to the Building Safety Regulator" />
+        </govuk-list>
+
+        <govuk-body>You will need written instruction from the principal accountable person to act on their behalf. We may ask you to show us this.</govuk-body>
+        <govuk-body>After you submit your application, you cannot use this service to amend your answers. </govuk-body>
+
+      </ng-container>
 
       <govuk-button (onClick)="saveAndContinue()" [disabled]="loading" [isLoading]="loading">Declare and continue</govuk-button>
       <save-and-come-back (onClick)="saveAndComeBack()" />

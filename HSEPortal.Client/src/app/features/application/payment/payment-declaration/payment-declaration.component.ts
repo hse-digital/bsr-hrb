@@ -42,6 +42,10 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
     }
   }
 
+  isPapRegisteringFor() {
+    return this.applicationService.model.AccountablePersons[0].Role == "registering_for";
+  }
+
   canContinue(): boolean {
     return true;
   }

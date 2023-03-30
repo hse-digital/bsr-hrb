@@ -8,7 +8,7 @@
                   [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'
                   class='govuk-!-margin-bottom-3'>
 
-    <govuk-body *ngIf="pap()">This is the address we will use to send official communications or to serve notices.</govuk-body>
+    <govuk-body *ngIf="pap()">This is the address we will send official communications to, including serving notices.</govuk-body>
     <govuk-body>{{addressTypeDescription()}}</govuk-body>
     <govuk-input id="postcode" label="Postcode"
                  [(model)]="searchModel.postcode"

@@ -1,7 +1,6 @@
 <i class="fa fa-spinner fa-spin loading" *ngIf="!shouldRender"></i>
 
 <ng-container *ngIf="shouldRender">
-  <govuk-back-link>Back</govuk-back-link>
 
   <div class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -9,7 +8,7 @@
 
         <h1 class="govuk-heading-l">Registration application submitted for {{applicationService.model.BuildingName ?? '[Building name]'}}</h1>
 
-        <govuk-body>Your application number is <b>{{applicationService.model.id ?? "[Application number]"}}</b>.</govuk-body>
+        <govuk-body>Your application reference is <b>{{applicationService.model.id ?? "[Application number]"}}</b>.</govuk-body>
 
         <govuk-body>We've emailed confirmation of your payment to {{payment?.Email}}. If you cannot find the email, check your junk or spam folders. If you did not get the email, <a href="https://www.hse.gov.uk/contact/tell-us-about-a-health-and-safety-issue.htm" target="_blank" class="govuk-link">contact us</a>.</govuk-body>
 
