@@ -40,6 +40,7 @@ public class PaymentFunctions
         }
 
         var paymentRequestModel = mapper.Map<PaymentApiRequestModel>(paymentModel);
+        paymentRequestModel.description = $"Payment for application {applicationModel.Id}";
         paymentRequestModel.amount = integrationOptions.PaymentAmount;
         paymentRequestModel.return_url = $"{swaOptions.Url}/application/{applicationModel.Id}/payment/confirm?reference={paymentModel.Reference}";
 
