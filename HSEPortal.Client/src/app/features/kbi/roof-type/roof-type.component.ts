@@ -7,6 +7,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { KbiService } from 'src/app/services/kbi.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { RoofInsulationComponent } from '../roof-insulation/roof-insulation.component';
 
 @Component({
   selector: 'hse-roof-type',
@@ -50,7 +51,7 @@ export class RoofTypeComponent extends BaseComponent implements IHasNextPage {
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative("", activatedRoute);
+    return navigationService.navigateRelative(RoofInsulationComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

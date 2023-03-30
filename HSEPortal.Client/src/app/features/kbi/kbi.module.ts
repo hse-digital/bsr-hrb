@@ -8,18 +8,21 @@ import { HseAngularModule } from 'hse-angular';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { RoofInsulationComponent } from './roof-insulation/roof-insulation.component';
 import { RoofTypeComponent } from './roof-type/roof-type.component';
+import { StaircasesComponent } from './staircases/staircases.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(RoofMaterialComponent.route, RoofMaterialComponent, RoofMaterialComponent.title),
   HseRoute.protected(RoofInsulationComponent.route, RoofInsulationComponent, RoofInsulationComponent.title),
   HseRoute.protected(RoofTypeComponent.route, RoofTypeComponent, RoofTypeComponent.title),
+  HseRoute.protected(StaircasesComponent.route, StaircasesComponent, StaircasesComponent.title),
 ]);
 
 @NgModule({
   declarations: [
     RoofMaterialComponent,
     RoofInsulationComponent,
-    RoofTypeComponent
+    RoofTypeComponent,
+    StaircasesComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

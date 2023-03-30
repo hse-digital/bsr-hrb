@@ -16,4 +16,6 @@ export class KbiModel {
   roofMaterial?: string;
   roofInsulation?: string;
   roofType?: string;
+  totalNumberStaircases?: number;
+  internalStaircasesAllFloors?: number;
 }

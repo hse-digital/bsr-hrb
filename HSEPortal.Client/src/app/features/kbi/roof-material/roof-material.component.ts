@@ -7,6 +7,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { KbiService } from 'src/app/services/kbi.service';
+import { StaircasesComponent } from '../staircases/staircases.component';
 
 @Component({
   selector: 'hse-roof-material',
@@ -29,7 +30,7 @@ export class RoofMaterialComponent extends BaseComponent implements IHasNextPage
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative("", activatedRoute);
+    return navigationService.navigateRelative(StaircasesComponent.route, activatedRoute);
   }
 
   override async saveAndContinue(): Promise<any> {
