@@ -1,11 +1,11 @@
 <govuk-summary-list>
-  <govuk-summary-list-row *ngIf="!hasMoreSections" key="Is the building made up of multiple independent sections?">Single independent section</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="!hasMoreSections" key="Is this a single high-rise residential structure?">Yes</govuk-summary-list-row>
   <govuk-summary-list-row *ngIf="hasMoreSections" key="Name">{{section.Name}}</govuk-summary-list-row>
   <govuk-summary-list-row key="Number of floors">{{section.FloorsAbove}}</govuk-summary-list-row>
   <govuk-summary-list-row key="Height">{{section.Height}} metres</govuk-summary-list-row>
   <govuk-summary-list-row key="Number of residential units">{{section.ResidentialUnits}} </govuk-summary-list-row>
-  <govuk-summary-list-row key="Are people living in the block?">{{section.PeopleLivingInBuilding | peopleLivingInSectionDescription}}</govuk-summary-list-row>
-  <govuk-summary-list-row key="When was the building originally built?">{{section.YearOfCompletionOption == 'year-exact' ? section.YearOfCompletion : section.YearOfCompletionOption | yearOfCompletionOptionDescription}}</govuk-summary-list-row>
+  <govuk-summary-list-row key="Are people living in it?">{{section.PeopleLivingInBuilding | peopleLivingInSectionDescription}}</govuk-summary-list-row>
+  <govuk-summary-list-row key="When was it originally built?">{{section.YearOfCompletionOption == 'year-exact' ? section.YearOfCompletion : section.YearOfCompletionOption | yearOfCompletionOptionDescription}}</govuk-summary-list-row>
   <govuk-summary-list-row *ngIf="section.YearOfCompletionOption == 'year-not-exact'" key="Completion year range">{{section.YearOfCompletionRange | yearOfCompletionDescription}}</govuk-summary-list-row>
 
   <govuk-summary-list-row key="Completion certificate issuer">{{section.CompletionCertificateIssuer}} </govuk-summary-list-row>
