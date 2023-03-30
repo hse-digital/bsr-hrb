@@ -35,7 +35,7 @@ export class HelpPagesModule {
   static footerLinks = [
     { title: "Accessibility", href: `/${HelpPagesModule.baseRoute}/${AccessibilityComponent.route}` },
     { title: "Cookies", href: `/${HelpPagesModule.baseRoute}/${CookiesComponent.route}` },
-    { title: "Feedback", href: "#" },
+    { title: "Feedback", href: "https://www.gov.uk/done/register-a-high-rise-building" },
     { title: "Privacy", href: `/${HelpPagesModule.baseRoute}/${PrivacyNoticeComponent.route}` },
     { title: "Terms and conditions", href: `/${HelpPagesModule.baseRoute}/${TermsConditionsComponent.route}` },
   ];
