@@ -7,6 +7,7 @@ import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from 'src/app/services/title.service';
+import { SectionAddressComponent } from "../address/address.component";
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 
 @Component({
@@ -29,6 +30,12 @@ export class SectionYearRangeComponent extends BaseComponent implements IHasNext
     }
 
     navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+        var selectedOption = this.applicationService.currentSection.YearOfCompletionRange;
+        console.log(selectedOption);
+        if (["Before-1900","1901-to-1955","1956-to-1969","1970-to-1984"].indexOf(selectedOption!) > -1) {
+            return navigationService.navigateRelative(SectionAddressComponent.route, activatedRoute);
+        }
+
         return navigationService.navigateRelative(CertificateIssuerComponent.route, activatedRoute);
     }
 
