@@ -12,22 +12,18 @@
 
         <h1 class="govuk-heading-l">Your name</h1>
 
-        <govuk-body>We will use this if we need to contact you about your application</govuk-body>
+        <govuk-body>We will only use this to contact you if we have questions about your application. But if you tell us later that you're the principal accountable person, your name will appear in the public register.</govuk-body>
 
-        <fieldset class="govuk-fieldset">
+        <govuk-input id="first-name" label="First name"
+                      [(model)]="applicationService.model.ContactFirstName"
+                      [errorText]="getErrorDescription(firstNameInError, 'Enter your first name')"
+                      class="govuk-!-margin-bottom-5"
+                      (onKeyupEnter)="saveAndContinue()" />
 
-          <govuk-input id="first-name" label="First name"
-                       [(model)]="applicationService.model.ContactFirstName"
-                       [errorText]="getErrorDescription(firstNameInError, 'Enter your first name')"
-                       class="govuk-!-margin-bottom-5"
-                       (onKeyupEnter)="saveAndContinue()" />
-
-          <govuk-input id="last-name" label="Last name"
-                       [(model)]="applicationService.model.ContactLastName"
-                       [errorText]="getErrorDescription(lastNameInError, 'Enter your last name')"
-                       (onKeyupEnter)="saveAndContinue()" />
-
-        </fieldset>
+        <govuk-input id="last-name" label="Last name"
+                      [(model)]="applicationService.model.ContactLastName"
+                      [errorText]="getErrorDescription(lastNameInError, 'Enter your last name')"
+                      (onKeyupEnter)="saveAndContinue()" />
 
       </div>
 

@@ -7,7 +7,9 @@ import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from 'src/app/services/title.service';
+import { SectionAddressComponent } from "../address/address.component";
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
+import { SectionYearRangeComponent } from "../year-range/year-range.component";
 
 @Component({
   templateUrl: './year-of-completion.component.html'
@@ -60,8 +62,16 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let route = CertificateIssuerComponent.route;
-    if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
-      route = 'year-range';
+
+    if (this.applicationService.currentSection.YearOfCompletionOption == 'not-completed') {
+      route = SectionAddressComponent.route;
+    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-exact') {
+      var yearOfCompletion = Number(this.applicationService.currentSection.YearOfCompletion);
+      if (yearOfCompletion && yearOfCompletion < 1985) {
+        route = SectionAddressComponent.route;
+      }
+    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
+      route = SectionYearRangeComponent.route;
     }
 
     return navigationService.navigateRelative(route, activatedRoute);

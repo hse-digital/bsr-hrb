@@ -6,23 +6,17 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="showError" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="application-new-input"
-                            message="Select if you want to start a new application or continue a saved application" />
+          <govuk-error-link anchorId="application-new-input" message="Select if you want to start a new application or continue a saved application" />
         </govuk-error-summary>
 
-        <govuk-radio-group [(model)]="continueLink" title="Your application" [isPageHeading]=true
-                           [errorText]="showError ? 'Select if you want to start a new application or continue a saved application': undefined"
-                           fieldsetClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-3' fieldsetMarginBottom='govuk-!-margin-bottom-3'>
-          <govuk-radio name="application-group" id="application-new" value="/new-application/building-name" label="Start a new application" (onKeyupEnter)="continue()">
-          </govuk-radio>
-          <govuk-radio name="application-group" id="application-return" value="/returning-application" label="Continue a saved application"
-                       class="govuk-radio-no-margin-bottom" (onKeyupEnter)="continue()">
-          </govuk-radio>
+        <govuk-radio-group [(model)]="continueLink" title="Your application" [isPageHeading]=true [errorText]="showError ? 'Select if you want to start a new application or continue a saved application': undefined" fieldsetClass='govuk-fieldset__legend--xl govuk-!-margin-bottom-3' fieldsetMarginBottom='govuk-!-margin-bottom-3'>
+          <govuk-radio name="application-group" id="application-new" value="/new-application/building-name" label="Start a new application" (onKeyupEnter)="continue()" />
+          <govuk-radio name="application-group" id="application-return" value="/returning-application" label="Continue a saved application" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="continue()" />
         </govuk-radio-group>
 
       </div>
+
       <govuk-button (onClick)="continue()">Continue</govuk-button>
     </div>
   </div>
 </div>
-

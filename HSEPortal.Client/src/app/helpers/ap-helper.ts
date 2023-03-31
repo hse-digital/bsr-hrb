@@ -12,11 +12,13 @@ export class ApHelper {
     return false;
   }
 
-  static isOrganisation(applicationService: ApplicationService) {
-    return applicationService.currentAccountablePerson?.Type == "organisation";
-  }
+  static isOrganisation(routeSnapshot: ActivatedRouteSnapshot, applicationService: ApplicationService) {
+    var requestedSectionIndex = routeSnapshot.parent?.params["id"];
+    if (requestedSectionIndex) {
+      let index = Number(requestedSectionIndex.split('-').at(-1)) - 1;
+      return applicationService.model.AccountablePersons[index]?.Type == "organisation";
+    }
 
-  static isIndividual(applicationService: ApplicationService) {
-    return applicationService.currentAccountablePerson?.Type == "individual";
+    return false;
   }
 }

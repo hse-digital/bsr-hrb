@@ -6,22 +6,19 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="organisation-input"
-                            message="Select if the principal accountable person is an organisation or an individual" />
+          <govuk-error-link anchorId="organisation-input" message="Select if the principal accountable person is an organisation or an individual" />
         </govuk-error-summary>
 
         <h1 class="govuk-heading-l">Is the principal accountable person for {{applicationService.model.BuildingName}} an organisation or an individual?</h1>
 
-        <govuk-body>The principal accountable person is the individual or organisation that owns or is legally obliged to repair the structure and exterior of the building.</govuk-body>
+        <govuk-body>The principal accountable person is the individual or organisation that owns or is legally obliged to repair the external walls and structure of the building.</govuk-body>
         <govuk-body>There may be other accountable persons that own or are legally obliged to repair other parts of the building. You can tell us about these later.</govuk-body>
-        <govuk-body>If the principal accountable person is an organisation, individuals within that organisation are not accountable persons, but we will ask you for the name and contact details of someone in the organisation we can contact.</govuk-body>
+        <govuk-body>If the principal accountable person is an organisation, individuals within that organisation are not accountable persons. But we will ask you to name someone in the organisation we can talk to about building safety issues.</govuk-body>
         <govuk-body>If the principal accountable person is an individual, we will contact that individual.</govuk-body>
 
-        <govuk-radio-group title="The principal accountable person is" fieldsetClass="govuk-fieldset__legend--s"
-                           [(model)]="applicationService.model.PrincipalAccountableType" id="radios-accountable-person"
-                           [errorText]="getErrorDescription(hasErrors, 'Select if the principal accountable person is an organisation or an individual')">
-          <govuk-radio [model]="applicationService.model.PrincipalAccountableType" name="application-group" id="organisation" value="organisation" label="An organisation" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.model.PrincipalAccountableType" name="application-group" id="individual" value="individual" label="An individual" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
+        <govuk-radio-group title="The principal accountable person is" fieldsetClass="govuk-fieldset__legend--s" [(model)]="applicationService.model.PrincipalAccountableType" id="radios-accountable-person" [errorText]="getErrorDescription(hasErrors, 'Select if the principal accountable person is an organisation or an individual')">
+          <govuk-radio [model]="applicationService.model.PrincipalAccountableType" name="application-group" id="organisation" value="organisation" hint="The organisation is the principal accountable person not, for example, the chief executive officer." label="An organisation" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.model.PrincipalAccountableType" name="application-group" id="individual" value="individual" label="The individual who personally owns the building" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
         </govuk-radio-group>
 
       </div>
@@ -30,4 +27,3 @@
     </div>
   </div>
 </div>
-

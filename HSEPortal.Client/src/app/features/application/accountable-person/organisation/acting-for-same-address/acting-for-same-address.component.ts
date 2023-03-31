@@ -67,7 +67,7 @@ export class ActingForSameAddressComponent extends BaseComponent implements IHas
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
-      && ApHelper.isOrganisation(this.applicationService)
+      && ApHelper.isOrganisation(routeSnapshot, this.applicationService)
       && this.applicationService.currentAccountablePerson.Role == "registering_for";
   }
 

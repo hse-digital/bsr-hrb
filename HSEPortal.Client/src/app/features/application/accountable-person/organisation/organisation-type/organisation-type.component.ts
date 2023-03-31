@@ -42,15 +42,19 @@ export class OrganisationTypeComponent extends BaseComponent implements IHasNext
   }
 
   getPrincipalOrOther() {
-    return this.applicationService._currentAccountablePersonIndex > 0 ? 'Other' : 'Principal';
+    return !this.isPrincipal() ? 'Other' : 'Principal';
   }
 
   title() {
-    return `${this.applicationService._currentAccountablePersonIndex == 0 ? 'Principal' : 'Other'} accountable person for ${this.applicationService.model.BuildingName}`;
+    return `${this.isPrincipal() ? 'Principal' : 'Other'} accountable person for ${this.applicationService.model.BuildingName}`;
+  }
+
+  isPrincipal() {
+    return this.applicationService._currentAccountablePersonIndex == 0;
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
-      && ApHelper.isOrganisation(this.applicationService);
+      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
   }
 }

@@ -1,12 +1,8 @@
-<div class="govuk-form-group">
+<h1 class="govuk-heading-l">{{getTitle()}}</h1>
 
-  <govuk-fieldset [title]="getTitle()"
-   [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
-    <govuk-inset-text>
-      <address-description [address]="address"/>
-    </govuk-inset-text>
-  </govuk-fieldset>
-</div>
+<govuk-inset-text>
+  <address-description [address]="address"/>
+</govuk-inset-text>
 
 <govuk-button (onClick)="onAddressConfirmed.emit()">Confirm</govuk-button>
 <govuk-body><a class="govuk-link" (keyup.enter)="onSearchAgain.emit()" (click)="onSearchAgain.emit()" role="link" tabindex="0">Search again</a></govuk-body>

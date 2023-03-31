@@ -6,16 +6,12 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="organisation-input"
-                            message="Select if the accountable person is an organisation or an individual" />
+          <govuk-error-link anchorId="organisation-input" message="Select if the accountable person is an organisation or an individual" />
         </govuk-error-summary>
 
-        <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.Type" id="radios-accountable-person"
-                           title="Is this accountable person for {{applicationService.model.BuildingName}} an organisation or an individual?" [isPageHeading]=true
-                           fieldsetClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' fieldsetMarginBottom='govuk-!-margin-bottom-3'
-                           [errorText]="getErrorDescription(hasErrors, 'Select if the accountable person is an organisation or an individual')">
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="organisation" value="organisation" label="An organisation" />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="individual" value="individual" label="An individual" />
+        <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.Type" id="radios-accountable-person" title="Is this accountable person for {{applicationService.model.BuildingName}} an organisation or an individual?" [isPageHeading]=true fieldsetClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' fieldsetMarginBottom='govuk-!-margin-bottom-3' [errorText]="getErrorDescription(hasErrors, 'Select if the accountable person is an organisation or an individual')">
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="organisation" value="organisation" hint="The organisation is the principal accountable person not, for example, the chief executive officer." label="An organisation" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="individual" value="individual" label="The individual who personally owns the building" />
         </govuk-radio-group>
 
       </div>
@@ -24,4 +20,3 @@
     </div>
   </div>
 </div>
-

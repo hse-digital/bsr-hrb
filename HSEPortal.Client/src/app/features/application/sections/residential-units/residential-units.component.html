@@ -13,8 +13,9 @@
 
         <govuk-body>A residential unit is a flat, maisonette, student bedroom, room or flat in a house in multiple occupation or any other place where someone could live.</govuk-body>
 
+        <div class="govuk-hint govuk-!-margin-bottom-4">Count all residential units, whether someone is living in them or not.</div>
+
         <govuk-input label="Number of residential units"
-                     hint="Count all of the residential units, whether someone is living in them or not."
                      labelClass="govuk-label--s" id="height"
                      [(model)]="applicationService.currentSection.ResidentialUnits"
                      [errorText]="getErrorDescription(residentialUnitsHasErrors, errorMessage)"

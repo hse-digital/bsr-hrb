@@ -10,19 +10,18 @@
           <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter their last name" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Tell us the name of the {{pap ? 'principal' : 'other'}} accountable person for {{applicationService.model.BuildingName}}" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+        <h1 class="govuk-heading-l">Tell us the name of the {{pap ? 'principal' : 'other'}} accountable person for {{applicationService.model.BuildingName}}</h1>
 
-          <govuk-input id="first-name" label="First name" 
-                       [(model)]="applicationService.currentAccountablePerson.FirstName"
-                       [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
-                       class="govuk-!-margin-bottom-5"
-                       (onKeyupEnter)="saveAndContinue()" />
+        <govuk-input id="first-name" label="First name" 
+                      [(model)]="applicationService.currentAccountablePerson.FirstName"
+                      [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
+                      class="govuk-!-margin-bottom-5"
+                      (onKeyupEnter)="saveAndContinue()" />
 
-          <govuk-input id="last-name" label="Last name" 
-                       [(model)]="applicationService.currentAccountablePerson.LastName"
-                       [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
-                       (onKeyupEnter)="saveAndContinue()" />
-        </govuk-fieldset>
+        <govuk-input id="last-name" label="Last name" 
+                      [(model)]="applicationService.currentAccountablePerson.LastName"
+                      [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
+                      (onKeyupEnter)="saveAndContinue()" />
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
