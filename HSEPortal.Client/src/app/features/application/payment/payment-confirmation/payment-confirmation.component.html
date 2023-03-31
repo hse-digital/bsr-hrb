@@ -15,31 +15,23 @@
         <govuk-body *ngIf="notPap()">We have also sent an email to the principal accountable person that outlines their duties at this stage.</govuk-body>
 
         <h2 class="govuk-heading-m">View your application</h2>
-        <govuk-body>You can <a class="govuk-link" [routerLink]="['../../summary']"
-                                href="" target="_blank" role="link" tabindex="0">view your application (opens in a new tab)</a>.</govuk-body>
+        <govuk-body>You can <a class="govuk-link" [routerLink]="['../../summary']" href="" target="_blank" role="link" tabindex="0">view your application (opens in a new tab)</a>.</govuk-body>
 
         <h2 class="govuk-heading-m">What happens next</h2>
 
-        <govuk-body>We'll look at your application to register this building.</govuk-body>
-        <govuk-body>We'll contact you when we have decided if your building should be registered. We'll also contact you if we need more information.</govuk-body>
-        <govuk-body>We're registering all the high-rise buildings in England. This is likely to take several months. So you might not hear from us for a while. Do not worry. We have your application.</govuk-body>
+        <govuk-body>We'll contact you:</govuk-body>
+        <govuk-list classes='govuk-list--bullet govuk-!-margin-bottom-6'>
+          <govuk-list-item text="with your building registration number, when we've registered your building" />
+          <govuk-list-item text="if we need more information" />
+          <govuk-list-item text="if we cannot register your building as a high-rise residential building" />
+        </govuk-list>
 
-        <div class="govuk-warning-text">
-          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-          <strong class="govuk-warning-text__text">
-            <span class="govuk-warning-text__assistive">Warning</span>
-            You must give us structure and safety information for
-            {{applicationService.model.BuildingName ?? '[building-name]'}} by 30 September 2023.
-          </strong>
-        </div>
+        <govuk-body>We're registering all the high-rise residential buildings in England. This is likely to take several months. You may not hear from us for a while. But we have your application.</govuk-body>
+        <govuk-body>You need to prepare some information about the structure and safety of the building. We'll contact you again to tell you when you'll need to give that information to us.</govuk-body>
 
-        <govuk-body>You need to prepare some information about the structure and safety of the building. We will contact you again when we need you to give us that information.</govuk-body>
-        <!-- <govuk-button (onClick)="saveAndContinue()">Continue to structure and safety information</govuk-button> -->
+        <govuk-body><a href="https://www.gov.uk/done/register-a-high-rise-building" class="govuk-link" target="_blank">What do you think of this service?</a> (takes 30 seconds)</govuk-body>
 
-        <govuk-body>
-          You can <a href="#" class="govuk-link" (click)="registerAnotherBuilding()">register another building</a>.
-        </govuk-body>
-
+        <govuk-body>Or you can <a href="#" class="govuk-link" (click)="registerAnotherBuilding()">register another building</a>.</govuk-body>
       </div>
     </div>
   </div>
