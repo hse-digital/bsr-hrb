@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from './services/application.service';
-import { HeaderTitleService } from './services/headertitle.service';
 import { IdleTimerService } from './services/idle-timer.service';
 import { CookiesBannerService } from './services/cookies-banner.service';
 import { GovukCookieBannerComponent } from 'hse-angular';
@@ -21,13 +20,9 @@ export class AppComponent implements AfterViewInit {
   viewCookiesLink!: string;
 
   constructor(private applicationService: ApplicationService,
-    private router: Router, private headerTitleService: HeaderTitleService, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute, private cookiesBannerService: CookiesBannerService, private navigationService: NavigationService) {
+    private router: Router, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute, private cookiesBannerService: CookiesBannerService, private navigationService: NavigationService) {
     this.initTimer();
     this.initCookiesBanner();
-  }
-
-  get headerTitle(): string | undefined {
-    return this.headerTitleService.headerTitle;
   }
 
   async timeoutSaveAndComeBack() {
