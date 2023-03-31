@@ -6,27 +6,22 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link *ngIf="errors.email.hasErrors" anchorId="input-email" message="{{errors.email.errorText}}" />
-          <govuk-error-link *ngIf="errors.phoneNumber.hasErrors" anchorId="input-phone-number" message="{{errors.phoneNumber.errorText}}" />
-          <govuk-error-link *ngIf="errors.contactDetailsAreEmpty" anchorId="input-email" message="Enter your contact details" />
+          <govuk-error-link *ngIf="emailHasErrors" anchorId="input-email" [message]="emailErrorText" />
+          <govuk-error-link *ngIf="phoneHasErrors" anchorId="input-phone-number" [message]="phoneErrorText" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="{{papName}}'s contact details"
-                        [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6'
-                        [errorText]="getErrorDescription(errors.contactDetailsAreEmpty, 'Enter your contact details')"
-                        class='govuk-!-margin-bottom-4'>
+        <h1 class="govuk-heading-l">{{papName}}'s contact details</h1>
 
-          <govuk-input id="email" label="Email address" type="email" [maxlength]=100
-                       [(model)]="applicationService.currentAccountablePerson.Email"
-                       [errorText]="getErrorDescription(errors.email.hasErrors, errors.email.errorText)"
-                       class="govuk-!-margin-bottom-5"
-                       (onKeyupEnter)="saveAndContinue()" />
+        <govuk-input id="email" label="Email address" type="email" [maxlength]=100
+                      [(model)]="applicationService.currentAccountablePerson.Email"
+                      [errorText]="getErrorDescription(emailHasErrors, emailErrorText)"
+                      class="govuk-!-margin-bottom-5"
+                      (onKeyupEnter)="saveAndContinue()" />
 
-          <govuk-input id="phone-number" label="Telephone number" type="tel"
-                       [(model)]="applicationService.currentAccountablePerson.PhoneNumber"
-                       [errorText]="getErrorDescription(errors.phoneNumber.hasErrors, errors.phoneNumber.errorText)" 
-                       (onKeyupEnter)="saveAndContinue()"/>
-        </govuk-fieldset>
+        <govuk-input id="phone-number" label="Telephone number" type="tel"
+                      [(model)]="applicationService.currentAccountablePerson.PhoneNumber"
+                      [errorText]="getErrorDescription(phoneHasErrors, phoneErrorText)" 
+                      (onKeyupEnter)="saveAndContinue()"/>
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>

@@ -5,21 +5,17 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link *ngIf="organisationNameHasErrors" anchorId="input-organisation-name" message="Enter the organisation name" />
         </govuk-error-summary>
 
-        <govuk-fieldset [title]="title()" [isPageHeading]=true id="application"
-                        titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-6'>
+        <h1 class="govuk-heading-l">{{title()}}</h1>
 
-          <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
-                                    hint="Type part of the organisation name to begin. If the name does not show in the drop down list, enter the organisation's full name manually."
-                                    [(model)]="applicationService.currentAccountablePerson.OrganisationName"
-                                    [values]="companies" (onDebounce)="searchCompanies($event)" (onSelectedValue)="selectCompanyName($event)"
-                                    [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/>
-
-        </govuk-fieldset>
+        <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
+                                  hint="Type part of the organisation name to begin. If the name does not show in the drop down list, enter the organisation's full name manually."
+                                  [(model)]="applicationService.currentAccountablePerson.OrganisationName"
+                                  [values]="companies" (onDebounce)="searchCompanies($event)" (onSelectedValue)="selectCompanyName($event)"
+                                  [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/>
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
