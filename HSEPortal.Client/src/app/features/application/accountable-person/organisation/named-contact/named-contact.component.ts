@@ -42,7 +42,7 @@ export class OrganisationNamedContactComponent extends BaseComponent implements 
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
-      && ApHelper.isOrganisation(this.applicationService);
+      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
   }
 
 }

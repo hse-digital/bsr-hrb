@@ -56,7 +56,7 @@ export class ActingForAddressComponent implements OnInit, CanActivate {
 
     canActivate(routeSnapshot: ActivatedRouteSnapshot) {
         return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
-            && ApHelper.isOrganisation(this.applicationService)
+            && ApHelper.isOrganisation(routeSnapshot, this.applicationService)
             && this.applicationService.currentAccountablePerson.Role == "registering_for"
             && this.applicationService.currentAccountablePerson.ActingForSameAddress == "no";
     }

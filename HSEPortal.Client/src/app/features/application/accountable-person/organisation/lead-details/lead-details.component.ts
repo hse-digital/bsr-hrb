@@ -85,7 +85,8 @@ export class LeadDetailsComponent extends BaseComponent implements IHasNextPage,
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return ApHelper.isApAvailable(routeSnapshot, this.applicationService) && ApHelper.isOrganisation(this.applicationService);
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService) 
+      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
   }
 
 } 
