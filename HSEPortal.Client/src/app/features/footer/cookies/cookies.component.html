@@ -82,9 +82,7 @@
         </tbody>
       </table>
 
-      <govuk-radio-group title="Do you want to accept analytics cookies?"
-                         [isPageHeading]=false [(model)]="cookieModel"
-                         fieldsetClass='govuk-!-margin-bottom-3' fieldsetMarginBottom='govuk-!-margin-bottom-3'>
+      <govuk-radio-group title="Do you want to accept analytics cookies?" [isPageHeading]=false [(model)]="cookieModel" fieldsetClass='govuk-!-margin-bottom-3' fieldsetMarginBottom='govuk-!-margin-bottom-3'>
         <govuk-radio name="cookies" id="cookies-yes" value="true" label="Yes" (onKeyupEnter)="saveCookieSettings()" [model]="cookieModel" />
         <govuk-radio name="cookies" id="cookies-no" value="false" label="No" (onKeyupEnter)="saveCookieSettings()" [model]="cookieModel" />
       </govuk-radio-group>

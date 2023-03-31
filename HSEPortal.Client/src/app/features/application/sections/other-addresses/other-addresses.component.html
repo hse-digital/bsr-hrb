@@ -11,8 +11,7 @@
       <govuk-body>It may have more than one address and postcode. For example, it may be on the corner of 2 streets.</govuk-body>
       <govuk-body>Do not tell us the address for each residential unit within it.</govuk-body>
 
-      <govuk-radio-group (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(hasMoreAddressesError, 'Select one of the options below')"
-                         [(model)]="hasMoreAddresses" fieldsetMarginBottom='govuk-!-margin-bottom-4'>
+      <govuk-radio-group (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(hasMoreAddressesError, 'Select one of the options below')" [(model)]="hasMoreAddresses" fieldsetMarginBottom='govuk-!-margin-bottom-4'>
         <govuk-radio [model]="hasMoreAddresses" name="application-group" id="application-yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
         <govuk-radio [model]="hasMoreAddresses" name="application-group" id="application-no" value="no" label="No" (onKeyupEnter)="saveAndContinue()" />
       </govuk-radio-group>

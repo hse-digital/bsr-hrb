@@ -6,8 +6,7 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="yes-input"
-                            message="Select yes if you want to add another accountable person" />
+          <govuk-error-link anchorId="yes-input" message="Select yes if you want to add another accountable person" />
         </govuk-error-summary>
 
         <h1 class="govuk-heading-l">Add another accountable person for {{applicationService.model.BuildingName}}</h1>
@@ -32,7 +31,7 @@
 
       </div>
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()"/>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
     </div>
   </div>
 </div>

@@ -9,12 +9,9 @@
           <govuk-error-link anchorId="isPrincipal-yes-input" message="Select 'Yes' if you are the principal accountable person" />
         </govuk-error-summary>
 
-        <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.IsPrincipal" title="Are you the principal accountable person for {{applicationService.model.BuildingName}}?"
-                           fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'
-                           [errorText]="getErrorDescription(principalHasErrors, 'Select \'Yes\' if you are the principal accountable person')">
+        <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.IsPrincipal" title="Are you the principal accountable person for {{applicationService.model.BuildingName}}?" fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4' [errorText]="getErrorDescription(principalHasErrors, 'Select \'Yes\' if you are the principal accountable person')">
           <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
           <govuk-radio [model]="applicationService.currentAccountablePerson.IsPrincipal" name="application-group" id="isPrincipal-no" value="no" label="No" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
-
         </govuk-radio-group>
       </div>
 
