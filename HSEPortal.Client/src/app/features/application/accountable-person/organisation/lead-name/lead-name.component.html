@@ -14,18 +14,17 @@
 
         <govuk-body>Tell us the name of the person who we should contact about building safety issues. You can contact us later if the person or their details change.</govuk-body>
 
-        <fieldset class="govuk-fieldset">
-          <govuk-input id="first-name" label="First name"
-                       [(model)]="applicationService.currentAccountablePerson.LeadFirstName"
-                       [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
-                       class="govuk-!-margin-bottom-5"
-                       (onKeyupEnter)="saveAndContinue()" />
+        <govuk-input id="first-name" label="First name"
+                      [(model)]="applicationService.currentAccountablePerson.LeadFirstName"
+                      [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
+                      class="govuk-!-margin-bottom-5"
+                      (onKeyupEnter)="saveAndContinue()" />
 
-          <govuk-input id="last-name" label="Last name"
-                       [(model)]="applicationService.currentAccountablePerson.LeadLastName"
-                       [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
-                       (onKeyupEnter)="saveAndContinue()" />
-        </fieldset>
+        <govuk-input id="last-name" label="Last name"
+                      [(model)]="applicationService.currentAccountablePerson.LeadLastName"
+                      [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
+                      (onKeyupEnter)="saveAndContinue()" />
+                      
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
