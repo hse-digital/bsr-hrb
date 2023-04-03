@@ -15,7 +15,7 @@
         <govuk-body>If an accountable person is an organisation, individuals within that organisation are not accountable persons. But we will ask you to name someone in the organisation we can talk to about building safety issues.</govuk-body>
         <govuk-body>You have told us that <b>{{principalName()}}</b> is the principal accountable person.</govuk-body>
 
-        <ng-container *ngIf="applicationService.model.AccountablePersons.length > 1">
+        <ng-container *ngIf="otherAps().length > 0">
           <govuk-body>You have also told us about these accountable persons:</govuk-body>
           <govuk-list classes='govuk-list--bullet govuk-!-margin-bottom-6'>
             <govuk-list-item [text]="apName(ap)" *ngFor="let ap of otherAps()" />

@@ -65,7 +65,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
 
   otherAps() {
     var aps = this.applicationService.model.AccountablePersons;
-    return aps.slice(1, aps.length);
+    return aps.slice(1, aps.length).filter(ap => ap.FirstName !== undefined || ap.LastName !== undefined);
   }
 
   apName(ap: AccountablePersonModel) {

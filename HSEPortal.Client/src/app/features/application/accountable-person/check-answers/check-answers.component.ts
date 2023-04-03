@@ -110,6 +110,12 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsInProgress) == BuildingApplicationStatus.AccountablePersonsInProgress;
   }
 
+  navigateTo(url: string, apIndex: number) {
+      this.navigationService.navigateRelative(`accountable-person-${apIndex + 1}/${url}`, this.activatedRoute, {
+          return: 'check-answers'
+      });
+  }
+
   removeAp(ap: AccountablePersonModel, index: number) {
     this.applicationService.removeAp(index);
   }
