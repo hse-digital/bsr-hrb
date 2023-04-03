@@ -14,4 +14,8 @@ export class AccountablePersonSummaryComponent {
   ngOnInit(): void {
     this.aps = this.applicationService.model.AccountablePersons;
   }
+
+  getPrincipalAccountablePersonName() {
+    return `${this.aps[0].IsPrincipal == 'no' ? this.aps[0].FirstName : this.applicationService.model.ContactFirstName} ${this.aps[0].IsPrincipal == 'no' ? this.aps[0].LastName : this.applicationService.model.ContactLastName}`;
+  }
 }

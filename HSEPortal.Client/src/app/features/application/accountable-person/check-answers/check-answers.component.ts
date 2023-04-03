@@ -119,4 +119,8 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
   removeAp(ap: AccountablePersonModel, index: number) {
     this.applicationService.removeAp(index);
   }
+
+  getPrincipalAccountablePersonName() {
+    return `${this.aps[0].IsPrincipal == 'no' ? this.aps[0].FirstName : this.applicationService.model.ContactFirstName} ${ this.aps[0].IsPrincipal == 'no' ? this.aps[0].LastName : this.applicationService.model.ContactLastName}`;
+  }
 }
