@@ -68,20 +68,34 @@ public class DynamicsSynchronisationFunctions
     }
 
     [Function(nameof(UpdateDynamicsBuildingSummaryStage))]
-    public async Task<HttpResponseData> UpdateDynamicsBuildingSummaryStage([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request, [DurableClient] DurableTaskClient durableTaskClient)
+    public async Task<HttpResponseData> UpdateDynamicsBuildingSummaryStage([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
-        var application = await dynamicsService.GetBuildingApplicationUsingId(buildingApplicationModel.Id);
-        if (application is { bsr_applicationstage: null, statuscode: BuildingApplicationStatus.New })
+        await UpdateBuildingApplicationStage(buildingApplicationModel, new DynamicsBuildingApplication
         {
-            await dynamicsService.UpdateBuildingApplication(application, new DynamicsBuildingApplication
-            {
-                bsr_applicationstage = BuildingApplicationStage.BuildingSummary,
-                statuscode = BuildingApplicationStatus.InProgress
-            });
-        }
+            bsr_applicationstage = BuildingApplicationStage.BuildingSummary,
+            statuscode = BuildingApplicationStatus.InProgress
+        });
 
         return request.CreateResponse();
+    }
+
+    [Function(nameof(UpdateDynamicsAccountablePersonsStage))]
+    public async Task<HttpResponseData> UpdateDynamicsAccountablePersonsStage([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
+    {
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        await UpdateBuildingApplicationStage(buildingApplicationModel, new DynamicsBuildingApplication
+        {
+            bsr_applicationstage = BuildingApplicationStage.AccountablePersons
+        });
+
+        return request.CreateResponse();
+    }
+
+    private async Task UpdateBuildingApplicationStage(BuildingApplicationModel buildingApplicationModel, DynamicsBuildingApplication buildingApplication)
+    {
+        var application = await dynamicsService.GetBuildingApplicationUsingId(buildingApplicationModel.Id);
+        await dynamicsService.UpdateBuildingApplication(application, buildingApplication);
     }
 
     [Function(nameof(SynchroniseBuildingStructures))]
