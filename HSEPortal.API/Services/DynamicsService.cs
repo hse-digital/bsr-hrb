@@ -439,21 +439,61 @@ public class DynamicsService
 
     private async Task CreateStructureOptionalAddresses(SectionModel section, DynamicsStructure dynamicsStructure)
     {
-        foreach (var address in section.Addresses.Skip(1))
+        var portalAddresses = section.Addresses.Skip(1).ToList();
+        var dynamicsAddresses = (await dynamicsApi.Get<DynamicsResponse<DynamicsAddress>>("bsr_addresses", ("$filter", $"_bsr_independentsectionid_value eq '{dynamicsStructure.bsr_blockid}' and statuscode eq 1"))).value;
+
+        for (var i = 0; i < portalAddresses.Count; i++)
         {
-            await dynamicsApi.Create("bsr_addresses", new DynamicsAddress
+            var portalAddress = portalAddresses[i];
+            var dynamicsAddress = dynamicsAddresses.ElementAtOrDefault(i);
+            if (dynamicsAddress == null) // new address
             {
-                bsr_line1 = string.Join(", ", address.Address.Split(',').Take(3)),
-                bsr_line2 = address.AddressLineTwo,
-                bsr_addresstypecode = AddressType.Other,
-                bsr_city = address.Town,
-                bsr_postcode = address.Postcode,
-                bsr_uprn = address.UPRN,
-                bsr_usrn = address.USRN,
-                bsr_manualaddress = address.IsManual ? YesNoOption.Yes : YesNoOption.No,
-                countryReferenceId = address.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[address.Country]})" : null,
-                structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
-            });
+                await dynamicsApi.Create("bsr_addresses", new DynamicsAddress
+                {
+                    bsr_line1 = string.Join(", ", portalAddress.Address.Split(',').Take(3)),
+                    bsr_line2 = portalAddress.AddressLineTwo,
+                    bsr_addresstypecode = AddressType.Other,
+                    bsr_city = portalAddress.Town,
+                    bsr_postcode = portalAddress.Postcode,
+                    bsr_uprn = portalAddress.UPRN,
+                    bsr_usrn = portalAddress.USRN,
+                    bsr_manualaddress = portalAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
+                    countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null,
+                    structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
+                });
+
+                continue;
+            }
+
+            var isMatch = string.Join(", ", portalAddress.Address.Split(',').Take(3)) == dynamicsAddress.bsr_line1 && portalAddress.Postcode == dynamicsAddress.bsr_postcode;
+            if (!isMatch) // exists, update
+            {
+                await dynamicsApi.Update($"bsr_addresses({dynamicsAddress.bsr_addressId})", new DynamicsAddress
+                {
+                    bsr_line1 = string.Join(", ", portalAddress.Address.Split(',').Take(3)),
+                    bsr_line2 = portalAddress.AddressLineTwo,
+                    bsr_addresstypecode = AddressType.Other,
+                    bsr_city = portalAddress.Town,
+                    bsr_postcode = portalAddress.Postcode,
+                    bsr_uprn = portalAddress.UPRN,
+                    bsr_usrn = portalAddress.USRN,
+                    bsr_manualaddress = portalAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
+                    countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null,
+                });
+            }
+        }
+
+        if (dynamicsAddresses.Count > portalAddresses.Count) // deleted addresses portal, deactivate on d365
+        {
+            var toDeactivate = dynamicsAddresses.Skip(portalAddresses.Count);
+            foreach (var address in toDeactivate)
+            {
+                await dynamicsApi.Update($"bsr_addresses({address.bsr_addressId})", new DynamicsAddress
+                {
+                    statuscode = 2,
+                    statecode = 1
+                });
+            }
         }
     }
 
