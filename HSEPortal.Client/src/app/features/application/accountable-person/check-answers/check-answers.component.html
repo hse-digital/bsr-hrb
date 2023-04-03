@@ -11,47 +11,27 @@
           <govuk-error-link anchorId="input-floors-above" message="Please check if all accountable persons have data correctly entered" />
         </govuk-error-summary>
 
-        <ng-container *ngIf="aps.length == 1">
-          <h2 class="govuk-heading-m">Principal accountable person</h2>
-          <organisation-answers *ngIf="aps[0].Type == 'organisation'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
-          <individual-answers *ngIf="aps[0].Type == 'individual'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
+        <ng-container *ngFor="let ap of aps; let i = index">
+          <div [class.section-wrapper]="aps.length > 1">
 
-          <govuk-body>{{getPrincipalAccountablePersonName()}} is accountable for the external walls and structure of the building. If you have not told us about another accountable person, we will assume that {{getPrincipalAccountablePersonName()}} is also accountable for:</govuk-body>
-          <govuk-list classes='govuk-list--bullet'>
-            <govuk-list-item text="the routes that residents can walk through" />
-            <govuk-list-item text="maintaining plant and equipment" />
-            <govuk-list-item text="facilities that residents share" />
-          </govuk-list>
-
-        </ng-container>
-
-        <div *ngIf="aps.length > 1">
-          <ng-container *ngFor="let ap of aps; let i = index">
-            <div class="section-wrapper">
-              <div class="section-header" *ngIf="i == 0">Principal accountable person</div>
-              <div class="section-header" *ngIf="i > 0">
-                <span>Other accountable person {{ i }}</span>
-                <a class="govuk-link" (click)="removeAp(ap, i)">Remove</a>
-              </div>
-              <div class="section-content">
-                <organisation-answers *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
-                <individual-answers *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
-
-                <govuk-summary-list *ngIf="!ap.Type">
-                  <govuk-summary-list-row key="Type" (onKeyupEnter)="navigateTo('accountable-person-type', i)" (onClick)="navigateTo('accountable-person-type', i)" [showAction]=true></govuk-summary-list-row>
-                </govuk-summary-list>
-              </div>
+            <h2 class="govuk-heading-m" [class.section-header]="aps.length > 1" *ngIf="i == 0">Principal accountable person</h2>
+            <div [class.section-header]="aps.length > 1" *ngIf="i > 0">
+              <span>Other accountable person {{ i }}</span>
+              <a class="govuk-link" (click)="removeAp(ap, i)">Remove</a>
             </div>
-            <ng-container *ngIf="i == 0">
-              <govuk-body>{{getPrincipalAccountablePersonName()}} is accountable for the external walls and structure of the building. If you have not told us about another accountable person, we will assume that {{getPrincipalAccountablePersonName()}} is also accountable for:</govuk-body>
-              <govuk-list classes='govuk-list--bullet'>
-                <govuk-list-item text="the routes that residents can walk through" />
-                <govuk-list-item text="maintaining plant and equipment" />
-                <govuk-list-item text="facilities that residents share" />
-              </govuk-list>
-            </ng-container>
-          </ng-container>
-        </div>
+
+            <div [class.section-content]="aps.length > 1">
+              <organisation-answers *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+              <individual-answers *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+
+              <govuk-summary-list *ngIf="!ap.Type">
+                <govuk-summary-list-row key="Type" (onKeyupEnter)="navigateTo('accountable-person-type', i)" (onClick)="navigateTo('accountable-person-type', i)" [showAction]=true></govuk-summary-list-row>
+              </govuk-summary-list>
+            </div>
+          </div>
+
+          <pap-accountability [pap]="ap" *ngIf="i == 0" />
+        </ng-container>
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>

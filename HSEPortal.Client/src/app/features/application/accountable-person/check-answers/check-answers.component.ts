@@ -111,16 +111,12 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
   }
 
   navigateTo(url: string, apIndex: number) {
-      this.navigationService.navigateRelative(`accountable-person-${apIndex + 1}/${url}`, this.activatedRoute, {
-          return: 'check-answers'
-      });
+    this.navigationService.navigateRelative(`accountable-person-${apIndex + 1}/${url}`, this.activatedRoute, {
+      return: 'check-answers'
+    });
   }
 
   removeAp(ap: AccountablePersonModel, index: number) {
     this.applicationService.removeAp(index);
-  }
-
-  getPrincipalAccountablePersonName() {
-    return `${this.aps[0].IsPrincipal == 'no' ? this.aps[0].FirstName : this.applicationService.model.ContactFirstName} ${ this.aps[0].IsPrincipal == 'no' ? this.aps[0].LastName : this.applicationService.model.ContactLastName}`;
   }
 }
