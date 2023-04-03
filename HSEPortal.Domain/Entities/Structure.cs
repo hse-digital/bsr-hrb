@@ -6,8 +6,8 @@ public record Structure(string Name, string FloorsAboveGround, string HeightInMe
     string PeopleLivingInStructure, string ConstructionYearOption, string ExactYear = null,
     string YearRange = null, string Id = null) : Entity(Id);
 
-public record DynamicsStructure(string bsr_name, int bsr_nooffloorsabovegroundlevel, double bsr_blockheightinmetres,
-    int bsr_numberofresidentialunits, PeopleLivingInStructure bsr_arepeoplelivingintheblock, ConstructionYearOption bsr_doyouknowtheblocksexactconstructionyear,
+public record DynamicsStructure(string bsr_name = null, int? bsr_nooffloorsabovegroundlevel = null, double? bsr_blockheightinmetres = null,
+    int? bsr_numberofresidentialunits = null, PeopleLivingInStructure? bsr_arepeoplelivingintheblock = null, ConstructionYearOption? bsr_doyouknowtheblocksexactconstructionyear = null,
     string bsr_blockid = null,
     string bsr_addressline1 = null, string bsr_addressline2 = null, string bsr_city = null, string bsr_postcode = null, string bsr_uprn = null, string bsr_usrn = null, AddressType? bsr_addresstype = null, YesNoOption? bsr_manualaddress = null,
     [property: JsonPropertyName("bsr_Country@odata.bind")]
@@ -19,7 +19,9 @@ public record DynamicsStructure(string bsr_name, int bsr_nooffloorsabovegroundle
     [property: JsonPropertyName("bsr_BuildingApplicationID@odata.bind")]
     string buildingApplicationReferenceId = null,
     [property: JsonPropertyName("bsr_BuildingId@odata.bind")]
-    string buildingReferenceId = null) : DynamicsEntity<Structure>;
+    string buildingReferenceId = null,
+    [property: JsonPropertyName("bsr_CompletionCertificate@odata.bind")]
+    string certificateReferenceId = null) : DynamicsEntity<Structure>;
 
 public static class DynamicsSectionArea
 {

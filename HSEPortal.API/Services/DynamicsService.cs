@@ -78,6 +78,7 @@ public class DynamicsService
             var dynamicsStructure = BuildDynamicsStructure(structures, section, structureDefinition);
             dynamicsStructure = await SetYearOfCompletion(section, dynamicsStructure);
             dynamicsStructure = await CreateStructure(structureDefinition, dynamicsStructure);
+            await CreateStructureCompletionCertificate(section, dynamicsStructure);
             await CreateStructureOptionalAddresses(section, dynamicsStructure);
         }
     }
@@ -410,6 +411,30 @@ public class DynamicsService
         }
 
         return existingAccount.accountid;
+    }
+
+    private async Task CreateStructureCompletionCertificate(SectionModel section, DynamicsStructure dynamicsStructure)
+    {
+        if (!string.IsNullOrWhiteSpace(section.CompletionCertificateIssuer) || !string.IsNullOrWhiteSpace(section.CompletionCertificateReference))
+        {
+            var existingCertificate = await dynamicsApi.Get<DynamicsResponse<DynamicsCompletionCertificate>>("bsr_completioncertificates", ("$filter", $"bsr_certificatereferencenumber eq '{section.CompletionCertificateReference}' and bsr_issuingorganisation eq '{section.CompletionCertificateIssuer}'"));
+            if (!existingCertificate.value.Any())
+            {
+                var response = await dynamicsApi.Create("bsr_completioncertificates", new DynamicsCompletionCertificate
+                {
+                    bsr_name = string.Join(" - ", new[] { section.CompletionCertificateReference, section.CompletionCertificateIssuer }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                    bsr_certificatereferencenumber = section.CompletionCertificateReference,
+                    bsr_issuingorganisation = section.CompletionCertificateIssuer,
+                    structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
+                }, returnObjectResponse: true);
+
+                var certificate = await response.GetJsonAsync<DynamicsCompletionCertificate>();
+                await dynamicsApi.Update($"/bsr_blocks({dynamicsStructure.bsr_blockid})", new DynamicsStructure
+                {
+                    certificateReferenceId = $"/bsr_completioncertificates({certificate.bsr_completioncertificateid})"
+                });
+            }
+        }
     }
 
     private async Task CreateStructureOptionalAddresses(SectionModel section, DynamicsStructure dynamicsStructure)
