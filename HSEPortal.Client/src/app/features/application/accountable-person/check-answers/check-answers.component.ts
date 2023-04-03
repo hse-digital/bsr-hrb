@@ -8,6 +8,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { PapNameService } from 'src/app/services/pap-name.service';
 
 @Component({
   templateUrl: './check-answers.component.html',
@@ -19,7 +20,7 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
   static title: string = "Check your answers for PAP and AP - Register a high-rise building - GOV.UK";
 
   aps: AccountablePersonModel[] = [];
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, public papNameService: PapNameService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

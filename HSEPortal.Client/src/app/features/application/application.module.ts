@@ -19,6 +19,7 @@ import { IndividualComponent } from "./summary-page/accountable-person-summary/i
 import { OrganisationComponent } from "./summary-page/accountable-person-summary/organisation.component";
 import { SectionSummaryComponent } from "./summary-page/section-summary.component";
 import { ApplicationTaskListComponent } from "./task-list/task-list.component";
+import { PapNameService } from "src/app/services/pap-name.service";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent, ApplicationTaskListComponent.title),
@@ -50,7 +51,7 @@ const routes = new HseRoutes([
     PipesModule,
     HttpClientModule
   ],
-  providers: [HttpClient, ApplicationService, ...routes.getProviders()]
+  providers: [HttpClient, ApplicationService, ...routes.getProviders(), PapNameService]
 })
 export class ApplicationModule {
   static baseRoute: string = 'application/:id';

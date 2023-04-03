@@ -32,6 +32,7 @@ import { OrganisationNamedContactDetailsComponent } from "./organisation/named-c
 import { OrganisationNamedContactComponent } from "./organisation/named-contact/named-contact.component";
 import { PapNamedRoleComponent } from "./organisation/pap-named-role/pap-named-role.component";
 import { PrincipleAccountableSelection } from "./principal/principal.component";
+import { PapNameService } from "src/app/services/pap-name.service";
 
 @Component({
   template: '<router-outlet></router-outlet>'
@@ -111,7 +112,7 @@ const routes = new HseRoutes([
     OrganisationTypeComponent,
     OrganisationNameComponent,
   ],
-  providers: [HttpClient, ...routes.getProviders()],
+  providers: [HttpClient, ...routes.getProviders(), PapNameService],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
     HseAngularModule,
