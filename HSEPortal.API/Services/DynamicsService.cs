@@ -128,6 +128,8 @@ public class DynamicsService
                                 address1_line2 = actingForAddress.AddressLineTwo,
                                 address1_city = actingForAddress.Town,
                                 address1_postalcode = actingForAddress.Postcode,
+                                bsr_manualaddress = actingForAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
+                                countryReferenceId = actingForAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[actingForAddress.Country]})" : null
                             };
                         }
 
@@ -235,6 +237,7 @@ public class DynamicsService
                         address1_line2 = apAddress.AddressLineTwo,
                         address1_city = apAddress.Town,
                         address1_postalcode = apAddress.Postcode,
+                        countryReferenceId = apAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[apAddress.Country]})" : null,
                         bsr_manualaddress = apAddress.IsManual ? YesNoOption.Yes : YesNoOption.No
                     });
 
@@ -283,6 +286,16 @@ public class DynamicsService
         {
             await AssignContactType(dynamicsBuildingApplication._bsr_registreeid_value, DynamicsContactTypes.PrincipalAccountablePerson);
         }
+
+        await dynamicsApi.Update($"contacts({dynamicsBuildingApplication._bsr_registreeid_value})", new DynamicsContact
+        {
+            address1_line1 = string.Join(", ", apAddress.Address.Split(',').Take(3)),
+            address1_line2 = apAddress.AddressLineTwo,
+            address1_city = apAddress.Town,
+            address1_postalcode = apAddress.Postcode,
+            countryReferenceId = apAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[apAddress.Country]})" : null,
+            bsr_manualaddress = apAddress.IsManual ? YesNoOption.Yes : YesNoOption.No
+        });
 
         return $"/contacts({dynamicsBuildingApplication._bsr_registreeid_value})";
     }
@@ -389,6 +402,7 @@ public class DynamicsService
                 address1_line2 = apAddress.AddressLineTwo,
                 address1_city = apAddress.Town,
                 address1_postalcode = apAddress.Postcode,
+                countryReferenceId = apAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[apAddress.Country]})" : null,
                 acountTypeReferenceId = $"/bsr_accounttypes({DynamicsAccountType.Ids[$"{accountablePerson.OrganisationType}"]})"
             });
 
@@ -412,6 +426,7 @@ public class DynamicsService
                 bsr_uprn = address.UPRN,
                 bsr_usrn = address.USRN,
                 bsr_manualaddress = address.IsManual ? YesNoOption.Yes : YesNoOption.No,
+                countryReferenceId = address.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[address.Country]})" : null,
                 structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
             });
         }
@@ -448,6 +463,7 @@ public class DynamicsService
             bsr_addressline1 = string.Join(", ", primaryAddress.Address.Split(',').Take(3)),
             bsr_addressline2 = primaryAddress.AddressLineTwo,
             bsr_addresstype = AddressType.Primary,
+            countryReferenceId = primaryAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[primaryAddress.Country]})" : null,
             bsr_city = primaryAddress.Town,
             bsr_postcode = primaryAddress.Postcode,
             bsr_uprn = primaryAddress.UPRN,
