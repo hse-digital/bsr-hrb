@@ -4,6 +4,8 @@ namespace HSEPortal.Domain.Entities;
 
 public record DynamicsAccount(string name = null, string accountid = null,
     string address1_line1 = null, string address1_line2 = null, string address1_city = null, string address1_postalcode = null, 
+    [property: JsonPropertyName("bsr_Address1CountryCode@odata.bind")]
+    string countryReferenceId = null,
     [property: JsonPropertyName("bsr_accounttype_accountId@odata.bind")]
     string acountTypeReferenceId = null);
 

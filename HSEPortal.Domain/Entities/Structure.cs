@@ -9,7 +9,9 @@ public record Structure(string Name, string FloorsAboveGround, string HeightInMe
 public record DynamicsStructure(string bsr_name, int bsr_nooffloorsabovegroundlevel, double bsr_blockheightinmetres,
     int bsr_numberofresidentialunits, PeopleLivingInStructure bsr_arepeoplelivingintheblock, ConstructionYearOption bsr_doyouknowtheblocksexactconstructionyear,
     string bsr_blockid = null,
-    string bsr_addressline1 = null, string bsr_addressline2 = null, string bsr_city = null, string bsr_postcode = null, string bsr_uprn = null, string bsr_usrn = null, AddressType? bsr_addresstype = null, YesNoOption? bsr_manualaddress = null, 
+    string bsr_addressline1 = null, string bsr_addressline2 = null, string bsr_city = null, string bsr_postcode = null, string bsr_uprn = null, string bsr_usrn = null, AddressType? bsr_addresstype = null, YesNoOption? bsr_manualaddress = null,
+    [property: JsonPropertyName("bsr_Country@odata.bind")]
+    string countryReferenceId = null,
     [property: JsonPropertyName("bsr_exactconstructionyearid@odata.bind")]
     string exactConstructionYearReferenceId = null,
     [property: JsonPropertyName("bsr_SectionCompletionYearRange@odata.bind")]
@@ -63,7 +65,7 @@ public enum ConstructionYearOption
 
 public enum AddressType
 {
-    Primary = 760_810_000, 
+    Primary = 760_810_000,
     BillTo = 760_810_001,
     ShipTo = 760_810_002,
     Other = 760_810_003
