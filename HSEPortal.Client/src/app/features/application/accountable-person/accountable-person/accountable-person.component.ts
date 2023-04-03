@@ -25,11 +25,11 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
   }
 
   previousAnswer?: string;
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.previousAnswer = this.applicationService.model.PrincipalAccountableType;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.AccountablePersonsInProgress;
-    this.applicationService.updateLocalStorage();
-    this.applicationService.updateApplication();
+    await this.applicationService.updateApplication();
+    await this.applicationService.updateDynamicsAccountablePersonsStage();
   }
 
   canContinue(): boolean {
