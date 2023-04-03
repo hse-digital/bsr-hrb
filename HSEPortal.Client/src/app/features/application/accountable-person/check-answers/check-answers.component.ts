@@ -111,9 +111,9 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
   }
 
   navigateTo(url: string, apIndex: number) {
-      this.navigationService.navigateRelative(`accountable-person-${apIndex + 1}/${url}`, this.activatedRoute, {
-          return: 'check-answers'
-      });
+    this.navigationService.navigateRelative(`accountable-person-${apIndex + 1}/${url}`, this.activatedRoute, {
+      return: 'check-answers'
+    });
   }
 
   removeAp(ap: AccountablePersonModel, index: number) {

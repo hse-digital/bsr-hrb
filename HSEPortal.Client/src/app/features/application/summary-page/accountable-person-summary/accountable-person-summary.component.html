@@ -1,18 +1,9 @@
-<ng-container *ngIf="aps.length == 1">
-  <h2 class="govuk-heading-m govuk-!-margin-top-8">Principal accountable person</h2>
-  <organisation-summary *ngIf="aps[0].Type == 'organisation'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
-  <individual-summary *ngIf="aps[0].Type == 'individual'" [ap]="aps[0]" [apIndex]="0" [hasMoreAp]=false />
-</ng-container>
+<ng-container *ngFor="let ap of aps; let i = index;">
+  <h2 class="govuk-heading-m govuk-!-margin-top-8" *ngIf="i == 0">Principal accountable person</h2>
+  <h2 class="govuk-heading-m govuk-!-margin-top-8" *ngIf="i > 0">Other accountable person {{ i }}</h2>
 
-<ng-container *ngIf="aps.length > 1">
-  <ng-container *ngFor="let ap of aps; let i = index">
-    <h2 class="govuk-heading-m govuk-!-margin-top-8" *ngIf="i == 0">Principal accountable person</h2>
-    <h2 class="govuk-heading-m govuk-!-margin-top-8" *ngIf="i > 0">
-      <span>Other accountable person {{ i }}</span>
-    </h2>
-    <div class="section-content">
-      <organisation-summary *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
-      <individual-summary *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
-    </div>
-  </ng-container>
+  <organisation-summary *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+  <individual-summary *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+
+  <pap-accountability [pap]="ap" *ngIf="i == 0" />
 </ng-container>

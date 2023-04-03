@@ -6,7 +6,6 @@ import { AccountablePersonModel, ApplicationService } from 'src/app/services/app
   templateUrl: './accountable-person-summary.component.html'
 })
 export class AccountablePersonSummaryComponent {
-
   aps: AccountablePersonModel[] = [];
 
   constructor(private applicationService: ApplicationService) { }
