@@ -1,6 +1,7 @@
 <div class="govuk-!-margin-bottom-8" *ngIf="papName">
-  <govuk-body *ngIf="isCheckAnswers()">{{papName}} is accountable for the external walls and structure of the building. If you have not told us about another accountable person, we will assume that {{papName}} is also accountable for:</govuk-body>
-  <govuk-body *ngIf="isSummary()">{{papName}} is accountable for the external walls and structure of the building. If there are no other accountable persons listed, {{papName}} is also accountable for:</govuk-body>
+  <govuk-body *ngIf="area == accountabilityArea.CheckAnswers">{{papName}} is accountable for the external walls and structure of the building. If you have not told us about another accountable person, we will assume that {{papName}} is also accountable for:</govuk-body>
+  <govuk-body *ngIf="area == accountabilityArea.Summary">{{papName}} is accountable for the external walls and structure of the building. If there are no other accountable persons listed, {{papName}} is also accountable for:</govuk-body>
+  
   <govuk-list classes='govuk-list--bullet'>
     <govuk-list-item text="the routes that residents can walk through" />
     <govuk-list-item text="maintaining plant and equipment" />
