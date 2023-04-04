@@ -1,18 +1,18 @@
 <govuk-summary-list>
   <govuk-summary-list-row (onClick)="goToApType()" (onKeyupEnter)="goToApType()" key="Type" [showAction]=true>{{ap.Type == 'individual' ? 'Individual' : 'Organisation'}}</govuk-summary-list-row>
 
-  <govuk-summary-list-row (onKeyupEnter)="navigateTo('organisation-type')" (onClick)="navigateTo('organisation-type')" key="Organisation type" [showAction]=true>{{organisationTypeDescription()}}</govuk-summary-list-row>
+  <govuk-summary-list-row (onKeyupEnter)="navigateTo('organisation-type')" (onClick)="navigateTo('organisation-type')" key="Organisation type" [showAction]=true>{{organisationTypeDescription}}</govuk-summary-list-row>
   <govuk-summary-list-row (onKeyupEnter)="navigateTo('organisation-name')" (onClick)="navigateTo('organisation-name')" key="Organisation name" [showAction]=true>{{ap.OrganisationName}}</govuk-summary-list-row>
 
   <govuk-summary-list-row (onClick)="navigateTo('pap-address')" (onKeyupEnter)="navigateTo('pap-address')" key="Organisation address" [showAction]=true>
-    <address-description [address]="apAddress()" />
+    <address-description [address]="apAddress" />
   </govuk-summary-list-row>
 
   <ng-container *ngIf="apIndex == 0">
-    <govuk-summary-list-row (onClick)="navigateTo('who-are-you')" (onKeyupEnter)="navigateTo('who-are-you')" key="Are you the named contact?" [showAction]=true>{{whoAreYouDescription()}}</govuk-summary-list-row>
-    <govuk-summary-list-row *ngIf="namedContact()" (onClick)="navigateTo('pap-named-role')" (onKeyupEnter)="navigateTo('pap-named-role')" key="Job role" [showAction]=true>{{leadJobRoleDescription()}}</govuk-summary-list-row>
-    <govuk-summary-list-row *ngIf="registeringFor()" (onClick)="navigateTo('same-address')" (onKeyupEnter)="navigateTo('same-address')" key="Should we use the same address to contact you?" [showAction]=true>{{useSameAddressDescription()}}</govuk-summary-list-row>
-    <govuk-summary-list-row *ngIf="registeringFor() && ap.ActingForSameAddress == 'no'" (onClick)="navigateTo('acting-for-address')" (onKeyupEnter)="navigateTo('acting-for-address')" key="Your address" [showAction]=true>
+    <govuk-summary-list-row (onClick)="navigateTo('who-are-you')" (onKeyupEnter)="navigateTo('who-are-you')" key="Are you the named contact?" [showAction]=true>{{whoAreYouDescription}}</govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="isNamedContact()" (onClick)="navigateTo('pap-named-role')" (onKeyupEnter)="navigateTo('pap-named-role')" key="Job role" [showAction]=true>{{leadJobRoleDescription}}</govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="isRegisteringFor()" (onClick)="navigateTo('same-address')" (onKeyupEnter)="navigateTo('same-address')" key="Should we use the same address to contact you?" [showAction]=true>{{useSameAddressDescription}}</govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="isRegisteringFor() && ap.ActingForSameAddress == 'no'" (onClick)="navigateTo('acting-for-address')" (onKeyupEnter)="navigateTo('acting-for-address')" key="Your address" [showAction]=true>
       <address-description [address]="ap.ActingForAddress" />
     </govuk-summary-list-row>
   </ng-container>
@@ -26,9 +26,9 @@
     </govuk-summary-list-row>
   </ng-container>
 
-  <govuk-summary-list-row *ngIf="registeringFor() || employee()" (onKeyupEnter)="navigateTo('lead-name')" (onClick)="navigateTo('lead-name')" key="Named contact" [showAction]=true>{{ap.LeadFirstName}} {{ap.LeadLastName}}</govuk-summary-list-row>
-  <govuk-summary-list-row *ngIf="registeringFor() || employee()" (onKeyupEnter)="navigateTo('lead-details')" (onClick)="navigateTo('lead-details')" key="Named contact's details" [showAction]=true>
-    <div>{{leadJobRoleDescription()}}</div>
+  <govuk-summary-list-row *ngIf="isRegisteringFor() || isEmployee()" (onKeyupEnter)="navigateTo('lead-name')" (onClick)="navigateTo('lead-name')" key="Named contact" [showAction]=true>{{ap.LeadFirstName}} {{ap.LeadLastName}}</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="isRegisteringFor() || isEmployee()" (onKeyupEnter)="navigateTo('lead-details')" (onClick)="navigateTo('lead-details')" key="Named contact's details" [showAction]=true>
+    <div>{{leadJobRoleDescription}}</div>
     <div>{{ap.LeadEmail}}</div>
     <div>{{ap.LeadPhoneNumber}}</div>
   </govuk-summary-list-row>
