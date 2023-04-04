@@ -24,7 +24,7 @@
 
         <div class="govuk-hint">We do not need to know about responsible persons, like those under the Fire Safety Order, unless they are also accountable.</div>
 
-        <govuk-radio-group title="Is anyone else accountable for any residential part of {{applicationService.model.BuildingName}}?" fieldsetClass="govuk-fieldset__legend--s" id="radios-add-accountable-person" [(model)]="addAccountablePerson" [errorText]="getErrorDescription(hasErrors, 'Select yes if you want to add another accountable person')">
+        <govuk-radio-group title="Is anyone else accountable for any residential part of {{applicationService.model.BuildingName}}?" id="radios-add-accountable-person" [(model)]="addAccountablePerson" [errorText]="getErrorDescription(hasErrors, 'Select yes if you want to add another accountable person')">
           <govuk-radio name="application-group" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
           <govuk-radio name="application-group" id="no" value="no" label="No" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
         </govuk-radio-group>

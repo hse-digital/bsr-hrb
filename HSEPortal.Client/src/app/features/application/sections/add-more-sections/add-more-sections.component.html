@@ -9,11 +9,9 @@
           <govuk-error-link anchorId="yes-input" message="Select yes if there are more blocks in the building" />
         </govuk-error-summary>
 
-        <h1 class="govuk-heading-l">High-rise residential structures of {{applicationService.model.BuildingName}}</h1>
+        <govuk-radio-group title="High-rise residential structures of {{applicationService.model.BuildingName}}" [isPageHeading]=true id="another-block" [(model)]="addAnotherSectionLink" title="Add another high-rise residential structure?" [errorText]="getErrorDescription(anotherBlockHasErrors, 'Select yes if there are more blocks in the building')">
+          <govuk-body>So far you have told us about <b>{{getSectionNames()}}</b> <span *ngIf="sections!.length > 1"> and <b>{{getSectionName(sections!.at(-1)!, sections!.length-1)}}</b></span>.</govuk-body>
 
-        <govuk-body>So far you have told us about <b>{{getSectionNames()}}</b> <span *ngIf="sections!.length > 1"> and <b>{{getSectionName(sections!.at(-1)!, sections!.length-1)}}</b></span>.</govuk-body>
-
-        <govuk-radio-group id="another-block" [(model)]="addAnotherSectionLink" title="Add another high-rise residential structure?" fieldsetClass="govuk-fieldset__legend--s" [errorText]="getErrorDescription(anotherBlockHasErrors, 'Select yes if there are more blocks in the building')">
           <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="yes" value="yes" label="Yes" />
           <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="no" value="no" label="No" />
         </govuk-radio-group>
