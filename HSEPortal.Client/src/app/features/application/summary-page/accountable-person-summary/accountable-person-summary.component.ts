@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AccountablePersonModel, ApplicationService } from 'src/app/services/application.service';
-import { PapNameService } from 'src/app/services/pap-name.service';
+import { AccountabilityArea } from 'src/app/components/pap-accountability/pap-accountability.component';
 
 @Component({
   selector: 'accountable-person-summary',
@@ -9,7 +9,9 @@ import { PapNameService } from 'src/app/services/pap-name.service';
 export class AccountablePersonSummaryComponent {
   aps: AccountablePersonModel[] = [];
 
-  constructor(private applicationService: ApplicationService, public papNameService: PapNameService) { }
+  summaryArea = AccountabilityArea.Summary;
+
+  constructor(private applicationService: ApplicationService) { }
 
   ngOnInit(): void {
     this.aps = this.applicationService.model.AccountablePersons;

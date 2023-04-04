@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { PaymentDeclarationComponent } from 'src/app/features/application/payment/payment-declaration/payment-declaration.component';
 import { PaymentModule } from 'src/app/features/application/payment/payment.module';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -8,7 +8,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { PapNameService } from 'src/app/services/pap-name.service';
+import { AccountabilityArea } from 'src/app/components/pap-accountability/pap-accountability.component';
 
 @Component({
   templateUrl: './check-answers.component.html',
@@ -19,8 +19,10 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
   static route: string = 'check-answers';
   static title: string = "Check your answers for PAP and AP - Register a high-rise building - GOV.UK";
 
+  checkAnswersArea = AccountabilityArea.CheckAnswers;
+
   aps: AccountablePersonModel[] = [];
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, public papNameService: PapNameService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 

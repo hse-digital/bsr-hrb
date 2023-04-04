@@ -37,7 +37,7 @@ import { PapAccountabilityComponent } from "./pap-accountability/pap-accountabil
     AddressComponent,
     AddressDescriptionComponent,
     SaveAndComeBackLaterComponent,
-    PapAccountabilityComponent
+    PapAccountabilityComponent    
   ],
   providers: [HttpClient, AddressService]
 })
