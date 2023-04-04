@@ -74,7 +74,7 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
   }
 
   getCheckboxTitle(section: any) {
-    return this.applicationService.model.NumberOfSections == 'two_or_more' ? section?.Name ?? "First section" : "";
+    return this.applicationService.model.NumberOfSections == 'two_or_more' ? section?.Name ?? "First section" : this.applicationService.model.BuildingName;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
