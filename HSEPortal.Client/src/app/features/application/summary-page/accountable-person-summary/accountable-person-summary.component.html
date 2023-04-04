@@ -5,5 +5,6 @@
   <organisation-summary *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
   <individual-summary *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
 
-  <pap-accountability [pap]="ap" *ngIf="i == 0" />
+  <pap-accountability *ngIf="i == 0" [pap]="ap" [area]="summaryArea" />
+  
 </ng-container>
