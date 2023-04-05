@@ -83,7 +83,7 @@ export class AddressComponent implements OnInit {
   }
 
   resetFocus() {
-    const mainHeader = document.querySelector('.govuk-header__link--service-name');
+    const mainHeader = document.querySelector('#gouvk-header-service-name');
     if (mainHeader) {
       (mainHeader as HTMLElement).focus();
       (mainHeader as HTMLElement).blur();
