@@ -10,10 +10,21 @@ public record DynamicsPayment(string bsr_paymentid = null, double? bsr_amountpai
     string bsr_billingaddress = null,
     string bsr_cardbrandegvisa = null,
     DynamicsPaymentCardType? bsr_cardtypecreditdebit = null,
-    string bsr_govukpaystatus = null);
+    string bsr_govukpaystatus = null,
+    string bsr_govukpaymentid = null,
+    DynamicsPaymentReconciliationStatus? bsr_paymentreconciliationstatus = null);
 
 public enum DynamicsPaymentCardType
 {
     Credit = 760810000,
     Debit = 760810001,
+}
+
+public enum DynamicsPaymentReconciliationStatus
+{
+    Pending = 760_810_000,
+    Successful = 760_810_001,
+    FailedReconciliation = 760_810_002,
+    FailedPayment = 760_810_003,
+    Refunded = 760_810_004
 }

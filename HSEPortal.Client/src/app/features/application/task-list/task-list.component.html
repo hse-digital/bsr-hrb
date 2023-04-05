@@ -46,13 +46,14 @@
           <ul class="app-task-list__items">
             <li class="app-task-list__item firstItem">
               <span class="app-task-list__task-name">
-                <span task *ngIf="!containsFlag(applicationStatus.AccountablePersonsComplete)">Apply and pay the fee</span>
-                <a task *ngIf="containsFlag(applicationStatus.AccountablePersonsComplete)" class="govuk-link" (keyup.enter)="navigateToPayment()" (click)="navigateToPayment()" role="link" tabindex="0">Apply and pay the fee</a>
+                <span task *ngIf="!containsFlag(applicationStatus.AccountablePersonsComplete) || checkingStatus">Apply and pay the fee</span>
+                <a task *ngIf="containsFlag(applicationStatus.AccountablePersonsComplete) && !checkingStatus" class="govuk-link" (keyup.enter)="navigateToPayment()" (click)="navigateToPayment()" role="link" tabindex="0">Apply and pay the fee</a>
               </span>
-              <govuk-tag tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.AccountablePersonsComplete)">CANNOT START YET</govuk-tag>
-              <govuk-tag tag class="govuk-tag--grey" *ngIf="containsFlag(applicationStatus.AccountablePersonsComplete) && !containsFlag(applicationStatus.PaymentInProgress)">NOT STARTED YET</govuk-tag>
-              <govuk-tag tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.PaymentInProgress) && !containsFlag(applicationStatus.PaymentComplete)">IN PROGRESS</govuk-tag>
-              <govuk-tag tag *ngIf="containsFlag(applicationStatus.PaymentComplete)">COMPLETE</govuk-tag>
+              <govuk-tag tag *ngIf="checkingStatus"><i class="fa fa-spinner fa-spin "></i></govuk-tag>
+              <govuk-tag tag class="govuk-tag--grey" *ngIf="!checkingStatus && !containsFlag(applicationStatus.AccountablePersonsComplete)">CANNOT START YET</govuk-tag>
+              <govuk-tag tag class="govuk-tag--grey" *ngIf="!checkingStatus && containsFlag(applicationStatus.AccountablePersonsComplete) && (paymentStatus == paymentEnum.Failed || paymentStatus == undefined)">NOT STARTED YET</govuk-tag>
+              <govuk-tag tag class="govuk-tag--blue" *ngIf="!checkingStatus && containsFlag(applicationStatus.AccountablePersonsComplete) && (paymentStatus == paymentEnum.Pending || paymentStatus == paymentEnum.Started)">IN PROGRESS</govuk-tag>
+              <govuk-tag tag *ngIf="!checkingStatus && containsFlag(applicationStatus.PaymentComplete) && paymentStatus == paymentEnum.Success">COMPLETE</govuk-tag>
             </li>
           </ul>
         </li>

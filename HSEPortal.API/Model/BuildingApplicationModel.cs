@@ -16,8 +16,6 @@ public record BuildingApplicationModel(
     AccountablePerson[] AccountablePersons = null,
     string OutOfScopeContinueReason = null,
     string PrincipalAccountableType = null,
-    PaymentResponseModel[] Payments = null,
-    [property:Obsolete]PaymentResponseModel Payment = null,
     BuildingApplicationStatus ApplicationStatus = BuildingApplicationStatus.None) : IValidatableModel
 {
     public ValidationSummary Validate()

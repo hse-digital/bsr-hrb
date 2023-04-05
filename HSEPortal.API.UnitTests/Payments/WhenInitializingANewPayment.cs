@@ -1,4 +1,6 @@
 ﻿using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using FluentAssertions;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Functions;
@@ -7,11 +9,13 @@ using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
 using Microsoft.Extensions.Options;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace HSEPortal.API.UnitTests.Payments;
 
 public class WhenInitializingANewPayment : UnitTestBase
 {
+    private readonly ITestOutputHelper outputHelper;
     private readonly PaymentFunctions paymentFunctions;
     private readonly IntegrationsOptions integrationOptions;
     private readonly SwaOptions swaOptions;
@@ -19,11 +23,12 @@ public class WhenInitializingANewPayment : UnitTestBase
     private readonly PaymentApiResponseModel paymentApiResponse;
     private string returnUrl => $"{swaOptions.Url}/application/{applicationId}/payment/confirm";
 
-    public WhenInitializingANewPayment()
+    public WhenInitializingANewPayment(ITestOutputHelper outputHelper)
     {
+        this.outputHelper = outputHelper;
         integrationOptions = new IntegrationsOptions { PaymentEndpoint = "https://publicapi.payments.service.gov.uk", PaymentApiKey = "abc123", PaymentAmount = 251 };
         swaOptions = new SwaOptions { Url = "http://localhost:4280" };
-        paymentFunctions = new PaymentFunctions(new OptionsWrapper<IntegrationsOptions>(integrationOptions), new OptionsWrapper<SwaOptions>(swaOptions), GetMapper());
+        paymentFunctions = new PaymentFunctions(new OptionsWrapper<IntegrationsOptions>(integrationOptions), new OptionsWrapper<SwaOptions>(swaOptions), DynamicsService, GetMapper());
 
         paymentApiResponse = CreatePaymentApiResponse();
         HttpTest.RespondWithJson(paymentApiResponse);

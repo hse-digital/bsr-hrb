@@ -21,30 +21,15 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   async ngOnInit() {
     await this.applicationService.syncPayment();
 
-    var applicationStatus = this.applicationService.model.ApplicationStatus;
-    if ((applicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
-      this.shouldRender = true;
-      return;
-    }
-
-    if ((this.applicationService.model.Payments?.findIndex(x => x.Status == "success") ?? -1) > -1) {
-      this.shouldRender = true;
-      return;
-    }
-
     this.activatedRoute.queryParams.subscribe(async query => {
       var paymentReference = query['reference'];
-      var modelPaymentIndex = this.applicationService.model.Payments?.findIndex(x => x.Reference == paymentReference);
 
-      if (!paymentReference || modelPaymentIndex == -1) {
+      if (!paymentReference) {
         this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
         return;
       }
 
-      var modelPayment = this.applicationService.model.Payments![modelPaymentIndex!];
-      this.payment = await this.paymentService.GetPayment(modelPayment!.PaymentId!);
-      this.applicationService.model.Payments![modelPaymentIndex!] = this.payment;
-
+      this.payment = await this.paymentService.GetPayment(paymentReference);
       if (this.payment.Status == 'success') {
         this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
         await this.applicationService.updateApplication();
