@@ -4,11 +4,9 @@
     <govuk-error-link anchorId="address-0-input" message="Select an address" />
   </govuk-error-summary>
 
-  <h1 class="govuk-heading-l">{{getTitle()}}</h1>
+  <govuk-radio-group [title]="getTitle()" [isPageHeading]=true [(model)]="selectedAddress" id="radios-addresses" [errorText]="getErrorDescription(addressHasErrors, 'Select an address.')">
+    <govuk-body>{{addressResponse?.Results?.length}} {{(addressResponse?.Results?.length ?? 0) > 1 ? "addresses" : "address"}} found for <b>{{ searchModel.postcode }}</b><span *ngIf="searchModel.addressLine1"> and <b>{{searchModel.addressLine1}}</b></span>.</govuk-body>
 
-  <govuk-body>{{addressResponse?.Results?.length}} {{(addressResponse?.Results?.length ?? 0) > 1 ? "addresses" : "address"}} found for <b>{{ searchModel.postcode }}</b><span *ngIf="searchModel.addressLine1"> and <b>{{searchModel.addressLine1}}</b></span>.</govuk-body>
-
-  <govuk-radio-group [(model)]="selectedAddress" id="radios-addresses" [errorText]="getErrorDescription(addressHasErrors, 'Select an address.')">
     <govuk-radio *ngFor="let item of addressResponse?.Results; let i = index" (onKeyupEnter)="continue()" name="application-group" id="address-{{i}}" [value]="item" label="{{ item.Address }}" />
   </govuk-radio-group>
 </div>

@@ -6,12 +6,10 @@
         <govuk-error-link anchorId="application-yes-input" message="Select one of the options below" />
       </govuk-error-summary>
 
-      <h1 class="govuk-heading-l">Does {{sectionBuildingName()}} have another address or postcode?</h1>
+      <govuk-radio-group title="Does {{sectionBuildingName()}} have another address or postcode?" [isPageHeading]=true class="govuk-!-margin-bottom-4" (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(hasMoreAddressesError, 'Select one of the options below')" [(model)]="hasMoreAddresses">
+        <govuk-body>It may have more than one address and postcode. For example, it may be on the corner of 2 streets.</govuk-body>
+        <govuk-body>Do not tell us the address for each residential unit within it.</govuk-body>
 
-      <govuk-body>It may have more than one address and postcode. For example, it may be on the corner of 2 streets.</govuk-body>
-      <govuk-body>Do not tell us the address for each residential unit within it.</govuk-body>
-
-      <govuk-radio-group class="govuk-!-margin-bottom-4" (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(hasMoreAddressesError, 'Select one of the options below')" [(model)]="hasMoreAddresses">
         <govuk-radio [model]="hasMoreAddresses" name="application-group" id="application-yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
         <govuk-radio [model]="hasMoreAddresses" name="application-group" id="application-no" value="no" label="No" (onKeyupEnter)="saveAndContinue()" />
       </govuk-radio-group>

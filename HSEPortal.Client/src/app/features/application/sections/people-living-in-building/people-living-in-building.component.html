@@ -9,7 +9,7 @@
           <govuk-error-link anchorId="yes-input" [message]="getErrorMessage()" />
         </govuk-error-summary>
 
-        <govuk-radio-group id="peopleLivingInBuilding" [(model)]="applicationService.currentSection.PeopleLivingInBuilding" [errorText]="getErrorDescription(peopleLivingHasErrors, getErrorMessage())" title="Is anyone living in {{sectionBuildingName()}}?" fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-6'>
+        <govuk-radio-group title="Is anyone living in {{sectionBuildingName()}}?" [isPageHeading]=true id="peopleLivingInBuilding" [(model)]="applicationService.currentSection.PeopleLivingInBuilding" [errorText]="getErrorDescription(peopleLivingHasErrors, getErrorMessage())">
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.PeopleLivingInBuilding" name="people-living" id="yes" value="yes" label="Yes" />
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.PeopleLivingInBuilding" name="people-living" id="no_block_ready" value="no_section_ready" label="No, but it is ready for people to move in" hint="This could be if it has been refurbished or is new." />
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.PeopleLivingInBuilding" name="people-living" id="no_wont_move" value="no_wont_move" label="No and people will not be moving in" hint="This could be because it's going to be demolished or the use of the building is changing." />
