@@ -10,14 +10,4 @@ export class IndividualComponent extends SummaryComponent {
   @Input() override ap!: AccountablePersonModel;
   @Input() override apIndex!: number;
   @Input() override hasMoreAp = false;
-
-  getYourAddress() {
-    return this.apIndex == 0 && this.ap.IsPrincipal == 'yes' ?
-      this.ap.PapAddress : this.ap.Address;
-  }
-
-  getPapAddress() {
-    return this.apIndex == 0 && this.ap.IsPrincipal == 'no' ?
-      this.ap.PapAddress : this.ap.Address;
-  }
 }

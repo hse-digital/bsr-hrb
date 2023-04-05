@@ -30,6 +30,16 @@ export class SummaryComponent {
     return this.ap.PapAddress ?? this.ap.Address;
   }
 
+  getYourAddress() {
+    return this.apIndex == 0 && this.ap.IsPrincipal == 'yes' ?
+      this.ap.PapAddress : this.ap.Address;
+  }
+
+  getPapAddress() {
+    return this.apIndex == 0 && this.ap.IsPrincipal == 'no' ?
+      this.ap.PapAddress : this.ap.Address;
+  }
+
   sectionsWithAccountability() {
     return this.ap.SectionsAccountability?.filter(x => x.Accountability?.length ?? 0 > 0);
   }
@@ -56,6 +66,7 @@ export class SummaryComponent {
   isEmployee() {
     return this.ap.Role == 'employee';
   }
+
 }
 
 type Mapper = Record<string, string>;
