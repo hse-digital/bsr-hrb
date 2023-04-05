@@ -16,7 +16,7 @@
         <govuk-body>If the principal accountable person is an organisation, individuals within that organisation are not accountable persons. But we will ask you to name someone in the organisation we can talk to about building safety issues.</govuk-body>
         <govuk-body>If the principal accountable person is an individual, we will contact that individual.</govuk-body>
 
-        <govuk-radio-group title="The principal accountable person is" fieldsetClass="govuk-fieldset__legend--s" [(model)]="applicationService.model.PrincipalAccountableType" id="radios-accountable-person" [errorText]="getErrorDescription(hasErrors, 'Select if the principal accountable person is an organisation or an individual')">
+        <govuk-radio-group title="The principal accountable person is" [(model)]="applicationService.model.PrincipalAccountableType" id="radios-accountable-person" [errorText]="getErrorDescription(hasErrors, 'Select if the principal accountable person is an organisation or an individual')">
           <govuk-radio [model]="applicationService.model.PrincipalAccountableType" name="application-group" id="organisation" value="organisation" hint="The organisation is the principal accountable person not, for example, the chief executive officer." label="An organisation" (onKeyupEnter)="saveAndContinue()" />
           <govuk-radio [model]="applicationService.model.PrincipalAccountableType" name="application-group" id="individual" value="individual" label="The individual who personally owns the building" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
         </govuk-radio-group>
