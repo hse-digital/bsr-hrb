@@ -5,6 +5,7 @@ using Flurl.Util;
 using HSEPortal.API.Model;
 using HSEPortal.API.Model.DynamicsSynchronisation;
 using HSEPortal.API.Model.LocalAuthority;
+using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.Domain.DynamicsDefinitions;
 using HSEPortal.Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -58,7 +59,7 @@ public class DynamicsService
     {
         var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplication>>("bsr_buildingapplications", new[]
         {
-            ("$filter", $"bsr_applicationid eq '{applicationId}' or bsr_applicationreturncode eq '{applicationId}'"),
+            ("$filter", $"bsr_applicationid eq '{applicationId}'"),
             ("$expand", "bsr_Building,bsr_RegistreeId")
         });
 
@@ -93,6 +94,14 @@ public class DynamicsService
         {
             await CreateAccountablePerson(ap, dynamicsBuildingApplication);
         }
+    }
+
+    public async Task<List<DynamicsPayment>> GetPayments(string applicationNumber)
+    {
+        var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
+        var payments = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"_bsr_buildingapplicationid_value eq '{buildingApplication.bsr_buildingapplicationid}'"));
+
+        return payments.value;
     }
 
     private async Task<string> CreateAccountablePerson(AccountablePerson accountablePerson, DynamicsBuildingApplication dynamicsBuildingApplication, bool pap = false)
@@ -333,6 +342,12 @@ public class DynamicsService
         await dynamicsApi.Update($"bsr_buildings({dynamicsBuildingApplication._bsr_building_value})", lookup with { bsr_paptypecode = papType, bsr_whoareyou = null });
     }
 
+    public async Task NewPayment(string applicationId, PaymentResponseModel payment)
+    {
+        var application = await GetBuildingApplicationUsingId(applicationId);
+        await CreatePayment(new BuildingApplicationPayment(application.bsr_buildingapplicationid, payment));
+    }
+
     public async Task CreatePayment(BuildingApplicationPayment buildingApplicationPayment)
     {
         var payment = buildingApplicationPayment.Payment;
@@ -360,6 +375,7 @@ public class DynamicsService
                 bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
                 bsr_amountpaid = payment.Amount / 100,
                 bsr_govukpaystatus = payment.Status,
+                bsr_govukpaymentid = payment.PaymentId
             });
         }
         else
@@ -371,6 +387,12 @@ public class DynamicsService
                 bsr_govukpaystatus = payment.Status,
             });
         }
+    }
+
+    public async Task<DynamicsPayment> GetPaymentByReference(string reference)
+    {
+        var payments = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_transactionid eq '{reference}'"));
+        return payments.value.FirstOrDefault();
     }
 
     private async Task<DynamicsAccountablePerson> FindExistingAp(string sectionId, string accountId, string area)

@@ -1,9 +1,9 @@
 import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { ApplicationService, BuildingApplicationStatus } from "src/app/services/application.service";
+import { ApplicationService, BuildingApplicationStatus, PaymentStatus } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { AccountablePersonModule } from "../accountable-person/accountable-person.module";
 import { NumberOfSectionsComponment } from "../number-of-sections/number-of-sections.component";
@@ -21,6 +21,8 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
 
   applicationStatus = BuildingApplicationStatus;
   completedSections: number = 0;
+  paymentEnum = PaymentStatus;
+  paymentStatus?: PaymentStatus;
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
@@ -28,10 +30,16 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
-  ngOnInit(): void {
+  checkingStatus = true;
+  async ngOnInit(): Promise<void> {
     if (this.containsFlag(BuildingApplicationStatus.BlocksInBuildingComplete)) this.completedSections++;
-    if (this.containsFlag(BuildingApplicationStatus.AccountablePersonsComplete)) this.completedSections++;
+    if (this.containsFlag(BuildingApplicationStatus.AccountablePersonsComplete)) {
+      await this.getPaymentStatus();
+      this.completedSections++;
+    }
     if (this.containsFlag(BuildingApplicationStatus.PaymentComplete)) this.completedSections++;
+
+    this.checkingStatus = false;
   }
 
   canContinue(): boolean {
@@ -64,17 +72,28 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
 
   navigateToPayment() {
     let appendRoute = PaymentModule.baseRoute;
-
-    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
-      appendRoute = `${appendRoute}/${PaymentConfirmationComponent.route}`;
-    } else {
-      appendRoute = `${appendRoute}/${PaymentDeclarationComponent.route}`;
-    }
+    appendRoute = `${appendRoute}/${PaymentDeclarationComponent.route}`;
 
     this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
   }
 
   containsFlag(flag: BuildingApplicationStatus) {
     return (this.applicationService.model.ApplicationStatus & flag) == flag;
+  }
+
+  async getPaymentStatus(): Promise<void> {
+    var payments = await this.applicationService.getApplicationPayments();
+
+    if (payments?.length > 0) {
+      var successFulPayment = payments.find(x => x.bsr_govukpaystatus == 'success');
+
+      if (successFulPayment) {
+        this.paymentStatus = successFulPayment.bsr_paymentreconciliationstatus == 760_810_002 || successFulPayment.bsr_paymentreconciliationstatus == 760_810_003 ? PaymentStatus.Failed : PaymentStatus.Success;
+      } else {
+        this.paymentStatus = PaymentStatus.Failed;
+      }
+    } else if (this.containsFlag(BuildingApplicationStatus.PaymentInProgress)) {
+      this.paymentStatus = PaymentStatus.Started;
+    }
   }
 }

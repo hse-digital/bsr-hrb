@@ -149,6 +149,10 @@ export class ApplicationService {
   async syncPayment(): Promise<void> {
     await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
   }
+
+  async getApplicationPayments(): Promise<any[]> {
+    return await firstValueFrom(this.httpClient.get<any[]>(`api/GetApplicationPaymentStatus/${this.model.id}`));
+  }
 }
 
 export class BuildingRegistrationModel {
@@ -169,7 +173,6 @@ export class BuildingRegistrationModel {
   OutOfScopeContinueReason?: string;
   PrincipalAccountableType?: string;
   AccountablePersons: AccountablePersonModel[] = [];
-  Payments?: PaymentModel[] = [];
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
 }
 
@@ -249,4 +252,12 @@ export class PaymentModel {
   PaymentId?: string;
   PaymentProvider?: string;
   ProviderId?: string;
+  ReconciliationStatus?: number;
+}
+
+export enum PaymentStatus {
+  Started,
+  Pending,
+  Success,
+  Failed
 }

@@ -1,5 +1,3 @@
-using System.Globalization;
-using System.Net;
 using AutoMapper;
 using Flurl;
 using Flurl.Http;
@@ -132,21 +130,20 @@ public class DynamicsSynchronisationFunctions
         {
             var buildingApplicationWrapper = new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.ApplicationSubmitted);
             await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), buildingApplicationWrapper);
-
-            var paymentSyncTasks = buildingApplicationModel.Payments.Select(async payment =>
+            
+            var payments = await orchestrationContext.CallActivityAsync<List<DynamicsPayment>>(nameof(GetDynamicsPayments), buildingApplicationModel.Id);
+            var paymentSyncTasks = payments.Select(async payment =>
             {
-                var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), payment.PaymentId);
+                var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), payment.bsr_govukpaymentid);
                 if (paymentResponse != null)
                 {
-                    await orchestrationContext.CallActivityAsync(nameof(CreatePayment), new BuildingApplicationPayment(dynamicsBuildingApplication.bsr_buildingapplicationid, paymentResponse));
+                    await orchestrationContext.CallActivityAsync(nameof(CreateOrUpdatePayment), new BuildingApplicationPayment(dynamicsBuildingApplication.bsr_buildingapplicationid, paymentResponse));
                 }
 
                 return paymentResponse;
             }).ToArray();
 
-            var updatedPayments = await Task.WhenAll(paymentSyncTasks);
-            var newApplication = buildingApplicationModel with { Payments = updatedPayments };
-            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplicationInCosmos), newApplication);
+            await Task.WhenAll(paymentSyncTasks);
         }
     }
 
@@ -202,8 +199,14 @@ public class DynamicsSynchronisationFunctions
         return dynamicsService.CreateAccountablePersons(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);
     }
 
-    [Function(nameof(CreatePayment))]
-    public async Task CreatePayment([ActivityTrigger] BuildingApplicationPayment buildingApplicationPayment)
+    [Function(nameof(GetDynamicsPayments))]
+    public Task<List<DynamicsPayment>> GetDynamicsPayments([ActivityTrigger] string applicationId)
+    {
+        return dynamicsService.GetPayments(applicationId);
+    }
+
+    [Function(nameof(CreateOrUpdatePayment))]
+    public async Task CreateOrUpdatePayment([ActivityTrigger] BuildingApplicationPayment buildingApplicationPayment)
     {
         await dynamicsService.CreatePayment(buildingApplicationPayment);
     }
