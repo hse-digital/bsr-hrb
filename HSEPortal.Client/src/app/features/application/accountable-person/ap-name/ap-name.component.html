@@ -13,13 +13,13 @@
         <h1 class="govuk-heading-l">Tell us the name of the {{pap ? 'principal' : 'other'}} accountable person for {{applicationService.model.BuildingName}}</h1>
 
         <govuk-input id="first-name" label="First name" 
-                      [(model)]="applicationService.currentAccountablePerson.FirstName"
+                      [(model)]="applicationService.currentAccountablePerson.FirstName" #field [govukRequired]="field"
                       [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
                       class="govuk-!-margin-bottom-5"
                       (onKeyupEnter)="saveAndContinue()" />
 
         <govuk-input id="last-name" label="Last name" 
-                      [(model)]="applicationService.currentAccountablePerson.LastName"
+                      [(model)]="applicationService.currentAccountablePerson.LastName" #field2 [govukRequired]="field2"
                       [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
                       (onKeyupEnter)="saveAndContinue()" />
       </div>

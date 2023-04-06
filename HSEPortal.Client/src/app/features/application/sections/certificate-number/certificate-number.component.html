@@ -13,7 +13,7 @@
 
         <govuk-input hint="This should be on the completion certificate for the building. Do not use the Unique Property Reference Number (UPRN) instead. If you do not have the completion certificate number, leave this blank."
                      id="certificate-reference" [(model)]="applicationService.currentSection.CompletionCertificateReference"
-                     (onKeyupEnter)="saveAndContinue()"
+                     (onKeyupEnter)="saveAndContinue()" #field [govukRequired]="field" 
                      [errorText]="getErrorDescription(certificateHasErrors, 'Enter the certificate number')"  />
       </div>
 

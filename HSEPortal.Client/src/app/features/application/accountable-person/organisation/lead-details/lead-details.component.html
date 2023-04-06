@@ -13,7 +13,9 @@
 
         <h1 class="govuk-heading-l">{{applicationService.currentAccountablePerson.LeadFirstName}} {{applicationService.currentAccountablePerson.LeadLastName}}'s details</h1>
 
-        <govuk-radio-group title="Job role" [(model)]="applicationService.currentAccountablePerson.LeadJobRole" id="job_role" class="govuk-!-margin-bottom-6" hintText="We want to understand the seniority of {{applicationService.currentAccountablePerson.LeadFirstName}} {{applicationService.currentAccountablePerson.LeadLastName}}. Select the closest match." [errorText]="getErrorDescription(jobRoleHasErrors, jobRoleErrorText)">
+        <govuk-radio-group title="Job role" 
+          [(model)]="applicationService.currentAccountablePerson.LeadJobRole" #field [govukRequired]="field"
+          id="job_role" class="govuk-!-margin-bottom-6" hintText="We want to understand the seniority of {{applicationService.currentAccountablePerson.LeadFirstName}} {{applicationService.currentAccountablePerson.LeadLastName}}. Select the closest match." [errorText]="getErrorDescription(jobRoleHasErrors, jobRoleErrorText)">
           <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-director" value="director" label="Director" hint="This includes chief executive officer." (onKeyupEnter)="saveAndContinue()" />
           <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-administrative_worker" value="administrative_worker" label="Administrative or office worker" (onKeyupEnter)="saveAndContinue()" />
           <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_manager" value="building_manager" label="Building or facilities manager" (onKeyupEnter)="saveAndContinue()" />

@@ -15,13 +15,13 @@
         <govuk-body>Tell us the name of the person who we should contact about building safety issues. You can contact us later if the person or their details change.</govuk-body>
 
         <govuk-input id="first-name" label="First name"
-                      [(model)]="applicationService.currentAccountablePerson.LeadFirstName"
+                      [(model)]="applicationService.currentAccountablePerson.LeadFirstName" #field [govukRequired]="field"
                       [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
                       class="govuk-!-margin-bottom-5"
                       (onKeyupEnter)="saveAndContinue()" />
 
         <govuk-input id="last-name" label="Last name"
-                      [(model)]="applicationService.currentAccountablePerson.LeadLastName"
+                      [(model)]="applicationService.currentAccountablePerson.LeadLastName" #field2 [govukRequired]="field2"
                       [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
                       (onKeyupEnter)="saveAndContinue()" />
                       

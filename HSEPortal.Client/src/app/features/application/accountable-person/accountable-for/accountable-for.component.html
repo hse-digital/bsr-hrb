@@ -16,8 +16,8 @@
         <div class="govuk-hint govuk-!-margin-bottom-6">Select all that apply</div>
 
         <div class="govuk-!-margin-bottom-6" *ngFor="let section of applicationService.model.Sections; let i = index">
-          <govuk-checkbox-group [(model)]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" id="{{'section-' + i + '-AccountabilityCheckbox'}}"
-                                [title]="getCheckboxTitle(section)">
+          <govuk-checkbox-group [(model)]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" 
+            id="{{'section-' + i + '-AccountabilityCheckbox'}}" #field [govukRequired]="field" [title]="getCheckboxTitle(section)">
             <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="Routes that residents can walk through" value="routes" hint="This includes stairs, lobbies, corridors, and maintaining the internal walls and floors." />
             <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="Maintaining machinery and equipment" value="maintenance" hint="This includes all utilities, fire alarms, sprinklers, and other fire and smoke provisions." />
             <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="Facilities that residents share" value="facilities" hint="This includes underground car parks, laundry rooms, bin stores and other storage areas." />

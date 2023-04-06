@@ -7,7 +7,7 @@
       <h1 class="govuk-heading-l">Check your building summary answers for {{applicationService.model.BuildingName}}</h1>
 
       <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
-        <govuk-error-link anchorId="input-floors-above" message="Please check if all structures have data correctly entered" />
+        <govuk-error-link anchorId="input-floors-above" message="Answer all questions" />
       </govuk-error-summary>
 
       <govuk-summary-list classes="govuk-summary-list--no-border answers-heading-border {{applicationService.model.NumberOfSections == 'one' ? 'no-margin-bottom' : ''}}">
@@ -26,7 +26,6 @@
           </div>
         </div>
       </div>
-
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
       <save-and-come-back (onClick)="saveAndComeBack()" />

@@ -14,6 +14,7 @@ import { TooManyAddressComponent } from "./address/too-many-address.component";
 import { AddressDescriptionComponent } from "./address-description.component";
 import { SaveAndComeBackLaterComponent } from "./save-and-come-back.component";
 import { PapAccountabilityComponent } from "./pap-accountability/pap-accountability.component";
+import { GovukRequiredDirective } from "./required.directive";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { PapAccountabilityComponent } from "./pap-accountability/pap-accountabil
     SelectAddressComponent,
     AddressDescriptionComponent,
     SaveAndComeBackLaterComponent,
-    PapAccountabilityComponent
+    PapAccountabilityComponent,
+    GovukRequiredDirective
   ],
   imports: [
     HseAngularModule,
@@ -37,7 +39,8 @@ import { PapAccountabilityComponent } from "./pap-accountability/pap-accountabil
     AddressComponent,
     AddressDescriptionComponent,
     SaveAndComeBackLaterComponent,
-    PapAccountabilityComponent    
+    PapAccountabilityComponent,
+    GovukRequiredDirective
   ],
   providers: [HttpClient, AddressService]
 })

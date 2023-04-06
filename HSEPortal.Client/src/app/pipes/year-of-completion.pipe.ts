@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from "@angular/core";
 export class YearOfCompletionPipe implements PipeTransform {
 
     transform(value: any, ...args: any[]) {
-        return value.toString().replaceAll('-', ' ');
+        return value?.toString().replaceAll('-', ' ');
     }
 
 }

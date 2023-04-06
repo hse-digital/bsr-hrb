@@ -1,4 +1,4 @@
-import { QueryList } from "@angular/core";
+import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { NotFoundComponent } from "../components/not-found/not-found.component";
@@ -6,7 +6,9 @@ import { ApplicationService } from "../services/application.service";
 import { NavigationService } from "../services/navigation.service";
 import { TitleService } from "../services/title.service";
 import { IHasNextPage } from "./has-next-page.interface";
+import { GovukRequiredDirective } from "../components/required.directive";
 
+@Component({ template: ''})
 export abstract class BaseComponent implements CanActivate {
 
   summaryError?: QueryList<GovukErrorSummaryComponent>;
@@ -21,6 +23,7 @@ export abstract class BaseComponent implements CanActivate {
   }
 
   abstract canContinue(): boolean;
+
   canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean { return true; }
   canActivate(routeSnapshot: ActivatedRouteSnapshot) {
     if (!this.canAccess(routeSnapshot)) {
@@ -55,15 +58,17 @@ export abstract class BaseComponent implements CanActivate {
     this.processing = false;
   }
 
+  @ViewChildren(GovukRequiredDirective) requiredFields?: QueryList<GovukRequiredDirective>;
   async saveAndComeBack(): Promise<any> {
-    this.hasErrors = !this.canContinue();
+    let canSave = this.requiredFieldsAreEmpty() || this.canContinue();
+    this.hasErrors = !canSave;
     if (this.hasErrors) {
       this.summaryError?.first?.focus();
       this.titleService.setTitleError();
     } else {
       this.screenReaderNotification();
-      await this.applicationService.updateApplication();
       this.navigationService.navigate(`application/${this.applicationService.model.id}`);
+      await this.applicationService.updateApplication();
     }
   }
 
@@ -91,5 +96,9 @@ export abstract class BaseComponent implements CanActivate {
     if (alertContainer) {
       alertContainer.innerHTML = message;
     }
+  }
+
+  private requiredFieldsAreEmpty() {
+    return this.requiredFields?.filter(x => !x.govukRequired.model).length == this.requiredFields?.length;
   }
 }
