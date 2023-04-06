@@ -40,9 +40,9 @@
 
       <h2 class="govuk-heading-m govuk-!-margin-top-8">Payment details</h2>
       <govuk-summary-list>
-        <govuk-summary-list-row key="Total">{{(payment?.Amount ?? 0) / 100| currency: 'GBP' }}</govuk-summary-list-row>
-        <govuk-summary-list-row key="Payment reference">{{payment?.Reference}}</govuk-summary-list-row>
-        <govuk-summary-list-row key="Date">{{payment?.CreatedDate | date: 'dd MMMM yyyy'}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Total">{{(payment?.bsr_amountpaid ?? 0)| currency: 'GBP' }}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Payment reference">{{payment?.bsr_transactionid}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Date">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</govuk-summary-list-row>
       </govuk-summary-list>
     </div>
   </div>

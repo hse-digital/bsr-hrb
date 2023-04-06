@@ -11,8 +11,8 @@ export class PaymentService {
   constructor(private httpClient: HttpClient) {
   }
 
-  async GetPayment(paymetId: string): Promise<PaymentModel> {
-    return await firstValueFrom(this.httpClient.get<PaymentModel>(`api/GetPayment/${paymetId}`));
+  async GetPayment(paymentReference: string): Promise<PaymentModel> {
+    return await firstValueFrom(this.httpClient.get<PaymentModel>(`api/GetPayment/${paymentReference}`));
   }
 
   async InitialisePayment(applicationModel: BuildingRegistrationModel): Promise<PaymentModel> {

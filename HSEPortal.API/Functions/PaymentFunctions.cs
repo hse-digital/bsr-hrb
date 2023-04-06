@@ -5,6 +5,7 @@ using Flurl;
 using Flurl.Http;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
+using HSEPortal.API.Model.DynamicsSynchronisation;
 using HSEPortal.API.Model.Payment.Request;
 using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
@@ -16,12 +17,14 @@ namespace HSEPortal.API.Functions;
 
 public class PaymentFunctions
 {
+    private readonly DynamicsService dynamicsService;
     private readonly IMapper mapper;
     private readonly IntegrationsOptions integrationOptions;
     private readonly SwaOptions swaOptions;
 
-    public PaymentFunctions(IOptions<IntegrationsOptions> integrationOptions, IOptions<SwaOptions> swaOptions, IMapper mapper)
+    public PaymentFunctions(IOptions<IntegrationsOptions> integrationOptions, IOptions<SwaOptions> swaOptions, DynamicsService dynamicsService, IMapper mapper)
     {
+        this.dynamicsService = dynamicsService;
         this.mapper = mapper;
         this.integrationOptions = integrationOptions.Value;
         this.swaOptions = swaOptions.Value;
@@ -53,8 +56,10 @@ public class PaymentFunctions
             return request.CreateResponse(HttpStatusCode.BadRequest);
 
         var paymentApiResponse = await response.GetJsonAsync<PaymentApiResponseModel>();
-        var paymentFunctionResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
-        return await request.CreateObjectResponseAsync(paymentFunctionResponse);
+        var paymentResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
+        await dynamicsService.NewPayment(applicationModel.Id, paymentResponse);
+        
+        return await request.CreateObjectResponseAsync(paymentResponse);
     }
 
     private static PaymentRequestModel BuildPaymentRequestModel(BuildingApplicationModel applicationModel)
@@ -81,13 +86,17 @@ public class PaymentFunctions
 
 
     [Function(nameof(GetPayment))]
-    public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentId}}")] HttpRequestData request, string paymentId)
+    public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentReference}}")] HttpRequestData request, string paymentReference)
     {
-        if (paymentId == null || paymentId.Equals(string.Empty))
+        if (paymentReference == null || paymentReference.Equals(string.Empty))
+            return request.CreateResponse(HttpStatusCode.BadRequest);
+
+        var dynamicsPayment = await dynamicsService.GetPaymentByReference(paymentReference);
+        if (dynamicsPayment == null)
             return request.CreateResponse(HttpStatusCode.BadRequest);
 
         var response = await integrationOptions.PaymentEndpoint
-            .AppendPathSegments("v1", "payments", paymentId)
+            .AppendPathSegments("v1", "payments", dynamicsPayment.bsr_govukpaymentid)
             .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
             .AllowHttpStatus(HttpStatusCode.BadRequest)
             .GetJsonAsync<PaymentApiResponseModel>();

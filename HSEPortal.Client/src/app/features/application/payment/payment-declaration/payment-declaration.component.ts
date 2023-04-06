@@ -30,11 +30,6 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
 
     await this.applicationService.syncDeclaration();
     var paymentResponse = await this.paymentService.InitialisePayment(this.applicationService.model);
-    if (!this.applicationService.model.Payments) {
-      this.applicationService.model.Payments = [];
-    }
-
-    this.applicationService.model.Payments.push(paymentResponse);
     this.applicationService.updateApplication();
 
     if (typeof window !== 'undefined') {

@@ -58,12 +58,6 @@ public class BuildingApplicationFunctions
             var application = buildingApplications[0];
             if (otpService.ValidateToken(otpToken, application.ContactEmailAddress) || featureOptions.DisableOtpValidation)
             {
-                if (application.Payment != null && application.Payments?.Length == 0)
-                {
-                    var payment = application.Payment;
-                    application = application with { Payments = new[] { payment }, Payment = null };
-                }
-
                 return await request.CreateObjectResponseAsync(application);
             }
         }
@@ -86,6 +80,24 @@ public class BuildingApplicationFunctions
             Application = buildingApplicationModel,
             HttpResponse = request.CreateResponse(HttpStatusCode.OK)
         };
+    }
+
+    [Function(nameof(GetApplicationPaymentStatus))]
+    public async Task<HttpResponseData> GetApplicationPaymentStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetApplicationPaymentStatus)}/{{applicationNumber}}")] HttpRequestData request,
+        string applicationNumber)
+    {
+        var dynamicsPayments = await dynamicsService.GetPayments(applicationNumber);
+        var payments = dynamicsPayments.Select(payment => new
+        {
+            payment.bsr_paymentid,
+            payment.bsr_govukpaystatus,
+            payment.bsr_paymentreconciliationstatus,
+            payment.bsr_amountpaid,
+            payment.bsr_transactionid,
+            payment.bsr_timeanddateoftransaction
+        });
+        
+        return await request.CreateObjectResponseAsync(payments);
     }
 }
 

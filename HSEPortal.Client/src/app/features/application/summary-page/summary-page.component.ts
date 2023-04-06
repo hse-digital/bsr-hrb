@@ -17,7 +17,7 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
   static title: string = "Summary - Register a high-rise building - GOV.UK";
 
   sections: SectionModel[] = [];
-  payment?: PaymentModel;
+  payment?: any;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
@@ -25,7 +25,9 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
 
   async ngOnInit() {
     this.sections = this.applicationService.model.Sections;
-    this.payment = this.applicationService.model.Payments?.find(x => x.Status == 'success');
+    
+    var payments = await this.applicationService.getApplicationPayments()
+    this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
   }
 
   canContinue() {
