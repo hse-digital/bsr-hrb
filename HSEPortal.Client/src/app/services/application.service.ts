@@ -20,18 +20,18 @@ export class ApplicationService {
   }
 
   constructor(private httpClient: HttpClient) {
-    this.model = LocalStorage.getJSON('HSE_MODEL') ?? {};
+    this.model = LocalStorage.getJSON('application_data') ?? {};
     this._currentSectionIndex = this.model?.Sections?.length - 1 ?? 0;
     this._currentAccountablePersonIndex = this.model?.AccountablePersons?.length - 1 ?? 0;
   }
 
   newApplication() {
-    LocalStorage.remove('HSE_MODEL');
+    LocalStorage.remove('application_data');
     this.model = new BuildingRegistrationModel();
   }
 
   updateLocalStorage() {
-    LocalStorage.setJSON('HSE_MODEL', this.model)
+    LocalStorage.setJSON('application_data', this.model)
   }
 
   clearApplication() {
@@ -112,13 +112,12 @@ export class ApplicationService {
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
     var application = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
     this.model = application;
-
-    LocalStorage.setJSON('HSE_MODEL', this.model)
+    this.updateLocalStorage();
   }
 
   async registerNewBuildingApplication(): Promise<void> {
     this.model = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/NewBuildingApplication', this.model));
-    LocalStorage.setJSON('HSE_MODEL', this.model)
+    this.updateLocalStorage();
   }
 
   async updateApplication(): Promise<void> {
