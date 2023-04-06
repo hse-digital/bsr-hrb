@@ -85,10 +85,11 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
     var payments = await this.applicationService.getApplicationPayments();
 
     if (payments?.length > 0) {
-      var successFulPayment = payments.find(x => x.bsr_govukpaystatus == 'success');
+      var successfulPayments = payments.filter(x => x.bsr_govukpaystatus == 'success');
 
-      if (successFulPayment) {
-        this.paymentStatus = successFulPayment.bsr_paymentreconciliationstatus == 760_810_002 || successFulPayment.bsr_paymentreconciliationstatus == 760_810_003 ? PaymentStatus.Failed : PaymentStatus.Success;
+      if (successfulPayments?.length > 0) {
+        var sucesssfulpayment = successfulPayments.find(x => x.bsr_paymentreconciliationstatus !== 760_810_002 && x.bsr_paymentreconciliationstatus !== 760_810_003 && x.bsr_paymentreconciliationstatus !== 760_810_004);
+        this.paymentStatus = sucesssfulpayment ? PaymentStatus.Success : PaymentStatus.Failed;
       } else {
         this.paymentStatus = PaymentStatus.Failed;
       }

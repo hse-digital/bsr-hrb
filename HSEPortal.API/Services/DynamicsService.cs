@@ -99,6 +99,9 @@ public class DynamicsService
     public async Task<List<DynamicsPayment>> GetPayments(string applicationNumber)
     {
         var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
+        if (buildingApplication == null)
+            return new List<DynamicsPayment>();
+        
         var payments = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"_bsr_buildingapplicationid_value eq '{buildingApplication.bsr_buildingapplicationid}'"));
 
         return payments.value;

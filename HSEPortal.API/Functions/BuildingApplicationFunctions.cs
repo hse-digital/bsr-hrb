@@ -91,7 +91,10 @@ public class BuildingApplicationFunctions
         {
             payment.bsr_paymentid,
             payment.bsr_govukpaystatus,
-            payment.bsr_paymentreconciliationstatus
+            payment.bsr_paymentreconciliationstatus,
+            payment.bsr_amountpaid,
+            payment.bsr_transactionid,
+            payment.bsr_timeanddateoftransaction
         });
         
         return await request.CreateObjectResponseAsync(payments);
