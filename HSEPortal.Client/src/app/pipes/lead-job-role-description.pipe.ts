@@ -13,7 +13,7 @@ export class LeadJobRoleDescriptionPipe implements PipeTransform {
     "other": "Other"
   }
 
-  transform(value: string, ...args: unknown[]): string {
+  transform(value: string | undefined, ...args: any[]): string {
     return LeadJobRoleDescriptionPipe.leadJobRoleDescription[value ?? ""];
   }
 

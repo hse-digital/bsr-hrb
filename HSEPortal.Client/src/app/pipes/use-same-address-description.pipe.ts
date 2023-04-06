@@ -5,8 +5,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class UseSameAddressDescriptionPipe implements PipeTransform {
 
-  transform(value: unknown, ...args: unknown[]): unknown {
-    return null;
+  static readonly useSameAddressDescription: Record<string, string> = {
+    "yes": "Yes, use the same address",
+    "no": "No, use a different address"
+  }
+
+  transform(value: string | undefined, ...args: any[]): string {
+    return UseSameAddressDescriptionPipe.useSameAddressDescription[value ?? ""]
   }
 
 }

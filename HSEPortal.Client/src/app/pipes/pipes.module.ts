@@ -6,21 +6,28 @@ import { WhoAreYouDescriptionPipe } from './who-are-you-description.pipe';
 import { UseSameAddressDescriptionPipe } from './use-same-address-description.pipe';
 import { OrganisationTypeDescriptionPipe } from './organisation-type-description.pipe';
 import { LeadJobRoleDescriptionPipe } from './lead-job-role-description.pipe';
+import { AccountabilityDescriptionPipe } from './accountability-description.pipe';
 
 @NgModule({
-    declarations: [
-        PeopleLivingInSectionDescriptionPipe,
-        YearOfCompletionOptionPipe,
-        YearOfCompletionPipe,
-        WhoAreYouDescriptionPipe,
-        UseSameAddressDescriptionPipe,
-        OrganisationTypeDescriptionPipe,
-        LeadJobRoleDescriptionPipe
-    ],
-    exports: [
-        PeopleLivingInSectionDescriptionPipe,
-        YearOfCompletionOptionPipe,
-        YearOfCompletionPipe
-    ]
+  declarations: [
+    PeopleLivingInSectionDescriptionPipe,
+    YearOfCompletionOptionPipe,
+    YearOfCompletionPipe,
+    WhoAreYouDescriptionPipe,
+    UseSameAddressDescriptionPipe,
+    OrganisationTypeDescriptionPipe,
+    LeadJobRoleDescriptionPipe,
+    AccountabilityDescriptionPipe
+  ],
+  exports: [
+    PeopleLivingInSectionDescriptionPipe,
+    YearOfCompletionOptionPipe,
+    YearOfCompletionPipe,
+    WhoAreYouDescriptionPipe,
+    UseSameAddressDescriptionPipe,
+    OrganisationTypeDescriptionPipe,
+    LeadJobRoleDescriptionPipe,
+    AccountabilityDescriptionPipe
+  ]
 })
-export class PipesModule {}
+export class PipesModule { }

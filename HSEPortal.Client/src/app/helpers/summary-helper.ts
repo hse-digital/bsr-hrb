@@ -1,30 +1,9 @@
 import { AccountablePersonModel } from "../services/application.service";
-import { FieldValidations } from "./validators/fieldvalidations";
 
 export class SummaryComponent {
   protected ap!: AccountablePersonModel;
   protected apIndex!: number;
   protected hasMoreAp = false;
-
-  get whoAreYouDescription() {
-    return SummaryTextValueMapper.whoAreYouDescription[this.ap.Role ?? ""];
-  }
-
-  get useSameAddressDescription() {
-    return SummaryTextValueMapper.useSameAddressDescription[this.ap.ActingForSameAddress ?? ""]
-  }
-
-  get organisationTypeDescription() {
-    let organisationType = SummaryTextValueMapper.organisationTypeDescription[this.ap.OrganisationType ?? ""];
-
-    return FieldValidations.IsNotNullOrWhitespace(organisationType)
-      ? organisationType
-      : this.ap.OrganisationTypeDescription;
-  }
-
-  get leadJobRoleDescription() {
-    return SummaryTextValueMapper.leadJobRoleDescription[this.ap.LeadJobRole ?? ""];
-  }
 
   get apAddress() {
     return this.ap.PapAddress ?? this.ap.Address;
@@ -32,13 +11,6 @@ export class SummaryComponent {
 
   sectionsWithAccountability() {
     return this.ap.SectionsAccountability?.filter(x => x.Accountability?.length ?? 0 > 0);
-  }
-
-  _accountabilityDescription(value: string) {
-    let accountabilityDescription = SummaryTextValueMapper._accountabilityDescription[value];
-    return FieldValidations.IsNotNullOrWhitespace(accountabilityDescription)
-      ? accountabilityDescription
-      : 'Facilities that residents share';
   }
 
   notPap() {
@@ -55,32 +27,6 @@ export class SummaryComponent {
 
   isEmployee() {
     return this.ap.Role == 'employee';
-  }
-
-}
-
-type Mapper = Record<string, string>;
-
-class SummaryTextValueMapper {
-
-  static readonly whoAreYouDescription: Mapper = {
-    "named_contact": "I am the named contact",
-    "registering_for": "I am registering for the named contact",
-    "employee": "I am an employee"
-  };
-
-  static readonly useSameAddressDescription: Mapper = {
-    "yes": "Yes, use the same address",
-    "no": "No, use a different address"
-  }
-
-
-
-
-  static readonly _accountabilityDescription: Mapper = {
-    "external_walls": "External walls and roof",
-    "routes": "Routes that residents can walk through",
-    "maintenance": "Maintaining plant and equipment"
   }
 
 }

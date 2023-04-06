@@ -8,19 +8,19 @@ export class OrganisationTypeDescriptionPipe implements PipeTransform {
 
   static readonly organisationTypeDescription: Record<string, string> = {
     "commonhold-association": "Commonhold association",
-    "housing-association": "Housing association or other company operating under section 27 of the Housing Act 1985",
+    "housing-association": "Registered provider of social housing",
     "local-authority": "Local authority",
-    "management-company": "Management company",
+    "management-company": "Private registered provider of social housing",
     "rmc-or-organisation": "Resident management company (RMC) or organisation",
     "rtm-or-organisation": "Right to manage (RTM) company or organisation"
   }
 
-  transform(value: string, ...args: unknown[]): string {
+  transform(value: string | undefined, organisationTypeDescription: string | undefined): string {
     let organisationType = OrganisationTypeDescriptionPipe.organisationTypeDescription[value ?? ""];
 
     return FieldValidations.IsNotNullOrWhitespace(organisationType)
       ? organisationType
-      : this.ap.OrganisationTypeDescription;
+      : organisationTypeDescription ?? "";
   }
 
 }

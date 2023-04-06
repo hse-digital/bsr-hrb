@@ -31,7 +31,7 @@
   <govuk-summary-list-row *ngIf="apIndex > 0" key="Areas of accountability">
     <ng-container *ngFor="let section of sectionsWithAccountability()">
       <h2 class="govuk-heading-s">{{section.SectionName}}</h2>
-      <govuk-body class="govuk-!-margin-0 govuk-!-margin-bottom-3" *ngFor="let acc of section.Accountability">{{_accountabilityDescription(acc)}}</govuk-body>
+      <govuk-body class="govuk-!-margin-0 govuk-!-margin-bottom-3" *ngFor="let acc of section.Accountability">{{acc | accountabilityDescription}}</govuk-body>
     </ng-container>
   </govuk-summary-list-row>
 
