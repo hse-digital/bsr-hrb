@@ -11,7 +11,9 @@
 
         <h1 class="govuk-heading-l">Your address</h1>
 
-        <govuk-radio-group title="Should we use the same address to contact you?" [(model)]="applicationService.currentAccountablePerson.ActingForSameAddress" [errorText]="getErrorDescription(sameAddressHasErrors, getErrorMessage())">
+        <govuk-radio-group title="Should we use the same address to contact you?" 
+          [(model)]="applicationService.currentAccountablePerson.ActingForSameAddress" #field [govukRequired]="field"
+          [errorText]="getErrorDescription(sameAddressHasErrors, getErrorMessage())">
           <govuk-body>You have told us that the address of {{applicationService.currentAccountablePerson.OrganisationName}} is <b>{{getOrganisationAddress()}}</b>.</govuk-body>
 
           <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-yes" value="yes" label="Yes, use this address" (onKeyupEnter)="saveAndContinue()" />

@@ -6,7 +6,7 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="input-height" [message]="errorMessage" />
+          <govuk-error-link anchorId="input-residential-units" [message]="errorMessage" />
         </govuk-error-summary>
 
         <h1 class="govuk-heading-l">Number of residential units in {{sectionBuildingName()}}</h1>
@@ -15,12 +15,10 @@
 
         <div class="govuk-hint govuk-!-margin-bottom-4">Count all residential units, whether someone is living in them or not.</div>
 
-        <govuk-input label="Number of residential units"
-                     labelClass="govuk-label--s" id="height"
-                     [(model)]="applicationService.currentSection.ResidentialUnits"
+        <govuk-input label="Number of residential units" labelClass="govuk-label--s" id="residential-units"
+                     [(model)]="applicationService.currentSection.ResidentialUnits" #field [govukRequired]="field"
                      [errorText]="getErrorDescription(residentialUnitsHasErrors, errorMessage)"
-                     class="govuk-input--width-4" #height
-                     (onKeyupEnter)="saveAndContinue()" />
+                     class="govuk-input--width-4" (onKeyupEnter)="saveAndContinue()" />
 
       </div>
 

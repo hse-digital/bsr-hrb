@@ -9,9 +9,12 @@
           <govuk-error-link anchorId="year-exact-input" [message]="errorMessage" />
         </govuk-error-summary>
 
-        <govuk-radio-group title="When was {{sectionBuildingName()}} originally built?" [isPageHeading]=true (onRadioSelected)="radioChange()" [errorText]="getErrorDescription(yearOfCompletionHasErrors && !exactYearHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletionOption">
+        <govuk-radio-group title="When was {{sectionBuildingName()}} originally built?" [isPageHeading]=true (onRadioSelected)="radioChange()" 
+          [errorText]="getErrorDescription(yearOfCompletionHasErrors && !exactYearHasErrors, errorMessage)" 
+          [(model)]="applicationService.currentSection.YearOfCompletionOption" #field [govukRequired]="field">
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-exact" value="year-exact" label="I know the exact year">
-            <govuk-input (onKeyupEnter)="saveAndContinue()" [errorText]="getErrorDescription(exactYearHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletion" class="govuk-input--width-4" labelClass="govuk-label--s" label="Exact Year" hint="For example '1983'." />
+            <govuk-input (onKeyupEnter)="saveAndContinue()" [errorText]="getErrorDescription(exactYearHasErrors, errorMessage)" [(model)]="applicationService.currentSection.YearOfCompletion"
+                         class="govuk-input--width-4" labelClass="govuk-label--s" label="Exact Year" hint="For example '1983'." />
           </govuk-radio>
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentSection.YearOfCompletionOption" name="application-group" id="year-not-exact" value="year-not-exact" label="I do not know the exact year" hint="Select this option if you know a general range." />
           <div class="govuk-radios__divider">or</div>

@@ -46,8 +46,12 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
       canContinue &&= FieldValidations.IsGreaterThanZero(section.FloorsAbove);
       canContinue &&= FieldValidations.IsGreaterThanZero(section.Height);
-      canContinue &&= FieldValidations.IsGreaterThanZero(section.ResidentialUnits);
-      canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
+      canContinue &&= FieldValidations.IsAPositiveNumber(section.ResidentialUnits);
+
+      if (section.YearOfCompletionOption != 'not-completed') {
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
+      }
+
       canContinue &&= (section.YearOfCompletionOption == "not-completed") || (section.YearOfCompletionOption == "year-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletion)) || (section.YearOfCompletionOption == "year-not-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletionRange));
       canContinue &&= section.Addresses?.length > 0;
 

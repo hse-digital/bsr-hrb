@@ -13,7 +13,7 @@
 
         <govuk-input-autocomplete label="Organisation name" labelClass="govuk-label--s" id="organisation-name"
                                   hint="Type part of the organisation name to begin. If the name does not show in the drop down list, enter the organisation's full name manually."
-                                  [(model)]="applicationService.currentAccountablePerson.OrganisationName"
+                                  [(model)]="applicationService.currentAccountablePerson.OrganisationName" #field [govukRequired]="field"
                                   [values]="companies" (onDebounce)="searchCompanies($event)" (onSelectedValue)="selectCompanyName($event)"
                                   [errorText]="getErrorDescription(organisationNameHasErrors, 'Enter the organisation name')"/>
       </div>

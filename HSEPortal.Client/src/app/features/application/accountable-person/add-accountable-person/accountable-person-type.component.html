@@ -9,7 +9,9 @@
           <govuk-error-link anchorId="organisation-input" message="Select if the accountable person is an organisation or an individual" />
         </govuk-error-summary>
 
-        <govuk-radio-group title="Is this accountable person for {{applicationService.model.BuildingName}} an organisation or an individual?" [isPageHeading]=true [(model)]="applicationService.currentAccountablePerson.Type" id="radios-accountable-person" [errorText]="getErrorDescription(hasErrors, 'Select if the accountable person is an organisation or an individual')">
+        <govuk-radio-group title="Is this accountable person for {{applicationService.model.BuildingName}} an organisation or an individual?" [isPageHeading]=true 
+          [(model)]="applicationService.currentAccountablePerson.Type" id="radios-accountable-person" #field [govukRequired]="field"
+          [errorText]="getErrorDescription(hasErrors, 'Select if the accountable person is an organisation or an individual')">
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="organisation" value="organisation" hint="The organisation is the accountable person not, for example, the chief executive officer." label="An organisation" />
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.Type" name="application-group" id="individual" value="individual" label="The individual who personally owns the building" />
         </govuk-radio-group>

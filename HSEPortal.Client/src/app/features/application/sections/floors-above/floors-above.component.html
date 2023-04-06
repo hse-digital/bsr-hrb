@@ -36,7 +36,7 @@
         </govuk-details>
 
         <govuk-input label="Number of floors at or above ground level"
-                     labelClass="govuk-label--s" id="floors-above"
+                     labelClass="govuk-label--s" id="floors-above" #field [govukRequired]="field" 
                      [(model)]="applicationService.currentSection.FloorsAbove"
                      [errorText]="getErrorDescription(floorsHasError, errorMessage)"
                      class="govuk-input--width-3"

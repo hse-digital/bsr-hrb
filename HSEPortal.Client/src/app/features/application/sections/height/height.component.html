@@ -22,12 +22,10 @@
           <p>Ground level is the level of the land immediately next to {{sectionBuildingName()}}. If that land is uneven, measure from the lowest part of the land immediately next to {{sectionBuildingName()}}.</p>
         </govuk-details>
 
-        <govuk-input label="Height in metres"
-                     hint="For example, '18.75'."
-                     labelClass="govuk-label--s" id="height"
-                     [(model)]="applicationService.currentSection.Height"
+        <govuk-input label="Height in metres" hint="For example, '18.75'."labelClass="govuk-label--s" id="height"
+                     [(model)]="applicationService.currentSection.Height" #field [govukRequired]="field"
                      [errorText]="getErrorDescription(heightHasErrors, errorMessage)" suffix="m"
-                     class="govuk-input--width-4" #height
+                     class="govuk-input--width-4" 
                      (onKeyupEnter)="saveAndContinue()" />
       </div>
 

@@ -9,7 +9,9 @@
           <govuk-error-link anchorId="who_are_you-named_contact-input" [message]="getErrorMessage()" />
         </govuk-error-summary>
 
-        <govuk-radio-group title="Are you the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}?" [isPageHeading]=true [(model)]="applicationService.currentAccountablePerson.Role" [errorText]="getErrorDescription(roleHasErrors, getErrorMessage())">
+        <govuk-radio-group title="Are you the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}?" 
+          [isPageHeading]=true [(model)]="applicationService.currentAccountablePerson.Role" #field [govukRequired]="field"
+          [errorText]="getErrorDescription(roleHasErrors, getErrorMessage())">
           <govuk-body>This is the person at {{applicationService.currentAccountablePerson.OrganisationName}} that you want us to talk to about building safety issues. We will not serve notices on this person.</govuk-body>
 
           <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="Yes, I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" (onKeyupEnter)="saveAndContinue()" />

@@ -8,7 +8,7 @@
         <h1 class="govuk-heading-l">Check your accountable persons answers for {{applicationService.model.BuildingName}}</h1>
 
         <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="input-floors-above" message="Please check if all accountable persons have data correctly entered" />
+          <govuk-error-link anchorId="input-floors-above" message="Answer all questions" />
         </govuk-error-summary>
 
         <ng-container *ngFor="let ap of aps; let i = index">
