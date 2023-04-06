@@ -8,7 +8,7 @@ import { TitleService } from "../services/title.service";
 import { IHasNextPage } from "./has-next-page.interface";
 import { GovukRequiredDirective } from "../components/required.directive";
 
-@Component({ template: ''})
+@Component({ template: '' })
 export abstract class BaseComponent implements CanActivate {
 
   summaryError?: QueryList<GovukErrorSummaryComponent>;
@@ -99,6 +99,12 @@ export abstract class BaseComponent implements CanActivate {
   }
 
   private requiredFieldsAreEmpty() {
-    return this.requiredFields?.filter(x => !x.govukRequired.model).length == this.requiredFields?.length;
+    return this.requiredFields?.filter(x => {
+      if (Array.isArray(x.govukRequired.model)) {
+        return x.govukRequired.model.length == 0;
+      }
+
+      return !x.govukRequired.model;
+    }).length == this.requiredFields?.length;
   }
 }
