@@ -74,22 +74,8 @@ class SummaryTextValueMapper {
     "no": "No, use a different address"
   }
 
-  static readonly organisationTypeDescription: Mapper = {
-    "commonhold-association": "Commonhold association",
-    "housing-association": "Housing association or other company operating under section 27 of the Housing Act 1985",
-    "local-authority": "Local authority",
-    "management-company": "Management company",
-    "rmc-or-organisation": "Resident management company (RMC) or organisation",
-    "rtm-or-organisation": "Right to manage (RTM) company or organisation"
-  }
 
-  static readonly leadJobRoleDescription: Mapper = {
-    "director": "Director",
-    "administrative_worker": "Administrative or office worker",
-    "building_manager": "Building or facilities manager",
-    "building_director": "Building safety director",
-    "other": "Other"
-  }
+
 
   static readonly _accountabilityDescription: Mapper = {
     "external_walls": "External walls and roof",
