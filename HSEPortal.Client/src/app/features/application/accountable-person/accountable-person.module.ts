@@ -32,6 +32,7 @@ import { OrganisationNamedContactDetailsComponent } from "./organisation/named-c
 import { OrganisationNamedContactComponent } from "./organisation/named-contact/named-contact.component";
 import { PapNamedRoleComponent } from "./organisation/pap-named-role/pap-named-role.component";
 import { PrincipleAccountableSelection } from "./principal/principal.component";
+import { PipesModule } from "src/app/pipes/pipes.module";
 
 @Component({
   template: '<router-outlet></router-outlet>'
@@ -118,7 +119,8 @@ const routes = new HseRoutes([
     CommonModule,
     HttpClientModule,
     ComponentsModule,
-    FormsModule
+    FormsModule,
+    PipesModule,
   ]
 })
 export class AccountablePersonModule {

@@ -1,5 +1,5 @@
 import { QueryList } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { NotFoundComponent } from "../components/not-found/not-found.component";
 import { ApplicationService } from "../services/application.service";
