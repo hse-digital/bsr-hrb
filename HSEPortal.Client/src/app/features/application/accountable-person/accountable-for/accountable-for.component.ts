@@ -73,6 +73,10 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
     return this.getErrorDescription(false, '');
   }
 
+  getCheckboxTitle(section: any) {
+    return this.applicationService.model.NumberOfSections == 'two_or_more' ? section?.Name ?? "First section" : this.applicationService.model.BuildingName;
+  }
+
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     if (this.applicationService.currentAccountablePerson.Type == 'individual') {
       return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
@@ -81,7 +85,7 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
     return navigationService.navigateRelative(OrganisationNamedContactComponent.route, activatedRoute);
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
   }
 }

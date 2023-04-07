@@ -1,9 +1,11 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Flurl.Http;
 using Flurl.Util;
 using HSEPortal.API.Model;
 using HSEPortal.API.Model.DynamicsSynchronisation;
 using HSEPortal.API.Model.LocalAuthority;
+using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.Domain.DynamicsDefinitions;
 using HSEPortal.Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -13,13 +15,15 @@ namespace HSEPortal.API.Services;
 public class DynamicsService
 {
     private readonly DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory;
+    private readonly SwaOptions swaOptions;
     private readonly DynamicsApi dynamicsApi;
     private readonly DynamicsOptions dynamicsOptions;
 
-    public DynamicsService(DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory, IOptions<DynamicsOptions> dynamicsOptions, DynamicsApi dynamicsApi)
+    public DynamicsService(DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory, IOptions<DynamicsOptions> dynamicsOptions, IOptions<SwaOptions> swaOptions, DynamicsApi dynamicsApi)
     {
         this.dynamicsModelDefinitionFactory = dynamicsModelDefinitionFactory;
         this.dynamicsApi = dynamicsApi;
+        this.swaOptions = swaOptions.Value;
         this.dynamicsOptions = dynamicsOptions.Value;
     }
 
@@ -37,7 +41,8 @@ public class DynamicsService
         await dynamicsOptions.EmailVerificationFlowUrl.PostJsonAsync(new
         {
             emailAddress = emailVerificationModel.EmailAddress,
-            otp = otpToken
+            otp = otpToken,
+            hrbRegUrl = swaOptions.Url
         });
     }
 
@@ -54,7 +59,7 @@ public class DynamicsService
     {
         var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplication>>("bsr_buildingapplications", new[]
         {
-            ("$filter", $"bsr_applicationid eq '{applicationId}' or bsr_applicationreturncode eq '{applicationId}'"),
+            ("$filter", $"bsr_applicationid eq '{applicationId}'"),
             ("$expand", "bsr_Building,bsr_RegistreeId")
         });
 
@@ -74,6 +79,7 @@ public class DynamicsService
             var dynamicsStructure = BuildDynamicsStructure(structures, section, structureDefinition);
             dynamicsStructure = await SetYearOfCompletion(section, dynamicsStructure);
             dynamicsStructure = await CreateStructure(structureDefinition, dynamicsStructure);
+            await CreateStructureCompletionCertificate(section, dynamicsStructure);
             await CreateStructureOptionalAddresses(section, dynamicsStructure);
         }
     }
@@ -88,6 +94,17 @@ public class DynamicsService
         {
             await CreateAccountablePerson(ap, dynamicsBuildingApplication);
         }
+    }
+
+    public async Task<List<DynamicsPayment>> GetPayments(string applicationNumber)
+    {
+        var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
+        if (buildingApplication == null)
+            return new List<DynamicsPayment>();
+        
+        var payments = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"_bsr_buildingapplicationid_value eq '{buildingApplication.bsr_buildingapplicationid}'"));
+
+        return payments.value;
     }
 
     private async Task<string> CreateAccountablePerson(AccountablePerson accountablePerson, DynamicsBuildingApplication dynamicsBuildingApplication, bool pap = false)
@@ -124,6 +141,8 @@ public class DynamicsService
                                 address1_line2 = actingForAddress.AddressLineTwo,
                                 address1_city = actingForAddress.Town,
                                 address1_postalcode = actingForAddress.Postcode,
+                                bsr_manualaddress = actingForAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
+                                countryReferenceId = actingForAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[actingForAddress.Country]})" : null
                             };
                         }
 
@@ -231,6 +250,7 @@ public class DynamicsService
                         address1_line2 = apAddress.AddressLineTwo,
                         address1_city = apAddress.Town,
                         address1_postalcode = apAddress.Postcode,
+                        countryReferenceId = apAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[apAddress.Country]})" : null,
                         bsr_manualaddress = apAddress.IsManual ? YesNoOption.Yes : YesNoOption.No
                     });
 
@@ -274,6 +294,22 @@ public class DynamicsService
             }
         }
 
+        var principalContact = await dynamicsApi.Get<DynamicsContact>($"contacts({dynamicsBuildingApplication._bsr_registreeid_value})", ("$expand", "bsr_contacttype_contact"));
+        if (principalContact.bsr_contacttype_contact.All(x => x.bsr_contacttypeid != DynamicsContactTypes.PrincipalAccountablePerson))
+        {
+            await AssignContactType(dynamicsBuildingApplication._bsr_registreeid_value, DynamicsContactTypes.PrincipalAccountablePerson);
+        }
+
+        await dynamicsApi.Update($"contacts({dynamicsBuildingApplication._bsr_registreeid_value})", new DynamicsContact
+        {
+            address1_line1 = string.Join(", ", apAddress.Address.Split(',').Take(3)),
+            address1_line2 = apAddress.AddressLineTwo,
+            address1_city = apAddress.Town,
+            address1_postalcode = apAddress.Postcode,
+            countryReferenceId = apAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[apAddress.Country]})" : null,
+            bsr_manualaddress = apAddress.IsManual ? YesNoOption.Yes : YesNoOption.No
+        });
+
         return $"/contacts({dynamicsBuildingApplication._bsr_registreeid_value})";
     }
 
@@ -309,23 +345,57 @@ public class DynamicsService
         await dynamicsApi.Update($"bsr_buildings({dynamicsBuildingApplication._bsr_building_value})", lookup with { bsr_paptypecode = papType, bsr_whoareyou = null });
     }
 
-    public async Task CreatePayment(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication)
+    public async Task NewPayment(string applicationId, PaymentResponseModel payment)
     {
-        var payment = model.Payment;
-        await dynamicsApi.Create("bsr_payments", new DynamicsPayment
+        var application = await GetBuildingApplicationUsingId(applicationId);
+        await CreatePayment(new BuildingApplicationPayment(application.bsr_buildingapplicationid, payment));
+    }
+
+    public async Task CreatePayment(BuildingApplicationPayment buildingApplicationPayment)
+    {
+        var payment = buildingApplicationPayment.Payment;
+        var existingPayment = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_service eq 'HRB Registration' and bsr_transactionid eq '{payment.Reference}'"));
+        if (!existingPayment.value.Any())
         {
-            buildingApplicationReferenceId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
-            bsr_lastfourdigitsofnumber = int.Parse(payment.LastFourDigitsCardNumber),
-            bsr_timeanddateoftransaction = payment.CreatedDate,
-            bsr_transactionid = payment.Reference,
-            bsr_service = "HRB Registration",
-            bsr_cardexpirydate = payment.CardExpiryDate,
-            bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
-            bsr_cardbrandegvisa = payment.CardBrand,
-            bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
-            bsr_amountpaid = payment.Amount / 100,
-            bsr_govukpaystatus = payment.Status,
-        });
+            if (payment.Status == "success")
+            {
+                await UpdateBuildingApplication(new DynamicsBuildingApplication { bsr_buildingapplicationid = buildingApplicationPayment.BuildingApplicationId }, new DynamicsBuildingApplication
+                {
+                    bsr_submittedon = DateTime.Now.ToString(CultureInfo.InvariantCulture)
+                });
+            }
+
+            await dynamicsApi.Create("bsr_payments", new DynamicsPayment
+            {
+                buildingApplicationReferenceId = $"/bsr_buildingapplications({buildingApplicationPayment.BuildingApplicationId})",
+                bsr_lastfourdigitsofcardnumber = payment.LastFourDigitsCardNumber,
+                bsr_timeanddateoftransaction = payment.CreatedDate,
+                bsr_transactionid = payment.Reference,
+                bsr_service = "HRB Registration",
+                bsr_cardexpirydate = payment.CardExpiryDate,
+                bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                bsr_cardbrandegvisa = payment.CardBrand,
+                bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
+                bsr_amountpaid = payment.Amount / 100,
+                bsr_govukpaystatus = payment.Status,
+                bsr_govukpaymentid = payment.PaymentId
+            });
+        }
+        else
+        {
+            var dynamicsPayment = existingPayment.value[0];
+            await dynamicsApi.Update($"bsr_payments({dynamicsPayment.bsr_paymentid})", new DynamicsPayment
+            {
+                bsr_timeanddateoftransaction = payment.CreatedDate,
+                bsr_govukpaystatus = payment.Status,
+            });
+        }
+    }
+
+    public async Task<DynamicsPayment> GetPaymentByReference(string reference)
+    {
+        var payments = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_transactionid eq '{reference}'"));
+        return payments.value.FirstOrDefault();
     }
 
     private async Task<DynamicsAccountablePerson> FindExistingAp(string sectionId, string accountId, string area)
@@ -358,6 +428,7 @@ public class DynamicsService
                 address1_line2 = apAddress.AddressLineTwo,
                 address1_city = apAddress.Town,
                 address1_postalcode = apAddress.Postcode,
+                countryReferenceId = apAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[apAddress.Country]})" : null,
                 acountTypeReferenceId = $"/bsr_accounttypes({DynamicsAccountType.Ids[$"{accountablePerson.OrganisationType}"]})"
             });
 
@@ -367,22 +438,87 @@ public class DynamicsService
         return existingAccount.accountid;
     }
 
+    private async Task CreateStructureCompletionCertificate(SectionModel section, DynamicsStructure dynamicsStructure)
+    {
+        if (!string.IsNullOrWhiteSpace(section.CompletionCertificateIssuer) || !string.IsNullOrWhiteSpace(section.CompletionCertificateReference))
+        {
+            var existingCertificate = await dynamicsApi.Get<DynamicsResponse<DynamicsCompletionCertificate>>("bsr_completioncertificates", ("$filter", $"bsr_certificatereferencenumber eq '{section.CompletionCertificateReference}' and bsr_issuingorganisation eq '{section.CompletionCertificateIssuer}'"));
+            if (!existingCertificate.value.Any())
+            {
+                var response = await dynamicsApi.Create("bsr_completioncertificates", new DynamicsCompletionCertificate
+                {
+                    bsr_name = string.Join(" - ", new[] { section.CompletionCertificateReference, section.CompletionCertificateIssuer }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                    bsr_certificatereferencenumber = section.CompletionCertificateReference,
+                    bsr_issuingorganisation = section.CompletionCertificateIssuer,
+                    structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
+                }, returnObjectResponse: true);
+
+                var certificate = await response.GetJsonAsync<DynamicsCompletionCertificate>();
+                await dynamicsApi.Update($"/bsr_blocks({dynamicsStructure.bsr_blockid})", new DynamicsStructure
+                {
+                    certificateReferenceId = $"/bsr_completioncertificates({certificate.bsr_completioncertificateid})"
+                });
+            }
+        }
+    }
+
     private async Task CreateStructureOptionalAddresses(SectionModel section, DynamicsStructure dynamicsStructure)
     {
-        foreach (var address in section.Addresses.Skip(1))
+        var portalAddresses = section.Addresses.Skip(1).ToList();
+        var dynamicsAddresses = (await dynamicsApi.Get<DynamicsResponse<DynamicsAddress>>("bsr_addresses", ("$filter", $"_bsr_independentsectionid_value eq '{dynamicsStructure.bsr_blockid}' and statuscode eq 1"))).value;
+
+        for (var i = 0; i < portalAddresses.Count; i++)
         {
-            await dynamicsApi.Create("bsr_addresses", new DynamicsAddress
+            var portalAddress = portalAddresses[i];
+            var dynamicsAddress = dynamicsAddresses.ElementAtOrDefault(i);
+            if (dynamicsAddress == null) // new address
             {
-                bsr_line1 = string.Join(", ", address.Address.Split(',').Take(3)),
-                bsr_line2 = address.AddressLineTwo,
-                bsr_addresstypecode = AddressType.Other,
-                bsr_city = address.Town,
-                bsr_postcode = address.Postcode,
-                bsr_uprn = address.UPRN,
-                bsr_usrn = address.USRN,
-                bsr_manualaddress = address.IsManual ? YesNoOption.Yes : YesNoOption.No,
-                structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
-            });
+                await dynamicsApi.Create("bsr_addresses", new DynamicsAddress
+                {
+                    bsr_line1 = string.Join(", ", portalAddress.Address.Split(',').Take(3)),
+                    bsr_line2 = portalAddress.AddressLineTwo,
+                    bsr_addresstypecode = AddressType.Other,
+                    bsr_city = portalAddress.Town,
+                    bsr_postcode = portalAddress.Postcode,
+                    bsr_uprn = portalAddress.UPRN,
+                    bsr_usrn = portalAddress.USRN,
+                    bsr_manualaddress = portalAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
+                    countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null,
+                    structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
+                });
+
+                continue;
+            }
+
+            var isMatch = string.Join(", ", portalAddress.Address.Split(',').Take(3)) == dynamicsAddress.bsr_line1 && portalAddress.Postcode == dynamicsAddress.bsr_postcode;
+            if (!isMatch) // exists, update
+            {
+                await dynamicsApi.Update($"bsr_addresses({dynamicsAddress.bsr_addressId})", new DynamicsAddress
+                {
+                    bsr_line1 = string.Join(", ", portalAddress.Address.Split(',').Take(3)),
+                    bsr_line2 = portalAddress.AddressLineTwo,
+                    bsr_addresstypecode = AddressType.Other,
+                    bsr_city = portalAddress.Town,
+                    bsr_postcode = portalAddress.Postcode,
+                    bsr_uprn = portalAddress.UPRN,
+                    bsr_usrn = portalAddress.USRN,
+                    bsr_manualaddress = portalAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
+                    countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null,
+                });
+            }
+        }
+
+        if (dynamicsAddresses.Count > portalAddresses.Count) // deleted addresses portal, deactivate on d365
+        {
+            var toDeactivate = dynamicsAddresses.Skip(portalAddresses.Count);
+            foreach (var address in toDeactivate)
+            {
+                await dynamicsApi.Update($"bsr_addresses({address.bsr_addressId})", new DynamicsAddress
+                {
+                    statuscode = 2,
+                    statecode = 1
+                });
+            }
         }
     }
 
@@ -391,13 +527,14 @@ public class DynamicsService
         if (dynamicsStructure.bsr_doyouknowtheblocksexactconstructionyear == ConstructionYearOption.Exact)
         {
             var yearResponse = await dynamicsApi.Get<DynamicsResponse<DynamicsYear>>("bsr_years", ("$filter", $"bsr_name eq '{section.YearOfCompletion}'"));
-            return dynamicsStructure with { exactConstructionYearReferenceId = $"/bsr_years({yearResponse.value[0].bsr_yearid})" };
+            var yearId = yearResponse.value.Count > 0 ? yearResponse.value[0].bsr_yearid : "49cbd8c7-30b8-ed11-a37f-0022481b5bf5"; // 1800
+            return dynamicsStructure with { exactConstructionYearReferenceId = $"/bsr_years({yearId})" };
         }
 
         if (dynamicsStructure.bsr_doyouknowtheblocksexactconstructionyear == ConstructionYearOption.YearRange)
         {
-            var yearRangesResponse = await dynamicsApi.Get<DynamicsResponse<DynamicsYearRange>>("bsr_sectioncompletionyearranges", ("$filter", $"bsr_name eq '{section.YearOfCompletionRange.Replace("-", " ")}'"));
-            return dynamicsStructure with { sectionCompletionYearRangeReferenceId = $"/bsr_sectioncompletionyearranges({yearRangesResponse.value[0].bsr_sectioncompletionyearrangeid})" };
+            var yearRangeId = DynamicsYearRangeIds.Ids[section.YearOfCompletionRange];
+            return dynamicsStructure with { sectionCompletionYearRangeReferenceId = $"/bsr_sectioncompletionyearranges({yearRangeId})" };
         }
 
         return dynamicsStructure;
@@ -416,11 +553,12 @@ public class DynamicsService
             bsr_addressline1 = string.Join(", ", primaryAddress.Address.Split(',').Take(3)),
             bsr_addressline2 = primaryAddress.AddressLineTwo,
             bsr_addresstype = AddressType.Primary,
+            countryReferenceId = primaryAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[primaryAddress.Country]})" : null,
             bsr_city = primaryAddress.Town,
             bsr_postcode = primaryAddress.Postcode,
             bsr_uprn = primaryAddress.UPRN,
             bsr_usrn = primaryAddress.USRN,
-            bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No
+            bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
         };
 
         return dynamicsStructure;
@@ -428,6 +566,14 @@ public class DynamicsService
 
     private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure)
     {
+        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{dynamicsStructure.bsr_name}' and bsr_postcode eq '{dynamicsStructure.bsr_postcode}'"));
+        if (existingStructure.value.Any())
+        {
+            dynamicsStructure = dynamicsStructure with { bsr_blockid = existingStructure.value[0].bsr_blockid };
+            await dynamicsApi.Update($"{structureDefinition.Endpoint}({dynamicsStructure.bsr_blockid})", dynamicsStructure);
+            return dynamicsStructure;
+        }
+
         var response = await dynamicsApi.Create(structureDefinition.Endpoint, dynamicsStructure);
         var structureId = ExtractEntityIdFromHeader(response.Headers);
         return dynamicsStructure with { bsr_blockid = structureId };

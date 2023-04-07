@@ -46,10 +46,19 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
       canContinue &&= FieldValidations.IsGreaterThanZero(section.FloorsAbove);
       canContinue &&= FieldValidations.IsGreaterThanZero(section.Height);
-      canContinue &&= FieldValidations.IsGreaterThanZero(section.ResidentialUnits);
-      canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
+      canContinue &&= FieldValidations.IsAPositiveNumber(section.ResidentialUnits);
+
+      if (section.YearOfCompletionOption != 'not-completed') {
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
+      }
+
       canContinue &&= (section.YearOfCompletionOption == "not-completed") || (section.YearOfCompletionOption == "year-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletion)) || (section.YearOfCompletionOption == "year-not-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletionRange));
       canContinue &&= section.Addresses?.length > 0;
+
+      if ((section.YearOfCompletionOption == 'year-exact' && Number(section.YearOfCompletion) >= 2023) || (section.YearOfCompletionOption == 'year-not-exact' && section.YearOfCompletionRange == '2023-onwards')) {
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateIssuer);
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateReference);
+      }
     }
 
     this.hasIncompleteData = !canContinue;
@@ -88,7 +97,7 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     return this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+  override canAccess(_: ActivatedRouteSnapshot): boolean {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingInProgress) == BuildingApplicationStatus.BlocksInBuildingInProgress;
   }
 }

@@ -5,14 +5,14 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-fieldset title="You do not need to register this building " [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l'>
+        <h1 class="govuk-heading-l">You do not need to register this building</h1>
 
-          <govuk-body>Based on the answers you've given, there is no need to register this building.</govuk-body>
-          <govuk-body>You can <a class="govuk-link" (click)="registerAnother()" role="link">register another building.</a></govuk-body>
-        </govuk-fieldset>
+        <govuk-body>Based on the answers you've given, there is no need to register this building.</govuk-body>
+        <govuk-body>You can <a class="govuk-link" (click)="registerAnother()" (keyup.enter)="registerAnother()" role="link">register another building.</a></govuk-body>
+
       </div>
 
-      <govuk-body><a class="govuk-link" role="link">Back to GOV.UK home</a></govuk-body>
+      <govuk-body><a class="govuk-link" role="link" href="https://www.gov.uk/" tabindex="0">Back to GOV.UK home</a></govuk-body>
     </div>
   </div>
 </div>

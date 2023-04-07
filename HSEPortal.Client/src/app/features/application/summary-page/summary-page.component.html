@@ -1,0 +1,49 @@
+<div class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">Your completed application</h1>
+
+      <h2 class="govuk-heading-m">Application details</h2>
+      <govuk-summary-list>
+        <govuk-summary-list-row key="Application reference">{{applicationService.model.id}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Building name">{{applicationService.model.BuildingName}}</govuk-summary-list-row>
+      </govuk-summary-list>
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-8">Contact details</h2>
+      <govuk-summary-list>
+        <govuk-summary-list-row key="Name">{{applicationService.model.ContactFirstName + " " + applicationService.model.ContactLastName}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Telephone number">{{applicationService.model.ContactPhoneNumber}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Email address">{{applicationService.model.ContactEmailAddress}}</govuk-summary-list-row>
+      </govuk-summary-list>
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-8">Building summary</h2>
+      
+      <section-summary *ngIf="applicationService.model.NumberOfSections == 'one'" [section]="sections[0]" />
+
+      <govuk-summary-list *ngIf="applicationService.model.NumberOfSections == 'two_or_more'" classes="answers-heading-border">
+        <govuk-summary-list-row key="Is this a single high-rise residential structure?">
+          No
+        </govuk-summary-list-row>
+      </govuk-summary-list>
+
+      <ng-container *ngIf="applicationService.model.NumberOfSections == 'two_or_more'">
+        <ng-container *ngFor="let section of sections; let i = index">
+          <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ getSectionName(i, undefined) }}</h2>
+          <div>
+            <section-summary [section]="section" [hasMoreSections]="i < sections.length" />
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <accountable-person-summary />
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-8">Payment details</h2>
+      <govuk-summary-list>
+        <govuk-summary-list-row key="Total">{{(payment?.bsr_amountpaid ?? 0)| currency: 'GBP' }}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Payment reference">{{payment?.bsr_transactionid}}</govuk-summary-list-row>
+        <govuk-summary-list-row key="Date">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</govuk-summary-list-row>
+      </govuk-summary-list>
+    </div>
+  </div>
+</div>

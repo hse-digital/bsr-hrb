@@ -26,10 +26,10 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
 
   override async saveAndContinue() {
     this.loading = true;
+    this.screenReaderNotification();
 
     await this.applicationService.syncDeclaration();
     var paymentResponse = await this.paymentService.InitialisePayment(this.applicationService.model);
-    this.applicationService.model.Payment = paymentResponse;
     this.applicationService.updateApplication();
 
     if (typeof window !== 'undefined') {
@@ -37,11 +37,15 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
     }
   }
 
+  isPapRegisteringFor() {
+    return this.applicationService.model.AccountablePersons[0].Role == "registering_for";
+  }
+
   canContinue(): boolean {
     return true;
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(_: ActivatedRouteSnapshot) {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsComplete) == BuildingApplicationStatus.AccountablePersonsComplete;
   }
 }

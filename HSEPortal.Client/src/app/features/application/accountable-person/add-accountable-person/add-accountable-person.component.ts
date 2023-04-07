@@ -28,7 +28,6 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
 
   ngOnInit(): void {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsInProgress;
-    this.applicationService.updateLocalStorage();
     this.applicationService.updateApplication();
   }
 
@@ -45,7 +44,6 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
 
 
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsComplete;
-    this.applicationService.updateLocalStorage();
     this.applicationService.updateApplication();
 
     return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
@@ -65,7 +63,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
 
   otherAps() {
     var aps = this.applicationService.model.AccountablePersons;
-    return aps.slice(1, aps.length);
+    return aps.slice(1, aps.length).filter(ap => ap.FirstName !== undefined || ap.LastName !== undefined || ap.OrganisationName !== undefined);
   }
 
   apName(ap: AccountablePersonModel) {
@@ -75,7 +73,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
     return `${ap.FirstName} ${ap.LastName}`;
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(_: ActivatedRouteSnapshot) {
     return this.applicationService.model.AccountablePersons?.length >= 1;
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate } from '@angular/router';
+import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
+import { ApplicationService, BuildingApplicationStatus, PaymentModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { PaymentService } from 'src/app/services/payment.service';
 
@@ -11,22 +12,32 @@ import { PaymentService } from 'src/app/services/payment.service';
 export class PaymentConfirmationComponent implements OnInit, CanActivate {
   static route: string = "confirm";
   static title: string = "Registration complete confirmation - Register a high-rise building - GOV.UK";
+  payment?: PaymentModel;
+  shouldRender = false;
 
-  constructor(public applicationService: ApplicationService, public paymentService: PaymentService, private navigationService: NavigationService) {
+  constructor(public applicationService: ApplicationService, public paymentService: PaymentService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
   }
 
   async ngOnInit() {
-    var applicationStatus = this.applicationService.model.ApplicationStatus;
-    if ((applicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
-      // already completed/payed/synced
-      return;
-    }
-
-    this.applicationService.model.Payment = await this.paymentService.GetPayment(this.applicationService.model.Payment!.PaymentId!)
-    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
-
-    await this.applicationService.updateApplication();
     await this.applicationService.syncPayment();
+
+    this.activatedRoute.queryParams.subscribe(async query => {
+      var paymentReference = query['reference'];
+
+      if (!paymentReference) {
+        this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
+        return;
+      }
+
+      this.payment = await this.paymentService.GetPayment(paymentReference);
+      if (this.payment.Status == 'success') {
+        this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
+        await this.applicationService.updateApplication();
+        this.shouldRender = true;
+      } else {
+        this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
+      }
+    });
   }
 
   canContinue(): boolean {
@@ -39,16 +50,21 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
 
   notPap() {
     var pap = this.applicationService.model.AccountablePersons[0];
-    return pap.IsPrincipal == 'no' && pap.Type == 'individual';
+    return (pap.IsPrincipal == 'no' && pap.Type == 'individual') ||
+      (pap.Type == 'organisation' && pap.Role == 'registering_for');
   }
 
   registerAnotherBuilding() {
     this.navigationService.navigate('');
   }
 
-  canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentInProgress) == BuildingApplicationStatus.PaymentInProgress
-      && this.applicationService.model.Payment != null;
-  }
+  canActivate(_: ActivatedRouteSnapshot) {
+    var isInProgress = (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentInProgress) == BuildingApplicationStatus.PaymentInProgress;
+    if (!isInProgress) {
+      this.navigationService.navigate(NotFoundComponent.route);
+      return false;
+    }
 
+    return true;
+  }
 }

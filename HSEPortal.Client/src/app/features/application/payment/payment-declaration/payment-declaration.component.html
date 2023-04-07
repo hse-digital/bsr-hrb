@@ -4,17 +4,14 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <govuk-fieldset title="Declaration" [isPageHeading]=true
-                      titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-5' class='govuk-!-margin-bottom-1'>
+      <h1 class="govuk-heading-l">Declaration</h1>
 
+      <govuk-body>By submitting this application to register {{applicationService.model.BuildingName}}, you are confirming that the details you are providing are correct.</govuk-body>
+      <govuk-body>You must not give false or misleading information to the Building Safety Regulator. Knowingly or recklessly giving false or misleading information is a criminal offence punishable by up to 2 years in prison.</govuk-body>
 
-        <govuk-body>By submitting this application, you are confirming that the details you are providing are correct.</govuk-body>
-        <govuk-body>You must not give false or misleading information to the Building Safety Regulator. Knowingly or recklessly giving false or misleading information is a criminal offence punishable by up to 2 years in prison.</govuk-body>
+      <ng-container *ngIf="isPapRegisteringFor()">
 
-
-        <govuk-fieldset title="If you are authorised to act for the principal accountable person" [isPageHeading]=false
-                        titleClass='govuk-fieldset__legend--m govuk-!-margin-bottom-4'
-                        class='govuk-!-margin-bottom-1' />
+        <h2 class="govuk-heading-m">If you are authorised to act for the principal accountable person</h2>
 
         <govuk-body>By submitting this application, you are also confirming that:</govuk-body>
 
@@ -24,12 +21,13 @@
           <govuk-list-item text="you have explained to the PAP that it is a criminal offence to give false or misleading information to the Building Safety Regulator" />
         </govuk-list>
 
-        <govuk-body>We may ask you for written evidence that the principal accountable person has authorised you to act for them.</govuk-body>
+        <govuk-body>You will need written instruction from the principal accountable person to act on their behalf. We may ask you to show us this.</govuk-body>
+        <govuk-body>After you submit your application, you cannot use this service to amend your answers. </govuk-body>
 
-      </govuk-fieldset>
+      </ng-container>
 
       <govuk-button (onClick)="saveAndContinue()" [disabled]="loading" [isLoading]="loading">Declare and continue</govuk-button>
-      <save-and-come-back/>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
     </div>
   </div>
 </div>

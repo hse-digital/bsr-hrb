@@ -25,11 +25,11 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
   }
 
   previousAnswer?: string;
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.previousAnswer = this.applicationService.model.PrincipalAccountableType;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.AccountablePersonsInProgress;
-    this.applicationService.updateLocalStorage();
-    this.applicationService.updateApplication();
+    await this.applicationService.updateApplication();
+    await this.applicationService.updateDynamicsAccountablePersonsStage();
   }
 
   canContinue(): boolean {
@@ -61,7 +61,7 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
     return navigationService.navigateAppend(`${accountablePerson}/${route}`, activatedRoute);
   }
 
-  override canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(_: ActivatedRouteSnapshot) {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingComplete) == BuildingApplicationStatus.BlocksInBuildingComplete;
   }
 }

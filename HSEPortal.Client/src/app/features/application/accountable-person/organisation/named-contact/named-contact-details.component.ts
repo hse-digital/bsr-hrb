@@ -72,8 +72,8 @@ export class OrganisationNamedContactDetailsComponent extends BaseComponent impl
     return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
-      && ApHelper.isOrganisation(this.applicationService);
+      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
   }
 }

@@ -1,4 +1,3 @@
-using System.Net;
 using AutoMapper;
 using Flurl;
 using Flurl.Http;
@@ -13,6 +12,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.DurableTask;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Options;
+using BuildingApplicationStatus = HSEPortal.Domain.Entities.BuildingApplicationStatus;
 
 namespace HSEPortal.API.Functions;
 
@@ -66,19 +66,34 @@ public class DynamicsSynchronisationFunctions
     }
 
     [Function(nameof(UpdateDynamicsBuildingSummaryStage))]
-    public async Task<HttpResponseData> UpdateDynamicsBuildingSummaryStage([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request, [DurableClient] DurableTaskClient durableTaskClient)
+    public async Task<HttpResponseData> UpdateDynamicsBuildingSummaryStage([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
-        var application = await dynamicsService.GetBuildingApplicationUsingId(buildingApplicationModel.Id);
-        if (application is { bsr_applicationstage: null })
+        await UpdateBuildingApplicationStage(buildingApplicationModel, new DynamicsBuildingApplication
         {
-            await dynamicsService.UpdateBuildingApplication(application, new DynamicsBuildingApplication
-            {
-                bsr_applicationstage = BuildingApplicationStage.AccountablePersons,
-            });
-        }
+            bsr_applicationstage = BuildingApplicationStage.BuildingSummary,
+            statuscode = BuildingApplicationStatus.InProgress
+        });
 
         return request.CreateResponse();
+    }
+
+    [Function(nameof(UpdateDynamicsAccountablePersonsStage))]
+    public async Task<HttpResponseData> UpdateDynamicsAccountablePersonsStage([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
+    {
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        await UpdateBuildingApplicationStage(buildingApplicationModel, new DynamicsBuildingApplication
+        {
+            bsr_applicationstage = BuildingApplicationStage.AccountablePersons
+        });
+
+        return request.CreateResponse();
+    }
+
+    private async Task UpdateBuildingApplicationStage(BuildingApplicationModel buildingApplicationModel, DynamicsBuildingApplication buildingApplication)
+    {
+        var application = await dynamicsService.GetBuildingApplicationUsingId(buildingApplicationModel.Id);
+        await dynamicsService.UpdateBuildingApplication(application, buildingApplication);
     }
 
     [Function(nameof(SynchroniseBuildingStructures))]
@@ -114,15 +129,21 @@ public class DynamicsSynchronisationFunctions
         if (dynamicsBuildingApplication != null)
         {
             var buildingApplicationWrapper = new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.ApplicationSubmitted);
-
-            var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), buildingApplicationWrapper);
-            if (paymentResponse != null)
-            {
-                buildingApplicationWrapper = buildingApplicationWrapper with { Model = buildingApplicationWrapper.Model with { Payment = paymentResponse } };
-            }
-
             await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), buildingApplicationWrapper);
-            await orchestrationContext.CallActivityAsync(nameof(CreatePayment), buildingApplicationWrapper);
+            
+            var payments = await orchestrationContext.CallActivityAsync<List<DynamicsPayment>>(nameof(GetDynamicsPayments), buildingApplicationModel.Id);
+            var paymentSyncTasks = payments.Select(async payment =>
+            {
+                var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), payment.bsr_govukpaymentid);
+                if (paymentResponse != null)
+                {
+                    await orchestrationContext.CallActivityAsync(nameof(CreateOrUpdatePayment), new BuildingApplicationPayment(dynamicsBuildingApplication.bsr_buildingapplicationid, paymentResponse));
+                }
+
+                return paymentResponse;
+            }).ToArray();
+
+            await Task.WhenAll(paymentSyncTasks);
         }
     }
 
@@ -149,11 +170,21 @@ public class DynamicsSynchronisationFunctions
     [Function(nameof(UpdateBuildingApplication))]
     public Task UpdateBuildingApplication([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
     {
+        var manualAddresses = CountManualAddresses(buildingApplicationWrapper.Model);
         return dynamicsService.UpdateBuildingApplication(buildingApplicationWrapper.DynamicsBuildingApplication, new DynamicsBuildingApplication
         {
             bsr_applicationstage = buildingApplicationWrapper.Stage,
-            bsr_declarationconfirmed = buildingApplicationWrapper.Stage is BuildingApplicationStage.ApplicationSubmitted or BuildingApplicationStage.PayAndApply
+            bsr_declarationconfirmed = buildingApplicationWrapper.Stage is BuildingApplicationStage.ApplicationSubmitted or BuildingApplicationStage.PayAndApply,
+            bsr_numberofmanuallyenteredaddresses = manualAddresses.ToString()
         });
+    }
+
+    private int CountManualAddresses(BuildingApplicationModel model)
+    {
+        var manualStructureAddresses = model.Sections?.SelectMany(x => x.Addresses).Count(x => x.IsManual) ?? 0;
+        var manualApAddresses = model.AccountablePersons?.Select(x => x.PapAddress ?? x.Address).Count(x => x.IsManual) ?? 0;
+
+        return manualStructureAddresses + manualApAddresses;
     }
 
     [Function(nameof(CreateBuildingStructures))]
@@ -168,20 +199,55 @@ public class DynamicsSynchronisationFunctions
         return dynamicsService.CreateAccountablePersons(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);
     }
 
-    [Function(nameof(CreatePayment))]
-    public Task CreatePayment([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
+    [Function(nameof(GetDynamicsPayments))]
+    public Task<List<DynamicsPayment>> GetDynamicsPayments([ActivityTrigger] string applicationId)
     {
-        return dynamicsService.CreatePayment(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);
+        return dynamicsService.GetPayments(applicationId);
+    }
+
+    [Function(nameof(CreateOrUpdatePayment))]
+    public async Task CreateOrUpdatePayment([ActivityTrigger] BuildingApplicationPayment buildingApplicationPayment)
+    {
+        await dynamicsService.CreatePayment(buildingApplicationPayment);
     }
 
     [Function(nameof(GetPaymentStatus))]
-    public async Task<PaymentResponseModel> GetPaymentStatus([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
+    public async Task<PaymentResponseModel> GetPaymentStatus([ActivityTrigger] string paymentId)
     {
-        var response = await integrationOptions.PaymentEndpoint
-            .AppendPathSegments("v1", "payments", buildingApplicationWrapper.Model.Payment.PaymentId)
-            .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
-            .GetJsonAsync<PaymentApiResponseModel>();
+        PaymentApiResponseModel response;
+        var retryCount = 0;
+
+        do
+        {
+            response = await integrationOptions.PaymentEndpoint
+                .AppendPathSegments("v1", "payments", paymentId)
+                .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
+                .GetJsonAsync<PaymentApiResponseModel>();
+
+            if (ShouldRetry(response.state.status, retryCount))
+            {
+                await Task.Delay(3000);
+                retryCount++;
+            }
+        } while (ShouldRetry(response.state.status, retryCount));
 
         return mapper.Map<PaymentResponseModel>(response);
+    }
+
+    [Function(nameof(UpdateBuildingApplicationInCosmos))]
+    [CosmosDBOutput("hseportal", "building-registrations", Connection = "CosmosConnection")]
+    public BuildingApplicationModel UpdateBuildingApplicationInCosmos([ActivityTrigger] BuildingApplicationModel buildingApplicationModel)
+    {
+        return buildingApplicationModel;
+    }
+
+    private bool ShouldRetry(string status, int retryCount)
+    {
+        if (status != "success" && status != "failed" && status != "cancelled" && status != "error")
+        {
+            return retryCount < 3;
+        }
+
+        return false;
     }
 }

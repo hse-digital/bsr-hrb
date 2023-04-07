@@ -6,24 +6,23 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="who_are_you" [message]="getErrorMessage()" />
+          <govuk-error-link anchorId="who_are_you-named_contact-input" [message]="getErrorMessage()" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Are you the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}?" [isPageHeading]=true id="who_are_you" titleClass='govuk-fieldset__legend--l' class='govuk-!-margin-bottom-4'
-                        [errorText]="getErrorDescription(roleHasErrors, getErrorMessage())">
+        <govuk-radio-group title="Are you the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}?" 
+          [isPageHeading]=true [(model)]="applicationService.currentAccountablePerson.Role" #field [govukRequired]="field"
+          [errorText]="getErrorDescription(roleHasErrors, getErrorMessage())">
+          <govuk-body>This is the person at {{applicationService.currentAccountablePerson.OrganisationName}} that you want us to talk to about building safety issues. We will not serve notices on this person.</govuk-body>
 
-            <govuk-body>The named contact is the single point of contact at {{applicationService.currentAccountablePerson.OrganisationName}} that you want us to use when we need to talk about building safety issues. They will not be the person we serve notices on.</govuk-body>
+          <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="Yes, I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-employee" value="employee" label="No, but I am an employee of {{applicationService.currentAccountablePerson.OrganisationName}}" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-registering_for" value="registering_for" label="No, I am not part of {{applicationService.currentAccountablePerson.OrganisationName}} but I have been appointed to register {{sectionBuildingName()}} for them" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
+        </govuk-radio-group>
 
-            <govuk-radio-group [(model)]="applicationService.currentAccountablePerson.Role">
-                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" (onKeyupEnter)="saveAndContinue()"/>
-                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-employee" value="employee" label="I am an employee of {{applicationService.currentAccountablePerson.OrganisationName}}" (onKeyupEnter)="saveAndContinue()" />
-                <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-registering_for" value="registering_for" label="I am not part of {{applicationService.currentAccountablePerson.OrganisationName}} and have been appointed to register {{sectionBuildingName()}}  for them" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
-              </govuk-radio-group>
-        </govuk-fieldset> 
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back/>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
     </div>
   </div>
 </div>

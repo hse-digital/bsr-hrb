@@ -78,8 +78,16 @@ export class AddressComponent implements OnInit {
   private changeStepTo(step: string) {
     this.history.push(this.step);
     this.step = step;
-    this.backButton?.nativeElement?.focus();
+    this.resetFocus();
     this.onChangeStep.emit(this.step);
+  }
+
+  resetFocus() {
+    const mainHeader = document.querySelector('#gouvk-header-service-name');
+    if (mainHeader) {
+      (mainHeader as HTMLElement).focus();
+      (mainHeader as HTMLElement).blur();
+    }
   }
 
 }

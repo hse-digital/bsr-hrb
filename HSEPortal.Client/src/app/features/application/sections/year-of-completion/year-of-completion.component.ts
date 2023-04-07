@@ -1,5 +1,5 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
@@ -7,7 +7,9 @@ import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from 'src/app/services/title.service';
+import { SectionAddressComponent } from "../address/address.component";
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
+import { SectionYearRangeComponent } from "../year-range/year-range.component";
 
 @Component({
   templateUrl: './year-of-completion.component.html'
@@ -60,8 +62,16 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     let route = CertificateIssuerComponent.route;
-    if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
-      route = 'year-range';
+
+    if (this.applicationService.currentSection.YearOfCompletionOption == 'not-completed') {
+      route = SectionAddressComponent.route;
+    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-exact') {
+      var yearOfCompletion = Number(this.applicationService.currentSection.YearOfCompletion);
+      if (yearOfCompletion && yearOfCompletion < 1985) {
+        route = SectionAddressComponent.route;
+      }
+    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
+      route = SectionYearRangeComponent.route;
     }
 
     return navigationService.navigateRelative(route, activatedRoute);
@@ -78,7 +88,7 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
       this.applicationService.currentSection.Name;
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 }

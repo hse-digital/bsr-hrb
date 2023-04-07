@@ -1,0 +1,10 @@
+<ng-container *ngFor="let ap of aps; let i = index;">
+  <h2 class="govuk-heading-m govuk-!-margin-top-8" *ngIf="i == 0">Principal accountable person</h2>
+  <h2 class="govuk-heading-m govuk-!-margin-top-8" *ngIf="i > 0">Other accountable person {{ i }}</h2>
+
+  <organisation-summary *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+  <individual-summary *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+
+  <pap-accountability *ngIf="i == 0" [pap]="ap" [area]="summaryArea" />
+  
+</ng-container>

@@ -50,7 +50,7 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
 
         responseAddress.MaxResults.Should().Be(postcodeResponse.header.maxresults);
         responseAddress.Offset.Should().Be(postcodeResponse.header.offset);
-        responseAddress.TotalResults.Should().Be(postcodeResponse.header.totalresults);
+        responseAddress.TotalResults.Should().Be(2);
 
         responseAddress.Results[0].UPRN.Should().Be(postcodeResponse.results[0].DPA.UPRN);
         responseAddress.Results[0].USRN.Should().Be(postcodeResponse.results[0].DPA.USRN);
@@ -75,6 +75,22 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
         responseAddress.Offset.Should().Be(0);
         responseAddress.TotalResults.Should().Be(0);
         responseAddress.Results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task ShouldFilterResultsThatAreNotEnglandOrWales()
+    {
+        var postcodeResponse = BuildPostcodeResponseJson();
+        HttpTest.RespondWithJson(postcodeResponse);
+
+        var response = await addressFunctions.SearchBuildingByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
+        var responseAddress = await response.ReadAsJsonAsync<BuildingAddressSearchResponse>();
+
+        responseAddress.MaxResults.Should().Be(postcodeResponse.header.maxresults);
+        responseAddress.Offset.Should().Be(postcodeResponse.header.offset);
+        responseAddress.TotalResults.Should().Be(2);
+
+        responseAddress.Results.Any(x => x.Country is not ("E" or "W")).Should().BeFalse();
     }
 
     private OrdnanceSurveyPostcodeResponse BuildPostcodeResponseJson()
@@ -126,6 +142,22 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
                         MATCH = 1.0,
                         MATCH_DESCRIPTION = "EXACT",
                         DELIVERY_POINT_SUFFIX = "3Q"
+                    }
+                },
+                new()
+                {
+                    DPA = new DPA
+                    {
+                        UPRN = "123123",
+                        COUNTRY_CODE = "W",
+                    }
+                },
+                new()
+                {
+                    DPA = new DPA
+                    {
+                        UPRN = "6666",
+                        COUNTRY_CODE = "X",
                     }
                 }
             }

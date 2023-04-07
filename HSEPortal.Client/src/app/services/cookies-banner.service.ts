@@ -36,7 +36,7 @@ export class CookiesBannerService {
   }
 
   private initCookiesModel() {
-    let model = this.getCookie(this.cookieKey);
+    let model = this.getCookieModel(this.cookieKey);
     this.cookiesModel = model ? model
       : { showCookies: true, cookiesAccepted: false };
   }
@@ -45,10 +45,10 @@ export class CookiesBannerService {
     Cookies.set(this.cookieKey, value, this.cookieExpiresDays);
   }
 
-  private getCookie(cookieKey: string) {
+  private getCookieModel(cookieKey: string) {
     let cookie = Cookies.get(cookieKey);
     if (cookie) {
-      let value = cookie.substring(cookie.indexOf('=') + 1, cookie.length - 1);
+      let value = cookie.replace(';', '').substring(cookie.indexOf('=') + 1);
       return {
         showCookies: false,
         cookiesAccepted: value === "true"
@@ -60,9 +60,9 @@ export class CookiesBannerService {
 
 export class Cookies {
 
-  static set(key: string, value: string, expiresDays?: number) {
+  static set(key: string, value: string, expiresDays?: number, path: string = "/") {
     let expires = expiresDays ? this.createExpiresValue(expiresDays) : "";
-    this.add(key, value, expires);
+    this.add(key, value, expires, path);
   }
 
   static get(key: string): string | undefined {
@@ -73,9 +73,9 @@ export class Cookies {
     return undefined;
   }
 
-  private static add(key: string, value: string, expires?: string) {
+  private static add(key: string, value: string, expires?: string, path?: string) {
     if (typeof document !== 'undefined') {
-      let newCookie = `${key}=${value}${expires ? "; expires=" + expires : ""}`;
+      let newCookie = `${key}=${value}${expires ? "; expires=" + expires : ""}${path ? "; path=" + path : ""}`;
       document.cookie = newCookie;
     }
   }

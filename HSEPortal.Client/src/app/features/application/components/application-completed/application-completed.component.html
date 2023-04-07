@@ -4,15 +4,21 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <govuk-fieldset title="Your application for {{buildingName}} has already been submitted"
-                      [isPageHeading]=true id="application-completed"
-                      titleClass="govuk-fieldset__legend--l govuk-!-margin-bottom-6">
-        <govuk-body>We sent confirmation of this to you at <b>{{email}}</b>.</govuk-body>
-        <govuk-body>You can either
-          <a class="govuk-link" href="#" role="link">return to another application</a> or
-          <a class="govuk-link" href="/building-registration/building/name" role="link">register another building</a>.
-        </govuk-body>
-      </govuk-fieldset>
+      <h1 class="govuk-heading-l">Your application for {{buildingName}} has already been submitted</h1>
+
+      <govuk-body>We sent confirmation of this to you at <b>{{email}}</b>.</govuk-body>
+      <govuk-body>
+        You can either
+        <a class="govuk-link" href="#" role="link">return to another application</a> or
+        <a class="govuk-link" href="/building-registration/building/name" role="link">register another building</a>.
+      </govuk-body>
+
+      <govuk-body><a class="govuk-link"
+                     (keyup.enter)="navigateToSummary()"
+                     (click)="navigateToSummary()"
+                     role="link"
+                     tabindex="0">View your completed application</a>.</govuk-body>
+
 
     </div>
   </div>

@@ -5,24 +5,23 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-fieldset title="We need some more information" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-8' class='govuk-!-margin-bottom-4'>
+        <h1 class="govuk-heading-l">We need some more information</h1>
 
-          <govuk-body>For <b>{{getSectionNames(inScopeSections!)}}</b> <span *ngIf="inScopeSections!.length > 1"> and <b>{{getSectionName(inScopeSections!.at(-1)!, inScopeSections!.length-1)}}</b></span>, we need you to tell us about:</govuk-body>
+        <govuk-body>For <b>{{getSectionNames(inScopeSections!)}}</b> <span *ngIf="inScopeSections!.length > 1"> and <b>{{getSectionName(inScopeSections!.at(-1)!, inScopeSections!.length-1)}}</b></span>, we need you to tell us about:</govuk-body>
 
-          <govuk-list classes='govuk-list--bullet'>
-            <govuk-list-item text="the principal accountable person" />
-            <govuk-list-item text="other accountable persons" />
-            <govuk-list-item text="how we can contact them" />
-            <govuk-list-item text="what they're accountable for" />
-          </govuk-list>
+        <govuk-list classes='govuk-list--bullet'>
+          <govuk-list-item text="the principal accountable person" />
+          <govuk-list-item text="other accountable persons" />
+          <govuk-list-item text="how we can contact them" />
+          <govuk-list-item text="what they're accountable for" />
+        </govuk-list>
 
-          <govuk-body *ngIf="outOfScopeSections">We do not need any more information about <b>{{getSectionNames(outOfScopeSections!)}}</b><span *ngIf="outOfScopeSections!.length > 1"> and <b>{{getSectionName(outOfScopeSections!.at(-1)!, outOfScopeSections!.length-1)}}</b></span>. Based on the information you have given, they are not high-rise residential structures.</govuk-body>
+        <govuk-body *ngIf="outOfScopeSections">We do not need any more information about <b>{{getSectionNames(outOfScopeSections!)}}</b><span *ngIf="outOfScopeSections!.length > 1"> and <b>{{getSectionName(outOfScopeSections!.at(-1)!, outOfScopeSections!.length-1)}}</b></span>. Based on the information you have given, they are not high-rise residential structures.</govuk-body>
 
-        </govuk-fieldset>
       </div>
 
       <govuk-button (onClick)="saveAndContinue()">Continue</govuk-button>
-      <save-and-come-back/>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
     </div>
   </div>
 </div>

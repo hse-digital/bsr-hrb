@@ -5,22 +5,23 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem"  #summaryError>
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link anchorId="input-security-code" [message]="getOtpError()" />
         </govuk-error-summary>
 
-        <govuk-fieldset title="Verify your email address" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+        <h1 class="govuk-heading-l">Verify your email address</h1>
 
           <govuk-body>We have sent a 6-digit security code to: <b>{{ applicationService.model.ContactEmailAddress}}</b>.</govuk-body>
           <govuk-body>If you cannot find the email, please check your junk or spam folders.</govuk-body>
           <govuk-body>If you did not get an email, or wish to use a different email address, you can <a class="govuk-link" [routerLink]="['/new-application/contact-email']">resend the email or enter a different email address.</a></govuk-body>
 
-          <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
-                       hint="For example, '123456'."
-                       [(model)]="otpToken" class="govuk-input--width-10"
-                       [errorText]="getErrorDescription(hasErrors, getOtpError())"
-                       (onKeyupEnter)="saveAndContinue()"/>
-        </govuk-fieldset>
+        <govuk-input id="security-code" label="Security code" labelClass="govuk-label--s"
+                     hint="For example, '123456'."
+                     [(model)]="otpToken" class="govuk-input--width-10"
+                     [errorText]="getErrorDescription(hasErrors, getOtpError())"
+                     (onKeyupEnter)="saveAndContinue()" />
+
+
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>

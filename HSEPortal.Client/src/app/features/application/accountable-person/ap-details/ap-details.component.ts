@@ -5,6 +5,7 @@ import { ApHelper } from "src/app/helpers/ap-helper";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { EmailValidator } from "src/app/helpers/validators/email-validator";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { PhoneNumberValidator } from "src/app/helpers/validators/phone-number-validator";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
@@ -33,59 +34,53 @@ export class ApDetailsComponent extends BaseComponent implements IHasNextPage, O
     this.papName = `${this.applicationService.currentAccountablePerson.FirstName} ${this.applicationService.currentAccountablePerson.LastName}`;
   }
 
-  errors = {
-    contactDetailsAreEmpty: false,
-    email: { hasErrors: false, errorText: '' },
-    phoneNumber: { hasErrors: false, errorText: '' }
-  };
+  emailHasErrors: boolean = false;
+  emailErrorText: string = `Enter ${this.papName}'s email address`;
+
+  phoneHasErrors: boolean = false;
+  phoneErrorText: string = `Enter ${this.papName}'s telephone number`;
 
   canContinue(): boolean {
     let email = this.applicationService.currentAccountablePerson.Email;
     let phone = this.applicationService.currentAccountablePerson.PhoneNumber;
-    let canContinue = false;
 
-    if (!email && !phone) {
-      this.errors.contactDetailsAreEmpty = true;
-    } else {
-      this.errors.contactDetailsAreEmpty = false;
-      let emailValid = this.isEmailValid(email);
-      let phoneValid = this.isPhoneNumberValid(phone);
-      canContinue = emailValid && phoneValid;
-    }
+    this.emailHasErrors = !this.isEmailValid(email);
+    this.phoneHasErrors = !this.isPhoneNumberValid(phone);
 
-    return canContinue;
+    return !this.emailHasErrors && !this.phoneHasErrors;
   }
 
   isEmailValid(email: string | undefined): boolean {
-    this.errors.email.hasErrors = true;
-    if (!email) {
-      this.errors.email.errorText = 'Enter your email address';
-    } else if (!EmailValidator.isValid(email)) {
-      this.errors.email.errorText = 'You must enter an email address in the correct format, for example \'name@example.com\'';
+    var inError = true;
+    if (!FieldValidations.IsNotNullOrWhitespace(email)) {
+      this.emailErrorText = `Enter ${this.papName}'s email address`;
+    } else if (!EmailValidator.isValid(email!)) {
+      this.emailErrorText = 'You must enter an email address in the correct format, for example \'name@example.com\'';
     } else {
-      this.errors.email.hasErrors = false;
+      inError = false;
     }
 
-    return !this.errors.email.hasErrors;
+    return !inError;
   }
 
   isPhoneNumberValid(phone: string | undefined) {
-    this.errors.phoneNumber.hasErrors = true;
-    if (!phone) {
-      this.errors.phoneNumber.errorText = 'Enter your telephone number';
-    } else if (!PhoneNumberValidator.isValid(phone)) {
-      this.errors.phoneNumber.errorText = 'You must enter a UK telephone number. For example, \'01632 960 001\', \'07700 900 982\' or \'+44 808 157 0192\'';
+    var inError = true;
+    if (!FieldValidations.IsNotNullOrWhitespace(phone)) {
+      this.phoneErrorText = `Enter ${this.papName}'s telephone number`;
+    } else if (!PhoneNumberValidator.isValid(phone!)) {
+      this.phoneErrorText = 'You must enter a UK telephone number. For example, \'01632 960 001\', \'07700 900 982\' or \'+44 808 157 0192\'';
     } else {
-      this.errors.phoneNumber.hasErrors = false;
+      inError = false;
     }
-    return !this.errors.phoneNumber.hasErrors;
+
+    return !inError;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(this.nextRoute ?? ApAddressComponent.route, activatedRoute);
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot) {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
   }
 }

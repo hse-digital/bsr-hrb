@@ -20,18 +20,18 @@ export class ApplicationService {
   }
 
   constructor(private httpClient: HttpClient) {
-    this.model = LocalStorage.getJSON('HSE_MODEL') ?? {};
+    this.model = LocalStorage.getJSON('application_data') ?? {};
     this._currentSectionIndex = this.model?.Sections?.length - 1 ?? 0;
     this._currentAccountablePersonIndex = this.model?.AccountablePersons?.length - 1 ?? 0;
   }
 
   newApplication() {
-    LocalStorage.remove('HSE_MODEL');
+    LocalStorage.remove('application_data');
     this.model = new BuildingRegistrationModel();
   }
 
   updateLocalStorage() {
-    LocalStorage.setJSON('HSE_MODEL', this.model)
+    LocalStorage.setJSON('application_data', this.model)
   }
 
   clearApplication() {
@@ -84,6 +84,11 @@ export class ApplicationService {
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
+  async removeAp(index: number) {
+    this.model.AccountablePersons.splice(index, 1);
+    await this.updateApplication();
+  }
+
   async sendVerificationEmail(emailAddress: string): Promise<void> {
     await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": emailAddress }));
   }
@@ -107,13 +112,12 @@ export class ApplicationService {
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
     var application = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
     this.model = application;
-
-    LocalStorage.setJSON('HSE_MODEL', this.model)
+    this.updateLocalStorage();
   }
 
   async registerNewBuildingApplication(): Promise<void> {
     this.model = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/NewBuildingApplication', this.model));
-    LocalStorage.setJSON('HSE_MODEL', this.model)
+    this.updateLocalStorage();
   }
 
   async updateApplication(): Promise<void> {
@@ -123,6 +127,10 @@ export class ApplicationService {
 
   async updateDynamicsBuildingSummaryStage(): Promise<void> {
     await firstValueFrom(this.httpClient.post(`api/UpdateDynamicsBuildingSummaryStage`, this.model));
+  }
+
+  async updateDynamicsAccountablePersonsStage(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/UpdateDynamicsAccountablePersonsStage`, this.model));
   }
 
   async syncBuildingStructures(): Promise<void> {
@@ -139,6 +147,10 @@ export class ApplicationService {
 
   async syncPayment(): Promise<void> {
     await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
+  }
+
+  async getApplicationPayments(): Promise<any[]> {
+    return await firstValueFrom(this.httpClient.get<any[]>(`api/GetApplicationPaymentStatus/${this.model.id}`));
   }
 }
 
@@ -160,7 +172,6 @@ export class BuildingRegistrationModel {
   OutOfScopeContinueReason?: string;
   PrincipalAccountableType?: string;
   AccountablePersons: AccountablePersonModel[] = [];
-  Payment?: PaymentModel;
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
 }
 
@@ -240,4 +251,12 @@ export class PaymentModel {
   PaymentId?: string;
   PaymentProvider?: string;
   ProviderId?: string;
+  ReconciliationStatus?: number;
+}
+
+export enum PaymentStatus {
+  Started,
+  Pending,
+  Success,
+  Failed
 }

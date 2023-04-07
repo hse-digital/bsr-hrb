@@ -72,7 +72,7 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
     }
   }
 
-  override canActivate(routeSnapshot: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
+  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
     return this.applicationService.isCurrentApplication(routeSnapshot.params['id']);
   }
 

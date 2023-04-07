@@ -5,21 +5,25 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <govuk-fieldset title="Completion certificate issuer for {{sectionBuildingName()}} (optional)" [isPageHeading]=true id="application" titleClass='govuk-fieldset__legend--l govuk-!-margin-bottom-6' class='govuk-!-margin-bottom-4'>
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link *ngIf="certificateHasErrors" anchorId="input-block-name" message="Enter the completion certificate issuer" />
+        </govuk-error-summary>
 
-          <govuk-details summaryText="Help with completion certificate">
-            <p>A building control body or authority issues a completion certificate as proof that the building work has been inspected and complies with building regulations.</p>
-          </govuk-details>
+        <h1 class="govuk-heading-l">Completion certificate issuer for {{sectionBuildingName()}}{{ isOptional ? ' (optional)' : ''}}</h1>
 
-          <govuk-input label="Issuer name (optional)" labelClass="govuk-label--s" 
-            hint="Enter the full name of the building control body or authority that issued the completion certificate. If you do not have access to the completion certificate, leave this blank."
-            id="certificate-issuer" [(model)]="applicationService.currentSection.CompletionCertificateIssuer"
-            s="govuk-input--width-3" />
-        </govuk-fieldset>
+        <govuk-details summaryText="Help with completion certificate">
+          <p>A building control body or authority issues a completion certificate as proof that the building work has been inspected and complies with building regulations.</p>
+        </govuk-details>
+
+        <govuk-input label="Issuer name{{ isOptional ? ' (optional)' : ''}}" labelClass="govuk-label--s"
+                     hint="Enter the full name of the building control body or authority that issued the completion certificate. If you do not have access to the completion certificate, leave this blank."
+                     id="certificate-issuer" [(model)]="applicationService.currentSection.CompletionCertificateIssuer"
+                     (onKeyupEnter)="saveAndContinue()" #field [govukRequired]="field"
+                     [errorText]="getErrorDescription(certificateHasErrors, 'Enter the completion certificate issuer')"  />
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back />
+      <save-and-come-back (onClick)="saveAndComeBack()"/>
     </div>
   </div>
 </div>

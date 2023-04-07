@@ -75,18 +75,10 @@ export class FindAddressComponent {
   }
 
   addressTypeDescription() {
-    if (this.searchMode == AddressSearchMode.Building) {
-      return 'This address must be in England.';
-    }
-
     return 'This address must be in England or Wales.';
   }
 
   getTitle() {
     return this.selfAddress ? 'Find your address' : `Find the address of ${this.addressName}`;
-  }
-
-  postcodeHint() {
-    return this.searchMode == AddressSearchMode.Building ? 'You can use the temporary postcode if its postcode has not been approved yet.' : undefined;
   }
 }
