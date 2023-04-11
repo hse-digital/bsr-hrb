@@ -22,6 +22,10 @@ export class CookiesBannerService {
     this.cookiesModel.showCookies = false;
     this.cookiesModel.cookiesAccepted = true;
     this.setCookie("true");
+
+    if (typeof window !== 'undefined') {
+      (<any>window).clarity('consent');
+    }
   }
 
   rejectCookies() {
