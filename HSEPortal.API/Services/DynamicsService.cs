@@ -388,6 +388,12 @@ public class DynamicsService
             {
                 bsr_timeanddateoftransaction = payment.CreatedDate,
                 bsr_govukpaystatus = payment.Status,
+                bsr_cardexpirydate = payment.CardExpiryDate,
+                bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                bsr_cardbrandegvisa = payment.CardBrand,
+                bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
+                bsr_amountpaid = payment.Amount / 100,
+                bsr_lastfourdigitsofcardnumber = payment.LastFourDigitsCardNumber,
             });
         }
     }
