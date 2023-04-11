@@ -376,7 +376,7 @@ public class DynamicsService
                 bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
                 bsr_cardbrandegvisa = payment.CardBrand,
                 bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
-                bsr_amountpaid = payment.Amount / 100,
+                bsr_amountpaid = Math.Round((float)payment.Amount / 100, 2),
                 bsr_govukpaystatus = payment.Status,
                 bsr_govukpaymentid = payment.PaymentId
             });
@@ -392,7 +392,6 @@ public class DynamicsService
                 bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
                 bsr_cardbrandegvisa = payment.CardBrand,
                 bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
-                bsr_amountpaid = payment.Amount / 100,
                 bsr_lastfourdigitsofcardnumber = payment.LastFourDigitsCardNumber,
             });
         }
