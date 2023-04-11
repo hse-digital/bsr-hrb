@@ -102,7 +102,7 @@ export class ApplicationService {
 
   async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
     try {
-      await firstValueFrom(this.httpClient.get(`api/ValidateApplicationNumber/${applicationNumber}/${emailAddress}`));
+      await firstValueFrom(this.httpClient.get(`api/ValidateApplicationNumber/${emailAddress}/${applicationNumber}`));
       return true;
     } catch {
       return false;

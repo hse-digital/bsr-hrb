@@ -41,7 +41,7 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(ValidateApplicationNumber))]
-    public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ValidateApplicationNumber/{applicationNumber}/{emailAddress}")] HttpRequestData request,
+    public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ValidateApplicationNumber/{emailAddress}/{applicationNumber}")] HttpRequestData request,
         [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber} and c.ContactEmailAddress = {emailAddress}", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {

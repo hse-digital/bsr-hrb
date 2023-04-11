@@ -18,11 +18,11 @@ public class WhenValidatingApplicationNumber : IntegrationTestBase
     }
 
     [Theory]
-    [InlineData("HBR170597960", "dont@delete.com", HttpStatusCode.OK)]
+    [InlineData("dont@delete.com", "HBR170597960", HttpStatusCode.OK)]
     [InlineData("DOESNT-EXIST", "DOESNT-EXIST", HttpStatusCode.BadRequest)]
-    public async Task ShouldReturnApplicationExistsBasedOnNumberAndEmailAddress(string applicationNumber, string emailAddress, HttpStatusCode expectedResponse)
+    public async Task ShouldReturnApplicationExistsBasedOnNumberAndEmailAddress(string emailAddress, string applicationNumber, HttpStatusCode expectedResponse)
     {
-        var response = await swaOptions.Value.Url.AppendPathSegments("api", "ValidateApplicationNumber", applicationNumber, emailAddress)
+        var response = await swaOptions.Value.Url.AppendPathSegments("api", "ValidateApplicationNumber", emailAddress, applicationNumber)
             .AllowAnyHttpStatus().GetAsync();
 
         response.StatusCode.Should().Be((int)expectedResponse);
