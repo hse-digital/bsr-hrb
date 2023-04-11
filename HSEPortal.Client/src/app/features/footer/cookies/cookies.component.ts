@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Cookies, CookiesBannerService } from 'src/app/services/cookies-banner.service';
+import { Cookies, CookiesService } from 'src/app/services/cookies-banner.service';
 
 @Component({
   selector: 'hse-cookies',
@@ -9,20 +9,21 @@ export class CookiesComponent implements OnInit {
   public static route: string = "cookies";
   static title: string = "Cookies - Register a high-rise building - GOV.UK";
 
-  cookieModel?: string;
+  cookiesAccepted?: string;
 
-  constructor(public cookiesBannerService: CookiesBannerService) { }
+  constructor(public cookiesService: CookiesService) { }
 
   async ngOnInit() {
-    this.cookieModel = !this.cookiesBannerService.cookiesModel.showCookies
-      ? String(this.cookiesBannerService.cookiesModel.cookiesAccepted)
+    this.cookiesAccepted = !this.cookiesService.cookiesModel.showCookies
+      ? String(this.cookiesService.cookiesModel.cookiesAccepted)
       : undefined;
   }
 
   saveCookieSettings() {
-    if (!!this.cookieModel) {
-      Cookies.set(this.cookiesBannerService.cookieKey, "", -1);
-      Cookies.set(this.cookiesBannerService.cookieKey, this.cookieModel, this.cookiesBannerService.cookieExpiresDays);
+    if (this.cookiesAccepted == 'true') {
+      this.cookiesService.acceptCookies();
+    } else if (this.cookiesAccepted == 'false') {
+      this.cookiesService.rejectCookies();
     }
   }
 }

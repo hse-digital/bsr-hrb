@@ -75,9 +75,9 @@
         </tbody>
       </table>
 
-      <govuk-radio-group title="Do you want to accept analytics cookies?" class="govuk-!-margin-bottom-4" [(model)]="cookieModel">
-        <govuk-radio name="cookies" id="cookies-yes" value="true" label="Yes" (onKeyupEnter)="saveCookieSettings()" [model]="cookieModel" />
-        <govuk-radio name="cookies" id="cookies-no" value="false" label="No" (onKeyupEnter)="saveCookieSettings()" [model]="cookieModel" />
+      <govuk-radio-group title="Do you want to accept analytics cookies?" class="govuk-!-margin-bottom-4" [(model)]="cookiesAccepted">
+        <govuk-radio name="cookies" id="cookies-yes" value="true" label="Yes" (onKeyupEnter)="saveCookieSettings()" [model]="cookiesAccepted" />
+        <govuk-radio name="cookies" id="cookies-no" value="false" label="No" (onKeyupEnter)="saveCookieSettings()" [model]="cookiesAccepted" />
       </govuk-radio-group>
 
       <govuk-button (onClick)="saveCookieSettings()">Save cookie settings</govuk-button>

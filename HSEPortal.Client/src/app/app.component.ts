@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from './services/application.service';
 import { IdleTimerService } from './services/idle-timer.service';
-import { CookiesBannerService } from './services/cookies-banner.service';
+import { CookiesService } from './services/cookies-banner.service';
 import { GovukCookieBannerComponent } from 'hse-angular';
 import { HelpPagesModule } from './features/footer/help-pages.module';
 import { NavigationService } from './services/navigation.service';
@@ -11,7 +11,7 @@ import { CookiesComponent } from './features/footer/cookies/cookies.component';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  providers: [CookiesBannerService]
+  providers: [CookiesService]
 })
 export class AppComponent implements AfterViewInit {
 
@@ -20,7 +20,7 @@ export class AppComponent implements AfterViewInit {
   viewCookiesLink!: string;
 
   constructor(private applicationService: ApplicationService,
-    private router: Router, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute, private cookiesBannerService: CookiesBannerService, private navigationService: NavigationService) {
+    private router: Router, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute, private cookiesService: CookiesService, private navigationService: NavigationService) {
     this.initTimer();
     this.initCookiesBanner();
   }
@@ -67,18 +67,18 @@ export class AppComponent implements AfterViewInit {
 
   showCookieBanner: boolean = true;
   initCookiesBanner() {
-    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+    this.showCookieBanner = this.cookiesService.getShowCookiesStatus();
     this.viewCookiesLink = `/${HelpPagesModule.baseRoute}/${CookiesComponent.route}`;
   }
 
   cookiesAccepted() {
-    this.cookiesBannerService.acceptCookies();
-    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+    this.cookiesService.acceptCookies();
+    this.showCookieBanner = this.cookiesService.getShowCookiesStatus();
   }
 
   cookiesRejected() {
-    this.cookiesBannerService.rejectCookies();
-    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+    this.cookiesService.rejectCookies();
+    this.showCookieBanner = this.cookiesService.getShowCookiesStatus();
   }
 
   async cookiesChanged() {
