@@ -393,6 +393,7 @@ public class DynamicsService
                 bsr_cardbrandegvisa = payment.CardBrand,
                 bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
                 bsr_lastfourdigitsofcardnumber = payment.LastFourDigitsCardNumber,
+                bsr_amountpaid = Math.Round((float)payment.Amount / 100, 2)
             });
         }
     }
