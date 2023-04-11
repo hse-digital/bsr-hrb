@@ -32,6 +32,18 @@ export class CookiesBannerService {
     if (!this.cookiesModel) this.initCookiesModel();
     this.cookiesModel.showCookies = this.cookiesModel.cookiesAccepted = false;
     this.setCookie("false");
+
+    Cookies.set("_clsk", "", -1);
+    Cookies.set("_ga_Q39686J738", "", -1);
+    Cookies.set("_ga", "", -1);
+    Cookies.set("_clck", "", -1);
+    Cookies.set("MUID", "", -1);
+    Cookies.set("CLID", "", -1);
+    Cookies.set("ANONCHK", "", -1);
+
+    if (typeof window !== 'undefined') {
+      (<any>window).clarity('stop');
+    }
   }
 
   resetCookies() {
