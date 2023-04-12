@@ -1,4 +1,5 @@
-﻿using HSEPortal.Domain.Entities;
+﻿using System.Globalization;
+using HSEPortal.Domain.Entities;
 
 namespace HSEPortal.Domain.DynamicsDefinitions;
 public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsStructure>
@@ -9,8 +10,9 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
     {
         var peopleLivingInStructure = GetPeopleLivingInStructure(entity.PeopleLivingInStructure);
         var constructionYearOption = GetConstructionYearOption(entity.ConstructionYearOption);
-
-        return new DynamicsStructure(entity.Name, int.Parse(entity.FloorsAboveGround), double.Parse(entity.HeightInMeters), int.Parse(entity.NumberOfResidentialUnits), peopleLivingInStructure, constructionYearOption);
+        
+        var roundedHeight = (int)Math.Round(double.Parse(entity.HeightInMeters, CultureInfo.InvariantCulture));
+        return new DynamicsStructure(entity.Name, int.Parse(entity.FloorsAboveGround), roundedHeight, int.Parse(entity.NumberOfResidentialUnits), peopleLivingInStructure, constructionYearOption);
     }
 
     public override Structure BuildEntity(DynamicsStructure dynamicsEntity)
