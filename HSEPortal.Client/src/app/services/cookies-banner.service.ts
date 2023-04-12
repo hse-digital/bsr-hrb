@@ -35,18 +35,16 @@ export class CookiesBannerService {
     this.cookiesModel.showCookies = this.cookiesModel.cookiesAccepted = false;
     this.setCookie("false");
 
+    this.cookieService.delete("_clsk", "/", ".hse.gov.uk");
+    this.cookieService.delete("_ga_Q39686J738", "/", ".hse.gov.uk");
+    this.cookieService.delete("_ga", "/", ".hse.gov.uk");
+    this.cookieService.delete("_clck", "/", ".hse.gov.uk");
+    this.cookieService.delete("MUID", "/", ".clarity.ms", true, "None");
+    this.cookieService.delete("CLID", "/", "www.clarity.ms", true, "None");
+
     if (typeof window !== 'undefined') {
       (<any>window).clarity('stop');
     }
-    
-    this.cookieService.delete("_clsk", "/");
-    this.cookieService.delete("_ga_Q39686J738", "/");
-    this.cookieService.delete("_ga", "/");
-    this.cookieService.delete("_clck", "/");
-    this.cookieService.delete("MUID", "/", ".clarity.ms", true, "None");
-    this.cookieService.delete("CLID", "/", "www.clarity.ms", true, "None");
-    this.cookieService.delete("ANONCHK", "/");
-
   }
 
   resetCookies() {
