@@ -1,3 +1,4 @@
+using System.Globalization;
 using AutoMapper;
 using Flurl;
 using Flurl.Http;
@@ -128,9 +129,9 @@ public class DynamicsSynchronisationFunctions
         var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
         if (dynamicsBuildingApplication != null)
         {
-            var buildingApplicationWrapper = new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.ApplicationSubmitted);
+            var buildingApplicationWrapper = new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.PayAndApply);
             await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), buildingApplicationWrapper);
-            
+
             var payments = await orchestrationContext.CallActivityAsync<List<DynamicsPayment>>(nameof(GetDynamicsPayments), buildingApplicationModel.Id);
             var paymentSyncTasks = payments.Select(async payment =>
             {
@@ -138,6 +139,10 @@ public class DynamicsSynchronisationFunctions
                 if (paymentResponse != null)
                 {
                     await orchestrationContext.CallActivityAsync(nameof(CreateOrUpdatePayment), new BuildingApplicationPayment(dynamicsBuildingApplication.bsr_buildingapplicationid, paymentResponse));
+                    if (paymentResponse.Status == "success" && dynamicsBuildingApplication.bsr_applicationstage != BuildingApplicationStage.ApplicationSubmitted)
+                    {
+                        await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingToSubmitted), dynamicsBuildingApplication);
+                    }
                 }
 
                 return paymentResponse;
@@ -176,6 +181,16 @@ public class DynamicsSynchronisationFunctions
             bsr_applicationstage = buildingApplicationWrapper.Stage,
             bsr_declarationconfirmed = buildingApplicationWrapper.Stage is BuildingApplicationStage.ApplicationSubmitted or BuildingApplicationStage.PayAndApply,
             bsr_numberofmanuallyenteredaddresses = manualAddresses.ToString()
+        });
+    }
+
+    [Function(nameof(UpdateBuildingToSubmitted))]
+    public Task UpdateBuildingToSubmitted([ActivityTrigger] DynamicsBuildingApplication buildingApplication)
+    {
+        return dynamicsService.UpdateBuildingApplication(buildingApplication, new DynamicsBuildingApplication
+        {
+            bsr_submittedon = DateTime.Now.ToString(CultureInfo.InvariantCulture),
+            bsr_applicationstage = BuildingApplicationStage.ApplicationSubmitted
         });
     }
 
