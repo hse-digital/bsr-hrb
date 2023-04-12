@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class CookiesBannerService {
+
+  constructor(private cookieService: CookieService) {
+    this.initCookiesModel();
+  }
 
   cookiesModel!: { showCookies: boolean, cookiesAccepted: boolean };
 
   cookieKey: string = "nonEsentialCookies";
   cookieExpiresDays = 365;
 
-  constructor() {
-    this.initCookiesModel();
-  }
 
   getShowCookiesStatus() {
     if (!this.cookiesModel) this.initCookiesModel();
@@ -33,17 +35,18 @@ export class CookiesBannerService {
     this.cookiesModel.showCookies = this.cookiesModel.cookiesAccepted = false;
     this.setCookie("false");
 
-    Cookies.set("_clsk", "", -1);
-    Cookies.set("_ga_Q39686J738", "", -1);
-    Cookies.set("_ga", "", -1);
-    Cookies.set("_clck", "", -1);
-    Cookies.set("MUID", "", -1);
-    Cookies.set("CLID", "", -1);
-    Cookies.set("ANONCHK", "", -1);
-
     if (typeof window !== 'undefined') {
       (<any>window).clarity('stop');
     }
+    
+    this.cookieService.delete("_clsk", "/");
+    this.cookieService.delete("_ga_Q39686J738", "/");
+    this.cookieService.delete("_ga", "/");
+    this.cookieService.delete("_clck", "/");
+    this.cookieService.delete("MUID", "/", ".clarity.ms", true, "None");
+    this.cookieService.delete("CLID", "/", "www.clarity.ms", true, "None");
+    this.cookieService.delete("ANONCHK", "/");
+
   }
 
   resetCookies() {
