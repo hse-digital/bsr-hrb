@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Flurl.Http;
 using Flurl.Util;
+using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Model.DynamicsSynchronisation;
 using HSEPortal.API.Model.LocalAuthority;
@@ -49,7 +50,7 @@ public class DynamicsService
     {
         return dynamicsApi.Get<LocalAuthoritiesSearchResponse>("accounts", new[]
         {
-            ("$filter", $"_bsr_accounttype_accountid_value eq '{dynamicsOptions.LocalAuthorityTypeId}' and contains(name, '{authorityName}')"),
+            ("$filter", $"_bsr_accounttype_accountid_value eq '{dynamicsOptions.LocalAuthorityTypeId}' and contains(name, '{authorityName.EscapeSingleQuote()}')"),
             ("$select", "name")
         });
     }
@@ -205,7 +206,7 @@ public class DynamicsService
                     var sectionName = accountability.SectionName ?? dynamicsBuildingApplication.bsr_Building.bsr_name;
                     var areas = accountability.Accountability;
 
-                    var structures = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{sectionName}' and _bsr_buildingid_value eq '{dynamicsBuildingApplication._bsr_building_value}'"));
+                    var structures = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{sectionName.EscapeSingleQuote()}' and _bsr_buildingid_value eq '{dynamicsBuildingApplication._bsr_building_value}'"));
                     var structure = structures.value.First();
 
                     foreach (var area in areas)
@@ -270,7 +271,7 @@ public class DynamicsService
                     var sectionName = accountability.SectionName ?? dynamicsBuildingApplication.bsr_Building.bsr_name;
                     var areas = accountability.Accountability;
 
-                    var structures = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{sectionName}' and _bsr_buildingid_value eq '{dynamicsBuildingApplication._bsr_building_value}'"));
+                    var structures = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{sectionName.EscapeSingleQuote()}' and _bsr_buildingid_value eq '{dynamicsBuildingApplication._bsr_building_value}'"));
                     var structure = structures.value.First();
 
                     foreach (var area in areas)
@@ -440,7 +441,7 @@ public class DynamicsService
     {
         if (!string.IsNullOrWhiteSpace(section.CompletionCertificateIssuer) || !string.IsNullOrWhiteSpace(section.CompletionCertificateReference))
         {
-            var existingCertificate = await dynamicsApi.Get<DynamicsResponse<DynamicsCompletionCertificate>>("bsr_completioncertificates", ("$filter", $"bsr_certificatereferencenumber eq '{section.CompletionCertificateReference}' and bsr_issuingorganisation eq '{section.CompletionCertificateIssuer}'"));
+            var existingCertificate = await dynamicsApi.Get<DynamicsResponse<DynamicsCompletionCertificate>>("bsr_completioncertificates", ("$filter", $"bsr_certificatereferencenumber eq '{section.CompletionCertificateReference.EscapeSingleQuote()}' and bsr_issuingorganisation eq '{section.CompletionCertificateIssuer.EscapeSingleQuote()}'"));
             if (!existingCertificate.value.Any())
             {
                 var response = await dynamicsApi.Create("bsr_completioncertificates", new DynamicsCompletionCertificate
@@ -564,7 +565,7 @@ public class DynamicsService
 
     private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure)
     {
-        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{dynamicsStructure.bsr_name}' and bsr_postcode eq '{dynamicsStructure.bsr_postcode}'"));
+        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{dynamicsStructure.bsr_name.EscapeSingleQuote()}' and bsr_postcode eq '{dynamicsStructure.bsr_postcode}'"));
         if (existingStructure.value.Any())
         {
             dynamicsStructure = dynamicsStructure with { bsr_blockid = existingStructure.value[0].bsr_blockid };
@@ -621,7 +622,7 @@ public class DynamicsService
     {
         var response = await dynamicsApi.Get<DynamicsResponse<DynamicsContact>>("contacts", new[]
         {
-            ("$filter", $"firstname eq '{firstName}' and lastname eq '{lastName}' and emailaddress1 eq '{email}' and contains(telephone1, '{phoneNumber.Replace("+", string.Empty)}')"),
+            ("$filter", $"firstname eq '{firstName.EscapeSingleQuote()}' and lastname eq '{lastName.EscapeSingleQuote()}' and emailaddress1 eq '{email.EscapeSingleQuote()}' and contains(telephone1, '{phoneNumber.Replace("+", string.Empty).EscapeSingleQuote()}')"),
             ("$expand", "bsr_contacttype_contact")
         });
 
@@ -630,7 +631,7 @@ public class DynamicsService
 
     private async Task<DynamicsAccount> FindExistingAccountAsync(string organisationName, string postcode)
     {
-        var response = await dynamicsApi.Get<DynamicsResponse<DynamicsAccount>>("accounts", ("$filter", $"name eq '{organisationName}' and address1_postalcode eq '{postcode}'"));
+        var response = await dynamicsApi.Get<DynamicsResponse<DynamicsAccount>>("accounts", ("$filter", $"name eq '{organisationName.EscapeSingleQuote()}' and address1_postalcode eq '{postcode}'"));
 
         return response.value.FirstOrDefault();
     }
