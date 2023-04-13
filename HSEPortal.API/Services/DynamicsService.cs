@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text.RegularExpressions;
 using Flurl.Http;
 using Flurl.Util;
@@ -357,14 +356,6 @@ public class DynamicsService
         var existingPayment = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_service eq 'HRB Registration' and bsr_transactionid eq '{payment.Reference}'"));
         if (!existingPayment.value.Any())
         {
-            if (payment.Status == "success")
-            {
-                await UpdateBuildingApplication(new DynamicsBuildingApplication { bsr_buildingapplicationid = buildingApplicationPayment.BuildingApplicationId }, new DynamicsBuildingApplication
-                {
-                    bsr_submittedon = DateTime.Now.ToString(CultureInfo.InvariantCulture)
-                });
-            }
-
             await dynamicsApi.Create("bsr_payments", new DynamicsPayment
             {
                 buildingApplicationReferenceId = $"/bsr_buildingapplications({buildingApplicationPayment.BuildingApplicationId})",
@@ -434,6 +425,7 @@ public class DynamicsService
                 address1_line2 = apAddress.AddressLineTwo,
                 address1_city = apAddress.Town,
                 address1_postalcode = apAddress.Postcode,
+                bsr_manualaddress = apAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
                 countryReferenceId = apAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[apAddress.Country]})" : null,
                 acountTypeReferenceId = $"/bsr_accounttypes({DynamicsAccountType.Ids[$"{accountablePerson.OrganisationType}"]})"
             });
