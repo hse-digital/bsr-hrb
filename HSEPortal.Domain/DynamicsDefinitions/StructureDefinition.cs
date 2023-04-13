@@ -25,7 +25,8 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
         switch (peopleLivingInStructure)
         {
             case "yes": return PeopleLivingInStructure.Yes;
-            case "no_block_ready": return PeopleLivingInStructure.NoBlockReady;
+            case "no_block_ready":
+            case "no_section_ready": return PeopleLivingInStructure.NoBlockReady;
             case "no_wont_move": return PeopleLivingInStructure.NoWontMove;
         }
 
