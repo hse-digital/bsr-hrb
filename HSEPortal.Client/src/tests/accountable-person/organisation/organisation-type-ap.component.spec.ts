@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { OrganisationTypeApComponent } from 'src/app/features/application/accountable-person/organisation/organisation-type/organisation-type.component';
+import { OrganisationTypeComponent } from 'src/app/features/application/accountable-person/organisation/organisation-type/organisation-type.component';
 
 xdescribe('OrganisationTypeApComponent', () => {
-  let component: OrganisationTypeApComponent;
-  let fixture: ComponentFixture<OrganisationTypeApComponent>;
+  let component: OrganisationTypeComponent;
+  let fixture: ComponentFixture<OrganisationTypeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OrganisationTypeApComponent ]
+      declarations: [ OrganisationTypeComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(OrganisationTypeApComponent);
+    fixture = TestBed.createComponent(OrganisationTypeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

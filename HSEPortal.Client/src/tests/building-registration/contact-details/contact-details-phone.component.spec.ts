@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ContactPhoneComponent } from '../../../app/features/new-application/contact-phone/contact-phone.component';
 import { ApplicationService } from '../../../app/services/application.service';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 let component: ContactPhoneComponent;
 let fixture: ComponentFixture<ContactPhoneComponent>;
@@ -14,7 +15,7 @@ describe('ContactDetailsPhoneComponent showError', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ContactPhoneComponent],
-      imports: [RouterTestingModule, HseAngularModule],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
       providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
     fixture = TestBed.createComponent(ContactPhoneComponent);
@@ -35,10 +36,10 @@ describe('ContactDetailsPhoneComponent showError', () => {
 
   testCasesShowError.forEach((test) => {
 
-    it(test.description, async( inject([Router], (router: any) => {
+    it(test.description, (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
       spyOn(router, 'navigate');
       test.phoneNumbers?.forEach((number) => {
-        component.applicationService.model.ContactPhoneNumber = number;
+        applicationService.model.ContactPhoneNumber = number;
         component.saveAndContinue();
         expect(component.hasErrors).toBeTrue();
         expect(router.navigate).not.toHaveBeenCalled();
@@ -54,10 +55,10 @@ describe('ContactDetailsPhoneComponent showError', () => {
 
   testCasesNoShowError.forEach((test) => {
 
-    it(test.description, async(inject([Router], (router: any) => {
+    it(test.description, (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
       spyOn(router, 'navigate');
       test.phoneNumbers?.forEach((number) => {
-        component.applicationService.model.ContactPhoneNumber = number;
+        applicationService.model.ContactPhoneNumber = number;
         component.saveAndContinue();
         expect(component.hasErrors).toBeFalse();
         expect(router.navigate).toHaveBeenCalled();
@@ -72,7 +73,7 @@ describe('ContactDetailsPhoneComponent getErrorDescription(hasError, errorText)'
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ContactPhoneComponent],
-      imports: [RouterTestingModule, HseAngularModule],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
       providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
     fixture = TestBed.createComponent(ContactPhoneComponent);
@@ -80,12 +81,12 @@ describe('ContactDetailsPhoneComponent getErrorDescription(hasError, errorText)'
     fixture.detectChanges();
   });
 
-  it('should display an error message when phone number is not valid.', async(inject([Router], (router: any) => {
+  it('should display an error message when phone number is not valid.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     let phoneNumbers = ['', 'abcdef', '1234567890', '+441234', '+441234567890123456789', '+4412345abc90'];
     
     spyOn(router, 'navigate');
     phoneNumbers.forEach(number => {
-      component.applicationService.model.ContactPhoneNumber = number;
+      applicationService.model.ContactPhoneNumber = number;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.phoneNumberHasErrors, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.phoneNumberHasErrors, 'Error message')).toEqual('Error message');
@@ -94,13 +95,13 @@ describe('ContactDetailsPhoneComponent getErrorDescription(hasError, errorText)'
 
   })));
 
-  it('should NOT display an error message when phone number is valid.', async(inject([Router], (router: any) => {
+  it('should NOT display an error message when phone number is valid.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
 
     let phoneNumbers = ['+441234567890', '01234567890'];
 
     spyOn(router, 'navigate');
     phoneNumbers.forEach(number => {
-      component.applicationService.model.ContactPhoneNumber = number;
+      applicationService.model.ContactPhoneNumber = number;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.phoneNumberHasErrors, 'Error message')).toBeUndefined();
       expect(router.navigate).toHaveBeenCalled();

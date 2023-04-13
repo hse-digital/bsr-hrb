@@ -3,26 +3,25 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
+import { ComponentsModule } from 'src/app/components/components.module';
+import { SectionPeopleLivingInBuildingComponent } from 'src/app/features/application/sections/people-living-in-building/people-living-in-building.component';
 
 import { ApplicationService } from 'src/app/services/application.service';
-import { CaptionService } from 'src/app/services/caption.service';
-import { PeopleLivingInBuildingComponent } from 'src/app/features/application/blocks/people-living-in-building/people-living-in-building.component';
 
-
-let component: PeopleLivingInBuildingComponent;
-let fixture: ComponentFixture<PeopleLivingInBuildingComponent>;
+let component: SectionPeopleLivingInBuildingComponent;
+let fixture: ComponentFixture<SectionPeopleLivingInBuildingComponent>;
 
 
 describe('PeopleLivingInBuildingComponent showError', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PeopleLivingInBuildingComponent],
-      imports: [RouterTestingModule, HseAngularModule],
-      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService]
+      declarations: [SectionPeopleLivingInBuildingComponent],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PeopleLivingInBuildingComponent);
+    fixture = TestBed.createComponent(SectionPeopleLivingInBuildingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -33,7 +32,7 @@ describe('PeopleLivingInBuildingComponent showError', () => {
 
   it('should show an error when the peopleLivingInBuilding is empty.',  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     spyOn(router, 'navigate');
-    applicationService.currentBlock.PeopleLivingInBuilding = undefined;
+    applicationService.currentSection.PeopleLivingInBuilding = undefined;
     component.saveAndContinue();
     expect(component.hasErrors).toBeTrue();
     expect(router.navigate).not.toHaveBeenCalled();
@@ -43,7 +42,7 @@ describe('PeopleLivingInBuildingComponent showError', () => {
     let peopleLivingInBuilding: string[] = ["yes", "no_block_ready", "no_wont_move"]
     spyOn(router, 'navigate');
     peopleLivingInBuilding.forEach(peopleLivingInBuilding => {
-      applicationService.currentBlock.PeopleLivingInBuilding = peopleLivingInBuilding;
+      applicationService.currentSection.PeopleLivingInBuilding = peopleLivingInBuilding;
       component.saveAndContinue();
       expect(component.hasErrors).toBeFalse();
       expect(router.navigate).toHaveBeenCalled();
@@ -56,18 +55,18 @@ describe('PeopleLivingInBuildingComponent getErrorDescription(hasError, errorTex
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PeopleLivingInBuildingComponent],
-      imports: [RouterTestingModule, HseAngularModule],
-      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService]
+      declarations: [SectionPeopleLivingInBuildingComponent],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
-    fixture = TestBed.createComponent(PeopleLivingInBuildingComponent);
+    fixture = TestBed.createComponent(SectionPeopleLivingInBuildingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should display an error message when the peopleLivingInBuilding is not valid.',  async(inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     spyOn(router, 'navigate');
-    applicationService.currentBlock.PeopleLivingInBuilding = undefined;
+    applicationService.currentSection.PeopleLivingInBuilding = undefined;
     component.saveAndContinue();
     expect(component.getErrorDescription(component.peopleLivingHasErrors, 'Error message')).toBeDefined();
     expect(component.getErrorDescription(component.peopleLivingHasErrors, 'Error message')).toEqual('Error message');
@@ -78,7 +77,7 @@ describe('PeopleLivingInBuildingComponent getErrorDescription(hasError, errorTex
     let peopleLivingInBuilding: string[] = ["yes", "no_block_ready", "no_wont_move"]
     spyOn(router, 'navigate');
     peopleLivingInBuilding.forEach(peopleLivingInBuilding => {
-      applicationService.currentBlock.PeopleLivingInBuilding = peopleLivingInBuilding;
+      applicationService.currentSection.PeopleLivingInBuilding = peopleLivingInBuilding;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.peopleLivingHasErrors, 'Error message')).toBeUndefined();
       expect(router.navigate).toHaveBeenCalled();

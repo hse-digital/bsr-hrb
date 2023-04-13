@@ -3,8 +3,8 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
+import { ComponentsModule } from 'src/app/components/components.module';
 
-import { CaptionService } from 'src/app/services/caption.service';
 import { SectionNameComponent } from 'src/app/features/application/sections/name/name.component';
 import { ApplicationService } from 'src/app/services/application.service';
 
@@ -17,8 +17,8 @@ describe('BlockNameComponent showError', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SectionNameComponent, ],
-      imports: [RouterTestingModule, HseAngularModule],
-      providers: [CaptionService, ApplicationService, HttpClient, HttpHandler]
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
+      providers: [ApplicationService, HttpClient, HttpHandler]
     })
       .compileComponents();
 
@@ -41,7 +41,7 @@ describe('BlockNameComponent showError', () => {
       spyOn(router, 'navigate');
       applicationService.newApplication();
       applicationService.currentSection.Name = test.name;
-      component.saveAndContinue()
+      component.hasErrors = !component.canContinue();
       expect(component.hasErrors).toBeTrue();
       expect(router.navigate).not.toHaveBeenCalled();
     })));
@@ -51,7 +51,7 @@ describe('BlockNameComponent showError', () => {
     spyOn(router, 'navigate');
     applicationService.newApplication();
     applicationService.currentSection.Name = 'Block name';
-    component.saveAndContinue();
+    component.hasErrors = !component.canContinue();
     expect(component.hasErrors).toBeFalse();
     expect(router.navigate).toHaveBeenCalled();
   })));
@@ -63,8 +63,8 @@ describe('BlockNameComponent getErrorDescription(value, errorText)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SectionNameComponent],
-      imports: [RouterTestingModule, HseAngularModule],
-      providers: [CaptionService, ApplicationService, HttpClient, HttpHandler]
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
+      providers: [ApplicationService, HttpClient, HttpHandler]
     })
       .compileComponents();
 
@@ -78,7 +78,7 @@ describe('BlockNameComponent getErrorDescription(value, errorText)', () => {
     [undefined, ''].forEach(name => {
       applicationService.newApplication();
       applicationService.currentSection.Name = name;
-      component.saveAndContinue();
+      component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.blockNameHasErrors, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.blockNameHasErrors, 'Error message')).toEqual('Error message');
       expect(router.navigate).not.toHaveBeenCalled();
@@ -89,7 +89,7 @@ describe('BlockNameComponent getErrorDescription(value, errorText)', () => {
     spyOn(router, 'navigate');
     applicationService.newApplication();
     applicationService.currentSection.Name = 'Block name';
-    component.saveAndContinue();
+    component.hasErrors = !component.canContinue();
     expect(component.getErrorDescription(component.blockNameHasErrors, 'Error message')).toBeUndefined();
     expect(router.navigate).toHaveBeenCalled();
   })));

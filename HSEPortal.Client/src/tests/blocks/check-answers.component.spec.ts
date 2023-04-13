@@ -3,22 +3,23 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
+import { ComponentsModule } from 'src/app/components/components.module';
+import { SectionCheckAnswersComponent } from 'src/app/features/application/sections/check-answers/check-answers.component';
 import { ApplicationService } from 'src/app/services/application.service';
-import { CheckAnswersComponent } from 'src/app/features/application/blocks/check-answers/check-answers.component';
 
 xdescribe('CheckAnswersComponent', () => {
-  let component: CheckAnswersComponent;
-  let fixture: ComponentFixture<CheckAnswersComponent>;
+  let component: SectionCheckAnswersComponent;
+  let fixture: ComponentFixture<SectionCheckAnswersComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CheckAnswersComponent],
-      imports: [RouterTestingModule, HseAngularModule],
+      declarations: [SectionCheckAnswersComponent],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
       providers: [Router, ApplicationService, HttpClient, HttpHandler]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CheckAnswersComponent);
+    fixture = TestBed.createComponent(SectionCheckAnswersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

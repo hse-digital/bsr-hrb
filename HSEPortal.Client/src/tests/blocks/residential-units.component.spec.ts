@@ -3,24 +3,24 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
+import { ComponentsModule } from 'src/app/components/components.module';
+import { SectionResidentialUnitsComponent } from 'src/app/features/application/sections/residential-units/residential-units.component';
 import { ApplicationService } from 'src/app/services/application.service';
-import { CaptionService } from 'src/app/services/caption.service';
-import { ResidentialUnitsComponent } from 'src/app/features/application/blocks/residential-units/residential-units.component';
 
-let component: ResidentialUnitsComponent;
-let fixture: ComponentFixture<ResidentialUnitsComponent>;
+let component: SectionResidentialUnitsComponent;
+let fixture: ComponentFixture<SectionResidentialUnitsComponent>;
 
 
 describe('ResidentialUnitsComponent showError', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ResidentialUnitsComponent],
-      imports: [RouterTestingModule, HseAngularModule],
-      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService]
+      declarations: [SectionResidentialUnitsComponent],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ResidentialUnitsComponent);
+    fixture = TestBed.createComponent(SectionResidentialUnitsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -42,7 +42,7 @@ describe('ResidentialUnitsComponent showError', () => {
       spyOn(router, 'navigate');
       test.residentialUnits?.forEach((residentialUnits) => {
         applicationService.newApplication();
-        applicationService.currentBlock.ResidentialUnits = residentialUnits;
+        applicationService.currentSection.ResidentialUnits = residentialUnits;
         component.saveAndContinue();
         expect(component.hasErrors).toBeTrue();
         expect(router.navigate).not.toHaveBeenCalled();
@@ -55,7 +55,7 @@ describe('ResidentialUnitsComponent showError', () => {
     spyOn(router, 'navigate');
     residentialUnits.forEach(residentialUnits => {
       applicationService.newApplication();
-      applicationService.currentBlock.ResidentialUnits = residentialUnits;
+      applicationService.currentSection.ResidentialUnits = residentialUnits;
       component.saveAndContinue();
       expect(component.hasErrors).toBeFalse();
       expect(router.navigate).toHaveBeenCalled();
@@ -68,12 +68,12 @@ describe('ResidentialUnitsComponent getErrorDescription(hasError, errorText)', (
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ResidentialUnitsComponent],
-      imports: [RouterTestingModule, HseAngularModule],
-      providers: [ApplicationService, HttpClient, HttpHandler, CaptionService]
+      declarations: [SectionResidentialUnitsComponent],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
+      providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ResidentialUnitsComponent);
+    fixture = TestBed.createComponent(SectionResidentialUnitsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -84,7 +84,7 @@ describe('ResidentialUnitsComponent getErrorDescription(hasError, errorText)', (
     spyOn(router, 'navigate');
     wrongResidentialUnits.forEach((residentialUnits: any) => {
       applicationService.newApplication();
-      applicationService.currentBlock.ResidentialUnits = residentialUnits;
+      applicationService.currentSection.ResidentialUnits = residentialUnits;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.residentialUnitsHasErrors, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.residentialUnitsHasErrors, 'Error message')).toEqual('Error message');
@@ -100,7 +100,7 @@ describe('ResidentialUnitsComponent getErrorDescription(hasError, errorText)', (
     spyOn(router, 'navigate');
     residentialUnits.forEach(residentialUnits => {
       applicationService.newApplication();
-      applicationService.currentBlock.ResidentialUnits = residentialUnits;
+      applicationService.currentSection.ResidentialUnits = residentialUnits;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.residentialUnitsHasErrors, 'Error message')).toBeUndefined();
       expect(router.navigate).toHaveBeenCalled();

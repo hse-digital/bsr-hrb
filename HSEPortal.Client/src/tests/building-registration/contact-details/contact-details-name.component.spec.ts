@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ContactNameComponent } from '../../../app/features/new-application/contact-name/contact-name.component';
 import { ApplicationService } from '../../../app/services/application.service';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 
 describe('ContactDetailsNameComponent showError', () => {
@@ -14,7 +15,7 @@ describe('ContactDetailsNameComponent showError', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ContactNameComponent],
-      imports: [RouterTestingModule, HseAngularModule],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
       providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
@@ -35,20 +36,20 @@ describe('ContactDetailsNameComponent showError', () => {
   ];
 
   testCasesShowError.forEach((test) => {
-    it(test.description, async(inject([Router], (router: any) => {
+    it(test.description, (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
       spyOn(router, 'navigate');
-      component.applicationService.model.ContactFirstName = test.firstName;
-      component.applicationService.model.ContactLastName = test.lastName;
+      applicationService.model.ContactFirstName = test.firstName;
+      applicationService.model.ContactLastName = test.lastName;
       component.saveAndContinue()
       expect(component.hasErrors).toBeTrue();
       expect(router.navigate).not.toHaveBeenCalled();
     })));
   });
 
-  it('should NOT show an error when the first and last name are defined and not empty.', async(inject([Router], (router: any) => {
+  it('should NOT show an error when the first and last name are defined and not empty.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
     spyOn(router, 'navigate');
-    component.applicationService.model.ContactFirstName = 'FirstName';
-    component.applicationService.model.ContactLastName = 'LastName';
+    applicationService.model.ContactFirstName = 'FirstName';
+    applicationService.model.ContactLastName = 'LastName';
     component.saveAndContinue();
     expect(component.hasErrors).toBeFalse();
     expect(router.navigate).toHaveBeenCalled();
@@ -63,7 +64,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ContactNameComponent],
-      imports: [RouterTestingModule, HseAngularModule],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
       providers: [ApplicationService, HttpClient, HttpHandler]
     }).compileComponents();
 
@@ -72,7 +73,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
     fixture.detectChanges();
   });
 
-  it('should display the first name error message.', async(inject([Router], (router: any) => {
+  it('should display the first name error message.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
 
     let contactDetails: { firstName?: string, lastName?: string }[] = [
       { firstName: '', lastName: '' },
@@ -83,8 +84,8 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
 
     spyOn(router, 'navigate');
     contactDetails.forEach(contact => {
-      component.applicationService.model.ContactFirstName = contact.firstName;
-      component.applicationService.model.ContactLastName = contact.lastName;
+      applicationService.model.ContactFirstName = contact.firstName;
+      applicationService.model.ContactLastName = contact.lastName;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toEqual('Error message');
@@ -93,7 +94,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
 
   })));
 
-  it('should display the last name error message.', async(inject([Router], (router: any) => {
+  it('should display the last name error message.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
 
     let contactDetails: { firstName?: string, lastName?: string }[] = [
       { firstName: '', lastName: '' },
@@ -104,8 +105,8 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
 
     spyOn(router, 'navigate');
     contactDetails.forEach(contact => {
-      component.applicationService.model.ContactFirstName = contact.firstName;
-      component.applicationService.model.ContactLastName = contact.lastName;
+      applicationService.model.ContactFirstName = contact.firstName;
+      applicationService.model.ContactLastName = contact.lastName;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toEqual('Error message');
@@ -114,7 +115,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
 
   })));
 
-  it('should display the error messages when the contact details are not valid.', async(inject([Router], (router: any) => {
+  it('should display the error messages when the contact details are not valid.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
 
     let contactDetails: { firstName?: string, lastName?: string }[] = [
       { firstName: '', lastName: '' },
@@ -125,8 +126,8 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
 
     spyOn(router, 'navigate');
     contactDetails.forEach(contact => {
-      component.applicationService.model.ContactFirstName = contact.firstName;
-      component.applicationService.model.ContactLastName = contact.lastName;
+      applicationService.model.ContactFirstName = contact.firstName;
+      applicationService.model.ContactLastName = contact.lastName;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toEqual('Error message');
@@ -137,11 +138,11 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
 
   })));
 
-  it('should NOT display the error messages when the contact details are valid.', async(inject([Router], (router: any) => {
+  it('should NOT display the error messages when the contact details are valid.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
 
     spyOn(router, 'navigate');
-    component.applicationService.model.ContactFirstName = 'FirstName';
-    component.applicationService.model.ContactLastName = 'LastName';
+    applicationService.model.ContactFirstName = 'FirstName';
+    applicationService.model.ContactLastName = 'LastName';
     component.saveAndContinue();
     expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toBeUndefined();
     expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toBeUndefined();
@@ -149,7 +150,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
 
   })));
 
-  it('should only display the last name error message.', async(inject([Router], (router: any) => {
+  it('should only display the last name error message.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
 
     let contactDetails: { firstName?: string, lastName?: string }[] = [
       { firstName: 'FirstName', lastName: '' },
@@ -158,8 +159,8 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
 
     spyOn(router, 'navigate');
     contactDetails.forEach(contact => {
-      component.applicationService.model.ContactFirstName = contact.firstName;
-      component.applicationService.model.ContactLastName = contact.lastName;
+      applicationService.model.ContactFirstName = contact.firstName;
+      applicationService.model.ContactLastName = contact.lastName;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toBeUndefined();
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toBeDefined();
@@ -170,7 +171,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
   })));
 
 
-  it('should only display the first name error message.', async(inject([Router], (router: any) => {
+  it('should only display the first name error message.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
 
     let contactDetails: { firstName?: string, lastName?: string }[] = [
       { firstName: '', lastName: 'LastName' },
@@ -179,8 +180,8 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
 
     spyOn(router, 'navigate');
     contactDetails.forEach(contact => {
-      component.applicationService.model.ContactFirstName = contact.firstName;
-      component.applicationService.model.ContactLastName = contact.lastName;
+      applicationService.model.ContactFirstName = contact.firstName;
+      applicationService.model.ContactLastName = contact.lastName;
       component.saveAndContinue();
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toBeUndefined();
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toBeDefined();
