@@ -6,7 +6,7 @@ public record Structure(string Name, string FloorsAboveGround, string HeightInMe
     string PeopleLivingInStructure, string ConstructionYearOption, string ExactYear = null,
     string YearRange = null, string Id = null) : Entity(Id);
 
-public record DynamicsStructure(string bsr_name = null, int? bsr_nooffloorsabovegroundlevel = null, int? bsr_blockheightinmetres = null,
+public record DynamicsStructure(string bsr_name = null, int? bsr_nooffloorsabovegroundlevel = null, double? bsr_sectionheightinmetres = null,
     int? bsr_numberofresidentialunits = null, PeopleLivingInStructure? bsr_arepeoplelivingintheblock = null, ConstructionYearOption? bsr_doyouknowtheblocksexactconstructionyear = null,
     string bsr_blockid = null,
     string bsr_addressline1 = null, string bsr_addressline2 = null, string bsr_city = null, string bsr_postcode = null, string bsr_uprn = null, string bsr_usrn = null, AddressType? bsr_addresstype = null, YesNoOption? bsr_manualaddress = null,
