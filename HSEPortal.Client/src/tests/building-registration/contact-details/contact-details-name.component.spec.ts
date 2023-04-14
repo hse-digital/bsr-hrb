@@ -90,7 +90,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toEqual('Error message');
-    }, contactDetailsFirstName).execute();
+    }, ...contactDetailsFirstName).execute();
 
   let contactDetailsLastName: { firstName?: string, lastName?: string }[] = [
     { firstName: '', lastName: '' },
@@ -108,7 +108,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toEqual('Error message');
-    }, contactDetailsLastName).execute();
+    }, ...contactDetailsLastName).execute();
 
   let contactDetails: { firstName?: string, lastName?: string }[] = [
     { firstName: '', lastName: '' },
@@ -128,7 +128,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toEqual('Error message');
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toEqual('Error message');
-    }, contactDetails).execute();
+    }, ...contactDetails).execute();
 
   new TestHelper()
     .setDescription('should NOT display the error messages when the contact details are valid.')
@@ -156,7 +156,7 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toBeUndefined();
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toEqual('Error message');
-    }, contactDetailsUndefined).execute();
+    }, ...contactDetailsUndefined).execute();
 
   let contactDetailsFirstnameUndefined: { firstName?: string, lastName?: string }[] = [
     { firstName: '', lastName: 'LastName' },
@@ -173,6 +173,6 @@ describe('ContactNameComponent getErrorDescription(value, errorText)', () => {
       expect(component.getErrorDescription(component.lastNameInError, 'Error message')).toBeUndefined();
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.firstNameInError, 'Error message')).toEqual('Error message');
-    }, contactDetailsFirstnameUndefined).execute();
+    }, ...contactDetailsFirstnameUndefined).execute();
 
 });

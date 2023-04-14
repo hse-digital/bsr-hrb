@@ -1,17 +1,17 @@
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 
 import { ComponentsModule } from 'src/app/components/components.module';
 import { ContactPhoneComponent } from 'src/app/features/new-application/contact-phone/contact-phone.component';
 import { ApplicationService } from 'src/app/services/application.service';
+import { TestHelper } from 'src/tests/test-helper';
 
 let component: ContactPhoneComponent;
 let fixture: ComponentFixture<ContactPhoneComponent>;
 
-describe('ContactDetailsPhoneComponent showError', () => {
+describe('ContactPhoneComponent showError', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -36,17 +36,13 @@ describe('ContactDetailsPhoneComponent showError', () => {
   ]
 
   testCasesShowError.forEach((test) => {
-
-    it(test.description, (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
-      spyOn(router, 'navigate');
-      test.phoneNumbers?.forEach((number) => {
-        applicationService.model.ContactPhoneNumber = number;
-        component.saveAndContinue();
-        expect(component.hasErrors).toBeTrue();
-        expect(router.navigate).not.toHaveBeenCalled();
-      });
-    })));
-
+    new TestHelper().setDescription(test.description)
+      .setTestCase((applicationService: ApplicationService, value: any) => {
+        applicationService.newApplication();
+        applicationService.model.ContactPhoneNumber = value;
+        component.hasErrors = !component.canContinue();
+        expect(component.phoneNumberHasErrors).toBeTrue();
+      }, ...test.phoneNumbers).execute();
   });
 
   let testCasesNoShowError = [
@@ -55,21 +51,18 @@ describe('ContactDetailsPhoneComponent showError', () => {
   ]
 
   testCasesNoShowError.forEach((test) => {
-
-    it(test.description, (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
-      spyOn(router, 'navigate');
-      test.phoneNumbers?.forEach((number) => {
-        applicationService.model.ContactPhoneNumber = number;
-        component.saveAndContinue();
-        expect(component.hasErrors).toBeFalse();
-        expect(router.navigate).toHaveBeenCalled();
-      });
-    })));
+    new TestHelper().setDescription(test.description)
+      .setTestCase((applicationService: ApplicationService, value: any) => {
+        applicationService.newApplication();
+        applicationService.model.ContactPhoneNumber = value;
+        component.hasErrors = !component.canContinue();
+        expect(component.phoneNumberHasErrors).toBeFalse();
+      }, ...test.phoneNumbers).execute();
   });
 
 });
 
-describe('ContactDetailsPhoneComponent getErrorDescription(hasError, errorText)', () => {
+describe('ContactPhoneComponent getErrorDescription(hasError, errorText)', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -82,32 +75,21 @@ describe('ContactDetailsPhoneComponent getErrorDescription(hasError, errorText)'
     fixture.detectChanges();
   });
 
-  it('should display an error message when phone number is not valid.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
-    let phoneNumbers = ['', 'abcdef', '1234567890', '+441234', '+441234567890123456789', '+4412345abc90'];
-    
-    spyOn(router, 'navigate');
-    phoneNumbers.forEach(number => {
-      applicationService.model.ContactPhoneNumber = number;
-      component.saveAndContinue();
+  new TestHelper().setDescription('should display an error message when phone number is not valid.')
+    .setTestCase((applicationService: ApplicationService, value: any) => {
+      applicationService.newApplication();
+      applicationService.model.ContactPhoneNumber = value;
+      component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.phoneNumberHasErrors, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.phoneNumberHasErrors, 'Error message')).toEqual('Error message');
-      expect(router.navigate).not.toHaveBeenCalled();
-    });
+    }, '', 'abcdef', '1234567890', '+441234', '+441234567890123456789', '+4412345abc90').execute();
 
-  })));
-
-  it('should NOT display an error message when phone number is valid.', (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
-
-    let phoneNumbers = ['+441234567890', '01234567890'];
-
-    spyOn(router, 'navigate');
-    phoneNumbers.forEach(number => {
-      applicationService.model.ContactPhoneNumber = number;
-      component.saveAndContinue();
+  new TestHelper().setDescription('should NOT display an error message when phone number is valid.')
+    .setTestCase((applicationService: ApplicationService, value: any) => {
+      applicationService.newApplication();
+      applicationService.model.ContactPhoneNumber = value;
+      component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.phoneNumberHasErrors, 'Error message')).toBeUndefined();
-      expect(router.navigate).toHaveBeenCalled();
-    });
-
-  })));
+    }, '+441234567890', '01234567890').execute();
 
 });

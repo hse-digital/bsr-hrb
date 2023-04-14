@@ -45,7 +45,7 @@ describe('SectionResidentialUnitsComponent showError', () => {
         applicationService.currentSection.ResidentialUnits = value;
         component.hasErrors = !component.canContinue();
         expect(component.residentialUnitsHasErrors).toBeTrue();
-      }, test.residentialUnits).execute();
+      }, ...test.residentialUnits).execute();
   });
 
   new TestHelper()
