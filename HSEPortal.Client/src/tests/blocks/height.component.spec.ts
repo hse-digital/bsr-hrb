@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { SectionHeightComponent } from 'src/app/features/application/sections/height/height.component';
 import { ApplicationService } from 'src/app/services/application.service';
-import { TestEnds, TestHelper } from '../test-helper';
+import { TestHelper } from '../test-helper';
 import { ComponentsModule } from 'src/app/components/components.module';
 
 let component: SectionHeightComponent;
@@ -35,26 +35,26 @@ describe('SectionHeightComponent showError', () => {
   ]
 
   testCasesShowError.forEach((test) => {
-    new TestHelper().setComponent(component)
+    new TestHelper()
       .setDescription(test.description)
-      .setTestEnd(TestEnds.Errors)
       .setTestCase((applicationService: ApplicationService, value: any) => {
         applicationService.newApplication();
         applicationService.startSectionsEdit();
         applicationService.currentSection.Height = value;
-        component.hasErrors = component.canContinue();
+        component.hasErrors = !component.canContinue();
+        expect(component.heightHasErrors).toBeTrue();
       }, test.heights).execute();
   });
 
-  new TestHelper().setComponent(component)
+  new TestHelper()
     .setDescription('should NOT show an error when the height greater than 2 and less than 1000.')
-    .setTestEnd(TestEnds.Success)
     .setTestCase((applicationService: ApplicationService, value: any) => {
       applicationService.newApplication();
       applicationService.startSectionsEdit();
       applicationService.currentSection.Height = value;
-      component.hasErrors = component.canContinue();
-    }, [3, 100, 150.5, 500, 999, 999.9, 999.9999]).execute();
+      component.hasErrors = !component.canContinue();
+      expect(component.heightHasErrors).toBeFalse();
+    }, 3, 100, 150.5, 500, 999, 999.9, 999.9999).execute();
 });
 
 describe('SectionHeightComponent getErrorDescription(hasError, errorText)', () => {
@@ -62,7 +62,7 @@ describe('SectionHeightComponent getErrorDescription(hasError, errorText)', () =
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SectionHeightComponent],
-      imports: [RouterTestingModule, HseAngularModule],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
       providers: [ApplicationService]
     }).compileComponents();
 
@@ -72,24 +72,25 @@ describe('SectionHeightComponent getErrorDescription(hasError, errorText)', () =
 
   });
 
-  new TestHelper().setComponent(component)
+  new TestHelper()
     .setDescription('should display an error message when the height is not valid.')
-    .setTestEnd(TestEnds.ErrorMessages)
     .setTestCase((applicationService: ApplicationService, value: any) => {
       applicationService.newApplication();
       applicationService.startSectionsEdit();
       applicationService.currentSection.Height = value;
-      component.hasErrors = component.canContinue();
-    }, [0, 1, 2, 2.9999, 1000, 1000.01, 1001, 1500.5, 5000, undefined, 'abc', '123abc12', '1-2', '123?']).execute();
+      component.hasErrors = !component.canContinue();
+      expect(component.getErrorDescription(component.heightHasErrors, 'Error message')).toBeDefined();
+      expect(component.getErrorDescription(component.heightHasErrors, 'Error message')).toEqual('Error message');
+    }, 0, 1, 2, 2.9999, 1000, 1000.01, 1001, 1500.5, 5000, undefined, 'abc', '123abc12', '1-2', '123?').execute();
 
-  new TestHelper().setComponent(component)
+  new TestHelper()
     .setDescription('should NOT display an error message when the height is valid.')
-    .setTestEnd(TestEnds.NotErrorMessages)
     .setTestCase((applicationService: ApplicationService, value: any) => {
       applicationService.newApplication();
       applicationService.startSectionsEdit();
-      applicationService.currentSection.Height = value;
-      component.hasErrors = component.canContinue();
-    }, [3, 100, 150.5, 500, 999, 999.9, 999.9999]).execute();
+      applicationService.currentSection.Height = value;      
+      component.hasErrors = !component.canContinue();
+      expect(component.getErrorDescription(component.heightHasErrors, 'Error message')).toBeUndefined();
+    }, 3, 100, 150.5, 500, 999, 999.9, 999.9999).execute();
 
 });

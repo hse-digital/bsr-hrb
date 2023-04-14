@@ -1,11 +1,10 @@
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-
-import { BuildingNameComponent } from '../../../app/features/new-application/building-name/building-name.component';
-import { ApplicationService } from '../../../app/services/application.service';
+import { BuildingNameComponent } from 'src/app/features/new-application/building-name/building-name.component';
+import { ApplicationService } from 'src/app/services/application.service';
+import { TestHelper } from 'src/tests/test-helper';
 
 describe('BuildingNameComponent showError', () => {
   let component: BuildingNameComponent;
@@ -33,22 +32,24 @@ describe('BuildingNameComponent showError', () => {
   ];
 
   testCasesShowError.forEach((test) => {
-    it(test.description, (inject([Router, ApplicationService], (router: any, applicationService: ApplicationService) => {
-      spyOn(router, 'navigate');
-      applicationService.model.BuildingName = test.name;
-      component.saveAndContinue()
-      expect(component.hasErrors).toBeTrue();
-      expect(router.navigate).not.toHaveBeenCalled();
-    })));
+    new TestHelper()
+      .setDescription(test.description)
+      .setTestCase((applicationService: ApplicationService, value: any) => {
+        applicationService.newApplication();
+        applicationService.model.BuildingName = value;
+        component.hasErrors = !component.canContinue();
+        expect(component.nameHasErrors).toBeTrue();
+      }, test.name).execute();
   });
 
-  it('should NOT show an error when the name is defined and not empty.', (inject([Router], (router: any, applicationService: ApplicationService) => {
-    spyOn(router, 'navigate');
-    applicationService.model.BuildingName = 'Building name';
-    component.saveAndContinue();
-    expect(component.hasErrors).toBeFalse();
-    expect(router.navigate).toHaveBeenCalled();
-  })));
+  new TestHelper()
+    .setDescription('should NOT show an error when the name is defined and not empty.')
+    .setTestCase((applicationService: ApplicationService, value: any) => {
+      applicationService.newApplication();
+      applicationService.model.BuildingName = value;
+      component.hasErrors = !component.canContinue();
+      expect(component.nameHasErrors).toBeFalse();
+    }, 'Building name').execute();
 
 });
 
@@ -69,23 +70,23 @@ describe('BuildingNameComponent getErrorDescription(value, errorText)', () => {
     fixture.detectChanges();
   });
 
-  it('should display an error message when the name is undefined or empty.', (inject([Router], (router: any, applicationService: ApplicationService) => {
-    spyOn(router, 'navigate');
-    [undefined, ''].forEach(name => {
-      applicationService.model.BuildingName = name;
-      component.saveAndContinue();
+  new TestHelper()
+    .setDescription('should display an error message when the name is undefined or empty.')
+    .setTestCase((applicationService: ApplicationService, value: any) => {
+      applicationService.newApplication();
+      applicationService.model.BuildingName = value;
+      component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.nameHasErrors, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.nameHasErrors, 'Error message')).toEqual('Error message');
-      expect(router.navigate).not.toHaveBeenCalled();
-    });
-  })));
+    }, undefined, '').execute();
 
-  it('should NOT display an error message when the name is defined and not empty.', (inject([Router], (router: any, applicationService: ApplicationService) => {
-    spyOn(router, 'navigate');
-    applicationService.model.BuildingName = 'Building name';
-    component.saveAndContinue();
-    expect(component.getErrorDescription(component.nameHasErrors, 'Error message')).toBeUndefined();
-    expect(router.navigate).toHaveBeenCalled();
-  })));
+  new TestHelper()
+    .setDescription('should NOT display an error message when the name is defined and not empty.')
+    .setTestCase((applicationService: ApplicationService, value: any) => {
+      applicationService.newApplication();
+      applicationService.model.BuildingName = value;
+      component.hasErrors = !component.canContinue();
+      expect(component.getErrorDescription(component.nameHasErrors, 'Error message')).toBeUndefined();
+    }, 'Building name').execute();
 
 });

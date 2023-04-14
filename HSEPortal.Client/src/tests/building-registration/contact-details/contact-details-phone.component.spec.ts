@@ -1,11 +1,12 @@
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { ContactPhoneComponent } from '../../../app/features/new-application/contact-phone/contact-phone.component';
-import { ApplicationService } from '../../../app/services/application.service';
+
 import { ComponentsModule } from 'src/app/components/components.module';
+import { ContactPhoneComponent } from 'src/app/features/new-application/contact-phone/contact-phone.component';
+import { ApplicationService } from 'src/app/services/application.service';
 
 let component: ContactPhoneComponent;
 let fixture: ComponentFixture<ContactPhoneComponent>;

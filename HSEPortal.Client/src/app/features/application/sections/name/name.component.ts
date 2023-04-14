@@ -26,7 +26,7 @@ export class SectionNameComponent extends BaseComponent implements IHasNextPage,
 
   sections: SectionModel[] = [];
   ngOnInit(): void {
-    this.sections = this.applicationService.model.Sections.slice(0, this.applicationService.model.Sections.length - 1);
+    this.sections = this.applicationService.model?.Sections?.slice(0, this.applicationService.model?.Sections?.length - 1);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
