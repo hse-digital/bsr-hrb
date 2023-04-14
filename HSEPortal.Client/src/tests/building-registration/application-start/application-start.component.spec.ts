@@ -10,7 +10,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
 let component: ApplicationSelectorComponent;
 let fixture: ComponentFixture<ApplicationSelectorComponent>;
 
-describe('ApplicationStartComponent showError', () => {
+describe('ApplicationSelectorComponent showError', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
