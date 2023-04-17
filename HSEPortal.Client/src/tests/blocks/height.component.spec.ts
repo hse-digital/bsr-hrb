@@ -9,6 +9,11 @@ import { ComponentsModule } from 'src/app/components/components.module';
 let component: SectionHeightComponent;
 let fixture: ComponentFixture<SectionHeightComponent>;
 
+function setup(applicationService: ApplicationService) {
+  applicationService.newApplication();
+  applicationService.startSectionsEdit();
+}
+
 describe('SectionHeightComponent showError', () => {
 
   beforeEach(async () => {
@@ -38,8 +43,7 @@ describe('SectionHeightComponent showError', () => {
     new TestHelper()
       .setDescription(test.description)
       .setTestCase((applicationService: ApplicationService, value: any) => {
-        applicationService.newApplication();
-        applicationService.startSectionsEdit();
+        setup(applicationService);
         applicationService.currentSection.Height = value;
         component.hasErrors = !component.canContinue();
         expect(component.heightHasErrors).toBeTrue();
@@ -49,8 +53,7 @@ describe('SectionHeightComponent showError', () => {
   new TestHelper()
     .setDescription('should NOT show an error when the height greater than 2 and less than 1000.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.Height = value;
       component.hasErrors = !component.canContinue();
       expect(component.heightHasErrors).toBeFalse();
@@ -75,8 +78,7 @@ describe('SectionHeightComponent getErrorDescription(hasError, errorText)', () =
   new TestHelper()
     .setDescription('should display an error message when the height is not valid.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.Height = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.heightHasErrors, 'Error message')).toBeDefined();
@@ -86,8 +88,7 @@ describe('SectionHeightComponent getErrorDescription(hasError, errorText)', () =
   new TestHelper()
     .setDescription('should NOT display an error message when the height is valid.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.Height = value;      
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.heightHasErrors, 'Error message')).toBeUndefined();

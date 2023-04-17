@@ -10,6 +10,12 @@ import { TestHelper } from '../test-helper';
 let component: SectionNameComponent;
 let fixture: ComponentFixture<SectionNameComponent>;
 
+function setup(applicationService: ApplicationService) {
+  applicationService.newApplication();
+  applicationService.startSectionsEdit();
+  component.ngOnInit();
+}
+
 describe('SectionNameComponent showError', () => {
 
   beforeEach(async () => {
@@ -37,9 +43,7 @@ describe('SectionNameComponent showError', () => {
     new TestHelper()
       .setDescription(test.description)
       .setTestCase((applicationService: ApplicationService, value: any) => {
-        applicationService.newApplication();
-        applicationService.startSectionsEdit();
-        component.ngOnInit();
+        setup(applicationService);
         applicationService.currentSection.Name = value;
         component.hasErrors = !component.canContinue();
         expect(component.blockNameHasErrors).toBeTrue();
@@ -49,9 +53,7 @@ describe('SectionNameComponent showError', () => {
   new TestHelper()
     .setDescription('should NOT show an error when the blockName is defined and not empty.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
-      component.ngOnInit();
+      setup(applicationService);
       applicationService.currentSection.Name = value;
       component.hasErrors = !component.canContinue();
       expect(component.blockNameHasErrors).toBeFalse();
@@ -75,9 +77,7 @@ describe('SectionNameComponent getErrorDescription(value, errorText)', () => {
   new TestHelper()
     .setDescription('should display an error message when the blockName is undefined or empty.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
-      component.ngOnInit();
+      setup(applicationService);
       applicationService.currentSection.Name = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.blockNameHasErrors, 'Error message')).toBeDefined();
@@ -87,9 +87,7 @@ describe('SectionNameComponent getErrorDescription(value, errorText)', () => {
   new TestHelper()
     .setDescription('should NOT display an error message when the blockName is defined and not empty.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
-      component.ngOnInit();
+      setup(applicationService);
       applicationService.currentSection.Name = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.blockNameHasErrors, 'Error message')).toBeUndefined();

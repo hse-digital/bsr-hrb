@@ -11,6 +11,10 @@ import { TestHelper } from '../test-helper';
 let component: SectionPeopleLivingInBuildingComponent;
 let fixture: ComponentFixture<SectionPeopleLivingInBuildingComponent>;
 
+function setup(applicationService: ApplicationService) {
+  applicationService.newApplication();
+  applicationService.startSectionsEdit();
+}
 
 describe('SectionPeopleLivingInBuildingComponent showError', () => {
 
@@ -18,7 +22,7 @@ describe('SectionPeopleLivingInBuildingComponent showError', () => {
     await TestBed.configureTestingModule({
       declarations: [SectionPeopleLivingInBuildingComponent],
       imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
-      providers: [ApplicationService, HttpClient, HttpHandler]
+      providers: [ApplicationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SectionPeopleLivingInBuildingComponent);
@@ -33,8 +37,7 @@ describe('SectionPeopleLivingInBuildingComponent showError', () => {
   new TestHelper()
     .setDescription('should show an error when the peopleLivingInBuilding is empty')
     .setTestCase((applicationService: ApplicationService, value?: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.PeopleLivingInBuilding = value;
       component.hasErrors = !component.canContinue();
       expect(component.peopleLivingHasErrors).toBeTrue();
@@ -43,8 +46,7 @@ describe('SectionPeopleLivingInBuildingComponent showError', () => {
   new TestHelper()
     .setDescription('should NOT show an error when the value of peopleLivingInBuilding is "yes", "no_block_ready" or "no_wont_move"')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.PeopleLivingInBuilding = value;
       component.hasErrors = !component.canContinue();
       expect(component.peopleLivingHasErrors).toBeFalse();
@@ -57,7 +59,7 @@ describe('SectionPeopleLivingInBuildingComponent getErrorDescription(hasError, e
     await TestBed.configureTestingModule({
       declarations: [SectionPeopleLivingInBuildingComponent],
       imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
-      providers: [ApplicationService, HttpClient, HttpHandler]
+      providers: [ApplicationService]
     }).compileComponents();
     fixture = TestBed.createComponent(SectionPeopleLivingInBuildingComponent);
     component = fixture.componentInstance;
@@ -67,8 +69,7 @@ describe('SectionPeopleLivingInBuildingComponent getErrorDescription(hasError, e
   new TestHelper()
     .setDescription('should display an error message when the peopleLivingInBuilding is not valid.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.PeopleLivingInBuilding = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.peopleLivingHasErrors, 'Error message')).toBeDefined();
@@ -79,8 +80,7 @@ describe('SectionPeopleLivingInBuildingComponent getErrorDescription(hasError, e
   new TestHelper()
     .setDescription('should NOT display an error message when the peopleLivingInBuilding is valid.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.PeopleLivingInBuilding = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.peopleLivingHasErrors, 'Error message')).toBeUndefined();

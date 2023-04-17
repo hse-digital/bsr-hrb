@@ -10,6 +10,11 @@ import { TestHelper } from '../test-helper';
 let component: SectionFloorsAboveComponent;
 let fixture: ComponentFixture<SectionFloorsAboveComponent>;
 
+function setup(applicationService: ApplicationService) {
+  applicationService.newApplication();
+  applicationService.startSectionsEdit();
+}
+
 describe('SectionFloorsAboveComponent showError', () => {
 
   beforeEach(async () => {
@@ -40,8 +45,7 @@ describe('SectionFloorsAboveComponent showError', () => {
     new TestHelper()
       .setDescription(test.description)
       .setTestCase((applicationService: ApplicationService, value: any) => {
-        applicationService.newApplication();
-        applicationService.startSectionsEdit();
+        setup(applicationService);
         applicationService.currentSection.FloorsAbove = value;
         component.hasErrors = !component.canContinue();
         expect(component.floorsHasError).toBeTrue();
@@ -51,8 +55,7 @@ describe('SectionFloorsAboveComponent showError', () => {
   new TestHelper()
     .setDescription('should NOT show an error when the floorsAbove greater than 0 and less than 1000.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.FloorsAbove = value;
       component.hasErrors = !component.canContinue();
       expect(component.floorsHasError).toBeFalse();
@@ -76,8 +79,7 @@ describe('SectionFloorsAboveComponent getErrorDescription(hasError, errorText)',
   new TestHelper()
     .setDescription('should display an error message when the floorsAbove is not valid.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.FloorsAbove = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.floorsHasError, 'Error message')).toBeDefined();
@@ -87,8 +89,7 @@ describe('SectionFloorsAboveComponent getErrorDescription(hasError, errorText)',
   new TestHelper()
     .setDescription('should NOT display an error message when the floorsAbove is valid.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.FloorsAbove = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.floorsHasError, 'Error message')).toBeUndefined();

@@ -3,9 +3,10 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { ApplicationSelectorComponent } from '../../../app/features/application-selector/application-selector.component';
-import { ApplicationService } from '../../../app/services/application.service';
+
 import { ComponentsModule } from 'src/app/components/components.module';
+import { ApplicationSelectorComponent } from 'src/app/features/application-selector/application-selector.component';
+import { ApplicationService } from 'src/app/services/application.service';
 
 let component: ApplicationSelectorComponent;
 let fixture: ComponentFixture<ApplicationSelectorComponent>;

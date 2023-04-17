@@ -10,13 +10,18 @@ import { TestHelper } from '../test-helper';
 let component: SectionResidentialUnitsComponent;
 let fixture: ComponentFixture<SectionResidentialUnitsComponent>;
 
+function setup(applicationService: ApplicationService) {
+  applicationService.newApplication();
+  applicationService.startSectionsEdit();
+}
+
 describe('SectionResidentialUnitsComponent showError', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SectionResidentialUnitsComponent],
       imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
-      providers: [ApplicationService, HttpClient, HttpHandler]
+      providers: [ApplicationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SectionResidentialUnitsComponent);
@@ -40,8 +45,7 @@ describe('SectionResidentialUnitsComponent showError', () => {
     new TestHelper()
       .setDescription(test.description)
       .setTestCase((applicationService: ApplicationService, value: any) => {
-        applicationService.newApplication();
-        applicationService.startSectionsEdit();
+        setup(applicationService);
         applicationService.currentSection.ResidentialUnits = value;
         component.hasErrors = !component.canContinue();
         expect(component.residentialUnitsHasErrors).toBeTrue();
@@ -51,8 +55,7 @@ describe('SectionResidentialUnitsComponent showError', () => {
   new TestHelper()
     .setDescription('should NOT show an error when the residentialUnits greater than 0 and less than 1000.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.ResidentialUnits = value;
       component.hasErrors = !component.canContinue();
       expect(component.hasErrors).toBeFalse();
@@ -66,7 +69,7 @@ describe('SectionResidentialUnitsComponent getErrorDescription(hasError, errorTe
     await TestBed.configureTestingModule({
       declarations: [SectionResidentialUnitsComponent],
       imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
-      providers: [ApplicationService, HttpClient, HttpHandler]
+      providers: [ApplicationService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SectionResidentialUnitsComponent);
@@ -77,8 +80,7 @@ describe('SectionResidentialUnitsComponent getErrorDescription(hasError, errorTe
   new TestHelper()
     .setDescription('should display an error message when the residentialUnits is not valid.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.ResidentialUnits = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.residentialUnitsHasErrors, 'Error message')).toBeDefined();
@@ -88,8 +90,7 @@ describe('SectionResidentialUnitsComponent getErrorDescription(hasError, errorTe
   new TestHelper()
     .setDescription('should NOT display an error message when the residentialUnits is valid.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
-      applicationService.newApplication();
-      applicationService.startSectionsEdit();
+      setup(applicationService);
       applicationService.currentSection.ResidentialUnits = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.residentialUnitsHasErrors, 'Error message')).toBeUndefined();
