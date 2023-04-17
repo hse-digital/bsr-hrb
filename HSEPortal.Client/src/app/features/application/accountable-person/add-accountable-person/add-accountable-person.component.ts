@@ -28,6 +28,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
 
   ngOnInit(): void {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsInProgress;
+    
     this.applicationService.updateApplication();
   }
 
@@ -42,9 +43,10 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
       return navigationService.navigateRelative(`${newAp}/${AccountablePersonTypeComponent.route}`, activatedRoute);
     }
 
-
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsComplete;
+    
     this.applicationService.updateApplication();
+
 
     return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
   }
