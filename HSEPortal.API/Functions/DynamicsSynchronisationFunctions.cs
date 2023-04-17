@@ -94,7 +94,9 @@ public class DynamicsSynchronisationFunctions
     private async Task UpdateBuildingApplicationStage(BuildingApplicationModel buildingApplicationModel, DynamicsBuildingApplication buildingApplication)
     {
         var application = await dynamicsService.GetBuildingApplicationUsingId(buildingApplicationModel.Id);
-        if(application.bsr_applicationstage != BuildingApplicationStage.ApplicationSubmitted) {
+        var currentStage = application.bsr_applicationstage != null ? (int)application.bsr_applicationstage : 0;
+        if (currentStage < (int)buildingApplication.bsr_applicationstage!)
+        {
             await dynamicsService.UpdateBuildingApplication(application, buildingApplication);
         }
     }
@@ -178,9 +180,10 @@ public class DynamicsSynchronisationFunctions
     public Task UpdateBuildingApplication([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
     {
         var manualAddresses = CountManualAddresses(buildingApplicationWrapper.Model);
+        var stage = buildingApplicationWrapper.DynamicsBuildingApplication.bsr_applicationstage == BuildingApplicationStage.ApplicationSubmitted ? BuildingApplicationStage.ApplicationSubmitted : buildingApplicationWrapper.Stage;
         return dynamicsService.UpdateBuildingApplication(buildingApplicationWrapper.DynamicsBuildingApplication, new DynamicsBuildingApplication
         {
-            bsr_applicationstage = buildingApplicationWrapper.Stage,
+            bsr_applicationstage = stage,
             bsr_declarationconfirmed = buildingApplicationWrapper.Stage is BuildingApplicationStage.ApplicationSubmitted or BuildingApplicationStage.PayAndApply,
             bsr_numberofmanuallyenteredaddresses = manualAddresses.ToString()
         });
