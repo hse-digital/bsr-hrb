@@ -7,6 +7,7 @@ import { HseAngularModule } from 'hse-angular';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { ApplicationSelectorComponent } from 'src/app/features/application-selector/application-selector.component';
 import { ApplicationService } from 'src/app/services/application.service';
+import { TestHelper } from 'src/tests/test-helper';
 
 let component: ApplicationSelectorComponent;
 let fixture: ComponentFixture<ApplicationSelectorComponent>;
@@ -29,18 +30,20 @@ describe('ApplicationSelectorComponent showError', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show an error when the continueLink is empty or undefined.', async(inject([Router], (router: any) => {
-    [undefined, ''].forEach(link => {
-      component.continueLink = link;
-      //component.updateErrorStatus();
+  new TestHelper()
+    .setDescription('should show an error when the continueLink is empty or undefined.')
+    .setTestCase((applicationService: ApplicationService, value: any) => {
+      component.continueLink = value;
+      component.continue();
       expect(component.showError).toBeTrue();
-    });
-  })));
+    }, undefined, '').execute();
 
-  it('should NOT show an error when continueLink exists', async(inject([Router], (router: any) => {
-    component.continueLink = '/'
-    //component.updateErrorStatus();
-    expect(component.showError).toBeFalse();
-  })));
+  new TestHelper()
+    .setDescription('should NOT show an error when continueLink exists')
+    .setTestCase((applicationService: ApplicationService, value: any) => {
+      component.continueLink = value;
+      component.continue();
+      expect(component.showError).toBeFalse();
+    }, '/').execute();
 
 });
