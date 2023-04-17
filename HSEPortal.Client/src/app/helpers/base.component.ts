@@ -7,6 +7,7 @@ import { NavigationService } from "../services/navigation.service";
 import { TitleService } from "../services/title.service";
 import { IHasNextPage } from "./has-next-page.interface";
 import { GovukRequiredDirective } from "../components/required.directive";
+import { ApplicationSubmittedHelper } from "./app-submitted-helper";
 
 @Component({ template: '' })
 export abstract class BaseComponent implements CanActivate {
@@ -29,9 +30,16 @@ export abstract class BaseComponent implements CanActivate {
     if (!this.canAccess(routeSnapshot)) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
+    } else if (!this.isSummaryPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
+      this.navigationService.navigate(ApplicationSubmittedHelper.getPaymentConfirmationRoute(this.applicationService));
+      return false;
     }
 
     return true;
+  }
+
+  private isSummaryPage(){
+    return location.href.endsWith(`/${this.applicationService.model.id}/summary`);
   }
 
   hasErrors = false;

@@ -7,6 +7,7 @@ import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from "src/app/services/title.service";
 import { LeadNameComponent } from "../lead-name/lead-name.component";
+import { ApplicationSubmittedHelper } from "src/app/helpers/app-submitted-helper";
 
 @Component({
     templateUrl: './acting-for-address.component.html'
@@ -55,6 +56,9 @@ export class ActingForAddressComponent implements OnInit, CanActivate {
     }
 
     canActivate(routeSnapshot: ActivatedRouteSnapshot) {
+
+        ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
+
         return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
             && ApHelper.isOrganisation(routeSnapshot, this.applicationService)
             && this.applicationService.currentAccountablePerson.Role == "registering_for"
