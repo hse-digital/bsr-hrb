@@ -1,4 +1,5 @@
-﻿using HSEPortal.Domain.Entities;
+﻿using System.Globalization;
+using HSEPortal.Domain.Entities;
 
 namespace HSEPortal.Domain.DynamicsDefinitions;
 public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsStructure>
@@ -9,8 +10,8 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
     {
         var peopleLivingInStructure = GetPeopleLivingInStructure(entity.PeopleLivingInStructure);
         var constructionYearOption = GetConstructionYearOption(entity.ConstructionYearOption);
-
-        return new DynamicsStructure(entity.Name, int.Parse(entity.FloorsAboveGround), double.Parse(entity.HeightInMeters), int.Parse(entity.NumberOfResidentialUnits), peopleLivingInStructure, constructionYearOption);
+        
+        return new DynamicsStructure(entity.Name, int.Parse(entity.FloorsAboveGround), Math.Round(float.Parse(entity.HeightInMeters, CultureInfo.InvariantCulture), 2), int.Parse(entity.NumberOfResidentialUnits), peopleLivingInStructure, constructionYearOption);
     }
 
     public override Structure BuildEntity(DynamicsStructure dynamicsEntity)
@@ -23,7 +24,8 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
         switch (peopleLivingInStructure)
         {
             case "yes": return PeopleLivingInStructure.Yes;
-            case "no_block_ready": return PeopleLivingInStructure.NoBlockReady;
+            case "no_block_ready":
+            case "no_section_ready": return PeopleLivingInStructure.NoBlockReady;
             case "no_wont_move": return PeopleLivingInStructure.NoWontMove;
         }
 
