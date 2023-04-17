@@ -11,6 +11,7 @@ import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections
 import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
 import { SectionNameComponent } from "../name/name.component";
 import { SectionOtherAddressesComponent } from "../other-addresses/other-addresses.component";
+import { ApplicationSubmittedHelper } from "src/app/helpers/app-submitted-helper";
 
 @Component({
   templateUrl: './address.component.html'
@@ -86,6 +87,9 @@ export class SectionAddressComponent implements OnInit, CanActivate {
   }
 
   canActivate(routeSnapshot: ActivatedRouteSnapshot) {
+
+    ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
+
     if (!SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService)) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
