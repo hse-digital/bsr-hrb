@@ -27,9 +27,8 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
   }
 
   ngOnInit(): void {
-    if((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
-      this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsInProgress;
-    }
+    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsInProgress;
+    
     this.applicationService.updateApplication();
   }
 
@@ -44,9 +43,8 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
       return navigationService.navigateRelative(`${newAp}/${AccountablePersonTypeComponent.route}`, activatedRoute);
     }
 
-    if((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
-      this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsComplete;
-    }
+    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsComplete;
+    
     this.applicationService.updateApplication();
 
 

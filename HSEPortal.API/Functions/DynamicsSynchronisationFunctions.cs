@@ -94,7 +94,9 @@ public class DynamicsSynchronisationFunctions
     private async Task UpdateBuildingApplicationStage(BuildingApplicationModel buildingApplicationModel, DynamicsBuildingApplication buildingApplication)
     {
         var application = await dynamicsService.GetBuildingApplicationUsingId(buildingApplicationModel.Id);
-        await dynamicsService.UpdateBuildingApplication(application, buildingApplication);
+        if(application.bsr_applicationstage != BuildingApplicationStage.ApplicationSubmitted) {
+            await dynamicsService.UpdateBuildingApplication(application, buildingApplication);
+        }
     }
 
     [Function(nameof(SynchroniseBuildingStructures))]

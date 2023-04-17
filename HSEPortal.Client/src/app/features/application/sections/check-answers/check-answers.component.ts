@@ -89,9 +89,8 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   override async onSave(): Promise<void> {
-    if((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
-      this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.BlocksInBuildingComplete;
-    }
+    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.BlocksInBuildingComplete;
+    
     await this.applicationService.syncBuildingStructures();
   }
 
