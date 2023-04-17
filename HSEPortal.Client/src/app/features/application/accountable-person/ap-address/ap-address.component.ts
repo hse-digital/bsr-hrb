@@ -12,6 +12,7 @@ import { AddAccountablePersonComponent } from "../add-accountable-person/add-acc
 import { PapNameComponent } from "../ap-name/pap-name.component";
 import { PapWhoAreYouComponent } from "../organisation/pap-who-are-you/pap-who-are-you.component";
 import { PapAddressComponent } from "./pap-address.component";
+import { ApplicationSubmittedHelper } from "src/app/helpers/app-submitted-helper";
 
 @Component({
     selector: 'ap-address',
@@ -98,6 +99,9 @@ export class ApAddressComponent implements OnInit, CanActivate {
     }
 
     canActivate(routeSnapshot: ActivatedRouteSnapshot) {
+
+        ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
+
         if (!ApHelper.isApAvailable(routeSnapshot, this.applicationService)) {
             this.navigationService.navigate(NotFoundComponent.route);
             return false;

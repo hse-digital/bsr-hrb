@@ -5,6 +5,7 @@ import { ApHelper } from "src/app/helpers/ap-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { PapAddressComponent } from "../ap-address/pap-address.component";
+import { ApplicationSubmittedHelper } from "src/app/helpers/app-submitted-helper";
 
 @Component({
     template: `<ap-details [pap]=true [nextRoute]="nextRoute" />`,
@@ -18,6 +19,9 @@ export class PapDetailsComponent implements CanActivate {
     constructor(private applicationService: ApplicationService, private navigationService: NavigationService) {}
 
     canActivate(routeSnapshot: ActivatedRouteSnapshot) {
+        
+        ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
+
         if (!ApHelper.isApAvailable(routeSnapshot, this.applicationService)) {
             this.navigationService.navigate(NotFoundComponent.route);
             return false;

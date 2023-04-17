@@ -22,7 +22,7 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
     await this.applicationService.syncPayment();
 
     this.activatedRoute.queryParams.subscribe(async query => {
-      var paymentReference = query['reference'];
+      var paymentReference = query['reference'] ?? await this.getApplicationPaymentReference();
 
       if (!paymentReference) {
         this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
@@ -38,6 +38,11 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
         this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
       }
     });
+  }
+
+  private async getApplicationPaymentReference(){
+    var payments = await this.applicationService.getApplicationPayments()
+    return await payments.find(x => x.bsr_govukpaystatus == "success")?.bsr_transactionid;
   }
 
   canContinue(): boolean {
