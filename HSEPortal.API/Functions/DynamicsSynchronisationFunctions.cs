@@ -202,9 +202,11 @@ public class DynamicsSynchronisationFunctions
     private int CountManualAddresses(BuildingApplicationModel model)
     {
         var manualStructureAddresses = model.Sections?.SelectMany(x => x.Addresses).Count(x => x.IsManual) ?? 0;
-        var manualApAddresses = model.AccountablePersons?.Select(x => x.PapAddress ?? x.Address).Count(x => x.IsManual) ?? 0;
+        var manualApAddresses = model.AccountablePersons?.Where(x => x.PapAddress != null).Select(x => x.PapAddress).Count(x => x.IsManual) ?? 0;
+        var manualPapAddresses = model.AccountablePersons?.Where(x => x.Address != null).Select(x => x.Address).Count(x => x.IsManual) ?? 0;
+        var manualActingForAddress = model.AccountablePersons?.Where(x => x.ActingForAddress != null).Select(x => x.ActingForAddress).Count(x => x.IsManual) ?? 0;
 
-        return manualStructureAddresses + manualApAddresses;
+        return manualStructureAddresses + manualApAddresses + manualPapAddresses + manualActingForAddress;
     }
 
     [Function(nameof(CreateBuildingStructures))]
