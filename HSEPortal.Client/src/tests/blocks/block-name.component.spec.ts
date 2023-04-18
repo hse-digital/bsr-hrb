@@ -4,7 +4,7 @@ import { HseAngularModule } from 'hse-angular';
 import { ComponentsModule } from 'src/app/components/components.module';
 
 import { SectionNameComponent } from 'src/app/features/application/sections/name/name.component';
-import { ApplicationService, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService } from 'src/app/services/application.service';
 import { TestHelper } from '../test-helper';
 
 let component: SectionNameComponent;

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, QueryList, ViewChildren } from 
 import { TitleService } from 'src/app/services/title.service';
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { ApplicationService } from "src/app/services/application.service";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 
 @Component({
   selector: 'application-enterdata',
@@ -40,7 +41,7 @@ export class ReturningApplicationEnterDataComponent {
     await this.isApplicationNumberValid();
 
     this.hasErrors = this.errors.emailAddress.hasError || this.errors.applicationNumber.hasError;
-
+        
     if (!this.hasErrors) {
       await this.applicationService.sendVerificationEmail(this.emailAddress!);
       this.onContinue.emit({ emailAddress: this.emailAddress!, applicationNumber: this.applicationNumber! });
@@ -54,7 +55,7 @@ export class ReturningApplicationEnterDataComponent {
 
   async isApplicationNumberValid() {
     this.errors.applicationNumber.hasError = true;
-    if (!this.applicationNumber) {
+    if (!this.applicationNumber || !FieldValidations.IsNotNullOrWhitespace(this.applicationNumber)) {
       this.errors.applicationNumber.errorText = 'Enter the application number';
     } else if (this.applicationNumber.length != 12) {
       this.errors.applicationNumber.errorText = 'Application number must be 12 characters';
@@ -67,7 +68,7 @@ export class ReturningApplicationEnterDataComponent {
 
   isEmailAddressValid() {
     this.errors.emailAddress.hasError = false;
-    if (!this.emailAddress) {
+    if (!FieldValidations.IsNotNullOrWhitespace(this.emailAddress)) {
       this.errors.emailAddress.errorText = 'Enter your email address';
       this.errors.emailAddress.hasError = true;
     }
