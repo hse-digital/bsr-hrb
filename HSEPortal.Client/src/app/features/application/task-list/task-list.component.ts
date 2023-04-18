@@ -7,7 +7,6 @@ import { ApplicationService, BuildingApplicationStatus, PaymentStatus } from "sr
 import { NavigationService } from "src/app/services/navigation.service";
 import { AccountablePersonModule } from "../accountable-person/accountable-person.module";
 import { NumberOfSectionsComponment } from "../number-of-sections/number-of-sections.component";
-import { PaymentConfirmationComponent } from "../payment/payment-confirmation/payment-confirmation.component";
 import { PaymentDeclarationComponent } from "../payment/payment-declaration/payment-declaration.component";
 import { PaymentModule } from "../payment/payment.module";
 
