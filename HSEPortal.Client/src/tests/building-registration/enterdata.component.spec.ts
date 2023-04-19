@@ -6,11 +6,13 @@ import { TestHelper } from "../test-helper";
 import { ReturningApplicationEnterDataComponent } from "src/app/features/returning-application/enterdata.component";
 import { ComponentsModule } from "src/app/components/components.module";
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient } from "@angular/common/http";
 
-describe('ReturningApplicationEnterDataComponent', () => {
+describe('ReturningApplicationEnterDataComponent showError', () => {
     let component: ReturningApplicationEnterDataComponent;
     let fixture: ComponentFixture<ReturningApplicationEnterDataComponent>;
-    let httpMock: HttpTestingController;
+    let httpClient: HttpClient;
+    let httpTestingController: HttpTestingController;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -21,13 +23,11 @@ describe('ReturningApplicationEnterDataComponent', () => {
 
         fixture = TestBed.createComponent(ReturningApplicationEnterDataComponent);
         component = fixture.componentInstance;
-        httpMock = fixture.debugElement.injector.get<HttpTestingController>(HttpTestingController as Type<HttpTestingController>);
+        
+        httpClient = TestBed.inject(HttpClient);
+        httpTestingController = TestBed.inject(HttpTestingController);
 
         fixture.detectChanges();
-    });
-
-    afterEach(() => {
-        httpMock.verify();
     });
 
     it('should create', () => {
@@ -77,6 +77,15 @@ describe('ReturningApplicationEnterDataComponent', () => {
                 component.applicationNumber = value.applicationNumber;
                 component.emailAddress = value.email;
                 await component.validateAndContinue();
+
+                let route = `api/ValidateApplicationNumber/${value.email}/${value.applicationNumber}`;
+                httpTestingController.expectNone(route);
+                
+                let routeSendVerificationEmail = `api/SendVerificationEmail/${value.email}`;
+                httpTestingController.expectNone(routeSendVerificationEmail);
+                
+                httpTestingController.verify();
+
                 expect(component.hasErrors).toBeTrue();
             }, { email: test.email, applicationNumber: test.applicationNumber }).execute();
     });
@@ -84,10 +93,19 @@ describe('ReturningApplicationEnterDataComponent', () => {
     new TestHelper()
         .setDescription('should NOT show an error when the application number and the email are valid.')
         .setTestCase(async (applicationService: ApplicationService, value: any) => {
-            component.applicationNumber = "012345678901";
-            component.emailAddress = value;
-            await component.validateAndContinue();
+            component.applicationNumber = value.applicationNumber;
+            component.emailAddress = value.email;            
+            component.validateAndContinue();
+            
+            let route = `api/ValidateApplicationNumber/${value.email}/${value.applicationNumber}`;
+            httpTestingController.match(route);
+            
+            let routeSendVerificationEmail = `api/SendVerificationEmail/${value.email}`;
+            httpTestingController.match(routeSendVerificationEmail);
+
             expect(component.hasErrors).toBeFalse();
-        }, "validemailaddress@abcd.com").execute();
+
+            httpTestingController.verify();
+        }, {email: "validemailaddress@abcd.com", applicationNumber: "012345678901"}).execute();
 
 });

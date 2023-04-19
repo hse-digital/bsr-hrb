@@ -23,19 +23,19 @@ export class TestHelper {
     }
 
     setTestCase(test: (applicationService: ApplicationService, value?: any) => void, ...values:any[]): this {  
-        this.testCase = () => {
+        this.testCase = async () => {
             if(!!this.spyOn) this.spyOn();
-            values.forEach(value => {                
-                test(this.applicationService, value);
+            await values.forEach(async value => {                
+                await test(this.applicationService, value);
             });
         };
         return this;
     }
 
     execute() {
-        it(this.description, inject([ApplicationService], (applicationService: ApplicationService) => {
+        it(this.description, inject([ApplicationService], async (applicationService: ApplicationService) => {
             this.applicationService = applicationService;
-            this.testCase();
+            await this.testCase();
         }));
     }
 }
