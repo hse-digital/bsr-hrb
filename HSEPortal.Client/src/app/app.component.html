@@ -1,7 +1,9 @@
 <govuk-cookie-banner [viewCookiesLink]="viewCookiesLink"
                      title="Register a high-rise building"
                      class="govuk-width-container"
-                     [showCookieBanner]="showCookieBanner"
+                     [showCookieBanner]="cookieBannerModel.showCookies"
+                     [showConfirmBanner]="cookieBannerModel.showConfirmBanner"
+                     [cookiesAccepted]="cookieBannerModel.cookiesAccepted"
                      (onChangeCookies)="cookiesChanged()"
                      (onCookiesAccepted)="cookiesAccepted()"
                      (onCookiesRejected)="cookiesRejected()" />
