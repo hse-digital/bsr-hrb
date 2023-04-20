@@ -60,7 +60,6 @@ export class CookiesBannerService {
     this.setCookie(this.cookiesModel.cookiesAccepted ? "true" : "false");
     let showConfirmBanner = this.cookiesModel.showConfirmBanner ? "showConfirm" : "hideConfirm";
     LocalStorage.setJSON(this.confirmBannerLocalStorageKey, showConfirmBanner);
-    this.setCookie("false");
   }
 
   resetCookies() {
