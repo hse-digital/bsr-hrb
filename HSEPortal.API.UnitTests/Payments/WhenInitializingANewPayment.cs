@@ -1,87 +1,55 @@
 ﻿using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using FluentAssertions;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Functions;
+using HSEPortal.API.Model;
 using HSEPortal.API.Model.Payment.Request;
 using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
 using Microsoft.Extensions.Options;
-using Xunit;
-using Xunit.Abstractions;
+using Moq;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.Payments;
 
 public class WhenInitializingANewPayment : UnitTestBase
 {
-    private readonly ITestOutputHelper outputHelper;
-    private readonly PaymentFunctions paymentFunctions;
-    private readonly IntegrationsOptions integrationOptions;
-    private readonly SwaOptions swaOptions;
+    private SwaOptions swaOptions;
+    private PaymentFunctions paymentFunctions;
+    private IntegrationsOptions integrationOptions;
+    private PaymentApiResponseModel paymentApiResponse;
     private readonly string applicationId = "HBR123123123";
-    private readonly PaymentApiResponseModel paymentApiResponse;
-    private string returnUrl => $"{swaOptions.Url}/application/{applicationId}/payment/confirm";
 
-    public WhenInitializingANewPayment(ITestOutputHelper outputHelper)
+    private string returnUrl => $"{swaOptions.Url}/application/{applicationId}/payment/confirm?reference={applicationId}";
+
+    protected override void AdditionalSetup()
     {
-        this.outputHelper = outputHelper;
+        var paymentReferenceService = new Mock<IPaymentReferenceService>();
+        paymentReferenceService.Setup(x => x.Generate()).Returns(applicationId);
+
         integrationOptions = new IntegrationsOptions { PaymentEndpoint = "https://publicapi.payments.service.gov.uk", PaymentApiKey = "abc123", PaymentAmount = 251 };
         swaOptions = new SwaOptions { Url = "http://localhost:4280" };
-        paymentFunctions = new PaymentFunctions(new OptionsWrapper<IntegrationsOptions>(integrationOptions), new OptionsWrapper<SwaOptions>(swaOptions), DynamicsService, GetMapper());
+        paymentFunctions = new PaymentFunctions(DynamicsService, paymentReferenceService.Object, new OptionsWrapper<IntegrationsOptions>(integrationOptions), new OptionsWrapper<SwaOptions>(swaOptions), GetMapper());
 
         paymentApiResponse = CreatePaymentApiResponse();
         HttpTest.RespondWithJson(paymentApiResponse);
+        HttpTest.RespondWithJson(new { value = new[] { new { bsr_buildingapplicationid = Guid.NewGuid().ToString() } } });
     }
 
-    [Fact(Skip = "fixing payment later")]
+    [Test]
     public async Task ShouldCallPaymentApiEndpoint()
     {
-        var paymentRequestModel = BuildPaymentRequestModel();
-        await paymentFunctions.InitialisePayment(BuildHttpRequestData(paymentRequestModel), null);
+        var applicationModel = BuildBuildingApplicationModel();
+        await paymentFunctions.InitialisePayment(BuildHttpRequestData(applicationModel), applicationModel);
 
-        HttpTest.ShouldHaveCalled($"{integrationOptions.PaymentEndpoint}/v1/payments")
-            .WithRequestJson(new PaymentApiRequestModel
-            {
-                amount = integrationOptions.PaymentAmount,
-                reference = applicationId,
-                return_url = returnUrl,
-                delayed_capture = false,
-                email = paymentRequestModel.Email,
-                prefilled_cardholder_details = new ApiCardHolderDetails
-                {
-                    cardholder_name = paymentRequestModel.CardHolderDetails.Name,
-                    billing_address = new ApiCardHolderAddress
-                    {
-                        line1 = paymentRequestModel.CardHolderDetails.Address.Line1,
-                        line2 = paymentRequestModel.CardHolderDetails.Address.Line2,
-                        postcode = paymentRequestModel.CardHolderDetails.Address.Postcode,
-                        city = paymentRequestModel.CardHolderDetails.Address.City,
-                    }
-                }
-            })
-            .WithVerb(HttpMethod.Post);
+        ShouldPostPaymentDataToApi(applicationModel);
     }
 
-    [Theory(Skip = "fixing payment later")]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData(default(string))]
-    public async Task ShouldReturnBadRequestIfValuesAreWrong(string reference)
-    {
-        var paymentRequestModel = new PaymentRequestModel { Reference = reference };
-
-        var response = await paymentFunctions.InitialisePayment(BuildHttpRequestData(paymentRequestModel), null);
-
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        HttpTest.ShouldNotHaveCalled($"{integrationOptions.PaymentEndpoint}/v1/payments");
-    }
-
-    [Fact(Skip = "fixing payment later")]
+    [Test]
     public async Task ShouldReturnPaymentApiResponse()
     {
-        var paymentRequestModel = BuildPaymentRequestModel();
-        var response = await paymentFunctions.InitialisePayment(BuildHttpRequestData(paymentRequestModel), null);
+        var applicationModel = BuildBuildingApplicationModel();
+        var response = await paymentFunctions.InitialisePayment(BuildHttpRequestData(applicationModel), applicationModel);
 
         var paymentResponse = await response.ReadAsJsonAsync<PaymentResponseModel>();
         paymentResponse.Should().BeEquivalentTo(new PaymentResponseModel
@@ -110,9 +78,50 @@ public class WhenInitializingANewPayment : UnitTestBase
         });
     }
 
+    private void ShouldPostPaymentDataToApi(BuildingApplicationModel applicationModel)
+    {
+        HttpTest.ShouldHaveCalled($"{integrationOptions.PaymentEndpoint}/v1/payments")
+            .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
+            .WithRequestJson(new PaymentApiRequestModel
+            {
+                amount = integrationOptions.PaymentAmount,
+                return_url = returnUrl,
+                reference = applicationId,
+                description = $"Payment for application {applicationId}",
+                email = applicationModel.ContactEmailAddress,
+                prefilled_cardholder_details = new ApiCardHolderDetails
+                {
+                    cardholder_name = $"{applicationModel.ContactFirstName} {applicationModel.ContactLastName}",
+                    billing_address = new ApiCardHolderAddress
+                    {
+                        line1 = applicationModel.AccountablePersons[0].PapAddress.Address,
+                        line2 = applicationModel.AccountablePersons[0].PapAddress.AddressLineTwo,
+                        postcode = applicationModel.AccountablePersons[0].PapAddress.Postcode,
+                        city = applicationModel.AccountablePersons[0].PapAddress.Town
+                    }
+                }
+            })
+            .WithVerb(HttpMethod.Post);
+    }
+
+    private BuildingApplicationModel BuildBuildingApplicationModel()
+    {
+        return new BuildingApplicationModel(applicationId, ContactFirstName: "First Name", ContactLastName: "Last Name", ContactEmailAddress: "first@last.com",
+            AccountablePersons: new AccountablePerson[]
+            {
+                new(PapAddress: new BuildingAddress
+                {
+                    Address = "address line 1",
+                    AddressLineTwo = "address line 2",
+                    Postcode = "erq 1234",
+                    Town = "gasglow"
+                }),
+            });
+    }
+
     private PaymentRequestModel BuildPaymentRequestModel()
     {
-        var paymentRequestModel = new PaymentRequestModel
+        return new PaymentRequestModel
         {
             Reference = applicationId,
             ReturnUrl = returnUrl,
@@ -129,7 +138,6 @@ public class WhenInitializingANewPayment : UnitTestBase
                 }
             }
         };
-        return paymentRequestModel;
     }
 
     private PaymentApiResponseModel CreatePaymentApiResponse()

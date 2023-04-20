@@ -10,26 +10,25 @@ using HSEPortal.API.Services;
 using HSEPortal.API.Services.CompanySearch;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Options;
-using Xunit;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.CompanySearch;
 
 public class WhenSearchingForACompany : UnitTestBase
 {
-    private readonly CompanySearchFunctions companySearchFunctions;
-    private readonly IntegrationsOptions integrationsOptions;
+    private CompanySearchFunctions companySearchFunctions;
+    private IntegrationsOptions integrationsOptions;
     private const string companyName = "hse";
     private const string DynamicsAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkd";
 
-    public WhenSearchingForACompany()
+    protected override void AdditionalSetup()
     {
         integrationsOptions = new IntegrationsOptions { CompaniesHouseEndpoint = "https://api.company-information.service.gov.uk", CompaniesHouseApiKey = "123" };
         companySearchFunctions = new CompanySearchFunctions(new CompanySearchService(new CompanySearchFactory(new OptionsWrapper<IntegrationsOptions>(integrationsOptions), DynamicsService, GetMapper())));
     }
 
-    [Theory]
-    [InlineData("company", null)]
-    [InlineData(null, "companyType")]
+    [TestCase("company", null)]
+    [TestCase(null, "companyType")]
     public async Task ShouldReturnBadRequestIfCompanyOrCompanyTypeAreNotProvided(string company, string companyType)
     {
         var request = BuildRequestData(company, companyType);
@@ -38,12 +37,11 @@ public class WhenSearchingForACompany : UnitTestBase
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
-    [Theory]
-    [InlineData("commonhold-association")]
-    [InlineData("management-company")]
-    [InlineData("rmc-or-organisation")]
-    [InlineData("rtm-or-organisation")]
-    [InlineData("other")]
+    [TestCase("commonhold-association")]
+    [TestCase("management-company")]
+    [TestCase("rmc-or-organisation")]
+    [TestCase("rtm-or-organisation")]
+    [TestCase("other")]
     public async Task AndCompanyTypeIsCompaniesHouseShouldCallEndpointToSearchForCompany(string companyType)
     {
         var companiesHouseSearchResponse = BuildCompaniesHouseResponseJson();
@@ -67,20 +65,20 @@ public class WhenSearchingForACompany : UnitTestBase
         companySearchResponse.Companies[0].Status.Should().Be(companiesHouseSearchResponse.items[0].company_status);
     }
 
-    [Fact]
+    [Test]
     public async Task AndCompanyTypeIsCompaniesHouseAndCompanyIsNotFoundShouldReturnEmptyResults()
     {
         HttpTest.RespondWith(status: 404);
-        
+
         var request = BuildRequestData(companyName, "management-company");
         var response = await companySearchFunctions.SearchCompany(request);
-        
+
         var companySearchResponse = await response.ReadAsJsonAsync<CompanySearchResponse>();
         companySearchResponse.Results.Should().Be(0);
         companySearchResponse.Companies.Count.Should().Be(0);
     }
 
-    [Fact]
+    [Test]
     public async Task AndCompanyTypeIsLocalAuthorityShouldCallEndpointToSearchForCompany()
     {
         var localAuthoritySearchResponse = BuildLocalAuthorityResponseJson();
@@ -104,16 +102,16 @@ public class WhenSearchingForACompany : UnitTestBase
         companySearchResponse.Companies[0].Number.Should().Be(localAuthoritySearchResponse.value[0].accountid);
     }
 
-    [Fact]
+    [Test]
     public async Task AndCompanyTypeIsHousingAssociationShouldReturnCompanyFromFixedDataset()
     {
         var expectedCompanyRecord = SocialHousingDataset.Records[0];
-        
+
         var request = BuildRequestData(expectedCompanyRecord.organisation_name, "housing-association");
         var response = await companySearchFunctions.SearchCompany(request);
-        
+
         var companySearchResponse = await response.ReadAsJsonAsync<CompanySearchResponse>();
-        
+
         companySearchResponse.Results.Should().Be(1);
         companySearchResponse.Companies[0].Name.Should().Be(expectedCompanyRecord.organisation_name);
         companySearchResponse.Companies[0].Type.Should().Be(expectedCompanyRecord.designation);

@@ -23,5 +23,4 @@ public class ApiCardHolderAddress
     public string line2 { get; set; }
     public string postcode { get; set; }
     public string city { get; set; }
-    public string country = "GB";
 }

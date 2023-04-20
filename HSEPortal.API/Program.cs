@@ -36,7 +36,8 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.AddTransient<DynamicsModelDefinitionFactory>();
     serviceCollection.AddTransient<CompanySearchService>();
     serviceCollection.AddTransient<CompanySearchFactory>();
-
+    serviceCollection.AddSingleton<PaymentReferenceService>();
+    
     serviceCollection.AddSingleton(_ => new MapperConfiguration(config =>
     {
         config.AddProfile<OrdnanceSurveyPostcodeResponseProfile>();

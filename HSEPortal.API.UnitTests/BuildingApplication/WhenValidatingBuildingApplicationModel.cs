@@ -1,13 +1,13 @@
 using FluentAssertions;
 using HSEPortal.API.Model;
 using HSEPortal.TestingCommon.Builders;
-using Xunit;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenValidatingBuildingRegistrationModel
 {
-    [Fact]
+    [Test]
     public void ShouldReturnNoErrorsWhenModelIsValid()
     {
         var model = new BuildingApplicationModelBuilder().Build();
@@ -17,8 +17,7 @@ public class WhenValidatingBuildingRegistrationModel
         validationResult.Errors.Should().BeEmpty();
     }
 
-    [Theory]
-    [MemberData(nameof(ValidationTestCases))]
+    [TestCaseSource(nameof(ValidationTestCases))]
     public void ShouldValidateBuildingRegistrationFields(BuildingApplicationModel model, string errorMessage)
     {
         var validationResult = model.Validate();
@@ -27,7 +26,7 @@ public class WhenValidatingBuildingRegistrationModel
         validationResult.Errors.Should().Contain(errorMessage);
     }
 
-    [Fact]
+    [Test]
     public void ShouldReturnMultipleErrorMessagesWhenMultipleFieldsAreInvalid()
     {
         var model = new BuildingApplicationModelBuilder().WithBuildingName(null).WithContactFirstName(null)
@@ -42,16 +41,15 @@ public class WhenValidatingBuildingRegistrationModel
         validationResult.Errors.Should().Contain("Contact email address is required");
     }
 
-    [Theory]
-    [InlineData("07700900982", true)]
-    [InlineData("07700 900 982", true)]
-    [InlineData("+448081570192", true)]
-    [InlineData("+44 808 157 0192", true)]
-    [InlineData("01632960001", true)]
-    [InlineData("01632 960 001", true)]
-    [InlineData("+55123123", false)]
-    [InlineData("+0124123123", false)]
-    [InlineData("+44 808 157 0192 33", false)]
+    [TestCase("07700900982", true)]
+    [TestCase("07700 900 982", true)]
+    [TestCase("+448081570192", true)]
+    [TestCase("+44 808 157 0192", true)]
+    [TestCase("01632960001", true)]
+    [TestCase("01632 960 001", true)]
+    [TestCase("+55123123", false)]
+    [TestCase("+0124123123", false)]
+    [TestCase("+44 808 157 0192 33", false)]
     public void ShouldValidatePhoneNumberFormat(string phoneNumber, bool isValid)
     {
         var model = new BuildingApplicationModelBuilder().WithContactPhoneNumber(phoneNumber).Build();

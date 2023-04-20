@@ -7,38 +7,44 @@ using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using Microsoft.Extensions.Options;
-using Xunit;
+using Moq;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.Payments;
 
 public class WhenGettingPayment : UnitTestBase
 {
-    private readonly PaymentFunctions paymentFunctions;
-    private readonly IntegrationsOptions integrationOptions;
+    private PaymentFunctions paymentFunctions;
+    private IntegrationsOptions integrationOptions;
+    private PaymentApiResponseModel responseApiModel;
+    private const string DynamicsToken = "i34h9gf834njgabdiufhgap9384ythgpa9ei48gha;eriough";
     private readonly string paymentId = "1234";
-    private readonly PaymentApiResponseModel responseApiModel;
+    private readonly string paymentReference = "FG1346780H8904cf680qghcf";
 
-    public WhenGettingPayment()
+    protected override void AdditionalSetup()
     {
+        var paymentReferenceService = new Mock<IPaymentReferenceService>();
+        paymentReferenceService.Setup(x => x.Generate()).Returns(paymentReference);
+        
         integrationOptions = new IntegrationsOptions { PaymentEndpoint = "https://publicapi.payments.service.gov.uk", PaymentApiKey = "abc123" };
-        paymentFunctions = new PaymentFunctions(new OptionsWrapper<IntegrationsOptions>(integrationOptions), new OptionsWrapper<SwaOptions>(new SwaOptions { Url = "http://localhost:4280" }), dynamicsService: DynamicsService, GetMapper());
+        paymentFunctions = new PaymentFunctions(DynamicsService, paymentReferenceService.Object, new OptionsWrapper<IntegrationsOptions>(integrationOptions), new OptionsWrapper<SwaOptions>(new SwaOptions { Url = "http://localhost:4280" }), mapper: GetMapper());
 
         responseApiModel = CreatePaymentApiResponse();
-        HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = "abc" });
-        HttpTest.RespondWithJson(new { value = new[] { new DynamicsPayment { bsr_paymentid = paymentId } } });
+        HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsToken });
+        HttpTest.RespondWithJson(new { value = new[] { new DynamicsPayment { bsr_govukpaymentid = paymentId } } });
         HttpTest.RespondWithJson(responseApiModel);
     }
 
-    [Fact(Skip="refactoring")]
+    [Test]
     public async Task ShouldCallPaymentApiGetPayment()
     {
-        await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentId), paymentId);
+        await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentReference), paymentReference);
 
         HttpTest.ShouldHaveCalled($"{integrationOptions.PaymentEndpoint}/v1/payments/{paymentId}")
             .WithVerb(HttpMethod.Get);
     }
 
-    [Fact(Skip="refactoring")]
+    [Test]
     public async Task ShouldReturnPaymentResponseModel()
     {
         var response = await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, paymentId), paymentId);
@@ -55,9 +61,8 @@ public class WhenGettingPayment : UnitTestBase
         paymentResponseModel.Postcode.Should().Be(responseApiModel.card_details.billing_address.postcode);
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData(null)]
+    [TestCase("")]
+    [TestCase(null)]
     public async Task ShouldReturnBadRequestIfAmountIsWrong(string id)
     {
         var response = await paymentFunctions.GetPayment(BuildHttpRequestData<object>(default, id), id);

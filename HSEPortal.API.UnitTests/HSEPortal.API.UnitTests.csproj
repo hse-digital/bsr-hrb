@@ -10,15 +10,16 @@
       <PackageReference Include="Flurl.Http" Version="3.2.4" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
       <PackageReference Include="Moq" Version="4.18.4" />
-      <PackageReference Include="xunit" Version="2.4.2" />
-      <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+      <PackageReference Include="NUnit" Version="3.13.3" />
+      <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\HSEPortal.API\HSEPortal.API.csproj" />
       <ProjectReference Include="..\HSEPortal.TestingCommon\HSEPortal.TestingCommon.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="DynamicsSynchronisation\" />
     </ItemGroup>
 </Project>

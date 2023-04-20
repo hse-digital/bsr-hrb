@@ -6,23 +6,23 @@ using HSEPortal.API.Model;
 using HSEPortal.API.Model.OrdnanceSurvey;
 using HSEPortal.API.Services;
 using Microsoft.Extensions.Options;
-using Xunit;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.Address;
 
 public class WhenSearchingBuildingUsingPostcode : UnitTestBase
 {
-    private readonly AddressFunctions addressFunctions;
-    private readonly IntegrationsOptions integrationsOptions;
+    private AddressFunctions addressFunctions;
+    private IntegrationsOptions integrationsOptions;
     private const string buckinghamPalacePostcode = "SW1A1AA";
 
-    public WhenSearchingBuildingUsingPostcode()
+    protected override void AdditionalSetup()
     {
         integrationsOptions = new IntegrationsOptions { OrdnanceSurveyEndpoint = "https://api.os.uk/search/places/v1", OrdnanceSurveyApiKey = "abc123" };
         addressFunctions = new AddressFunctions(new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper());
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldCallPostcodeEndpoint()
     {
         HttpTest.RespondWithJson(BuildPostcodeResponseJson());
@@ -40,7 +40,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
             .WithVerb(HttpMethod.Get);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldReturnMatchingAddresses()
     {
         var postcodeResponse = BuildPostcodeResponseJson();
@@ -65,7 +65,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
         responseAddress.Results[0].Postcode.Should().Be(postcodeResponse.results[0].LPI.POSTCODE_LOCATOR);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldReturnEmptyResultsIfPostcodeIsNotFound()
     {
         HttpTest.RespondWith(status: (int)HttpStatusCode.BadRequest);
@@ -81,7 +81,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
         responseAddress.Results.Should().BeEmpty();
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldFilterResultsThatAreNotEnglandOrWales()
     {
         var postcodeResponse = BuildPostcodeResponseJson();

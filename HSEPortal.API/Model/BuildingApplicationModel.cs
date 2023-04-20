@@ -66,12 +66,12 @@ public record SectionModel(string Name,
         string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange,
         string CompletionCertificateIssuer, string CompletionCertificateReference, BuildingAddress[] Addresses = null);
 
-public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress Address, BuildingAddress PapAddress,
-    string OrganisationName, string OrganisationType, string OrganisationTypeDescription,
-    string NamedContactFirstName, string NamedContactLastName, string NamedContactEmail, string NamedContactPhoneNumber,
-    string FirstName, string LastName, string Email, string PhoneNumber, string Role, string LeadJobRole, 
-    string ActingForSameAddress, BuildingAddress ActingForAddress, string LeadFirstName, string LeadLastName, 
-    string LeadEmail, string LeadPhoneNumber, SectionAccountability[] SectionsAccountability);
+public record AccountablePerson(string Type = null, string IsPrincipal = null, BuildingAddress Address = null, BuildingAddress PapAddress = null,
+    string OrganisationName = null, string OrganisationType = null, string OrganisationTypeDescription = null,
+    string NamedContactFirstName = null, string NamedContactLastName = null, string NamedContactEmail = null, string NamedContactPhoneNumber = null,
+    string FirstName = null, string LastName = null, string Email = null, string PhoneNumber = null, string Role = null, string LeadJobRole = null, 
+    string ActingForSameAddress = null, BuildingAddress ActingForAddress = null, string LeadFirstName = null, string LeadLastName = null, 
+    string LeadEmail = null, string LeadPhoneNumber = null, SectionAccountability[] SectionsAccountability = null);
 
 public record SectionAccountability(string SectionName, string[] Accountability);
 

@@ -1,22 +1,11 @@
 ﻿namespace HSEPortal.API.Model.Payment.Request;
 
-public class PaymentRequestModel : IValidatableModel
+public class PaymentRequestModel
 {
     public string Reference { get; set; }
     public string ReturnUrl { get; set; }
     public string Email { get; set; }
     public CardHolderDetails CardHolderDetails { get; set; }
-
-    public ValidationSummary Validate()
-    {
-        var errors = new List<string>();
-        if (string.IsNullOrWhiteSpace(Reference))
-        {
-            errors.Add("reference");
-        }
-
-        return new ValidationSummary(!errors.Any(), errors.ToArray());
-    }
 }
 
 public class CardHolderDetails

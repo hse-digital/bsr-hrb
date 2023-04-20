@@ -4,19 +4,19 @@ using HSEPortal.API.Extensions;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenReceivingANewBuildingApplication : UnitTestBase
 {
-    private readonly BuildingApplicationFunctions buildingApplicationFunctions;
+    private BuildingApplicationFunctions buildingApplicationFunctions;
     private const string DynamicsAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkd";
     private const string ContactReturnId = "CBC72467-DAA0-4CC5-8EB6-706E16C5736C";
     private const string BuildingApplicationReturnId = "EC6B32C8-0188-4CCE-B58C-D6F05FEEF79B";
     private const string BuildingReturnId = "06F8C7E4-F41A-4EB4-B8E2-3501701A4A53";
 
-    public WhenReceivingANewBuildingApplication()
+    protected override void AdditionalSetup()
     {
         buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, FeatureOptions);
         HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken });
@@ -25,7 +25,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
         HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(BuildingApplicationReturnId));
     }
 
-    [Fact(Skip = "token setup")]
+    [Test]
     public async Task ShouldAcquireAuthenticationTokenForDynamics()
     {
         var buildingRegistrationModel = GivenABuildingApplicationModel();
@@ -41,12 +41,11 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
             });
     }
 
-    [Theory]
-    [InlineData(null, "firstname", "lastname", "phone", "email")]
-    [InlineData("building", null, "lastname", "phone", "email")]
-    [InlineData("building", "firstname", null, "phone", "email")]
-    [InlineData("building", "firstname", "lastname", null, "email")]
-    [InlineData("building", "firstname", "lastname", "phone", null)]
+    [TestCase(null, "firstname", "lastname", "phone", "email")]
+    [TestCase("building", null, "lastname", "phone", "email")]
+    [TestCase("building", "firstname", null, "phone", "email")]
+    [TestCase("building", "firstname", "lastname", null, "email")]
+    [TestCase("building", "firstname", "lastname", "phone", null)]
     public async Task ShouldReturnBadRequestIfInputsAreInvalid(string buildingName, string contactFirstName, string contactLastName, string contactPhone, string contactEmail)
     {
         var buildingRegistrationModel = new BuildingApplicationModel(buildingName, contactFirstName, contactLastName, contactPhone, contactEmail);
@@ -55,7 +54,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
-    [Fact(Skip = "token setup")]
+    [Test]
     public async Task ShouldCreateBuilding()
     {
         var buildingRegistrationModel = GivenABuildingApplicationModel();
@@ -66,7 +65,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
             .WithRequestJson(new DynamicsBuilding(buildingRegistrationModel.BuildingName));
     }
 
-    [Fact(Skip = "token setup")]
+    [Test]
     public async Task ShouldCreateContact()
     {
         var buildingRegistrationModel = GivenABuildingApplicationModel();
@@ -77,7 +76,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
             .WithRequestJson(new DynamicsContact(buildingRegistrationModel.ContactFirstName, buildingRegistrationModel.ContactLastName, buildingRegistrationModel.ContactPhoneNumber, buildingRegistrationModel.ContactEmailAddress));
     }
 
-    [Fact(Skip = "token setup")]
+    [Test]
     public async Task ShouldCreateBuildingApplication()
     {
         var buildingRegistrationModel = GivenABuildingApplicationModel();
@@ -85,12 +84,12 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
 
         var request = HttpTest.CallLog.FirstOrDefault(x => x.Request.Url == $"{DynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_buildingapplications");
         request.Should().NotBeNull();
-        
+
         request!.Request.Headers.Should().Contain(("Authorization", $"Bearer {DynamicsAuthToken}"));
         request.RequestBody.Should().MatchRegex($"{{\"bsr_applicationid\":\"HRB\\.{{9}}\",\"bsr_RegistreeId@odata.bind\":\"\\/contacts\\({ContactReturnId}\\)\",\"bsr_Building@odata.bind\":\"\\/bsr_buildings\\({BuildingReturnId}\\)\"}}");
     }
 
-    [Fact(Skip = "token setup")]
+    [Test]
     public async Task ShouldSetIdToARandom9DigitNumberStartingWithHBR()
     {
         var buildingApplicationModel = GivenABuildingApplicationModel();

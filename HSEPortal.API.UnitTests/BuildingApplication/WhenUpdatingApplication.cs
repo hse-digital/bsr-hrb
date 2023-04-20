@@ -3,19 +3,20 @@ using FluentAssertions;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.TestingCommon.Builders;
-using Xunit;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenUpdatingApplication : UnitTestBase
 {
-    private readonly BuildingApplicationFunctions buildingApplicationFunctions;
-    public WhenUpdatingApplication()
+    private BuildingApplicationFunctions buildingApplicationFunctions;
+
+    protected override void AdditionalSetup()
     {
         buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, FeatureOptions);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldSetApplicationOnCosmosDocumentResponse()
     {
         var application = new BuildingApplicationModelBuilder().Build();
@@ -26,12 +27,11 @@ public class WhenUpdatingApplication : UnitTestBase
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
-    [Theory]
-    [InlineData(null, "firstname", "lastname", "phone", "email")]
-    [InlineData("building", null, "lastname", "phone", "email")]
-    [InlineData("building", "firstname", null, "phone", "email")]
-    [InlineData("building", "firstname", "lastname", null, "email")]
-    [InlineData("building", "firstname", "lastname", "phone", null)]
+    [TestCase(null, "firstname", "lastname", "phone", "email")]
+    [TestCase("building", null, "lastname", "phone", "email")]
+    [TestCase("building", "firstname", null, "phone", "email")]
+    [TestCase("building", "firstname", "lastname", null, "email")]
+    [TestCase("building", "firstname", "lastname", "phone", null)]
     public async Task ShouldReturnBadRequestIfInputsAreInvalid(string buildingName, string contactFirstName, string contactLastName, string contactPhone, string contactEmail)
     {
         var application = new BuildingApplicationModel(buildingName, contactFirstName, contactLastName, contactPhone, contactEmail);

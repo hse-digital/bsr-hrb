@@ -18,13 +18,15 @@ namespace HSEPortal.API.Functions;
 public class PaymentFunctions
 {
     private readonly DynamicsService dynamicsService;
+    private readonly IPaymentReferenceService paymentReferenceService;
     private readonly IMapper mapper;
     private readonly IntegrationsOptions integrationOptions;
     private readonly SwaOptions swaOptions;
 
-    public PaymentFunctions(IOptions<IntegrationsOptions> integrationOptions, IOptions<SwaOptions> swaOptions, DynamicsService dynamicsService, IMapper mapper)
+    public PaymentFunctions(DynamicsService dynamicsService, IPaymentReferenceService paymentReferenceService, IOptions<IntegrationsOptions> integrationOptions, IOptions<SwaOptions> swaOptions, IMapper mapper)
     {
         this.dynamicsService = dynamicsService;
+        this.paymentReferenceService = paymentReferenceService;
         this.mapper = mapper;
         this.integrationOptions = integrationOptions.Value;
         this.swaOptions = swaOptions.Value;
@@ -36,12 +38,6 @@ public class PaymentFunctions
         BuildingApplicationModel applicationModel)
     {
         var paymentModel = BuildPaymentRequestModel(applicationModel);
-        var validation = paymentModel.Validate();
-        if (!validation.IsValid)
-        {
-            return request.CreateResponse(HttpStatusCode.BadRequest);
-        }
-
         var paymentRequestModel = mapper.Map<PaymentApiRequestModel>(paymentModel);
         paymentRequestModel.description = $"Payment for application {applicationModel.Id}";
         paymentRequestModel.amount = integrationOptions.PaymentAmount;
@@ -58,32 +54,9 @@ public class PaymentFunctions
         var paymentApiResponse = await response.GetJsonAsync<PaymentApiResponseModel>();
         var paymentResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
         await dynamicsService.NewPayment(applicationModel.Id, paymentResponse);
-        
+
         return await request.CreateObjectResponseAsync(paymentResponse);
     }
-
-    private static PaymentRequestModel BuildPaymentRequestModel(BuildingApplicationModel applicationModel)
-    {
-        var address = applicationModel.AccountablePersons[0].PapAddress ?? applicationModel.AccountablePersons[0].Address;
-        var paymentModel = new PaymentRequestModel
-        {
-            Reference = Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray())[..22], @"\W", "0"),
-            Email = applicationModel.ContactEmailAddress,
-            CardHolderDetails = new CardHolderDetails
-            {
-                Name = $"{applicationModel.ContactFirstName} {applicationModel.ContactLastName}",
-                Address = new CardHolderAddress
-                {
-                    Line1 = address?.Address,
-                    Line2 = address?.AddressLineTwo,
-                    Postcode = address?.Postcode,
-                    City = address?.Town
-                }
-            }
-        };
-        return paymentModel;
-    }
-
 
     [Function(nameof(GetPayment))]
     public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentReference}}")] HttpRequestData request, string paymentReference)
@@ -103,5 +76,26 @@ public class PaymentFunctions
 
         var paymentFunctionResponse = mapper.Map<PaymentResponseModel>(response);
         return await request.CreateObjectResponseAsync(paymentFunctionResponse);
+    }
+
+    private PaymentRequestModel BuildPaymentRequestModel(BuildingApplicationModel applicationModel)
+    {
+        var address = applicationModel.AccountablePersons[0].PapAddress ?? applicationModel.AccountablePersons[0].Address;
+        return new PaymentRequestModel
+        {
+            Reference = paymentReferenceService.Generate(),
+            Email = applicationModel.ContactEmailAddress,
+            CardHolderDetails = new CardHolderDetails
+            {
+                Name = $"{applicationModel.ContactFirstName} {applicationModel.ContactLastName}",
+                Address = new CardHolderAddress
+                {
+                    Line1 = address?.Address,
+                    Line2 = address?.AddressLineTwo,
+                    Postcode = address?.Postcode,
+                    City = address?.Town
+                }
+            }
+        };
     }
 }

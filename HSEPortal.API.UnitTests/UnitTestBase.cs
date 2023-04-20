@@ -14,18 +14,20 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Options;
 using Moq;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests;
 
 public abstract class UnitTestBase
 {
-    protected HttpTest HttpTest { get; }
-    protected DynamicsService DynamicsService { get; }
+    protected HttpTest HttpTest { get; private set; }
+    protected DynamicsService DynamicsService { get; private set; }
+    protected OTPService OtpService { get; private set; }
 
-    protected OTPService OtpService { get; }
     protected IOptions<FeatureOptions> FeatureOptions = new OptionsWrapper<FeatureOptions>(new FeatureOptions());
 
-    protected UnitTestBase()
+    [SetUp]
+    public void Setup()
     {
         FlurlHttp.Configure(settings => { settings.JsonSerializer = new SystemTextJsonSerializer(); });
 
@@ -35,7 +37,11 @@ public abstract class UnitTestBase
         HttpTest = new HttpTest();
         DynamicsService = new DynamicsService(new DynamicsModelDefinitionFactory(), options.Object, new OptionsWrapper<SwaOptions>(new SwaOptions()), new DynamicsApi(options.Object));
         OtpService = new OTPService();
+        
+        AdditionalSetup();
     }
+    
+    protected virtual void AdditionalSetup() {}
 
     protected readonly DynamicsOptions DynamicsOptions = new()
     {

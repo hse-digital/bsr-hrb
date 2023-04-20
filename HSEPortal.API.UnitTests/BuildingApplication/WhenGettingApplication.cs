@@ -6,7 +6,7 @@ using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using HSEPortal.TestingCommon.Builders;
 using Microsoft.Extensions.Options;
-using Xunit;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.BuildingApplication;
 
@@ -17,12 +17,12 @@ public class WhenGettingApplication : UnitTestBase
     private readonly string applicationId = "HBR123456789012";
     private readonly string emailAddress = "email@address.com";
 
-    public WhenGettingApplication()
+    protected override void AdditionalSetup()
     {
         buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, FeatureOptions);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldReturnApplicationFromCosmos()
     {
         var token = OtpService.GenerateToken(emailAddress);
@@ -35,7 +35,7 @@ public class WhenGettingApplication : UnitTestBase
         responseApplication.Should().BeEquivalentTo(cosmosApplication);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldReturnBadRequestIfApplicationIdIsInvalid()
     {
         var token = OtpService.GenerateToken(emailAddress);
@@ -43,7 +43,7 @@ public class WhenGettingApplication : UnitTestBase
         applicationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldReturnBadRequestIfTokenIsInvalid()
     {
         var invalidToken = "123456";
@@ -53,7 +53,7 @@ public class WhenGettingApplication : UnitTestBase
         applicationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldNotValidateTokenIfFeatureIsDisabled()
     {
         buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, new OptionsWrapper<FeatureOptions>(new FeatureOptions { DisableOtpValidation = true }));

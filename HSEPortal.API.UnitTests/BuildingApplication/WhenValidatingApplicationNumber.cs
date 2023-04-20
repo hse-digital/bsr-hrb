@@ -3,20 +3,20 @@ using FluentAssertions;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
-using Xunit;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.BuildingApplication;
 
 public class WhenValidatingApplicationNumber : UnitTestBase
 {
-    private readonly BuildingApplicationFunctions buildingApplicationFunctions;
+    private BuildingApplicationFunctions buildingApplicationFunctions;
 
-    public WhenValidatingApplicationNumber()
+    protected override void AdditionalSetup()
     {
         buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, new OTPService(), FeatureOptions);
     }
 
-    [Fact]
+    [Test]
     public void ShouldReturnOkWhenApplicationExists()
     {
         var applicationId = "RegistrationId";
@@ -32,7 +32,7 @@ public class WhenValidatingApplicationNumber : UnitTestBase
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
-    [Fact]
+    [Test]
     public void ShouldReturnBadRequestIfApplicationDoesNotExist()
     {
         var applicationId = "RegistrationId";

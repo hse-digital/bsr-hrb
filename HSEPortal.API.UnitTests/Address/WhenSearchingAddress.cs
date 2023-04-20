@@ -1,4 +1,3 @@
-using System.Net;
 using FluentAssertions;
 using Flurl;
 using HSEPortal.API.Extensions;
@@ -7,23 +6,23 @@ using HSEPortal.API.Model;
 using HSEPortal.API.Model.OrdnanceSurvey;
 using HSEPortal.API.Services;
 using Microsoft.Extensions.Options;
-using Xunit;
+using NUnit.Framework;
 
 namespace HSEPortal.API.UnitTests.Address;
 
 public class WhenSearchingAddress : UnitTestBase
 {
-    private readonly AddressFunctions addressFunctions;
-    private readonly IntegrationsOptions integrationsOptions;
+    private AddressFunctions addressFunctions;
+    private IntegrationsOptions integrationsOptions;
     private const string searchQuery = "10, BRESSENDEN PLACE";
 
-    public WhenSearchingAddress()
+    protected override void AdditionalSetup()
     {
         integrationsOptions = new IntegrationsOptions { OrdnanceSurveyEndpoint = "https://api.os.uk/search/places/v1", OrdnanceSurveyApiKey = "abc123" };
         addressFunctions = new AddressFunctions(new OptionsWrapper<IntegrationsOptions>(integrationsOptions), GetMapper());
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldCallQueryEndpoint()
     {
         HttpTest.RespondWithJson(BuildAddressResponseJson());
@@ -33,7 +32,7 @@ public class WhenSearchingAddress : UnitTestBase
             .WithVerb(HttpMethod.Get);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldReturnMatchingAddresses()
     {
         var postcodeResponse = BuildAddressResponseJson();
@@ -56,7 +55,7 @@ public class WhenSearchingAddress : UnitTestBase
         responseAddress.Results[0].Postcode.Should().Be(postcodeResponse.results[0].LPI.POSTCODE_LOCATOR);
     }
 
-    [Fact]
+    [Test]
     public async Task ShouldReturnEmptyResultListIfAddressIsNotFound()
     {
         HttpTest.RespondWithJson(BuildEmptyResultResponseJson());
