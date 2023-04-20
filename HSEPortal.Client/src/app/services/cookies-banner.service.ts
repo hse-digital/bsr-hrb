@@ -49,6 +49,12 @@ export class CookiesBannerService {
     this.initCookiesModel();
   }
 
+  refreshPage(){
+    if (typeof window !== 'undefined') {
+      window.location.href = window.location.href;
+    }
+  }
+
   private initCookiesModel() {
     let model = this.getCookieModel(this.cookieKey);
     this.cookiesModel = model ? model : new CookiesBannerModel();

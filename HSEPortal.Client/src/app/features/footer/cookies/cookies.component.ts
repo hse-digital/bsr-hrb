@@ -25,5 +25,6 @@ export class CookiesComponent implements OnInit {
     } else if (this.cookieModel === "false") {
       this.cookiesBannerService.rejectCookies(false);
     }
+    this.cookiesBannerService.refreshPage();
   }
 }

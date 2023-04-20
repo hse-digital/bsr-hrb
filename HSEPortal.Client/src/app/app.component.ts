@@ -74,9 +74,7 @@ export class AppComponent implements AfterViewInit {
   cookiesAccepted() {
     this.cookiesBannerService.acceptCookies(true);
     this.cookieBannerModel = this.cookiesBannerService.getShowCookiesStatus();
-    if (typeof window !== 'undefined') {
-      window.location.href = window.location.href;
-    }
+    this.cookiesBannerService.refreshPage();
   }
 
   cookiesRejected() {
@@ -86,6 +84,5 @@ export class AppComponent implements AfterViewInit {
 
   async cookiesChanged() {
     await this.navigationService.navigate(`/${HelpPagesModule.baseRoute}/${CookiesComponent.route}`);
-    //this.cookieBanner?.hideCookieBannerConfirmation();
   }
 }
