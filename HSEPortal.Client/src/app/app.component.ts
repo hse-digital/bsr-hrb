@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from './services/application.service';
 import { IdleTimerService } from './services/idle-timer.service';
-import { CookiesBannerService } from './services/cookies-banner.service';
+import { CookiesBannerModel, CookiesBannerService } from './services/cookies-banner.service';
 import { GovukCookieBannerComponent } from 'hse-angular';
 import { HelpPagesModule } from './features/footer/help-pages.module';
 import { NavigationService } from './services/navigation.service';
@@ -55,34 +55,37 @@ export class AppComponent implements AfterViewInit {
   private doesUrlContains(...segment: string[]) {
     return segment.filter(x => window.location.href.indexOf(x) > -1).length > 0;
   }
-
+  
   @ViewChild(GovukCookieBannerComponent) cookieBanner?: GovukCookieBannerComponent;
+  cookieBannerModel!: CookiesBannerModel;
+
   ngAfterViewInit(): void {
-    this.cookieBanner?.onHideCookieBannerConfirmation.subscribe(() => {
-      if (typeof window !== 'undefined') {
-        window.location.href = window.location.href;
-      }
-    })
+    this.cookieBanner?.onHideCookieBannerConfirmation.subscribe(()=>{
+      this.cookiesBannerService.removeConfirmationBanner();
+      this.cookieBannerModel = this.cookiesBannerService.getShowCookiesStatus();
+    });
   }
 
-  showCookieBanner: boolean = true;
   initCookiesBanner() {
-    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+    this.cookieBannerModel = this.cookiesBannerService.getShowCookiesStatus();
     this.viewCookiesLink = `/${HelpPagesModule.baseRoute}/${CookiesComponent.route}`;
   }
 
   cookiesAccepted() {
-    this.cookiesBannerService.acceptCookies();
-    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+    this.cookiesBannerService.acceptCookies(true);
+    this.cookieBannerModel = this.cookiesBannerService.getShowCookiesStatus();
+    if (typeof window !== 'undefined') {
+      window.location.href = window.location.href;
+    }
   }
 
   cookiesRejected() {
-    this.cookiesBannerService.rejectCookies();
-    this.showCookieBanner = this.cookiesBannerService.getShowCookiesStatus();
+    this.cookiesBannerService.rejectCookies(true);
+    this.cookieBannerModel = this.cookiesBannerService.getShowCookiesStatus();
   }
 
   async cookiesChanged() {
     await this.navigationService.navigate(`/${HelpPagesModule.baseRoute}/${CookiesComponent.route}`);
-    this.cookieBanner?.hideCookieBannerConfirmation();
+    //this.cookieBanner?.hideCookieBannerConfirmation();
   }
 }
