@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LocalStorage } from '../helpers/local-storage';
 
 @Injectable()
 export class CookiesBannerService {
@@ -6,6 +7,7 @@ export class CookiesBannerService {
   cookiesModel!: CookiesBannerModel;
 
   cookieKey: string = "nonEsentialCookies";
+  confirmBannerLocalStorageKey: string = "confirmBanner";
   cookieExpiresDays = 365;
 
   constructor() {
@@ -36,12 +38,13 @@ export class CookiesBannerService {
     if (!this.cookiesModel) this.initCookiesModel();
     this.cookiesModel.showConfirmBanner = false;
     this.updateCookieValue();
+    LocalStorage.remove(this.confirmBannerLocalStorageKey);
   }
 
   updateCookieValue(){
-    let nonEsential = this.cookiesModel.cookiesAccepted ? "true" : "false";
+    this.setCookie(this.cookiesModel.cookiesAccepted ? "true" : "false");
     let showConfirmBanner = this.cookiesModel.showConfirmBanner ? "showConfirm" : "hideConfirm";
-    this.setCookie(`${nonEsential}#${showConfirmBanner}`);
+    LocalStorage.setJSON(this.confirmBannerLocalStorageKey, showConfirmBanner);
   }
 
   resetCookies() {
@@ -67,13 +70,12 @@ export class CookiesBannerService {
   private getCookieModel(cookieKey: string): CookiesBannerModel | undefined {
     let cookie = Cookies.get(cookieKey);
     if (cookie) {
-      let value = cookie.replace(';', '').substring(cookie.indexOf('=') + 1);
-      let nonEsential = value.split('#')[0];
-      let showConfirmBanner = value.split('#')[1];
+      let cookieValue = cookie.replace(';', '').substring(cookie.indexOf('=') + 1);
+      let showConfirmBanner = LocalStorage.getJSON(this.confirmBannerLocalStorageKey);
       return {
         showCookies: false,
         showConfirmBanner: showConfirmBanner === "showConfirm",
-        cookiesAccepted: nonEsential === "true"
+        cookiesAccepted: cookieValue === "true"
       } as CookiesBannerModel;
     }
     return undefined;
