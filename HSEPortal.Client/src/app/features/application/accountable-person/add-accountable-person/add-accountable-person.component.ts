@@ -43,11 +43,6 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
       return navigationService.navigateRelative(`${newAp}/${AccountablePersonTypeComponent.route}`, activatedRoute);
     }
 
-    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsComplete;
-    
-    this.applicationService.updateApplication();
-
-
     return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
   }
 
