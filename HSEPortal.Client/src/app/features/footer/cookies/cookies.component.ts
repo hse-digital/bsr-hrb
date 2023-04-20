@@ -19,10 +19,12 @@ export class CookiesComponent implements OnInit {
   }
 
   saveCookieSettings() {
-    if (this.cookieModel == 'true') {
-      this.cookiesBannerService.acceptCookies();
-    } else if (this.cookieModel == 'false') {
-      this.cookiesBannerService.rejectCookies();
+    if (this.cookieModel === "true"){
+      this.cookiesBannerService.acceptCookies(false);
+    } else if (this.cookieModel === "false") {
+      this.cookiesBannerService.rejectCookies(false);
     }
+    this.cookiesBannerService.refreshPage();
+    this.cookiesBannerService.removeConfirmationBanner();
   }
 }
