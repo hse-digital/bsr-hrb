@@ -35,7 +35,7 @@ describe('AddMoreSectionsComponent showError', () => {
   }));
 
   new TestHelper()
-    .setDescription('should show an error when the anotherBlock is empty.')
+    .setDescription('should show an error when the addAnotherSectionLink is empty.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
       setup(applicationService);
       component.addAnotherSectionLink = value;
@@ -44,7 +44,7 @@ describe('AddMoreSectionsComponent showError', () => {
     }, undefined, '').execute();
 
   new TestHelper()
-    .setDescription('should NOT show an error when the value of anotherBlock is "yes" or "no"')
+    .setDescription('should NOT show an error when the value of addAnotherSectionLink is "yes" or "no"')
     .setTestCase((applicationService: ApplicationService, value: any) => {
       setup(applicationService);
       component.addAnotherSectionLink = value;
@@ -66,7 +66,7 @@ describe('AddMoreSectionsComponent getErrorDescription(hasError, errorText)', ()
   });
 
   new TestHelper()
-    .setDescription('should display an error message when the anotherBlock is not valid.')
+    .setDescription('should display an error message when the addAnotherSectionLink is not valid.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
       setup(applicationService);
       component.addAnotherSectionLink = value;
@@ -76,7 +76,7 @@ describe('AddMoreSectionsComponent getErrorDescription(hasError, errorText)', ()
     }, undefined, '').execute();
 
   new TestHelper()
-    .setDescription('should NOT display an error message when the anotherBlock is valid.')
+    .setDescription('should NOT display an error message when the addAnotherSectionLink is valid.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
       setup(applicationService);
       component.addAnotherSectionLink = value;
