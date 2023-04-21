@@ -7,13 +7,13 @@ import { ApplicationService } from 'src/app/services/application.service';
 
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-
 import { inject } from "@angular/core/testing";
-import { TestHelper } from '../test-helper';
-import { ApNameComponent } from 'src/app/features/application/accountable-person/ap-name/ap-name.component';
 
-let component: ApNameComponent;
-let fixture: ComponentFixture<ApNameComponent>;
+import { TestHelper } from 'src/tests/test-helper';
+import { OrganisationNamedContactComponent } from 'src/app/features/application/accountable-person/organisation/named-contact/named-contact.component';
+
+let component: OrganisationNamedContactComponent;
+let fixture: ComponentFixture<OrganisationNamedContactComponent>;
 
 let httpClient: HttpClient;
 let httpTestingController: HttpTestingController;
@@ -23,16 +23,16 @@ function setup(applicationService: ApplicationService) {
     applicationService.model.AccountablePersons = [];
     applicationService.startAccountablePersonEdit();
 
-    fixture = TestBed.createComponent(ApNameComponent);
+    fixture = TestBed.createComponent(OrganisationNamedContactComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 }
 
-describe('ApNameComponent showError', () => {
+describe('OrganisationNamedContactComponent showError', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ApNameComponent],
+            declarations: [OrganisationNamedContactComponent],
             imports: [HttpClientTestingModule, RouterTestingModule, HseAngularModule, ComponentsModule],
             providers: [ApplicationService]
         }).compileComponents();
@@ -57,8 +57,8 @@ describe('ApNameComponent showError', () => {
         .setDescription("should show an error if the first name or the last name are empty or undefined")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.currentAccountablePerson.FirstName = value.firstName;
-            applicationService.currentAccountablePerson.LastName = value.lastName;
+            applicationService.currentAccountablePerson.NamedContactFirstName = value.firstName;
+            applicationService.currentAccountablePerson.NamedContactLastName = value.lastName;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeTrue();
         }, ...testCasesEmptyUndefined).execute();
@@ -67,8 +67,8 @@ describe('ApNameComponent showError', () => {
         .setDescription("should show an error if the first name is empty or undefined but the last name is valid")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.currentAccountablePerson.FirstName = value;
-            applicationService.currentAccountablePerson.LastName = "Last Name";
+            applicationService.currentAccountablePerson.NamedContactFirstName = value;
+            applicationService.currentAccountablePerson.NamedContactLastName = "Last Name";
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeTrue();
             expect(component.firstNameInError).toBeTrue();
@@ -79,8 +79,8 @@ describe('ApNameComponent showError', () => {
         .setDescription("should show an error if the last name is empty or undefined but the first name is valid")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.currentAccountablePerson.FirstName = "First Name";
-            applicationService.currentAccountablePerson.LastName = value;
+            applicationService.currentAccountablePerson.NamedContactFirstName = "First Name";
+            applicationService.currentAccountablePerson.NamedContactLastName = value;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeTrue();
             expect(component.firstNameInError).toBeFalse();
@@ -91,8 +91,8 @@ describe('ApNameComponent showError', () => {
         .setDescription("should NOT show an error if the first name and the last name are valid")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.currentAccountablePerson.FirstName = value.firstName;
-            applicationService.currentAccountablePerson.LastName = value.lastName;
+            applicationService.currentAccountablePerson.NamedContactFirstName = value.firstName;
+            applicationService.currentAccountablePerson.NamedContactLastName = value.lastName;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeFalse();
             expect(component.firstNameInError).toBeFalse();
