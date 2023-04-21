@@ -10,28 +10,30 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { inject } from "@angular/core/testing";
 
 import { TestHelper } from 'src/tests/test-helper';
-import { ContactEmailComponent } from 'src/app/features/new-application/contact-email/contact-email.component';
+import { CertificateIssuerComponent } from './certificate-issuer.component';
 
-
-let component: ContactEmailComponent;
-let fixture: ComponentFixture<ContactEmailComponent>;
+let component: CertificateIssuerComponent;
+let fixture: ComponentFixture<CertificateIssuerComponent>;
 
 let httpClient: HttpClient;
 let httpTestingController: HttpTestingController;
 
 function setup(applicationService: ApplicationService) {
     applicationService.newApplication();
+    applicationService.startSectionsEdit();
 
-    fixture = TestBed.createComponent(ContactEmailComponent);
+    fixture = TestBed.createComponent(CertificateIssuerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    component.isOptional = false;
 }
 
-describe('ContactEmailComponent showError', () => {
+describe('CertificateIssuerComponent showError', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ContactEmailComponent],
+            declarations: [CertificateIssuerComponent],
             imports: [HttpClientTestingModule, RouterTestingModule, HseAngularModule, ComponentsModule],
             providers: [ApplicationService]
         }).compileComponents();
@@ -46,29 +48,22 @@ describe('ContactEmailComponent showError', () => {
     }));
 
     new TestHelper()
-        .setDescription("should show an error if the contact email is empty or undefined")
+        .setDescription("should show an error if the certificate issuer is empty or undefined (isOptional = false)")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.model.ContactEmailAddress = value;
+            applicationService.currentSection.CompletionCertificateIssuer = value;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeTrue();
+            expect(component.certificateHasErrors).toBeTrue();
         }, '', undefined).execute();
 
     new TestHelper()
-        .setDescription("should show an error if the contact email is not valid")
+        .setDescription("should NOT show an error if the certificate issuer is valid")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.model.ContactEmailAddress = value;
-            component.hasErrors = !component.canContinue();
-            expect(component.hasErrors).toBeTrue();
-        }, 'notValidEmail', '@notvalidemail', '@notvalidemail.com', 'notvalidemail.com', 'notvalidemail@').execute();
-
-    new TestHelper()
-        .setDescription("should NOT show an error if the contact email is valid")
-        .setTestCase((applicationService: ApplicationService, value: any) => {
-            setup(applicationService);
-            applicationService.model.ContactEmailAddress = value;
+            applicationService.currentSection.CompletionCertificateIssuer = value;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeFalse();
-        }, "validemail@example.com", "valid_email@example.uk", "validEmail123@example.com").execute();
+            expect(component.certificateHasErrors).toBeFalse();
+        }, "Cerficate Issuer").execute();
 });

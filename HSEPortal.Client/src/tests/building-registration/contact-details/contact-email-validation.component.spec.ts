@@ -20,8 +20,6 @@ let httpTestingController: HttpTestingController;
 
 function setup(applicationService: ApplicationService) {
     applicationService.newApplication();
-    applicationService.model.AccountablePersons = [];
-    applicationService.startAccountablePersonEdit();
 
     fixture = TestBed.createComponent(ContactEmailValidationComponent);
     component = fixture.componentInstance;
