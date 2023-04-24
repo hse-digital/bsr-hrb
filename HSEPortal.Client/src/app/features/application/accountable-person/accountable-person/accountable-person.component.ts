@@ -45,7 +45,7 @@ export class AccountablePersonComponent extends BaseComponent implements IHasNex
 
       this.applicationService.model.AccountablePersons[0] = replaceAp;
       this.applicationService._currentAccountablePersonIndex = 0;
-      this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.AccountablePersonsInProgress;
+      this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStatus.AccountablePersonsComplete;
     } else if (!this.previousAnswer) {
       await this.applicationService.startAccountablePersonEdit();
     }
