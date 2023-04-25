@@ -1,0 +1,43 @@
+{
+  "masterKey": {
+    "name": "master",
+    "value": "IMsNwSX2pJ3RcraqSoFuAYPFrhhICFOgGQRCNtaOV-sXAzFuyU2ESA==",
+    "encrypted": false
+  },
+  "functionKeys": [
+    {
+      "name": "default",
+      "value": "ZcHTFm3W4N1mc4N6SOD55rO1ka1HQ6Dqt3RYtwJH42GnAzFumyxGTw==",
+      "encrypted": false
+    }
+  ],
+  "systemKeys": [],
+  "hostName": "localhost:7071",
+  "instanceId": "000000000000000000000000AF794BFF",
+  "source": "runtime",
+  "decryptionKeyId": ""
+}{
+  "masterKey": {
+    "name": "master",
+    "value": "IMsNwSX2pJ3RcraqSoFuAYPFrhhICFOgGQRCNtaOV-sXAzFuyU2ESA==",
+    "encrypted": false
+  },
+  "functionKeys": [
+    {
+      "name": "default",
+      "value": "ZcHTFm3W4N1mc4N6SOD55rO1ka1HQ6Dqt3RYtwJH42GnAzFumyxGTw==",
+      "encrypted": false
+    }
+  ],
+  "systemKeys": [
+    {
+      "name": "durabletask_extension",
+      "value": "8HEEMfZRuxkfJJd8xEtv03-JcxHN8yFDL26nEuEj5dr3AzFuss2t0w==",
+      "encrypted": false
+    }
+  ],
+  "hostName": "localhost:7071",
+  "instanceId": "000000000000000000000000AF794BFF",
+  "source": "runtime",
+  "decryptionKeyId": ""
+}{}{"TaskHubName":"TestHubName","CreatedAt":"2023-04-25T08:56:12.500199Z","PartitionCount":4}{"PartitionId":"testhubname-control-01","Owner":null,"Token":null,"Epoch":0}{"OwnerId":"811c9dc5-0000-0000-0000-000000000000","DesiredSwapId":null}{"PartitionId":"testhubname-control-00","Owner":"Diegos-Mac-Studio","Token":"72d31cab-e369-4cb8-80e7-61bedee930fa","Epoch":1}{"PartitionId":"testhubname-control-01","Owner":"Diegos-Mac-Studio","Token":"c398131a-0b89-4bf6-964e-d244bdce654b","Epoch":1}{"PartitionId":"testhubname-control-02","Owner":"Diegos-Mac-Studio","Token":"1e50237a-b3c1-4599-bf13-885c2baf9db8","Epoch":1}{"PartitionId":"testhubname-control-03","Owner":"Diegos-Mac-Studio","Token":"a230f736-5c38-4fab-895e-94817bea9102","Epoch":1}{"PartitionId":"testhubname-control-00","Owner":"Diegos-Mac-Studio","Token":"4372377c-915b-4d34-a706-ef4ec247fe69","Epoch":1}{"PartitionId":"testhubname-control-01","Owner":"Diegos-Mac-Studio","Token":"8758c75b-0fdb-4650-bf36-59e0b97f1d31","Epoch":1}{"PartitionId":"testhubname-control-02","Owner":"Diegos-Mac-Studio","Token":"3a79e0be-8537-4903-9272-bae141b136bb","Epoch":1}{"PartitionId":"testhubname-control-03","Owner":"Diegos-Mac-Studio","Token":"d7406584-f5b0-4e6c-bb20-6ccc97e5baaf","Epoch":1}{"PartitionId":"testhubname-control-01","Owner":null,"Token":null,"Epoch":1}{"PartitionId":"testhubname-control-01","Owner":null,"Token":null,"Epoch":1}{}{"PartitionId":"testhubname-control-03","Owner":null,"Token":null,"Epoch":0}{"PartitionId":"testhubname-control-00","Owner":"Diegos-Mac-Studio","Token":"d6f08195-0d93-4da1-bb63-d53b254a524d","Epoch":2}{"PartitionId":"testhubname-control-01","Owner":"Diegos-Mac-Studio","Token":"70e61810-8f57-498b-a483-ca6eab54718b","Epoch":2}{"PartitionId":"testhubname-control-02","Owner":"Diegos-Mac-Studio","Token":"f6c52b65-86e6-4a02-bc6b-63b16ad0ecc7","Epoch":2}{"PartitionId":"testhubname-control-03","Owner":"Diegos-Mac-Studio","Token":"86deeb0a-6d37-4f16-b481-386255be250d","Epoch":2}{"PartitionId":"testhubname-control-00","Owner":"Diegos-Mac-Studio","Token":"e244e621-4472-407d-af32-428acd677f3f","Epoch":2}{"PartitionId":"testhubname-control-01","Owner":"Diegos-Mac-Studio","Token":"bb8efddc-793f-4492-aa2b-8391d6dadda6","Epoch":2}{"PartitionId":"testhubname-control-02","Owner":"Diegos-Mac-Studio","Token":"af7eea99-864b-4fba-97f9-dadffcafcad9","Epoch":2}{"PartitionId":"testhubname-control-03","Owner":"Diegos-Mac-Studio","Token":"263f45b4-1da3-4762-96e0-cb70e4ec9166","Epoch":2}

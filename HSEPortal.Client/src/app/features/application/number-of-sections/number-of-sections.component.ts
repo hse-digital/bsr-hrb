@@ -44,12 +44,14 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
     // user is changing the answer
     if (this.previousAnswer && this.previousAnswer != this.applicationService.model.NumberOfSections) {
       this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStatus.BlocksInBuildingComplete;
+      this.applicationService.updateApplication();
+
       var firstSection = this.applicationService.model.Sections[0];
       if (this.applicationService.model.NumberOfSections == "one") {
         // keep only first section
         this.applicationService.model.Sections = [firstSection];
       } else {
-        if(!FieldValidations.IsNotNullOrWhitespace(firstSection.Name)) {
+        if (!FieldValidations.IsNotNullOrWhitespace(firstSection.Name)) {
           return navigationService.navigateRelative(`/sections/section-1`, activatedRoute);
         } else {
           var sectionRoute = this.applicationService.startNewSection();
