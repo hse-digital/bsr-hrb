@@ -46,6 +46,7 @@ export class PaymentDeclarationComponent extends BaseComponent implements OnInit
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsComplete) == BuildingApplicationStatus.AccountablePersonsComplete;
+    return ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsComplete) == BuildingApplicationStatus.AccountablePersonsComplete)
+        && ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingComplete) == BuildingApplicationStatus.BlocksInBuildingComplete);
   }
 }
