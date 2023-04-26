@@ -31,7 +31,7 @@
                 <span task *ngIf="!containsFlag(applicationStatus.BlocksInBuildingComplete)">Accountable persons</span>
                 <a task *ngIf="containsFlag(applicationStatus.BlocksInBuildingComplete)" class="govuk-link" (keyup.enter)="navigateToPap()" (click)="navigateToPap()" role="link" tabindex="0">Accountable persons</a>
               </span>
-              <govuk-tag tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.BlocksInBuildingComplete)">CANNOT START YET</govuk-tag>
+              <govuk-tag tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.BlocksInBuildingComplete) && !containsFlag(applicationStatus.AccountablePersonsInProgress) && !containsFlag(applicationStatus.AccountablePersonsComplete)">CANNOT START YET</govuk-tag>
               <govuk-tag tag class="govuk-tag--grey" *ngIf="containsFlag(applicationStatus.BlocksInBuildingComplete) && !containsFlag(applicationStatus.AccountablePersonsInProgress)">NOT STARTED YET</govuk-tag>
               <govuk-tag tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.AccountablePersonsInProgress) && !containsFlag(applicationStatus.AccountablePersonsComplete)">IN PROGRESS</govuk-tag>
               <govuk-tag tag *ngIf="containsFlag(applicationStatus.AccountablePersonsComplete)">COMPLETE</govuk-tag>
@@ -46,8 +46,8 @@
           <ul class="app-task-list__items">
             <li class="app-task-list__item firstItem">
               <span class="app-task-list__task-name">
-                <span task *ngIf="!containsFlag(applicationStatus.AccountablePersonsComplete) || checkingStatus">Apply and pay the fee</span>
-                <a task *ngIf="containsFlag(applicationStatus.AccountablePersonsComplete) && !checkingStatus" class="govuk-link" (keyup.enter)="navigateToPayment()" (click)="navigateToPayment()" role="link" tabindex="0">Apply and pay the fee</a>
+                <span task *ngIf="!containsFlag(applicationStatus.AccountablePersonsComplete) || !containsFlag(applicationStatus.BlocksInBuildingComplete) || checkingStatus">Apply and pay the fee</span>
+                <a task *ngIf="containsFlag(applicationStatus.AccountablePersonsComplete) && containsFlag(applicationStatus.BlocksInBuildingComplete) && !checkingStatus" class="govuk-link" (keyup.enter)="navigateToPayment()" (click)="navigateToPayment()" role="link" tabindex="0">Apply and pay the fee</a>
               </span>
               <govuk-tag tag *ngIf="checkingStatus"><i class="fa fa-spinner fa-spin "></i></govuk-tag>
               <govuk-tag tag class="govuk-tag--grey" *ngIf="!checkingStatus && !containsFlag(applicationStatus.AccountablePersonsComplete)">CANNOT START YET</govuk-tag>
