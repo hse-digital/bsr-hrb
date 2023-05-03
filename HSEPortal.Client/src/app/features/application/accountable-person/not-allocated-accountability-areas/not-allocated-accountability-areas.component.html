@@ -7,7 +7,7 @@
 
                 <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
                     <govuk-error-link *ngFor="let error of errors" anchorId="{{error.anchorId}}"
-                        [message]="error.shortMessage" />
+                        [message]="error.message" />
                 </govuk-error-summary>
 
                 <h1 class="govuk-heading-l">You have not allocated all areas of accountability in
@@ -15,12 +15,11 @@
                 <govuk-body>At least one accountable person must be accountable for each of these areas.</govuk-body>
 
                 <div class="govuk-!-margin-bottom-6" *ngFor="let section of applicationService.model.Sections; let i = index">
-                    <ng-container *ngFor="let area of areasOfAccountability">
-                        <!-- <govuk-checkbox-group [title]="getCheckboxTitle(i, area)" hint="Select all that apply." #field [govukRequired]="field"> -->
-                        <govuk-checkbox-group [title]="area" hint="Select all that apply." #field [govukRequired]="field">
-                            <!-- <govuk-checkbox *ngFor="let person of applicationService.model.AccountablePersons" [text]="getAccountablePersonName(person) ?? ''"/> -->
-                            <govuk-checkbox *ngFor="let person of accountablePersons" [text]="person"  value="facilities" />
-                        </govuk-checkbox-group> -->
+                    <ng-container *ngFor="let area of getNotAllocatedAreasOf(section)">
+                        <govuk-checkbox-group [title]="getCheckboxTitle(i, area)" hint="Select all that apply." #field [govukRequired]="field"
+                                [id]="createSectionId(i, area)" [errorText]="getSectionError(i, area)">
+                            <govuk-checkbox [id]="createSectionId(i, area)" *ngFor="let person of accountablePersons; let personIndex = index" [text]="person"  value="facilities" (onClicked)="updateAccountabilityAreas(personIndex, section, area)" />
+                        </govuk-checkbox-group>
                     </ng-container>
                 </div>
 

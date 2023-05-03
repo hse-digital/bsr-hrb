@@ -14,7 +14,7 @@
 
         <div class="govuk-!-margin-bottom-6" *ngFor="let section of applicationService.model.Sections; let i = index">
           <accountability [title]="getCheckboxTitle(i)" hint="Select all that apply" [id]="createSectionId(i)" [errorText]="getSectionError(i)"
-            [(model)]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!"
+            [(model)]="applicationService.model.AccountablePersons[0]!.SectionsAccountability![i].Accountability!"
             (onKeyupEnter)="saveAndContinue()">
           </accountability>
         </div>

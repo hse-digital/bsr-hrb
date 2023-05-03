@@ -6,8 +6,6 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { AddAccountablePersonComponent } from '../add-accountable-person/add-accountable-person.component';
-import { OrganisationNamedContactComponent } from '../organisation/named-contact/named-contact.component';
 import { AccountabilityComponent } from 'src/app/components/accountability/accountability.component';
 
 @Component({
@@ -29,22 +27,23 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currentAccountablePerson.SectionsAccountability) {
-      this.applicationService.currentAccountablePerson.SectionsAccountability = [];
+    if (!this.applicationService.model.AccountablePersons[0].SectionsAccountability) {
+      this.applicationService.model.AccountablePersons[0].SectionsAccountability = [];
     }
 
     for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
       var section = this.applicationService.model.Sections[i];
-      if (!this.applicationService.currentAccountablePerson.SectionsAccountability[i]) {
-        this.applicationService.currentAccountablePerson.SectionsAccountability[i] = { SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: [] };
+      if (!this.applicationService.model.AccountablePersons[0].SectionsAccountability[i]) {
+        this.applicationService.model.AccountablePersons[0].SectionsAccountability[i] = { SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: [] };
       }
     }
   }
 
   canContinue(): boolean {
     let canContinue = true;
+    this.errors = [];
     for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
-      var sectionAccountability = this.applicationService.currentAccountablePerson.SectionsAccountability![i];
+      var sectionAccountability = this.applicationService.model.AccountablePersons[0].SectionsAccountability![i];
       if (sectionAccountability.Accountability!.length == 0) {
         this.addError(i);
         canContinue = false;
@@ -65,8 +64,8 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
 
   getApName() {
     return this.applicationService.currentAccountablePerson.Type == 'organisation' ?
-      this.applicationService.currentAccountablePerson.OrganisationName :
-      `${this.applicationService.currentAccountablePerson.FirstName ?? this.applicationService.model.ContactFirstName} ${this.applicationService.currentAccountablePerson.LastName ?? this.applicationService.model.ContactLastName}`;
+      this.applicationService.model.AccountablePersons[0].OrganisationName :
+      `${this.applicationService.model.AccountablePersons[0].FirstName ?? this.applicationService.model.ContactFirstName} ${this.applicationService.model.AccountablePersons[0].LastName ?? this.applicationService.model.ContactLastName}`;
   }
 
   getInfraestructureName(index: number) {
@@ -88,11 +87,7 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentAccountablePerson.Type == 'individual') {
-      return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
-    }
-
-    return navigationService.navigateRelative(OrganisationNamedContactComponent.route, activatedRoute);
+    return navigationService.navigateRelative('', activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

@@ -1,10 +1,9 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { AccountabilityComponent } from 'src/app/components/accountability/accountability.component';
+import { GovukCheckboxComponent, GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { AccountablePersonModel, ApplicationService } from 'src/app/services/application.service';
+import { AccountablePersonModel, ApplicationService, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { AddAccountablePersonComponent } from '../add-accountable-person/add-accountable-person.component';
@@ -15,58 +14,63 @@ import { OrganisationNamedContactComponent } from '../organisation/named-contact
   templateUrl: './not-allocated-accountability-areas.component.html',
   styleUrls: ['./not-allocated-accountability-areas.component.scss']
 })
-export class NotAllocatedAccountabilityAreasComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class NotAllocatedAccountabilityAreasComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'not-allocated-accountability';
   static title: string = "Allocate all areas of accountability - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-  @ViewChildren(AccountabilityComponent) accountabilityComponentes?: QueryList<AccountabilityComponent>;
+  @ViewChildren(GovukCheckboxComponent) checkboxes?: QueryList<GovukCheckboxComponent>;
 
-  errors?: { checkboxGroupId: string, anchorId: string, message: string, shortMessage: string }[] = [];
+  errors?: { checkboxGroupId: string, anchorId: string, message: string }[] = [];
 
   areasOfAccountability: string[] = ["routes", "maintenance", "facilities", "none"];
+  areasAccountabilityMapper: Record<string, string> = {
+    "routes": "routes that residents can walk through",
+    "maintenance": "maintaining machinery and equipment",
+    "facilities": "facilities that residents share",
+    "none": "structure and exterior",
+  }
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
-  ngOnInit(): void {
-    if (!this.applicationService.currentAccountablePerson.SectionsAccountability) {
-      this.applicationService.currentAccountablePerson.SectionsAccountability = [];
-    }
-
-    for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
-      var section = this.applicationService.model.Sections[i];
-      if (!this.applicationService.currentAccountablePerson.SectionsAccountability[i]) {
-        this.applicationService.currentAccountablePerson.SectionsAccountability[i] = { SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: [] };
-      }
-    }
-  }
-
   canContinue(): boolean {
     let canContinue = true;
-    for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
-      var sectionAccountability = this.applicationService.currentAccountablePerson.SectionsAccountability![i];
-      if (sectionAccountability.Accountability!.length == 0) {
-        this.addError(i);
+    this.errors = [];
+    this.applicationService.model.Sections.forEach((section, index) => {
+      let notAllocatedAreas = this.getNotAllocatedAreasOf(section);
+      if (notAllocatedAreas.length != 0) {
         canContinue = false;
+        console.log(section, index, notAllocatedAreas);
+        this.addError(section, index, notAllocatedAreas);
       }
-    }
+    });
     return canContinue;
   }
 
-  addError(index: number) {
-    let checkboxGroupId = this.createSectionId(index);
-    let anchorId = `${checkboxGroupId}-${this.accountabilityComponentes?.find(x => x.id == checkboxGroupId)?.checkboxElements?.first.innerId}`;
-    let errorMessage = `Select areas of ${this.getInfraestructureName(index)} that the ${this.getApName()} is accountable for`;
-    let shortMessage = `Select accountability areas for ${this.getInfraestructureName(index)}`;
-    if (!this.errors?.find(x => x.checkboxGroupId == checkboxGroupId)) {
-      this.errors?.push({ checkboxGroupId: checkboxGroupId, anchorId: anchorId, message: errorMessage, shortMessage: shortMessage });
-    }
+  addError(section: SectionModel, sectionIndex: number, notAllocatedAreas: string[]) {
+    notAllocatedAreas.forEach((area) => {
+      let checkboxGroupId = this.createSectionId(sectionIndex, area);
+      let anchorId = `${checkboxGroupId}-${this.checkboxes?.find(x => x.id.startsWith(checkboxGroupId))?.innerId}`;
+      let errorMessage = `Select who is accountable for ${this.areasAccountabilityMapper[area]} in ${section.Name ?? this.applicationService.model.BuildingName}`;
+      if (!this.errors?.find(x => x.anchorId == anchorId)) {
+        this.errors?.push({ checkboxGroupId: checkboxGroupId, anchorId: anchorId, message: errorMessage });
+      }
+    });
   }
 
   get accountablePersons(): string[] {
-    return this.applicationService.model!.AccountablePersons!.map(x => x.FirstName!) ?? [''];
+    let persons = this.applicationService.model!.AccountablePersons!;
+    let accountablePersonNames: string[] = [];
+    for (let i: number = 0; i < persons.length; i++) {
+      if (persons[i].Type == 'organisation') {
+        accountablePersonNames.push(persons[i].OrganisationName ?? "");
+      } else {
+        accountablePersonNames.push(`${persons[i].FirstName ?? this.applicationService.model.ContactFirstName} ${persons[i].LastName ?? this.applicationService.model.ContactLastName}`);
+      }
+    }
+    return accountablePersonNames;
   }
 
   getAccountablePersonName(person: AccountablePersonModel) {
@@ -75,28 +79,33 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
       `${person.FirstName ?? this.applicationService.model.ContactFirstName} ${person.LastName ?? this.applicationService.model.ContactLastName}`;
   }
 
-  getApName() {
-    return this.applicationService.currentAccountablePerson.Type == 'organisation' ?
-      this.applicationService.currentAccountablePerson.OrganisationName :
-      `${this.applicationService.currentAccountablePerson.FirstName ?? this.applicationService.model.ContactFirstName} ${this.applicationService.currentAccountablePerson.LastName ?? this.applicationService.model.ContactLastName}`;
-  }
-
   getInfraestructureName(index: number) {
     return this.applicationService.model.NumberOfSections != 'one'
       ? this.applicationService.model.Sections[index].Name
       : this.applicationService.model.BuildingName
   }
 
-  getSectionError(sectionIndex: number) {
-    return this.errors?.find(x => x.checkboxGroupId == this.createSectionId(sectionIndex))?.message ?? undefined;
+  getSectionError(sectionIndex: number, area: string) {
+    let checkboxGroupId = this.createSectionId(sectionIndex, area);
+    let anchorId = `${checkboxGroupId}-${this.checkboxes?.find(x => x.id.startsWith(checkboxGroupId))?.innerId}`;
+    return this.errors?.find(x => x.anchorId == anchorId)?.message ?? undefined;
   }
 
   getCheckboxTitle(index: number, areaOfAccountability: string) {
-    return `Who is accountable for ${areaOfAccountability} in ${this.getInfraestructureName(index)}?`;
+    return `Who is accountable for ${this.areasAccountabilityMapper[areaOfAccountability]} in ${this.getInfraestructureName(index)}?`;
   }
 
-  createSectionId(index: number) {
-    return `section-${index}-AccountabilityCheckbox`;
+  createSectionId(index: number, area: string) {
+    return `section-${area}-${index}-checkbox`;
+  }
+
+  getNotAllocatedAreasOf(section: SectionModel) {
+    let accountabilityAreasOfSection = this.applicationService.model.AccountablePersons
+      .flatMap(x => x.SectionsAccountability)
+      .filter(x => x?.SectionName == section.Name ?? this.applicationService.model.BuildingName!)
+      .flatMap(x => x?.Accountability);
+    let notAllocatedAreas: string[] = this.areasOfAccountability.filter(x => !accountabilityAreasOfSection.includes(x))
+    return notAllocatedAreas;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
