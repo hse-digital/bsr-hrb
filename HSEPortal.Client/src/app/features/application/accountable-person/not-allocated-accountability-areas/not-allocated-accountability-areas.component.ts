@@ -1,4 +1,4 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { GovukCheckboxComponent, GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -8,13 +8,14 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { AddAccountablePersonComponent } from '../add-accountable-person/add-accountable-person.component';
 import { OrganisationNamedContactComponent } from '../organisation/named-contact/named-contact.component';
+import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper'
 
 @Component({
   selector: 'hse-not-allocated-accountability-areas',
   templateUrl: './not-allocated-accountability-areas.component.html',
   styleUrls: ['./not-allocated-accountability-areas.component.scss']
 })
-export class NotAllocatedAccountabilityAreasComponent extends BaseComponent implements IHasNextPage {
+export class NotAllocatedAccountabilityAreasComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'not-allocated-accountability';
   static title: string = "Allocate all areas of accountability - Register a high-rise building - GOV.UK";
 
@@ -22,6 +23,8 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   @ViewChildren(GovukCheckboxComponent) checkboxes?: QueryList<GovukCheckboxComponent>;
 
   errors?: { checkboxGroupId: string, anchorId: string, message: string }[] = [];
+  model: any = []
+  notAllocatedAreas: string[][] = []
 
   areasOfAccountability: string[] = ["routes", "maintenance", "facilities", "none"];
   areasAccountabilityMapper: Record<string, string> = {
@@ -35,6 +38,12 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
+  ngOnInit(): void {
+    this.applicationService.model.Sections.forEach(section => {
+      this.notAllocatedAreas.push(this.getNotAllocatedAreasOf(section))
+    });
+  }
+
   canContinue(): boolean {
     let canContinue = true;
     this.errors = [];
@@ -42,7 +51,6 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
       let notAllocatedAreas = this.getNotAllocatedAreasOf(section);
       if (notAllocatedAreas.length != 0) {
         canContinue = false;
-        console.log(section, index, notAllocatedAreas);
         this.addError(section, index, notAllocatedAreas);
       }
     });
@@ -108,12 +116,24 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
     return notAllocatedAreas;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentAccountablePerson.Type == 'individual') {
-      return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
+  updateAccountabilityAreas(accountablePersonIndex: number, section: SectionModel, area: string) {
+    let accountability = this.applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability
+      ?.find(x => x.SectionName == section.Name ?? this.applicationService.model.BuildingName)?.Accountability!;
+
+    if (!AccountabilityAreasHelper.isApAccountableFor(this.applicationService, accountablePersonIndex, section, area)) {
+      accountability.push(area);
+    } else {
+      let areaIndex = accountability.indexOf(area);
+      if (areaIndex) accountability.splice(areaIndex, 1);
     }
 
-    return navigationService.navigateRelative(OrganisationNamedContactComponent.route, activatedRoute);
+    this.applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability!
+      .find(x => x.SectionName == section.Name ?? this.applicationService.model.BuildingName)!
+      .Accountability = accountability;
+  }
+
+  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    return navigationService.navigateRelative('', activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

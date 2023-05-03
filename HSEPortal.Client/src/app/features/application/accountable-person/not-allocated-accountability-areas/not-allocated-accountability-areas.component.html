@@ -15,11 +15,9 @@
                 <govuk-body>At least one accountable person must be accountable for each of these areas.</govuk-body>
 
                 <div class="govuk-!-margin-bottom-6" *ngFor="let section of applicationService.model.Sections; let i = index">
-                    <ng-container *ngFor="let area of getNotAllocatedAreasOf(section)">
-                        <govuk-checkbox-group [title]="getCheckboxTitle(i, area)" hint="Select all that apply." #field [govukRequired]="field"
-                                [id]="createSectionId(i, area)" [errorText]="getSectionError(i, area)">
-                            <govuk-checkbox [id]="createSectionId(i, area)" *ngFor="let person of accountablePersons; let personIndex = index" [text]="person"  value="facilities" (onClicked)="updateAccountabilityAreas(personIndex, section, area)" />
-                        </govuk-checkbox-group>
+                    <ng-container *ngFor="let area of notAllocatedAreas[i]">
+                        <not-allocated-accountability [title]="getCheckboxTitle(i, area)" [id]="createSectionId(i, area)" [errorText]="getSectionError(i, area)"
+                        (onModelChange)="updateAccountabilityAreas($event, section, area)" />
                     </ng-container>
                 </div>
 
