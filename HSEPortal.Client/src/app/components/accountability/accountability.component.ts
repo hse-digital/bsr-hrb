@@ -3,8 +3,7 @@ import { GovukCheckboxComponent } from 'hse-angular';
 
 @Component({
   selector: 'accountability',
-  templateUrl: './accountability.component.html',
-  styleUrls: ['./areas-accountability.component.scss']
+  templateUrl: './accountability.component.html'
 })
 export class AccountabilityComponent {
   @Output() onKeyupEnter = new EventEmitter();
