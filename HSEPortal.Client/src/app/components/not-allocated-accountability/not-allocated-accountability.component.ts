@@ -4,8 +4,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
   selector: 'not-allocated-accountability',
-  templateUrl: './not-allocated-accountability.component.html',
-  styleUrls: ['./not-allocated-accountability.component.scss']
+  templateUrl: './not-allocated-accountability.component.html'
 })
 export class NotAllocatedAccountabilityComponent {
 
