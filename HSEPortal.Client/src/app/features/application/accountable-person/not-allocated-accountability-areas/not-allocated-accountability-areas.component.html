@@ -17,7 +17,7 @@
                 <ng-container *ngFor="let section of applicationService.model.Sections; let i = index">
                     <div *ngFor="let area of notAllocatedAreas[i]" class="govuk-!-margin-bottom-6">
                         <not-allocated-accountability [title]="getCheckboxTitle(i, area)"
-                            [id]="createSectionId(i, area)" [errorText]="getSectionError(i, area)"
+                            [id]="createSectionId(i, area)" [errorText]="getSectionError(i, area)" (onKeyupEnter)="saveAndContinue()"
                             (onModelChange)="updateAccountabilityAreas($event, section, area)" />
                     </div>
                 </ng-container>
