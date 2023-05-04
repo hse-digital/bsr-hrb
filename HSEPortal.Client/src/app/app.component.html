@@ -8,9 +8,9 @@
                      (onCookiesAccepted)="cookiesAccepted()"
                      (onCookiesRejected)="cookiesRejected()" />
 
-<govuk-page headerTitle="Register a high-rise building" headerTitleLink="./" [footerLinks]="footerLinks">
+<govuk-page headerTitle="Register a high-rise building" [govukLogoLink]="govukLogoLink" [headerTitleLink]="registerHighRiseLink" [footerLinks]="footerLinks">
   <govuk-phase-banner tag="Beta">
-    This is a new service – your <a href="https://forms.office.com/e/dRsZyPur6S" role="link" tabindex="0" target="_blank">feedback</a> will help us to improve it.
+    This is a new service - your <a href="https://forms.office.com/e/dRsZyPur6S" role="link" tabindex="0" target="_blank">feedback</a> will help us to improve it.
   </govuk-phase-banner>
   <router-outlet />
 </govuk-page>
