@@ -41,6 +41,6 @@ jobs:
       displayName: Deploy SWA to $(env)
       inputs:
         app_location: 'HSEPortal.Client'
-        app_build_command: appBuildCommand
+        app_build_command: '${{parameters.appBuildCommand}}'
         output_location: 'dist/hseportalclient/browser'
         azure_static_web_apps_api_token: $(swaToken)
