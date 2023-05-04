@@ -6,7 +6,7 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link *ngFor="let error of errors" anchorId="{{error.anchorId}}" [message]="error.shortMessage" />
+          <govuk-error-link *ngFor="let error of errors" anchorId="{{error.anchorId}}" [message]="error.message"/>
         </govuk-error-summary>
 
         <h1 class="govuk-heading-l">Areas of accountability for {{applicationService.model.BuildingName}}</h1>
