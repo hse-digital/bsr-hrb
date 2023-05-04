@@ -37,7 +37,7 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
       }
     }
   }
-  
+
   canContinue(): boolean {
     let canContinue = true;
     this.errors = [];
@@ -70,9 +70,9 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
   }
 
   getApName() {
-    return this.applicationService.currentAccountablePerson.Type == 'organisation' ?
-      this.applicationService.model.AccountablePersons[0].OrganisationName :
-      `${this.applicationService.model.AccountablePersons[0].FirstName ?? this.applicationService.model.ContactFirstName} ${this.applicationService.model.AccountablePersons[0].LastName ?? this.applicationService.model.ContactLastName}`;
+    let pap = this.applicationService.model.AccountablePersons.find(x => x.IsPrincipal)!;
+    return pap.Type == 'organisation' ? pap.OrganisationName :
+      `${pap.FirstName ?? this.applicationService.model.ContactFirstName} ${pap.LastName ?? this.applicationService.model.ContactLastName}`;
   }
 
   getInfraestructureName(index: number) {
