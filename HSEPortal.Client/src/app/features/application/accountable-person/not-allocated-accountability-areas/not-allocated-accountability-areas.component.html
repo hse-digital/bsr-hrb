@@ -14,13 +14,14 @@
                     {{applicationService.model.BuildingName}}</h1>
                 <govuk-body>At least one accountable person must be accountable for each of these areas.</govuk-body>
 
-                <div class="govuk-!-margin-bottom-6" *ngFor="let section of applicationService.model.Sections; let i = index">
-                    <ng-container *ngFor="let area of notAllocatedAreas[i]">
-                        <not-allocated-accountability [title]="getCheckboxTitle(i, area)" [id]="createSectionId(i, area)" [errorText]="getSectionError(i, area)"
-                        (onModelChange)="updateAccountabilityAreas($event, section, area)" />
-                    </ng-container>
-                </div>
-
+                <ng-container *ngFor="let section of applicationService.model.Sections; let i = index">
+                    <div *ngFor="let area of notAllocatedAreas[i]" class="govuk-!-margin-bottom-6">
+                        <not-allocated-accountability [title]="getCheckboxTitle(i, area)"
+                            [id]="createSectionId(i, area)" [errorText]="getSectionError(i, area)"
+                            (onModelChange)="updateAccountabilityAreas($event, section, area)" />
+                    </div>
+                </ng-container>
+                
             </div>
 
             <govuk-inset-text>If these accountable persons are not accountable for all areas you'll need to <a
