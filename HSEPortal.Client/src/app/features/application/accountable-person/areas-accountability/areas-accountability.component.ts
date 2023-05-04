@@ -1,4 +1,4 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -10,17 +10,16 @@ import { AccountabilityComponent } from 'src/app/components/accountability/accou
 
 @Component({
   selector: 'hse-areas-accountability',
-  templateUrl: './areas-accountability.component.html',
-  styleUrls: ['./areas-accountability.component.scss']
+  templateUrl: './areas-accountability.component.html'
 })
-export class AreasAccountabilityComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class AreasAccountabilityComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'areas-accountability';
   static title: string = "Areas of accountability - principal accountable person - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChildren(AccountabilityComponent) accountabilityComponentes?: QueryList<AccountabilityComponent>;
 
-  errors?: { checkboxGroupId: string, anchorId: string, message: string, shortMessage: string }[] = [];
+  errors?: { anchorId: string, message: string }[] = [];
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
@@ -38,7 +37,7 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
       }
     }
   }
-
+  
   canContinue(): boolean {
     let canContinue = true;
     this.errors = [];
@@ -53,13 +52,21 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
   }
 
   addError(index: number) {
-    let checkboxGroupId = this.createSectionId(index);
-    let anchorId = `${checkboxGroupId}-${this.accountabilityComponentes?.find(x => x.id == checkboxGroupId)?.checkboxElements?.first.innerId}`;
+    let anchorId = this.getAnchorId(index);
     let errorMessage = `Select areas of ${this.getInfraestructureName(index)} that the ${this.getApName()} is accountable for`;
-    let shortMessage = `Select accountability areas for ${this.getInfraestructureName(index)}`;
-    if (!this.errors?.find(x => x.checkboxGroupId == checkboxGroupId)) {
-      this.errors?.push({ checkboxGroupId: checkboxGroupId, anchorId: anchorId, message: errorMessage, shortMessage: shortMessage });
+    if (!this.errors?.find(x => x.anchorId == anchorId)) {
+      this.errors?.push({ anchorId: anchorId, message: errorMessage });
     }
+  }
+
+  getSectionError(sectionIndex: number) {
+    let anchorId = this.getAnchorId(sectionIndex);
+    return this.errors?.find(x => x.anchorId == anchorId)?.message ?? undefined;
+  }
+
+  private getAnchorId(sectionIndex: number){
+    let checkboxGroupId = this.createSectionId(sectionIndex);
+    return `${checkboxGroupId}-${this.accountabilityComponentes?.find(x => x.id == checkboxGroupId)?.checkboxElements?.first.innerId}`;
   }
 
   getApName() {
@@ -72,10 +79,6 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
     return this.applicationService.model.NumberOfSections != 'one'
       ? this.applicationService.model.Sections[index].Name
       : this.applicationService.model.BuildingName
-  }
-
-  getSectionError(sectionIndex: number) {
-    return this.errors?.find(x => x.checkboxGroupId == this.createSectionId(sectionIndex))?.message ?? undefined;
   }
 
   getCheckboxTitle(index: number) {
@@ -92,6 +95,5 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return true;
-    //return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
   }
 }

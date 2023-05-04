@@ -11,8 +11,7 @@ import { NotAllocatedAccountabilityComponent } from 'src/app/components/not-allo
 
 @Component({
   selector: 'hse-not-allocated-accountability-areas',
-  templateUrl: './not-allocated-accountability-areas.component.html',
-  styleUrls: ['./not-allocated-accountability-areas.component.scss']
+  templateUrl: './not-allocated-accountability-areas.component.html'
 })
 export class NotAllocatedAccountabilityAreasComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'not-allocated-accountability';
@@ -21,8 +20,7 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChildren(NotAllocatedAccountabilityComponent) checkboxes?: QueryList<NotAllocatedAccountabilityComponent>;
 
-  errors?: { checkboxGroupId: string, anchorId: string, message: string }[] = [];
-  model: any = []
+  errors?: { anchorId: string, message: string }[] = [];
   notAllocatedAreas: string[][] = []
   
   areasAccountabilityMapper: Record<string, string> = {
@@ -37,7 +35,7 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
 
   ngOnInit(): void {
     this.applicationService.model.Sections.forEach(section => {
-      this.notAllocatedAreas.push(this.getNotAllocatedAreasOf(section))
+      this.notAllocatedAreas.push(AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section))
     });
   }
 
@@ -45,7 +43,7 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
     let canContinue = true;
     this.errors = [];
     this.applicationService.model.Sections.forEach((section, index) => {
-      let notAllocatedAreas = this.getNotAllocatedAreasOf(section);
+      let notAllocatedAreas = AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section);
       if (notAllocatedAreas.length != 0) {
         canContinue = false;
         this.addError(section, index, notAllocatedAreas);
@@ -56,33 +54,26 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
 
   private addError(section: SectionModel, sectionIndex: number, notAllocatedAreas: string[]) {
     notAllocatedAreas.forEach((area) => {
-      let checkboxGroupId = this.createSectionId(sectionIndex, area);
-      let anchorId = `${checkboxGroupId}-${this.checkboxes?.find(x => x.id == checkboxGroupId)?.checkboxElements?.first?.innerId}`;
+      let anchorId = this.getAnchorId(sectionIndex, area);
       let errorMessage = `Select who is accountable for ${this.areasAccountabilityMapper[area]} in ${section.Name ?? this.applicationService.model.BuildingName}`;
       if (!this.errors?.find(x => x.anchorId == anchorId)) {
-        this.errors?.push({ checkboxGroupId: checkboxGroupId, anchorId: anchorId, message: errorMessage });
+        this.errors?.push({ anchorId: anchorId, message: errorMessage });
       }
     });
   }
 
-  private areasOfAccountability: string[] = ["routes", "maintenance", "facilities"];
-  private getNotAllocatedAreasOf(section: SectionModel) {
-    let accountabilityAreasOfSection = this.applicationService.model.AccountablePersons
-      .flatMap(x => x.SectionsAccountability)
-      .filter(x => x?.SectionName == section.Name ?? this.applicationService.model.BuildingName!)
-      .flatMap(x => x?.Accountability);
-    let notAllocatedAreas: string[] = this.areasOfAccountability.filter(x => !accountabilityAreasOfSection.includes(x))
-    return notAllocatedAreas;
-  }
-
-  getSectionError(sectionIndex: number, area: string) {
-    let checkboxGroupId = this.createSectionId(sectionIndex, area);
-    let anchorId = `${checkboxGroupId}-${this.checkboxes?.find(x => x.id == checkboxGroupId)?.checkboxElements?.first?.innerId}`;
+  getSectionError(sectionIndex: number, area: string) {    
+    let anchorId = this.getAnchorId(sectionIndex, area);
     return this.errors?.find(x => x.anchorId == anchorId)?.message ?? undefined;
   }
 
   createSectionId(index: number, area: string) {
     return `${area}-${index}`;
+  }
+
+  private getAnchorId(sectionIndex: number, area: string) {
+    let checkboxGroupId = this.createSectionId(sectionIndex, area);
+    return `${checkboxGroupId}-${this.checkboxes?.find(x => x.id == checkboxGroupId)?.checkboxElements?.first?.innerId}`;
   }
 
   getCheckboxTitle(index: number, areaOfAccountability: string) {
@@ -96,21 +87,8 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   }
 
   updateAccountabilityAreas(accountablePersonIndex: number, section: SectionModel, area: string) {
-    let accountability = this.getAccountabilityFor(accountablePersonIndex, section);
-
-    if (!AccountabilityAreasHelper.isApAccountableFor(this.applicationService, accountablePersonIndex, section, area)) {
-      accountability.push(area);
-    } else { 
-      let areaIndex = accountability.indexOf(area);
-      if (areaIndex) accountability.splice(areaIndex, 1);
-    }
-
+    let accountability = AccountabilityAreasHelper.updateAccountabilityAreas(this.applicationService, accountablePersonIndex, section, area);
     this.setAccountabilityFor(accountablePersonIndex, section, accountability);
-  }
-
-  private getAccountabilityFor(accountablePersonIndex: number, section: SectionModel) {
-    return this.applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability
-      ?.find(x => x.SectionName == section.Name ?? this.applicationService.model.BuildingName)?.Accountability!;
   }
 
   private setAccountabilityFor(accountablePersonIndex: number, section: SectionModel, newAccountability: string[]) {
@@ -124,6 +102,6 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return this.applicationService.model.Sections.some(x => this.getNotAllocatedAreasOf(x).length > 0)
+    return this.applicationService.model.Sections.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0)
   }
 }
