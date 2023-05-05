@@ -7,6 +7,7 @@ import { GovukCookieBannerComponent } from 'hse-angular';
 import { HelpPagesModule } from './features/footer/help-pages.module';
 import { NavigationService } from './services/navigation.service';
 import { CookiesComponent } from './features/footer/cookies/cookies.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,9 @@ export class AppComponent implements AfterViewInit {
   showTimeoutDialog = false;
   footerLinks = HelpPagesModule.footerLinks;
   viewCookiesLink!: string;
+  
+  registerHighRiseLink = environment.headerLink;
+  govukLogoLink = environment.govukLogoLink;
 
   constructor(private applicationService: ApplicationService,
     private router: Router, private idleTimerService: IdleTimerService, private activatedRoute: ActivatedRoute, private cookiesBannerService: CookiesBannerService, private navigationService: NavigationService) {

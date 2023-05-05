@@ -6,6 +6,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   templateUrl: './number-of-sections.component.html'
@@ -42,14 +43,20 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     // user is changing the answer
     if (this.previousAnswer && this.previousAnswer != this.applicationService.model.NumberOfSections) {
+      this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStatus.BlocksInBuildingComplete;
+      this.applicationService.updateApplication();
+
+      var firstSection = this.applicationService.model.Sections[0];
       if (this.applicationService.model.NumberOfSections == "one") {
         // keep only first section
-        var firstSection = this.applicationService.model.Sections[0];
         this.applicationService.model.Sections = [firstSection];
       } else {
-        // start a new section and move to that section's screen
-        var section = this.applicationService.startNewSection();
-        return navigationService.navigateRelative(`/sections/${section}`, activatedRoute);
+        if (!FieldValidations.IsNotNullOrWhitespace(firstSection.Name)) {
+          return navigationService.navigateRelative(`/sections/section-1`, activatedRoute);
+        } else {
+          var sectionRoute = this.applicationService.startNewSection();
+          return navigationService.navigateRelative(`/sections/${sectionRoute}`, activatedRoute);
+        }
       }
     }
 
