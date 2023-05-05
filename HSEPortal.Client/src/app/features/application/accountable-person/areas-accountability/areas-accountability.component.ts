@@ -7,6 +7,9 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { AccountabilityComponent } from 'src/app/components/accountability/accountability.component';
+import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper';
+import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
+import { NotAllocatedAccountabilityAreasComponent } from '../not-allocated-accountability-areas/not-allocated-accountability-areas.component';
 
 @Component({
   selector: 'hse-areas-accountability',
@@ -64,7 +67,7 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
     return this.errors?.find(x => x.anchorId == anchorId)?.message ?? undefined;
   }
 
-  private getAnchorId(sectionIndex: number){
+  private getAnchorId(sectionIndex: number) {
     let checkboxGroupId = this.createSectionId(sectionIndex);
     return `${checkboxGroupId}-${this.accountabilityComponentes?.find(x => x.id == checkboxGroupId)?.checkboxElements?.first.innerId}`;
   }
@@ -90,7 +93,12 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative('', activatedRoute);
+    let thereAreNotAllocatedAreas = this.applicationService.model.Sections.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0);
+    if (thereAreNotAllocatedAreas) {
+      return navigationService.navigateRelative(NotAllocatedAccountabilityAreasComponent.route, activatedRoute);
+    } else {
+      return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
+    }
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
