@@ -93,6 +93,6 @@ describe('SectionFloorsAboveComponent getErrorDescription(hasError, errorText)',
       applicationService.currentSection.FloorsAbove = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.floorsHasError, 'Error message')).toBeUndefined();
-    },).execute();
+    }, 1, 3, 5, 100, 999).execute();
 
 });

@@ -25,6 +25,7 @@ export class TestHelper {
     setTestCase(test: (applicationService: ApplicationService, value?: any) => void, ...values:any[]): this {  
         this.testCase = async () => {
             if(!!this.spyOn) this.spyOn();
+            if(!values || values.length == 0) await test(this.applicationService);
             await values.forEach(async value => {                
                 await test(this.applicationService, value);
             });
