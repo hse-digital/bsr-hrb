@@ -73,7 +73,7 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
   }
 
   getApName() {
-    let pap = this.applicationService.model.AccountablePersons.find(x => x.IsPrincipal)!;
+    let pap = this.applicationService.model.AccountablePersons[0];
     return pap.Type == 'organisation' ? pap.OrganisationName :
       `${pap.FirstName ?? this.applicationService.model.ContactFirstName} ${pap.LastName ?? this.applicationService.model.ContactLastName}`;
   }
