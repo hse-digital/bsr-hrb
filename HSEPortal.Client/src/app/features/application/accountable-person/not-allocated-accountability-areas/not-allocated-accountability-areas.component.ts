@@ -9,6 +9,7 @@ import { TitleService } from 'src/app/services/title.service';
 import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper'
 import { NotAllocatedAccountabilityComponent } from 'src/app/components/not-allocated-accountability/not-allocated-accountability.component';
 import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
+import { AddAccountablePersonComponent } from '../add-accountable-person/add-accountable-person.component';
 
 @Component({
   selector: 'hse-not-allocated-accountability-areas',
@@ -100,6 +101,10 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
+  }
+
+  navigateToAddMoreAccountablePersons() {    
+    this.navigationService.navigateRelative(AddAccountablePersonComponent.route, this.activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
