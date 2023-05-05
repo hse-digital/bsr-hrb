@@ -25,7 +25,7 @@
             </div>
 
             <govuk-inset-text>If these accountable persons are not accountable for all areas you'll need to <a
-                    class="govuk-link" role="link" tabindex="0">add an accountable person</a>.</govuk-inset-text>
+                    class="govuk-link" role="link" tabindex="0" (click)="navigateToAddMoreAccountablePersons()">add an accountable person</a>.</govuk-inset-text>
 
             <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
             <save-and-come-back (onClick)="saveAndComeBack()" />
