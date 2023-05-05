@@ -39,27 +39,9 @@ export class TestHelper {
             await this.testCase();
         }));
     }
-}
 
-export class TestHelperHttpClient extends TestHelper {
-
-    private httpClient!: HttpClient;
-    
-    override setTestCase(test: (applicationService: ApplicationService, httpClient: HttpClient, value?: any) => void, ...values:any[]): this {  
-        this.testCase = () => {
-            values.forEach(value => {                
-                test(this.applicationService, this.httpClient, value);
-            });
-        };
-        return this;
-    }
-
-    override execute() {
-        it(this.description, inject([ApplicationService, HttpClient], (applicationService: ApplicationService, httpClient: HttpClient) => {
-            this.applicationService = applicationService;
-            this.httpClient = httpClient;
-            this.testCase();
-        }));
+    disabled() {
+        xit(this.description);
     }
 }
 

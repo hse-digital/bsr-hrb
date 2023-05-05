@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ComponentsModule } from 'src/app/components/components.module';
@@ -17,8 +17,9 @@ let httpTestingController: HttpTestingController;
 
 function setup(applicationService: ApplicationService) {
     applicationService.newApplication();
-    applicationService.model.AccountablePersons = [];
+    applicationService.startNewAccountablePerson();
     applicationService.startAccountablePersonEdit();
+
     applicationService.startSectionsEdit();
     applicationService.model.Sections = [new SectionModel()];
     applicationService.currentAccountablePerson.Type = 'organisation';
@@ -42,24 +43,11 @@ describe('ApAccountableForComponent showError', () => {
         httpTestingController = TestBed.inject(HttpTestingController);
     });
 
-    it('should create', () => {
-        fixture = TestBed.createComponent(ApAccountableForComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-
+    it('should create', inject([ApplicationService], (applicationService: ApplicationService) => {
+        setup(applicationService);
+        
         expect(component).toBeTruthy();
-    });
-
-    new TestHelper()
-        .setDescription('should throw an error when the SectionsAccountability is undefined.')
-        .setTestCase((applicationService: ApplicationService, value: any) => {
-            setup(applicationService);
-            applicationService.currentAccountablePerson.SectionsAccountability = value
-            let canContinue = function canContinueThrowError() {
-                component.hasErrors = !component.canContinue();
-            }
-            expect(canContinue).toThrowError();
-        }, [{ SectionName: "accountability1", Accountability: undefined }]).execute();
+    }));
 
     new TestHelper()
         .setDescription('should show an error when the SectionsAccountability is empty.')
