@@ -24,10 +24,26 @@ export class TaskListComponent implements CanActivate, OnInit {
 
   ngOnInit(): void {
     this.applicationService.model.Sections = [
-      { Name: "name", Addresses: [new AddressModel()] },
-      { Name: "name2", Addresses: [new AddressModel()] },
+      { Name: "Name", Addresses: [new AddressModel()] },
+      { Name: "Name2", Addresses: [new AddressModel()] },
+      { Name: "Name3", Addresses: [new AddressModel()] },
     ]
     this.applicationService.model.Sections.map(x => this.sectionStatus.push({ inProgress: false, complete: false }));
+    
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiCheckBeforeInProgress; 
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiCheckBeforeComplete; 
+    this.sectionStatus[0].inProgress = false;
+    this.sectionStatus[0].complete = true;
+    this.sectionStatus[1].inProgress = false;
+    this.sectionStatus[1].complete = true;
+    this.sectionStatus[2].inProgress = false;
+    this.sectionStatus[2].complete = true;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationInProgress; 
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationComplete; 
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress; 
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsComplete; 
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitInProgress; 
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitComplete; 
   }
 
   isSectionInProgress(index: number) {
@@ -35,7 +51,24 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   isSectionComplete(index: number) {
-    return this.sectionStatus[index].complete;
+    return index < 0 
+      ? this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete) 
+      : this.sectionStatus[index].complete;
+  }
+
+  getNumberOfCompletedSteps() {
+    let numberCompletedSteps = 0;
+    if(this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete)) numberCompletedSteps++;
+    if(this.containsFlag(BuildingApplicationStatus.KbiConnectionsComplete)) numberCompletedSteps++;
+    if(this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete)) numberCompletedSteps++;
+    numberCompletedSteps += this.sectionStatus.filter(x => x.complete).length;
+    return numberCompletedSteps;
+  }
+
+  getSectionName(index: number) {
+    return this.applicationService.model.Sections.length == 1 
+      ? this.applicationService.model.BuildingName 
+      : this.applicationService.model.Sections[index].Name;
   }
 
   navigateToCheckBeforeStart() {
