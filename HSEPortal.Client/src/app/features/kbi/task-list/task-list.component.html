@@ -2,7 +2,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-            <h1 class="govuk-heading-l">Give structure and safety information for {{applicationService.model.BuildingName}}</h1>
+            <h1 class="govuk-heading-l">Give structure and safety information for {{applicationService.model.BuildingName ?? ""}}</h1>
 
             <h2 class="govuk-heading-m">Application incomplete</h2>
             <govuk-body class="govuk-!-margin-bottom-4">You have completed {{getNumberOfCompletedSteps()}} of {{ 3 + applicationService.model.Sections.length }} sections.</govuk-body>

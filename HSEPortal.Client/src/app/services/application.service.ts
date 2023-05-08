@@ -271,5 +271,5 @@ export enum PaymentStatus {
 }
 
 export class KbiModel {
-  SectionStatus?: { inProgress: boolean, complete: boolean }[];
+  SectionStatus: { inProgress: boolean, complete: boolean }[] = [];
 }

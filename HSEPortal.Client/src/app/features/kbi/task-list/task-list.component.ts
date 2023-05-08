@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus, KbiModel } from 'src/app/services/application.service';
 
 @Component({
   selector: 'hse-task-list',
@@ -20,7 +20,8 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   ngOnInit(): void {
-    if(!this.applicationService.model.Kbi?.SectionStatus) {
+    if (!this.applicationService.model.Kbi) { this.applicationService.model.Kbi = new KbiModel(); }
+    if (this.applicationService.model.Kbi.SectionStatus.length == 0) {
       this.applicationService.model.Sections.map(x => this.applicationService.model.Kbi?.SectionStatus?.push({ inProgress: false, complete: false }));
     }
   }
@@ -30,23 +31,23 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   isSectionComplete(index: number) {
-    return index < 0 
-      ? this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete) 
+    return index < 0
+      ? this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete)
       : this.applicationService.model.Kbi?.SectionStatus?.at(index)?.complete;
   }
 
   getNumberOfCompletedSteps() {
     let numberCompletedSteps = 0;
-    if(this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete)) numberCompletedSteps++;
-    if(this.containsFlag(BuildingApplicationStatus.KbiConnectionsComplete)) numberCompletedSteps++;
-    if(this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete)) numberCompletedSteps++;
+    if (this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete)) numberCompletedSteps++;
+    if (this.containsFlag(BuildingApplicationStatus.KbiConnectionsComplete)) numberCompletedSteps++;
+    if (this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete)) numberCompletedSteps++;
     numberCompletedSteps += this.applicationService.model.Kbi?.SectionStatus?.filter(x => x.complete).length ?? 0;
     return numberCompletedSteps;
   }
 
   getSectionName(index: number) {
-    return this.applicationService.model.Sections.length == 1 
-      ? this.applicationService.model.BuildingName 
+    return this.applicationService.model.Sections.length == 1
+      ? this.applicationService.model.BuildingName
       : this.applicationService.model.Sections[index].Name;
   }
 
