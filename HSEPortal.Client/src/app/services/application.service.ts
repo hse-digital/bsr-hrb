@@ -173,6 +173,7 @@ export class BuildingRegistrationModel {
   PrincipalAccountableType?: string;
   AccountablePersons: AccountablePersonModel[] = [];
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
+  Kbi?: KbiModel;
 }
 
 export enum BuildingApplicationStatus {
@@ -267,4 +268,8 @@ export enum PaymentStatus {
   Pending,
   Success,
   Failed
+}
+
+export class KbiModel {
+  SectionStatus?: { inProgress: boolean, complete: boolean }[];
 }

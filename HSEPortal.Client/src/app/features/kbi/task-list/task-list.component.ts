@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
-import { AddressModel } from 'src/app/services/address.service';
+import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 
 @Component({
   selector: 'hse-task-list',
@@ -16,44 +15,24 @@ export class TaskListComponent implements CanActivate, OnInit {
   applicationStatus = BuildingApplicationStatus;
   checkingStatus = true;
 
-  sectionStatus: { inProgress: boolean, complete: boolean }[] = []
-
   constructor(public applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
 
   }
 
   ngOnInit(): void {
-    this.applicationService.model.Sections = [
-      { Name: "Name", Addresses: [new AddressModel()] },
-      { Name: "Name2", Addresses: [new AddressModel()] },
-      { Name: "Name3", Addresses: [new AddressModel()] },
-    ]
-    this.applicationService.model.Sections.map(x => this.sectionStatus.push({ inProgress: false, complete: false }));
-    
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiCheckBeforeInProgress; 
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiCheckBeforeComplete; 
-    this.sectionStatus[0].inProgress = false;
-    this.sectionStatus[0].complete = true;
-    this.sectionStatus[1].inProgress = false;
-    this.sectionStatus[1].complete = true;
-    this.sectionStatus[2].inProgress = false;
-    this.sectionStatus[2].complete = true;
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationInProgress; 
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationComplete; 
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress; 
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsComplete; 
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitInProgress; 
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitComplete; 
+    if(!this.applicationService.model.Kbi?.SectionStatus) {
+      this.applicationService.model.Sections.map(x => this.applicationService.model.Kbi?.SectionStatus?.push({ inProgress: false, complete: false }));
+    }
   }
 
   isSectionInProgress(index: number) {
-    return this.sectionStatus[index].inProgress;
+    return this.applicationService.model.Kbi?.SectionStatus?.at(index)?.inProgress;
   }
 
   isSectionComplete(index: number) {
     return index < 0 
       ? this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete) 
-      : this.sectionStatus[index].complete;
+      : this.applicationService.model.Kbi?.SectionStatus?.at(index)?.complete;
   }
 
   getNumberOfCompletedSteps() {
@@ -61,7 +40,7 @@ export class TaskListComponent implements CanActivate, OnInit {
     if(this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete)) numberCompletedSteps++;
     if(this.containsFlag(BuildingApplicationStatus.KbiConnectionsComplete)) numberCompletedSteps++;
     if(this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete)) numberCompletedSteps++;
-    numberCompletedSteps += this.sectionStatus.filter(x => x.complete).length;
+    numberCompletedSteps += this.applicationService.model.Kbi?.SectionStatus?.filter(x => x.complete).length ?? 0;
     return numberCompletedSteps;
   }
 
