@@ -8,6 +8,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { HseRoute, HseRoutes } from 'src/app/services/hse.route';
 import { CheckBeforeStartComponent } from './check-before-start/check-before-start.component';
+import { EvacuationStrategyComponent } from './evacuation-strategy/evacuation-strategy.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -15,7 +16,8 @@ const routes = new HseRoutes([
 
 @NgModule({
   declarations: [
-    CheckBeforeStartComponent
+    CheckBeforeStartComponent,
+    EvacuationStrategyComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
