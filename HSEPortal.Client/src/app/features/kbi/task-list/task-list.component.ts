@@ -5,8 +5,7 @@ import { ApplicationService, BuildingApplicationStatus, KbiModel } from 'src/app
 
 @Component({
   selector: 'hse-task-list',
-  templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.scss']
+  templateUrl: './task-list.component.html'
 })
 export class TaskListComponent implements CanActivate, OnInit {
   public static route: string = "task-list";
