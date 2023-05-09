@@ -113,7 +113,6 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    return true;
     return this.applicationService.model.Sections.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0)
   }
 }
