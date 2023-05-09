@@ -35,4 +35,16 @@ export class OrganisationAnswersComponent extends SummaryComponent {
       return: 'check-answers'
     });
   }
+
+  navigate(url: string) {
+    this.navigationService.navigateRelative(url, this.activatedRoute);
+  }
+
+  navigateToAccountability() {
+    if (this.apIndex == 0) {
+      this.navigate('areas-accountability');
+    } else{
+      this.navigateTo('accountable-for');
+    }
+  }
 }
