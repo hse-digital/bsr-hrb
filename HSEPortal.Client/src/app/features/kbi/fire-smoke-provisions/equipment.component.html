@@ -1,0 +1,7 @@
+<govuk-checkbox-group [hint]="hint" id="equipment" #field [govukRequired]="field"
+    [title]="title" [(model)]="model">
+    <govuk-checkbox #checkbox (onKeyupEnter)="onKeyupEnter.emit()" (onClicked)="optionClicked()" id="" [model]="model" text="" value="" />
+    
+    <div class="govuk-radios__divider">or</div>
+    <govuk-checkbox #noneCheckbox (onKeyupEnter)="onKeyupEnter.emit()" (onClicked)="noneOptionClicked()" id="equipment_none" [model]="model" text="None of these" value="none" />
+</govuk-checkbox-group>

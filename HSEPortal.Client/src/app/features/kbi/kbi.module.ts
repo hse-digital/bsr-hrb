@@ -12,12 +12,15 @@ import { TaskListComponent } from './task-list/task-list.component';
 import { EvacuationStrategyComponent } from './evacuation-strategy/evacuation-strategy.component';
 import { ProvisionsEquipmentComponent } from './provisions-equipment/provisions-equipment.component';
 import { EquipmentComponent } from './provisions-equipment/equipment.component';
+import { FireSmokeProvisionsComponent } from './fire-smoke-provisions/fire-smoke-provisions.component';
+import { EquipmentFireSmokeProvisionsComponent } from './fire-smoke-provisions/equipment.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
   HseRoute.protected(TaskListComponent.route, TaskListComponent, TaskListComponent.title),
   HseRoute.protected(EvacuationStrategyComponent.route, EvacuationStrategyComponent, EvacuationStrategyComponent.title),
   HseRoute.protected(ProvisionsEquipmentComponent.route, ProvisionsEquipmentComponent, ProvisionsEquipmentComponent.title),
+  HseRoute.protected(FireSmokeProvisionsComponent.route, FireSmokeProvisionsComponent, FireSmokeProvisionsComponent.title),
 ]);
 
 @NgModule({
@@ -26,7 +29,9 @@ const routes = new HseRoutes([
     TaskListComponent,
     EvacuationStrategyComponent,
     ProvisionsEquipmentComponent,
-    EquipmentComponent
+    EquipmentComponent,
+    EquipmentFireSmokeProvisionsComponent,
+    FireSmokeProvisionsComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
