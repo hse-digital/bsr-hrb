@@ -11,7 +11,7 @@
 
         <govuk-radio-group title="What strategy do you use to evacuate the residential part of {{applicationService.model.BuildingName}}?" 
           [isPageHeading]=true [(model)]="applicationService.model.Kbi!.strategyEvacuateBuilding" #field [govukRequired]="field"
-          id="strategy" [errorText]="getErrorDescription(namedRoleHasErrors, 'Select your job role')">
+          id="strategy" [errorText]="getErrorDescription(evacuationStrategyHasErrors, '')">
           <govuk-radio [model]="applicationService.model.Kbi!.strategyEvacuateBuilding" name="application-group" id="strategy_phased" value="phased" label="Phased" (onKeyupEnter)="saveAndContinue()" />
           <govuk-radio [model]="applicationService.model.Kbi!.strategyEvacuateBuilding" name="application-group" id="strategy_progressive_horizontal" value="progressive_horizontal" label="Progressive horizontal" (onKeyupEnter)="saveAndContinue()" />
           <govuk-radio [model]="applicationService.model.Kbi!.strategyEvacuateBuilding" name="application-group" id="strategy_simultaneous" value="simultaneous" label="Simultaneous" (onKeyupEnter)="saveAndContinue()" />

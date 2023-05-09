@@ -20,24 +20,22 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  namedRoleHasErrors = false;
+  evacuationStrategyHasErrors = false;
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   canContinue(): boolean {
-    this.namedRoleHasErrors = !this.applicationService.currentAccountablePerson.LeadJobRole;
-    return !this.namedRoleHasErrors;
+    this.evacuationStrategyHasErrors = !this.applicationService.model.Kbi?.strategyEvacuateBuilding ?? true;
+    return !this.evacuationStrategyHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
+    return navigationService.navigateRelative(EvacuationStrategyComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
       && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
   }
-
-
 }
