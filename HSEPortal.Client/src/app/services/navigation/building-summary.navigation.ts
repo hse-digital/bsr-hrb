@@ -1,5 +1,5 @@
 import { NumberOfSectionsComponment } from "src/app/features/application/number-of-sections/number-of-sections.component";
-import { ApplicationService } from "../application.service";
+import { ApplicationService, SectionModel } from "../application.service";
 import { BaseNavigation, BuildingNavigationNode } from "./navigation";
 import { SectionsIntroComponent } from "src/app/features/application/sections/intro/intro.component";
 import { SectionNameComponent } from "src/app/features/application/sections/name/name.component";
@@ -12,8 +12,6 @@ import { SectionYearRangeComponent } from "src/app/features/application/sections
 import { CertificateIssuerComponent } from "src/app/features/application/sections/certificate-issuer/certificate-issuer.component";
 import { CertificateNumberComponent } from "src/app/features/application/sections/certificate-number/certificate-number.component";
 import { SectionAddressComponent } from "src/app/features/application/sections/address/address.component";
-import { SectionOtherAddressesComponent } from "src/app/features/application/sections/other-addresses/other-addresses.component";
-import { AddMoreSectionsComponent } from "src/app/features/application/sections/add-more-sections/add-more-sections.component";
 import { SectionCheckAnswersComponent } from "src/app/features/application/sections/check-answers/check-answers.component";
 import { Injectable } from "@angular/core";
 
@@ -24,264 +22,232 @@ export class BuildingSummaryNavigation extends BaseNavigation {
     super();
   }
 
-  private checkAnswersNavigationNode = new CheckAnswersNavigationNode(this.applicationService);
-  private addMoreSectionsNavigationNode = new AddMoreSectionsNavigationNode(this.applicationService, this.checkAnswersNavigationNode);
-  private sectionMoreAddressesNavigationNode = new SectionMoreAddressesNavigationNode(this.applicationService, this.addMoreSectionsNavigationNode);
-  private sectionAddressNavigationNode = new SectionAddressNavigationNode(this.applicationService, this.sectionMoreAddressesNavigationNode);
-  private completionCertificateReferenceNavigationNode = new CompletionCertificateReferenceNavigationNode(this.applicationService, this.sectionAddressNavigationNode);
-  private completionCertificateIssuerNavigationNode = new CompletionCertificateIssuerNavigationNode(this.applicationService, this.completionCertificateReferenceNavigationNode);
-  private yearRangeNavigationNode = new YearRangeNavigationNode(this.applicationService, this.completionCertificateIssuerNavigationNode);
-  private yearOfCompletionNavigationNode = new YearOfCompletionNavigationNode(this.applicationService, this.yearRangeNavigationNode, this.completionCertificateIssuerNavigationNode, this.sectionAddressNavigationNode);
-  private peopleLivingNavigationNode = new PeopleLivingNavigationNode(this.applicationService, this.yearOfCompletionNavigationNode);
-  private numberOfResidentialUnitsNavigationNode = new NumberOfResidentialUnitsNavigationNode(this.applicationService, this.peopleLivingNavigationNode, this.yearOfCompletionNavigationNode);
-  private heightNavigationNode = new HeightNavigationNode(this.applicationService, this.numberOfResidentialUnitsNavigationNode);
-  private numberOfFloorsNavigationNode = new NumberOfFloorsNavigationNode(this.applicationService, this.heightNavigationNode);
-  private sectionNameNavigationNode = new SectionNameNavigationNode(this.applicationService, this.numberOfFloorsNavigationNode);
-  private sectionsIntroNavigationNode = new SectionsIntroNavigationNode(this.applicationService, this.sectionNameNavigationNode);
+  private checkAnswersNavigationNode = new CheckAnswersNavigationNode();
+  private sectionAddressNavigationNode = new SectionAddressNavigationNode(this.checkAnswersNavigationNode);
+  private completionCertificateReferenceNavigationNode = new CompletionCertificateReferenceNavigationNode(this.sectionAddressNavigationNode);
+  private completionCertificateIssuerNavigationNode = new CompletionCertificateIssuerNavigationNode(this.completionCertificateReferenceNavigationNode);
+  private yearRangeNavigationNode = new YearRangeNavigationNode(this.completionCertificateIssuerNavigationNode);
+  private yearOfCompletionNavigationNode = new YearOfCompletionNavigationNode(this.yearRangeNavigationNode, this.completionCertificateIssuerNavigationNode, this.sectionAddressNavigationNode);
+  private peopleLivingNavigationNode = new PeopleLivingNavigationNode(this.yearOfCompletionNavigationNode);
+  private numberOfResidentialUnitsNavigationNode = new NumberOfResidentialUnitsNavigationNode(this.peopleLivingNavigationNode, this.yearOfCompletionNavigationNode);
+  private heightNavigationNode = new HeightNavigationNode(this.numberOfResidentialUnitsNavigationNode);
+  private numberOfFloorsNavigationNode = new NumberOfFloorsNavigationNode(this.heightNavigationNode);
+  private sectionNameNavigationNode = new SectionNameNavigationNode(this.numberOfFloorsNavigationNode);
+  private sectionsIntroNavigationNode = new SectionsIntroNavigationNode(this.sectionNameNavigationNode);
   private numberOfSectionsNavigationNode = new NumberOfSectionsNavigationNode(this.applicationService, this.sectionsIntroNavigationNode, this.numberOfFloorsNavigationNode);
 
   override getNextRoute(): string {
-    return this.numberOfSectionsNavigationNode.getNextRoute();
+    for (let sectionIndex = 0; sectionIndex < this.applicationService.model.Sections.length; sectionIndex++) {
+      let section = this.applicationService.model.Sections[sectionIndex];
+      let sectionRoute = this.numberOfSectionsNavigationNode.getNextRoute(section);
+
+      if (!sectionRoute || sectionRoute == SectionCheckAnswersComponent.route) {
+        continue;
+      }
+
+      return `sections/section-${sectionIndex + 1}/${sectionRoute}`;
+    }
+
+    return `sections/${SectionCheckAnswersComponent.route}`;
   }
 }
 
 class NumberOfSectionsNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
+  constructor(private applicationService: ApplicationService,
     private sectionsIntroNavigationNode: SectionsIntroNavigationNode,
     private numberOfFloorsNavigationNode: NumberOfFloorsNavigationNode) {
-    super(applicationService);
+    super();
   }
 
-  override getNextRoute(): string {
+  override getNextRoute(section: SectionModel): string {
     if (!this.applicationService.model.NumberOfSections) {
       return NumberOfSectionsComponment.route;
     }
 
     if (this.applicationService.model.NumberOfSections == 'one') {
-      return this.numberOfFloorsNavigationNode.getNextRoute();
+      return this.numberOfFloorsNavigationNode.getNextRoute(section);
     }
 
-    return this.sectionsIntroNavigationNode.getNextRoute();
+    return this.sectionsIntroNavigationNode.getNextRoute(section);
   }
 }
 
 class SectionsIntroNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private sectionNameNavigationNode: SectionNameNavigationNode) {
-    super(applicationService);
+  constructor(private sectionNameNavigationNode: SectionNameNavigationNode) {
+    super();
   }
 
-  override getNextRoute(): string {
-    if (!this.applicationService.currentSection.Name) {
+  override getNextRoute(section: SectionModel): string {
+    if (!section.Name) {
       return SectionsIntroComponent.route;
     }
 
-    return this.sectionNameNavigationNode.getNextRoute();
+    return this.sectionNameNavigationNode.getNextRoute(section);
   }
 }
 
 class SectionNameNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private numberOfFloorsNavigationNode: NumberOfFloorsNavigationNode) {
-    super(applicationService);
+  constructor(private numberOfFloorsNavigationNode: NumberOfFloorsNavigationNode) {
+    super();
   }
 
-  override getNextRoute(): string {
-    if (!this.applicationService.currentSection.Name) {
+  override getNextRoute(section: SectionModel): string {
+    if (!section.Name) {
       return SectionNameComponent.route;
     }
 
-    return this.numberOfFloorsNavigationNode.getNextRoute();
+    return this.numberOfFloorsNavigationNode.getNextRoute(section);
   }
 }
 
 class NumberOfFloorsNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private heightNavigationNode: HeightNavigationNode) {
-    super(applicationService);
+  constructor(private heightNavigationNode: HeightNavigationNode) {
+    super();
   }
 
-  override getNextRoute(): string {
-    if (!this.applicationService.currentSection.FloorsAbove) {
-      return this.getCurrentSectionRouteTo(SectionFloorsAboveComponent.route);
+  override getNextRoute(section: SectionModel): string {
+    if (!section.FloorsAbove) {
+      return SectionFloorsAboveComponent.route;
     }
 
-    return this.heightNavigationNode.getNextRoute();
+    return this.heightNavigationNode.getNextRoute(section);
   }
 }
 
 class HeightNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private numberOfResidentialUnitsNavigationNode: NumberOfResidentialUnitsNavigationNode) {
-    super(applicationService);
+  constructor(private numberOfResidentialUnitsNavigationNode: NumberOfResidentialUnitsNavigationNode) {
+    super();
   }
 
-  override getNextRoute(): string {
-    if (!this.applicationService.currentSection.Height) {
-      return this.getCurrentSectionRouteTo(SectionHeightComponent.route);
+  override getNextRoute(section: SectionModel): string {
+    if (!section.Height) {
+      return SectionHeightComponent.route;
     }
 
-    return this.numberOfResidentialUnitsNavigationNode.getNextRoute();
+    return this.numberOfResidentialUnitsNavigationNode.getNextRoute(section);
   }
 }
 
 class NumberOfResidentialUnitsNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private peopleLivingNavigationNode: PeopleLivingNavigationNode,
+  constructor(private peopleLivingNavigationNode: PeopleLivingNavigationNode,
     private yearOfCompletionNavigationNode: YearOfCompletionNavigationNode) {
-    super(applicationService);
+    super();
   }
 
-  override getNextRoute(): string {
-    if (!this.applicationService.currentSection.ResidentialUnits) {
-      return this.getCurrentSectionRouteTo(SectionResidentialUnitsComponent.route);
+  override getNextRoute(section: SectionModel): string {
+    if (!section.ResidentialUnits) {
+      return SectionResidentialUnitsComponent.route;
     }
 
-    if (this.applicationService.currentSection.ResidentialUnits == 0) {
-      return this.yearOfCompletionNavigationNode.getNextRoute();
+    if (section.ResidentialUnits == 0) {
+      return this.yearOfCompletionNavigationNode.getNextRoute(section);
     }
 
-    return this.peopleLivingNavigationNode.getNextRoute();
+    return this.peopleLivingNavigationNode.getNextRoute(section);
   }
 }
 
 class PeopleLivingNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private yearOfCompletionNavigationNode: YearOfCompletionNavigationNode) {
-    super(applicationService);
+  constructor(private yearOfCompletionNavigationNode: YearOfCompletionNavigationNode) {
+    super();
   }
 
-  override getNextRoute(): string {
-    if (!this.applicationService.currentSection.PeopleLivingInBuilding) {
-      return this.getCurrentSectionRouteTo(SectionPeopleLivingInBuildingComponent.route);
+  override getNextRoute(section: SectionModel): string {
+    if (!section.PeopleLivingInBuilding) {
+      return SectionPeopleLivingInBuildingComponent.route;
     }
 
-    return this.yearOfCompletionNavigationNode.getNextRoute();
+    return this.yearOfCompletionNavigationNode.getNextRoute(section);
   }
 }
 
 class YearOfCompletionNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private yearRangeNavigationNode: YearRangeNavigationNode,
+  constructor(private yearRangeNavigationNode: YearRangeNavigationNode,
     private completionCertificateIssuerNavigationNode: CompletionCertificateIssuerNavigationNode,
     private sectionAddressNavigationNode: SectionAddressNavigationNode) {
-    super(applicationService);
+    super();
   }
 
-  override getNextRoute(): string {
-    if (!this.applicationService.currentSection.YearOfCompletionOption) {
-      return this.getCurrentSectionRouteTo(SectionYearOfCompletionComponent.route);
+  override getNextRoute(section: SectionModel): string {
+    if (!section.YearOfCompletionOption) {
+      return SectionYearOfCompletionComponent.route;
     }
 
-    if (this.applicationService.currentSection.YearOfCompletionOption == 'not-completed') {
-      return this.sectionAddressNavigationNode.getNextRoute();
-    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-exact') {
-      var yearOfCompletion = Number(this.applicationService.currentSection.YearOfCompletion);
+    if (section.YearOfCompletionOption == 'not-completed') {
+      return this.sectionAddressNavigationNode.getNextRoute(section);
+    } else if (section.YearOfCompletionOption == 'year-exact') {
+      var yearOfCompletion = Number(section.YearOfCompletion);
       if (yearOfCompletion && yearOfCompletion < 1985) {
-        return this.sectionAddressNavigationNode.getNextRoute();
+        return this.sectionAddressNavigationNode.getNextRoute(section);
       }
     }
 
-    if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
-      return this.yearRangeNavigationNode.getNextRoute();
+    if (section.YearOfCompletionOption == 'year-not-exact') {
+      return this.yearRangeNavigationNode.getNextRoute(section);
     }
 
-    return this.completionCertificateIssuerNavigationNode.getNextRoute();
+    return this.completionCertificateIssuerNavigationNode.getNextRoute(section);
   }
 }
 
 class YearRangeNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private completionCertificateIssuerNavigationNode: CompletionCertificateIssuerNavigationNode) {
-    super(applicationService);
+  constructor(private completionCertificateIssuerNavigationNode: CompletionCertificateIssuerNavigationNode) {
+    super();
   }
 
-  override getNextRoute(): string {
-    if (!this.applicationService.currentSection.YearOfCompletionRange) {
-      return this.getCurrentSectionRouteTo(SectionYearRangeComponent.route);
+  override getNextRoute(section: SectionModel): string {
+    if (!section.YearOfCompletionRange) {
+      return SectionYearRangeComponent.route;
     }
 
-    return this.completionCertificateIssuerNavigationNode.getNextRoute();
+    return this.completionCertificateIssuerNavigationNode.getNextRoute(section);
   }
 }
 
 class CompletionCertificateIssuerNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private completionCertificateReferenceNavigationNode: CompletionCertificateReferenceNavigationNode) {
-    super(applicationService);
+  constructor(private completionCertificateReferenceNavigationNode: CompletionCertificateReferenceNavigationNode) {
+    super();
   }
 
-  override getNextRoute(): string {
-    if (!this.applicationService.currentSection.CompletionCertificateIssuer) {
-      return this.getCurrentSectionRouteTo(CertificateIssuerComponent.route);
+  override getNextRoute(section: SectionModel): string {
+    if (!section.CompletionCertificateIssuer) {
+      return CertificateIssuerComponent.route;
     }
 
-    return this.completionCertificateReferenceNavigationNode.getNextRoute();
+    return this.completionCertificateReferenceNavigationNode.getNextRoute(section);
   }
 }
 
 class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private sectionAddressNavigationNode: SectionAddressNavigationNode) {
-    super(applicationService);
+  constructor(private sectionAddressNavigationNode: SectionAddressNavigationNode) {
+    super();
   }
 
-  override getNextRoute(): string {
-    if (!this.applicationService.currentSection.CompletionCertificateReference) {
-      return this.getCurrentSectionRouteTo(CertificateNumberComponent.route);
+  override getNextRoute(section: SectionModel): string {
+    if (!section.CompletionCertificateReference) {
+      return CertificateNumberComponent.route;
     }
 
-    return this.sectionAddressNavigationNode.getNextRoute();
+    return this.sectionAddressNavigationNode.getNextRoute(section);
   }
 }
 
 class SectionAddressNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private sectionMoreAddressesNavigationNode: SectionMoreAddressesNavigationNode) {
-    super(applicationService);
+  constructor(private checkAnswersNavigationNode: CheckAnswersNavigationNode) {
+    super();
   }
 
-  override getNextRoute(): string {
-    if ((this.applicationService.currentSection.Addresses?.length ?? 0) == 0 || this.applicationService.currentSection.Addresses.filter(x => !x.Postcode).length > 0) {
-      return this.getCurrentSectionRouteTo(SectionAddressComponent.route);
+  override getNextRoute(section: SectionModel): string {
+    if ((section.Addresses?.length ?? 0) == 0 || section.Addresses.filter(x => !x.Postcode).length > 0) {
+      return SectionAddressComponent.route;
     }
 
-    return this.sectionMoreAddressesNavigationNode.getNextRoute();
-  }
-}
-
-class SectionMoreAddressesNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private addMoreSectionsNavigationNode: AddMoreSectionsNavigationNode) {
-    super(applicationService);
-  }
-
-  override getNextRoute(): string {
-    if ((this.applicationService.currentSection.Addresses.length ?? 0) < 5) {
-      return this.getCurrentSectionRouteTo(SectionOtherAddressesComponent.route);
-    }
-
-    return this.addMoreSectionsNavigationNode.getNextRoute();
-  }
-}
-
-class AddMoreSectionsNavigationNode extends BuildingNavigationNode {
-  constructor(applicationService: ApplicationService,
-    private checkAnswersNavigationNode: CheckAnswersNavigationNode) {
-    super(applicationService);
-  }
-
-  override getNextRoute(): string {
-    if (this.applicationService.model.NumberOfSections == 'two_or_more' && this.applicationService.model.Sections.length <= 1) {
-      return this.getCurrentSectionRouteTo(AddMoreSectionsComponent.route);
-    }
-
-    return this.checkAnswersNavigationNode.getNextRoute();
+    return this.checkAnswersNavigationNode.getNextRoute(section);
   }
 }
 
 class CheckAnswersNavigationNode extends BuildingNavigationNode {
-  override getNextRoute(): string {
+  override getNextRoute(_: SectionModel): string {
     return SectionCheckAnswersComponent.route;
   }
 }
