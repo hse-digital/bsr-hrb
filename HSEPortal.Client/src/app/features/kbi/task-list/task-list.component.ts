@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { ApplicationService, BuildingApplicationStatus, KbiModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus, KbiModel, KbiSectionModel } from 'src/app/services/application.service';
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { EvacuationStrategyComponent } from '../evacuation-strategy/evacuation-strategy.component';
 
@@ -21,9 +21,14 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.model.Kbi) { this.applicationService.model.Kbi = new KbiModel(); }
-    if (this.applicationService.model.Kbi.SectionStatus.length == 0) {
-      this.applicationService.model.Sections.map(x => this.applicationService.model.Kbi?.SectionStatus?.push({ inProgress: false, complete: false }));
+    if(!this.applicationService.model.Kbi) {
+      this.applicationService.model.Kbi = new KbiModel();
+      this.applicationService.model.Sections.forEach(x => this.applicationService.model.Kbi!.KbiSections.push(new KbiSectionModel()));
+      this.applicationService._currentSectionIndex = 0;
+    }
+    if (!this.applicationService.model.Kbi.SectionStatus || this.applicationService.model.Kbi.SectionStatus.length == 0) {
+      this.applicationService.model.Kbi.SectionStatus = [];
+      this.applicationService.model.Sections.map(x => this.applicationService.model.Kbi!.SectionStatus!.push({ inProgress: false, complete: false }));
     }
   }
 

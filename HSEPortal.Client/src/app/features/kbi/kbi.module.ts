@@ -11,6 +11,7 @@ import { CheckBeforeStartComponent } from './check-before-start/check-before-sta
 import { TaskListComponent } from './task-list/task-list.component';
 import { EvacuationStrategyComponent } from './evacuation-strategy/evacuation-strategy.component';
 import { ProvisionsEquipmentComponent } from './provisions-equipment/provisions-equipment.component';
+import { EquipmentComponent } from './provisions-equipment/equipment.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -24,7 +25,8 @@ const routes = new HseRoutes([
     CheckBeforeStartComponent,
     TaskListComponent,
     EvacuationStrategyComponent,
-    ProvisionsEquipmentComponent
+    ProvisionsEquipmentComponent,
+    EquipmentComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

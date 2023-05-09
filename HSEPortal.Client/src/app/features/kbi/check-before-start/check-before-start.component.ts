@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStatus, KbiModel, KbiSectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { EvacuationStrategyComponent } from '../evacuation-strategy/evacuation-strategy.component';
 
@@ -18,11 +18,6 @@ export class CheckBeforeStartComponent implements CanActivate, OnInit {
 
   ngOnInit(): void {
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiCheckBeforeInProgress;
-    if(!this.applicationService.model.Kbi) {
-      this.applicationService.model.Kbi = new KbiModel();
-      this.applicationService.model.Sections.forEach(x => this.applicationService.model.Kbi!.KbiSections.push(new KbiSectionModel()));
-      this.applicationService._currentSectionIndex = 0;
-    }
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
