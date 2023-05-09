@@ -13,7 +13,7 @@ import { TitleService } from 'src/app/services/title.service';
 })
 export class EvacuationStrategyComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'evacuation-strategy';
-  static title: string = "Evacuation strategy of the building - Register a high-rise building - GOV.UK";
+  static title: string = "Evacuation strategy - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   errorMessage?: string;
@@ -29,7 +29,9 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   }
 
   getInfraestructureName(){
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName : this.applicationService.currentSection.Name;
+    return this.applicationService.model.NumberOfSections === 'one' 
+      ? this.applicationService.model.BuildingName 
+      : this.applicationService.currentSection.Name;
   }
 
   canContinue(): boolean {
