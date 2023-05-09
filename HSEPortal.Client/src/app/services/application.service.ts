@@ -188,7 +188,15 @@ export enum BuildingApplicationStatus {
   AccountablePersonsInProgress = 4,
   AccountablePersonsComplete = 8,
   PaymentInProgress = 16,
-  PaymentComplete = 32
+  PaymentComplete = 32,
+  KbiCheckBeforeInProgress = 64,
+  KbiCheckBeforeComplete = 128,
+  KbiStructureInformationInProgress = 256,
+  KbiStructureInformationComplete = 512,
+  KbiConnectionsInProgress = 1024,
+  KbiConnectionsComplete = 2048,
+  KbiSubmitInProgress = 4096,
+  KbiSubmitComplete = 8192
 }
 
 export class SectionModel {
