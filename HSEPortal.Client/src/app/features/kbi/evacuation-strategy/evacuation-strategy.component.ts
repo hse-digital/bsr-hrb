@@ -1,32 +1,38 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
-import { ApHelper } from 'src/app/helpers/ap-helper';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, KbiModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { AddAccountablePersonComponent } from '../../application/accountable-person/add-accountable-person/add-accountable-person.component';
 
 @Component({
   selector: 'hse-evacuation-strategy',
-  templateUrl: './evacuation-strategy.component.html',
-  styleUrls: ['./evacuation-strategy.component.scss']
+  templateUrl: './evacuation-strategy.component.html'
 })
-export class EvacuationStrategyComponent extends BaseComponent implements IHasNextPage {
-  static route: string = 'pap-named-role';
-  static title: string = "What is your job role at PAP organisation? - Register a high-rise building - GOV.UK";
+export class EvacuationStrategyComponent extends BaseComponent implements IHasNextPage, OnInit {
+  static route: string = 'evacuation-strategy';
+  static title: string = "Evacuation strategy of the building - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+  errorMessage?: string;
 
   evacuationStrategyHasErrors = false;
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
+  ngOnInit(): void {
+    this.errorMessage = `Select the strategy you use to evacuate the residential part of ${this.getInfraestructureName()}`;
+  }
+
+  getInfraestructureName(){
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName : this.applicationService.currentSection.Name;
+  }
+
   canContinue(): boolean {
-    this.evacuationStrategyHasErrors = !this.applicationService.model.Kbi?.strategyEvacuateBuilding ?? true;
+    this.evacuationStrategyHasErrors = !this.applicationService.currenKbiSection?.strategyEvacuateBuilding;
     return !this.evacuationStrategyHasErrors;
   }
 
@@ -35,7 +41,7 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
-      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
+    //return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete;
+    return true;
   }
 }

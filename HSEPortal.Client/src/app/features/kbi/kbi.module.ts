@@ -12,6 +12,7 @@ import { EvacuationStrategyComponent } from './evacuation-strategy/evacuation-st
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
+  HseRoute.protected(EvacuationStrategyComponent.route, EvacuationStrategyComponent, EvacuationStrategyComponent.title),
 ]);
 
 @NgModule({

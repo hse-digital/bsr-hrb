@@ -4,21 +4,19 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
-
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="" message="" />
+          <govuk-error-link anchorId="strategy_phased-input" message={{errorMessage}} />
         </govuk-error-summary>
 
         <govuk-radio-group title="What strategy do you use to evacuate the residential part of {{applicationService.model.BuildingName}}?" 
-          [isPageHeading]=true [(model)]="applicationService.model.Kbi!.strategyEvacuateBuilding" #field [govukRequired]="field"
-          id="strategy" [errorText]="getErrorDescription(evacuationStrategyHasErrors, '')">
-          <govuk-radio [model]="applicationService.model.Kbi!.strategyEvacuateBuilding" name="application-group" id="strategy_phased" value="phased" label="Phased" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.model.Kbi!.strategyEvacuateBuilding" name="application-group" id="strategy_progressive_horizontal" value="progressive_horizontal" label="Progressive horizontal" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.model.Kbi!.strategyEvacuateBuilding" name="application-group" id="strategy_simultaneous" value="simultaneous" label="Simultaneous" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.model.Kbi!.strategyEvacuateBuilding" name="application-group" id="strategy_stay_put" value="stay_put" label="Stay put (defend in place)" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.model.Kbi!.strategyEvacuateBuilding" name="application-group" id="strategy_temporary_simultaneous" value="temporary_simultaneous" label="Temporary simultaneous" (onKeyupEnter)="saveAndContinue()" />
+          [isPageHeading]=true [(model)]="applicationService.currenKbiSection!.strategyEvacuateBuilding" #field [govukRequired]="field"
+          id="strategy" [errorText]="getErrorDescription(evacuationStrategyHasErrors, errorMessage!)" hintText="You should be able to get this information from the latest fire risk assessment.">
+          <govuk-radio [model]="applicationService.currenKbiSection!.strategyEvacuateBuilding" name="application-group" id="strategy_phased" value="phased" label="Phased" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currenKbiSection!.strategyEvacuateBuilding" name="application-group" id="strategy_progressive_horizontal" value="progressive_horizontal" label="Progressive horizontal" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currenKbiSection!.strategyEvacuateBuilding" name="application-group" id="strategy_simultaneous" value="simultaneous" label="Simultaneous" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currenKbiSection!.strategyEvacuateBuilding" name="application-group" id="strategy_stay_put" value="stay_put" label="Stay put (defend in place)" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currenKbiSection!.strategyEvacuateBuilding" name="application-group" id="strategy_temporary_simultaneous" value="temporary_simultaneous" label="Temporary simultaneous" (onKeyupEnter)="saveAndContinue()" />
         </govuk-radio-group>
-
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>

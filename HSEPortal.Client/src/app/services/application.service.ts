@@ -84,6 +84,11 @@ export class ApplicationService {
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
+  _currentKbiSectionIndex: number = 0;
+  get currenKbiSection() {
+    return this.model.Kbi?.KbiSections[this._currentKbiSectionIndex];
+  }
+
   async removeAp(index: number) {
     this.model.AccountablePersons.splice(index, 1);
     await this.updateApplication();
@@ -261,7 +266,12 @@ export enum PaymentStatus {
   Success,
   Failed
 }
+
 export class KbiModel {
   SectionStatus: { inProgress: boolean, complete: boolean }[] = [];
+  KbiSections: KbiSectionModel[] = [];
+}
+
+export class KbiSectionModel {
   strategyEvacuateBuilding?: string;
 }
