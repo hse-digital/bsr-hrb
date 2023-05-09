@@ -23,17 +23,17 @@ export class AccountabilityAreasHelper {
 
     static getAccountabilityFor(applicationService: ApplicationService, accountablePersonIndex: number, section: SectionModel) {
         return applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability
-            ?.find(x => x.SectionName == section.Name ?? applicationService.model.BuildingName)?.Accountability!;
+            ?.find(x => x.SectionName == section.Name ?? applicationService.model.BuildingName)?.Accountability ?? [];
     }
 
     private static areasOfAccountability: string[] = ["routes", "maintenance", "facilities"];
     static getNotAllocatedAreasOf(applicationService: ApplicationService, section: SectionModel) {
-      let accountabilityAreasOfSection = applicationService.model.AccountablePersons
-        .flatMap(x => x.SectionsAccountability)
-        .filter(x => x?.SectionName == section.Name ?? applicationService.model.BuildingName!)
-        .flatMap(x => x?.Accountability);
-      let notAllocatedAreas: string[] = this.areasOfAccountability.filter(x => !accountabilityAreasOfSection.includes(x))
-      return notAllocatedAreas;
+        let accountabilityAreasOfSection = applicationService.model.AccountablePersons
+            .flatMap(x => x.SectionsAccountability)
+            .filter(x => x?.SectionName == section.Name ?? applicationService.model.BuildingName!)
+            .flatMap(x => x?.Accountability);
+
+        return this.areasOfAccountability.filter(x => !accountabilityAreasOfSection.includes(x));
     }
 
 }

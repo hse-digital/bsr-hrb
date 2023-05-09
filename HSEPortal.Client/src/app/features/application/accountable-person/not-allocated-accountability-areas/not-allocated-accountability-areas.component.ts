@@ -24,7 +24,7 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
 
   errors?: { anchorId: string, message: string }[] = [];
   notAllocatedAreas: string[][] = []
-  
+
   areasAccountabilityMapper: Record<string, string> = {
     "routes": "routes that residents can walk through",
     "maintenance": "maintaining machinery and equipment",
@@ -64,7 +64,7 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
     });
   }
 
-  getSectionError(sectionIndex: number, area: string) {    
+  getSectionError(sectionIndex: number, area: string) {
     let anchorId = this.getAnchorId(sectionIndex, area);
     return this.errors?.find(x => x.anchorId == anchorId)?.message ?? undefined;
   }
@@ -94,20 +94,25 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   }
 
   private setAccountabilityFor(accountablePersonIndex: number, section: SectionModel, newAccountability: string[]) {
-    this.applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability!
-      .find(x => x.SectionName == section.Name ?? this.applicationService.model.BuildingName)!
-      .Accountability = newAccountability;
+    let sectionAccountability = this.applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability!
+      .find(x => x.SectionName == section.Name ?? this.applicationService.model.BuildingName);
+
+    if (!sectionAccountability) {
+      this.applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability!.push({ SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: newAccountability });
+    } else {
+      sectionAccountability.Accountability = newAccountability;
+    }
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
   }
 
-  navigateToAddMoreAccountablePersons() {    
+  navigateToAddMoreAccountablePersons() {
     this.navigationService.navigateRelative(AddAccountablePersonComponent.route, this.activatedRoute);
   }
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
+  override canAccess(_: ActivatedRouteSnapshot) {
     return this.applicationService.model.Sections.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0)
   }
 }

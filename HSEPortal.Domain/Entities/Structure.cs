@@ -27,6 +27,7 @@ public static class DynamicsSectionArea
 {
     public static readonly IDictionary<string, string> Ids = new Dictionary<string, string>
     {
+        ["none"] = "5d36620b-04b1-ed11-83ff-0022481b5e4f",
         ["external_walls"] = "5d36620b-04b1-ed11-83ff-0022481b5e4f",
         ["routes"] = "1441d018-04b1-ed11-83ff-0022481b5e4f",
         ["maintenance"] = "2e3f1d2b-04b1-ed11-83ff-0022481b5e4f",

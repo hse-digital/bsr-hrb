@@ -30,10 +30,22 @@ export class IndividualAnswersComponent extends SummaryComponent {
     }
   }
 
-  navigateTo(url: string, query?: string) {
+  navigateTo(url: string) {
     this.navigationService.navigateRelative(`accountable-person-${this.apIndex + 1}/${url}`, this.activatedRoute, {
       return: 'check-answers'
     });
+  }
+
+  navigate(url: string) {
+    this.navigationService.navigateRelative(url, this.activatedRoute);
+  }
+
+  navigateToAccountability() {
+    if (this.apIndex == 0) {
+      this.navigate('areas-accountability');
+    } else{
+      this.navigateTo('accountable-for');
+    }
   }
 
 }
