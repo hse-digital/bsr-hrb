@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { ApplicationService, BuildingApplicationStatus, KbiModel } from 'src/app/services/application.service';
+import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
+import { EvacuationStrategyComponent } from '../evacuation-strategy/evacuation-strategy.component';
 
 @Component({
   selector: 'hse-task-list',
@@ -51,11 +53,12 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   navigateToCheckBeforeStart() {
-
+    return this.navigationService.navigateRelative(CheckBeforeStartComponent.route, this.activatedRoute);
   }
 
   navigateToSection(index: number) {
-
+    this.applicationService._currentKbiSectionIndex = index;
+    return this.navigationService.navigateRelative(EvacuationStrategyComponent.route, this.activatedRoute);
   }
 
   navigateToConnections() {

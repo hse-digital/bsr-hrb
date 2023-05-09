@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, KbiModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus, KbiModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 
@@ -24,6 +24,7 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   }
 
   ngOnInit(): void {
+    this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].inProgress = true;
     this.errorMessage = `Select the strategy you use to evacuate the residential part of ${this.getInfraestructureName()}`;
   }
 
@@ -41,7 +42,6 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    //return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete;
-    return true;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete;
   }
 }

@@ -17,6 +17,7 @@ export class CheckBeforeStartComponent implements CanActivate, OnInit {
   }
 
   ngOnInit(): void {
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiCheckBeforeInProgress;
     if(!this.applicationService.model.Kbi) {
       this.applicationService.model.Kbi = new KbiModel();
       this.applicationService.model.Sections.forEach(x => this.applicationService.model.Kbi!.KbiSections.push(new KbiSectionModel()));
@@ -26,9 +27,11 @@ export class CheckBeforeStartComponent implements CanActivate, OnInit {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     return true;
+    // return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete;
   }
 
   continue(){
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiCheckBeforeComplete;
     return this.navigationService.navigateRelative(EvacuationStrategyComponent.route, this.activatedRoute);
   }
 }
