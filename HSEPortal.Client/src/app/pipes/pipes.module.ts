@@ -7,7 +7,6 @@ import { UseSameAddressDescriptionPipe } from './use-same-address-description.pi
 import { OrganisationTypeDescriptionPipe } from './organisation-type-description.pipe';
 import { LeadJobRoleDescriptionPipe } from './lead-job-role-description.pipe';
 import { AccountabilityDescriptionPipe } from './accountability-description.pipe';
-import { OrdinalNumberPipe } from './ordinal-number.pipe';
 
 @NgModule({
   declarations: [
@@ -18,8 +17,7 @@ import { OrdinalNumberPipe } from './ordinal-number.pipe';
     UseSameAddressDescriptionPipe,
     OrganisationTypeDescriptionPipe,
     LeadJobRoleDescriptionPipe,
-    AccountabilityDescriptionPipe,
-    OrdinalNumberPipe
+    AccountabilityDescriptionPipe
   ],
   exports: [
     PeopleLivingInSectionDescriptionPipe,
@@ -29,8 +27,7 @@ import { OrdinalNumberPipe } from './ordinal-number.pipe';
     UseSameAddressDescriptionPipe,
     OrganisationTypeDescriptionPipe,
     LeadJobRoleDescriptionPipe,
-    AccountabilityDescriptionPipe,
-    OrdinalNumberPipe
+    AccountabilityDescriptionPipe
   ]
 })
 export class PipesModule { }
