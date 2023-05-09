@@ -3,30 +3,29 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, BuildingApplicationStatus, KbiModel } from 'src/app/services/application.service';
+import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { ProvisionsEquipmentComponent } from '../provisions-equipment/provisions-equipment.component';
 
 @Component({
-  selector: 'hse-evacuation-strategy',
-  templateUrl: './evacuation-strategy.component.html'
+  selector: 'hse-provisions-equipment',
+  templateUrl: './provisions-equipment.component.html',
+  styleUrls: ['./provisions-equipment.component.scss']
 })
-export class EvacuationStrategyComponent extends BaseComponent implements IHasNextPage, OnInit {
-  static route: string = 'evacuation-strategy';
-  static title: string = "Evacuation strategy - Register a high-rise building - GOV.UK";
+export class ProvisionsEquipmentComponent  extends BaseComponent implements IHasNextPage, OnInit {
+  static route: string = 'provisions-equipment';
+  static title: string = "Residential fire and smoke controls - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   errorMessage?: string;
 
-  evacuationStrategyHasErrors = false;
+  provisionsEquipmentHasErrors = false;
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {
-    this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].inProgress = true;
-    this.errorMessage = `Select the strategy you use to evacuate the residential part of ${this.getInfraestructureName()}`;
+    this.errorMessage = `Select the fire and smoke control equipment in the residential units of ${this.getInfraestructureName()}`;
   }
 
   getInfraestructureName(){
@@ -36,8 +35,8 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   }
 
   canContinue(): boolean {
-    this.evacuationStrategyHasErrors = !this.applicationService.currenKbiSection?.strategyEvacuateBuilding;
-    return !this.evacuationStrategyHasErrors;
+    this.provisionsEquipmentHasErrors = !this.applicationService.currenKbiSection?.provisionsEquipment;
+    return !this.provisionsEquipmentHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
@@ -45,6 +44,6 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete;
+    return !!this.applicationService.currenKbiSection!.strategyEvacuateBuilding;
   }
 }

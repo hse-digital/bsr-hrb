@@ -10,18 +10,21 @@ import { HseRoute, HseRoutes } from 'src/app/services/hse.route';
 import { CheckBeforeStartComponent } from './check-before-start/check-before-start.component';
 import { TaskListComponent } from './task-list/task-list.component';
 import { EvacuationStrategyComponent } from './evacuation-strategy/evacuation-strategy.component';
+import { ProvisionsEquipmentComponent } from './provisions-equipment/provisions-equipment.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
   HseRoute.protected(TaskListComponent.route, TaskListComponent, TaskListComponent.title),
   HseRoute.protected(EvacuationStrategyComponent.route, EvacuationStrategyComponent, EvacuationStrategyComponent.title),
+  HseRoute.protected(ProvisionsEquipmentComponent.route, ProvisionsEquipmentComponent, ProvisionsEquipmentComponent.title),
 ]);
 
 @NgModule({
   declarations: [
     CheckBeforeStartComponent,
     TaskListComponent,
-    EvacuationStrategyComponent
+    EvacuationStrategyComponent,
+    ProvisionsEquipmentComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

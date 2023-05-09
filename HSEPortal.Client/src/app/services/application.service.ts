@@ -282,4 +282,5 @@ export class KbiModel {
 
 export class KbiSectionModel {
   strategyEvacuateBuilding?: string;
+  provisionsEquipment?: string;
 }
