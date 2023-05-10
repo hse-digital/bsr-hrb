@@ -7,6 +7,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
+import { FireSmokeProvisionLocationsComponent } from '../fire-smoke-provision-locations/fire-smoke-provision-locations.component';
 
 @Component({
   selector: 'hse-fire-smoke-provisions',
@@ -48,6 +49,11 @@ export class FireSmokeProvisionsComponent  extends BaseComponent implements IHas
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    if(!this.applicationService.currenKbiSection!.fireSmokeProvisions?.includes('none')) {
+      return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute, {
+        equipment: this.applicationService.currenKbiSection!.fireSmokeProvisions![0]
+      });  
+    }
     return navigationService.navigateRelative(FireSmokeProvisionsComponent.route, activatedRoute);
   }
 

@@ -284,4 +284,5 @@ export class KbiSectionModel {
   strategyEvacuateBuilding?: string;
   provisionsEquipment?: string[];
   fireSmokeProvisions?: string[];
+  fireSmokeProvisionLocations?: Record<string, string[]>;
 }
