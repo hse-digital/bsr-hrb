@@ -7,6 +7,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
+import { LiftsComponent } from '../lifts/lifts.component';
 
 @Component({
   selector: 'hse-fire-smoke-provision-locations',
@@ -100,10 +101,10 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
         equipment: nextEquipment
       });
     }
-    return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute);
+    return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
+    return !!this.applicationService.currenKbiSection!.fireSmokeProvisions && this.applicationService.currenKbiSection!.fireSmokeProvisions!.length > 0;
   }
 }

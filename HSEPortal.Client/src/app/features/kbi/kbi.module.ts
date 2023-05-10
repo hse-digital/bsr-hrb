@@ -22,6 +22,7 @@ const routes = new HseRoutes([
   HseRoute.protected(ProvisionsEquipmentComponent.route, ProvisionsEquipmentComponent, ProvisionsEquipmentComponent.title),
   HseRoute.protected(FireSmokeProvisionsComponent.route, FireSmokeProvisionsComponent, FireSmokeProvisionsComponent.title),
   HseRoute.protected(FireSmokeProvisionLocationsComponent.route, FireSmokeProvisionLocationsComponent, FireSmokeProvisionLocationsComponent.title),
+  HseRoute.protected(LiftsComponent.route, LiftsComponent, LiftsComponent.title),
 ]);
 
 @NgModule({

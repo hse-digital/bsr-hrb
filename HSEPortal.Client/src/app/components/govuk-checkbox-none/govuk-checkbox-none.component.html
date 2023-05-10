@@ -1,6 +1,6 @@
 <govuk-checkbox-group [hint]="hint" [id]="checkboxGroupId" #field [govukRequired]="field" [errorText]="errorText"
-    [title]="title" [(model)]="model">
-
+    [title]="title" [titleClass]="titleClass" [(model)]="model" [isPageHeading]="isPageHeading">
+    <govuk-body>test</govuk-body>
     <govuk-checkbox #checkbox *ngFor="let item of checkboxes" id="{{item.id}}" text="{{item.text}}" value="{{item.value}}" hint="{{item.hint}}" (onKeyupEnter)="onKeyupEnter.emit()" (onClicked)="optionClicked()" [model]="model" />
     
     <div class="govuk-radios__divider">or</div>

@@ -8,6 +8,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
 import { FireSmokeProvisionLocationsComponent } from '../fire-smoke-provision-locations/fire-smoke-provision-locations.component';
+import { LiftsComponent } from '../lifts/lifts.component';
 
 @Component({
   selector: 'hse-fire-smoke-provisions',
@@ -54,7 +55,7 @@ export class FireSmokeProvisionsComponent  extends BaseComponent implements IHas
         equipment: this.applicationService.currenKbiSection!.fireSmokeProvisions![0]
       });  
     }
-    return navigationService.navigateRelative(FireSmokeProvisionsComponent.route, activatedRoute);
+    return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
