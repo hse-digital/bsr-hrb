@@ -6,6 +6,7 @@ import { Component, Input } from '@angular/core';
 })
 export class CheckboxOptionComponent {
   @Input() public text?: string;
+  @Input() public hint?: string;
   @Input() public value?: string;
   @Input() public id?: string;
 }
