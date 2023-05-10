@@ -5,6 +5,11 @@ export class AccountabilityAreasHelper {
     static updateAccountabilityAreas(applicationService: ApplicationService, accountablePersonIndex: number, section: SectionModel, area: string) {
         let accountability = AccountabilityAreasHelper.getAccountabilityFor(applicationService, accountablePersonIndex, section);
 
+        if (accountablePersonIndex == 0 && area !== 'none' && accountability.includes('none')) {
+            let noneIndex = accountability.indexOf('none');
+            if (noneIndex > -1) accountability.splice(noneIndex, 1);
+        }
+
         if (!AccountabilityAreasHelper.isApAccountableFor(applicationService, accountablePersonIndex, section, area)) {
             accountability.push(area);
         } else {
