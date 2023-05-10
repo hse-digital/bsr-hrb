@@ -12,7 +12,7 @@
                 <govuk-body>This is not a complete list. It includes only the equipment we need to know about.</govuk-body>
                 <govuk-body>You should be able to get this information from the latest fire risk assessment.</govuk-body>
 
-                <equipment title="What equipment is in the residential units?" hint="Select all that apply" 
+                <equipment title="What equipment is in the residential units?" hint="Select all that apply"  [errorText]="getErrorDescription(provisionsEquipmentHasErrors, errorMessage!)"
                     (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.provisionsEquipment!"></equipment>
             </div>
 

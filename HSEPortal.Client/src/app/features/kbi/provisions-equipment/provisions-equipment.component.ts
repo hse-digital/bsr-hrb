@@ -7,6 +7,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { EquipmentComponent } from './equipment.component';
+import { FireSmokeProvisionsComponent } from '../fire-smoke-provisions/fire-smoke-provisions.component';
 
 @Component({
   selector: 'hse-provisions-equipment',
@@ -48,7 +49,7 @@ export class ProvisionsEquipmentComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ProvisionsEquipmentComponent.route, activatedRoute);
+    return navigationService.navigateRelative(FireSmokeProvisionsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

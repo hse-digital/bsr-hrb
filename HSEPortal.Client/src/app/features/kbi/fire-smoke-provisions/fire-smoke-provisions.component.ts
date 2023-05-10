@@ -6,7 +6,6 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { ProvisionsEquipmentComponent } from '../provisions-equipment/provisions-equipment.component';
 import { EquipmentFireSmokeProvisionsComponent } from './equipment.component';
 
 @Component({
@@ -14,7 +13,7 @@ import { EquipmentFireSmokeProvisionsComponent } from './equipment.component';
   templateUrl: './fire-smoke-provisions.component.html'
 })
 export class FireSmokeProvisionsComponent  extends BaseComponent implements IHasNextPage, OnInit {
-  static route: string = 'provisions-equipment';
+  static route: string = 'fire-smoke-provisions';
   static title: string = "Residential fire and smoke controls - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
@@ -22,14 +21,14 @@ export class FireSmokeProvisionsComponent  extends BaseComponent implements IHas
 
   firstCheckboxAnchorId?: string;
   errorMessage?: string;
-  provisionsEquipmentHasErrors = false;
+  fireSmokeProvisionsHasErrors = false;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.provisionsEquipment) { this.applicationService.currenKbiSection!.provisionsEquipment = []; }
+    if (!this.applicationService.currenKbiSection!.fireSmokeProvisions) { this.applicationService.currenKbiSection!.fireSmokeProvisions = []; }
     this.errorMessage = `Select the fire and smoke control equipment in the residential units of ${this.getInfraestructureName()}`;
   }
 
@@ -40,16 +39,16 @@ export class FireSmokeProvisionsComponent  extends BaseComponent implements IHas
   }
 
   canContinue(): boolean {
-    this.provisionsEquipmentHasErrors = !this.applicationService.currenKbiSection!.provisionsEquipment 
-      || this.applicationService.currenKbiSection!.provisionsEquipment.length == 0;
+    this.fireSmokeProvisionsHasErrors = !this.applicationService.currenKbiSection!.fireSmokeProvisions 
+      || this.applicationService.currenKbiSection!.fireSmokeProvisions.length == 0;
 
-    if (this.provisionsEquipmentHasErrors) this.firstCheckboxAnchorId = `equipment_heat_detectors-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
+    if (this.fireSmokeProvisionsHasErrors) this.firstCheckboxAnchorId = `alarm_heat_smoke-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
-    return !this.provisionsEquipmentHasErrors;
+    return !this.fireSmokeProvisionsHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ProvisionsEquipmentComponent.route, activatedRoute);
+    return navigationService.navigateRelative(FireSmokeProvisionsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

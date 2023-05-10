@@ -1,4 +1,4 @@
-<govuk-checkbox-group [hint]="hint" id="equipment" #field [govukRequired]="field"
+<govuk-checkbox-group [hint]="hint" id="equipment" #field [govukRequired]="field" [errorText]="errorText"
     [title]="title" [(model)]="model">
     <govuk-checkbox #checkbox (onKeyupEnter)="onKeyupEnter.emit()" (onClicked)="optionClicked()" id="equipment_heat_detectors" [model]="model" text="Heat detectors" value="heat_detectors" />
     <govuk-checkbox #checkbox (onKeyupEnter)="onKeyupEnter.emit()" (onClicked)="optionClicked()" id="equipment_smoke_detectors" [model]="model" text="Smoke detectors" value="smoke_detectors" />
