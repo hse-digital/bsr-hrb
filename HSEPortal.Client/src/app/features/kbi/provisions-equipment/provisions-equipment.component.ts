@@ -6,8 +6,8 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { EquipmentComponent } from './equipment.component';
 import { FireSmokeProvisionsComponent } from '../fire-smoke-provisions/fire-smoke-provisions.component';
+import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
 
 @Component({
   selector: 'hse-provisions-equipment',
@@ -18,7 +18,7 @@ export class ProvisionsEquipmentComponent extends BaseComponent implements IHasN
   static title: string = "Residential fire and smoke controls - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-  @ViewChild(EquipmentComponent) equipmentCheckboxGroup?: EquipmentComponent;
+  @ViewChild(GovukCheckboxNoneComponent) equipmentCheckboxGroup?: GovukCheckboxNoneComponent;
 
   firstCheckboxAnchorId?: string;
   errorMessage?: string;

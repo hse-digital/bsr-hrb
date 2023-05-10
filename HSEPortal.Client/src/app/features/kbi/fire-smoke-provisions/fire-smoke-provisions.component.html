@@ -9,10 +9,27 @@
                 </govuk-error-summary>
 
                 <h1 class="govuk-heading-l">Fire and smoke control equipment in the parts of that residents share</h1>
-                <govuk-body>This is not a complete list. It includes only the equipment we need to know about.</govuk-body>
+                <govuk-body>This is not a complete list. It includes only the equipment we need to know
+                    about.</govuk-body>
 
-                <equipment-fire-smoke title="What equipment is in the parts shared by all residents?" hint="Select all that apply" [errorText]="getErrorDescription(fireSmokeProvisionsHasErrors, errorMessage!)"
-                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.fireSmokeProvisions!"></equipment-fire-smoke>
+                <govuk-checkbox-none title="What equipment is in the parts shared by all residents?"
+                    hint="Select all that apply"
+                    [errorText]="getErrorDescription(fireSmokeProvisionsHasErrors, errorMessage!)"
+                    (onKeyupEnter)="saveAndContinue()"
+                    [(model)]="applicationService.currenKbiSection!.fireSmokeProvisions!">
+                    <checkbox-option text="Alarm connected to heat or smoke detectors" value="alarm_heat_smoke" id="alarm_heat_smoke" />
+                    <checkbox-option text="Alarm connected to call points" value="alarm_call_points" id="alarm_call_points" />
+                    <checkbox-option text="Fire dampers" value="fire_dampers" id="fire_dampers" />
+                    <checkbox-option text="Fire extinguishers" value="fire_extinguishers" id="fire_extinguishers" />
+                    <checkbox-option text="Fire shutters" value="fire_shutters" id="fire_shutters" />
+                    <checkbox-option text="Heat detectors" value="heat_detectors" id="heat_detectors" />
+                    <checkbox-option text="Risers - dry" value="risers_dry" id="risers_dry" />
+                    <checkbox-option text="Risers - wet" value="risers_wet" id="risers_wet" />
+                    <checkbox-option text="Smoke control systems - automatic (AOVs)" value="smoke_aovs" id="smoke_aovs" />
+                    <checkbox-option text="Smoke control systems - manual" value="smoke_manual" id="smoke_manual" />
+                    <checkbox-option text="Smoke detectors" value="smoke_detectors" id="smoke_detectors" />
+                    <checkbox-option text="Sprinklers or misters" value="sprinklers_misters" id="sprinklers_misters" />
+                </govuk-checkbox-none>
             </div>
 
             <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>

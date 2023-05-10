@@ -15,6 +15,8 @@ import { AddressDescriptionComponent } from "./address-description.component";
 import { SaveAndComeBackLaterComponent } from "./save-and-come-back.component";
 import { PapAccountabilityComponent } from "./pap-accountability/pap-accountability.component";
 import { GovukRequiredDirective } from "./required.directive";
+import { GovukCheckboxNoneComponent } from './govuk-checkbox-none/govuk-checkbox-none.component';
+import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { GovukRequiredDirective } from "./required.directive";
     AddressDescriptionComponent,
     SaveAndComeBackLaterComponent,
     PapAccountabilityComponent,
-    GovukRequiredDirective
+    GovukRequiredDirective,
+    GovukCheckboxNoneComponent,
+    CheckboxOptionComponent
   ],
   imports: [
     HseAngularModule,
@@ -40,7 +44,8 @@ import { GovukRequiredDirective } from "./required.directive";
     AddressDescriptionComponent,
     SaveAndComeBackLaterComponent,
     PapAccountabilityComponent,
-    GovukRequiredDirective
+    GovukRequiredDirective,
+    GovukCheckboxNoneComponent,CheckboxOptionComponent
   ],
   providers: [HttpClient, AddressService]
 })
