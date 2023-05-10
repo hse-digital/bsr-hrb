@@ -14,7 +14,7 @@ import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-no
 })
 export class FireSmokeProvisionsComponent  extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'fire-smoke-provisions';
-  static title: string = "Residential fire and smoke controls - Register a high-rise building - GOV.UK";
+  static title: string = "Common parts fire and smoke controls - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChild(GovukCheckboxNoneComponent) equipmentCheckboxGroup?: GovukCheckboxNoneComponent;
