@@ -231,6 +231,7 @@ export class AccountablePersonModel {
   LeadPhoneNumber?: string;
 
   SectionsAccountability?: SectionAccountability[];
+  AddAnother?: string;
 }
 
 export class SectionAccountability {
