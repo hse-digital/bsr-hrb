@@ -84,6 +84,11 @@ export class ApplicationService {
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
+  _currentKbiSectionIndex: number = 0;
+  get currenKbiSection() {
+    return this.model.Kbi?.KbiSections[this._currentKbiSectionIndex];
+  }
+
   async removeAp(index: number) {
     this.model.AccountablePersons.splice(index, 1);
     await this.updateApplication();
@@ -173,6 +178,7 @@ export class BuildingRegistrationModel {
   PrincipalAccountableType?: string;
   AccountablePersons: AccountablePersonModel[] = [];
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
+  Kbi?: KbiModel;
 }
 
 export enum BuildingApplicationStatus {
@@ -182,7 +188,15 @@ export enum BuildingApplicationStatus {
   AccountablePersonsInProgress = 4,
   AccountablePersonsComplete = 8,
   PaymentInProgress = 16,
-  PaymentComplete = 32
+  PaymentComplete = 32,
+  KbiCheckBeforeInProgress = 64,
+  KbiCheckBeforeComplete = 128,
+  KbiStructureInformationInProgress = 256,
+  KbiStructureInformationComplete = 512,
+  KbiConnectionsInProgress = 1024,
+  KbiConnectionsComplete = 2048,
+  KbiSubmitInProgress = 4096,
+  KbiSubmitComplete = 8192
 }
 
 export class SectionModel {
@@ -259,4 +273,17 @@ export enum PaymentStatus {
   Pending,
   Success,
   Failed
+}
+
+export class KbiModel {
+  SectionStatus: { inProgress: boolean, complete: boolean }[] = [];
+  KbiSections: KbiSectionModel[] = [];
+}
+
+export class KbiSectionModel {
+  strategyEvacuateBuilding?: string;
+  provisionsEquipment?: string[];
+  fireSmokeProvisions?: string[];
+  fireSmokeProvisionLocations?: Record<string, string[]>;
+  lifts?: string[];
 }

@@ -30,7 +30,7 @@ export abstract class BaseComponent implements CanActivate {
     if (!this.canAccess(routeSnapshot)) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
-    } else if (!this.isSummaryPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
+    } else if (!this.isSummaryPage() && !this.isKbiPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
       this.navigationService.navigate(ApplicationSubmittedHelper.getPaymentConfirmationRoute(this.applicationService));
       return false;
     }
@@ -38,8 +38,12 @@ export abstract class BaseComponent implements CanActivate {
     return true;
   }
 
-  private isSummaryPage(){
+  private isSummaryPage() {
     return location.href.endsWith(`/${this.applicationService.model.id}/summary`);
+  }
+
+  private isKbiPage() {
+    return location.href.includes(`/${this.applicationService.model.id}/kbi`);
   }
 
   hasErrors = false;
