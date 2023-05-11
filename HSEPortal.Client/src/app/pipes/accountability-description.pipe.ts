@@ -7,6 +7,7 @@ import { FieldValidations } from '../helpers/validators/fieldvalidations';
 export class AccountabilityDescriptionPipe implements PipeTransform {
 
   static readonly accountabilityDescription: Record<string, string> = {
+    "none": "External walls and roof",
     "external_walls": "External walls and roof",
     "routes": "Routes that residents can walk through",
     "maintenance": "Maintaining plant and equipment"

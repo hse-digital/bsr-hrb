@@ -1,0 +1,34 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+                    <govuk-error-link *ngFor="let error of errors" anchorId="{{error.anchorId}}"
+                        [message]="error.message" />
+                </govuk-error-summary>
+
+                <h1 class="govuk-heading-l">You have not allocated all areas of accountability in
+                    {{applicationService.model.BuildingName}}</h1>
+                <govuk-body>At least one accountable person must be accountable for each of these areas.</govuk-body>
+
+                <ng-container *ngFor="let section of applicationService.model.Sections; let i = index">
+                    <div *ngFor="let area of notAllocatedAreas[i]" class="govuk-!-margin-bottom-6">
+                        <not-allocated-accountability [title]="getCheckboxTitle(i, area)"
+                            [id]="createSectionId(i, area)" [errorText]="getSectionError(i, area)" (onKeyupEnter)="saveAndContinue()"
+                            (onModelChange)="updateAccountabilityAreas($event, section, area)" />
+                    </div>
+                </ng-container>
+                
+            </div>
+
+            <govuk-inset-text>If these accountable persons are not accountable for all areas you'll need to <a
+                    class="govuk-link" role="link" tabindex="0" (click)="navigateToAddMoreAccountablePersons()">add an accountable person</a>.</govuk-inset-text>
+
+            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+            <save-and-come-back (onClick)="saveAndComeBack()" />
+        </div>
+    </div>
+</div>

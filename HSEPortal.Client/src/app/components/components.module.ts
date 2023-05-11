@@ -15,6 +15,8 @@ import { AddressDescriptionComponent } from "./address-description.component";
 import { SaveAndComeBackLaterComponent } from "./save-and-come-back.component";
 import { PapAccountabilityComponent } from "./pap-accountability/pap-accountability.component";
 import { GovukRequiredDirective } from "./required.directive";
+import { AccountabilityComponent } from './accountability/accountability.component';
+import { NotAllocatedAccountabilityComponent } from './not-allocated-accountability/not-allocated-accountability.component';
 import { GovukCheckboxNoneComponent } from './govuk-checkbox-none/govuk-checkbox-none.component';
 import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.component';
 
@@ -31,6 +33,8 @@ import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.c
     SaveAndComeBackLaterComponent,
     PapAccountabilityComponent,
     GovukRequiredDirective,
+    AccountabilityComponent,
+    NotAllocatedAccountabilityComponent,
     GovukCheckboxNoneComponent,
     CheckboxOptionComponent
   ],
@@ -45,6 +49,8 @@ import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.c
     SaveAndComeBackLaterComponent,
     PapAccountabilityComponent,
     GovukRequiredDirective,
+    AccountabilityComponent,
+    NotAllocatedAccountabilityComponent,
     GovukCheckboxNoneComponent,CheckboxOptionComponent
   ],
   providers: [HttpClient, AddressService]

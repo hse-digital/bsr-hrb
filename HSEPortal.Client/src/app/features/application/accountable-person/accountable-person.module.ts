@@ -33,6 +33,8 @@ import { OrganisationNamedContactComponent } from "./organisation/named-contact/
 import { PapNamedRoleComponent } from "./organisation/pap-named-role/pap-named-role.component";
 import { PrincipleAccountableSelection } from "./principal/principal.component";
 import { PipesModule } from "src/app/pipes/pipes.module";
+import { AreasAccountabilityComponent } from './areas-accountability/areas-accountability.component';
+import { NotAllocatedAccountabilityAreasComponent } from './not-allocated-accountability-areas/not-allocated-accountability-areas.component';
 
 @Component({
   template: '<router-outlet></router-outlet>'
@@ -55,6 +57,8 @@ const routes = new HseRoutes([
   HseRoute.protected(AccountablePersonComponent.route, AccountablePersonComponent, AccountablePersonComponent.title),
   HseRoute.protected(AddAccountablePersonComponent.route, AddAccountablePersonComponent, AddAccountablePersonComponent.title),
   HseRoute.protected(AccountablePersonCheckAnswersComponent.route, AccountablePersonCheckAnswersComponent, AccountablePersonCheckAnswersComponent.title),
+  HseRoute.protected(AreasAccountabilityComponent.route, AreasAccountabilityComponent, AreasAccountabilityComponent.title),
+  HseRoute.protected(NotAllocatedAccountabilityAreasComponent.route, NotAllocatedAccountabilityAreasComponent, NotAllocatedAccountabilityAreasComponent.title),
   HseRoute.forChildren(':id', IdCaptureComponent, new HseRoutes([
     HseRoute.protected(PrincipleAccountableSelection.route, PrincipleAccountableSelection, PrincipleAccountableSelection.title),
     HseRoute.protected(PapNamedRoleComponent.route, PapNamedRoleComponent, PapNamedRoleComponent.title),
@@ -76,6 +80,8 @@ const routes = new HseRoutes([
     HseRoute.protected(OrganisationTypeComponent.route, OrganisationTypeComponent, OrganisationTypeComponent.title),
     HseRoute.protected(OrganisationNameComponent.route, OrganisationNameComponent, OrganisationNameComponent.title),
     HseRoute.protected(PapWhoAreYouComponent.route, PapWhoAreYouComponent, PapWhoAreYouComponent.title),
+    
+    
   ]))
 ]);
 
@@ -111,6 +117,8 @@ const routes = new HseRoutes([
 
     OrganisationTypeComponent,
     OrganisationNameComponent,
+    AreasAccountabilityComponent,
+    NotAllocatedAccountabilityAreasComponent,
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

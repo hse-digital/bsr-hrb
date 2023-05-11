@@ -1,0 +1,21 @@
+<govuk-checkbox-group
+    [title]=title [hint]=hint [errorText]=errorText
+    [(model)]="model"
+    [id]="id" #field [govukRequired]="field">
+    <govuk-checkbox #checkbox (onKeyupEnter)="onKeyupEnter.emit()" [id]="id"
+        [model]="model"
+        text="Routes that residents can walk through" value="routes" (onClicked)="optionClicked()" [id]="id"
+        hint="This includes stairs, lobbies, corridors, and maintaining the internal walls and floors." />
+    <govuk-checkbox #checkbox (onKeyupEnter)="onKeyupEnter.emit()"
+        [model]="model"
+        text="Maintaining machinery and equipment" value="maintenance" (onClicked)="optionClicked()" [id]="id"
+        hint="This includes all utilities, fire alarms, sprinklers, and other fire and smoke provisions." />
+    <govuk-checkbox #checkbox (onKeyupEnter)="onKeyupEnter.emit()"
+        [model]="model"
+        text="Facilities that residents share" value="facilities" (onClicked)="optionClicked()" [id]="id"
+        hint="This includes underground car parks, laundry rooms, bin stores and other storage areas." />
+    <div class="govuk-radios__divider">or</div>
+    <govuk-checkbox #noneCheckbox (onKeyupEnter)="onKeyupEnter.emit()" (onClicked)="noneOptionClicked()"
+        [model]="model" [id]="id"
+        text="None of these, only the structure and exterior" value="none" />
+</govuk-checkbox-group>
