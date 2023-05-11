@@ -7,8 +7,6 @@ import { OrganisationTypeComponent } from "src/app/features/application/accounta
 import { OrganisationNameComponent } from "src/app/features/application/accountable-person/organisation/organisation-name/organisation-name.component";
 import { PrincipleAccountableSelection } from "src/app/features/application/accountable-person/principal/principal.component";
 import { PapAddressComponent } from "src/app/features/application/accountable-person/ap-address/pap-address.component";
-import { ApAddressComponent } from "src/app/features/application/accountable-person/ap-address/ap-address.component";
-import { ApNameComponent } from "src/app/features/application/accountable-person/ap-name/ap-name.component";
 import { PapNameComponent } from "src/app/features/application/accountable-person/ap-name/pap-name.component";
 import { PapDetailsComponent } from "src/app/features/application/accountable-person/ap-details/pap-details.component";
 import { PapWhoAreYouComponent } from "src/app/features/application/accountable-person/organisation/pap-who-are-you/pap-who-are-you.component";
@@ -17,6 +15,14 @@ import { LeadNameComponent } from "src/app/features/application/accountable-pers
 import { LeadDetailsComponent } from "src/app/features/application/accountable-person/organisation/lead-details/lead-details.component";
 import { PapNamedRoleComponent } from "src/app/features/application/accountable-person/organisation/pap-named-role/pap-named-role.component";
 import { AddAccountablePersonComponent } from "src/app/features/application/accountable-person/add-accountable-person/add-accountable-person.component";
+import { AreasAccountabilityComponent } from "src/app/features/application/accountable-person/areas-accountability/areas-accountability.component";
+import { AccountablePersonTypeComponent } from "src/app/features/application/accountable-person/add-accountable-person/accountable-person-type.component";
+import { ApNameComponent } from "src/app/features/application/accountable-person/ap-name/ap-name.component";
+import { ApDetailsComponent } from "src/app/features/application/accountable-person/ap-details/ap-details.component";
+import { ApAddressComponent } from "src/app/features/application/accountable-person/ap-address/ap-address.component";
+import { ApAccountableForComponent } from "src/app/features/application/accountable-person/accountable-for/accountable-for.component";
+import { OrganisationNamedContactComponent } from "src/app/features/application/accountable-person/organisation/named-contact/named-contact.component";
+import { OrganisationNamedContactDetailsComponent } from "src/app/features/application/accountable-person/organisation/named-contact/named-contact-details.component";
 
 @Injectable({ providedIn: 'root' })
 export class AccountablePersonNavigation extends BaseNavigation {
@@ -26,7 +32,7 @@ export class AccountablePersonNavigation extends BaseNavigation {
   }
 
   private CheckAnswersNavigationNode = new CheckAnswersNavigationNode();
-  private AccountabilityNotAllocatedNavigationNode = new AccountabilityNotAllocatedNavigationNode(this.CheckAnswersNavigationNode);
+  private AccountabilityNotAllocatedNavigationNode = new AccountabilityNotAllocatedNavigationNode(this.applicationService, this.CheckAnswersNavigationNode);
   private PapAccountabilityNavigationNode = new PapAccountabilityNavigationNode(this.applicationService, this.AccountabilityNotAllocatedNavigationNode, this.CheckAnswersNavigationNode);
   private AddAnotherApNavigationTree = new AddAnotherApNavigationTree(this.PapAccountabilityNavigationNode);
   private PapLeadContactDetailsNavigationNode = new PapLeadContactDetailsNavigationNode(this.AddAnotherApNavigationTree);
@@ -315,7 +321,36 @@ class PapAccountabilityNavigationNode extends ApNavigationNode {
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
     var pap = this.applicationService.model.AccountablePersons[0];
-    return '';
+    if (pap.SectionsAccountability == null || pap.SectionsAccountability.length == 0 || pap.SectionsAccountability.flatMap(x => x.Accountability)?.length == 0) {
+      return AreasAccountabilityComponent.route;
+    }
+
+    for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
+      var sectionAccountability = this.applicationService.model.AccountablePersons[0].SectionsAccountability![i];
+      if (sectionAccountability.Accountability!.length == 0) {
+        return this.AccountabilityNotAllocatedNavigationNode.getNextRoute(ap, apIndex);
+      }
+    }
+
+    return this.CheckAnswersNavigationNode.getNextRoute(ap, apIndex);
+  }
+}
+
+class AccountabilityNotAllocatedNavigationNode extends ApNavigationNode {
+  constructor(private applicationService: ApplicationService,
+    private CheckAnswersNavigationNode: CheckAnswersNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
+    for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
+      var sectionAccountability = this.applicationService.model.AccountablePersons[0].SectionsAccountability![i];
+      if (sectionAccountability.Accountability!.length == 0) {
+        return AreasAccountabilityComponent.route;
+      }
+    }
+
+    return this.CheckAnswersNavigationNode.getNextRoute(ap, apIndex);
   }
 }
 
@@ -326,26 +361,29 @@ class ApTypeNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    throw new Error("Method not implemented.");
+    if (!ap.Type) {
+      return AccountablePersonTypeComponent.route;
+    }
+
+    if (ap.Type == 'organisation') {
+      return this.OrganisationTypeNavigationNode.getNextRoute(ap, apIndex);
+    }
+
+    return this.ApNameNavigationNode.getNextRoute(ap, apIndex);
   }
 }
 
-class AccountabilityNotAllocatedNavigationNode extends ApNavigationNode {
-  constructor(private CheckAnswersNavigationNode: CheckAnswersNavigationNode) {
-    super();
-  }
-
-  override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    throw new Error("Method not implemented.");
-  }
-}
 class ApNameNavigationNode extends ApNavigationNode {
   constructor(private ApDetailsNavigationNode: ApDetailsNavigationNode) {
     super();
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    throw new Error("Method not implemented.");
+    if (!ap.FirstName || !ap.LastName) {
+      return ApNameComponent.route;
+    }
+
+    return this.ApDetailsNavigationNode.getNextRoute(ap, apIndex);
   }
 }
 
@@ -355,7 +393,11 @@ class ApDetailsNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    throw new Error("Method not implemented.");
+    if (!ap.PhoneNumber || !ap.Email) {
+      return ApDetailsComponent.route;
+    }
+
+    return this.ApAddressNavigationNode.getNextRoute(ap, apIndex);
   }
 }
 
@@ -365,7 +407,11 @@ class ApAddressNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    throw new Error("Method not implemented.");
+    if (!ap.Address) {
+      return ApAddressComponent.route;
+    }
+
+    return this.ApAccountabilityNavigationNode.getNextRoute(ap, apIndex);
   }
 }
 
@@ -376,7 +422,15 @@ class ApAccountabilityNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    throw new Error("Method not implemented.");
+    if (ap.SectionsAccountability == null || ap.SectionsAccountability.length == 0 || ap.SectionsAccountability.flatMap(x => x.Accountability)?.length == 0) {
+      return ApAccountableForComponent.route;
+    }
+
+    if (ap.Type == 'individual') {
+      return this.AddAnotherApNavigationTree.getNextRoute(ap, apIndex);
+    }
+
+    return this.ApNamedContactNameNavigationNode.getNextRoute(ap, apIndex);
   }
 }
 
@@ -386,7 +440,11 @@ class ApNamedContactNameNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    throw new Error("Method not implemented.");
+    if (!ap.NamedContactFirstName || !ap.NamedContactLastName) {
+      return OrganisationNamedContactComponent.route;
+    }
+
+    return this.ApNamedContactDetailsNavigationNode.getNextRoute(ap, apIndex);
   }
 }
 
@@ -396,7 +454,11 @@ class ApNamedContactDetailsNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    throw new Error("Method not implemented.");
+    if (!ap.NamedContactPhoneNumber || !ap.NamedContactEmail) {
+      return OrganisationNamedContactDetailsComponent.route;
+    }
+
+    return this.AddAnotherApNavigationTree.getNextRoute(ap, apIndex);
   }
 }
 
@@ -405,8 +467,8 @@ class CheckAnswersNavigationNode extends ApNavigationNode {
     super();
   }
 
-  override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    throw new Error("Method not implemented.");
+  override getNextRoute(ap: AccountablePersonModel, _: number): string {
+    return AccountablePersonCheckAnswersComponent.route;
   }
 }
 
