@@ -199,7 +199,6 @@ export class SectionModel {
   CompletionCertificateIssuer?: any;
   CompletionCertificateReference?: any;
   Addresses: AddressModel[] = [];
-  AnotherSection?: string;
 }
 
 export class AccountablePersonModel {
