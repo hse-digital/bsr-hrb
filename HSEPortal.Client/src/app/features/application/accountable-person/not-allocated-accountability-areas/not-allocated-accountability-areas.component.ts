@@ -95,7 +95,7 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
 
   private setAccountabilityFor(accountablePersonIndex: number, section: SectionModel, newAccountability: string[]) {
     let sectionAccountability = this.applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability!
-      .find(x => x.SectionName == section.Name ?? this.applicationService.model.BuildingName);
+      .find(x => x.SectionName == (section.Name ?? this.applicationService.model.BuildingName));
 
     if (!sectionAccountability) {
       this.applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability!.push({ SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: newAccountability });
