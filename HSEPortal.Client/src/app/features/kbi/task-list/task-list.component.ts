@@ -10,7 +10,7 @@ import { EvacuationStrategyComponent } from '../evacuation-strategy/evacuation-s
   templateUrl: './task-list.component.html'
 })
 export class TaskListComponent implements CanActivate, OnInit {
-  public static route: string = "task-list";
+  public static route: string = "";
   static title: string = "Task list - KBI - Register a high-rise building - GOV.UK";
 
   applicationStatus = BuildingApplicationStatus;
@@ -58,12 +58,12 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   navigateToCheckBeforeStart() {
-    return this.navigationService.navigateRelative(CheckBeforeStartComponent.route, this.activatedRoute);
+    return this.navigationService.navigateAppend(CheckBeforeStartComponent.route, this.activatedRoute);
   }
 
   navigateToSection(index: number) {
     this.applicationService._currentKbiSectionIndex = index;
-    return this.navigationService.navigateRelative(EvacuationStrategyComponent.route, this.activatedRoute);
+    return this.navigationService.navigateAppend(EvacuationStrategyComponent.route, this.activatedRoute);
   }
 
   navigateToConnections() {
