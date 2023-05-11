@@ -40,6 +40,7 @@ stages:
     - template: deploy.yml
       parameters:
         subscription: 's118-dev-bsr-acs-services'
+        appBuildCommand: 'npm run buildnonprod'
     - job: IntegrationTesting
       dependsOn: Deploy
       steps:
@@ -63,6 +64,7 @@ stages:
     - template: deploy.yml
       parameters:
         subscription: 's118-test-bsr-acs-services'
+        appBuildCommand: 'npm run buildnonprod'
         
 - stage: UAT
   dependsOn: QA
@@ -72,3 +74,4 @@ stages:
     - template: deploy.yml
       parameters:
         subscription: 's118-test-bsr-acs-services'
+        appBuildCommand: 'npm run buildnonprod'

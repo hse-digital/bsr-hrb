@@ -15,6 +15,8 @@ import { AddressDescriptionComponent } from "./address-description.component";
 import { SaveAndComeBackLaterComponent } from "./save-and-come-back.component";
 import { PapAccountabilityComponent } from "./pap-accountability/pap-accountability.component";
 import { GovukRequiredDirective } from "./required.directive";
+import { AccountabilityComponent } from './accountability/accountability.component';
+import { NotAllocatedAccountabilityComponent } from './not-allocated-accountability/not-allocated-accountability.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { GovukRequiredDirective } from "./required.directive";
     AddressDescriptionComponent,
     SaveAndComeBackLaterComponent,
     PapAccountabilityComponent,
-    GovukRequiredDirective
+    GovukRequiredDirective,
+    AccountabilityComponent,
+    NotAllocatedAccountabilityComponent
   ],
   imports: [
     HseAngularModule,
@@ -40,7 +44,9 @@ import { GovukRequiredDirective } from "./required.directive";
     AddressDescriptionComponent,
     SaveAndComeBackLaterComponent,
     PapAccountabilityComponent,
-    GovukRequiredDirective
+    GovukRequiredDirective,
+    AccountabilityComponent,
+    NotAllocatedAccountabilityComponent
   ],
   providers: [HttpClient, AddressService]
 })

@@ -6,8 +6,8 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { AccountablePersonTypeComponent } from './accountable-person-type.component';
+import { AreasAccountabilityComponent } from '../areas-accountability/areas-accountability.component';
 
 @Component({
   selector: 'hse-add-accountable-person',
@@ -42,7 +42,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
       return navigationService.navigateRelative(`${newAp}/${AccountablePersonTypeComponent.route}`, activatedRoute);
     }
 
-    return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
+    return navigationService.navigateRelative(AreasAccountabilityComponent.route, activatedRoute);
   }
 
   principalName() {
