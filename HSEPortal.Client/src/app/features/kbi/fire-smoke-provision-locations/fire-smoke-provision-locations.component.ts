@@ -91,6 +91,7 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
   canContinue(): boolean {
     this.firstCheckboxAnchorId = `basement-${this.checkboxes?.first.innerId}`;
     this.locationsHasErrors = !this.applicationService.currenKbiSection!.fireSmokeProvisionLocations![this.currentEquipment!] || this.applicationService.currenKbiSection!.fireSmokeProvisionLocations![this.currentEquipment!].length == 0;
+    if(this.locationsHasErrors) this.errorMessage = `Select where the ${this.getEquipmentName(this.currentEquipment!)} are in ${this.getInfraestructureName()}`;
     return !this.locationsHasErrors;
   }
 

@@ -11,6 +11,7 @@ export class GovukCheckboxNoneComponent {
   @Output() onKeyupEnter = new EventEmitter();
   @Input() title?: string;
   @Input() titleClass?: string;
+  @Input() fieldsetClass?: string;
   @Input() isPageHeading: boolean = false;
   @Input() hint?: string;
   @Input() id!: string;

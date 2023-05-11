@@ -43,7 +43,7 @@ export class ProvisionsEquipmentComponent extends BaseComponent implements IHasN
     this.provisionsEquipmentHasErrors = !this.applicationService.currenKbiSection!.provisionsEquipment 
       || this.applicationService.currenKbiSection!.provisionsEquipment.length == 0;
 
-    if (this.provisionsEquipmentHasErrors) this.firstCheckboxAnchorId = `equipment_heat_detectors-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
+    if (this.provisionsEquipmentHasErrors) this.firstCheckboxAnchorId = `heat_detectors-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
     return !this.provisionsEquipmentHasErrors;
   }

@@ -31,7 +31,7 @@ export class FireSmokeProvisionsComponent  extends BaseComponent implements IHas
 
   ngOnInit(): void {
     if (!this.applicationService.currenKbiSection!.fireSmokeProvisions) { this.applicationService.currenKbiSection!.fireSmokeProvisions = []; }
-    this.errorMessage = `Select the fire and smoke control equipment in the residential units of ${this.getInfraestructureName()}`;
+    this.errorMessage = `Select the fire and smoke control equipment in the residential common parts of ${this.getInfraestructureName()}`;
   }
 
   getInfraestructureName() {

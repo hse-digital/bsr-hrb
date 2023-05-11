@@ -10,8 +10,7 @@ import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'hse-lifts',
-  templateUrl: './lifts.component.html',
-  styleUrls: ['./lifts.component.scss']
+  templateUrl: './lifts.component.html'
 })
 export class LiftsComponent  extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'lifts';
