@@ -5,7 +5,7 @@ export abstract class BaseNavigation {
 }
 
 export abstract class BuildingNavigationNode {
-  abstract getNextRoute(section: SectionModel): string;
+  abstract getNextRoute(section: SectionModel, sectionIndex: number): string;
 }
 
 export abstract class ApNavigationNode {
