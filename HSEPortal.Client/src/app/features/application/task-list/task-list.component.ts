@@ -9,6 +9,7 @@ import { AccountablePersonModule } from "../accountable-person/accountable-perso
 import { PaymentDeclarationComponent } from "../payment/payment-declaration/payment-declaration.component";
 import { PaymentModule } from "../payment/payment.module";
 import { BuildingSummaryNavigation } from "src/app/services/navigation/building-summary.navigation";
+import { AccountablePersonNavigation } from "src/app/services/navigation/accountable-person.navigation";
 
 @Component({
   templateUrl: './task-list.component.html'
@@ -25,7 +26,8 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private buildingNavigation: BuildingSummaryNavigation) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, 
+    private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
@@ -55,13 +57,8 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
   }
 
   navigateToPap() {
-    let appendRoute = AccountablePersonModule.baseRoute;
-
-    if (this.applicationService.model.AccountablePersons?.length > 0) {
-      appendRoute = 'accountable-person/check-answers'
-    }
-
-    this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
+    const route = this.apNavigation.getNextRoute();
+    this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
   navigateToPayment() {
