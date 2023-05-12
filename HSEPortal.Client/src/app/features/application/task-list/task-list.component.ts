@@ -5,10 +5,11 @@ import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService, BuildingApplicationStatus, PaymentStatus } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
-import { AccountablePersonModule } from "../accountable-person/accountable-person.module";
-import { NumberOfSectionsComponment } from "../number-of-sections/number-of-sections.component";
 import { PaymentDeclarationComponent } from "../payment/payment-declaration/payment-declaration.component";
 import { PaymentModule } from "../payment/payment.module";
+import { BuildingSummaryNavigation } from "src/app/services/navigation/building-summary.navigation";
+import { AccountablePersonNavigation } from "src/app/services/navigation/accountable-person.navigation";
+import { AccountablePersonModule } from "../accountable-person/accountable-person.module";
 
 @Component({
   templateUrl: './task-list.component.html'
@@ -25,7 +26,8 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, 
+    private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
@@ -50,16 +52,15 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
   }
 
   navigateToSections() {
-    let appendRoute = NumberOfSectionsComponment.route;
-
-    if (this.applicationService.model.Sections?.length > 0) {
-      appendRoute = 'sections/check-answers'
-    }
-
-    this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
+    const route = this.buildingNavigation.getNextRoute();
+    console.log(route);
+    this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
   navigateToPap() {
+    // const route = this.apNavigation.getNextRoute();
+    // this.navigationService.navigateAppend(route, this.activatedRoute);
+    
     let appendRoute = AccountablePersonModule.baseRoute;
 
     if (this.applicationService.model.AccountablePersons?.length > 0) {

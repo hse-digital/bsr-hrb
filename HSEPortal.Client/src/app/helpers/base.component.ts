@@ -79,11 +79,11 @@ export abstract class BaseComponent implements CanActivate {
       this.titleService.setTitleError();
     } else {
       this.screenReaderNotification();
+      await this.applicationService.updateApplication();
       let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete
         ? `application/${this.applicationService.model.id}/kbi`
         : `application/${this.applicationService.model.id}`;
       this.navigationService.navigate(route);
-      await this.applicationService.updateApplication();
     }
   }
 
