@@ -19,6 +19,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
+  addAccountablePerson?: string;
   addAccountablePersonHasError = false;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
@@ -32,12 +33,12 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
   }
 
   canContinue(): boolean {
-    this.addAccountablePersonHasError = !this.applicationService.currentAccountablePerson.AddAnother;
+    this.addAccountablePersonHasError = !this.addAccountablePerson;
     return !this.addAccountablePersonHasError;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentAccountablePerson.AddAnother == 'yes') {
+    if (this.addAccountablePerson == 'yes') {
       let newAp = this.applicationService.startNewAccountablePerson();
       return navigationService.navigateRelative(`${newAp}/${AccountablePersonTypeComponent.route}`, activatedRoute);
     }
