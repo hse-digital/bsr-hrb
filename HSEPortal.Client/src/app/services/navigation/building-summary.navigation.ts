@@ -29,15 +29,13 @@ export class BuildingSummaryNavigation extends BaseNavigation {
   private numberOfSectionsNavigationNode = new NumberOfSectionsNavigationNode(this.applicationService, this.sectionsIntroNavigationNode, this.addAnotherSectionNavigationTree);
 
   override getNextRoute(): string {
-    if (!this.applicationService.model.Sections) {
+    if (this.applicationService.model.Sections == null || this.applicationService.model.Sections.length == 0) {
       return NumberOfSectionsComponment.route;
     }
 
     for (let sectionIndex = 0; sectionIndex < this.applicationService.model.Sections.length; sectionIndex++) {
       let section = this.applicationService.model.Sections[sectionIndex];
       let sectionRoute = this.numberOfSectionsNavigationNode.getNextRoute(section, sectionIndex);
-
-      console.log(sectionRoute);
 
       if (sectionRoute === void 0 || sectionRoute == SectionCheckAnswersComponent.route) {
         continue;
