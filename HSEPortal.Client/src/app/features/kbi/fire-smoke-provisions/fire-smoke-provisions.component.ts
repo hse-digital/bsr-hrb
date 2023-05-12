@@ -59,6 +59,7 @@ export class FireSmokeProvisionsComponent  extends BaseComponent implements IHas
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection!.strategyEvacuateBuilding;
+    return !!this.applicationService.currenKbiSection!.provisionsEquipment 
+        && this.applicationService.currenKbiSection!.provisionsEquipment.length > 0;
   }
 }
