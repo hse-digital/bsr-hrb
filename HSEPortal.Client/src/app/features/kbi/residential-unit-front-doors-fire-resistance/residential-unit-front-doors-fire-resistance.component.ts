@@ -12,8 +12,7 @@ type Error = { hasError: boolean, errorMessage: string, message: string }
 
 @Component({
   selector: 'hse-residential-unit-front-doors-fire-resistance',
-  templateUrl: './residential-unit-front-doors-fire-resistance.component.html',
-  styleUrls: ['./residential-unit-front-doors-fire-resistance.component.scss']
+  templateUrl: './residential-unit-front-doors-fire-resistance.component.html'
 })
 export class ResidentialUnitFrontDoorsFireResistanceComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = "residential-unit-front-doors-fire-resistance";
