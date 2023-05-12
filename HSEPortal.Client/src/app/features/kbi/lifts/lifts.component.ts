@@ -7,6 +7,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { ResidentialUnitFrontDoorsFireResistanceComponent } from '../residential-unit-front-doors-fire-resistance/residential-unit-front-doors-fire-resistance.component';
 
 @Component({
   selector: 'hse-lifts',
@@ -48,7 +49,7 @@ export class LiftsComponent  extends BaseComponent implements IHasNextPage, OnIn
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
+    return navigationService.navigateRelative(ResidentialUnitFrontDoorsFireResistanceComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
