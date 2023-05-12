@@ -16,7 +16,7 @@ import { SectionCheckAnswersComponent } from "src/app/features/application/secti
 import { Injectable } from "@angular/core";
 import { AddMoreSectionsComponent } from "src/app/features/application/sections/add-more-sections/add-more-sections.component";
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class BuildingSummaryNavigation extends BaseNavigation {
 
   constructor(private applicationService: ApplicationService) {
