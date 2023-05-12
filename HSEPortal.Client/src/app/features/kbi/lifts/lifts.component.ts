@@ -53,7 +53,7 @@ export class LiftsComponent  extends BaseComponent implements IHasNextPage, OnIn
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    let fireSmokeProvisionIsNone = !!this.applicationService.currenKbiSection!.fireSmokeProvisions && this.applicationService.currenKbiSection!.fireSmokeProvisions!.length == 1 && this.applicationService.currenKbiSection!.fireSmokeProvisions![0] == 'none';
+    let fireSmokeProvisionIsNone = !!this.applicationService.currenKbiSection?.fireSmokeProvisions && this.applicationService.currenKbiSection?.fireSmokeProvisions?.length == 1 && this.applicationService.currenKbiSection!.fireSmokeProvisions![0] == 'none';
     return fireSmokeProvisionIsNone || (!!this.applicationService.currenKbiSection?.fireSmokeProvisionLocations 
               && Object.keys(this.applicationService.currenKbiSection?.fireSmokeProvisionLocations).length > 0
               && this.applicationService.currenKbiSection.fireSmokeProvisions!.every(x => this.applicationService.currenKbiSection!.fireSmokeProvisionLocations![x].length > 0));
