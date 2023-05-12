@@ -23,6 +23,7 @@ import { ApAddressComponent } from "src/app/features/application/accountable-per
 import { ApAccountableForComponent } from "src/app/features/application/accountable-person/accountable-for/accountable-for.component";
 import { OrganisationNamedContactComponent } from "src/app/features/application/accountable-person/organisation/named-contact/named-contact.component";
 import { OrganisationNamedContactDetailsComponent } from "src/app/features/application/accountable-person/organisation/named-contact/named-contact-details.component";
+import { AccountablePersonModule } from "src/app/features/application/accountable-person/accountable-person.module";
 
 @Injectable({ providedIn: 'root' })
 export class AccountablePersonNavigation extends BaseNavigation {
@@ -47,22 +48,30 @@ export class AccountablePersonNavigation extends BaseNavigation {
   private YourAddressNavigationNode = new YourAddressNavigationNode(this.PapNameNavigationNode, this.AddAnotherApNavigationTree);
   private OrganisationNameNavigationNode = new OrganisationNameNavigationNode(this.PapAddressNavigationNode, undefined);
   private OrganisationTypeNavigationNode = new OrganisationTypeNavigationNode(this.OrganisationNameNavigationNode);
-  private AreYouThePapNavigationNode = new AreYouThePapNavigationNode(this.YourAddressNavigationNode);
+  private AreYouThePapNavigationNode = new AreYouThePapNavigationNode(this.YourAddressNavigationNode, this.CheckAnswersNavigationNode);
   private WhoIsPapNavigationNode = new WhoIsPapNavigationNode(this.applicationService, this.OrganisationTypeNavigationNode, this.AreYouThePapNavigationNode);
 
   override getNextRoute(): string {
+    if (!this.applicationService.model.AccountablePersons) {
+      return AccountablePersonModule.baseRoute;
+    }
+
     for (let apIndex = 0; apIndex < this.applicationService.model.AccountablePersons.length; apIndex++) {
       let ap = this.applicationService.model.AccountablePersons[apIndex];
       let apRoute = this.WhoIsPapNavigationNode.getNextRoute(ap, apIndex);
 
-      if (!apRoute || apRoute == AccountablePersonCheckAnswersComponent.route) {
+      if (apRoute === void 0 || apRoute == AccountablePersonCheckAnswersComponent.route) {
         continue;
       }
 
-      return `accountable-persons/accountable-person-${apIndex + 1}/${apRoute}`;
+      if (apRoute == AddAccountablePersonComponent.route) {
+        return `accountable-person/${AddAccountablePersonComponent.route}`
+      }
+
+      return `accountable-person/accountable-person-${apIndex + 1}/${apRoute}`;
     }
 
-    return `accountable-persons/${AccountablePersonCheckAnswersComponent.route}`;
+    return `accountable-person/${AccountablePersonCheckAnswersComponent.route}`;
   }
 }
 
@@ -120,7 +129,8 @@ class OrganisationNameNavigationNode extends ApNavigationNode {
 }
 
 class AreYouThePapNavigationNode extends ApNavigationNode {
-  constructor(private YourAddressNavigationNode: YourAddressNavigationNode) {
+  constructor(private YourAddressNavigationNode: YourAddressNavigationNode,
+    private CheckAnswersNavigationNode: CheckAnswersNavigationNode) {
     super();
   }
 
@@ -129,23 +139,27 @@ class AreYouThePapNavigationNode extends ApNavigationNode {
       return PrincipleAccountableSelection.route;
     }
 
+    if (ap.IsPrincipal == 'yes') {
+      return this.CheckAnswersNavigationNode.getNextRoute(ap, apIndex);
+    }
+
     return this.YourAddressNavigationNode.getNextRoute(ap, apIndex);
   }
 }
 
 class YourAddressNavigationNode extends ApNavigationNode {
   constructor(private PapNameNavigationNode: PapNameNavigationNode,
-    private AddAnotherApNavigationTree: AddAnotherApNavigationTree) {
+    private CheckAnswersNavigationNode: CheckAnswersNavigationNode) {
     super();
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    if (apIndex == 0 && !ap.PapAddress) {
-      return PapAddressComponent.route;
+    if (apIndex == 0 && (!ap.PapAddress && !ap.Address)) {
+      return ApAddressComponent.route;
     }
 
     if (ap.IsPrincipal == 'yes') {
-      return this.AddAnotherApNavigationTree.getNextRoute(ap, apIndex);
+      return this.CheckAnswersNavigationNode.getNextRoute(ap, apIndex);
     }
 
     return this.PapNameNavigationNode.getNextRoute(ap, apIndex);
