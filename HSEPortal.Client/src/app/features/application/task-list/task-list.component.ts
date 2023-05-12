@@ -5,11 +5,11 @@ import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { ApplicationService, BuildingApplicationStatus, PaymentStatus } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
-import { AccountablePersonModule } from "../accountable-person/accountable-person.module";
 import { PaymentDeclarationComponent } from "../payment/payment-declaration/payment-declaration.component";
 import { PaymentModule } from "../payment/payment.module";
 import { BuildingSummaryNavigation } from "src/app/services/navigation/building-summary.navigation";
 import { AccountablePersonNavigation } from "src/app/services/navigation/accountable-person.navigation";
+import { AccountablePersonModule } from "../accountable-person/accountable-person.module";
 
 @Component({
   templateUrl: './task-list.component.html'
@@ -57,8 +57,13 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
   }
 
   navigateToPap() {
-    const route = this.apNavigation.getNextRoute();
-    this.navigationService.navigateAppend(route, this.activatedRoute);
+    let appendRoute = AccountablePersonModule.baseRoute;
+
+    if (this.applicationService.model.AccountablePersons?.length > 0) {
+      appendRoute = 'accountable-person/check-answers'
+    }
+
+    this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
   }
 
   navigateToPayment() {
