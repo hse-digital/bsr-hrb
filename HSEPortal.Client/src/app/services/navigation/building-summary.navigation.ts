@@ -25,10 +25,11 @@ export class BuildingSummaryNavigation extends BaseNavigation {
 
   private checkAnswersNavigationNode = new CheckAnswersNavigationNode();
   private addAnotherSectionNavigationTree = new AddAnotherSectionNavigationTree(this.applicationService, this.checkAnswersNavigationNode);
-  private sectionsIntroNavigationNode = new SectionsIntroNavigationNode(this.addAnotherSectionNavigationTree);
+  private sectionsIntroNavigationNode = new SectionsIntroNavigationNode(this.applicationService, this.addAnotherSectionNavigationTree);
   private numberOfSectionsNavigationNode = new NumberOfSectionsNavigationNode(this.applicationService, this.sectionsIntroNavigationNode, this.addAnotherSectionNavigationTree);
 
   override getNextRoute(): string {
+    console.log(this.applicationService.model);
     if (this.applicationService.model.Sections == null || this.applicationService.model.Sections.length == 0) {
       return NumberOfSectionsComponment.route;
     }
@@ -36,6 +37,7 @@ export class BuildingSummaryNavigation extends BaseNavigation {
     for (let sectionIndex = 0; sectionIndex < this.applicationService.model.Sections.length; sectionIndex++) {
       let section = this.applicationService.model.Sections[sectionIndex];
       let sectionRoute = this.numberOfSectionsNavigationNode.getNextRoute(section, sectionIndex);
+      console.log(sectionRoute);
 
       if (sectionRoute === void 0 || sectionRoute == SectionCheckAnswersComponent.route) {
         continue;
@@ -61,10 +63,11 @@ class NumberOfSectionsNavigationNode extends BuildingNavigationNode {
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!this.applicationService.model.NumberOfSections) {
+      console.log('1');
       return NumberOfSectionsComponment.route;
     }
 
-    if (this.applicationService.model.NumberOfSections == 'one') {
+    if (this.applicationService.model.NumberOfSections == 'two_or_more') {
       return this.addAnotherSectionNavigationTree.getNextRoute(section, sectionIndex);
     }
 
@@ -73,12 +76,13 @@ class NumberOfSectionsNavigationNode extends BuildingNavigationNode {
 }
 
 class SectionsIntroNavigationNode extends BuildingNavigationNode {
-  constructor(private addAnotherSectionNavigationTree: AddAnotherSectionNavigationTree) {
+  constructor(private applicationService: ApplicationService,
+    private addAnotherSectionNavigationTree: AddAnotherSectionNavigationTree) {
     super();
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
-    if (!section.Name) {
+    if (!section.Name && this.applicationService.model.NumberOfSections == 'two_or_mode') {
       return SectionsIntroComponent.route;
     }
 
@@ -93,6 +97,7 @@ class SectionNameNavigationNode extends BuildingNavigationNode {
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.Name) {
+      console.log('3');
       return SectionNameComponent.route;
     }
 
@@ -107,6 +112,7 @@ class NumberOfFloorsNavigationNode extends BuildingNavigationNode {
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.FloorsAbove) {
+      console.log('4');
       return SectionFloorsAboveComponent.route;
     }
 
@@ -121,6 +127,7 @@ class HeightNavigationNode extends BuildingNavigationNode {
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.Height) {
+      console.log('5');
       return SectionHeightComponent.route;
     }
 
@@ -136,6 +143,7 @@ class NumberOfResidentialUnitsNavigationNode extends BuildingNavigationNode {
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.ResidentialUnits) {
+      console.log('6');
       return SectionResidentialUnitsComponent.route;
     }
 
@@ -154,6 +162,7 @@ class PeopleLivingNavigationNode extends BuildingNavigationNode {
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.PeopleLivingInBuilding) {
+      console.log('7');
       return SectionPeopleLivingInBuildingComponent.route;
     }
 
@@ -170,6 +179,7 @@ class YearOfCompletionNavigationNode extends BuildingNavigationNode {
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.YearOfCompletionOption) {
+      console.log('8');
       return SectionYearOfCompletionComponent.route;
     }
 
@@ -197,6 +207,7 @@ class YearRangeNavigationNode extends BuildingNavigationNode {
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.YearOfCompletionRange) {
+      console.log('9');
       return SectionYearRangeComponent.route;
     }
 
@@ -216,6 +227,7 @@ class CompletionCertificateIssuerNavigationNode extends BuildingNavigationNode {
     }
 
     if (!section.CompletionCertificateIssuer) {
+      console.log('10');
       return CertificateIssuerComponent.route;
     }
 
@@ -249,6 +261,7 @@ class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNod
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.CompletionCertificateReference) {
+      console.log('11');
       return CertificateNumberComponent.route;
     }
 
@@ -263,6 +276,7 @@ class SectionAddressNavigationNode extends BuildingNavigationNode {
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if ((section.Addresses?.length ?? 0) == 0 || section.Addresses.filter(x => !x.Postcode).length > 0) {
+      console.log('12');
       return SectionAddressComponent.route;
     }
 
@@ -277,7 +291,8 @@ class AddAnotherSectionNavigationNode extends BuildingNavigationNode {
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
-    if (sectionIndex == this.applicationService.model.Sections.length - 1) {
+    if (sectionIndex == this.applicationService.model.Sections.length - 1 && this.applicationService.model.NumberOfSections == 'two_or_more') {
+      console.log('13');
       return AddMoreSectionsComponent.route;
     }
 
@@ -316,6 +331,7 @@ class AddAnotherSectionNavigationTree extends BuildingNavigationNode {
 
 class CheckAnswersNavigationNode extends BuildingNavigationNode {
   override getNextRoute(_: SectionModel, __: number): string {
+    console.log('14');
     return SectionCheckAnswersComponent.route;
   }
 }
