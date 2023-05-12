@@ -25,7 +25,7 @@ import { OrganisationNamedContactComponent } from "src/app/features/application/
 import { OrganisationNamedContactDetailsComponent } from "src/app/features/application/accountable-person/organisation/named-contact/named-contact-details.component";
 import { AccountablePersonModule } from "src/app/features/application/accountable-person/accountable-person.module";
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class AccountablePersonNavigation extends BaseNavigation {
 
   constructor(private applicationService: ApplicationService) {
@@ -52,7 +52,7 @@ export class AccountablePersonNavigation extends BaseNavigation {
   private WhoIsPapNavigationNode = new WhoIsPapNavigationNode(this.applicationService, this.OrganisationTypeNavigationNode, this.AreYouThePapNavigationNode);
 
   override getNextRoute(): string {
-    if (!this.applicationService.model.AccountablePersons) {
+    if (this.applicationService.model.AccountablePersons == null || this.applicationService.model.AccountablePersons.length == 0) {
       return AccountablePersonModule.baseRoute;
     }
 

@@ -19,6 +19,8 @@ import { IndividualComponent } from "./summary-page/accountable-person-summary/i
 import { OrganisationComponent } from "./summary-page/accountable-person-summary/organisation.component";
 import { SectionSummaryComponent } from "./summary-page/section-summary.component";
 import { ApplicationTaskListComponent } from "./task-list/task-list.component";
+import { BuildingSummaryNavigation } from "src/app/services/navigation/building-summary.navigation";
+import { AccountablePersonNavigation } from "src/app/services/navigation/accountable-person.navigation";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent, ApplicationTaskListComponent.title),
@@ -50,7 +52,13 @@ const routes = new HseRoutes([
     PipesModule,
     HttpClientModule
   ],
-  providers: [HttpClient, ApplicationService, ...routes.getProviders()]
+  providers: [
+    HttpClient,
+    ApplicationService,
+    BuildingSummaryNavigation,
+    AccountablePersonNavigation,
+    ...routes.getProviders()
+  ]
 })
 export class ApplicationModule {
   static baseRoute: string = 'application/:id';
