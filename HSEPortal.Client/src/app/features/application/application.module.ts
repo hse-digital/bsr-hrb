@@ -21,6 +21,7 @@ import { SectionSummaryComponent } from "./summary-page/section-summary.componen
 import { ApplicationTaskListComponent } from "./task-list/task-list.component";
 import { BuildingSummaryNavigation } from "src/app/services/navigation/building-summary.navigation";
 import { AccountablePersonNavigation } from "src/app/services/navigation/accountable-person.navigation";
+import { KbiModule } from "../kbi/kbi.module";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent, ApplicationTaskListComponent.title),
@@ -30,6 +31,7 @@ const routes = new HseRoutes([
   HseRoute.forLoadChildren(SectionsModule.baseRoute, () => import('./sections/sections.module').then(m => m.SectionsModule)),
   HseRoute.forLoadChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
   HseRoute.forLoadChildren(PaymentModule.baseRoute, () => import('./payment/payment.module').then(m => m.PaymentModule)),
+  HseRoute.forLoadChildren(KbiModule.baseRoute, () => import('../kbi/kbi.module').then(m => m.KbiModule)),
 ]);
 
 @NgModule({

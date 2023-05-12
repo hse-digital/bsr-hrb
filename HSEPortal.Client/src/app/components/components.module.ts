@@ -17,6 +17,8 @@ import { PapAccountabilityComponent } from "./pap-accountability/pap-accountabil
 import { GovukRequiredDirective } from "./required.directive";
 import { AccountabilityComponent } from './accountability/accountability.component';
 import { NotAllocatedAccountabilityComponent } from './not-allocated-accountability/not-allocated-accountability.component';
+import { GovukCheckboxNoneComponent } from './govuk-checkbox-none/govuk-checkbox-none.component';
+import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { NotAllocatedAccountabilityComponent } from './not-allocated-accountabil
     PapAccountabilityComponent,
     GovukRequiredDirective,
     AccountabilityComponent,
-    NotAllocatedAccountabilityComponent
+    NotAllocatedAccountabilityComponent,
+    GovukCheckboxNoneComponent,
+    CheckboxOptionComponent
   ],
   imports: [
     HseAngularModule,
@@ -46,7 +50,8 @@ import { NotAllocatedAccountabilityComponent } from './not-allocated-accountabil
     PapAccountabilityComponent,
     GovukRequiredDirective,
     AccountabilityComponent,
-    NotAllocatedAccountabilityComponent
+    NotAllocatedAccountabilityComponent,
+    GovukCheckboxNoneComponent,CheckboxOptionComponent
   ],
   providers: [HttpClient, AddressService]
 })
