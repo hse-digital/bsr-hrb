@@ -53,6 +53,7 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
 
   navigateToSections() {
     const route = this.buildingNavigation.getNextRoute();
+    console.log(route);
     this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
