@@ -106,6 +106,7 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection!.fireSmokeProvisions && this.applicationService.currenKbiSection!.fireSmokeProvisions!.length > 0;
+    return !!this.applicationService.currenKbiSection?.fireSmokeProvisions 
+        && this.applicationService.currenKbiSection!.fireSmokeProvisions!.length > 0;
   }
 }

@@ -2,7 +2,7 @@ import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { NotFoundComponent } from "../components/not-found/not-found.component";
-import { ApplicationService } from "../services/application.service";
+import { ApplicationService, BuildingApplicationStatus } from "../services/application.service";
 import { NavigationService } from "../services/navigation.service";
 import { TitleService } from "../services/title.service";
 import { IHasNextPage } from "./has-next-page.interface";
@@ -80,7 +80,10 @@ export abstract class BaseComponent implements CanActivate {
     } else {
       this.screenReaderNotification();
       await this.applicationService.updateApplication();
-      this.navigationService.navigate(`application/${this.applicationService.model.id}`);
+      let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete
+        ? `application/${this.applicationService.model.id}/kbi`
+        : `application/${this.applicationService.model.id}`;
+      this.navigationService.navigate(route);
     }
   }
 

@@ -286,6 +286,14 @@ export class KbiSectionModel {
   fireSmokeProvisions?: string[];
   fireSmokeProvisionLocations?: Record<string, string[]>;
   lifts?: string[];
+  residentialUnitFrontDoors?: { 
+    noFireResistance?: number, 
+    thirtyMinsFireResistance?: number,
+    sixtyMinsFireResistance?: number,
+    hundredTwentyMinsFireResistance?: number,
+    notKnownFireResistance?: number,
+  } = {};
+}
   fireDoorsCommon?: {
     fireDoorThirtyMinute?: number,
     fireDoorSixtyMinute?: number,

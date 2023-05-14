@@ -4,6 +4,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { ApplicationService, BuildingApplicationStatus, KbiModel, KbiSectionModel } from 'src/app/services/application.service';
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { EvacuationStrategyComponent } from '../evacuation-strategy/evacuation-strategy.component';
+import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 
 @Component({
   selector: 'hse-task-list',
@@ -79,10 +80,12 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    let canActivate = (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete;
+    if(!canActivate) {
+      this.navigationService.navigate(NotFoundComponent.route);
+      return false;
+    }
     return true;
   }
 
-  continue() {
-    return this.navigationService.navigateRelative(TaskListComponent.route, this.activatedRoute);
-  }
 }
