@@ -51,23 +51,14 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
     return this.applicationService.model?.id !== undefined && this.applicationService.model?.id == routeSnapshot.params['id'];
   }
 
-  navigateToSections() {
+  async navigateToSections() {
     const route = this.buildingNavigation.getNextRoute();
-    console.log(route);
-    this.navigationService.navigateAppend(route, this.activatedRoute);
+    await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
-  navigateToPap() {
-    // const route = this.apNavigation.getNextRoute();
-    // this.navigationService.navigateAppend(route, this.activatedRoute);
-    
-    let appendRoute = AccountablePersonModule.baseRoute;
-
-    if (this.applicationService.model.AccountablePersons?.length > 0) {
-      appendRoute = 'accountable-person/check-answers'
-    }
-
-    this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
+  async navigateToPap() {
+    const route = this.apNavigation.getNextRoute();
+    await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
   navigateToPayment() {
