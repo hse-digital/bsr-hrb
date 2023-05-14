@@ -7,6 +7,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { FireDoorsCommonComponent } from '../fire-doors-common/fire-doors-common.component';
 
 type Error = { hasError: boolean, errorMessage: string, message: string }
 
@@ -70,7 +71,7 @@ export class ResidentialUnitFrontDoorsFireResistanceComponent extends BaseCompon
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ResidentialUnitFrontDoorsFireResistanceComponent.route, activatedRoute);
+    return navigationService.navigateRelative(FireDoorsCommonComponent.route, activatedRoute);
   }
 
 }
