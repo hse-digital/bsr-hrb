@@ -45,6 +45,9 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete;
+    return !!this.applicationService.model.Kbi 
+        && !!this.applicationService.model.Kbi.SectionStatus 
+        && this.applicationService.model.Kbi.SectionStatus.length > 0 
+        && (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete;
   }
 }

@@ -14,6 +14,7 @@ import { ProvisionsEquipmentComponent } from './provisions-equipment/provisions-
 import { FireSmokeProvisionsComponent } from './fire-smoke-provisions/fire-smoke-provisions.component';
 import { FireSmokeProvisionLocationsComponent } from './fire-smoke-provision-locations/fire-smoke-provision-locations.component';
 import { LiftsComponent } from './lifts/lifts.component';
+import { ResidentialUnitFrontDoorsFireResistanceComponent } from './residential-unit-front-doors-fire-resistance/residential-unit-front-doors-fire-resistance.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -23,6 +24,7 @@ const routes = new HseRoutes([
   HseRoute.protected(FireSmokeProvisionsComponent.route, FireSmokeProvisionsComponent, FireSmokeProvisionsComponent.title),
   HseRoute.protected(FireSmokeProvisionLocationsComponent.route, FireSmokeProvisionLocationsComponent, FireSmokeProvisionLocationsComponent.title),
   HseRoute.protected(LiftsComponent.route, LiftsComponent, LiftsComponent.title),
+  HseRoute.protected(ResidentialUnitFrontDoorsFireResistanceComponent.route, ResidentialUnitFrontDoorsFireResistanceComponent, ResidentialUnitFrontDoorsFireResistanceComponent.title),
 ]);
 
 @NgModule({
@@ -33,7 +35,8 @@ const routes = new HseRoutes([
     ProvisionsEquipmentComponent,
     FireSmokeProvisionsComponent,
     FireSmokeProvisionLocationsComponent,
-    LiftsComponent
+    LiftsComponent,
+    ResidentialUnitFrontDoorsFireResistanceComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
