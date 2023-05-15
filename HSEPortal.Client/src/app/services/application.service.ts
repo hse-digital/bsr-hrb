@@ -293,4 +293,7 @@ export class KbiSectionModel {
     hundredTwentyMinsFireResistance?: number,
     notKnownFireResistance?: number,
   } = {};
+  roofType?: string;
+  roofInsulation?: string;
+  roofMaterial?: string;
 }
