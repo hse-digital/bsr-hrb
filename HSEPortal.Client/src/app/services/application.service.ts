@@ -293,6 +293,9 @@ export class KbiSectionModel {
     hundredTwentyMinsFireResistance?: number,
     notKnownFireResistance?: number,
   } = {};
+  roofType?: string;
+  roofInsulation?: string;
+  roofMaterial?: string;
   fireDoorsCommon?: {
     fireDoorThirtyMinute?: number,
     fireDoorSixtyMinute?: number,

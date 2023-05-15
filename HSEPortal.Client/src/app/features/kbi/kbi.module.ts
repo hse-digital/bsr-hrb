@@ -16,6 +16,9 @@ import { FireSmokeProvisionLocationsComponent } from './fire-smoke-provision-loc
 import { LiftsComponent } from './lifts/lifts.component';
 import { FireDoorsCommonComponent } from './fire-doors-common/fire-doors-common.component';
 import { ResidentialUnitFrontDoorsFireResistanceComponent } from './residential-unit-front-doors-fire-resistance/residential-unit-front-doors-fire-resistance.component';
+import { RoofTypeComponent } from './roof-type/roof-type.component';
+import { InsulationLayerComponent } from './insulation-layer/insulation-layer.component';
+import { RoofMaterialComponent } from './roof-material/roof-material.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -27,6 +30,9 @@ const routes = new HseRoutes([
   HseRoute.protected(LiftsComponent.route, LiftsComponent, LiftsComponent.title),
   HseRoute.protected(FireDoorsCommonComponent.route, FireDoorsCommonComponent, FireDoorsCommonComponent.title),
   HseRoute.protected(ResidentialUnitFrontDoorsFireResistanceComponent.route, ResidentialUnitFrontDoorsFireResistanceComponent, ResidentialUnitFrontDoorsFireResistanceComponent.title),
+  HseRoute.protected(RoofTypeComponent.route, RoofTypeComponent, RoofTypeComponent.title),
+  HseRoute.protected(InsulationLayerComponent.route, InsulationLayerComponent, InsulationLayerComponent.title),
+  HseRoute.protected(RoofMaterialComponent.route, RoofMaterialComponent, RoofMaterialComponent.title),
 ]);
 
 @NgModule({
@@ -39,8 +45,10 @@ const routes = new HseRoutes([
     FireSmokeProvisionLocationsComponent,
     LiftsComponent,
     FireDoorsCommonComponent,
-    LiftsComponent,
-    ResidentialUnitFrontDoorsFireResistanceComponent
+    ResidentialUnitFrontDoorsFireResistanceComponent,
+    RoofTypeComponent,
+    InsulationLayerComponent,
+    RoofMaterialComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
