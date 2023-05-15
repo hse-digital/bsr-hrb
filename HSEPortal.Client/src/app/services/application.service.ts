@@ -298,4 +298,5 @@ export class KbiSectionModel {
   roofMaterial?: string;
   internalStaircasesAllFloors?: number;
   totalNumberStaircases?: number;
+  energyTypeStorage?: string[];
 }
