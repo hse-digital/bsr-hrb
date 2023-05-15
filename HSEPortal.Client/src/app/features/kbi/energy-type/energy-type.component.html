@@ -12,7 +12,7 @@
                 <govuk-body>This is not a complete list. It includes only the types of energy storage we need to know about.</govuk-body>
 
                 <govuk-checkbox-none title="Types of energy storage" hint="Select all that apply"  [errorText]="getErrorDescription(energyTypeHasErrors, errorMessage!)"
-                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.energyTypeStorage!" noneOptionText="None">
+                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.energyTypeStorage!" noneOptionText="None" fieldsetClass="smallTitle">
                     <checkbox-option text="Hydrogen batteries" value="hydrogen_batteries" id="hydrogen_batteries" />
                     <checkbox-option text="Lithium ion batteries" value="lithium_ion_batteries" id="lithium_ion_batteries" />
                     <checkbox-option text="Other" value="other" id="other" />
