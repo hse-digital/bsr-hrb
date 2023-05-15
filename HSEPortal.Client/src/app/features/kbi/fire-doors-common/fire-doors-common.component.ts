@@ -61,12 +61,16 @@ export class FireDoorsCommonComponent extends BaseComponent implements IHasNextP
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(FireDoorsCommonComponent.route, activatedRoute);
+    return navigationService.navigateRelative(FireDoorsCommonComponent.route, activatedRoute); //TODO : Navigate to next page when #947 completed
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    //return !!this.applicationService.currenKbiSection!.strategyEvacuateBuilding;
-    return true;
+
+    return !!this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.noFireResistance
+      && !!this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.thirtyMinsFireResistance
+      && !!this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.sixtyMinsFireResistance
+      && !!this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.hundredTwentyMinsFireResistance
+      && !!this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.noFireResistance
   }
 
   validateNumericInput(input: number | undefined, error: Error): Error {
