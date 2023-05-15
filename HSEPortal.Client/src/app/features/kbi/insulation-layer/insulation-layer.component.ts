@@ -6,36 +6,35 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { InsulationLayerComponent } from '../insulation-layer/insulation-layer.component';
 
 @Component({
-  selector: 'hse-roof-type',
-  templateUrl: './roof-type.component.html'
+  selector: 'hse-insulation-layer',
+  templateUrl: './insulation-layer.component.html'
 })
-export class RoofTypeComponent  extends BaseComponent implements IHasNextPage {
-  static route: string = 'roof-type';
-  static title: string = "Type of roof - Register a high-rise building - GOV.UK";
+export class InsulationLayerComponent  extends BaseComponent implements IHasNextPage {
+  static route: string = 'roof-insulation';
+  static title: string = "Roof insulation - Register a high-rise building - GOV.UK";
 
-  roofTypeHasErrors = false;
+  roofInsulationHasErrors = false;
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
-  
+
+  getErrorMessage(){
+    return `Select if there is any insulation on any part of the roof on ${this.getInfraestructureName()}`;
+  }
+
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
       : this.applicationService.currentSection.Name;
   }
 
-  getErrorMessage() {
-    return `Select the type of roof on ${this.getInfraestructureName()}`
-  }
-
   canContinue(): boolean {
-    this.roofTypeHasErrors = !this.applicationService.currenKbiSection!.roofType;
-    return !this.roofTypeHasErrors;
+    this.roofInsulationHasErrors = !this.applicationService.currenKbiSection!.roofInsulation;
+    return !this.roofInsulationHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
@@ -43,7 +42,7 @@ export class RoofTypeComponent  extends BaseComponent implements IHasNextPage {
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.strategyEvacuateBuilding;
+    return !!this.applicationService.currenKbiSection?.roofType;
   }
 
 }

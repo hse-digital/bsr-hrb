@@ -294,4 +294,5 @@ export class KbiSectionModel {
     notKnownFireResistance?: number,
   } = {};
   roofType?: string;
+  roofInsulation?: string;
 }
