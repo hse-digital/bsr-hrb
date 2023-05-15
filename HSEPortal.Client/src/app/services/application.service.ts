@@ -296,4 +296,6 @@ export class KbiSectionModel {
   roofType?: string;
   roofInsulation?: string;
   roofMaterial?: string;
+  internalStaircasesAllFloors?: number;
+  totalNumberStaircases?: number;
 }
