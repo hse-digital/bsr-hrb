@@ -488,7 +488,7 @@ class ApAddressNavigationNode extends ApNavigationNode {
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
     console.log('21');
-    if (!ap.Address) {
+    if (!ap.Address && !ap.PapAddress) {
       console.log('21.1');
       return ApAddressComponent.route;
     }

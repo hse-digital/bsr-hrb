@@ -286,8 +286,8 @@ export class KbiSectionModel {
   fireSmokeProvisions?: string[];
   fireSmokeProvisionLocations?: Record<string, string[]>;
   lifts?: string[];
-  residentialUnitFrontDoors?: { 
-    noFireResistance?: number, 
+  residentialUnitFrontDoors?: {
+    noFireResistance?: number,
     thirtyMinsFireResistance?: number,
     sixtyMinsFireResistance?: number,
     hundredTwentyMinsFireResistance?: number,
@@ -296,6 +296,12 @@ export class KbiSectionModel {
   roofType?: string;
   roofInsulation?: string;
   roofMaterial?: string;
+  fireDoorsCommon?: {
+    fireDoorThirtyMinute?: number,
+    fireDoorSixtyMinute?: number,
+    fireDoorHundredTwentyMinute?: number,
+    fireDoorUnknown?: number,
+  } = {};
   internalStaircasesAllFloors?: number;
   totalNumberStaircases?: number;
   energyTypeStorage?: string[];
