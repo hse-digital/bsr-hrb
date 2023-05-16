@@ -477,7 +477,8 @@ public class DynamicsService
                 address1_postalcode = apAddress.Postcode,
                 bsr_manualaddress = apAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
                 countryReferenceId = apAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[apAddress.Country]})" : null,
-                acountTypeReferenceId = $"/bsr_accounttypes({DynamicsAccountType.Ids[$"{accountablePerson.OrganisationType}"]})"
+                acountTypeReferenceId = $"/bsr_accounttypes({DynamicsAccountType.Ids[$"{accountablePerson.OrganisationType}"]})",
+                bsr_otherorganisationtype = accountablePerson.OrganisationTypeDescription
             });
 
             return ExtractEntityIdFromHeader(response.Headers);
