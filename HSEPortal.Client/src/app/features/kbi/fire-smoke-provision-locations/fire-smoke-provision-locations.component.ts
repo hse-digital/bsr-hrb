@@ -74,7 +74,7 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
     "alarm_heat_smoke": "alarm sounders (connected to detectors)",
     "alarm_call_points": "alarm sounders (connected to call points)",
     "fire_dampers": "fire dampers",
-    "fire_extinguishers": "fire dampers",
+    "fire_extinguishers": "fire extinguishers",
     "fire_shutters": "fire shutters",
     "heat_detectors": "heat detectors",
     "risers_dry": "risers dry",

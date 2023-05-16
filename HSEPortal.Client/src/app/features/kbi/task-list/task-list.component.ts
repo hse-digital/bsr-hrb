@@ -5,6 +5,7 @@ import { ApplicationService, BuildingApplicationStatus, KbiModel, KbiSectionMode
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { EvacuationStrategyComponent } from '../evacuation-strategy/evacuation-strategy.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
+import { KbiNavigation } from 'src/app/services/navigation/kbi.navigation.ts.service';
 
 @Component({
   selector: 'hse-task-list',
@@ -17,12 +18,13 @@ export class TaskListComponent implements CanActivate, OnInit {
   applicationStatus = BuildingApplicationStatus;
   checkingStatus = true;
 
-  constructor(public applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+  constructor(public applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute,
+    private kbiNavigation: KbiNavigation) {
 
   }
 
   ngOnInit(): void {
-    if(!this.applicationService.model.Kbi) {
+    if (!this.applicationService.model.Kbi) {
       this.applicationService.model.Kbi = new KbiModel();
       this.applicationService.model.Sections.forEach(x => this.applicationService.model.Kbi!.KbiSections.push(new KbiSectionModel()));
       this.applicationService._currentSectionIndex = 0;
@@ -62,9 +64,20 @@ export class TaskListComponent implements CanActivate, OnInit {
     return this.navigationService.navigateAppend(CheckBeforeStartComponent.route, this.activatedRoute);
   }
 
-  navigateToSection(index: number) {
+  async navigateToSection(index: number) {
     this.applicationService._currentKbiSectionIndex = index;
-    return this.navigationService.navigateAppend(EvacuationStrategyComponent.route, this.activatedRoute);
+    return this.navigateToKbiSections();
+  }
+
+  async navigateToKbiSections() {
+    const route = this.kbiNavigation.getNextRoute();
+    if (route.indexOf('?') > -1) {
+      let segments = route.split('?');
+      let equipment = segments[1].substring(segments[1].indexOf('=') + 1);
+      await this.navigationService.navigateAppend(segments[0], this.activatedRoute, { equipment: equipment });
+    } else {
+      await this.navigationService.navigateAppend(route, this.activatedRoute);
+    }
   }
 
   navigateToConnections() {
@@ -81,7 +94,7 @@ export class TaskListComponent implements CanActivate, OnInit {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     let canActivate = (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete;
-    if(!canActivate) {
+    if (!canActivate) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
     }
