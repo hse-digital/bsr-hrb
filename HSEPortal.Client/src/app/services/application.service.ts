@@ -299,4 +299,5 @@ export class KbiSectionModel {
   internalStaircasesAllFloors?: number;
   totalNumberStaircases?: number;
   energyTypeStorage?: string[];
+  onsiteEnergyGeneration?: string[];
 }

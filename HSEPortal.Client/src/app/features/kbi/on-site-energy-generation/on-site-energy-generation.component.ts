@@ -7,30 +7,29 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { OnSiteEnergyGenerationComponent } from '../on-site-energy-generation/on-site-energy-generation.component';
 
 @Component({
-  selector: 'hse-energy-type',
-  templateUrl: './energy-type.component.html'
+  selector: 'hse-on-site-energy-generation',
+  templateUrl: './on-site-energy-generation.component.html'
 })
-export class EnergyTypeComponent  extends BaseComponent implements IHasNextPage, OnInit {
-  static route: string = 'energy-type';
-  static title: string = "Energy storage - Register a high-rise building - GOV.UK";
+export class OnSiteEnergyGenerationComponent  extends BaseComponent implements IHasNextPage, OnInit {
+  static route: string = 'onsite-energy-generation';
+  static title: string = "On site energy generation - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChild(GovukCheckboxNoneComponent) equipmentCheckboxGroup?: GovukCheckboxNoneComponent;
 
   firstCheckboxAnchorId?: string;
   errorMessage?: string;
-  energyTypeHasErrors = false;
+  onsiteEnergyGenerationHasErrors = false;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.energyTypeStorage) { this.applicationService.currenKbiSection!.energyTypeStorage = []; }
-    this.errorMessage = `Select the types of energy supply in ${this.getInfraestructureName()}`;
+    if (!this.applicationService.currenKbiSection!.onsiteEnergyGeneration) { this.applicationService.currenKbiSection!.onsiteEnergyGeneration = []; }
+    this.errorMessage = `Select the types of on-site energy generation in  ${this.getInfraestructureName()}`;
   }
 
   getInfraestructureName() {
@@ -40,12 +39,12 @@ export class EnergyTypeComponent  extends BaseComponent implements IHasNextPage,
   }
 
   canContinue(): boolean {
-    this.energyTypeHasErrors = !this.applicationService.currenKbiSection!.energyTypeStorage 
-      || this.applicationService.currenKbiSection!.energyTypeStorage.length == 0;
+    this.onsiteEnergyGenerationHasErrors = !this.applicationService.currenKbiSection!.onsiteEnergyGeneration 
+      || this.applicationService.currenKbiSection!.onsiteEnergyGeneration.length == 0;
 
-    if (this.energyTypeHasErrors) this.firstCheckboxAnchorId = `hydrogen_batteries-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
+    if (this.onsiteEnergyGenerationHasErrors) this.firstCheckboxAnchorId = `air-ground-source-heat-pumps-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
-    return !this.energyTypeHasErrors;
+    return !this.onsiteEnergyGenerationHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
@@ -53,6 +52,6 @@ export class EnergyTypeComponent  extends BaseComponent implements IHasNextPage,
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection!.strategyEvacuateBuilding;
+    return !!this.applicationService.currenKbiSection?.energyTypeStorage && this.applicationService.currenKbiSection!.energyTypeStorage!.length > 0;
   }
 }
