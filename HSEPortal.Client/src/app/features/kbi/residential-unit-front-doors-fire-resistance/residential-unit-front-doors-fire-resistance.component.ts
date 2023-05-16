@@ -7,8 +7,9 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { FireDoorsCommonComponent } from '../fire-doors-common/fire-doors-common.component';
 
-type Error = { hasError: boolean, errorMessage: string, message: string }
+type Error = { hasError: boolean, errorMessage: string }
 
 @Component({
   selector: 'hse-residential-unit-front-doors-fire-resistance',
@@ -24,13 +25,21 @@ export class ResidentialUnitFrontDoorsFireResistanceComponent extends BaseCompon
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
-  errorMessage: string = "Number of doors must be a whole number, for example '0' or '18'";
+  errorMessages: Record<string, string> = {
+    "noFireResistance": "Enter the number of residential front doors with no certified fire resistance, for example '0', or '18'",
+    "thirtyMinsFireResistance": "Enter the number of residential front doors with 30 minute certified fire resistance, for example '0', or '18'",
+    "sixtyMinsFireResistance": "Enter the number of residential front doors with 60 minute certified fire resistance, for example '0', or '18'",
+    "hundredTwentyMinsFireResistance": "Enter the number of residential front doors with 120 minute certified fire resistance, for example '0', or '18'",
+    "notKnownFireResistance": "Enter the number of residential front doors with not known certified fire resistance, for example '0', or '18'"
+  }
+
+  defaultErrorMessage: string = "Number of doors must be a whole number, for example '0' or '18'";
   errors = {
-    noFireResistance: { hasError: false, errorMessage: "", message: "Enter the number of residential front doors with no certified fire resistance, for example '0', or '18'" } as Error,
-    thirtyMinsFireResistance: { hasError: false, errorMessage: "", message: "Enter the number of residential front doors with 30 minute certified fire resistance, for example '0', or '18'" } as Error,
-    sixtyMinsFireResistance: { hasError: false, errorMessage: "", message: "Enter the number of residential front doors with 60 minute certified fire resistance, for example '0', or '18'" } as Error,
-    hundredTwentyMinsFireResistance: { hasError: false, errorMessage: "", message: "Enter the number of residential front doors with 120 minute certified fire resistance, for example '0', or '18'" } as Error,
-    notKnownFireResistance: { hasError: false, errorMessage: "", message: "Enter the number of residential front doors with not known certified fire resistance, for example '0', or '18'" } as Error
+    noFireResistance: { hasError: false, errorMessage: "", } as Error,
+    thirtyMinsFireResistance: { hasError: false, errorMessage: "", } as Error,
+    sixtyMinsFireResistance: { hasError: false, errorMessage: "", } as Error,
+    hundredTwentyMinsFireResistance: { hasError: false, errorMessage: "", } as Error,
+    notKnownFireResistance: { hasError: false, errorMessage: "",  } as Error
   };
 
   ngOnInit(): void {
@@ -40,22 +49,22 @@ export class ResidentialUnitFrontDoorsFireResistanceComponent extends BaseCompon
   }
 
   canContinue() {
-    this.errors.noFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.noFireResistance, this.errors.noFireResistance);
-    this.errors.thirtyMinsFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.thirtyMinsFireResistance, this.errors.thirtyMinsFireResistance);
-    this.errors.sixtyMinsFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.sixtyMinsFireResistance, this.errors.sixtyMinsFireResistance);
-    this.errors.hundredTwentyMinsFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.hundredTwentyMinsFireResistance, this.errors.hundredTwentyMinsFireResistance);
-    this.errors.notKnownFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.notKnownFireResistance, this.errors.notKnownFireResistance);
+    this.errors.noFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.noFireResistance, this.errors.noFireResistance, "noFireResistance");
+    this.errors.thirtyMinsFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.thirtyMinsFireResistance, this.errors.thirtyMinsFireResistance, "thirtyMinsFireResistance");
+    this.errors.sixtyMinsFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.sixtyMinsFireResistance, this.errors.sixtyMinsFireResistance, "sixtyMinsFireResistance");
+    this.errors.hundredTwentyMinsFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.hundredTwentyMinsFireResistance, this.errors.hundredTwentyMinsFireResistance, "hundredTwentyMinsFireResistance");
+    this.errors.notKnownFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.residentialUnitFrontDoors?.notKnownFireResistance, this.errors.notKnownFireResistance, "notKnownFireResistance");
 
-    return !this.errors.noFireResistance.hasError 
-      && !this.errors.thirtyMinsFireResistance.hasError 
-      && !this.errors.sixtyMinsFireResistance.hasError 
-      && !this.errors.hundredTwentyMinsFireResistance.hasError 
+    return !this.errors.noFireResistance.hasError
+      && !this.errors.thirtyMinsFireResistance.hasError
+      && !this.errors.sixtyMinsFireResistance.hasError
+      && !this.errors.hundredTwentyMinsFireResistance.hasError
       && !this.errors.notKnownFireResistance.hasError;
   }
 
-  validateNumericInput(input: number | undefined, error: Error): Error {
-    error.hasError = !input || !FieldValidations.IsWholeNumber(input) || !FieldValidations.IsAPositiveNumber(input);
-    if (error.hasError) error.errorMessage = !input ? error.message : this.errorMessage;
+  validateNumericInput(input: number | undefined, error: Error, key: string): Error {
+    error.hasError = !FieldValidations.IsWholeNumber(input) || !FieldValidations.IsAPositiveNumber(input);
+    if (error.hasError) error.errorMessage = !input ? this.errorMessages[key] : this.defaultErrorMessage;
     return error;
   }
 
@@ -66,11 +75,11 @@ export class ResidentialUnitFrontDoorsFireResistanceComponent extends BaseCompon
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    return true;
+    return !!this.applicationService.currenKbiSection?.lifts && this.applicationService.currenKbiSection!.lifts!.length > 0
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ResidentialUnitFrontDoorsFireResistanceComponent.route, activatedRoute);
+    return navigationService.navigateRelative(FireDoorsCommonComponent.route, activatedRoute);
   }
 
 }
