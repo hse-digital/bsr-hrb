@@ -52,6 +52,7 @@ export class OnSiteEnergyGenerationComponent  extends BaseComponent implements I
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.energyTypeStorage && this.applicationService.currenKbiSection!.energyTypeStorage!.length > 0;
+    return !!this.applicationService.currenKbiSection?.energyTypeStorage 
+        && this.applicationService.currenKbiSection!.energyTypeStorage!.length > 0;
   }
 }

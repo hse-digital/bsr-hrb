@@ -53,6 +53,9 @@ export class EnergyTypeComponent  extends BaseComponent implements IHasNextPage,
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection!.strategyEvacuateBuilding;
-  }
+    return !!this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorThirtyMinute
+        && !!this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorSixtyMinute
+        && !!this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorHundredTwentyMinute
+        && !!this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorUnknown
+      }
 }
