@@ -302,4 +302,5 @@ export class KbiSectionModel {
     fireDoorHundredTwentyMinute?: number,
     fireDoorUnknown?: number,
   } = {};
+  energySupply?: string[];
 }

@@ -1,0 +1,28 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link message={{errorMessage}} />
+        </govuk-error-summary>
+
+        <h1 class="govuk-heading-l">Energy supplies to {{getInfraestructureName()}}</h1>
+        <govuk-body>This is not a complete list. It includes only the types of energy supplies we need to know about.</govuk-body>
+
+
+          <govuk-checkbox-group title="Types of engery supply" hint="Select all that apply" [(model)]="applicationService.currenKbiSection!.energySupply!" #field [govukRequired]="field" [errorText]="getErrorDescription(energySupplyHasErrors, errorMessage!)">
+            <govuk-checkbox id="communal" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.energySupply!" text="District or communal heating" value="energy-supply-communal" />
+            <govuk-checkbox id="mains-electric" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.energySupply!" text="Mains electricity supply" value="energy-supply-mains-electric" />
+        <!--<govuk-checkbox id ="mains-hydrogen" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.energySupply!" text="Mains hydrogen supply" value="energy-supply-mains-hydrogen"/> Add Back as part of #4067--> 
+            <govuk-checkbox id="mains-gas" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.energySupply!" text="Mains gas supply" value="energy-supply-mains-gas" />
+            <govuk-checkbox id="oil" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.energySupply!" text="Oil" value="energy-supply-oil" />
+            <govuk-checkbox id="other" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.energySupply!" text="Other" value="energy-supply-other" />
+          </govuk-checkbox-group>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

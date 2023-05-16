@@ -19,6 +19,7 @@ import { ResidentialUnitFrontDoorsFireResistanceComponent } from './residential-
 import { RoofTypeComponent } from './roof-type/roof-type.component';
 import { InsulationLayerComponent } from './insulation-layer/insulation-layer.component';
 import { RoofMaterialComponent } from './roof-material/roof-material.component';
+import { EnergySupplyComponent } from './energy-supply/energy-supply.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -33,6 +34,7 @@ const routes = new HseRoutes([
   HseRoute.protected(RoofTypeComponent.route, RoofTypeComponent, RoofTypeComponent.title),
   HseRoute.protected(InsulationLayerComponent.route, InsulationLayerComponent, InsulationLayerComponent.title),
   HseRoute.protected(RoofMaterialComponent.route, RoofMaterialComponent, RoofMaterialComponent.title),
+  HseRoute.protected(EnergySupplyComponent.route, EnergySupplyComponent, EnergySupplyComponent.title)
 ]);
 
 @NgModule({
@@ -48,7 +50,8 @@ const routes = new HseRoutes([
     ResidentialUnitFrontDoorsFireResistanceComponent,
     RoofTypeComponent,
     InsulationLayerComponent,
-    RoofMaterialComponent
+    RoofMaterialComponent,
+    EnergySupplyComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
