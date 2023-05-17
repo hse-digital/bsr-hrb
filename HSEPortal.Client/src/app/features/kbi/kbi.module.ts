@@ -61,7 +61,7 @@ const routes = new HseRoutes([
     EnergySupplyComponent,
     TotalStaircasesComponent,
     EnergyTypeComponent,
-    OnSiteEnergyGenerationComponent
+    OnSiteEnergyGenerationComponent,
     BuildingStructureTypeComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
