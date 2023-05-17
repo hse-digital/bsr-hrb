@@ -20,6 +20,7 @@ import { RoofTypeComponent } from './roof-type/roof-type.component';
 import { InsulationLayerComponent } from './insulation-layer/insulation-layer.component';
 import { RoofMaterialComponent } from './roof-material/roof-material.component';
 import { EnergySupplyComponent } from './energy-supply/energy-supply.component';
+import { BuildingStructureTypeComponent } from './building-structure-type/building-structure-type.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -34,7 +35,8 @@ const routes = new HseRoutes([
   HseRoute.protected(RoofTypeComponent.route, RoofTypeComponent, RoofTypeComponent.title),
   HseRoute.protected(InsulationLayerComponent.route, InsulationLayerComponent, InsulationLayerComponent.title),
   HseRoute.protected(RoofMaterialComponent.route, RoofMaterialComponent, RoofMaterialComponent.title),
-  HseRoute.protected(EnergySupplyComponent.route, EnergySupplyComponent, EnergySupplyComponent.title)
+  HseRoute.protected(EnergySupplyComponent.route, EnergySupplyComponent, EnergySupplyComponent.title),
+  HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title)
 ]);
 
 @NgModule({
@@ -51,7 +53,8 @@ const routes = new HseRoutes([
     RoofTypeComponent,
     InsulationLayerComponent,
     RoofMaterialComponent,
-    EnergySupplyComponent
+    EnergySupplyComponent,
+    BuildingStructureTypeComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

@@ -303,4 +303,6 @@ export class KbiSectionModel {
     fireDoorUnknown?: number,
   } = {};
   energySupply?: string[];
+  buildingStructureType?: string[];
+
 }
