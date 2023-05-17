@@ -71,7 +71,7 @@ public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress
     string NamedContactFirstName, string NamedContactLastName, string NamedContactEmail, string NamedContactPhoneNumber,
     string FirstName, string LastName, string Email, string PhoneNumber, string Role, string LeadJobRole, 
     string ActingForSameAddress, BuildingAddress ActingForAddress, string LeadFirstName, string LeadLastName, 
-    string LeadEmail, string LeadPhoneNumber, SectionAccountability[] SectionsAccountability);
+    string LeadEmail, string LeadPhoneNumber, SectionAccountability[] SectionsAccountability, string AddAnother);
 
 public record SectionAccountability(string SectionName, string[] Accountability);
 
