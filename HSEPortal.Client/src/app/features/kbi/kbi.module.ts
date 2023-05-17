@@ -24,6 +24,7 @@ import { TotalStaircasesComponent } from './total-staircases/total-staircases.co
 import { EnergyTypeComponent } from './energy-type/energy-type.component';
 import { OnSiteEnergyGenerationComponent } from './on-site-energy-generation/on-site-energy-generation.component';
 import { ExternalWallMaterialsComponent } from './external-wall-materials/external-wall-materials.component';
+import { WallsAcmComponent } from './walls-acm/walls-acm.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -43,6 +44,7 @@ const routes = new HseRoutes([
   HseRoute.protected(EnergyTypeComponent.route, EnergyTypeComponent, EnergyTypeComponent.title),
   HseRoute.protected(OnSiteEnergyGenerationComponent.route, OnSiteEnergyGenerationComponent, OnSiteEnergyGenerationComponent.title),
   HseRoute.protected(ExternalWallMaterialsComponent.route, ExternalWallMaterialsComponent, ExternalWallMaterialsComponent.title),
+  HseRoute.protected(WallsAcmComponent.route, WallsAcmComponent, WallsAcmComponent.title),
 ]);
 
 @NgModule({
@@ -63,7 +65,8 @@ const routes = new HseRoutes([
     TotalStaircasesComponent,
     EnergyTypeComponent,
     OnSiteEnergyGenerationComponent,
-    ExternalWallMaterialsComponent
+    ExternalWallMaterialsComponent,
+    WallsAcmComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

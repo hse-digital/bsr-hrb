@@ -6,6 +6,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { WallsAcmComponent } from '../walls-acm/walls-acm.component';
 
 @Component({
   selector: 'hse-external-wall-materials',
@@ -45,7 +46,7 @@ export class ExternalWallMaterialsComponent  extends BaseComponent implements IH
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     if(this.doesExternalWallMaterialsIncludes('acm')) {
-      // user goes to ACM
+      return navigationService.navigateRelative(WallsAcmComponent.route, activatedRoute);
     } else if (this.doesExternalWallMaterialsIncludes('hpl')) {
       // user goes to HPL
     }
