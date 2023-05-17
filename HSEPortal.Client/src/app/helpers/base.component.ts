@@ -75,8 +75,8 @@ export abstract class BaseComponent implements CanActivate {
       this.titleService.setTitleError();
     } else {
       this.screenReaderNotification();
-      this.navigationService.navigate(`application/${this.applicationService.model.id}`);
       await this.applicationService.updateApplication();
+      this.navigationService.navigate(`application/${this.applicationService.model.id}`);
     }
   }
 

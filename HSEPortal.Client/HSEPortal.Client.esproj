@@ -10,8 +10,4 @@
     <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\HSEPortalClient</BuildOutputFolder>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="src\app\building-registration\contact-details\contact-details-phone\" />
-    <Folder Include="src\app\features\summary\" />
-  </ItemGroup>
 </Project>

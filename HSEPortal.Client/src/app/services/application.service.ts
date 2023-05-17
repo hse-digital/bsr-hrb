@@ -199,7 +199,6 @@ export class SectionModel {
   CompletionCertificateIssuer?: any;
   CompletionCertificateReference?: any;
   Addresses: AddressModel[] = [];
-  AnotherSection?: string;
 }
 
 export class AccountablePersonModel {
@@ -231,6 +230,7 @@ export class AccountablePersonModel {
   LeadPhoneNumber?: string;
 
   SectionsAccountability?: SectionAccountability[];
+  AddAnother?: string;
 }
 
 export class SectionAccountability {

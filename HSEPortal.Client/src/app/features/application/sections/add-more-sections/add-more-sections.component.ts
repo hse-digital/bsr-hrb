@@ -59,6 +59,10 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
   }
 
   getSectionNames() {
+    if (this.sections.length == 1) {
+      return this.sections.map((section, index) => this.getSectionName(section, index)).join(', ');
+    }
+
     return this.sections.slice(0, this.sections.length - 1).map((section, index) => this.getSectionName(section, index)).join(', ');
   }
 
