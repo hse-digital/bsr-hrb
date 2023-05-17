@@ -72,7 +72,7 @@ const routes = new HseRoutes([
     HttpClientModule,
     ComponentsModule,
     FormsModule,
-    PipesModule,
+    PipesModule
   ]
 })
 export class KbiModule {
