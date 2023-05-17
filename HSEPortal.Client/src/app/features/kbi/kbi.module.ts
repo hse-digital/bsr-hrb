@@ -20,6 +20,9 @@ import { RoofTypeComponent } from './roof-type/roof-type.component';
 import { InsulationLayerComponent } from './insulation-layer/insulation-layer.component';
 import { RoofMaterialComponent } from './roof-material/roof-material.component';
 import { EnergySupplyComponent } from './energy-supply/energy-supply.component';
+import { TotalStaircasesComponent } from './total-staircases/total-staircases.component';
+import { EnergyTypeComponent } from './energy-type/energy-type.component';
+import { OnSiteEnergyGenerationComponent } from './on-site-energy-generation/on-site-energy-generation.component';
 import { BuildingStructureTypeComponent } from './building-structure-type/building-structure-type.component';
 
 const routes = new HseRoutes([
@@ -34,7 +37,9 @@ const routes = new HseRoutes([
   HseRoute.protected(ResidentialUnitFrontDoorsFireResistanceComponent.route, ResidentialUnitFrontDoorsFireResistanceComponent, ResidentialUnitFrontDoorsFireResistanceComponent.title),
   HseRoute.protected(RoofTypeComponent.route, RoofTypeComponent, RoofTypeComponent.title),
   HseRoute.protected(InsulationLayerComponent.route, InsulationLayerComponent, InsulationLayerComponent.title),
-  HseRoute.protected(RoofMaterialComponent.route, RoofMaterialComponent, RoofMaterialComponent.title),
+  HseRoute.protected(RoofMaterialComponent.route, RoofMaterialComponent, RoofMaterialComponent.title),  HseRoute.protected(TotalStaircasesComponent.route, TotalStaircasesComponent, TotalStaircasesComponent.title),
+  HseRoute.protected(EnergyTypeComponent.route, EnergyTypeComponent, EnergyTypeComponent.title),
+  HseRoute.protected(OnSiteEnergyGenerationComponent.route, OnSiteEnergyGenerationComponent, OnSiteEnergyGenerationComponent.title),
   HseRoute.protected(EnergySupplyComponent.route, EnergySupplyComponent, EnergySupplyComponent.title),
   HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title)
 ]);
@@ -54,6 +59,9 @@ const routes = new HseRoutes([
     InsulationLayerComponent,
     RoofMaterialComponent,
     EnergySupplyComponent,
+    TotalStaircasesComponent,
+    EnergyTypeComponent,
+    OnSiteEnergyGenerationComponent
     BuildingStructureTypeComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],

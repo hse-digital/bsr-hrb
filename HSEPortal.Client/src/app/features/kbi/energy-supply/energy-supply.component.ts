@@ -1,6 +1,6 @@
 import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
+import { GovukCheckboxComponent, GovukErrorSummaryComponent } from 'hse-angular';
 import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
@@ -18,10 +18,11 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   static title: string = "Energy supplies to - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
+  @ViewChildren(GovukCheckboxComponent) checkboxes?: QueryList<GovukCheckboxComponent>;
 
   errorMessage?: string;
   energySupplyHasErrors = false;
+  firstCheckboxAnchorId?: string;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
@@ -41,6 +42,8 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   canContinue(): boolean {
     this.energySupplyHasErrors = !this.applicationService.currenKbiSection!.energySupply
       || this.applicationService.currenKbiSection!.energySupply.length == 0;
+      
+      if (this.energySupplyHasErrors) this.firstCheckboxAnchorId = `communal-${this.checkboxes?.first.innerId}`;
 
     return !this.energySupplyHasErrors;
   }
@@ -50,7 +53,7 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    //return !!this.applicationService.currenKbiSection!.strategyEvacuateBuilding; //TODO update with correct access property from #3520 once PR complete
-    return true;
+    return !!this.applicationService.currenKbiSection?.onsiteEnergyGeneration
+      && this.applicationService.currenKbiSection!.onsiteEnergyGeneration.length > 0;
   }
 }

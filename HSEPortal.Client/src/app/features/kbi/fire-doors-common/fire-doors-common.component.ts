@@ -7,6 +7,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { EnergyTypeComponent } from '../energy-type/energy-type.component';
 
 type Error = { hasError: boolean, errorMessage: string }
 @Component({
@@ -65,7 +66,7 @@ export class FireDoorsCommonComponent extends BaseComponent implements IHasNextP
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(FireDoorsCommonComponent.route, activatedRoute); //TODO : Navigate to next page when #947 completed
+    return navigationService.navigateRelative(EnergyTypeComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
