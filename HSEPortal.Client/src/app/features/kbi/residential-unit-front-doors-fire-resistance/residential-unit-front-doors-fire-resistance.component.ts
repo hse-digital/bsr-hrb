@@ -63,7 +63,7 @@ export class ResidentialUnitFrontDoorsFireResistanceComponent extends BaseCompon
   }
 
   validateNumericInput(input: number | undefined, error: Error, key: string): Error {
-    error.hasError = !FieldValidations.IsWholeNumber(input) || !FieldValidations.IsAPositiveNumber(input);
+    error.hasError = !input || !FieldValidations.IsWholeNumber(input) || !FieldValidations.IsAPositiveNumber(input);
     if (error.hasError) error.errorMessage = !input ? this.errorMessages[key] : this.defaultErrorMessage;
     return error;
   }

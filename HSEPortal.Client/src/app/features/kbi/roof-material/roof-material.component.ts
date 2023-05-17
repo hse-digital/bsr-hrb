@@ -6,6 +6,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { TotalStaircasesComponent } from '../total-staircases/total-staircases.component';
 
 @Component({
   selector: 'hse-roof-material',
@@ -38,7 +39,7 @@ export class RoofMaterialComponent  extends BaseComponent implements IHasNextPag
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(RoofMaterialComponent.route, activatedRoute);
+    return navigationService.navigateRelative(TotalStaircasesComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
