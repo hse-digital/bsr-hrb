@@ -25,6 +25,7 @@ import { EnergyTypeComponent } from './energy-type/energy-type.component';
 import { OnSiteEnergyGenerationComponent } from './on-site-energy-generation/on-site-energy-generation.component';
 import { ExternalWallMaterialsComponent } from './external-wall-materials/external-wall-materials.component';
 import { WallsAcmComponent } from './walls-acm/walls-acm.component';
+import { WallsHplComponent } from './walls-hpl/walls-hpl.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -45,6 +46,7 @@ const routes = new HseRoutes([
   HseRoute.protected(OnSiteEnergyGenerationComponent.route, OnSiteEnergyGenerationComponent, OnSiteEnergyGenerationComponent.title),
   HseRoute.protected(ExternalWallMaterialsComponent.route, ExternalWallMaterialsComponent, ExternalWallMaterialsComponent.title),
   HseRoute.protected(WallsAcmComponent.route, WallsAcmComponent, WallsAcmComponent.title),
+  HseRoute.protected(WallsHplComponent.route, WallsHplComponent, WallsHplComponent.title),
 ]);
 
 @NgModule({
@@ -66,7 +68,8 @@ const routes = new HseRoutes([
     EnergyTypeComponent,
     OnSiteEnergyGenerationComponent,
     ExternalWallMaterialsComponent,
-    WallsAcmComponent
+    WallsAcmComponent,
+    WallsHplComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

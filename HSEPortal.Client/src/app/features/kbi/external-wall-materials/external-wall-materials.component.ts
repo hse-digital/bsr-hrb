@@ -7,6 +7,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { WallsAcmComponent } from '../walls-acm/walls-acm.component';
+import { WallsHplComponent } from '../walls-hpl/walls-hpl.component';
 
 @Component({
   selector: 'hse-external-wall-materials',
@@ -48,7 +49,7 @@ export class ExternalWallMaterialsComponent  extends BaseComponent implements IH
     if(this.doesExternalWallMaterialsIncludes('acm')) {
       return navigationService.navigateRelative(WallsAcmComponent.route, activatedRoute);
     } else if (this.doesExternalWallMaterialsIncludes('hpl')) {
-      // user goes to HPL
+      return navigationService.navigateRelative(WallsHplComponent.route, activatedRoute);
     }
     // user goes to material percentage
     return navigationService.navigateRelative(ExternalWallMaterialsComponent.route, activatedRoute);
