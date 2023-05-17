@@ -7,6 +7,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { BuildingStructureTypeComponent } from '../building-structure-type/building-structure-type.component';
 
 @Component({
   selector: 'hse-energy-supply',
@@ -48,7 +49,7 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(EnergySupplyComponent.route, activatedRoute);
+    return navigationService.navigateRelative(BuildingStructureTypeComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

@@ -307,4 +307,6 @@ export class KbiSectionModel {
   totalNumberStaircases?: number;
   energyTypeStorage?: string[];
   onsiteEnergyGeneration?: string[];
+  buildingStructureType?: string[];
+
 }
