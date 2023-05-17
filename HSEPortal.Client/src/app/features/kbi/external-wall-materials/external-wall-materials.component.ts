@@ -9,26 +9,26 @@ import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'hse-external-wall-materials',
-  templateUrl: './external-wall-materials.component.html',
-  styleUrls: ['./external-wall-materials.component.scss']
+  templateUrl: './external-wall-materials.component.html'
 })
 export class ExternalWallMaterialsComponent  extends BaseComponent implements IHasNextPage, OnInit {
-  static route: string = '';
-  static title: string = " - Register a high-rise building - GOV.UK";
+  static route: string = 'materials-outside-wall';
+  static title: string = "Materials on outside wall - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChildren(GovukCheckboxComponent) checkboxes?: QueryList<GovukCheckboxComponent>;
+  
   errorMessage?: string;
-
   firstCheckboxAnchorId?: string;
   externalWallMaterialsHasErrors = false;
+  
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.externalWallMaterials) { this.applicationService.currenKbiSection!.externalWallMaterials = []; }
-    this.errorMessage = `${this.getInfraestructureName()}`;
+    if (!this.applicationService.currenKbiSection!.ExternalWallMaterials) { this.applicationService.currenKbiSection!.ExternalWallMaterials = []; }
+    this.errorMessage = `Select what materials are visible on the outside of the walls of ${this.getInfraestructureName()}`;
   }
 
   getInfraestructureName() {
@@ -37,16 +37,24 @@ export class ExternalWallMaterialsComponent  extends BaseComponent implements IH
       : this.applicationService.currentSection.Name;
   }
 
-  canContinue(): boolean {
-    this.firstCheckboxAnchorId = `acm-${this.checkboxes?.first.innerId}`;
-    this.externalWallMaterialsHasErrors = !this.applicationService.currenKbiSection!.externalWallMaterials || this.applicationService.currenKbiSection!.externalWallMaterials.length == 0;
-    if(this.externalWallMaterialsHasErrors) this.errorMessage = `${this.getInfraestructureName()}`;
+  canContinue(): boolean {    
+    this.externalWallMaterialsHasErrors = !this.applicationService.currenKbiSection!.ExternalWallMaterials || this.applicationService.currenKbiSection!.ExternalWallMaterials.length == 0;
+    if(this.externalWallMaterialsHasErrors) this.firstCheckboxAnchorId = `acm-${this.checkboxes?.first.innerId}`;
     return !this.externalWallMaterialsHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    
+    if(this.doesExternalWallMaterialsIncludes('acm')) {
+      // user goes to ACM
+    } else if (this.doesExternalWallMaterialsIncludes('hpl')) {
+      // user goes to HPL
+    }
+    // user goes to material percentage
     return navigationService.navigateRelative(ExternalWallMaterialsComponent.route, activatedRoute);
+  }
+
+  doesExternalWallMaterialsIncludes(material: string) {
+    return this.applicationService.currenKbiSection!.ExternalWallMaterials!.includes(material);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

@@ -8,22 +8,28 @@
           <govuk-error-link [anchorId]="firstCheckboxAnchorId" [message]=errorMessage />
         </govuk-error-summary>
 
-        <govuk-checkbox-group [(model)]="applicationService.currenKbiSection!.externalWallMaterials!" hint="Select all that apply" [isPageHeading]=true
-            id="locations" #field [govukRequired]="field" title="{{getInfraestructureName()}}?" [errorText]="getErrorDescription(externalWallMaterialsHasErrors, errorMessage!)">
+        <h1 class="govuk-heading-l">What materials are visible on the outside of the walls of {{getInfraestructureName()}}?</h1>
 
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Aluminium composite materials (ACM)" value="acm" id="acm"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="High pressure laminate (HPL)" value="hpl" id="hpl"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Metal composite panels" value="metal-composite-panels" id="metal-composite-panels"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Other composite panels" value="other-composite-panels" id="other-composite-panels"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Concrete" value="concrete" id="concrete"/>
-            <!-- remove? <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Glass" value="glass" id="glass"/>  -->
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Green walls" value="green-walls" id="green-walls"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Masonry" value="masonry" id="masonry"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Metal panels" value="metal-panels" id="metal-panels"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Render" value="render" id="render"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Tiles" value="tiles" id="tiles"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Timber" value="timber" id="timber"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.externalWallMaterials!" text="Other" value="other" id="other"/>
+        <govuk-body>You should be able to get this information from the latest external wall system appraisal.</govuk-body>
+        <govuk-body>This is not a complete list. It includes only the materials we need to know about.</govuk-body>
+
+        <govuk-checkbox-group [(model)]="applicationService.currenKbiSection!.ExternalWallMaterials!" hint="Select all that apply" [isPageHeading]=false 
+            title="We have assumed there is glass on the outside walls." class="plainText"
+            id="locations" #field [govukRequired]="field" [errorText]="getErrorDescription(externalWallMaterialsHasErrors, errorMessage!)">
+
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Aluminium composite materials (ACM)" value="acm" id="acm"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="High pressure laminate (HPL)" value="hpl" id="hpl"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Metal composite panels" value="metal-composite-panels" id="metal-composite-panels"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Other composite panels" value="other-composite-panels" id="other-composite-panels"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Concrete" value="concrete" id="concrete"/>
+            <!-- remove? <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Glass" value="glass" id="glass"/>  -->
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Green walls" value="green-walls" id="green-walls"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Masonry" value="masonry" id="masonry"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Metal panels" value="metal-panels" id="metal-panels"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Render" value="render" id="render"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Tiles" value="tiles" id="tiles"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Timber" value="timber" id="timber"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.ExternalWallMaterials!" text="Other" value="other" id="other"/>
 
         </govuk-checkbox-group>
       </div>

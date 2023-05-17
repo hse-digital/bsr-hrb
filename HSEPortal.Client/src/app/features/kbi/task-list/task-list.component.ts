@@ -3,7 +3,6 @@ import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapsho
 import { NavigationService } from 'src/app/services/navigation.service';
 import { ApplicationService, BuildingApplicationStatus, KbiModel, KbiSectionModel } from 'src/app/services/application.service';
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
-import { EvacuationStrategyComponent } from '../evacuation-strategy/evacuation-strategy.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { KbiNavigation } from 'src/app/services/navigation/kbi.navigation.ts.service';
 
@@ -65,6 +64,7 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   async navigateToSection(index: number) {
+    this.applicationService._currentSectionIndex = index;
     this.applicationService._currentKbiSectionIndex = index;
     return this.navigateToKbiSections();
   }
