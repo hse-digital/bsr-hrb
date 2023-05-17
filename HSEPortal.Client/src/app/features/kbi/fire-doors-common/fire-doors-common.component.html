@@ -17,22 +17,22 @@
         <govuk-body>Count fire doors that residents can walk through, like those between corridors and staircases.</govuk-body>
 
 
-        <govuk-input id="thirty-mins" label="Doors with 30-minute certified fire resistance"
+        <govuk-input id="thirty-mins" label="Doors with 30-minute certified fire resistance" #field [govukRequired]="field"
                      [(model)]="applicationService.currenKbiSection!.fireDoorsCommon!.fireDoorThirtyMinute"
                      [errorText]="getErrorDescription(errors!.fireDoorThirtyMinute!.hasError , errors!.fireDoorThirtyMinute!.errorMessage)"
                      class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 
-        <govuk-input id="sixty-mins" label="Doors with 60-minute certified fire resistance"
+        <govuk-input id="sixty-mins" label="Doors with 60-minute certified fire resistance" #field [govukRequired]="field"
                      [(model)]="applicationService.currenKbiSection!.fireDoorsCommon!.fireDoorSixtyMinute"
                      [errorText]="getErrorDescription(errors!.fireDoorSixtyMinute!.hasError , errors!.fireDoorSixtyMinute!.errorMessage)"
                      class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 
-        <govuk-input id="hundred-twenty-mins" label="Doors with 120-minute certified fire resistance"
+        <govuk-input id="hundred-twenty-mins" label="Doors with 120-minute certified fire resistance" #field [govukRequired]="field"
                      [(model)]="applicationService.currenKbiSection!.fireDoorsCommon!.fireDoorHundredTwentyMinute"
                      [errorText]="getErrorDescription(errors!.fireDoorHundredTwentyMinute!.hasError , errors!.fireDoorHundredTwentyMinute!.errorMessage)"
                      class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 
-        <govuk-input id="not-known" label="Doors that certified fire resistance is not known"
+        <govuk-input id="not-known" label="Doors that certified fire resistance is not known" #field [govukRequired]="field"
                      [(model)]="applicationService.currenKbiSection!.fireDoorsCommon!.fireDoorUnknown"
                      [errorText]="getErrorDescription(errors!.fireDoorUnknown!.hasError , errors!.fireDoorUnknown!.errorMessage)"
                      class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />

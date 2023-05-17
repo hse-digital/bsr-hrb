@@ -302,6 +302,7 @@ export class KbiSectionModel {
     fireDoorHundredTwentyMinute?: number,
     fireDoorUnknown?: number,
   } = {};
+  energySupply?: string[];
   internalStaircasesAllFloors?: number;
   totalNumberStaircases?: number;
   energyTypeStorage?: string[];

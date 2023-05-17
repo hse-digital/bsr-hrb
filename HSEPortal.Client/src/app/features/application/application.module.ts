@@ -22,6 +22,7 @@ import { ApplicationTaskListComponent } from "./task-list/task-list.component";
 import { BuildingSummaryNavigation } from "src/app/services/navigation/building-summary.navigation";
 import { AccountablePersonNavigation } from "src/app/services/navigation/accountable-person.navigation";
 import { KbiModule } from "../kbi/kbi.module";
+import { KbiNavigation } from "src/app/services/navigation/kbi.navigation.ts.service";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent, ApplicationTaskListComponent.title),
@@ -59,6 +60,7 @@ const routes = new HseRoutes([
     ApplicationService,
     BuildingSummaryNavigation,
     AccountablePersonNavigation,
+    KbiNavigation,
     ...routes.getProviders()
   ]
 })
