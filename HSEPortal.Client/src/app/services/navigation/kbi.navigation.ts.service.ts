@@ -62,7 +62,7 @@ class EvacuationStrategyNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.strategyEvacuateBuilding) {
+    if (!kbi.StrategyEvacuateBuilding) {
       return EvacuationStrategyComponent.route;
     }
     return this.provisionsEquipmentNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -77,7 +77,7 @@ class ProvisionsEquipmentNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.provisionsEquipment || kbi.provisionsEquipment.length == 0) {
+    if (!kbi.ProvisionsEquipment || kbi.ProvisionsEquipment.length == 0) {
       return ProvisionsEquipmentComponent.route;
     }
     return this.fireSmokeProvisionsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -93,11 +93,11 @@ class FireSmokeProvisionsNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.fireSmokeProvisions || kbi.fireSmokeProvisions!.length == 0) {
+    if (!kbi.FireSmokeProvisions || kbi.FireSmokeProvisions!.length == 0) {
       return FireSmokeProvisionsComponent.route;
     }
 
-    if (kbi.fireSmokeProvisions!.length == 1 && kbi.fireSmokeProvisions![0] === 'none') {
+    if (kbi.FireSmokeProvisions!.length == 1 && kbi.FireSmokeProvisions![0] === 'none') {
       return this.liftsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
 
@@ -111,12 +111,12 @@ class FireSmokeProvisionLocationsNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.fireSmokeProvisionLocations || Object.keys(kbi.fireSmokeProvisionLocations).length == 0) {
+    if (!kbi.FireSmokeProvisionLocations || Object.keys(kbi.FireSmokeProvisionLocations).length == 0) {
       return FireSmokeProvisionLocationsComponent.route;
     }
 
-    if (kbi.fireSmokeProvisions!.some(x => kbi!.fireSmokeProvisionLocations![x].length == 0)) {
-      let nextEquipment = kbi.fireSmokeProvisions!.find(x => kbi!.fireSmokeProvisionLocations![x].length == 0);
+    if (kbi.FireSmokeProvisions!.some(x => kbi!.FireSmokeProvisionLocations![x].length == 0)) {
+      let nextEquipment = kbi.FireSmokeProvisions!.find(x => kbi!.FireSmokeProvisionLocations![x].length == 0);
       return `${FireSmokeProvisionLocationsComponent.route}?equipment=${nextEquipment}`;
     }
 
@@ -131,7 +131,7 @@ class LiftsNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.lifts || kbi.lifts.length == 0) {
+    if (!kbi.Lifts || kbi.Lifts.length == 0) {
       return LiftsComponent.route;
     }
     return this.residentialUnitFrontDoorsFireResistanceNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -145,11 +145,11 @@ class ResidentialUnitFrontDoorsFireResistanceNavigationNode extends KbiNavigatio
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.residentialUnitFrontDoors || !kbi.residentialUnitFrontDoors.noFireResistance
-      || !kbi.residentialUnitFrontDoors.thirtyMinsFireResistance
-      || !kbi.residentialUnitFrontDoors.sixtyMinsFireResistance
-      || !kbi.residentialUnitFrontDoors.hundredTwentyMinsFireResistance
-      || !kbi.residentialUnitFrontDoors.notKnownFireResistance) {
+    if (!kbi.ResidentialUnitFrontDoors || !kbi.ResidentialUnitFrontDoors.NoFireResistance
+      || !kbi.ResidentialUnitFrontDoors.ThirtyMinsFireResistance
+      || !kbi.ResidentialUnitFrontDoors.SixtyMinsFireResistance
+      || !kbi.ResidentialUnitFrontDoors.HundredTwentyMinsFireResistance
+      || !kbi.ResidentialUnitFrontDoors.NotKnownFireResistance) {
       return ResidentialUnitFrontDoorsFireResistanceComponent.route;
     }
     return this.fireDoorsCommonNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -162,10 +162,10 @@ class FireDoorsCommonNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.fireDoorsCommon || !kbi.fireDoorsCommon.fireDoorUnknown
-      || !kbi.fireDoorsCommon.fireDoorThirtyMinute
-      || !kbi.fireDoorsCommon.fireDoorSixtyMinute
-      || !kbi.fireDoorsCommon.fireDoorHundredTwentyMinute) {
+    if (!kbi.FireDoorsCommon || !kbi.FireDoorsCommon.FireDoorUnknown
+      || !kbi.FireDoorsCommon.FireDoorThirtyMinute
+      || !kbi.FireDoorsCommon.FireDoorSixtyMinute
+      || !kbi.FireDoorsCommon.FireDoorHundredTwentyMinute) {
       return FireDoorsCommonComponent.route;
     }
     return FireDoorsCommonComponent.route;

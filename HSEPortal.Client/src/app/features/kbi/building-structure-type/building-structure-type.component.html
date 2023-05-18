@@ -13,7 +13,7 @@
                 <govuk-body>This is not a complete list. It includes only the structure types we need to know about</govuk-body>
 
                 <govuk-checkbox-none title="What is the type of structure?" hint="Select all that apply"  [errorText]="getErrorDescription(buildingStructureTypeHasErrors, errorMessage!)"
-                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.buildingStructureType!">
+                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.BuildingStructureType!">
                     <checkbox-option text="Composite steel and concrete" value="composite_steel_concrete" id="composite_steel_concrete" />
                     <checkbox-option text="Concrete large panel system - 1960s" value="concrete_large_panels_1960" id="concrete_large_panels_1960" />
                     <checkbox-option text="Concrete large panel system - 1970 onwards" value="concrete_large_panels_1970" id="concrete_large_panels_1970" />

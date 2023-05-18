@@ -29,7 +29,7 @@ export class ProvisionsEquipmentComponent extends BaseComponent implements IHasN
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.provisionsEquipment) { this.applicationService.currenKbiSection!.provisionsEquipment = []; }
+    if (!this.applicationService.currenKbiSection!.ProvisionsEquipment) { this.applicationService.currenKbiSection!.ProvisionsEquipment = []; }
     this.errorMessage = `Select the fire and smoke control equipment in the residential units of ${this.getInfraestructureName()}`;
   }
 
@@ -40,8 +40,8 @@ export class ProvisionsEquipmentComponent extends BaseComponent implements IHasN
   }
 
   canContinue(): boolean {
-    this.provisionsEquipmentHasErrors = !this.applicationService.currenKbiSection!.provisionsEquipment 
-      || this.applicationService.currenKbiSection!.provisionsEquipment.length == 0;
+    this.provisionsEquipmentHasErrors = !this.applicationService.currenKbiSection!.ProvisionsEquipment 
+      || this.applicationService.currenKbiSection!.ProvisionsEquipment.length == 0;
 
     if (this.provisionsEquipmentHasErrors) this.firstCheckboxAnchorId = `heat_detectors-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -53,6 +53,6 @@ export class ProvisionsEquipmentComponent extends BaseComponent implements IHasN
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection!.strategyEvacuateBuilding;
+    return !!this.applicationService.currenKbiSection!.StrategyEvacuateBuilding;
   }
 }

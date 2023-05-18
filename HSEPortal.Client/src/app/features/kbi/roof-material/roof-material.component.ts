@@ -34,7 +34,7 @@ export class RoofMaterialComponent  extends BaseComponent implements IHasNextPag
   }
 
   canContinue(): boolean {
-    this.roofMaterialHasErrors = !this.applicationService.currenKbiSection!.roofMaterial;
+    this.roofMaterialHasErrors = !this.applicationService.currenKbiSection!.RoofMaterial;
     return !this.roofMaterialHasErrors;
   }
 
@@ -43,7 +43,7 @@ export class RoofMaterialComponent  extends BaseComponent implements IHasNextPag
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.roofInsulation;
+    return !!this.applicationService.currenKbiSection?.RoofInsulation;
   }
 
 }

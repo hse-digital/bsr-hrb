@@ -29,7 +29,7 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.energySupply) { this.applicationService.currenKbiSection!.energySupply = []; }
+    if (!this.applicationService.currenKbiSection!.EnergySupply) { this.applicationService.currenKbiSection!.EnergySupply = []; }
     this.errorMessage = `Select the types of energy supply in ${this.getInfraestructureName()}`;
   }
 
@@ -40,8 +40,8 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   }
 
   canContinue(): boolean {
-    this.energySupplyHasErrors = !this.applicationService.currenKbiSection!.energySupply
-      || this.applicationService.currenKbiSection!.energySupply.length == 0;
+    this.energySupplyHasErrors = !this.applicationService.currenKbiSection!.EnergySupply
+      || this.applicationService.currenKbiSection!.EnergySupply.length == 0;
       
       if (this.energySupplyHasErrors) this.firstCheckboxAnchorId = `communal-${this.checkboxes?.first.innerId}`;
 
@@ -53,7 +53,7 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.onsiteEnergyGeneration
-      && this.applicationService.currenKbiSection!.onsiteEnergyGeneration.length > 0;
+    return !!this.applicationService.currenKbiSection?.OnsiteEnergyGeneration
+      && this.applicationService.currenKbiSection!.OnsiteEnergyGeneration.length > 0;
   }
 }

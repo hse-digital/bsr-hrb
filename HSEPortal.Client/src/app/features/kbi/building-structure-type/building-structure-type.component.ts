@@ -1,6 +1,6 @@
 import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukCheckboxComponent, GovukErrorSummaryComponent } from 'hse-angular';
+import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component'; 
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
@@ -29,7 +29,7 @@ export class BuildingStructureTypeComponent extends BaseComponent implements IHa
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.buildingStructureType) { this.applicationService.currenKbiSection!.buildingStructureType = []; }
+    if (!this.applicationService.currenKbiSection!.BuildingStructureType) { this.applicationService.currenKbiSection!.BuildingStructureType = []; }
     this.errorMessage = `Select the type of structure in ${this.getInfraestructureName()} , or select \'None of these\'`;
   }
 
@@ -40,8 +40,8 @@ export class BuildingStructureTypeComponent extends BaseComponent implements IHa
   }
 
   canContinue(): boolean {
-    this.buildingStructureTypeHasErrors = !this.applicationService.currenKbiSection!.buildingStructureType 
-      || this.applicationService.currenKbiSection!.buildingStructureType.length == 0;
+    this.buildingStructureTypeHasErrors = !this.applicationService.currenKbiSection!.BuildingStructureType 
+      || this.applicationService.currenKbiSection!.BuildingStructureType.length == 0;
 
     if (this.buildingStructureTypeHasErrors) this.firstCheckboxAnchorId = `composite_steel_concrete-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -53,6 +53,6 @@ export class BuildingStructureTypeComponent extends BaseComponent implements IHa
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!(this.applicationService.currenKbiSection!.energySupply!.length > 0);
+    return !!(this.applicationService.currenKbiSection!.EnergySupply!.length > 0);
   }
 }

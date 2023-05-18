@@ -276,37 +276,36 @@ export enum PaymentStatus {
 }
 
 export class KbiModel {
-  SectionStatus: { inProgress: boolean, complete: boolean }[] = [];
+  SectionStatus: { InProgress: boolean, Complete: boolean }[] = [];
   KbiSections: KbiSectionModel[] = [];
 }
 
 export class KbiSectionModel {
-  strategyEvacuateBuilding?: string;
-  provisionsEquipment?: string[];
-  fireSmokeProvisions?: string[];
-  fireSmokeProvisionLocations?: Record<string, string[]>;
-  lifts?: string[];
-  residentialUnitFrontDoors?: {
-    noFireResistance?: number,
-    thirtyMinsFireResistance?: number,
-    sixtyMinsFireResistance?: number,
-    hundredTwentyMinsFireResistance?: number,
-    notKnownFireResistance?: number,
+  StrategyEvacuateBuilding?: string;
+  ProvisionsEquipment?: string[];
+  FireSmokeProvisions?: string[];
+  FireSmokeProvisionLocations?: Record<string, string[]>;
+  Lifts?: string[];
+  ResidentialUnitFrontDoors?: {
+    NoFireResistance?: number,
+    ThirtyMinsFireResistance?: number,
+    SixtyMinsFireResistance?: number,
+    HundredTwentyMinsFireResistance?: number,
+    NotKnownFireResistance?: number,
   } = {};
-  roofType?: string;
-  roofInsulation?: string;
-  roofMaterial?: string;
-  fireDoorsCommon?: {
-    fireDoorThirtyMinute?: number,
-    fireDoorSixtyMinute?: number,
-    fireDoorHundredTwentyMinute?: number,
-    fireDoorUnknown?: number,
+  RoofType?: string;
+  RoofInsulation?: string;
+  RoofMaterial?: string;
+  FireDoorsCommon?: {
+    FireDoorThirtyMinute?: number,
+    FireDoorSixtyMinute?: number,
+    FireDoorHundredTwentyMinute?: number,
+    FireDoorUnknown?: number,
   } = {};
-  energySupply?: string[];
-  internalStaircasesAllFloors?: number;
-  totalNumberStaircases?: number;
-  energyTypeStorage?: string[];
-  onsiteEnergyGeneration?: string[];
-  buildingStructureType?: string[];
-
+  EnergySupply?: string[];
+  InternalStaircasesAllFloors?: number;
+  TotalNumberStaircases?: number;
+  EnergyTypeStorage?: string[];
+  OnsiteEnergyGeneration?: string[];
+  BuildingStructureType?: string[];
 }

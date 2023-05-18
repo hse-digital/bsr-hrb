@@ -29,7 +29,7 @@ export class EnergyTypeComponent  extends BaseComponent implements IHasNextPage,
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.energyTypeStorage) { this.applicationService.currenKbiSection!.energyTypeStorage = []; }
+    if (!this.applicationService.currenKbiSection!.EnergyTypeStorage) { this.applicationService.currenKbiSection!.EnergyTypeStorage = []; }
     this.errorMessage = `Select the types of energy supply in ${this.getInfraestructureName()}`;
   }
 
@@ -40,8 +40,8 @@ export class EnergyTypeComponent  extends BaseComponent implements IHasNextPage,
   }
 
   canContinue(): boolean {
-    this.energyTypeHasErrors = !this.applicationService.currenKbiSection!.energyTypeStorage 
-      || this.applicationService.currenKbiSection!.energyTypeStorage.length == 0;
+    this.energyTypeHasErrors = !this.applicationService.currenKbiSection!.EnergyTypeStorage 
+      || this.applicationService.currenKbiSection!.EnergyTypeStorage.length == 0;
 
     if (this.energyTypeHasErrors) this.firstCheckboxAnchorId = `hydrogen_batteries-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -53,9 +53,9 @@ export class EnergyTypeComponent  extends BaseComponent implements IHasNextPage,
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorThirtyMinute
-        && !!this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorSixtyMinute
-        && !!this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorHundredTwentyMinute
-        && !!this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorUnknown
+    return !!this.applicationService.currenKbiSection?.FireDoorsCommon?.FireDoorThirtyMinute
+        && !!this.applicationService.currenKbiSection?.FireDoorsCommon?.FireDoorSixtyMinute
+        && !!this.applicationService.currenKbiSection?.FireDoorsCommon?.FireDoorHundredTwentyMinute
+        && !!this.applicationService.currenKbiSection?.FireDoorsCommon?.FireDoorUnknown
       }
 }

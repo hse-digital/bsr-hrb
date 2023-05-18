@@ -16,27 +16,27 @@
                 <h1 class="govuk-heading-l">Number of residential unit front doors in {{getInfraestructureName()}}</h1>
 
                 <govuk-input id="no-resistance" label="Doors with no certified fire resistance" #field [govukRequired]="field"
-                    [(model)]="applicationService.currenKbiSection!.residentialUnitFrontDoors!.noFireResistance"
+                    [(model)]="applicationService.currenKbiSection!.ResidentialUnitFrontDoors!.NoFireResistance"
                     [errorText]="getErrorDescription(errors!.noFireResistance!.hasError , errors!.noFireResistance!.errorMessage)"
                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 
                 <govuk-input id="thirty-mins" label="Doors with 30-minute certified fire resistance" #field [govukRequired]="field"
-                    [(model)]="applicationService.currenKbiSection!.residentialUnitFrontDoors!.thirtyMinsFireResistance"
+                    [(model)]="applicationService.currenKbiSection!.ResidentialUnitFrontDoors!.ThirtyMinsFireResistance"
                     [errorText]="getErrorDescription(errors!.thirtyMinsFireResistance!.hasError , errors!.thirtyMinsFireResistance!.errorMessage)"
                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 
                 <govuk-input id="sixty-mins" label="Doors with 60-minute certified fire resistance" #field [govukRequired]="field"
-                    [(model)]="applicationService.currenKbiSection!.residentialUnitFrontDoors!.sixtyMinsFireResistance"
+                    [(model)]="applicationService.currenKbiSection!.ResidentialUnitFrontDoors!.SixtyMinsFireResistance"
                     [errorText]="getErrorDescription(errors!.sixtyMinsFireResistance!.hasError , errors!.sixtyMinsFireResistance!.errorMessage)"
                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 
                 <govuk-input id="hundred-twenty-mins" label="Doors with 120-minute certified fire resistance" #field [govukRequired]="field"
-                    [(model)]="applicationService.currenKbiSection!.residentialUnitFrontDoors!.hundredTwentyMinsFireResistance"
+                    [(model)]="applicationService.currenKbiSection!.ResidentialUnitFrontDoors!.HundredTwentyMinsFireResistance"
                     [errorText]="getErrorDescription(errors!.hundredTwentyMinsFireResistance!.hasError , errors!.hundredTwentyMinsFireResistance!.errorMessage)"
                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 
                 <govuk-input id="not-known" label="Doors that certified fire resistance is not known" #field [govukRequired]="field"
-                    [(model)]="applicationService.currenKbiSection!.residentialUnitFrontDoors!.notKnownFireResistance"
+                    [(model)]="applicationService.currenKbiSection!.ResidentialUnitFrontDoors!.NotKnownFireResistance"
                     [errorText]="getErrorDescription(errors!.notKnownFireResistance!.hasError , errors!.notKnownFireResistance!.errorMessage)"
                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 

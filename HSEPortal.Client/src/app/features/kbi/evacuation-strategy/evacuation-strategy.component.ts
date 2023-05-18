@@ -25,7 +25,7 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   }
 
   ngOnInit(): void {
-    this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].inProgress = true;
+    this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].InProgress = true;
     this.errorMessage = `Select the strategy you use to evacuate the residential part of ${this.getInfraestructureName()}`;
   }
 
@@ -36,7 +36,7 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   }
 
   canContinue(): boolean {
-    this.evacuationStrategyHasErrors = !this.applicationService.currenKbiSection?.strategyEvacuateBuilding;
+    this.evacuationStrategyHasErrors = !this.applicationService.currenKbiSection?.StrategyEvacuateBuilding;
     return !this.evacuationStrategyHasErrors;
   }
 
