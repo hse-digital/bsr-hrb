@@ -30,7 +30,7 @@ export class FireSmokeProvisionsComponent  extends BaseComponent implements IHas
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.fireSmokeProvisions) { this.applicationService.currenKbiSection!.fireSmokeProvisions = []; }
+    if (!this.applicationService.currenKbiSection!.FireSmokeProvisions) { this.applicationService.currenKbiSection!.FireSmokeProvisions = []; }
     this.errorMessage = `Select the fire and smoke control equipment in the residential common parts of ${this.getInfraestructureName()}`;
   }
 
@@ -41,8 +41,8 @@ export class FireSmokeProvisionsComponent  extends BaseComponent implements IHas
   }
 
   canContinue(): boolean {
-    this.fireSmokeProvisionsHasErrors = !this.applicationService.currenKbiSection!.fireSmokeProvisions 
-      || this.applicationService.currenKbiSection!.fireSmokeProvisions.length == 0;
+    this.fireSmokeProvisionsHasErrors = !this.applicationService.currenKbiSection!.FireSmokeProvisions 
+      || this.applicationService.currenKbiSection!.FireSmokeProvisions.length == 0;
 
     if (this.fireSmokeProvisionsHasErrors) this.firstCheckboxAnchorId = `alarm_heat_smoke-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -50,16 +50,16 @@ export class FireSmokeProvisionsComponent  extends BaseComponent implements IHas
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if(!this.applicationService.currenKbiSection!.fireSmokeProvisions?.includes('none')) {
+    if(!this.applicationService.currenKbiSection!.FireSmokeProvisions?.includes('none')) {
       return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute, {
-        equipment: this.applicationService.currenKbiSection!.fireSmokeProvisions![0]
+        equipment: this.applicationService.currenKbiSection!.FireSmokeProvisions![0]
       });  
     }
     return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.provisionsEquipment 
-        && this.applicationService.currenKbiSection!.provisionsEquipment.length > 0;
+    return !!this.applicationService.currenKbiSection?.ProvisionsEquipment 
+        && this.applicationService.currenKbiSection!.ProvisionsEquipment.length > 0;
   }
 }

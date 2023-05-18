@@ -7,6 +7,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { BuildingStructureTypeComponent } from '../building-structure-type/building-structure-type.component';
 
 @Component({
   selector: 'hse-energy-supply',
@@ -28,7 +29,7 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.energySupply) { this.applicationService.currenKbiSection!.energySupply = []; }
+    if (!this.applicationService.currenKbiSection!.EnergySupply) { this.applicationService.currenKbiSection!.EnergySupply = []; }
     this.errorMessage = `Select the types of energy supply in ${this.getInfraestructureName()}`;
   }
 
@@ -39,8 +40,8 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   }
 
   canContinue(): boolean {
-    this.energySupplyHasErrors = !this.applicationService.currenKbiSection!.energySupply
-      || this.applicationService.currenKbiSection!.energySupply.length == 0;
+    this.energySupplyHasErrors = !this.applicationService.currenKbiSection!.EnergySupply
+      || this.applicationService.currenKbiSection!.EnergySupply.length == 0;
       
       if (this.energySupplyHasErrors) this.firstCheckboxAnchorId = `communal-${this.checkboxes?.first.innerId}`;
 
@@ -48,11 +49,11 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(EnergySupplyComponent.route, activatedRoute);
+    return navigationService.navigateRelative(BuildingStructureTypeComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.onsiteEnergyGeneration
-      && this.applicationService.currenKbiSection!.onsiteEnergyGeneration.length > 0;
+    return !!this.applicationService.currenKbiSection?.OnsiteEnergyGeneration
+      && this.applicationService.currenKbiSection!.OnsiteEnergyGeneration.length > 0;
   }
 }

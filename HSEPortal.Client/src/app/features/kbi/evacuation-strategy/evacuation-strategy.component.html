@@ -9,13 +9,13 @@
         </govuk-error-summary>
 
         <govuk-radio-group title="What strategy do you use to evacuate the residential part of {{getInfraestructureName()}}?" 
-          [isPageHeading]=true [(model)]="applicationService.currenKbiSection!.strategyEvacuateBuilding" #field [govukRequired]="field"
+          [isPageHeading]=true [(model)]="applicationService.currenKbiSection!.StrategyEvacuateBuilding" #field [govukRequired]="field"
           id="strategy" [errorText]="getErrorDescription(evacuationStrategyHasErrors, errorMessage!)" hintText="You should be able to get this information from the latest fire risk assessment.">
-          <govuk-radio [model]="applicationService.currenKbiSection!.strategyEvacuateBuilding" name="application-group" id="strategy_phased" value="phased" label="Phased" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currenKbiSection!.strategyEvacuateBuilding" name="application-group" id="strategy_progressive_horizontal" value="progressive_horizontal" label="Progressive horizontal" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currenKbiSection!.strategyEvacuateBuilding" name="application-group" id="strategy_simultaneous" value="simultaneous" label="Simultaneous" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currenKbiSection!.strategyEvacuateBuilding" name="application-group" id="strategy_stay_put" value="stay_put" label="Stay put (defend in place)" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currenKbiSection!.strategyEvacuateBuilding" name="application-group" id="strategy_temporary_simultaneous" value="temporary_simultaneous" label="Temporary simultaneous" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currenKbiSection!.StrategyEvacuateBuilding" name="application-group" id="strategy_phased" value="phased" label="Phased" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currenKbiSection!.StrategyEvacuateBuilding" name="application-group" id="strategy_progressive_horizontal" value="progressive_horizontal" label="Progressive horizontal" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currenKbiSection!.StrategyEvacuateBuilding" name="application-group" id="strategy_simultaneous" value="simultaneous" label="Simultaneous" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currenKbiSection!.StrategyEvacuateBuilding" name="application-group" id="strategy_stay_put" value="stay_put" label="Stay put (defend in place)" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="applicationService.currenKbiSection!.StrategyEvacuateBuilding" name="application-group" id="strategy_temporary_simultaneous" value="temporary_simultaneous" label="Temporary simultaneous" (onKeyupEnter)="saveAndContinue()" />
         </govuk-radio-group>
       </div>
 

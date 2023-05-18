@@ -34,7 +34,7 @@ export class RoofTypeComponent  extends BaseComponent implements IHasNextPage {
   }
 
   canContinue(): boolean {
-    this.roofTypeHasErrors = !this.applicationService.currenKbiSection!.roofType;
+    this.roofTypeHasErrors = !this.applicationService.currenKbiSection!.RoofType;
     return !this.roofTypeHasErrors;
   }
 
@@ -43,7 +43,7 @@ export class RoofTypeComponent  extends BaseComponent implements IHasNextPage {
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.strategyEvacuateBuilding;
+    return !!this.applicationService.currenKbiSection?.BuildingStructureType && this.applicationService.currenKbiSection!.BuildingStructureType.length > 0;
   }
 
 }

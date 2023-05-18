@@ -1,36 +1,36 @@
 import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukCheckboxComponent, GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
+import { GovukErrorSummaryComponent } from 'hse-angular';
+import { BaseComponent } from 'src/app/helpers/base.component'; 
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { FireSmokeProvisionsComponent } from '../fire-smoke-provisions/fire-smoke-provisions.component';
 import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
+import { RoofTypeComponent } from '../roof-type/roof-type.component';
 
 @Component({
-  selector: 'hse-provisions-equipment',
-  templateUrl: './provisions-equipment.component.html'
+  selector: 'hse-building-structure-type',
+  templateUrl: './building-structure-type.component.html'
 })
-export class ProvisionsEquipmentComponent extends BaseComponent implements IHasNextPage, OnInit {
-  static route: string = 'provisions-equipment';
-  static title: string = "Residential fire and smoke controls - Register a high-rise building - GOV.UK";
+export class BuildingStructureTypeComponent extends BaseComponent implements IHasNextPage, OnInit {
+  static route: string = 'building-structure-type';
+  static title: string = "Structure type - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChild(GovukCheckboxNoneComponent) equipmentCheckboxGroup?: GovukCheckboxNoneComponent;
 
   firstCheckboxAnchorId?: string;
   errorMessage?: string;
-  provisionsEquipmentHasErrors = false;
+  buildingStructureTypeHasErrors = false;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.ProvisionsEquipment) { this.applicationService.currenKbiSection!.ProvisionsEquipment = []; }
-    this.errorMessage = `Select the fire and smoke control equipment in the residential units of ${this.getInfraestructureName()}`;
+    if (!this.applicationService.currenKbiSection!.BuildingStructureType) { this.applicationService.currenKbiSection!.BuildingStructureType = []; }
+    this.errorMessage = `Select the type of structure in ${this.getInfraestructureName()} , or select \'None of these\'`;
   }
 
   getInfraestructureName() {
@@ -40,19 +40,19 @@ export class ProvisionsEquipmentComponent extends BaseComponent implements IHasN
   }
 
   canContinue(): boolean {
-    this.provisionsEquipmentHasErrors = !this.applicationService.currenKbiSection!.ProvisionsEquipment 
-      || this.applicationService.currenKbiSection!.ProvisionsEquipment.length == 0;
+    this.buildingStructureTypeHasErrors = !this.applicationService.currenKbiSection!.BuildingStructureType 
+      || this.applicationService.currenKbiSection!.BuildingStructureType.length == 0;
 
-    if (this.provisionsEquipmentHasErrors) this.firstCheckboxAnchorId = `heat_detectors-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
+    if (this.buildingStructureTypeHasErrors) this.firstCheckboxAnchorId = `composite_steel_concrete-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
-    return !this.provisionsEquipmentHasErrors;
+    return !this.buildingStructureTypeHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(FireSmokeProvisionsComponent.route, activatedRoute);
+    return navigationService.navigateRelative(RoofTypeComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection!.StrategyEvacuateBuilding;
+    return !!(this.applicationService.currenKbiSection!.EnergySupply!.length > 0);
   }
 }

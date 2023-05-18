@@ -14,6 +14,7 @@ public record BuildingApplicationModel(
     string NumberOfSections = null,
     SectionModel[] Sections = null,
     AccountablePerson[] AccountablePersons = null,
+    KbiModel Kbi = null,
     string OutOfScopeContinueReason = null,
     string PrincipalAccountableType = null,
     BuildingApplicationStatus ApplicationStatus = BuildingApplicationStatus.None) : IValidatableModel
@@ -61,16 +62,16 @@ public record BuildingApplicationModel(
     }
 }
 
-public record SectionModel(string Name, 
-        string FloorsAbove, string Height, string PeopleLivingInBuilding, 
+public record SectionModel(string Name,
+        string FloorsAbove, string Height, string PeopleLivingInBuilding,
         string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange,
         string CompletionCertificateIssuer, string CompletionCertificateReference, BuildingAddress[] Addresses = null);
 
 public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress Address, BuildingAddress PapAddress,
     string OrganisationName, string OrganisationType, string OrganisationTypeDescription,
     string NamedContactFirstName, string NamedContactLastName, string NamedContactEmail, string NamedContactPhoneNumber,
-    string FirstName, string LastName, string Email, string PhoneNumber, string Role, string LeadJobRole, 
-    string ActingForSameAddress, BuildingAddress ActingForAddress, string LeadFirstName, string LeadLastName, 
+    string FirstName, string LastName, string Email, string PhoneNumber, string Role, string LeadJobRole,
+    string ActingForSameAddress, BuildingAddress ActingForAddress, string LeadFirstName, string LeadLastName,
     string LeadEmail, string LeadPhoneNumber, SectionAccountability[] SectionsAccountability, string AddAnother);
 
 public record SectionAccountability(string SectionName, string[] Accountability);
@@ -84,5 +85,27 @@ public enum BuildingApplicationStatus
     AccountablePersonsInProgress = 4,
     AccountablePersonsComplete = 8,
     PaymentInProgress = 16,
-    PaymentComplete = 32
+    PaymentComplete = 32,
+    KbiCheckBeforeInProgress = 64,
+    KbiCheckBeforeComplete = 128,
+    KbiStructureInformationInProgress = 256,
+    KbiStructureInformationComplete = 512,
+    KbiConnectionsInProgress = 1024,
+    KbiConnectionsComplete = 2048,
+    KbiSubmitInProgress = 4096,
+    KbiSubmitComplete = 8192
 }
+
+public record KbiModel(KbiSectionModel[] KbiSections, SectionStatus[] SectionStatus);
+
+public record SectionStatus(bool InProgress, bool Complete);
+
+public record KbiSectionModel(string StrategyEvacuateBuilding, string[] ProvisionsEquipment, string[] FireSmokeProvisions, 
+    Dictionary<string, string[]> FireSmokeProvisionLocations, string[] Lifts, ResidentialUnitFrontDoors ResidentialUnitFrontDoors, 
+    string RoofType, string RoofInsulation, string RoofMaterial, FireDoorsCommon FireDoorsCommon, string[] EnergySupply, string[] BuildingStructureType,
+    string InternalStaircasesAllFloors, string TotalNumberStaircases, string[] EnergyTypeStorage, string[] OnsiteEnergyGeneration);
+
+public record FireDoorsCommon(string FireDoorThirtyMinute, string FireDoorSixtyMinute, string FireDoorHundredTwentyMinute, string FireDoorUnknown);
+
+public record ResidentialUnitFrontDoors(string NoFireResistance, string ThirtyMinsFireResistance, string SixtyMinsFireResistance, 
+    string HundredTwentyMinsFireResistance, string NotKnownFireResistance);

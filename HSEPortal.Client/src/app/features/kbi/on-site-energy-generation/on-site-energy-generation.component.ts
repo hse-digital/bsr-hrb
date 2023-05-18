@@ -29,7 +29,7 @@ export class OnSiteEnergyGenerationComponent  extends BaseComponent implements I
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.onsiteEnergyGeneration) { this.applicationService.currenKbiSection!.onsiteEnergyGeneration = []; }
+    if (!this.applicationService.currenKbiSection!.OnsiteEnergyGeneration) { this.applicationService.currenKbiSection!.OnsiteEnergyGeneration = []; }
     this.errorMessage = `Select the types of on-site energy generation in  ${this.getInfraestructureName()}`;
   }
 
@@ -40,8 +40,8 @@ export class OnSiteEnergyGenerationComponent  extends BaseComponent implements I
   }
 
   canContinue(): boolean {
-    this.onsiteEnergyGenerationHasErrors = !this.applicationService.currenKbiSection!.onsiteEnergyGeneration 
-      || this.applicationService.currenKbiSection!.onsiteEnergyGeneration.length == 0;
+    this.onsiteEnergyGenerationHasErrors = !this.applicationService.currenKbiSection!.OnsiteEnergyGeneration 
+      || this.applicationService.currenKbiSection!.OnsiteEnergyGeneration.length == 0;
 
     if (this.onsiteEnergyGenerationHasErrors) this.firstCheckboxAnchorId = `air-ground-source-heat-pumps-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -53,7 +53,7 @@ export class OnSiteEnergyGenerationComponent  extends BaseComponent implements I
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.energyTypeStorage 
-        && this.applicationService.currenKbiSection!.energyTypeStorage!.length > 0;
+    return !!this.applicationService.currenKbiSection?.EnergyTypeStorage 
+        && this.applicationService.currenKbiSection!.EnergyTypeStorage!.length > 0;
   }
 }

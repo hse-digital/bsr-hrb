@@ -30,18 +30,18 @@ export class TaskListComponent implements CanActivate, OnInit {
     }
     if (!this.applicationService.model.Kbi.SectionStatus || this.applicationService.model.Kbi.SectionStatus.length == 0) {
       this.applicationService.model.Kbi.SectionStatus = [];
-      this.applicationService.model.Sections.map(x => this.applicationService.model.Kbi!.SectionStatus!.push({ inProgress: false, complete: false }));
+      this.applicationService.model.Sections.map(x => this.applicationService.model.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
     }
   }
 
   isSectionInProgress(index: number) {
-    return this.applicationService.model.Kbi?.SectionStatus?.at(index)?.inProgress;
+    return this.applicationService.model.Kbi?.SectionStatus?.at(index)?.InProgress;
   }
 
   isSectionComplete(index: number) {
     return index < 0
       ? this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete)
-      : this.applicationService.model.Kbi?.SectionStatus?.at(index)?.complete;
+      : this.applicationService.model.Kbi?.SectionStatus?.at(index)?.Complete;
   }
 
   getNumberOfCompletedSteps() {
@@ -49,7 +49,7 @@ export class TaskListComponent implements CanActivate, OnInit {
     if (this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete)) numberCompletedSteps++;
     if (this.containsFlag(BuildingApplicationStatus.KbiConnectionsComplete)) numberCompletedSteps++;
     if (this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete)) numberCompletedSteps++;
-    numberCompletedSteps += this.applicationService.model.Kbi?.SectionStatus?.filter(x => x.complete).length ?? 0;
+    numberCompletedSteps += this.applicationService.model.Kbi?.SectionStatus?.filter(x => x.Complete).length ?? 0;
     return numberCompletedSteps;
   }
 

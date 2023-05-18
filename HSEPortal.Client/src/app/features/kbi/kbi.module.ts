@@ -23,6 +23,7 @@ import { EnergySupplyComponent } from './energy-supply/energy-supply.component';
 import { TotalStaircasesComponent } from './total-staircases/total-staircases.component';
 import { EnergyTypeComponent } from './energy-type/energy-type.component';
 import { OnSiteEnergyGenerationComponent } from './on-site-energy-generation/on-site-energy-generation.component';
+import { BuildingStructureTypeComponent } from './building-structure-type/building-structure-type.component';
 import { ExternalWallMaterialsComponent } from './external-wall-materials/external-wall-materials.component';
 import { WallsAcmComponent } from './walls-acm/walls-acm.component';
 import { WallsHplComponent } from './walls-hpl/walls-hpl.component';
@@ -40,11 +41,12 @@ const routes = new HseRoutes([
   HseRoute.protected(ResidentialUnitFrontDoorsFireResistanceComponent.route, ResidentialUnitFrontDoorsFireResistanceComponent, ResidentialUnitFrontDoorsFireResistanceComponent.title),
   HseRoute.protected(RoofTypeComponent.route, RoofTypeComponent, RoofTypeComponent.title),
   HseRoute.protected(InsulationLayerComponent.route, InsulationLayerComponent, InsulationLayerComponent.title),
-  HseRoute.protected(RoofMaterialComponent.route, RoofMaterialComponent, RoofMaterialComponent.title),
-  HseRoute.protected(EnergySupplyComponent.route, EnergySupplyComponent, EnergySupplyComponent.title),
+  HseRoute.protected(RoofMaterialComponent.route, RoofMaterialComponent, RoofMaterialComponent.title),  
   HseRoute.protected(TotalStaircasesComponent.route, TotalStaircasesComponent, TotalStaircasesComponent.title),
   HseRoute.protected(EnergyTypeComponent.route, EnergyTypeComponent, EnergyTypeComponent.title),
   HseRoute.protected(OnSiteEnergyGenerationComponent.route, OnSiteEnergyGenerationComponent, OnSiteEnergyGenerationComponent.title),
+  HseRoute.protected(EnergySupplyComponent.route, EnergySupplyComponent, EnergySupplyComponent.title),
+  HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title),
   HseRoute.protected(ExternalWallMaterialsComponent.route, ExternalWallMaterialsComponent, ExternalWallMaterialsComponent.title),
   HseRoute.protected(WallsAcmComponent.route, WallsAcmComponent, WallsAcmComponent.title),
   HseRoute.protected(WallsHplComponent.route, WallsHplComponent, WallsHplComponent.title),
@@ -69,6 +71,7 @@ const routes = new HseRoutes([
     TotalStaircasesComponent,
     EnergyTypeComponent,
     OnSiteEnergyGenerationComponent,
+    BuildingStructureTypeComponent,
     ExternalWallMaterialsComponent,
     WallsAcmComponent,
     WallsHplComponent,
