@@ -25,6 +25,7 @@ import { EnergyTypeComponent } from './energy-type/energy-type.component';
 import { OnSiteEnergyGenerationComponent } from './on-site-energy-generation/on-site-energy-generation.component';
 import { BuildingStructureTypeComponent } from './building-structure-type/building-structure-type.component';
 import { ExternalWallInsulationTypeComponent } from './external-wall-insulation-type/external-wall-insulation-type.component';
+import { ExternalWallInsulationPercentageComponent } from './external-wall-insulation-percentage/external-wall-insulation-percentage.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -44,7 +45,8 @@ const routes = new HseRoutes([
   HseRoute.protected(EnergySupplyComponent.route, EnergySupplyComponent, EnergySupplyComponent.title),
   HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title),
   HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title),
-  HseRoute.protected(ExternalWallInsulationTypeComponent.route, ExternalWallInsulationTypeComponent, ExternalWallInsulationTypeComponent.title)
+  HseRoute.protected(ExternalWallInsulationTypeComponent.route, ExternalWallInsulationTypeComponent, ExternalWallInsulationTypeComponent.title),
+  HseRoute.protected(ExternalWallInsulationPercentageComponent.route, ExternalWallInsulationPercentageComponent, ExternalWallInsulationPercentageComponent.title)
 ]);
 
 @NgModule({
@@ -66,7 +68,8 @@ const routes = new HseRoutes([
     EnergyTypeComponent,
     OnSiteEnergyGenerationComponent,
     BuildingStructureTypeComponent,
-    ExternalWallInsulationTypeComponent
+    ExternalWallInsulationTypeComponent,
+    ExternalWallInsulationPercentageComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
