@@ -7,6 +7,7 @@ import { UseSameAddressDescriptionPipe } from './use-same-address-description.pi
 import { OrganisationTypeDescriptionPipe } from './organisation-type-description.pipe';
 import { LeadJobRoleDescriptionPipe } from './lead-job-role-description.pipe';
 import { AccountabilityDescriptionPipe } from './accountability-description.pipe';
+import { ExternalWallMaterialsPipe } from './external-wall-materials.pipe';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { AccountabilityDescriptionPipe } from './accountability-description.pipe
     UseSameAddressDescriptionPipe,
     OrganisationTypeDescriptionPipe,
     LeadJobRoleDescriptionPipe,
-    AccountabilityDescriptionPipe
+    AccountabilityDescriptionPipe,
+    ExternalWallMaterialsPipe
   ],
   exports: [
     PeopleLivingInSectionDescriptionPipe,
@@ -27,7 +29,8 @@ import { AccountabilityDescriptionPipe } from './accountability-description.pipe
     UseSameAddressDescriptionPipe,
     OrganisationTypeDescriptionPipe,
     LeadJobRoleDescriptionPipe,
-    AccountabilityDescriptionPipe
+    AccountabilityDescriptionPipe,
+    ExternalWallMaterialsPipe
   ]
 })
 export class PipesModule { }

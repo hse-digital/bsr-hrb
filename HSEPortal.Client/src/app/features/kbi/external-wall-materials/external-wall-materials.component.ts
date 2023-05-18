@@ -8,6 +8,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { WallsAcmComponent } from '../walls-acm/walls-acm.component';
 import { WallsHplComponent } from '../walls-hpl/walls-hpl.component';
+import { EstimatedPercentageComponent } from '../estimated-percentage/estimated-percentage.component';
 
 @Component({
   selector: 'hse-external-wall-materials',
@@ -41,7 +42,10 @@ export class ExternalWallMaterialsComponent  extends BaseComponent implements IH
 
   canContinue(): boolean {    
     this.externalWallMaterialsHasErrors = !this.applicationService.currenKbiSection!.ExternalWallMaterials || this.applicationService.currenKbiSection!.ExternalWallMaterials.length == 0;
+    
     if(this.externalWallMaterialsHasErrors) this.firstCheckboxAnchorId = `acm-${this.checkboxes?.first.innerId}`;
+    else this.applicationService.currenKbiSection?.ExternalWallMaterials?.push('glass');
+    
     return !this.externalWallMaterialsHasErrors;
   }
 
@@ -51,8 +55,7 @@ export class ExternalWallMaterialsComponent  extends BaseComponent implements IH
     } else if (this.doesExternalWallMaterialsIncludes('hpl')) {
       return navigationService.navigateRelative(WallsHplComponent.route, activatedRoute);
     }
-    // user goes to material percentage
-    return navigationService.navigateRelative(ExternalWallMaterialsComponent.route, activatedRoute);
+    return navigationService.navigateRelative(EstimatedPercentageComponent.route, activatedRoute);
   }
 
   doesExternalWallMaterialsIncludes(material: string) {

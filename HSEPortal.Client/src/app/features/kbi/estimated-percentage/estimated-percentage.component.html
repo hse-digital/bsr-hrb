@@ -1,0 +1,37 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+            <ng-container *ngFor="let error of errors">
+                <govuk-error-link *ngIf="error.hasError" anchorId="input-{{error.id}}" [message]="error.message" />
+            </ng-container>          
+        </govuk-error-summary>
+
+        <h1 class="govuk-heading-l">Percentage of each material on the outside walls of {{getInfraestructureName()}}</h1>
+
+        <govuk-body>Estimate the percentage.</govuk-body>
+        <govuk-body>They must all add up to 100%.</govuk-body>
+
+        <govuk-inset-text>For example, 70% might be covered in concrete while the remaining 30% might be covered in glass.</govuk-inset-text>
+
+        <govuk-details summaryText="Help with estimating percentages">
+            <p>Start by calculating the surface area of {{getInfraestructureName()}}. Then calculate the surface area of the windows and any glass on balcony doors. This helps you to calculate the percentage covered by glass.</p>
+            <p>Then you can estimate the remaining percentages of the other materials.</p>
+        </govuk-details>
+
+        <govuk-input *ngFor="let input of externalWallMaterials" [label]="input.value | valueToExternalWallMaterials" labelClass="govuk-label--s" class="govuk-input--width-3 govuk-!-margin-bottom-5"
+                     errorText="{{getErrorMessage(input.id)}}" suffix="%"
+                     [id]="input.id" [(model)]="applicationService.currenKbiSection!.ExternalWallMaterialsPercentage![input.value]"
+                     (onKeyupEnter)="saveAndContinue()" />
+                     
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

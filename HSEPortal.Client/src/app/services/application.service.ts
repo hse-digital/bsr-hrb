@@ -310,4 +310,5 @@ export class KbiSectionModel {
   ExternalWallMaterials?: string[];
   WallACM?: string;
   WallHPL?: string;
+  ExternalWallMaterialsPercentage?: Record<string, string>;
 }

@@ -6,6 +6,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { EstimatedPercentageComponent } from '../estimated-percentage/estimated-percentage.component';
 
 @Component({
   selector: 'hse-walls-hpl',
@@ -40,7 +41,7 @@ export class WallsHplComponent extends BaseComponent implements IHasNextPage, On
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(WallsHplComponent.route, activatedRoute); // user goes to material percentage
+    return navigationService.navigateRelative(EstimatedPercentageComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

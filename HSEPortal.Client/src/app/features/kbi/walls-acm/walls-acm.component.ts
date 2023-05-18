@@ -7,6 +7,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { WallsHplComponent } from '../walls-hpl/walls-hpl.component';
+import { EstimatedPercentageComponent } from '../estimated-percentage/estimated-percentage.component';
 
 @Component({
   selector: 'hse-walls-acm',
@@ -44,7 +45,7 @@ export class WallsAcmComponent extends BaseComponent implements IHasNextPage, On
     if (this.doesExternalWallMaterialsIncludes('hpl')) {
       return navigationService.navigateRelative(WallsHplComponent.route, activatedRoute);
     }
-    return navigationService.navigateRelative(WallsAcmComponent.route, activatedRoute); // user goes to material percentage
+    return navigationService.navigateRelative(EstimatedPercentageComponent.route, activatedRoute);
   }
 
   doesExternalWallMaterialsIncludes(material: string) {
