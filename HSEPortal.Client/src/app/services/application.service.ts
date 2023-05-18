@@ -308,5 +308,8 @@ export class KbiSectionModel {
   energyTypeStorage?: string[];
   onsiteEnergyGeneration?: string[];
   buildingStructureType?: string[];
-
+  externalWallInsulation? : {
+    checkBoxSelection? : string[],
+    otherValue? : string,
+  } = {};
 }

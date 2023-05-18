@@ -18,6 +18,7 @@ import { GovukRequiredDirective } from "./required.directive";
 import { AccountabilityComponent } from './accountability/accountability.component';
 import { NotAllocatedAccountabilityComponent } from './not-allocated-accountability/not-allocated-accountability.component';
 import { GovukCheckboxNoneComponent } from './govuk-checkbox-none/govuk-checkbox-none.component';
+import { GovukCheckboxNoneOtherComponent } from './govuk-checkbox-none-other/govuk-checkbox-none-other.component';
 import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.component';
 
 @NgModule({
@@ -36,6 +37,7 @@ import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.c
     AccountabilityComponent,
     NotAllocatedAccountabilityComponent,
     GovukCheckboxNoneComponent,
+    GovukCheckboxNoneOtherComponent,
     CheckboxOptionComponent
   ],
   imports: [
@@ -51,7 +53,9 @@ import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.c
     GovukRequiredDirective,
     AccountabilityComponent,
     NotAllocatedAccountabilityComponent,
-    GovukCheckboxNoneComponent,CheckboxOptionComponent
+    GovukCheckboxNoneComponent,
+    GovukCheckboxNoneOtherComponent,
+    CheckboxOptionComponent
   ],
   providers: [HttpClient, AddressService]
 })
