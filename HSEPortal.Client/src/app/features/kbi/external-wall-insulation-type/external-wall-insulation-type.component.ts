@@ -8,6 +8,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { ExternalWallInsulationPercentageComponent } from '../external-wall-insulation-percentage/external-wall-insulation-percentage.component';
 
 type Error = { hasError: boolean, errorMessage: string }
 
@@ -78,7 +79,13 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ExternalWallInsulationTypeComponent.route, activatedRoute);
+    if(this.applicationService.currenKbiSection!.externalWallInsulation!.checkBoxSelection!.includes('none'))
+    {
+      return navigationService.navigateRelative(ExternalWallInsulationTypeComponent.route, activatedRoute);
+    }
+    else {
+      return navigationService.navigateRelative(ExternalWallInsulationPercentageComponent.route, activatedRoute);
+    }
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

@@ -6,10 +6,7 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-<!--          <govuk-error-link *ngIf="errors!.fireDoorThirtyMinute!.hasError" anchorId="input-thirty-mins" [message]="errors!.fireDoorThirtyMinute.errorMessage" />
-          <govuk-error-link *ngIf="errors!.fireDoorSixtyMinute!.hasError" anchorId="input-sixty-mins" [message]="errors!.fireDoorSixtyMinute!.errorMessage" />
-          <govuk-error-link *ngIf="errors!.fireDoorHundredTwentyMinute!.hasError" anchorId="input-hundred-twenty-mins" [message]="errors!.fireDoorHundredTwentyMinute!.errorMessage" />
-          <govuk-error-link *ngIf="errors!.fireDoorUnknown!.hasError" anchorId="input-not-known" [message]="errors!.fireDoorUnknown!.errorMessage" />-->
+         <govuk-error-link *ngFor="let error of errors; let i = index" [anchorId]="error.errorAnchorId" [message]="error.errorMessage" />
         </govuk-error-summary>
 
         <h1 class="govuk-heading-l">Percentage of each type of insulation in the outside walls of {{getInfraestructureName()}}</h1>

@@ -8,7 +8,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 
-type Error = { hasError: boolean, errorMessage: string }
+type Error = {errorMessage: string , errorAnchorId: string}
 
 @Component({
   selector: 'hse-external-wall-insulation-percentage',
@@ -20,30 +20,21 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  hasError: boolean = false;
-
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
+
   errorMessages: Record<string, string> = {
-    "emptyFieldError": "Estimate the percentage of insulationName in the outside walls of",
+    "emptyFieldError": "Estimate the percentage of insulationName in the outside walls of " + this.getInfraestructureName(),
     "invalidPercentageExceedsHundredError": "insulationName must be 100% or less",
     "invalidPercentageLessThanOneError": "insulationName must be 1% or more",
-    "totalExceedsHundredError": "Percentage of all insulation must total 100",
-    "totalLessThanHundredError": "Percentage of all insulation must total 100",
+    "totalNotEqual100": "Percentage of all insulation must total 100",
     "invalidCharactersError": "Percentage of insulationName must be a number",
   }
 
   defaultErrorMessage: string = "Percentage of all insulation must total 100";
-  errors = {
-    emptyFieldError: { hasError: false, errorMessage: "" } as Error,
-    invalidPercentageExceedsHundredError: { hasError: false, errorMessage: "" } as Error,
-    invalidPercentageLessThanOneError: { hasError: false, errorMessage: "" } as Error,
-    totalExceedsHundredError: { hasError: false, errorMessage: "" } as Error,
-    totalLessThanHundredError: { hasError: false, errorMessage: "" } as Error,
-    invalidCharactersError: { hasError: false, errorMessage: "" } as Error
-  };
+  errors: Error[] = [];
 
   private insulationTypeMapper: Record<string, string> = {
     "fibre_glass_mineral_wool": "fibre Insulation - glass or mineral wool",
@@ -52,7 +43,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
     "phenolic_foam": "phenolic foam",
     "eps_xps": "polystyrene insulation - expanded polystyrene (EPS) or extruded polystyrene (XPS)",
     "pur_pir_iso": "polyurethane (PUR) or polyisocyanurate (PIR or ISO)",
-    "other": "other",
+    "Other": "Other",
   }
   getInsulationName(equipment: string) {
     return this.insulationTypeMapper[equipment];
@@ -63,7 +54,6 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
       if (!this.applicationService.currenKbiSection?.externalWallInsulationPercentages || Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages).length == 0) {
         this.applicationService.currenKbiSection!.externalWallInsulationPercentages = {};
         this.applicationService.currenKbiSection?.externalWallInsulation!.checkBoxSelection!.forEach(insulationType => {
-          this.applicationService.currenKbiSection!.externalWallInsulationPercentages![insulationType] = 0;
           this.applicationService.currenKbiSection!.externalWallInsulationPercentages![insulationType]
         });
     }
@@ -71,27 +61,25 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
     // check missing locations (in case the user modifies fire-smoke-provisions)
     if (Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages).length != this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection?.length) {
       this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection?.filter(x => !this.applicationService.currenKbiSection!.externalWallInsulationPercentages![x]).forEach(missingInsulation => {
-        this.applicationService.currenKbiSection!.externalWallInsulationPercentages![missingInsulation] = 0;
+        this.applicationService.currenKbiSection!.externalWallInsulationPercentages![missingInsulation];
       });
     }
   }
 
   canContinue() {
+    this.errors=[]
 
-    console.log(JSON.stringify(this.applicationService.currenKbiSection!.externalWallInsulationPercentages))
+    for (var insulationType in this.applicationService.currenKbiSection!.externalWallInsulationPercentages) {
+      //Check is not null or whitespace
+      this.validateInputs(this.applicationService.currenKbiSection!.externalWallInsulationPercentages[insulationType], insulationType)
+    }
+    this.validateTotalPercentage
 
+    this.validateTotalPercentage();
+      console.log(this.errors)
 
-/*    this.errors.fireDoorThirtyMinute = this.validateNumericInput(this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorThirtyMinute, this.errors.fireDoorThirtyMinute, "fireDoorThirtyMinute");
-    this.errors.fireDoorSixtyMinute = this.validateNumericInput(this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorSixtyMinute, this.errors.fireDoorSixtyMinute, "fireDoorSixtyMinute");
-    this.errors.fireDoorHundredTwentyMinute = this.validateNumericInput(this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorHundredTwentyMinute, this.errors.fireDoorHundredTwentyMinute, "fireDoorHundredTwentyMinute");
-    this.errors.fireDoorUnknown = this.validateNumericInput(this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorUnknown, this.errors.fireDoorUnknown, "fireDoorUnknown");
+    return !!(this.errors.length===0)
 
-    return !this.errors.fireDoorThirtyMinute.hasError
-      && !this.errors.fireDoorSixtyMinute.hasError
-      && !this.errors.fireDoorHundredTwentyMinute.hasError
-      && !this.errors.fireDoorUnknown.hasError;*/
-
-    return true;
   }
 
   getInfraestructureName() {
@@ -110,11 +98,34 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
   }
 
-  validateNumericInput(input: number | undefined, error: Error, key: string): Error {
-    error.hasError = !input || !FieldValidations.IsWholeNumber(input) || !FieldValidations.IsAPositiveNumber(input);
-    if (error.hasError) error.errorMessage = !input ? this.errorMessages[key] : this.defaultErrorMessage;
-    return error;
+  validateInputs(input: number | undefined, insulationType: string): void {
+
+    //Validate is not null or whitespace
+    if (!input || !FieldValidations.IsNotNullOrWhitespace(input.toString())) {
+      this.errors.push({errorMessage: this.errorMessages["emptyFieldError"].replace("insulationName", this.getInsulationName(insulationType)), errorAnchorId: insulationType});
+    }
+    //Validate is less than or equal to 100
+    if (!input || !FieldValidations.IsLessThanOrEqualTo100(input)) {
+      this.errors.push({errorMessage: this.errorMessages["invalidPercentageExceedsHundredError"].replace("insulationName", this.getInsulationName(insulationType)), errorAnchorId: insulationType });
+    }
+    //Validate is greater than or equal to 1
+    if (!input || !FieldValidations.IsGreaterThanZero(input)) {
+      this.errors.push({errorMessage: this.errorMessages["invalidPercentageLessThanOneError"].replace("insulationName", this.getInsulationName(insulationType)), errorAnchorId: insulationType });
+    }
+    //Validate is a number
+    if (!input || isNaN(input)) {
+      this.errors.push({ errorMessage: this.errorMessages["invalidCharactersError"].replace("insulationName", this.getInsulationName(insulationType)), errorAnchorId: insulationType });
+    }
   }
+
+  validateTotalPercentage(): void {
+
+    //add up all the percentages from the inputs using reduce function
+    let totalPercentage = Object.values(this.applicationService.currenKbiSection!.externalWallInsulationPercentages!).reduce((totalPercentage, percentage) => totalPercentage + +percentage, 0);
+    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqual100"], errorAnchorId: Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages!)[0] });
+
+  }
+
 
 
 
