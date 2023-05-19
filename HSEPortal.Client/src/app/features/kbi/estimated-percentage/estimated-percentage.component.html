@@ -25,7 +25,7 @@
         </govuk-details>
 
         <govuk-input *ngFor="let input of externalWallMaterials" [label]="input.value | valueToExternalWallMaterials"
-          class="govuk-input--width-3 govuk-!-margin-bottom-5" [id]="input.id"
+          class="govuk-input--width-3 govuk-!-margin-bottom-5" [id]="input.id" #field [govukRequired]="field"
           [(model)]="applicationService.currenKbiSection!.ExternalWallMaterialsPercentage![input.value]"
           errorText="{{getErrorMessage(input.id)}}" suffix="%" (onKeyupEnter)="saveAndContinue()" />
 

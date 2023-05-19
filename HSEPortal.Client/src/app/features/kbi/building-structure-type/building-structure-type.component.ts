@@ -53,6 +53,6 @@ export class BuildingStructureTypeComponent extends BaseComponent implements IHa
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!(this.applicationService.currenKbiSection!.EnergySupply!.length > 0);
+    return !!this.applicationService.currenKbiSection?.EnergySupply && this.applicationService.currenKbiSection!.EnergySupply!.length > 0;
   }
 }
