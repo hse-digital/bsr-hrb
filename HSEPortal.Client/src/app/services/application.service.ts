@@ -312,8 +312,5 @@ export class KbiSectionModel {
     checkBoxSelection?: string[],
     otherValue?: string,
   } = {};
-  externalWallInsulationPercentages?: {
-    insulationType?: string;
-    percentage?: number;
-  } [] = []
+  externalWallInsulationPercentages?: Record<string, number>;
 }

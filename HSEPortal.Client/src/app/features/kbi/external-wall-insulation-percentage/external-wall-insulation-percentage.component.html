@@ -16,10 +16,10 @@
 
         <govuk-body>Estimate the percentage. They must all add up to 100%</govuk-body>
 
-        <govuk-input *ngFor="let insulation of externalInsulation; let i = index" [attr.data-index]="i"
-                     id="{{insulation.insulationType!}}"
-                     label="{{getInsulationName(insulation.insulationType!) | titlecase}}" #field [govukRequired]="field"
-                     [(model)]="this.applicationService.currenKbiSection!.externalWallInsulationPercentages![i].percentage"
+        <govuk-input *ngFor="let insulation of this.applicationService.currenKbiSection!.externalWallInsulation!.checkBoxSelection!; let i = index" [attr.data-index]="i"
+                     id="{{insulation}}"
+                     label="{{getInsulationName(insulation) | titlecase}}" #field [govukRequired]="field"
+                     [(model)]="this.applicationService.currenKbiSection!.externalWallInsulationPercentages![insulation]"
                      class="govuk-!-margin-bottom-5 govuk-input--width-5"
                      (onKeyupEnter)="saveAndContinue()"
                      suffix="%"/>

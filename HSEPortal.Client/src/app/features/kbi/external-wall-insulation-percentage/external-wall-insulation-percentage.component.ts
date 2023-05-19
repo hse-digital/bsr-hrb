@@ -22,11 +22,6 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
   hasError: boolean = false;
 
-  externalInsulation: {
-    insulationType?: string,
-    percentage?: number
-  } [] = this.applicationService.currenKbiSection!.externalWallInsulationPercentages!;
-
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
@@ -64,13 +59,21 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   }
 
   ngOnInit(): void {
-    console.log(JSON.stringify(this.applicationService.currenKbiSection!.externalWallInsulationPercentages))
+      //Initilise the percentage values
       if (!this.applicationService.currenKbiSection?.externalWallInsulationPercentages || Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages).length == 0) {
-        this.applicationService.currenKbiSection!.externalWallInsulationPercentages = [];
+        this.applicationService.currenKbiSection!.externalWallInsulationPercentages = {};
         this.applicationService.currenKbiSection?.externalWallInsulation!.checkBoxSelection!.forEach(insulationType => {
-          this.applicationService.currenKbiSection!.externalWallInsulationPercentages!.push({ insulationType: insulationType, percentage: 0 });
+          this.applicationService.currenKbiSection!.externalWallInsulationPercentages![insulationType] = 0;
+          this.applicationService.currenKbiSection!.externalWallInsulationPercentages![insulationType]
         });
-      }
+    }
+
+    // check missing locations (in case the user modifies fire-smoke-provisions)
+    if (Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages).length != this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection?.length) {
+      this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection?.filter(x => !this.applicationService.currenKbiSection!.externalWallInsulationPercentages![x]).forEach(missingInsulation => {
+        this.applicationService.currenKbiSection!.externalWallInsulationPercentages![missingInsulation] = 0;
+      });
+    }
   }
 
   canContinue() {
