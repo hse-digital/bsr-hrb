@@ -20,7 +20,7 @@ import { SectionNameComponent } from "./name/name.component";
 import { SectionOtherAddressesComponent } from "./other-addresses/other-addresses.component";
 import { SectionPeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
 import { SectionResidentialUnitsComponent } from "./residential-units/residential-units.component";
-import { SectionsComponent } from "./sections.component";
+import { BuildingSummaryComponent } from "./building-summary.component";
 import { SectionYearOfCompletionComponent } from "./year-of-completion/year-of-completion.component";
 import { SectionYearRangeComponent } from "./year-range/year-range.component";
 
@@ -28,7 +28,7 @@ const routes = new HseRoutes([
   HseRoute.protected(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
   HseRoute.protected(MoreInformationComponent.route, MoreInformationComponent, MoreInformationComponent.title),
   HseRoute.protected(SectionCheckAnswersComponent.route, SectionCheckAnswersComponent, SectionCheckAnswersComponent.title),
-  HseRoute.forChildren(':id', SectionsComponent, new HseRoutes([
+  HseRoute.forChildren(':id', BuildingSummaryComponent, new HseRoutes([
     HseRoute.protected(SectionsIntroComponent.route, SectionsIntroComponent, SectionsIntroComponent.title),
     HseRoute.protected(SectionFloorsAboveComponent.route, SectionFloorsAboveComponent, SectionFloorsAboveComponent.title),
     HseRoute.protected(SectionNameComponent.route, SectionNameComponent, SectionNameComponent.title),
@@ -46,7 +46,7 @@ const routes = new HseRoutes([
 
 @NgModule({
   declarations: [
-    SectionsComponent,
+    BuildingSummaryComponent,
     SectionsIntroComponent,
     SectionFloorsAboveComponent,
     SectionNameComponent,
@@ -76,6 +76,6 @@ const routes = new HseRoutes([
     ...routes.getProviders()
   ]
 })
-export class SectionsModule {
+export class BuildingSummaryModule {
   public static baseRoute: string = "sections";
 }

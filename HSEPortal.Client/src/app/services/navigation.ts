@@ -1,4 +1,4 @@
-import { AccountablePersonModel, KbiSectionModel, SectionModel } from "../application.service";
+import { AccountablePersonModel, KbiSectionModel, SectionModel } from "./application.service";
 
 export abstract class BaseNavigation {
   abstract getNextRoute(): string;

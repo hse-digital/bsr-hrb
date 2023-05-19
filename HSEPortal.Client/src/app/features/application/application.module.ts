@@ -9,27 +9,27 @@ import { ApplicationService } from "src/app/services/application.service";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { PipesModule } from "src/app/pipes/pipes.module";
 import { AccountablePersonModule } from "./accountable-person/accountable-person.module";
-import { ApplicationCompletedComponent } from "./components/application-completed/application-completed.component";
-import { NumberOfSectionsComponment } from "./number-of-sections/number-of-sections.component";
+import { ApplicationCompletedComponent } from "./application-completed/application-completed.component";
+import { NumberOfSectionsComponment } from "./building-summary/number-of-sections/number-of-sections.component";
 import { BuildingOutOfScopeComponent } from "./out-of-scope/out-of-scope.component";
 import { PaymentModule } from "./payment/payment.module";
-import { SectionsModule } from "./sections/sections.module";
+import { BuildingSummaryModule } from "./building-summary/building-summary.module";
 import { AccountablePersonSummaryComponent } from "./summary-page/accountable-person-summary/accountable-person-summary.component";
 import { IndividualComponent } from "./summary-page/accountable-person-summary/individual.component";
 import { OrganisationComponent } from "./summary-page/accountable-person-summary/organisation.component";
 import { SectionSummaryComponent } from "./summary-page/section-summary.component";
 import { ApplicationTaskListComponent } from "./task-list/task-list.component";
-import { BuildingSummaryNavigation } from "src/app/services/navigation/building-summary.navigation";
-import { AccountablePersonNavigation } from "src/app/services/navigation/accountable-person.navigation";
+import { BuildingSummaryNavigation } from "src/app/features/application/building-summary/building-summary.navigation";
+import { AccountablePersonNavigation } from "src/app/features/application/accountable-person/accountable-person.navigation";
 import { KbiModule } from "../kbi/kbi.module";
-import { KbiNavigation } from "src/app/services/navigation/kbi.navigation.ts.service";
+import { KbiNavigation } from "src/app/features/kbi/kbi.navigation.ts.service";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent, ApplicationTaskListComponent.title),
   HseRoute.protected(NumberOfSectionsComponment.route, NumberOfSectionsComponment, NumberOfSectionsComponment.title),
   HseRoute.protected(BuildingOutOfScopeComponent.route, BuildingOutOfScopeComponent, BuildingOutOfScopeComponent.title),
   HseRoute.protected(SummaryPageComponent.route, SummaryPageComponent, SummaryPageComponent.title),
-  HseRoute.forLoadChildren(SectionsModule.baseRoute, () => import('./sections/sections.module').then(m => m.SectionsModule)),
+  HseRoute.forLoadChildren(BuildingSummaryModule.baseRoute, () => import('./building-summary/building-summary.module').then(m => m.BuildingSummaryModule)),
   HseRoute.forLoadChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
   HseRoute.forLoadChildren(PaymentModule.baseRoute, () => import('./payment/payment.module').then(m => m.PaymentModule)),
   HseRoute.forLoadChildren(KbiModule.baseRoute, () => import('../kbi/kbi.module').then(m => m.KbiModule)),

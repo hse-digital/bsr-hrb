@@ -5,7 +5,7 @@ import { ApplicationService, BuildingApplicationStatus, KbiModel, KbiSectionMode
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { EvacuationStrategyComponent } from '../evacuation-strategy/evacuation-strategy.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
-import { KbiNavigation } from 'src/app/services/navigation/kbi.navigation.ts.service';
+import { KbiNavigation } from 'src/app/features/kbi/kbi.navigation.ts.service';
 
 @Component({
   selector: 'hse-task-list',

@@ -1,20 +1,20 @@
-import { NumberOfSectionsComponment } from "src/app/features/application/number-of-sections/number-of-sections.component";
-import { ApplicationService, SectionModel } from "../application.service";
-import { BaseNavigation, BuildingNavigationNode } from "./navigation";
-import { SectionsIntroComponent } from "src/app/features/application/sections/intro/intro.component";
-import { SectionNameComponent } from "src/app/features/application/sections/name/name.component";
-import { SectionFloorsAboveComponent } from "src/app/features/application/sections/floors-above/floors-above.component";
-import { SectionHeightComponent } from "src/app/features/application/sections/height/height.component";
-import { SectionResidentialUnitsComponent } from "src/app/features/application/sections/residential-units/residential-units.component";
-import { SectionPeopleLivingInBuildingComponent } from "src/app/features/application/sections/people-living-in-building/people-living-in-building.component";
-import { SectionYearOfCompletionComponent } from "src/app/features/application/sections/year-of-completion/year-of-completion.component";
-import { SectionYearRangeComponent } from "src/app/features/application/sections/year-range/year-range.component";
-import { CertificateIssuerComponent } from "src/app/features/application/sections/certificate-issuer/certificate-issuer.component";
-import { CertificateNumberComponent } from "src/app/features/application/sections/certificate-number/certificate-number.component";
-import { SectionAddressComponent } from "src/app/features/application/sections/address/address.component";
-import { SectionCheckAnswersComponent } from "src/app/features/application/sections/check-answers/check-answers.component";
+import { NumberOfSectionsComponment } from "./number-of-sections/number-of-sections.component";
+import { ApplicationService, SectionModel } from "../../../services/application.service";
+import { BaseNavigation, BuildingNavigationNode } from "../../../services/navigation";
+import { SectionsIntroComponent } from "./intro/intro.component";
+import { SectionNameComponent } from "./name/name.component";
+import { SectionFloorsAboveComponent } from "./floors-above/floors-above.component";
+import { SectionHeightComponent } from "./height/height.component";
+import { SectionResidentialUnitsComponent } from "./residential-units/residential-units.component";
+import { SectionPeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
+import { SectionYearOfCompletionComponent } from "./year-of-completion/year-of-completion.component";
+import { SectionYearRangeComponent } from "./year-range/year-range.component";
+import { CertificateIssuerComponent } from "./certificate-issuer/certificate-issuer.component";
+import { CertificateNumberComponent } from "./certificate-number/certificate-number.component";
+import { SectionAddressComponent } from "./address/address.component";
+import { SectionCheckAnswersComponent } from "./check-answers/check-answers.component";
 import { Injectable } from "@angular/core";
-import { AddMoreSectionsComponent } from "src/app/features/application/sections/add-more-sections/add-more-sections.component";
+import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
 
 @Injectable()
 export class BuildingSummaryNavigation extends BaseNavigation {

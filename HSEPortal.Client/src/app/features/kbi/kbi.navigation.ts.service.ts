@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BaseNavigation, KbiNavigationNode } from './navigation';
-import { ApplicationService, KbiSectionModel, BuildingApplicationStatus } from '../application.service';
+import { BaseNavigation, KbiNavigationNode } from '../../services/navigation';
+import { ApplicationService, KbiSectionModel, BuildingApplicationStatus } from '../../services/application.service';
 import { CheckBeforeStartComponent } from 'src/app/features/kbi/check-before-start/check-before-start.component';
 import { EvacuationStrategyComponent } from 'src/app/features/kbi/evacuation-strategy/evacuation-strategy.component';
 import { ProvisionsEquipmentComponent } from 'src/app/features/kbi/provisions-equipment/provisions-equipment.component';
