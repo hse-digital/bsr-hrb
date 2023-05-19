@@ -24,6 +24,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
+  errors: Error[] = [];
 
   errorMessages: Record<string, string> = {
     "emptyFieldError": "Estimate the percentage of insulationName in the outside walls of " + this.getInfraestructureName(),
@@ -32,9 +33,6 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
     "totalNotEqual100": "Percentage of all insulation must total 100",
     "invalidCharactersError": "Percentage of insulationName must be a number",
   }
-
-  defaultErrorMessage: string = "Percentage of all insulation must total 100";
-  errors: Error[] = [];
 
   private insulationTypeMapper: Record<string, string> = {
     "fibre_glass_mineral_wool": "fibre Insulation - glass or mineral wool",
