@@ -7,9 +7,9 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { ExternalWallInsulationTypeComponent } from 'src/app/features/kbi/external-wall-insulation-type/external-wall-insulation-type.component';
 
 type Error = { hasError: boolean, errorMessage: string }
+
 @Component({
   selector: 'hse-external-wall-insulation-percentage',
   templateUrl: './external-wall-insulation-percentage.component.html'
@@ -22,7 +22,10 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
   hasError: boolean = false;
 
-  externalInsulationTypes: string[] = this.applicationService.currenKbiSection!.externalWallInsulation!.checkBoxSelection!;
+  externalInsulation: {
+    insulationType?: string,
+    percentage?: number
+  } [] = this.applicationService.currenKbiSection!.externalWallInsulationPercentages!;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
@@ -61,13 +64,18 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.externalWallInsulationPercentages) {
-      this.applicationService.currenKbiSection!.externalWallInsulationPercentages = {};
-    }
+    console.log(JSON.stringify(this.applicationService.currenKbiSection!.externalWallInsulationPercentages))
+      if (!this.applicationService.currenKbiSection?.externalWallInsulationPercentages || Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages).length == 0) {
+        this.applicationService.currenKbiSection!.externalWallInsulationPercentages = [];
+        this.applicationService.currenKbiSection?.externalWallInsulation!.checkBoxSelection!.forEach(insulationType => {
+          this.applicationService.currenKbiSection!.externalWallInsulationPercentages!.push({ insulationType: insulationType, percentage: 0 });
+        });
+      }
   }
 
   canContinue() {
 
+    console.log(JSON.stringify(this.applicationService.currenKbiSection!.externalWallInsulationPercentages))
 
 
 /*    this.errors.fireDoorThirtyMinute = this.validateNumericInput(this.applicationService.currenKbiSection?.fireDoorsCommon?.fireDoorThirtyMinute, this.errors.fireDoorThirtyMinute, "fireDoorThirtyMinute");
@@ -80,7 +88,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
       && !this.errors.fireDoorHundredTwentyMinute.hasError
       && !this.errors.fireDoorUnknown.hasError;*/
 
-    return false;
+    return true;
   }
 
   getInfraestructureName() {
@@ -93,7 +101,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
     return navigationService.navigateRelative(ExternalWallInsulationPercentageComponent.route, activatedRoute);
   }
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
+    override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
 
     return true;
 

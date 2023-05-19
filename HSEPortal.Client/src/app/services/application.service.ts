@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, QueryList } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
@@ -308,9 +308,12 @@ export class KbiSectionModel {
   energyTypeStorage?: string[];
   onsiteEnergyGeneration?: string[];
   buildingStructureType?: string[];
-  externalWallInsulation? : {
-    checkBoxSelection? : string[],
-    otherValue? : string,
+  externalWallInsulation?: {
+    checkBoxSelection?: string[],
+    otherValue?: string,
   } = {};
-  externalWallInsulationPercentages?: Record<string, number>;
+  externalWallInsulationPercentages?: {
+    insulationType?: string;
+    percentage?: number;
+  } [] = []
 }

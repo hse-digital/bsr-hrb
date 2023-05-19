@@ -16,12 +16,13 @@
 
         <govuk-body>Estimate the percentage. They must all add up to 100%</govuk-body>
 
-        <govuk-input *ngFor="let insulationType of externalInsulationTypes" id="{{insulationType}}" label="{{getInsulationName(insulationType) | titlecase}}" #field [govukRequired]="field"
-
-                     [model]="applicationService.currenKbiSection!.externalWallInsulationPercentages![insulationType]"
-                     class="govuk-!-margin-bottom-5 govuk-input--width-3"
-                     (onKeyupEnter)="saveAndContinue()" />
-
+        <govuk-input *ngFor="let insulation of externalInsulation; let i = index" [attr.data-index]="i"
+                     id="{{insulation.insulationType!}}"
+                     label="{{getInsulationName(insulation.insulationType!) | titlecase}}" #field [govukRequired]="field"
+                     [(model)]="this.applicationService.currenKbiSection!.externalWallInsulationPercentages![i].percentage"
+                     class="govuk-!-margin-bottom-5 govuk-input--width-5"
+                     (onKeyupEnter)="saveAndContinue()"
+                     suffix="%"/>
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
