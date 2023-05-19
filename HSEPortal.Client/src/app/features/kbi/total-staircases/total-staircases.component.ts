@@ -7,6 +7,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { ExternalWallMaterialsComponent } from '../external-wall-materials/external-wall-materials.component';
 
 @Component({
   selector: 'hse-total-staircases',
@@ -81,7 +82,7 @@ export class TotalStaircasesComponent extends BaseComponent implements IHasNextP
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(TotalStaircasesComponent.route, activatedRoute);
+    return navigationService.navigateRelative(ExternalWallMaterialsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

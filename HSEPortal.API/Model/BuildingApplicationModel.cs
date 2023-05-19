@@ -103,7 +103,8 @@ public record SectionStatus(bool InProgress, bool Complete);
 public record KbiSectionModel(string StrategyEvacuateBuilding, string[] ProvisionsEquipment, string[] FireSmokeProvisions, 
     Dictionary<string, string[]> FireSmokeProvisionLocations, string[] Lifts, ResidentialUnitFrontDoors ResidentialUnitFrontDoors, 
     string RoofType, string RoofInsulation, string RoofMaterial, FireDoorsCommon FireDoorsCommon, string[] EnergySupply, string[] BuildingStructureType,
-    string InternalStaircasesAllFloors, string TotalNumberStaircases, string[] EnergyTypeStorage, string[] OnsiteEnergyGeneration);
+    string InternalStaircasesAllFloors, string TotalNumberStaircases, string[] EnergyTypeStorage, string[] OnsiteEnergyGeneration,
+    string[] ExternalWallMaterials, string WallACM, string WallHPL, Dictionary<string, string> ExternalWallMaterialsPercentage);
 
 public record FireDoorsCommon(string FireDoorThirtyMinute, string FireDoorSixtyMinute, string FireDoorHundredTwentyMinute, string FireDoorUnknown);
 

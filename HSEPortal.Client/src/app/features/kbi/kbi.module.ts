@@ -24,6 +24,10 @@ import { TotalStaircasesComponent } from './total-staircases/total-staircases.co
 import { EnergyTypeComponent } from './energy-type/energy-type.component';
 import { OnSiteEnergyGenerationComponent } from './on-site-energy-generation/on-site-energy-generation.component';
 import { BuildingStructureTypeComponent } from './building-structure-type/building-structure-type.component';
+import { ExternalWallMaterialsComponent } from './external-wall-materials/external-wall-materials.component';
+import { WallsAcmComponent } from './walls-acm/walls-acm.component';
+import { WallsHplComponent } from './walls-hpl/walls-hpl.component';
+import { EstimatedPercentageComponent } from './estimated-percentage/estimated-percentage.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -42,7 +46,11 @@ const routes = new HseRoutes([
   HseRoute.protected(EnergyTypeComponent.route, EnergyTypeComponent, EnergyTypeComponent.title),
   HseRoute.protected(OnSiteEnergyGenerationComponent.route, OnSiteEnergyGenerationComponent, OnSiteEnergyGenerationComponent.title),
   HseRoute.protected(EnergySupplyComponent.route, EnergySupplyComponent, EnergySupplyComponent.title),
-  HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title)
+  HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title),
+  HseRoute.protected(ExternalWallMaterialsComponent.route, ExternalWallMaterialsComponent, ExternalWallMaterialsComponent.title),
+  HseRoute.protected(WallsAcmComponent.route, WallsAcmComponent, WallsAcmComponent.title),
+  HseRoute.protected(WallsHplComponent.route, WallsHplComponent, WallsHplComponent.title),
+  HseRoute.protected(EstimatedPercentageComponent.route, EstimatedPercentageComponent, EstimatedPercentageComponent.title),
 ]);
 
 @NgModule({
@@ -63,7 +71,11 @@ const routes = new HseRoutes([
     TotalStaircasesComponent,
     EnergyTypeComponent,
     OnSiteEnergyGenerationComponent,
-    BuildingStructureTypeComponent
+    BuildingStructureTypeComponent,
+    ExternalWallMaterialsComponent,
+    WallsAcmComponent,
+    WallsHplComponent,
+    EstimatedPercentageComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
