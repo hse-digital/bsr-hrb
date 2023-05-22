@@ -55,7 +55,6 @@ export class ExternalFeaturesComponent  extends BaseComponent implements IHasNex
     //Check for navigation to features-materials
     const checkSelection = ['balconies', 'communal_walkway', 'escape_route_roof', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'].every(option => {
       if (this.applicationService.currenKbiSection!.externalFeatures?.includes(option)) {
-        console.log("Navigate to features-materials");
         return navigationService.navigateRelative(ExternalFeaturesComponent.route, activatedRoute);
       }
       else {
