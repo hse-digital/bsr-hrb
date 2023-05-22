@@ -88,9 +88,10 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
       if (index > 0) {
         canContinue &&= (ap.SectionsAccountability?.length ?? 0) > 0;
         canContinue &&= (ap.SectionsAccountability?.findIndex(x => (x.Accountability?.length ?? 0) > 0) ?? -1) > -1;
-        canContinue &&= this.applicationService.model.Sections.every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section).length == 0);
       }
     }
+    
+    canContinue &&= this.applicationService.model.Sections.every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section).length == 0);
 
     this.hasIncompleteData = !canContinue;
     return canContinue;
