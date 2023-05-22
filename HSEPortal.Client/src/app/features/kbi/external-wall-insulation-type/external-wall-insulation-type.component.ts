@@ -26,6 +26,8 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
 
   errorMessage?: string;
   externalWallInsulationTypeHasErrors: boolean = false;
+  firstCheckboxAnchorId?: string;
+  otherValueAnchorId?: string;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
@@ -45,6 +47,7 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
 
   ngOnInit(): void {
     if (!this.applicationService.currenKbiSection!.externalWallInsulation) {
+      this.applicationService.currenKbiSection!.externalWallInsulation! = {};
       this.applicationService.currenKbiSection!.externalWallInsulation!.checkBoxSelection = [];
       this.applicationService.currenKbiSection!.externalWallInsulation!.otherValue = '';
     }
@@ -57,23 +60,31 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
   }
 
   canContinue(): boolean {
+
+
     if (this.applicationService!.currenKbiSection!.externalWallInsulation!.checkBoxSelection!.length == 0) {
       this.errors.noSelectionError.hasError = true;
       this.errors.noSelectionError.errorMessage = this.errorMessages["noSelectionError"];
+      this.firstCheckboxAnchorId = `fibre_glass_mineral_wool-${this.externalWallInsulationTypeCheckboxGroup?.checkboxElements?.first.innerId}`;
     }
     else {
       this.errors.noSelectionError.hasError = false;
       this.errors.noSelectionError.errorMessage = '';
     }
+
     if ((this.applicationService.currenKbiSection!.externalWallInsulation!.checkBoxSelection!.includes('Other')
       && this.applicationService.currenKbiSection!.externalWallInsulation!.otherValue?.length == 0)) {
       this.errors.noOtherValueError.hasError = true;
       this.errors.noOtherValueError.errorMessage = this.errorMessages["noOtherValueError"];
+      this.otherValueAnchorId = `input-other`;
     }
     else {
       this.errors.noOtherValueError.hasError = false;
       this.errors.noOtherValueError.errorMessage = '';
     }
+
+    console.log(this.errors.noSelectionError.hasError);
+    console.log(this.errors.noOtherValueError.hasError);
 
     return !this.errors.noSelectionError.hasError
       && !this.errors.noOtherValueError.hasError

@@ -5,8 +5,8 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link *ngIf="errors!.noSelectionError!.hasError" anchorId="fibre_glass_mineral_wool" [message]="errors!.noSelectionError!.errorMessage" />
-          <govuk-error-link *ngIf="errors!.noOtherValueError!.hasError" anchorId="none" [message]="errors!.noOtherValueError!.errorMessage" />
+          <govuk-error-link *ngIf="errors!.noSelectionError!.hasError" anchorId="{{firstCheckboxAnchorId}}" [message]="errors!.noSelectionError!.errorMessage" />
+          <govuk-error-link *ngIf="errors!.noOtherValueError!.hasError" anchorId="{{otherValueAnchorId}}" [message]="errors!.noOtherValueError!.errorMessage" />
         </govuk-error-summary>
 
         <h1 class="govuk-heading-l">What type of insulation is used in the outside walls of {{getInfraestructureName()}}?</h1>
