@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, QueryList } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
@@ -302,6 +302,19 @@ export class KbiSectionModel {
     FireDoorHundredTwentyMinute?: number,
     FireDoorUnknown?: number,
   } = {};
+  energySupply?: string[];
+  internalStaircasesAllFloors?: number;
+  totalNumberStaircases?: number;
+  energyTypeStorage?: string[];
+  onsiteEnergyGeneration?: string[];
+  buildingStructureType?: string[];
+  externalWallInsulation?: {
+    checkBoxSelection?: string[],
+    otherValue?: string,
+  } = {};
+  externalWallInsulationPercentages?: Record<string, number>;
+  externalFeatures?: string[];
+
   EnergySupply?: string[];
   InternalStaircasesAllFloors?: number;
   TotalNumberStaircases?: number;

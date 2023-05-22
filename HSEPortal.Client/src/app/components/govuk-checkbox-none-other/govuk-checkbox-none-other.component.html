@@ -1,0 +1,38 @@
+<govuk-checkbox-group [hint]="hint" [id]="checkboxGroupId" #field [govukRequired]="field" [errorText]="noCheckboxSelectedErrorText"
+                      [title]="title" [titleClass]="titleClass" [(model)]="model.checkBoxSelection!" [isPageHeading]="isPageHeading" [class]="fieldsetClass">
+
+  <govuk-checkbox #checkbox *ngFor="let item of checkboxes" id="{{item.id}}" text="{{item.text}}" value="{{item.value}}" hint="{{item.hint}}"
+                  (onKeyupEnter)="onKeyupEnter.emit()"
+                  (onClicked)="optionClicked()"
+                  [model]="model.checkBoxSelection!" />
+
+  <govuk-checkbox #otherCheckbox (onKeyupEnter)="onKeyupEnter.emit()"
+                  (onClicked)="otherOptionClicked()"
+                  id="other"
+                  [model]="model.checkBoxSelection!"
+                  [text]="otherOptionText!"
+                  [value]="otherOptionValue" />
+
+  <div *ngIf="otherCheckbox!.checked">
+    <govuk-inset-text>
+      <govuk-input #field [govukRequired]="field"
+                   id="none"
+                   labelClass="govuk-label--s"
+                   label="{{otherOptionLabel}}"
+                   hint="{{otherOptionHint}}"
+                   [(model)]="model.otherValue!"
+                   [errorText]="otherValueErrorText"
+                   class="govuk-!-margin-bottom-5 govuk-input--width-20 panel panel-border-wide"
+                   (onKeyupEnter)="onKeyupEnter.emit()" />
+    </govuk-inset-text>
+  </div>
+
+  <div class="govuk-radios__divider">or</div>
+  <govuk-checkbox #noneCheckbox (onKeyupEnter)="onKeyupEnter.emit()"
+                  (onClicked)="noneOptionClicked()"
+                  id="none"
+                  [model]="model.checkBoxSelection!"
+                  [text]="noneOptionText!"
+                  [value]="noneOptionValue" />
+</govuk-checkbox-group>
+<ng-content></ng-content>

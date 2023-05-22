@@ -4,3 +4,5 @@ D:/dev/hse/hseportal/HSEPortal.Client/obj/Debug/HSEPortal.Client.esproj.Suggeste
 D:/dev/hse/hseportal/HSEPortal.Client/obj/Debug/HSEPortal.Client.esproj.CoreCompileInputs.cache
 C:\Users\SeanP\source\codec\hse\bsr\HSEPortal\HSEPortal.Client\obj\Debug\HSEPortal.Client.esproj.SuggestedBindingRedirects.cache
 C:\Users\SeanP\source\codec\hse\bsr\HSEPortal\HSEPortal.Client\obj\Debug\HSEPortal.Client.esproj.CoreCompileInputs.cache
+C:\Users\SeanP\source\repos\Codec\HSE\BSR\HSEBuildingRegistrationPortal\HSEPortal.Client\obj\Debug\HSEPortal.Client.esproj.SuggestedBindingRedirects.cache
+C:\Users\SeanP\source\repos\Codec\HSE\BSR\HSEBuildingRegistrationPortal\HSEPortal.Client\obj\Debug\HSEPortal.Client.esproj.CoreCompileInputs.cache
