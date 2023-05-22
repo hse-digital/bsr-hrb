@@ -83,9 +83,6 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
       this.errors.noOtherValueError.errorMessage = '';
     }
 
-    console.log(this.errors.noSelectionError.hasError);
-    console.log(this.errors.noOtherValueError.hasError);
-
     return !this.errors.noSelectionError.hasError
       && !this.errors.noOtherValueError.hasError
   }

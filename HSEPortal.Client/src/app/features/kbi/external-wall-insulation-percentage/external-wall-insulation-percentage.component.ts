@@ -7,6 +7,8 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { ExternalFeaturesComponent } from '../external-features/external-features.component';
+import { ExternalWallMaterialsComponent } from '../external-wall-materials/external-wall-materials.component';
 
 type Error = { errorMessage: string, errorAnchorId: string, optionId?: string }
 
@@ -55,7 +57,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
     "phenolic_foam": "phenolic foam",
     "eps_xps": "polystyrene insulation - expanded polystyrene (EPS) or extruded polystyrene (XPS)",
     "pur_pir_iso": "polyurethane (PUR) or polyisocyanurate (PIR or ISO)",
-    "Other": "Other",
+    "other": "Other",
   }
   getInsulationName(equipment: string) {
     return this.insulationTypeMapper[equipment];
@@ -101,7 +103,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ExternalWallInsulationPercentageComponent.route, activatedRoute);
+    return navigationService.navigateRelative(ExternalFeaturesComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
@@ -134,7 +136,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
     //add up all the percentages from the inputs using reduce function
     let totalPercentage = Object.values(this.applicationService.currenKbiSection!.externalWallInsulationPercentages!).reduce((totalPercentage, percentage) => totalPercentage + +percentage, 0);
-    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqual100"], errorAnchorId: Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages!)[0] });
+    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqual100"], errorAnchorId: Object.keys(this.applicationService.currenKbiSection!.externalWallInsulation?.checkBoxSelection!)[0] });
 
   }
 
