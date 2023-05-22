@@ -82,7 +82,7 @@ const routes = new HseRoutes([
     BuildingStructureTypeComponent,
     ExternalWallInsulationTypeComponent,
     ExternalWallInsulationPercentageComponent,
-    ExternalFeaturesComponent
+    ExternalFeaturesComponent,
     BuildingStructureTypeComponent,
     ExternalWallMaterialsComponent,
     WallsAcmComponent,
