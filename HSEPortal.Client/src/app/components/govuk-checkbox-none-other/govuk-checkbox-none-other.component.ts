@@ -42,12 +42,10 @@ export class GovukCheckboxNoneOtherComponent {
   @Output() public modelChange = new EventEmitter<any>();
 
   @Input() get model() {
-    console.log(this.modelValue);
     return this.modelValue;
   }
 
   set model(value) {
-    console.log(value);
     this.modelValue = value;
     this.modelChange.emit(this.modelValue);
   }

@@ -1,3 +1,4 @@
+import { TitleCasePipe } from '@angular/common';
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
@@ -28,6 +29,8 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
   errors: Error[] = [];
 
+  firstErrorAnchorId?: string;
+
 
   getErrorForOption(optionId: string): string {
     //Get all errors for this option
@@ -46,17 +49,17 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
     "emptyFieldError": "Estimate the percentage of insulationName in the outside walls of " + this.getInfraestructureName(),
     "invalidPercentageExceedsHundredError": "insulationName must be 100% or less",
     "invalidPercentageLessThanOneError": "insulationName must be 1% or more",
-    "totalNotEqual100": "Percentage of all insulation must total 100",
+    "totalNotEqualHundred": "Percentage of all insulation must total 100",
     "invalidCharactersError": "Percentage of insulationName must be a number",
   }
 
   private insulationTypeMapper: Record<string, string> = {
-    "fibre_glass_mineral_wool": "fibre Insulation - glass or mineral wool",
-    "fibre_wood_sheep_wool": "fibre Insulation - wood or sheep wool",
-    "foil_bubble_multifoil_insulation": "foil bubble or multifoil insulation",
-    "phenolic_foam": "phenolic foam",
-    "eps_xps": "polystyrene insulation - expanded polystyrene (EPS) or extruded polystyrene (XPS)",
-    "pur_pir_iso": "polyurethane (PUR) or polyisocyanurate (PIR or ISO)",
+    "fibre_glass_mineral_wool": "Fibre insulation - glass or mineral wool",
+    "fibre_wood_sheep_wool": "Fibre insulation - wood or sheep wool",
+    "foil_bubble_multifoil_insulation": "Foil bubble or multifoil insulation",
+    "phenolic_foam": "Phenolic foam",
+    "eps_xps": "Polystyrene insulation - expanded polystyrene (EPS) or extruded polystyrene (XPS)",
+    "pur_pir_iso": "Polyurethane (PUR) or polyisocyanurate (PIR or ISO)",
     "other": "Other",
   }
   getInsulationName(equipment: string) {
@@ -72,25 +75,35 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
       });
     }
 
-    // check missing locations (in case the user modifies fire-smoke-provisions)
+    // check missing locations (in case the user modifies external-wall-insulation-type)
     if (Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages).length != this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection?.length) {
       this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection?.filter(x => !this.applicationService.currenKbiSection!.externalWallInsulationPercentages![x]).forEach(missingInsulation => {
         this.applicationService.currenKbiSection!.externalWallInsulationPercentages![missingInsulation];
       });
     }
+
+    //If value doesnt exist in this this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection remove from locations (in case the user modifies external-wall-insulation-type)
+    if (Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages).length != this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection?.length) {
+      Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages).forEach(insulationType => {
+        if (!this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection?.includes(insulationType)) {
+          delete this.applicationService.currenKbiSection!.externalWallInsulationPercentages![insulationType];
+        }
+      });
+    }
+
   }
 
+
   canContinue() {
+
     this.errors = []
 
     for (var insulationType in this.applicationService.currenKbiSection!.externalWallInsulationPercentages) {
-      //Check is not null or whitespace
       this.validateInputs(this.applicationService.currenKbiSection!.externalWallInsulationPercentages[insulationType], insulationType)
     }
     this.validateTotalPercentage
 
     this.validateTotalPercentage();
-    console.log(this.errors)
 
     return !!(this.errors.length === 0)
 
@@ -116,8 +129,16 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
     //Validate is not null or whitespace
     if (!input || !FieldValidations.IsNotNullOrWhitespace(input.toString())) {
+      console.log(this.errorMessages["emptyFieldError"].replace("insulationName", this.getInsulationName(insulationType)));
       this.errors.push({ errorMessage: this.errorMessages["emptyFieldError"].replace("insulationName", this.getInsulationName(insulationType)), errorAnchorId: insulationType, optionId: insulationType });
     }
+
+    //Validate is a number
+    else if (!input || isNaN(input)) {
+      this.errors.push({ errorMessage: this.errorMessages["invalidCharactersError"].replace("insulationName", this.getInsulationName(insulationType)), errorAnchorId: insulationType, optionId: insulationType });
+    }
+
+
     //Validate is less than or equal to 100
     else if (!input || !FieldValidations.IsLessThanOrEqualTo100(input)) {
       this.errors.push({ errorMessage: this.errorMessages["invalidPercentageExceedsHundredError"].replace("insulationName", this.getInsulationName(insulationType)), errorAnchorId: insulationType, optionId: insulationType });
@@ -126,9 +147,10 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
     else if (!input || !FieldValidations.IsGreaterThanZero(input)) {
       this.errors.push({ errorMessage: this.errorMessages["invalidPercentageLessThanOneError"].replace("insulationName", this.getInsulationName(insulationType)), errorAnchorId: insulationType, optionId: insulationType });
     }
-    //Validate is a number
-    else if (!input || isNaN(input)) {
-      this.errors.push({ errorMessage: this.errorMessages["invalidCharactersError"].replace("insulationName", this.getInsulationName(insulationType)), errorAnchorId: insulationType, optionId: insulationType });
+
+    if (this.errors.length > 0) {
+      this.firstErrorAnchorId = this.applicationService.currenKbiSection!.externalWallInsulation?.checkBoxSelection![0];
+
     }
   }
 
@@ -136,7 +158,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
     //add up all the percentages from the inputs using reduce function
     let totalPercentage = Object.values(this.applicationService.currenKbiSection!.externalWallInsulationPercentages!).reduce((totalPercentage, percentage) => totalPercentage + +percentage, 0);
-    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqual100"], errorAnchorId: Object.keys(this.applicationService.currenKbiSection!.externalWallInsulation?.checkBoxSelection!)[0] });
+    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqualHundred"], errorAnchorId: this.applicationService.currenKbiSection!.externalWallInsulation?.checkBoxSelection![0]! });
 
   }
 
