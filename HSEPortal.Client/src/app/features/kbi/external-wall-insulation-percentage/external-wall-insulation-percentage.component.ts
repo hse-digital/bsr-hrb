@@ -129,7 +129,6 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
     //Validate is not null or whitespace
     if (!input || !FieldValidations.IsNotNullOrWhitespace(input.toString())) {
-      console.log(this.errorMessages["emptyFieldError"].replace("insulationName", this.getInsulationName(insulationType)));
       this.errors.push({ errorMessage: this.errorMessages["emptyFieldError"].replace("insulationName", this.getInsulationName(insulationType)), errorAnchorId: insulationType, optionId: insulationType });
     }
 
