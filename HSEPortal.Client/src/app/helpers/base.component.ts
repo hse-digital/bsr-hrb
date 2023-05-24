@@ -18,7 +18,7 @@ export abstract class BaseComponent implements CanActivate {
   updateOnSave: boolean = true;
   constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute, protected titleService: TitleService) {
     this.screenReaderNotification("");
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.subscribe((params: { [x: string]: string | undefined; }) => {
       this.returnUrl = params['return'];
     });
   }

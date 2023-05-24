@@ -31,6 +31,7 @@ import { EstimatedPercentageComponent } from './estimated-percentage/estimated-p
 import { ExternalWallInsulationTypeComponent } from './external-wall-insulation-type/external-wall-insulation-type.component';
 import { ExternalWallInsulationPercentageComponent } from './external-wall-insulation-percentage/external-wall-insulation-percentage.component';
 import { ExternalFeaturesComponent } from './external-features/external-features.component';
+import { FeatureMaterialsOutsideComponent } from './feature-materials-outside/feature-materials-outside.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -58,7 +59,8 @@ const routes = new HseRoutes([
   HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title),
   HseRoute.protected(ExternalWallInsulationTypeComponent.route, ExternalWallInsulationTypeComponent, ExternalWallInsulationTypeComponent.title),
   HseRoute.protected(ExternalWallInsulationPercentageComponent.route, ExternalWallInsulationPercentageComponent, ExternalWallInsulationPercentageComponent.title),
-  HseRoute.protected(ExternalFeaturesComponent.route, ExternalFeaturesComponent, ExternalFeaturesComponent.title)
+  HseRoute.protected(ExternalFeaturesComponent.route, ExternalFeaturesComponent, ExternalFeaturesComponent.title),
+  HseRoute.protected(FeatureMaterialsOutsideComponent.route, FeatureMaterialsOutsideComponent, FeatureMaterialsOutsideComponent.title)
 ]);
 
 @NgModule({
@@ -87,7 +89,8 @@ const routes = new HseRoutes([
     ExternalWallMaterialsComponent,
     WallsAcmComponent,
     WallsHplComponent,
-    EstimatedPercentageComponent
+    EstimatedPercentageComponent,
+    FeatureMaterialsOutsideComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

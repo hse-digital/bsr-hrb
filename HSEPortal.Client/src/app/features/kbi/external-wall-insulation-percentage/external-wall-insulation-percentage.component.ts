@@ -7,6 +7,8 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { FeatureMaterialsOutsideComponent } from '../feature-materials-outside/feature-materials-outside.component';
+import { ExternalFeaturesComponent } from '../external-features/external-features.component';
 
 type Error = { errorMessage: string, errorAnchorId: string, optionId?: string }
 
@@ -63,17 +65,17 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
   ngOnInit(): void {
     //Initilise the percentage values
-    if (!this.applicationService.currenKbiSection?.externalWallInsulationPercentages || Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages).length == 0) {
-      this.applicationService.currenKbiSection!.externalWallInsulationPercentages = {};
-      this.applicationService.currenKbiSection?.externalWallInsulation!.checkBoxSelection!.forEach(insulationType => {
-        this.applicationService.currenKbiSection!.externalWallInsulationPercentages![insulationType]
+    if (!this.applicationService.currenKbiSection?.ExternalWallInsulationPercentages || Object.keys(this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages).length == 0) {
+      this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages = {};
+      this.applicationService.currenKbiSection?.ExternalWallInsulation!.CheckBoxSelection!.forEach(insulationType => {
+        this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages![insulationType]
       });
     }
 
     // check missing locations (in case the user modifies fire-smoke-provisions)
-    if (Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages).length != this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection?.length) {
-      this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection?.filter(x => !this.applicationService.currenKbiSection!.externalWallInsulationPercentages![x]).forEach(missingInsulation => {
-        this.applicationService.currenKbiSection!.externalWallInsulationPercentages![missingInsulation];
+    if (Object.keys(this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages).length != this.applicationService.currenKbiSection?.ExternalWallInsulation?.CheckBoxSelection?.length) {
+      this.applicationService.currenKbiSection?.ExternalWallInsulation?.CheckBoxSelection?.filter(x => !this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages![x]).forEach(missingInsulation => {
+        this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages![missingInsulation];
       });
     }
   }
@@ -81,9 +83,9 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   canContinue() {
     this.errors = []
 
-    for (var insulationType in this.applicationService.currenKbiSection!.externalWallInsulationPercentages) {
+    for (var insulationType in this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages) {
       //Check is not null or whitespace
-      this.validateInputs(this.applicationService.currenKbiSection!.externalWallInsulationPercentages[insulationType], insulationType)
+      this.validateInputs(this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages[insulationType], insulationType)
     }
     this.validateTotalPercentage
 
@@ -101,11 +103,11 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ExternalWallInsulationPercentageComponent.route, activatedRoute);
+    return navigationService.navigateRelative(ExternalFeaturesComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection && this.applicationService.currenKbiSection!.externalWallInsulation?.checkBoxSelection![0] != 'none';
+    return !!this.applicationService.currenKbiSection?.ExternalWallInsulation?.CheckBoxSelection && this.applicationService.currenKbiSection!.ExternalWallInsulation?.CheckBoxSelection![0] != 'none';
 
 
   }
@@ -133,8 +135,8 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   validateTotalPercentage(): void {
 
     //add up all the percentages from the inputs using reduce function
-    let totalPercentage = Object.values(this.applicationService.currenKbiSection!.externalWallInsulationPercentages!).reduce((totalPercentage, percentage) => totalPercentage + +percentage, 0);
-    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqual100"], errorAnchorId: Object.keys(this.applicationService.currenKbiSection!.externalWallInsulationPercentages!)[0] });
+    let totalPercentage = Object.values(this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages!).reduce((totalPercentage, percentage) => totalPercentage + +percentage, 0);
+    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqual100"], errorAnchorId: Object.keys(this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages!)[0] });
 
   }
 
