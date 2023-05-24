@@ -14,7 +14,7 @@ import { LiftsComponent } from '../lifts/lifts.component';
   selector: 'hse-fire-smoke-provisions',
   templateUrl: './fire-smoke-provisions.component.html'
 })
-export class FireSmokeProvisionsComponent  extends BaseComponent implements IHasNextPage, OnInit {
+export class FireSmokeProvisionsComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'fire-smoke-provisions';
   static title: string = "Common parts fire and smoke controls - Register a high-rise building - GOV.UK";
 
