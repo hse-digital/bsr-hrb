@@ -104,7 +104,8 @@ public record KbiSectionModel(string StrategyEvacuateBuilding, string[] Provisio
     Dictionary<string, string[]> FireSmokeProvisionLocations, string[] Lifts, ResidentialUnitFrontDoors ResidentialUnitFrontDoors, 
     string RoofType, string RoofInsulation, string RoofMaterial, FireDoorsCommon FireDoorsCommon, string[] EnergySupply, string[] BuildingStructureType,
     string InternalStaircasesAllFloors, string TotalNumberStaircases, string[] EnergyTypeStorage, string[] OnsiteEnergyGeneration,
-    string[] ExternalWallMaterials, string WallACM, string WallHPL, Dictionary<string, string> ExternalWallMaterialsPercentage);
+    string[] ExternalWallMaterials, string WallACM, string WallHPL, Dictionary<string, string> ExternalWallMaterialsPercentage,
+    string[] SecondaryUseBuilding);
 
 public record FireDoorsCommon(string FireDoorThirtyMinute, string FireDoorSixtyMinute, string FireDoorHundredTwentyMinute, string FireDoorUnknown);
 
