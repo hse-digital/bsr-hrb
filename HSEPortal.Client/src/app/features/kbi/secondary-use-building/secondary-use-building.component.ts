@@ -7,6 +7,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { FloorsBelowGroundLevelComponent } from '../floors-below-ground-level/floors-below-ground-level.component';
 
 @Component({
   selector: 'hse-secondary-use-building',
@@ -48,7 +49,7 @@ export class SecondaryUseBuildingComponent extends BaseComponent implements IHas
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(SecondaryUseBuildingComponent.route, activatedRoute);
+    return navigationService.navigateRelative(FloorsBelowGroundLevelComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

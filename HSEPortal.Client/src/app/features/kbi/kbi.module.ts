@@ -32,6 +32,7 @@ import { ExternalWallInsulationTypeComponent } from './external-wall-insulation-
 import { ExternalWallInsulationPercentageComponent } from './external-wall-insulation-percentage/external-wall-insulation-percentage.component';
 import { ExternalFeaturesComponent } from './external-features/external-features.component';
 import { SecondaryUseBuildingComponent } from './secondary-use-building/secondary-use-building.component';
+import { FloorsBelowGroundLevelComponent } from './floors-below-ground-level/floors-below-ground-level.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -61,6 +62,7 @@ const routes = new HseRoutes([
   HseRoute.protected(ExternalWallInsulationPercentageComponent.route, ExternalWallInsulationPercentageComponent, ExternalWallInsulationPercentageComponent.title),
   HseRoute.protected(ExternalFeaturesComponent.route, ExternalFeaturesComponent, ExternalFeaturesComponent.title),
   HseRoute.protected(SecondaryUseBuildingComponent.route, SecondaryUseBuildingComponent, SecondaryUseBuildingComponent.title),
+  HseRoute.protected(FloorsBelowGroundLevelComponent.route, FloorsBelowGroundLevelComponent, FloorsBelowGroundLevelComponent.title),
 ]);
 
 @NgModule({
@@ -90,7 +92,8 @@ const routes = new HseRoutes([
     WallsAcmComponent,
     WallsHplComponent,
     EstimatedPercentageComponent,
-    SecondaryUseBuildingComponent
+    SecondaryUseBuildingComponent,
+    FloorsBelowGroundLevelComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

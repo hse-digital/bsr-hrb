@@ -327,4 +327,5 @@ export class KbiSectionModel {
   ExternalWallMaterialsPercentage?: Record<string, string>;
 
   SecondaryUseBuilding?: string[];
+  FloorsBelowGroundLevel?: number;
 }
