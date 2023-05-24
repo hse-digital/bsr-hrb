@@ -6,6 +6,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { PrimaryUseOfBuildingComponent } from '../primary-use-of-building/primary-use-of-building.component';
 
 @Component({
   selector: 'hse-feature-materials-outside',
@@ -113,7 +114,7 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
         feature: selectedFeatures.at(nextFeatureIndex)
       });
     }
-    return navigationService.navigateRelative(FeatureMaterialsOutsideComponent.route, activatedRoute, { feature: this.currentFeature });
+    return navigationService.navigateRelative(PrimaryUseOfBuildingComponent.route, activatedRoute, { feature: this.currentFeature });
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

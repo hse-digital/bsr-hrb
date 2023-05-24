@@ -8,6 +8,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { FeatureMaterialsOutsideComponent } from '../feature-materials-outside/feature-materials-outside.component';
+import { PrimaryUseOfBuildingComponent } from '../primary-use-of-building/primary-use-of-building.component';
 
 @Component({
   selector: 'hse-external-features',
@@ -56,10 +57,11 @@ export class ExternalFeaturesComponent  extends BaseComponent implements IHasNex
       });
     }
 
-    return navigationService.navigateRelative(ExternalFeaturesComponent.route, activatedRoute);
+    return navigationService.navigateRelative(PrimaryUseOfBuildingComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return !!this.applicationService.currenKbiSection?.ExternalWallInsulation?.CheckBoxSelection && (this.applicationService.currenKbiSection!.ExternalWallInsulation?.CheckBoxSelection![0] == 'none' || !!(this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages));
   }
+
 }
