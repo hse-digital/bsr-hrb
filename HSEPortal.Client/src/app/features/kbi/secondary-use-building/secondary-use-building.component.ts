@@ -10,8 +10,7 @@ import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'hse-secondary-use-building',
-  templateUrl: './secondary-use-building.component.html',
-  styleUrls: ['./secondary-use-building.component.scss']
+  templateUrl: './secondary-use-building.component.html'
 })
 export class SecondaryUseBuildingComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'secondary-uses';
