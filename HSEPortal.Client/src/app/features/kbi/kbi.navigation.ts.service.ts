@@ -22,6 +22,7 @@ import { ExternalWallMaterialsComponent } from './external-wall-materials/extern
 import { EstimatedPercentageComponent } from './estimated-percentage/estimated-percentage.component';
 import { TaskListComponent } from './task-list/task-list.component';
 import { EnergySupplyComponent } from './energy-supply/energy-supply.component';
+import { ExternalWallInsulationTypeComponent } from './external-wall-insulation-type/external-wall-insulation-type.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -30,7 +31,8 @@ export class KbiNavigation extends BaseNavigation {
     super();
   }
 
-  private estimatedPercentageNavigationNode = new EstimatedPercentageNavigationNode(this.applicationService);
+  private externalWallInsulationTypeNavigationNode = new ExternalWallInsulationTypeNavigationNode(this.applicationService);
+  private estimatedPercentageNavigationNode = new EstimatedPercentageNavigationNode(this.applicationService, this.externalWallInsulationTypeNavigationNode);
   private wallHplNavigationNode = new WallsHplNavigationNode(this.applicationService, this.estimatedPercentageNavigationNode);
   private wallAcmNavigationNode = new WallsAcmNavigationNode(this.applicationService, this.wallHplNavigationNode, this.estimatedPercentageNavigationNode);
   private externalWallMaterialsNavigationNode = new ExternalWallMaterialsNavigationNode(this.applicationService, this.wallAcmNavigationNode, this.wallHplNavigationNode, this.estimatedPercentageNavigationNode);
@@ -362,7 +364,8 @@ class WallsHplNavigationNode extends KbiNavigationNode {
 }
 
 class EstimatedPercentageNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService) {
+  constructor(private applicationService: ApplicationService,
+    private externalWallInsulationTypeNavigationNode: ExternalWallInsulationTypeNavigationNode) {
     super();
   }
 
@@ -371,6 +374,20 @@ class EstimatedPercentageNavigationNode extends KbiNavigationNode {
       || kbi.ExternalWallMaterials!.some(x => !kbi!.ExternalWallMaterialsPercentage![x] || kbi!.ExternalWallMaterialsPercentage![x].length == 0)) {
       return EstimatedPercentageComponent.route;
     }
-    return EstimatedPercentageComponent.route;
+    return this.externalWallInsulationTypeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+}
+
+class ExternalWallInsulationTypeNavigationNode extends KbiNavigationNode {
+  constructor(private applicationService: ApplicationService) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.ExternalWallInsulation || !kbi.ExternalWallInsulation.CheckBoxSelection || kbi.ExternalWallInsulation.CheckBoxSelection?.length == 0) {
+      return ExternalWallInsulationTypeComponent.route;
+    }
+    return ExternalWallInsulationTypeComponent.route;
+    //return this.externalWallInsulationTypeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 }
