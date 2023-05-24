@@ -53,7 +53,7 @@ export class SecondaryUseBuildingComponent extends BaseComponent implements IHas
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
+    return !!this.applicationService.currenKbiSection?.PrimaryUseOfBuilding && this.applicationService.currenKbiSection?.PrimaryUseOfBuilding.length > 0;
   }
 
 }

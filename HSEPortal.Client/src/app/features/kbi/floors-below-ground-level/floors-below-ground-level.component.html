@@ -20,7 +20,7 @@
                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 
                 <govuk-details summaryText="Help with ground level">
-                    <p>Ground level is the level of land immediately next to . If that land is uneven, count from the lowest part of the land immediately next to .</p>
+                    <p>Ground level is the level of land immediately next to {{getInfraestructureName()}}. If that land is uneven, count from the lowest part of the land immediately next to {{getInfraestructureName()}}.</p>
                     <p>Any ceiling below that level is below ground level.</p>
                 </govuk-details>
             </div>
