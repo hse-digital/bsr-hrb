@@ -8,6 +8,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { ExternalWallMaterialsPipe } from 'src/app/pipes/external-wall-materials.pipe';
+import { ExternalWallInsulationTypeComponent } from '../external-wall-insulation-type/external-wall-insulation-type.component';
 
 type Error = { hasError: boolean, message: string, id: string }
 type Material = { value: string, id: string }
@@ -116,7 +117,7 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(EstimatedPercentageComponent.route, activatedRoute);
+    return navigationService.navigateRelative(ExternalWallInsulationTypeComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

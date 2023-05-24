@@ -46,7 +46,7 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
     }
 
     // getting current equipment
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.subscribe((params: { [x: string]: string | undefined; }) => {
       this.currentEquipment = params['equipment'] ?? this.applicationService.currenKbiSection?.FireSmokeProvisions![0];
     });
 

@@ -1,8 +1,6 @@
 import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { json } from 'express';
 import { GovukErrorSummaryComponent } from 'hse-angular';
-import { GovukCheckboxNoneOtherComponent } from 'src/app/components/govuk-checkbox-none-other/govuk-checkbox-none-other.component';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
@@ -10,8 +8,8 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { ExternalFeaturesComponent } from '../external-features/external-features.component';
 import { ExternalWallInsulationPercentageComponent } from '../external-wall-insulation-percentage/external-wall-insulation-percentage.component';
-
-type Error = { hasError: boolean, errorMessage: string }
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
 
 @Component({
   selector: 'hse-external-wall-insulation-type',
@@ -22,31 +20,20 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
   static title: string = "Insulation in outside walls - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-  @ViewChild(GovukCheckboxNoneOtherComponent) externalWallInsulationTypeCheckboxGroup?: GovukCheckboxNoneOtherComponent;
+  @ViewChild(GovukCheckboxNoneComponent) checkboxGroup?: GovukCheckboxNoneComponent;
 
+  errorAnchorId?: string;
   errorMessage?: string;
   externalWallInsulationTypeHasErrors: boolean = false;
+  otherError: boolean = false;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
-  errorMessages: Record<string, string> = {
-    "noSelectionError": `Select what type of insulation is used in the outside walls of ${this.getInfraestructureName()}, or select \'None\'`,
-    "noOtherValueError": `Enter the other insulation material used`,
-
-  }
-
-  defaultErrorMessage: string = `Select what type of insulation is used in the outside walls of ${this.getInfraestructureName()}, or select \'None\'`;
-  errors = {
-    noSelectionError: { hasError: false, errorMessage: "", } as Error,
-    noOtherValueError: { hasError: false, errorMessage: "", } as Error
-  };
-
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.externalWallInsulation) {
-      this.applicationService.currenKbiSection!.externalWallInsulation!.checkBoxSelection = [];
-      this.applicationService.currenKbiSection!.externalWallInsulation!.otherValue = '';
+    if (!this.applicationService.currenKbiSection!.ExternalWallInsulation) {
+      this.applicationService.currenKbiSection!.ExternalWallInsulation = { CheckBoxSelection: [], OtherValue: '' };
     }
   }
 
@@ -57,36 +44,35 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
   }
 
   canContinue(): boolean {
-    if (this.applicationService!.currenKbiSection!.externalWallInsulation!.checkBoxSelection!.length == 0) {
-      this.errors.noSelectionError.hasError = true;
-      this.errors.noSelectionError.errorMessage = this.errorMessages["noSelectionError"];
-    }
-    else {
-      this.errors.noSelectionError.hasError = false;
-      this.errors.noSelectionError.errorMessage = '';
-    }
-    if ((this.applicationService.currenKbiSection!.externalWallInsulation!.checkBoxSelection!.includes('Other')
-      && this.applicationService.currenKbiSection!.externalWallInsulation!.otherValue?.length == 0)) {
-      this.errors.noOtherValueError.hasError = true;
-      this.errors.noOtherValueError.errorMessage = this.errorMessages["noOtherValueError"];
-    }
-    else {
-      this.errors.noOtherValueError.hasError = false;
-      this.errors.noOtherValueError.errorMessage = '';
-    }
+    this.externalWallInsulationTypeHasErrors = false;
+    this.validateCheckboxSelection();
+    this.validateOtherOptionText();
 
-    return !this.errors.noSelectionError.hasError
-      && !this.errors.noOtherValueError.hasError
+    return !this.externalWallInsulationTypeHasErrors;
+  }
+
+  validateCheckboxSelection() {
+    if (this.applicationService!.currenKbiSection!.ExternalWallInsulation!.CheckBoxSelection!.length == 0) {
+      this.errorMessage = `Select what type of insulation is used in the outside walls of ${this.getInfraestructureName()}, or select \'None\'`;
+      this.errorAnchorId = `fibre_glass_mineral_wool-${this.checkboxGroup?.checkboxElements?.first.innerId}`;
+      this.externalWallInsulationTypeHasErrors = true;
+    }
+  }
+
+  validateOtherOptionText() {
+    if (this.applicationService.currenKbiSection!.ExternalWallInsulation!.CheckBoxSelection!.includes('other')
+      && !FieldValidations.IsNotNullOrWhitespace(this.applicationService.currenKbiSection!.ExternalWallInsulation!.OtherValue)) {
+      this.errorMessage = "Enter the other insulation material used";
+      this.errorAnchorId = "input-other";
+      this.externalWallInsulationTypeHasErrors = this.otherError = true;
+    }
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if(this.applicationService.currenKbiSection!.externalWallInsulation!.checkBoxSelection!.includes('none'))
-    {
+    if (this.applicationService.currenKbiSection!.ExternalWallInsulation!.CheckBoxSelection!.includes('none')) {
       return navigationService.navigateRelative(ExternalFeaturesComponent.route, activatedRoute);
     }
-    else {
-      return navigationService.navigateRelative(ExternalWallInsulationPercentageComponent.route, activatedRoute);
-    }
+    return navigationService.navigateRelative(ExternalWallInsulationPercentageComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

@@ -31,6 +31,8 @@ import { EstimatedPercentageComponent } from './estimated-percentage/estimated-p
 import { ExternalWallInsulationTypeComponent } from './external-wall-insulation-type/external-wall-insulation-type.component';
 import { ExternalWallInsulationPercentageComponent } from './external-wall-insulation-percentage/external-wall-insulation-percentage.component';
 import { ExternalFeaturesComponent } from './external-features/external-features.component';
+import { FeatureMaterialsOutsideComponent } from './feature-materials-outside/feature-materials-outside.component';
+import { PrimaryUseOfBuildingComponent } from './primary-use-of-building/primary-use-of-building.component';
 import { SecondaryUseBuildingComponent } from './secondary-use-building/secondary-use-building.component';
 import { FloorsBelowGroundLevelComponent } from './floors-below-ground-level/floors-below-ground-level.component';
 
@@ -61,6 +63,8 @@ const routes = new HseRoutes([
   HseRoute.protected(ExternalWallInsulationTypeComponent.route, ExternalWallInsulationTypeComponent, ExternalWallInsulationTypeComponent.title),
   HseRoute.protected(ExternalWallInsulationPercentageComponent.route, ExternalWallInsulationPercentageComponent, ExternalWallInsulationPercentageComponent.title),
   HseRoute.protected(ExternalFeaturesComponent.route, ExternalFeaturesComponent, ExternalFeaturesComponent.title),
+  HseRoute.protected(FeatureMaterialsOutsideComponent.route, FeatureMaterialsOutsideComponent, FeatureMaterialsOutsideComponent.title),
+  HseRoute.protected(PrimaryUseOfBuildingComponent.route, PrimaryUseOfBuildingComponent, PrimaryUseOfBuildingComponent.title),
   HseRoute.protected(SecondaryUseBuildingComponent.route, SecondaryUseBuildingComponent, SecondaryUseBuildingComponent.title),
   HseRoute.protected(FloorsBelowGroundLevelComponent.route, FloorsBelowGroundLevelComponent, FloorsBelowGroundLevelComponent.title),
 ]);
@@ -92,6 +96,8 @@ const routes = new HseRoutes([
     WallsAcmComponent,
     WallsHplComponent,
     EstimatedPercentageComponent,
+    FeatureMaterialsOutsideComponent,
+    PrimaryUseOfBuildingComponent,
     SecondaryUseBuildingComponent,
     FloorsBelowGroundLevelComponent
   ],

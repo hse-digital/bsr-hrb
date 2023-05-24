@@ -115,7 +115,7 @@ export class ApplicationService {
   }
 
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
-    var application = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
+    let application: BuildingRegistrationModel = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
     this.model = application;
     this.updateLocalStorage();
   }
@@ -302,18 +302,6 @@ export class KbiSectionModel {
     FireDoorHundredTwentyMinute?: number,
     FireDoorUnknown?: number,
   } = {};
-  energySupply?: string[];
-  internalStaircasesAllFloors?: number;
-  totalNumberStaircases?: number;
-  energyTypeStorage?: string[];
-  onsiteEnergyGeneration?: string[];
-  buildingStructureType?: string[];
-  externalWallInsulation?: {
-    checkBoxSelection?: string[],
-    otherValue?: string,
-  } = {};
-  externalWallInsulationPercentages?: Record<string, number>;
-  externalFeatures?: string[];
 
   EnergySupply?: string[];
   InternalStaircasesAllFloors?: number;
@@ -325,6 +313,16 @@ export class KbiSectionModel {
   WallACM?: string;
   WallHPL?: string;
   ExternalWallMaterialsPercentage?: Record<string, string>;
+
+  ExternalWallInsulation?: {
+    CheckBoxSelection?: string[],
+    OtherValue?: string,
+  } = {};
+  ExternalWallInsulationPercentages?: Record<string, number>;
+  ExternalFeatures?: string[];
+  FeatureMaterialsOutside?: Record<string, string[]>;
+
+  PrimaryUseOfBuilding?: string;
 
   SecondaryUseBuilding?: string[];
   FloorsBelowGroundLevel?: number;

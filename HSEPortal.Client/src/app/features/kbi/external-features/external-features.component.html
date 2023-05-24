@@ -14,14 +14,14 @@
                                      hint="Select all that apply. Machinery could be for heating, ventulation or energy generation"
                                      [errorText]="getErrorDescription(externalFeaturesHasErrors, errorMessage!)"
                                      (onKeyupEnter)="saveAndContinue()"
-                                     [(model)]="applicationService.currenKbiSection!.externalFeatures!">
-                  <checkbox-option text="Advertising hoarding attached to a wall" value="advertising" id="advertising" />
-                  <checkbox-option text="Balconies" value="balconies" id="balconies" />
-                  <checkbox-option text="Communal recreation area on the roof" value="communal_recreation_area" id="communal_recreation_area" />
-                  <checkbox-option text="Communal walkway between structures" value="communal_walkway" id="communal_walkway" />
-                  <checkbox-option text="Escape route onto and across the roof" value="escape_route_roof" id="escape_route_roof" />
-                  <checkbox-option text="External staircases" value="external_staircases" id="external_staircases" />
-                  <checkbox-option text="Machinery in an outbuilding" value="machinery_outbuilding" id="machinery_outbuilding"/>
+                                     [(model)]="applicationService.currenKbiSection!.ExternalFeatures!">
+                    <checkbox-option text="Advertising hoarding attached to a wall" value="advertising" id="advertising" />
+                    <checkbox-option text="Balconies" value="balconies" id="balconies" />
+                    <checkbox-option text="Communal recreation area on the roof" value="communal_recreation_area" id="communal_recreation_area" />
+                    <checkbox-option text="Communal walkway between structures" value="communal_walkway" id="communal_walkway" />
+                    <checkbox-option text="Escape route onto and across the roof" value="escape_route_roof" id="escape_route_roof" />
+                    <checkbox-option text="External staircases" value="external_staircases" id="external_staircases" />
+                    <checkbox-option text="Machinery in an outbuilding" value="machinery_outbuilding" id="machinery_outbuilding"/>
                     <checkbox-option text="Machinery in a room on the roof" value="machinery_roof_room" id="machinery_roof_room" />
                     <checkbox-option text="Machinery on the roof" value="machinery_roof" id="machinery_roof" />
                     <checkbox-option text="Phone masts" value="phone_masts" id="phone_masts" />
