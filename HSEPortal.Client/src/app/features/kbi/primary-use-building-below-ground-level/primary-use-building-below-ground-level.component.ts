@@ -34,7 +34,7 @@ export class PrimaryUseBuildingBelowGroundLevelComponent extends BaseComponent i
   }
 
   canContinue(): boolean {
-    this.primaryUseBuildingBelowGroundLevelHasErrors = !!this.applicationService.currenKbiSection?.PrimaryUseBuildingBelowGroundLevel && this.applicationService.currenKbiSection?.PrimaryUseBuildingBelowGroundLevel.length > 0;
+    this.primaryUseBuildingBelowGroundLevelHasErrors = !this.applicationService.currenKbiSection?.PrimaryUseBuildingBelowGroundLevel || this.applicationService.currenKbiSection?.PrimaryUseBuildingBelowGroundLevel.length == 0;
     return !this.primaryUseBuildingBelowGroundLevelHasErrors;
   }
 

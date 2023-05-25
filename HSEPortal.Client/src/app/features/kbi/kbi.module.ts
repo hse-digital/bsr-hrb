@@ -68,6 +68,7 @@ const routes = new HseRoutes([
   HseRoute.protected(PrimaryUseOfBuildingComponent.route, PrimaryUseOfBuildingComponent, PrimaryUseOfBuildingComponent.title),
   HseRoute.protected(SecondaryUseBuildingComponent.route, SecondaryUseBuildingComponent, SecondaryUseBuildingComponent.title),
   HseRoute.protected(FloorsBelowGroundLevelComponent.route, FloorsBelowGroundLevelComponent, FloorsBelowGroundLevelComponent.title),
+  HseRoute.protected(PrimaryUseBuildingBelowGroundLevelComponent.route, PrimaryUseBuildingBelowGroundLevelComponent, PrimaryUseBuildingBelowGroundLevelComponent.title),
 ]);
 
 @NgModule({
