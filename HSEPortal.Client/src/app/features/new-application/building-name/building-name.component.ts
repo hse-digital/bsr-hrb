@@ -1,34 +1,35 @@
-import { Component, ElementRef, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
+import { Component } from '@angular/core';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { ContactNameComponent } from '../contact-name/contact-name.component';
 
 @Component({
   templateUrl: './building-name.component.html'
 })
-export class BuildingNameComponent extends BaseComponent implements IHasNextPage {
+export class BuildingNameComponent extends PageComponent<string> {
   static route: string = "building-name";
   static title: string = "Building name - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+  override onInit(): void {
+    this.model = this.applicationService.model.BuildingName;
+  }
 
-  constructor(router: Router, registrationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, registrationService, navigationService, activatedRoute, titleService);
-    this.updateOnSave = false;
+  override async onSave(): Promise<void> {
+    this.applicationService.model.BuildingName = this.model!;
+  }
+
+  override canAccess(_: ActivatedRouteSnapshot): boolean {
+    return true;
   }
 
   nameHasErrors: boolean = false;
-  canContinue(): boolean {
-    this.nameHasErrors = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName);    
+  override isValid(): boolean {
+    this.nameHasErrors = !FieldValidations.IsNotNullOrWhitespace(this.model);
     return !this.nameHasErrors;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative('contact-name', activatedRoute);
+  override navigateNext(): Promise<boolean> {
+    return this.navigationService.navigateRelative(ContactNameComponent.route, this.activatedRoute);
   }
 }
