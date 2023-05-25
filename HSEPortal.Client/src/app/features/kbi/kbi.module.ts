@@ -33,6 +33,8 @@ import { ExternalWallInsulationPercentageComponent } from './external-wall-insul
 import { ExternalFeaturesComponent } from './external-features/external-features.component';
 import { FeatureMaterialsOutsideComponent } from './feature-materials-outside/feature-materials-outside.component';
 import { PrimaryUseOfBuildingComponent } from './primary-use-of-building/primary-use-of-building.component';
+import { SecondaryUseBuildingComponent } from './secondary-use-building/secondary-use-building.component';
+import { FloorsBelowGroundLevelComponent } from './floors-below-ground-level/floors-below-ground-level.component';
 import { PrimaryUseBuildingBelowGroundLevelComponent } from './primary-use-building-below-ground-level/primary-use-building-below-ground-level.component';
 
 const routes = new HseRoutes([
@@ -63,7 +65,9 @@ const routes = new HseRoutes([
   HseRoute.protected(ExternalWallInsulationPercentageComponent.route, ExternalWallInsulationPercentageComponent, ExternalWallInsulationPercentageComponent.title),
   HseRoute.protected(ExternalFeaturesComponent.route, ExternalFeaturesComponent, ExternalFeaturesComponent.title),
   HseRoute.protected(FeatureMaterialsOutsideComponent.route, FeatureMaterialsOutsideComponent, FeatureMaterialsOutsideComponent.title),
-  HseRoute.protected(PrimaryUseOfBuildingComponent.route, PrimaryUseOfBuildingComponent, PrimaryUseOfBuildingComponent.title)
+  HseRoute.protected(PrimaryUseOfBuildingComponent.route, PrimaryUseOfBuildingComponent, PrimaryUseOfBuildingComponent.title),
+  HseRoute.protected(SecondaryUseBuildingComponent.route, SecondaryUseBuildingComponent, SecondaryUseBuildingComponent.title),
+  HseRoute.protected(FloorsBelowGroundLevelComponent.route, FloorsBelowGroundLevelComponent, FloorsBelowGroundLevelComponent.title),
 ]);
 
 @NgModule({
@@ -95,6 +99,8 @@ const routes = new HseRoutes([
     EstimatedPercentageComponent,
     FeatureMaterialsOutsideComponent,
     PrimaryUseOfBuildingComponent,
+    SecondaryUseBuildingComponent,
+    FloorsBelowGroundLevelComponent,
     PrimaryUseBuildingBelowGroundLevelComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],

@@ -3,9 +3,11 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, BuildingApplicationStatus, KbiModel } from 'src/app/services/application.service';
+import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { FloorsBelowGroundLevelComponent } from '../floors-below-ground-level/floors-below-ground-level.component';
+import { SecondaryUseBuildingComponent } from '../secondary-use-building/secondary-use-building.component';
 
 @Component({
   selector: 'hse-primary-use-of-building',
@@ -44,7 +46,7 @@ export class PrimaryUseOfBuildingComponent extends BaseComponent implements IHas
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(PrimaryUseOfBuildingComponent.route, activatedRoute); //TODO route with next page
+    return navigationService.navigateRelative(SecondaryUseBuildingComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
