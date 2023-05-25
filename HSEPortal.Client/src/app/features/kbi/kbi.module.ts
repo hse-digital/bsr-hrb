@@ -33,6 +33,7 @@ import { ExternalWallInsulationPercentageComponent } from './external-wall-insul
 import { ExternalFeaturesComponent } from './external-features/external-features.component';
 import { FeatureMaterialsOutsideComponent } from './feature-materials-outside/feature-materials-outside.component';
 import { PrimaryUseOfBuildingComponent } from './primary-use-of-building/primary-use-of-building.component';
+import { PrimaryUseBuildingBelowGroundLevelComponent } from './primary-use-building-below-ground-level/primary-use-building-below-ground-level.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -93,7 +94,8 @@ const routes = new HseRoutes([
     WallsHplComponent,
     EstimatedPercentageComponent,
     FeatureMaterialsOutsideComponent,
-    PrimaryUseOfBuildingComponent
+    PrimaryUseOfBuildingComponent,
+    PrimaryUseBuildingBelowGroundLevelComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

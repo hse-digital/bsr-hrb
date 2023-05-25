@@ -323,4 +323,5 @@ export class KbiSectionModel {
   FeatureMaterialsOutside?: Record<string, string[]>;
 
   PrimaryUseOfBuilding?: string;
+  PrimaryUseBuildingBelowGroundLevel?: string;
 }
