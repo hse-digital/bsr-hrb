@@ -9,8 +9,7 @@ import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'hse-primary-use-building-below-ground-level',
-  templateUrl: './primary-use-building-below-ground-level.component.html',
-  styleUrls: ['./primary-use-building-below-ground-level.component.scss']
+  templateUrl: './primary-use-building-below-ground-level.component.html'
 })
 export class PrimaryUseBuildingBelowGroundLevelComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'primary-use-floors-below-ground-level';
