@@ -54,7 +54,7 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
     });
   }
 
-  mapExternalWallMaterials(){
+  mapExternalWallMaterials() {
     let aux: Record<string, string> = {};
     this.applicationService.currenKbiSection?.ExternalWallMaterials?.forEach(x =>
       aux[x] = !!this.applicationService.currenKbiSection!.ExternalWallMaterialsPercentage![x]
@@ -121,7 +121,12 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
+    let externalWallMaterials = this.applicationService.currenKbiSection?.ExternalWallMaterials;
+    
+    let canAccess = !!externalWallMaterials && externalWallMaterials.length > 0;
+    if (canAccess && externalWallMaterials!.indexOf('acm') > -1) canAccess &&= !!this.applicationService.currenKbiSection?.WallACM;
+    if (canAccess && externalWallMaterials!.indexOf('hpl') > -1) canAccess &&= !!this.applicationService.currenKbiSection?.WallHPL;
+    return canAccess;
   }
 
 }
