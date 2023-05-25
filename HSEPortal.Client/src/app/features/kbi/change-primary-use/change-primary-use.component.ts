@@ -6,26 +6,25 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
-import { ChangePrimaryUseComponent } from '../change-primary-use/change-primary-use.component';
 
 @Component({
-  selector: 'hse-primary-use-building-below-ground-level',
-  templateUrl: './primary-use-building-below-ground-level.component.html'
+  selector: 'hse-change-primary-use',
+  templateUrl: './change-primary-use.component.html'
 })
-export class PrimaryUseBuildingBelowGroundLevelComponent extends BaseComponent implements IHasNextPage, OnInit {
-  static route: string = 'primary-use-floors-below-ground-level';
-  static title: string = "Primary use of floors below ground level - Register a high-rise building - GOV.UK";
+export class ChangePrimaryUseComponent  extends BaseComponent implements IHasNextPage, OnInit {
+  static route: string = 'change-primary-use';
+  static title: string = "Change in primary use - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   errorMessage?: string;
-  primaryUseBuildingBelowGroundLevelHasErrors = false;
+  changePrimaryUseHasErrors = false;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {
-    this.errorMessage = `Select the primary use of the floors below ground level in ${this.getInfraestructureName()}`;
+    this.errorMessage = `Select whether ${this.getInfraestructureName()} has had a different primary use in the past`;
   }
 
   getInfraestructureName(){
@@ -35,8 +34,8 @@ export class PrimaryUseBuildingBelowGroundLevelComponent extends BaseComponent i
   }
 
   canContinue(): boolean {
-    this.primaryUseBuildingBelowGroundLevelHasErrors = !this.applicationService.currenKbiSection?.PrimaryUseBuildingBelowGroundLevel || this.applicationService.currenKbiSection?.PrimaryUseBuildingBelowGroundLevel.length == 0;
-    return !this.primaryUseBuildingBelowGroundLevelHasErrors;
+    this.changePrimaryUseHasErrors = !this.applicationService.currenKbiSection?.ChangePrimaryUse || this.applicationService.currenKbiSection?.ChangePrimaryUse.length == 0;
+    return !this.changePrimaryUseHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
