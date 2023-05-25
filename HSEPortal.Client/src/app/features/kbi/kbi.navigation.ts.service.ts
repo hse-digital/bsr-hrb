@@ -379,12 +379,18 @@ class ExternalWallInsulationTypeNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.ExternalWallInsulation || !kbi.ExternalWallInsulation.CheckBoxSelection || kbi.ExternalWallInsulation.CheckBoxSelection?.length == 0) {
+    if (!kbi.ExternalWallInsulation || !kbi.ExternalWallInsulation.CheckBoxSelection || kbi.ExternalWallInsulation.CheckBoxSelection?.length == 0 || this.isOtherOptionSelectedButNotCompleted(kbi)) {
       return ExternalWallInsulationTypeComponent.route;
     } else if (kbi.ExternalWallInsulation.CheckBoxSelection.length == 1 && kbi.ExternalWallInsulation.CheckBoxSelection.includes('none')) {
       return this.externalFeaturesNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
     return this.externalWallInsulationPercentageNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+  private isOtherOptionSelectedButNotCompleted(kbi: KbiSectionModel) {
+    return kbi.ExternalWallInsulation!.CheckBoxSelection!.length > 0
+      && kbi.ExternalWallInsulation!.CheckBoxSelection!.includes("other")
+      && (!kbi.ExternalWallInsulation!.OtherValue || kbi.ExternalWallInsulation!.OtherValue.length == 0);
   }
 }
 
@@ -426,7 +432,7 @@ class FeaturesMaterialsOutsideNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if(!kbi.FeatureMaterialsOutside || Object.keys(kbi.FeatureMaterialsOutside).length == 0) {
+    if (!kbi.FeatureMaterialsOutside || Object.keys(kbi.FeatureMaterialsOutside).length == 0) {
       return FeatureMaterialsOutsideComponent.route;
     } else if (Object.keys(kbi.FeatureMaterialsOutside).some(x => !kbi.FeatureMaterialsOutside![x] || kbi.FeatureMaterialsOutside![x].length == 0)) {
       let nextFeature = kbi.ExternalFeatures!.find(x => !kbi!.FeatureMaterialsOutside![x] || kbi!.FeatureMaterialsOutside![x].length == 0);
@@ -455,7 +461,7 @@ class SecondaryUseBuildingNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if(!kbi.SecondaryUseBuilding || kbi.SecondaryUseBuilding.length == 0) {
+    if (!kbi.SecondaryUseBuilding || kbi.SecondaryUseBuilding.length == 0) {
       return SecondaryUseBuildingComponent.route;
     }
     return this.floorsBelowGroundLevelNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -468,7 +474,7 @@ class FloorsBelowGroundLevelNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if(!kbi.FloorsBelowGroundLevel) {
+    if (!kbi.FloorsBelowGroundLevel) {
       return FloorsBelowGroundLevelComponent.route;
     }
     return FloorsBelowGroundLevelComponent.route;
