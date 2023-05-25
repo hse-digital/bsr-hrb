@@ -25,7 +25,7 @@ export class PrimaryUseBuildingBelowGroundLevelComponent extends BaseComponent i
   }
 
   ngOnInit(): void {
-    this.errorMessage = `${this.getInfraestructureName()}`;
+    this.errorMessage = `Select the primary use of the floors below ground level in ${this.getInfraestructureName()}`;
   }
 
   getInfraestructureName(){
@@ -44,7 +44,7 @@ export class PrimaryUseBuildingBelowGroundLevelComponent extends BaseComponent i
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
+    return !!this.applicationService.currenKbiSection?.FloorsBelowGroundLevel && this.applicationService.currenKbiSection?.FloorsBelowGroundLevel > 0;
   }
 
 }

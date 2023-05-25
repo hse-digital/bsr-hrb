@@ -7,6 +7,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { PrimaryUseBuildingBelowGroundLevelComponent } from '../primary-use-building-below-ground-level/primary-use-building-below-ground-level.component';
 
 @Component({
   selector: 'hse-floors-below-ground-level',
@@ -54,7 +55,7 @@ export class FloorsBelowGroundLevelComponent extends BaseComponent implements IH
         : FloorsBelowGroundLevelComponent.route; // route to "any material changes"
       return navigationService.navigateRelative(route, activatedRoute);
     }
-    return navigationService.navigateRelative(FloorsBelowGroundLevelComponent.route, activatedRoute); // navigate to "primary use floors below ground level"
+    return navigationService.navigateRelative(PrimaryUseBuildingBelowGroundLevelComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
