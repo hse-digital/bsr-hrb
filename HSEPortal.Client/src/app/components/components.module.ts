@@ -12,7 +12,6 @@ import { NotFoundAddressComponent } from "./address/not-found-address.component"
 import { SelectAddressComponent } from "./address/select-address.component";
 import { TooManyAddressComponent } from "./address/too-many-address.component";
 import { AddressDescriptionComponent } from "./address-description.component";
-import { SaveAndComeBackLaterComponent } from "./save-and-come-back.component";
 import { PapAccountabilityComponent } from "./pap-accountability/pap-accountability.component";
 import { GovukRequiredDirective } from "./required.directive";
 import { AccountabilityComponent } from './accountability/accountability.component';
@@ -30,7 +29,6 @@ import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.c
     TooManyAddressComponent,
     SelectAddressComponent,
     AddressDescriptionComponent,
-    SaveAndComeBackLaterComponent,
     PapAccountabilityComponent,
     GovukRequiredDirective,
     AccountabilityComponent,
@@ -46,7 +44,6 @@ import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.c
   exports: [
     AddressComponent,
     AddressDescriptionComponent,
-    SaveAndComeBackLaterComponent,
     PapAccountabilityComponent,
     GovukRequiredDirective,
     AccountabilityComponent,
