@@ -38,6 +38,7 @@ import { FloorsBelowGroundLevelComponent } from './floors-below-ground-level/flo
 import { PrimaryUseBuildingBelowGroundLevelComponent } from './primary-use-building-below-ground-level/primary-use-building-below-ground-level.component';
 import { ChangePrimaryUseComponent } from './change-primary-use/change-primary-use.component';
 import { PreviousUseBuildingComponent } from './previous-use-building/previous-use-building.component';
+import { CertificatesYearChangeComponent } from './certificates-year-change/certificates-year-change.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -73,6 +74,7 @@ const routes = new HseRoutes([
   HseRoute.protected(PrimaryUseBuildingBelowGroundLevelComponent.route, PrimaryUseBuildingBelowGroundLevelComponent, PrimaryUseBuildingBelowGroundLevelComponent.title),
   HseRoute.protected(ChangePrimaryUseComponent.route, ChangePrimaryUseComponent, ChangePrimaryUseComponent.title),
   HseRoute.protected(PreviousUseBuildingComponent.route, PreviousUseBuildingComponent, PreviousUseBuildingComponent.title),
+  HseRoute.protected(CertificatesYearChangeComponent.route, CertificatesYearChangeComponent, CertificatesYearChangeComponent.title),
 ]);
 
 @NgModule({
@@ -108,7 +110,8 @@ const routes = new HseRoutes([
     FloorsBelowGroundLevelComponent,
     PrimaryUseBuildingBelowGroundLevelComponent,
     ChangePrimaryUseComponent,
-    PreviousUseBuildingComponent
+    PreviousUseBuildingComponent,
+    CertificatesYearChangeComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

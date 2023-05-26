@@ -329,4 +329,5 @@ export class KbiSectionModel {
   PrimaryUseBuildingBelowGroundLevel?: string;
   ChangePrimaryUse?: string;
   PreviousUseBuilding?: string;
+  YearChangeInUse?: number;
 }

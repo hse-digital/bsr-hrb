@@ -32,6 +32,7 @@ import { FloorsBelowGroundLevelComponent } from './floors-below-ground-level/flo
 import { ChangePrimaryUseComponent } from './change-primary-use/change-primary-use.component';
 import { PrimaryUseBuildingBelowGroundLevelComponent } from './primary-use-building-below-ground-level/primary-use-building-below-ground-level.component';
 import { PreviousUseBuildingComponent } from './previous-use-building/previous-use-building.component';
+import { CertificatesYearChangeComponent } from './certificates-year-change/certificates-year-change.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -40,7 +41,8 @@ export class KbiNavigation extends BaseNavigation {
     super();
   }
 
-  private previousUseBuildingNavigationNode = new PreviousUseBuildingNavigationNode();
+  private certificatesYearChangeNavigationNode = new CertificatesYearChangeNavigationNode();
+  private previousUseBuildingNavigationNode = new PreviousUseBuildingNavigationNode(this.certificatesYearChangeNavigationNode);
   private changePrimaryUseNavigationNode = new ChangePrimaryUseNavigationNode(this.previousUseBuildingNavigationNode);
   private primaryUseBuildingBelowGroundLevelNavigationNode = new PrimaryUseBuildingBelowGroundLevelNavigationNode(this.changePrimaryUseNavigationNode);
   private floorsBelowGroundLevelNavigationNode = new FloorsBelowGroundLevelNavigationNode(this.primaryUseBuildingBelowGroundLevelNavigationNode, this.changePrimaryUseNavigationNode);
@@ -525,11 +527,24 @@ class ChangePrimaryUseNavigationNode extends KbiNavigationNode {
 }
 
 class PreviousUseBuildingNavigationNode extends KbiNavigationNode {
+  constructor(private certificatesYearChangeNavigationNode: CertificatesYearChangeNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.PreviousUseBuilding || kbi.PreviousUseBuilding.length == 0) {
+      return PreviousUseBuildingComponent.route;
+    }
+    return this.certificatesYearChangeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+}
+
+class CertificatesYearChangeNavigationNode extends KbiNavigationNode {
   constructor() {
     super();
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    return PreviousUseBuildingComponent.route;
+    return CertificatesYearChangeComponent.route;
   }
 }

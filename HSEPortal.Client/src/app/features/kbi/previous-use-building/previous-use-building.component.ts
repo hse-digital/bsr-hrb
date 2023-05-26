@@ -6,6 +6,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { CertificatesYearChangeComponent } from '../certificates-year-change/certificates-year-change.component';
 
 @Component({
   selector: 'hse-previous-use-building',
@@ -38,7 +39,7 @@ export class PreviousUseBuildingComponent  extends BaseComponent implements IHas
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(PreviousUseBuildingComponent.route, activatedRoute);
+    return navigationService.navigateRelative(CertificatesYearChangeComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
