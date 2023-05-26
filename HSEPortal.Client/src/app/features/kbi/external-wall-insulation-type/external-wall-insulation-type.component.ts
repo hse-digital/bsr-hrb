@@ -76,6 +76,8 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
+    return !!this.applicationService.currenKbiSection?.ExternalWallMaterialsPercentage 
+      && Object.keys(this.applicationService.currenKbiSection?.ExternalWallMaterialsPercentage).length > 0
+      && Object.keys(this.applicationService.currenKbiSection?.ExternalWallMaterialsPercentage).every(x => !!this.applicationService.currenKbiSection?.ExternalWallMaterialsPercentage![x] && this.applicationService.currenKbiSection?.ExternalWallMaterialsPercentage[x].length > 0);
   }
 }
