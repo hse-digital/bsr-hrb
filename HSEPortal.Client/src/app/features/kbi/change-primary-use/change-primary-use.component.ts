@@ -43,7 +43,7 @@ export class ChangePrimaryUseComponent  extends BaseComponent implements IHasNex
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.FloorsBelowGroundLevel && this.applicationService.currenKbiSection?.FloorsBelowGroundLevel > 0;
+    return !!this.applicationService.currenKbiSection?.FloorsBelowGroundLevel;
   }
 
 }

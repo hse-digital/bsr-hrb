@@ -40,7 +40,10 @@ export class PrimaryUseBuildingBelowGroundLevelComponent extends BaseComponent i
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ChangePrimaryUseComponent.route, activatedRoute);
+    if (this.applicationService.currenKbiSection?.PrimaryUseOfBuilding == "residential_dwellings") {
+      return navigationService.navigateRelative(ChangePrimaryUseComponent.route, activatedRoute);
+    }
+    return navigationService.navigateRelative(PrimaryUseBuildingBelowGroundLevelComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

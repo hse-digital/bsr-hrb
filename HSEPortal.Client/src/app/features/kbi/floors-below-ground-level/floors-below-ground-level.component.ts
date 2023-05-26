@@ -8,6 +8,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { PrimaryUseBuildingBelowGroundLevelComponent } from '../primary-use-building-below-ground-level/primary-use-building-below-ground-level.component';
+import { ChangePrimaryUseComponent } from '../change-primary-use/change-primary-use.component';
 
 @Component({
   selector: 'hse-floors-below-ground-level',
@@ -51,7 +52,7 @@ export class FloorsBelowGroundLevelComponent extends BaseComponent implements IH
     let input = this.applicationService.currenKbiSection?.FloorsBelowGroundLevel;
     if (input == 0) {
       let route = this.applicationService.currenKbiSection?.PrimaryUseOfBuilding == this.RESIDENTIAL_DWELLINGS
-        ? FloorsBelowGroundLevelComponent.route  // route to "previous primary use"
+        ? ChangePrimaryUseComponent.route
         : FloorsBelowGroundLevelComponent.route; // route to "any material changes"
       return navigationService.navigateRelative(route, activatedRoute);
     }
