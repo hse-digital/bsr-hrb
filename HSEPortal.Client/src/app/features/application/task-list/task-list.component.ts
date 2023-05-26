@@ -9,7 +9,6 @@ import { PaymentDeclarationComponent } from "../payment/payment-declaration/paym
 import { PaymentModule } from "../payment/payment.module";
 import { BuildingSummaryNavigation } from "src/app/services/navigation/building-summary.navigation";
 import { AccountablePersonNavigation } from "src/app/services/navigation/accountable-person.navigation";
-import { AccountablePersonModule } from "../accountable-person/accountable-person.module";
 
 @Component({
   templateUrl: './task-list.component.html'
