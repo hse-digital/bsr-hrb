@@ -1,4 +1,4 @@
-<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
+<govuk-formpage (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]=true saveAndContinueText="Continue">
 
   <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
     <govuk-error-link *ngIf="firstNameInError" anchorId="input-first-name" message="Enter your first name" />
