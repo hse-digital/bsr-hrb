@@ -1,26 +1,20 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-form-group">
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-                    <govuk-error-link anchorId="{{firstCheckboxAnchorId}}" message={{errorMessage}} />
-                </govuk-error-summary>
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="{{firstCheckboxAnchorId}}" message={{errorMessage}} />
+  </govuk-error-summary>
 
-                <h1 class="govuk-heading-l">Storage of energy supplying {{getInfraestructureName()}}</h1>
-                <govuk-body>This is not a complete list. It includes only the types of energy storage we need to know about.</govuk-body>
+  <h1 class="govuk-heading-l">Storage of energy supplying {{getInfraestructureName()}}</h1>
+  <govuk-body>This is not a complete list. It includes only the types of energy storage we need to know
+    about.</govuk-body>
 
-                <govuk-checkbox-none title="Types of energy storage" hint="Select all that apply"  [errorText]="getErrorDescription(energyTypeHasErrors, errorMessage!)"
-                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.EnergyTypeStorage!" noneOptionText="None" fieldsetClass="smallTitle">
-                    <checkbox-option text="Hydrogen batteries" value="hydrogen_batteries" id="hydrogen_batteries" />
-                    <checkbox-option text="Lithium ion batteries" value="lithium_ion_batteries" id="lithium_ion_batteries" />
-                    <checkbox-option text="Other" value="other" id="other" />
-                </govuk-checkbox-none>
-            </div>
+  <govuk-checkbox-none title="Types of energy storage" hint="Select all that apply"
+    [errorText]="getErrorDescription(energyTypeHasErrors, errorMessage!)" (onKeyupEnter)="saveAndContinue()"
+    [(model)]="applicationService.currenKbiSection!.EnergyTypeStorage!" noneOptionText="None"
+    fieldsetClass="smallTitle">
+    <checkbox-option text="Hydrogen batteries" value="hydrogen_batteries" id="hydrogen_batteries" />
+    <checkbox-option text="Lithium ion batteries" value="lithium_ion_batteries" id="lithium_ion_batteries" />
+    <checkbox-option text="Other" value="other" id="other" />
+  </govuk-checkbox-none>
 
-            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-            <save-and-come-back (onClick)="saveAndComeBack()" />
-        </div>
-    </div>
-</div>
+</govuk-formpage>

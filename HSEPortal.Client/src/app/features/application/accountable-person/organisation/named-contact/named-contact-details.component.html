@@ -1,32 +1,22 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-form-group">
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link *ngIf="errors.email.hasErrors" anchorId="input-email" message="{{errors.email.errorText}}" />
+        <govuk-error-link *ngIf="errors.phoneNumber.hasErrors" anchorId="input-phone-number" message="{{errors.phoneNumber.errorText}}" />
+    </govuk-error-summary>
 
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-                    <govuk-error-link *ngIf="errors.email.hasErrors" anchorId="input-email" message="{{errors.email.errorText}}" />
-                    <govuk-error-link *ngIf="errors.phoneNumber.hasErrors" anchorId="input-phone-number" message="{{errors.phoneNumber.errorText}}" />
-                </govuk-error-summary>
+    <h1 class="govuk-heading-l">{{applicationService.currentAccountablePerson.NamedContactFirstName}} {{applicationService.currentAccountablePerson.NamedContactLastName}}'s contact details</h1>
 
-                <h1 class="govuk-heading-l">{{applicationService.currentAccountablePerson.NamedContactFirstName}} {{applicationService.currentAccountablePerson.NamedContactLastName}}'s contact details</h1>
+    <govuk-input id="email" label="Email address" type="email" [maxlength]=100
+                    [(model)]="applicationService.currentAccountablePerson.NamedContactEmail" #field [govukRequired]="field"
+                    [errorText]="getErrorDescription(errors.email.hasErrors, errors.email.errorText)"
+                    class="govuk-!-margin-bottom-5"
+                    (onKeyupEnter)="saveAndContinue()"/>
 
-                <govuk-input id="email" label="Email address" type="email" [maxlength]=100
-                                [(model)]="applicationService.currentAccountablePerson.NamedContactEmail" #field [govukRequired]="field"
-                                [errorText]="getErrorDescription(errors.email.hasErrors, errors.email.errorText)"
-                                class="govuk-!-margin-bottom-5"
-                                (onKeyupEnter)="saveAndContinue()"/>
-        
-                <govuk-input id="phone-number" label="Telephone number" type="tel"
-                                hint="Enter a UK phone number with or without spaces. For example, '012 3456 7890' or '+447654321098'"
-                                [(model)]="applicationService.currentAccountablePerson.NamedContactPhoneNumber" #field2 [govukRequired]="field2"
-                                [errorText]="getErrorDescription(errors.phoneNumber.hasErrors, errors.phoneNumber.errorText)"
-                                (onKeyupEnter)="saveAndContinue()"/>
-            </div>
+    <govuk-input id="phone-number" label="Telephone number" type="tel"
+                    hint="Enter a UK phone number with or without spaces. For example, '012 3456 7890' or '+447654321098'"
+                    [(model)]="applicationService.currentAccountablePerson.NamedContactPhoneNumber" #field2 [govukRequired]="field2"
+                    [errorText]="getErrorDescription(errors.phoneNumber.hasErrors, errors.phoneNumber.errorText)"
+                    (onKeyupEnter)="saveAndContinue()"/>
 
-            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-            <save-and-come-back (onClick)="saveAndComeBack()"/>
-        </div>
-    </div>
-</div>
+</govuk-formpage>

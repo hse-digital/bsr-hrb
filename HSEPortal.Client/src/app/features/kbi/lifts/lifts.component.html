@@ -1,27 +1,18 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-form-group">
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-                    <govuk-error-link anchorId="{{firstCheckboxAnchorId}}" message={{errorMessage}} />
-                </govuk-error-summary>
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="{{firstCheckboxAnchorId}}" message={{errorMessage}} />
+    </govuk-error-summary>
 
-                <h1 class="govuk-heading-l">Types of lift in {{getInfraestructureName()}}</h1>
+    <h1 class="govuk-heading-l">Types of lift in {{getInfraestructureName()}}</h1>
 
-                <govuk-checkbox-none title="This is not a complete list. It includes only the equipment we need to know about." [isPageHeading]=false fieldsetClass="plainText"
-                    hint="Select all that apply" [errorText]="getErrorDescription(liftsHasErrors, errorMessage!)" (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.Lifts!">
-                    <checkbox-option text="Evacuation lift" value="evacuation" id="evacuation" hint="Has structural, electrical and fire protection. Used to evacuate people with a disability or extra needs." />
-                    <checkbox-option text="Firefighters lift" value="firefighters" id="firefighters" hint="Has protection, controls and signals for firefighters to control it. Installed after the 2003 British Standard for these lifts was first published." />
-                    <checkbox-option text="Fire-fighting lift" value="fire-fighting" id="fire-fighting" hint="Similar to firefighters lifts but less stringent. Installed after the 1986 British Standard for these lifts was first published." />
-                    <checkbox-option text="Modernised lift for fire service use" value="modernised" id="modernised" hint="Normally used for passengers but with basic extra protection, controls and signals for firefighters to use." />
-                    <checkbox-option text="Firemen's lift" value="firemen" id="firemen" hint="Installed before fire-fighting lift standards were available. Has no complex lift controls or protection measures for firefighters to use." />
-                </govuk-checkbox-none>
-            </div>
+    <govuk-checkbox-none title="This is not a complete list. It includes only the equipment we need to know about." [isPageHeading]=false fieldsetClass="plainText"
+        hint="Select all that apply" [errorText]="getErrorDescription(liftsHasErrors, errorMessage!)" (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.Lifts!">
+        <checkbox-option text="Evacuation lift" value="evacuation" id="evacuation" hint="Has structural, electrical and fire protection. Used to evacuate people with a disability or extra needs." />
+        <checkbox-option text="Firefighters lift" value="firefighters" id="firefighters" hint="Has protection, controls and signals for firefighters to control it. Installed after the 2003 British Standard for these lifts was first published." />
+        <checkbox-option text="Fire-fighting lift" value="fire-fighting" id="fire-fighting" hint="Similar to firefighters lifts but less stringent. Installed after the 1986 British Standard for these lifts was first published." />
+        <checkbox-option text="Modernised lift for fire service use" value="modernised" id="modernised" hint="Normally used for passengers but with basic extra protection, controls and signals for firefighters to use." />
+        <checkbox-option text="Firemen's lift" value="firemen" id="firemen" hint="Installed before fire-fighting lift standards were available. Has no complex lift controls or protection measures for firefighters to use." />
+    </govuk-checkbox-none>
 
-            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-            <save-and-come-back (onClick)="saveAndComeBack()" />
-        </div>
-    </div>
-</div>
+</govuk-formpage>

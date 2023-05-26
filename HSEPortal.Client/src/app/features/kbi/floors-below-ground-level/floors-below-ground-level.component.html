@@ -1,32 +1,21 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-form-group">
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="input-floors" message={{errorMessage}} />
+    </govuk-error-summary>
 
-                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-                    <govuk-error-link anchorId="input-floors" message={{errorMessage}} />
-                </govuk-error-summary>
+    <h1 class="govuk-heading-l">Number of floors below ground level in {{getInfraestructureName()}}</h1>
 
-                <h1 class="govuk-heading-l">Number of floors below ground level in {{getInfraestructureName()}}</h1>
+    <govuk-body>Count any floor whose ceiling is below ground level, like a basement.</govuk-body>
 
-                <govuk-body>Count any floor whose ceiling is below ground level, like a basement.</govuk-body>
+    <govuk-input id="floors" #field [govukRequired]="field"
+        [(model)]="applicationService.currenKbiSection!.FloorsBelowGroundLevel"
+        [errorText]="getErrorDescription(floorsBelowGroundLevelHasErrors , errorMessage!)"
+        class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 
+    <govuk-details summaryText="Help with ground level">
+        <p>Ground level is the level of land immediately next to {{getInfraestructureName()}}. If that land is uneven, count from the lowest part of the land immediately next to {{getInfraestructureName()}}.</p>
+        <p>Any ceiling below that level is below ground level.</p>
+    </govuk-details>
 
-                <govuk-input id="floors" #field [govukRequired]="field"
-                    [(model)]="applicationService.currenKbiSection!.FloorsBelowGroundLevel"
-                    [errorText]="getErrorDescription(floorsBelowGroundLevelHasErrors , errorMessage!)"
-                    class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
-
-                <govuk-details summaryText="Help with ground level">
-                    <p>Ground level is the level of land immediately next to {{getInfraestructureName()}}. If that land is uneven, count from the lowest part of the land immediately next to {{getInfraestructureName()}}.</p>
-                    <p>Any ceiling below that level is below ground level.</p>
-                </govuk-details>
-            </div>
-
-            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-            <save-and-come-back (onClick)="saveAndComeBack()" />
-        </div>
-    </div>
-</div>
+</govuk-formpage>
