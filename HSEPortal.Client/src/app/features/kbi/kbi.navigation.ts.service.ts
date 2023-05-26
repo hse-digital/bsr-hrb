@@ -22,6 +22,13 @@ import { ExternalWallMaterialsComponent } from './external-wall-materials/extern
 import { EstimatedPercentageComponent } from './estimated-percentage/estimated-percentage.component';
 import { TaskListComponent } from './task-list/task-list.component';
 import { EnergySupplyComponent } from './energy-supply/energy-supply.component';
+import { ExternalWallInsulationTypeComponent } from './external-wall-insulation-type/external-wall-insulation-type.component';
+import { ExternalWallInsulationPercentageComponent } from './external-wall-insulation-percentage/external-wall-insulation-percentage.component';
+import { ExternalFeaturesComponent } from './external-features/external-features.component';
+import { FeatureMaterialsOutsideComponent } from './feature-materials-outside/feature-materials-outside.component';
+import { PrimaryUseOfBuildingComponent } from './primary-use-of-building/primary-use-of-building.component';
+import { SecondaryUseBuildingComponent } from './secondary-use-building/secondary-use-building.component';
+import { FloorsBelowGroundLevelComponent } from './floors-below-ground-level/floors-below-ground-level.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -30,25 +37,32 @@ export class KbiNavigation extends BaseNavigation {
     super();
   }
 
-  private estimatedPercentageNavigationNode = new EstimatedPercentageNavigationNode(this.applicationService);
-  private wallHplNavigationNode = new WallsHplNavigationNode(this.applicationService, this.estimatedPercentageNavigationNode);
-  private wallAcmNavigationNode = new WallsAcmNavigationNode(this.applicationService, this.wallHplNavigationNode, this.estimatedPercentageNavigationNode);
-  private externalWallMaterialsNavigationNode = new ExternalWallMaterialsNavigationNode(this.applicationService, this.wallAcmNavigationNode, this.wallHplNavigationNode, this.estimatedPercentageNavigationNode);
-  private totalStaircasesNavigationNode = new TotalStaircasesNavigationNode(this.applicationService, this.externalWallMaterialsNavigationNode);
-  private roofMaterialNavigationNode = new RoofMaterialNavigationNode(this.applicationService, this.totalStaircasesNavigationNode);
-  private insulationLayerNavigationNode = new InsulationLayerNavigationNode(this.applicationService, this.roofMaterialNavigationNode);
-  private roofTypeNavigationNode = new RoofTypeNavigationNode(this.applicationService, this.insulationLayerNavigationNode);
-  private buildingStructureTypeNavigationNode = new BuildingStructureTypeNavigationNode(this.applicationService, this.roofTypeNavigationNode);
-  private energySupplyNavigationNode = new EnergySupplyNavigationNode(this.applicationService, this.buildingStructureTypeNavigationNode);
-  private onSiteEnergyGenerationNavigationNode = new OnSiteEnergyGenerationNavigationNode(this.applicationService, this.energySupplyNavigationNode);
-  private energyTypeStorageNavigationNode = new EnergyTypeStorageNavigationNode(this.applicationService, this.onSiteEnergyGenerationNavigationNode)
-  private fireDoorsCommonNavigationNode = new FireDoorsCommonNavigationNode(this.applicationService, this.energyTypeStorageNavigationNode);
-  private residentialUnitFrontDoorsFireResistanceNavigationNode = new ResidentialUnitFrontDoorsFireResistanceNavigationNode(this.applicationService, this.fireDoorsCommonNavigationNode);
-  private liftsNavigationNode = new LiftsNavigationNode(this.applicationService, this.residentialUnitFrontDoorsFireResistanceNavigationNode);
-  private fireSmokeProvisionLocationsNavigationNode = new FireSmokeProvisionLocationsNavigationNode(this.applicationService, this.liftsNavigationNode);
-  private fireSmokeProvisionsNavigationNode = new FireSmokeProvisionsNavigationNode(this.applicationService, this.fireSmokeProvisionLocationsNavigationNode, this.liftsNavigationNode);
-  private provisionsEquipmentNavigationNode = new ProvisionsEquipmentNavigationNode(this.applicationService, this.fireSmokeProvisionsNavigationNode);
-  private evacuationStrategyNavigationNode = new EvacuationStrategyNavigationNode(this.applicationService, this.provisionsEquipmentNavigationNode);
+  private floorsBelowGroundLevelNavigationNode = new FloorsBelowGroundLevelNavigationNode();
+  private secondaryUseBuildingNavigationNode = new SecondaryUseBuildingNavigationNode(this.floorsBelowGroundLevelNavigationNode);
+  private primaryUseBuildingNavigationNode = new PrimaryUseBuildingNavigationNode(this.secondaryUseBuildingNavigationNode);
+  private featuresMaterialsOutsideNavigationNode = new FeaturesMaterialsOutsideNavigationNode(this.primaryUseBuildingNavigationNode);
+  private externalFeaturesNavigationNode = new ExternalFeaturesNavigationNode(this.featuresMaterialsOutsideNavigationNode, this.primaryUseBuildingNavigationNode);
+  private externalWallInsulationPercentageNavigationNode = new ExternalWallInsulationPercentageNavigationNode(this.externalFeaturesNavigationNode);
+  private externalWallInsulationTypeNavigationNode = new ExternalWallInsulationTypeNavigationNode(this.externalWallInsulationPercentageNavigationNode, this.externalFeaturesNavigationNode);
+  private estimatedPercentageNavigationNode = new EstimatedPercentageNavigationNode(this.externalWallInsulationTypeNavigationNode);
+  private wallHplNavigationNode = new WallsHplNavigationNode(this.estimatedPercentageNavigationNode);
+  private wallAcmNavigationNode = new WallsAcmNavigationNode(this.wallHplNavigationNode, this.estimatedPercentageNavigationNode);
+  private externalWallMaterialsNavigationNode = new ExternalWallMaterialsNavigationNode(this.wallAcmNavigationNode, this.wallHplNavigationNode, this.estimatedPercentageNavigationNode);
+  private totalStaircasesNavigationNode = new TotalStaircasesNavigationNode(this.externalWallMaterialsNavigationNode);
+  private roofMaterialNavigationNode = new RoofMaterialNavigationNode(this.totalStaircasesNavigationNode);
+  private insulationLayerNavigationNode = new InsulationLayerNavigationNode(this.roofMaterialNavigationNode);
+  private roofTypeNavigationNode = new RoofTypeNavigationNode(this.insulationLayerNavigationNode);
+  private buildingStructureTypeNavigationNode = new BuildingStructureTypeNavigationNode(this.roofTypeNavigationNode);
+  private energySupplyNavigationNode = new EnergySupplyNavigationNode(this.buildingStructureTypeNavigationNode);
+  private onSiteEnergyGenerationNavigationNode = new OnSiteEnergyGenerationNavigationNode(this.energySupplyNavigationNode);
+  private energyTypeStorageNavigationNode = new EnergyTypeStorageNavigationNode(this.onSiteEnergyGenerationNavigationNode)
+  private fireDoorsCommonNavigationNode = new FireDoorsCommonNavigationNode(this.energyTypeStorageNavigationNode);
+  private residentialUnitFrontDoorsFireResistanceNavigationNode = new ResidentialUnitFrontDoorsFireResistanceNavigationNode(this.fireDoorsCommonNavigationNode);
+  private liftsNavigationNode = new LiftsNavigationNode(this.residentialUnitFrontDoorsFireResistanceNavigationNode);
+  private fireSmokeProvisionLocationsNavigationNode = new FireSmokeProvisionLocationsNavigationNode(this.liftsNavigationNode);
+  private fireSmokeProvisionsNavigationNode = new FireSmokeProvisionsNavigationNode(this.fireSmokeProvisionLocationsNavigationNode, this.liftsNavigationNode);
+  private provisionsEquipmentNavigationNode = new ProvisionsEquipmentNavigationNode(this.fireSmokeProvisionsNavigationNode);
+  private evacuationStrategyNavigationNode = new EvacuationStrategyNavigationNode(this.provisionsEquipmentNavigationNode);
   private checkBeforeStartNavigationNode = new CheckBeforeStartNavigationNode(this.applicationService, this.evacuationStrategyNavigationNode);
 
   override getNextRoute(): string {
@@ -81,8 +95,7 @@ class CheckBeforeStartNavigationNode extends KbiNavigationNode {
 }
 
 class EvacuationStrategyNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private provisionsEquipmentNavigationNode: ProvisionsEquipmentNavigationNode) {
+  constructor(private provisionsEquipmentNavigationNode: ProvisionsEquipmentNavigationNode) {
     super();
   }
 
@@ -96,8 +109,7 @@ class EvacuationStrategyNavigationNode extends KbiNavigationNode {
 }
 
 class ProvisionsEquipmentNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private fireSmokeProvisionsNavigationNode: FireSmokeProvisionsNavigationNode) {
+  constructor(private fireSmokeProvisionsNavigationNode: FireSmokeProvisionsNavigationNode) {
     super();
   }
 
@@ -111,8 +123,7 @@ class ProvisionsEquipmentNavigationNode extends KbiNavigationNode {
 }
 
 class FireSmokeProvisionsNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private fireSmokeProvisionLocationsNavigationNode: FireSmokeProvisionLocationsNavigationNode,
+  constructor(private fireSmokeProvisionLocationsNavigationNode: FireSmokeProvisionLocationsNavigationNode,
     private liftsNavigationNode: LiftsNavigationNode) {
     super();
   }
@@ -131,7 +142,7 @@ class FireSmokeProvisionsNavigationNode extends KbiNavigationNode {
 }
 
 class FireSmokeProvisionLocationsNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService, private liftsNavigationNode: LiftsNavigationNode) {
+  constructor(private liftsNavigationNode: LiftsNavigationNode) {
     super();
   }
 
@@ -150,8 +161,7 @@ class FireSmokeProvisionLocationsNavigationNode extends KbiNavigationNode {
 }
 
 class LiftsNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private residentialUnitFrontDoorsFireResistanceNavigationNode: ResidentialUnitFrontDoorsFireResistanceNavigationNode) {
+  constructor(private residentialUnitFrontDoorsFireResistanceNavigationNode: ResidentialUnitFrontDoorsFireResistanceNavigationNode) {
     super();
   }
 
@@ -164,8 +174,7 @@ class LiftsNavigationNode extends KbiNavigationNode {
 }
 
 class ResidentialUnitFrontDoorsFireResistanceNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private fireDoorsCommonNavigationNode: FireDoorsCommonNavigationNode) {
+  constructor(private fireDoorsCommonNavigationNode: FireDoorsCommonNavigationNode) {
     super();
   }
 
@@ -182,8 +191,7 @@ class ResidentialUnitFrontDoorsFireResistanceNavigationNode extends KbiNavigatio
 }
 
 class FireDoorsCommonNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private energyTypeStorageNavigationNode: EnergyTypeStorageNavigationNode) {
+  constructor(private energyTypeStorageNavigationNode: EnergyTypeStorageNavigationNode) {
     super();
   }
 
@@ -199,8 +207,7 @@ class FireDoorsCommonNavigationNode extends KbiNavigationNode {
 }
 
 class EnergyTypeStorageNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private onSiteEnergyGenerationNavigationNode: OnSiteEnergyGenerationNavigationNode) {
+  constructor(private onSiteEnergyGenerationNavigationNode: OnSiteEnergyGenerationNavigationNode) {
     super();
   }
 
@@ -213,8 +220,7 @@ class EnergyTypeStorageNavigationNode extends KbiNavigationNode {
 }
 
 class OnSiteEnergyGenerationNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private energySupplyNavigationNode: EnergySupplyNavigationNode) {
+  constructor(private energySupplyNavigationNode: EnergySupplyNavigationNode) {
     super();
   }
 
@@ -227,8 +233,7 @@ class OnSiteEnergyGenerationNavigationNode extends KbiNavigationNode {
 }
 
 class EnergySupplyNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private buildingStructureTypeNavigationNode: BuildingStructureTypeNavigationNode) {
+  constructor(private buildingStructureTypeNavigationNode: BuildingStructureTypeNavigationNode) {
     super();
   }
 
@@ -241,8 +246,7 @@ class EnergySupplyNavigationNode extends KbiNavigationNode {
 }
 
 class BuildingStructureTypeNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private roofTypeNavigationNode: RoofTypeNavigationNode) {
+  constructor(private roofTypeNavigationNode: RoofTypeNavigationNode) {
     super();
   }
 
@@ -255,8 +259,7 @@ class BuildingStructureTypeNavigationNode extends KbiNavigationNode {
 }
 
 class RoofTypeNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private insulationLayerNavigationNode: InsulationLayerNavigationNode) {
+  constructor(private insulationLayerNavigationNode: InsulationLayerNavigationNode) {
     super();
   }
 
@@ -269,8 +272,7 @@ class RoofTypeNavigationNode extends KbiNavigationNode {
 }
 
 class InsulationLayerNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private roofMaterialNavigationNode: RoofMaterialNavigationNode) {
+  constructor(private roofMaterialNavigationNode: RoofMaterialNavigationNode) {
     super();
   }
 
@@ -283,8 +285,7 @@ class InsulationLayerNavigationNode extends KbiNavigationNode {
 }
 
 class RoofMaterialNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private totalStaircasesNavigationNode: TotalStaircasesNavigationNode) {
+  constructor(private totalStaircasesNavigationNode: TotalStaircasesNavigationNode) {
     super();
   }
 
@@ -297,8 +298,7 @@ class RoofMaterialNavigationNode extends KbiNavigationNode {
 }
 
 class TotalStaircasesNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private externalWallMaterialsNavigationNode: ExternalWallMaterialsNavigationNode) {
+  constructor(private externalWallMaterialsNavigationNode: ExternalWallMaterialsNavigationNode) {
     super();
   }
 
@@ -311,8 +311,7 @@ class TotalStaircasesNavigationNode extends KbiNavigationNode {
 }
 
 class ExternalWallMaterialsNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private wallAcmNavigationNode: WallsAcmNavigationNode,
+  constructor(private wallAcmNavigationNode: WallsAcmNavigationNode,
     private wallHplNavigationNode: WallsHplNavigationNode,
     private estimatedPercentageNavigationNode: EstimatedPercentageNavigationNode) {
     super();
@@ -331,8 +330,7 @@ class ExternalWallMaterialsNavigationNode extends KbiNavigationNode {
 }
 
 class WallsAcmNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private wallHplNavigationNode: WallsHplNavigationNode,
+  constructor(private wallHplNavigationNode: WallsHplNavigationNode,
     private estimatedPercentageNavigationNode: EstimatedPercentageNavigationNode) {
     super();
   }
@@ -348,8 +346,7 @@ class WallsAcmNavigationNode extends KbiNavigationNode {
 }
 
 class WallsHplNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService,
-    private estimatedPercentageNavigationNode: EstimatedPercentageNavigationNode) {
+  constructor(private estimatedPercentageNavigationNode: EstimatedPercentageNavigationNode) {
     super();
   }
 
@@ -362,7 +359,7 @@ class WallsHplNavigationNode extends KbiNavigationNode {
 }
 
 class EstimatedPercentageNavigationNode extends KbiNavigationNode {
-  constructor(private applicationService: ApplicationService) {
+  constructor(private externalWallInsulationTypeNavigationNode: ExternalWallInsulationTypeNavigationNode) {
     super();
   }
 
@@ -371,6 +368,115 @@ class EstimatedPercentageNavigationNode extends KbiNavigationNode {
       || kbi.ExternalWallMaterials!.some(x => !kbi!.ExternalWallMaterialsPercentage![x] || kbi!.ExternalWallMaterialsPercentage![x].length == 0)) {
       return EstimatedPercentageComponent.route;
     }
-    return EstimatedPercentageComponent.route;
+    return this.externalWallInsulationTypeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+}
+
+class ExternalWallInsulationTypeNavigationNode extends KbiNavigationNode {
+  constructor(private externalWallInsulationPercentageNavigationNode: ExternalWallInsulationPercentageNavigationNode,
+    private externalFeaturesNavigationNode: ExternalFeaturesNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.ExternalWallInsulation || !kbi.ExternalWallInsulation.CheckBoxSelection || kbi.ExternalWallInsulation.CheckBoxSelection?.length == 0 || this.isOtherOptionSelectedButNotCompleted(kbi)) {
+      return ExternalWallInsulationTypeComponent.route;
+    } else if (kbi.ExternalWallInsulation.CheckBoxSelection.length == 1 && kbi.ExternalWallInsulation.CheckBoxSelection.includes('none')) {
+      return this.externalFeaturesNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+    }
+    return this.externalWallInsulationPercentageNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+  private isOtherOptionSelectedButNotCompleted(kbi: KbiSectionModel) {
+    return kbi.ExternalWallInsulation!.CheckBoxSelection!.length > 0
+      && kbi.ExternalWallInsulation!.CheckBoxSelection!.includes("other")
+      && (!kbi.ExternalWallInsulation!.OtherValue || kbi.ExternalWallInsulation!.OtherValue.length == 0);
+  }
+}
+
+class ExternalWallInsulationPercentageNavigationNode extends KbiNavigationNode {
+  constructor(private externalFeaturesNavigationNode: ExternalFeaturesNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.ExternalWallInsulationPercentages || Object.keys(kbi.ExternalWallInsulationPercentages).length == 0
+      || kbi.ExternalWallInsulation?.CheckBoxSelection?.length != Object.keys(kbi.ExternalWallInsulationPercentages).length
+      || kbi.ExternalWallInsulation?.CheckBoxSelection?.some(x => !kbi.ExternalWallInsulationPercentages![x])) {
+      return ExternalWallInsulationPercentageComponent.route;
+    }
+    return this.externalFeaturesNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+}
+
+class ExternalFeaturesNavigationNode extends KbiNavigationNode {
+  constructor(private featuresMaterialsOutsideNavigationNode: FeaturesMaterialsOutsideNavigationNode,
+    private primaryUseBuildingNavigationNode: PrimaryUseBuildingNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    const features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
+    if (!kbi.ExternalFeatures || kbi.ExternalFeatures.length == 0) {
+      return ExternalFeaturesComponent.route;
+    } else if (kbi.ExternalFeatures?.some(x => features.includes(x))) {
+      return this.featuresMaterialsOutsideNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+    }
+    return this.primaryUseBuildingNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+}
+
+class FeaturesMaterialsOutsideNavigationNode extends KbiNavigationNode {
+  constructor(private primaryUseBuildingNavigationNode: PrimaryUseBuildingNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.FeatureMaterialsOutside || Object.keys(kbi.FeatureMaterialsOutside).length == 0) {
+      return FeatureMaterialsOutsideComponent.route;
+    } else if (Object.keys(kbi.FeatureMaterialsOutside).some(x => !kbi.FeatureMaterialsOutside![x] || kbi.FeatureMaterialsOutside![x].length == 0)) {
+      let nextFeature = kbi.ExternalFeatures!.find(x => !kbi!.FeatureMaterialsOutside![x] || kbi!.FeatureMaterialsOutside![x].length == 0);
+      return `${FeatureMaterialsOutsideComponent.route}?feature=${nextFeature}`;
+    }
+    return this.primaryUseBuildingNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+}
+
+class PrimaryUseBuildingNavigationNode extends KbiNavigationNode {
+  constructor(private secondaryUseBuildingNavigationNode: SecondaryUseBuildingNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.PrimaryUseOfBuilding || kbi.PrimaryUseOfBuilding.length == 0) {
+      return PrimaryUseOfBuildingComponent.route;
+    }
+    return this.secondaryUseBuildingNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+}
+
+class SecondaryUseBuildingNavigationNode extends KbiNavigationNode {
+  constructor(private floorsBelowGroundLevelNavigationNode: FloorsBelowGroundLevelNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.SecondaryUseBuilding || kbi.SecondaryUseBuilding.length == 0) {
+      return SecondaryUseBuildingComponent.route;
+    }
+    return this.floorsBelowGroundLevelNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+}
+
+class FloorsBelowGroundLevelNavigationNode extends KbiNavigationNode {
+  constructor() {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.FloorsBelowGroundLevel) {
+      return FloorsBelowGroundLevelComponent.route;
+    }
+    return FloorsBelowGroundLevelComponent.route;
   }
 }
