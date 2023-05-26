@@ -1,29 +1,18 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="acting_for_same_address-yes-input" [message]="getErrorMessage()" />
+  </govuk-error-summary>
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="acting_for_same_address-yes-input" [message]="getErrorMessage()" />
-        </govuk-error-summary>
+  <h1 class="govuk-heading-l">Your address</h1>
 
-        <h1 class="govuk-heading-l">Your address</h1>
+  <govuk-radio-group title="Should we use the same address to contact you?" 
+    [(model)]="applicationService.currentAccountablePerson.ActingForSameAddress" #field [govukRequired]="field"
+    [errorText]="getErrorDescription(sameAddressHasErrors, getErrorMessage())">
+    <govuk-body>You have told us that the address of {{applicationService.currentAccountablePerson.OrganisationName}} is <b>{{getOrganisationAddress()}}</b>.</govuk-body>
 
-        <govuk-radio-group title="Should we use the same address to contact you?" 
-          [(model)]="applicationService.currentAccountablePerson.ActingForSameAddress" #field [govukRequired]="field"
-          [errorText]="getErrorDescription(sameAddressHasErrors, getErrorMessage())">
-          <govuk-body>You have told us that the address of {{applicationService.currentAccountablePerson.OrganisationName}} is <b>{{getOrganisationAddress()}}</b>.</govuk-body>
+    <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-yes" value="yes" label="Yes, use this address" (onKeyupEnter)="saveAndContinue()" />
+    <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-no" value="no" label="No, use a different address" (onKeyupEnter)="saveAndContinue()" />
+  </govuk-radio-group>
 
-          <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-yes" value="yes" label="Yes, use this address" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currentAccountablePerson.ActingForSameAddress" name="application-group" id="acting_for_same_address-no" value="no" label="No, use a different address" (onKeyupEnter)="saveAndContinue()" />
-        </govuk-radio-group>
-
-      </div>
-
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()" />
-    </div>
-  </div>
-</div>
+</govuk-formpage>

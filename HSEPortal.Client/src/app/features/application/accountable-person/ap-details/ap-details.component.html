@@ -1,31 +1,21 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link *ngIf="emailHasErrors" anchorId="input-email" [message]="emailErrorText" />
+    <govuk-error-link *ngIf="phoneHasErrors" anchorId="input-phone-number" [message]="phoneErrorText" />
+  </govuk-error-summary>
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link *ngIf="emailHasErrors" anchorId="input-email" [message]="emailErrorText" />
-          <govuk-error-link *ngIf="phoneHasErrors" anchorId="input-phone-number" [message]="phoneErrorText" />
-        </govuk-error-summary>
+  <h1 class="govuk-heading-l">{{papName}}'s contact details</h1>
 
-        <h1 class="govuk-heading-l">{{papName}}'s contact details</h1>
+  <govuk-input id="email" label="Email address" type="email" [maxlength]=100
+                [(model)]="applicationService.currentAccountablePerson.Email" #field [govukRequired]="field"
+                [errorText]="getErrorDescription(emailHasErrors, emailErrorText)"
+                class="govuk-!-margin-bottom-5" 
+                (onKeyupEnter)="saveAndContinue()" />
 
-        <govuk-input id="email" label="Email address" type="email" [maxlength]=100
-                      [(model)]="applicationService.currentAccountablePerson.Email" #field [govukRequired]="field"
-                      [errorText]="getErrorDescription(emailHasErrors, emailErrorText)"
-                      class="govuk-!-margin-bottom-5" 
-                      (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="phone-number" label="Telephone number" type="tel"
+                [(model)]="applicationService.currentAccountablePerson.PhoneNumber" #field2 [govukRequired]="field2"
+                [errorText]="getErrorDescription(phoneHasErrors, phoneErrorText)" 
+                (onKeyupEnter)="saveAndContinue()"/>
 
-        <govuk-input id="phone-number" label="Telephone number" type="tel"
-                      [(model)]="applicationService.currentAccountablePerson.PhoneNumber" #field2 [govukRequired]="field2"
-                      [errorText]="getErrorDescription(phoneHasErrors, phoneErrorText)" 
-                      (onKeyupEnter)="saveAndContinue()"/>
-      </div>
-
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()"/>
-    </div>
-  </div>
-</div>
+</govuk-formpage>

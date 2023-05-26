@@ -1,29 +1,20 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="yes-input"
+      message="Select yes if there are more high-rise residential structures in the building" />
+  </govuk-error-summary>
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="yes-input" message="Select yes if there are more high-rise residential structures in the building" />
-        </govuk-error-summary>
-        
-        <h1 class="govuk-heading-l">High-rise residential structures of {{applicationService.model.BuildingName}}</h1>
+  <h1 class="govuk-heading-l">High-rise residential structures of {{applicationService.model.BuildingName}}</h1>
 
-        <govuk-body>So far you have told us about <b>{{getSectionNames()}}</b> <span *ngIf="sections!.length > 1"> and <b>{{getSectionName(sections!.at(-1)!, sections!.length-1)}}</b></span>.</govuk-body>
+  <govuk-body>So far you have told us about <b>{{getSectionNames()}}</b> <span *ngIf="sections!.length > 1"> and
+      <b>{{getSectionName(sections!.at(-1)!, sections!.length-1)}}</b></span>.</govuk-body>
 
-        <govuk-radio-group title="Add another high-rise residential structure?" id="another-block" 
-          [(model)]="addAnotherSectionLink" #field [govukRequired]="field"
-          [errorText]="getErrorDescription(anotherBlockHasErrors, 'Select yes if there are more high-rise residential structures in the building')">
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="yes" value="yes" label="Yes" />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="no" value="no" label="No" />
-        </govuk-radio-group>
+  <govuk-radio-group title="Add another high-rise residential structure?" id="another-block"
+    [(model)]="addAnotherSectionLink" #field [govukRequired]="field"
+    [errorText]="getErrorDescription(anotherBlockHasErrors, 'Select yes if there are more high-rise residential structures in the building')">
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="yes" value="yes" label="Yes" />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" name="another-block" id="no" value="no" label="No" />
+  </govuk-radio-group>
 
-      </div>
-
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()" />
-    </div>
-  </div>
-</div>
+</govuk-formpage>

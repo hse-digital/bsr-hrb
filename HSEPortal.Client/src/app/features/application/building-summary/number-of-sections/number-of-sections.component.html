@@ -1,28 +1,18 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
+  
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="application-yes-input" message="Select if this building is a single structure" />
+  </govuk-error-summary>
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="application-yes-input" message="Select if this building is a single structure" />
-        </govuk-error-summary>
+  <h1 class="govuk-heading-l">Is {{applicationService.model.BuildingName}} a single high-rise residential structure?</h1>
 
-        <h1 class="govuk-heading-l">Is {{applicationService.model.BuildingName}} a single high-rise residential structure?</h1>
+  <govuk-body>A high-rise residential building can contain one or more high-rise residential structures.</govuk-body>
+  <govuk-inset-text>For example, Landmark Pinnacle in London's Canary Wharf is a single high-rise residential structure.</govuk-inset-text>
 
-        <govuk-body>A high-rise residential building can contain one or more high-rise residential structures.</govuk-body>
-        <govuk-inset-text>For example, Landmark Pinnacle in London's Canary Wharf is a single high-rise residential structure.</govuk-inset-text>
+  <govuk-radio-group title="Is it a single structure?" (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(numberOfSectionsHasErrors, 'Select if this building is a single structure')" 
+    [(model)]="applicationService.model.NumberOfSections" #field [govukRequired]="field">
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.model.NumberOfSections" name="application-group" id="application-yes" value="one" label="Yes" />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.model.NumberOfSections" name="application-group" id="application-no" value="two_or_more" label="No" />
+  </govuk-radio-group>
 
-        <govuk-radio-group title="Is it a single structure?" (modelChange)="updateReturnUrl()" [errorText]="getErrorDescription(numberOfSectionsHasErrors, 'Select if this building is a single structure')" 
-          [(model)]="applicationService.model.NumberOfSections" #field [govukRequired]="field">
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.model.NumberOfSections" name="application-group" id="application-yes" value="one" label="Yes" />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.model.NumberOfSections" name="application-group" id="application-no" value="two_or_more" label="No" />
-        </govuk-radio-group>
-
-      </div>
-
-      <govuk-button (onClick)="saveAndContinue()">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()" />
-    </div>
-  </div>
-</div>
+</govuk-formpage>

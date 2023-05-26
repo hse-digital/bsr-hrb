@@ -1,34 +1,24 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="commonhold-association-input" message="Enter the type of organisation" />
+  </govuk-error-summary>
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="commonhold-association-input" message="Enter the type of organisation" />
-        </govuk-error-summary>
+  <h1 class="govuk-heading-l">{{title()}}</h1>
 
-        <h1 class="govuk-heading-l">{{title()}}</h1>
+  <govuk-body *ngIf="isPrincipal()">This is not a complete list. It includes only the types of principal accountable person we need to know about.</govuk-body>
 
-        <govuk-body *ngIf="isPrincipal()">This is not a complete list. It includes only the types of principal accountable person we need to know about.</govuk-body>
+  <govuk-radio-group title="Type of organisation" [(model)]="applicationService.currentAccountablePerson.OrganisationType" #field [govukRequired]="field"
+    id="radios-accountable-person" [errorText]="getErrorDescription(hasErrors, 'Enter the type of organisation')">
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="commonhold-association" value="commonhold-association" label="Commonhold association" hint="A non-profit company formed by freeholders who manage and maintain the building they line in." />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="housing-association" value="housing-association" label="Registered provider of social housing" hint="Any housing association or any company managing social housing for the local housing authority, like an arms length management organisation (ALMO)." />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="local-authority" value="local-authority" label="Local authority" hint="Any local authority that manages or maintains its own housing stock." />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="management-company" value="management-company" label="Private registered provider of social housing" hint="This includes not-for-profit housing associations, co-operatives, and for-profit organisations." />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="rmc-or-organisation" value="rmc-or-organisation" label="Resident management company (RMC) or organisation" hint="A non-profit company formed by residents who manage or maintain the building they live in." />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="rtm-or-organisation" value="rtm-or-organisation" label="Right to manage (RTM) company or organisation" hint="A non-profit company formed by long leaseholders who manage or maintain the building they line in." />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="other" label="Other" value="other" hint="Any other type of organisation.">
+      <govuk-input (onKeyupEnter)="saveAndContinue()" id="other-conditional" label="Other organisation type" [(model)]="applicationService.currentAccountablePerson.OrganisationTypeDescription" class="govuk-!-margin-bottom-5" />
+    </govuk-radio>
+  </govuk-radio-group>
 
-        <govuk-radio-group title="Type of organisation" [(model)]="applicationService.currentAccountablePerson.OrganisationType" #field [govukRequired]="field"
-          id="radios-accountable-person" [errorText]="getErrorDescription(hasErrors, 'Enter the type of organisation')">
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="commonhold-association" value="commonhold-association" label="Commonhold association" hint="A non-profit company formed by freeholders who manage and maintain the building they line in." />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="housing-association" value="housing-association" label="Registered provider of social housing" hint="Any housing association or any company managing social housing for the local housing authority, like an arms length management organisation (ALMO)." />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="local-authority" value="local-authority" label="Local authority" hint="Any local authority that manages or maintains its own housing stock." />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="management-company" value="management-company" label="Private registered provider of social housing" hint="This includes not-for-profit housing associations, co-operatives, and for-profit organisations." />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="rmc-or-organisation" value="rmc-or-organisation" label="Resident management company (RMC) or organisation" hint="A non-profit company formed by residents who manage or maintain the building they live in." />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="rtm-or-organisation" value="rtm-or-organisation" label="Right to manage (RTM) company or organisation" hint="A non-profit company formed by long leaseholders who manage or maintain the building they line in." />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.OrganisationType" name="application-group" id="other" label="Other" value="other" hint="Any other type of organisation.">
-            <govuk-input (onKeyupEnter)="saveAndContinue()" id="other-conditional" label="Other organisation type" [(model)]="applicationService.currentAccountablePerson.OrganisationTypeDescription" class="govuk-!-margin-bottom-5" />
-          </govuk-radio>
-        </govuk-radio-group>
-
-      </div>
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()" />
-    </div>
-  </div>
-</div>
+</govuk-formpage>

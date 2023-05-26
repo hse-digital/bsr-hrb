@@ -1,41 +1,31 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
+  <h1 class="govuk-heading-l">Check your accountable persons answers for {{applicationService.model.BuildingName}}</h1>
 
-        <h1 class="govuk-heading-l">Check your accountable persons answers for {{applicationService.model.BuildingName}}</h1>
+  <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="input-floors-above" message="Answer all questions" />
+  </govuk-error-summary>
 
-        <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="input-floors-above" message="Answer all questions" />
-        </govuk-error-summary>
+  <ng-container *ngFor="let ap of aps; let i = index">
+    <div [class.section-wrapper]="aps.length > 1">
 
-        <ng-container *ngFor="let ap of aps; let i = index">
-          <div [class.section-wrapper]="aps.length > 1">
-
-            <h2 class="govuk-heading-m" [class.section-header]="aps.length > 1" *ngIf="i == 0">Principal accountable person</h2>
-            <div [class.section-header]="aps.length > 1" *ngIf="i > 0">
-              <span>Other accountable person {{ i }}</span>
-              <a class="govuk-link" (click)="removeAp(ap, i)">Remove</a>
-            </div>
-
-            <div [class.section-content]="aps.length > 1">
-              <organisation-answers *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
-              <individual-answers *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
-
-              <govuk-summary-list *ngIf="!ap.Type">
-                <govuk-summary-list-row key="Type" (onKeyupEnter)="navigateTo('accountable-person-type', i)" (onClick)="navigateTo('accountable-person-type', i)" [showAction]=true></govuk-summary-list-row>
-              </govuk-summary-list>
-            </div>
-          </div>
-
-          <pap-accountability *ngIf="i == 0" [pap]="ap" [area]="checkAnswersArea"/>
-        </ng-container>
+      <h2 class="govuk-heading-m" [class.section-header]="aps.length > 1" *ngIf="i == 0">Principal accountable person</h2>
+      <div [class.section-header]="aps.length > 1" *ngIf="i > 0">
+        <span>Other accountable person {{ i }}</span>
+        <a class="govuk-link" (click)="removeAp(ap, i)">Remove</a>
       </div>
 
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()" />
+      <div [class.section-content]="aps.length > 1">
+        <organisation-answers *ngIf="ap.Type == 'organisation'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+        <individual-answers *ngIf="ap.Type == 'individual'" [ap]="ap" [apIndex]="i" [hasMoreAp]="i < aps.length -1" />
+
+        <govuk-summary-list *ngIf="!ap.Type">
+          <govuk-summary-list-row key="Type" (onKeyupEnter)="navigateTo('accountable-person-type', i)" (onClick)="navigateTo('accountable-person-type', i)" [showAction]=true></govuk-summary-list-row>
+        </govuk-summary-list>
+      </div>
     </div>
-  </div>
-</div>
+
+    <pap-accountability *ngIf="i == 0" [pap]="ap" [area]="checkAnswersArea"/>
+  </ng-container>
+
+</govuk-formpage>

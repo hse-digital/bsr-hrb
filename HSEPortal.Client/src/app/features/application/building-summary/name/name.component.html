@@ -1,29 +1,18 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link *ngIf="blockNameHasErrors" anchorId="input-block-name" message="Enter this block's name" />
+  </govuk-error-summary>
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link *ngIf="blockNameHasErrors" anchorId="input-block-name" message="Enter this block's name" />
-        </govuk-error-summary>
+  <h1 class="govuk-heading-l">Tell us the name of one of the high-rise residential structures in {{applicationService.model.BuildingName}}</h1>
 
-        <h1 class="govuk-heading-l">Tell us the name of one of the high-rise residential structures in {{applicationService.model.BuildingName}}</h1>
+  <govuk-body>This will help you to identify which structure we are asking you about later on.</govuk-body>
 
-        <govuk-body>This will help you to identify which structure we are asking you about later on.</govuk-body>
+  <govuk-body *ngIf="applicationService._currentSectionIndex > 0">So far you have told us about <b>{{getSectionNames()}}</b> <span *ngIf="sections!.length > 1"> and <b>{{getSectionName(sections!.at(-1)!, sections!.length-1)}}</b></span>.</govuk-body>
 
-        <govuk-body *ngIf="applicationService._currentSectionIndex > 0">So far you have told us about <b>{{getSectionNames()}}</b> <span *ngIf="sections!.length > 1"> and <b>{{getSectionName(sections!.at(-1)!, sections!.length-1)}}</b></span>.</govuk-body>
+  <govuk-input id="block-name" (onKeyupEnter)="saveAndContinue()"
+                label="{{getCurrentStructureName()}} structure's name" labelClass="govuk-label--s" 
+                [(model)]="applicationService.currentSection.Name" #field [govukRequired]="field" 
+                [errorText]="getErrorDescription(blockNameHasErrors, 'Enter this block\'s name')" />
 
-        <govuk-input id="block-name" (onKeyupEnter)="saveAndContinue()"
-                     label="{{getCurrentStructureName()}} structure's name" labelClass="govuk-label--s" 
-                     [(model)]="applicationService.currentSection.Name" #field [govukRequired]="field" 
-                     [errorText]="getErrorDescription(blockNameHasErrors, 'Enter this block\'s name')" />
-
-      </div>
-
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()"/>
-    </div>
-  </div>
-</div>
+</govuk-formpage>

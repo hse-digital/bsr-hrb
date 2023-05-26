@@ -1,31 +1,21 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link *ngIf="firstNameInError" anchorId="input-first-name" message="Enter their first name" />
+    <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter their last name" />
+  </govuk-error-summary>
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link *ngIf="firstNameInError" anchorId="input-first-name" message="Enter their first name" />
-          <govuk-error-link *ngIf="lastNameInError" anchorId="input-last-name" message="Enter their last name" />
-        </govuk-error-summary>
+  <h1 class="govuk-heading-l">Tell us the name of the {{pap ? 'principal' : 'other'}} accountable person for {{applicationService.model.BuildingName}}</h1>
 
-        <h1 class="govuk-heading-l">Tell us the name of the {{pap ? 'principal' : 'other'}} accountable person for {{applicationService.model.BuildingName}}</h1>
+  <govuk-input id="first-name" label="First name" 
+                [(model)]="applicationService.currentAccountablePerson.FirstName" #field [govukRequired]="field"
+                [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
+                class="govuk-!-margin-bottom-5"
+                (onKeyupEnter)="saveAndContinue()" />
 
-        <govuk-input id="first-name" label="First name" 
-                      [(model)]="applicationService.currentAccountablePerson.FirstName" #field [govukRequired]="field"
-                      [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
-                      class="govuk-!-margin-bottom-5"
-                      (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="last-name" label="Last name" 
+                [(model)]="applicationService.currentAccountablePerson.LastName" #field2 [govukRequired]="field2"
+                [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
+                (onKeyupEnter)="saveAndContinue()" />
 
-        <govuk-input id="last-name" label="Last name" 
-                      [(model)]="applicationService.currentAccountablePerson.LastName" #field2 [govukRequired]="field2"
-                      [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
-                      (onKeyupEnter)="saveAndContinue()" />
-      </div>
-
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()"/>
-    </div>
-  </div>
-</div>
+                    </govuk-formpage>

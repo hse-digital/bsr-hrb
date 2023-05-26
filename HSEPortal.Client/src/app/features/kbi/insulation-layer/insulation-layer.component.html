@@ -1,23 +1,13 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="yes-top-input" message="{{getErrorMessage()}}" />
+  </govuk-error-summary>
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="yes-top-input" message="{{getErrorMessage()}}" />
-        </govuk-error-summary>
+  <govuk-radio-group [errorText]="getErrorDescription(roofInsulationHasErrors, getErrorMessage())" [(model)]="applicationService.currenKbiSection!.RoofInsulation" [isPageHeading]="true"
+                      title="Does the roof structure of {{getInfraestructureName()}} have a layer of insulation?" fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'>
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.RoofInsulation" name="materials-group" id="yes-top" value="yes-top" label="Yes, on top of the roof structure" />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.RoofInsulation" name="materials-group" id="yes-below" value="yes-below" label="Yes, below the roof structure" />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.RoofInsulation" name="materials-group" id="no" value="no" label="No" />
+    </govuk-radio-group>
 
-        <govuk-radio-group [errorText]="getErrorDescription(roofInsulationHasErrors, getErrorMessage())" [(model)]="applicationService.currenKbiSection!.RoofInsulation" [isPageHeading]="true"
-                           title="Does the roof structure of {{getInfraestructureName()}} have a layer of insulation?" fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'>
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.RoofInsulation" name="materials-group" id="yes-top" value="yes-top" label="Yes, on top of the roof structure" />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.RoofInsulation" name="materials-group" id="yes-below" value="yes-below" label="Yes, below the roof structure" />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.RoofInsulation" name="materials-group" id="no" value="no" label="No" />
-          </govuk-radio-group>
-
-      </div>
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()" />
-    </div>
-  </div>
-</div>
+</govuk-formpage>

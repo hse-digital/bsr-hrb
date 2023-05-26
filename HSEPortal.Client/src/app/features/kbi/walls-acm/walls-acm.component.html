@@ -1,26 +1,15 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="fire-classification-input" message={{errorMessage}} />
+  </govuk-error-summary>
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="fire-classification-input" message={{errorMessage}} />
-        </govuk-error-summary>
+  <govuk-radio-group title="Aluminium composite material (ACM) on {{getInfraestructureName()}}?" 
+    [isPageHeading]=true [(model)]="applicationService.currenKbiSection!.WallACM" #field [govukRequired]="field"
+    id="acm" [errorText]="getErrorDescription(wallsAcmHasErrors, errorMessage!)">
 
-        <govuk-radio-group title="Aluminium composite material (ACM) on {{getInfraestructureName()}}?" 
-          [isPageHeading]=true [(model)]="applicationService.currenKbiSection!.WallACM" #field [govukRequired]="field"
-          id="acm" [errorText]="getErrorDescription(wallsAcmHasErrors, errorMessage!)">
+    <govuk-radio [model]="applicationService.currenKbiSection!.WallACM" name="application-group" id="fire-classification" value="fire-classification" label="Meets the fire classification A2-s1, d0 or better" hint="Set out in the British Standard BS EN 13501-1, this classifies building materials based on their reaction to fire." (onKeyupEnter)="saveAndContinue()" />
+    <govuk-radio [model]="applicationService.currenKbiSection!.WallACM" name="application-group" id="large-scale-fire-test" value="large-scale-fire-test" label="Has passed a large-scale fire test to BS8414" hint="This is the British Standard for tests that assess the fire safety of cladding applied to the outside of buildings." (onKeyupEnter)="saveAndContinue()" />
+    <govuk-radio [model]="applicationService.currenKbiSection!.WallACM" name="application-group" id="neither-these" value="neither-these" label="Neither of these" (onKeyupEnter)="saveAndContinue()" />
 
-          <govuk-radio [model]="applicationService.currenKbiSection!.WallACM" name="application-group" id="fire-classification" value="fire-classification" label="Meets the fire classification A2-s1, d0 or better" hint="Set out in the British Standard BS EN 13501-1, this classifies building materials based on their reaction to fire." (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currenKbiSection!.WallACM" name="application-group" id="large-scale-fire-test" value="large-scale-fire-test" label="Has passed a large-scale fire test to BS8414" hint="This is the British Standard for tests that assess the fire safety of cladding applied to the outside of buildings." (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currenKbiSection!.WallACM" name="application-group" id="neither-these" value="neither-these" label="Neither of these" (onKeyupEnter)="saveAndContinue()" />
-
-        </govuk-radio-group>
-      </div>
-
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()" />
-    </div>
-  </div>
-</div>
+  </govuk-radio-group>
+</govuk-formpage>

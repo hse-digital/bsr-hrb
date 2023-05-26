@@ -1,50 +1,40 @@
-<govuk-back-link>Back</govuk-back-link>
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
 
-<div class="govuk-main-wrapper">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-form-group">
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="input-floors-above" [message]="errorMessage" />
+  </govuk-error-summary>
 
-        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link anchorId="input-floors-above" [message]="errorMessage" />
-        </govuk-error-summary>
+  <h1 class="govuk-heading-l">Number of floors at or above ground level in {{sectionBuildingName()}}</h1>
 
-        <h1 class="govuk-heading-l">Number of floors at or above ground level in {{sectionBuildingName()}}</h1>
+  <govuk-body>Count all floors from ground level to the top floor.</govuk-body>
 
-        <govuk-body>Count all floors from ground level to the top floor.</govuk-body>
+  <govuk-details summaryText="Help with top floor" id="help-with-top-floor">
+    <p>The top floor is the top of the floor surface of the top storey of the building. Ignore any storey that is a roof-top machinery or roof-top plant area or consists exclusively of roof-top machinery or roof-top plant rooms.</p>
+  </govuk-details>
 
-        <govuk-details summaryText="Help with top floor" id="help-with-top-floor">
-          <p>The top floor is the top of the floor surface of the top storey of the building. Ignore any storey that is a roof-top machinery or roof-top plant area or consists exclusively of roof-top machinery or roof-top plant rooms.</p>
-        </govuk-details>
+  <govuk-body>Count the following whether there's a residential unit or not:</govuk-body>
+  <govuk-list classes="govuk-list--bullet">
+    <govuk-list-item text="any floors at or above ground level" />
+    <govuk-list-item text="any mezzanine floors that are at least 50% of the area of any of the other floors" />
+  </govuk-list>
 
-        <govuk-body>Count the following whether there's a residential unit or not:</govuk-body>
-        <govuk-list classes="govuk-list--bullet">
-          <govuk-list-item text="any floors at or above ground level" />
-          <govuk-list-item text="any mezzanine floors that are at least 50% of the area of any of the other floors" />
-        </govuk-list>
+  <govuk-body>Do not count:</govuk-body>
+  <govuk-list classes="govuk-list--bullet">
+    <govuk-list-item text="floors below ground level" />
+    <govuk-list-item text="the roof" />
+    <govuk-list-item text="any mezzanine floors that are less than 50% of the area of any of the other floors" />
+  </govuk-list>
 
-        <govuk-body>Do not count:</govuk-body>
-        <govuk-list classes="govuk-list--bullet">
-          <govuk-list-item text="floors below ground level" />
-          <govuk-list-item text="the roof" />
-          <govuk-list-item text="any mezzanine floors that are less than 50% of the area of any of the other floors" />
-        </govuk-list>
+  <govuk-details summaryText="Help with ground level" id="help-with-ground-level">
+    <p>Ground level is the level of the land immediately next to {{sectionBuildingName()}}. If that land is uneven, count from the lowest part of the land immediately next to {{sectionBuildingName()}}.</p>
+    <p>Any ceiling below that level is below ground level.</p>
+  </govuk-details>
 
-        <govuk-details summaryText="Help with ground level" id="help-with-ground-level">
-          <p>Ground level is the level of the land immediately next to {{sectionBuildingName()}}. If that land is uneven, count from the lowest part of the land immediately next to {{sectionBuildingName()}}.</p>
-          <p>Any ceiling below that level is below ground level.</p>
-        </govuk-details>
+  <govuk-input label="Number of floors at or above ground level"
+                labelClass="govuk-label--s" id="floors-above" #field [govukRequired]="field" 
+                [(model)]="applicationService.currentSection.FloorsAbove"
+                [errorText]="getErrorDescription(floorsHasError, errorMessage)"
+                class="govuk-input--width-3"
+                (onKeyupEnter)="saveAndContinue()" />
 
-        <govuk-input label="Number of floors at or above ground level"
-                     labelClass="govuk-label--s" id="floors-above" #field [govukRequired]="field" 
-                     [(model)]="applicationService.currentSection.FloorsAbove"
-                     [errorText]="getErrorDescription(floorsHasError, errorMessage)"
-                     class="govuk-input--width-3"
-                     (onKeyupEnter)="saveAndContinue()" />
-      </div>
-
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()"/>
-    </div>
-  </div>
-</div>
+</govuk-formpage>
