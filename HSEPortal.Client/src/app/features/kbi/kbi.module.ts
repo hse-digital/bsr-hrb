@@ -37,6 +37,7 @@ import { SecondaryUseBuildingComponent } from './secondary-use-building/secondar
 import { FloorsBelowGroundLevelComponent } from './floors-below-ground-level/floors-below-ground-level.component';
 import { PrimaryUseBuildingBelowGroundLevelComponent } from './primary-use-building-below-ground-level/primary-use-building-below-ground-level.component';
 import { ChangePrimaryUseComponent } from './change-primary-use/change-primary-use.component';
+import { PreviousUseBuildingComponent } from './previous-use-building/previous-use-building.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -71,6 +72,7 @@ const routes = new HseRoutes([
   HseRoute.protected(FloorsBelowGroundLevelComponent.route, FloorsBelowGroundLevelComponent, FloorsBelowGroundLevelComponent.title),
   HseRoute.protected(PrimaryUseBuildingBelowGroundLevelComponent.route, PrimaryUseBuildingBelowGroundLevelComponent, PrimaryUseBuildingBelowGroundLevelComponent.title),
   HseRoute.protected(ChangePrimaryUseComponent.route, ChangePrimaryUseComponent, ChangePrimaryUseComponent.title),
+  HseRoute.protected(PreviousUseBuildingComponent.route, PreviousUseBuildingComponent, PreviousUseBuildingComponent.title),
 ]);
 
 @NgModule({
@@ -105,7 +107,8 @@ const routes = new HseRoutes([
     SecondaryUseBuildingComponent,
     FloorsBelowGroundLevelComponent,
     PrimaryUseBuildingBelowGroundLevelComponent,
-    ChangePrimaryUseComponent
+    ChangePrimaryUseComponent,
+    PreviousUseBuildingComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
