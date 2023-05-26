@@ -16,7 +16,7 @@ export abstract class PageComponent<T> implements CanActivate, OnInit {
     hasErrors: boolean = false;
 
     private injector: Injector = GetInjector();
-    protected applicationService: ApplicationService = this.injector.get(ApplicationService);
+    private applicationService: ApplicationService = this.injector.get(ApplicationService);
     protected titleService: TitleService = this.injector.get(TitleService);
     protected navigationService: NavigationService = this.injector.get(NavigationService);
 
@@ -24,9 +24,9 @@ export abstract class PageComponent<T> implements CanActivate, OnInit {
     private requiredFields?: QueryList<GovukRequiredDirective>;
     private summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-    abstract onInit(): void;
-    abstract onSave(): Promise<void>;
-    abstract canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean;
+    abstract onInit(applicationService: ApplicationService): void;
+    abstract onSave(applicationService: ApplicationService): Promise<void>;
+    abstract canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean;
     abstract isValid(): boolean;
     abstract navigateNext(): Promise<boolean>;
 
@@ -35,7 +35,7 @@ export abstract class PageComponent<T> implements CanActivate, OnInit {
     }
 
     ngOnInit(): void {
-        this.onInit();
+        this.onInit(this.applicationService);
     }
 
     async saveAndContinue(): Promise<void> {
@@ -74,7 +74,7 @@ export abstract class PageComponent<T> implements CanActivate, OnInit {
     }
 
     canActivate(route: ActivatedRouteSnapshot, _: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-        if (!this.canAccess(route)) {
+        if (!this.canAccess(this.applicationService,route)) {
             this.navigationService.navigate(NotFoundComponent.route);
             return false;
         }
@@ -113,7 +113,7 @@ export abstract class PageComponent<T> implements CanActivate, OnInit {
     }
 
     private async saveAndUpdate(): Promise<void> {
-        await this.onSave();
+        await this.onSave(this.applicationService);
         await this.applicationService.updateApplication();
     }
 

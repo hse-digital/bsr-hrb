@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot } from '@angular/router';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ContactNameComponent } from '../contact-name/contact-name.component';
+import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
   templateUrl: './building-name.component.html'
@@ -11,15 +12,15 @@ export class BuildingNameComponent extends PageComponent<string> {
   static route: string = "building-name";
   static title: string = "Building name - Register a high-rise building - GOV.UK";
 
-  override onInit(): void {
-    this.model = this.applicationService.model.BuildingName;
+  override onInit(applicationService: ApplicationService): void {
+    this.model = applicationService.model.BuildingName;
   }
 
-  override async onSave(): Promise<void> {
-    this.applicationService.model.BuildingName = this.model!;
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    applicationService.model.BuildingName = this.model!;
   }
 
-  override canAccess(_: ActivatedRouteSnapshot): boolean {
+  override canAccess(_: ApplicationService, __: ActivatedRouteSnapshot): boolean {
     return true;
   }
 

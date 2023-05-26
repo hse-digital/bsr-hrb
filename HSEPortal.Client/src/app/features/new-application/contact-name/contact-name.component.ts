@@ -1,42 +1,48 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
-import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
+import { Component } from '@angular/core';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { ContactPhoneComponent } from '../contact-phone/contact-phone.component';
+import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
   templateUrl: './contact-name.component.html'
 })
-export class ContactNameComponent extends BaseComponent implements IHasNextPage {
+export class ContactNameComponent extends PageComponent<ContactNameModel> {
   static route: string = "contact-name";
   static title: string = "Your name - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+  override onInit(applicationService: ApplicationService): void {
+    this.model = {
+      firstName: applicationService.model.ContactFirstName,
+      lastName: applicationService.model.ContactLastName,
+    };
+  }
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-    this.updateOnSave = false;
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    applicationService.model.ContactFirstName = this.model!.firstName;
+    applicationService.model.ContactLastName = this.model!.lastName;
   }
 
   firstNameInError: boolean = false;
   lastNameInError: boolean = false;
-
-  canContinue() {
-    this.firstNameInError = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactFirstName);
-    this.lastNameInError = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactLastName);
+  override isValid(): boolean {
+    this.firstNameInError = !FieldValidations.IsNotNullOrWhitespace(this.model!.firstName);
+    this.lastNameInError = !FieldValidations.IsNotNullOrWhitespace(this.model!.lastName);
 
     return !this.firstNameInError && !this.lastNameInError;
   }
 
-  override canAccess(_: ActivatedRouteSnapshot){
-    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName);
+  override navigateNext(): Promise<boolean> {
+    return this.navigationService.navigateRelative(ContactPhoneComponent.route, this.activatedRoute);
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative('contact-phone', activatedRoute);
+  override canAccess(applicationService: ApplicationService, _: ActivatedRouteSnapshot) {
+    return FieldValidations.IsNotNullOrWhitespace(applicationService.model.BuildingName);
   }
+}
+
+class ContactNameModel {
+  firstName?: string;
+  lastName?: string;
 }
