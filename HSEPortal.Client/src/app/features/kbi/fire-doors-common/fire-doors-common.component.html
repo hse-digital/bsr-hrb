@@ -1,0 +1,47 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link *ngIf="errors!.fireDoorThirtyMinute!.hasError" anchorId="input-thirty-mins" [message]="errors!.fireDoorThirtyMinute.errorMessage" />
+          <govuk-error-link *ngIf="errors!.fireDoorSixtyMinute!.hasError" anchorId="input-sixty-mins" [message]="errors!.fireDoorSixtyMinute!.errorMessage" />
+          <govuk-error-link *ngIf="errors!.fireDoorHundredTwentyMinute!.hasError" anchorId="input-hundred-twenty-mins" [message]="errors!.fireDoorHundredTwentyMinute!.errorMessage" />
+          <govuk-error-link *ngIf="errors!.fireDoorUnknown!.hasError" anchorId="input-not-known" [message]="errors!.fireDoorUnknown!.errorMessage" />
+        </govuk-error-summary>
+
+        <h1 class="govuk-heading-l">Number of fire doors in the residential common parts of {{getInfraestructureName()}}</h1>
+
+        <govuk-body>Count fire doors that residents can walk through, like those between corridors and staircases.</govuk-body>
+
+
+        <govuk-input id="thirty-mins" label="Doors with 30-minute certified fire resistance" #field [govukRequired]="field"
+                     [(model)]="applicationService.currenKbiSection!.FireDoorsCommon!.FireDoorThirtyMinute"
+                     [errorText]="getErrorDescription(errors!.fireDoorThirtyMinute!.hasError , errors!.fireDoorThirtyMinute!.errorMessage)"
+                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+
+        <govuk-input id="sixty-mins" label="Doors with 60-minute certified fire resistance" #field [govukRequired]="field"
+                     [(model)]="applicationService.currenKbiSection!.FireDoorsCommon!.FireDoorSixtyMinute"
+                     [errorText]="getErrorDescription(errors!.fireDoorSixtyMinute!.hasError , errors!.fireDoorSixtyMinute!.errorMessage)"
+                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+
+        <govuk-input id="hundred-twenty-mins" label="Doors with 120-minute certified fire resistance" #field [govukRequired]="field"
+                     [(model)]="applicationService.currenKbiSection!.FireDoorsCommon!.FireDoorHundredTwentyMinute"
+                     [errorText]="getErrorDescription(errors!.fireDoorHundredTwentyMinute!.hasError , errors!.fireDoorHundredTwentyMinute!.errorMessage)"
+                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+
+        <govuk-input id="not-known" label="Doors that certified fire resistance is not known" #field [govukRequired]="field"
+                     [(model)]="applicationService.currenKbiSection!.FireDoorsCommon!.FireDoorUnknown"
+                     [errorText]="getErrorDescription(errors!.fireDoorUnknown!.hasError , errors!.fireDoorUnknown!.errorMessage)"
+                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+
+
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

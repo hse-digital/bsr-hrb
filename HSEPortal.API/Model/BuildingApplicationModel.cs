@@ -61,16 +61,16 @@ public record BuildingApplicationModel(
     }
 }
 
-public record SectionModel(string Name, 
-        string FloorsAbove, string Height, string PeopleLivingInBuilding, 
+public record SectionModel(string Name,
+        string FloorsAbove, string Height, string PeopleLivingInBuilding,
         string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange,
         string CompletionCertificateIssuer, string CompletionCertificateReference, BuildingAddress[] Addresses = null);
 
 public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress Address, BuildingAddress PapAddress,
     string OrganisationName, string OrganisationType, string OrganisationTypeDescription,
     string NamedContactFirstName, string NamedContactLastName, string NamedContactEmail, string NamedContactPhoneNumber,
-    string FirstName, string LastName, string Email, string PhoneNumber, string Role, string LeadJobRole, 
-    string ActingForSameAddress, BuildingAddress ActingForAddress, string LeadFirstName, string LeadLastName, 
+    string FirstName, string LastName, string Email, string PhoneNumber, string Role, string LeadJobRole,
+    string ActingForSameAddress, BuildingAddress ActingForAddress, string LeadFirstName, string LeadLastName,
     string LeadEmail, string LeadPhoneNumber, SectionAccountability[] SectionsAccountability, string AddAnother);
 
 public record SectionAccountability(string SectionName, string[] Accountability);

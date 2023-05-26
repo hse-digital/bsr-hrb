@@ -38,7 +38,7 @@ export abstract class BaseComponent implements CanActivate {
     return true;
   }
 
-  private isSummaryPage(){
+  private isSummaryPage() {
     return location.href.endsWith(`/${this.applicationService.model.id}/summary`);
   }
 

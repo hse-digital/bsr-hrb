@@ -10,7 +10,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
 import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
-import { NumberOfSectionsComponment } from '../../number-of-sections/number-of-sections.component';
+import { NumberOfSectionsComponment } from '../number-of-sections/number-of-sections.component';
 import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
 import { MoreInformationComponent } from '../more-information/more-information.component';
 

@@ -9,11 +9,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HSEPortal.API", "HSEPortal.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HSEPortal.API.UnitTests", "HSEPortal.API.UnitTests\HSEPortal.API.UnitTests.csproj", "{836365A3-602D-41B7-9FC6-C2257E95ED8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.Domain", "HSEPortal.Domain\HSEPortal.Domain.csproj", "{23F4380B-8EF4-429D-B036-957F2824AC7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HSEPortal.Domain", "HSEPortal.Domain\HSEPortal.Domain.csproj", "{23F4380B-8EF4-429D-B036-957F2824AC7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.API.IntegrationTests", "HSEPortal.API.IntegrationTests\HSEPortal.API.IntegrationTests.csproj", "{15067904-3FE9-45BC-B8FE-2DBE3A8446DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HSEPortal.API.IntegrationTests", "HSEPortal.API.IntegrationTests\HSEPortal.API.IntegrationTests.csproj", "{15067904-3FE9-45BC-B8FE-2DBE3A8446DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSEPortal.TestingCommon", "HSEPortal.TestingCommon\HSEPortal.TestingCommon.csproj", "{F71C2E1B-ED61-4F22-A906-34F13B1E3EB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HSEPortal.TestingCommon", "HSEPortal.TestingCommon\HSEPortal.TestingCommon.csproj", "{F71C2E1B-ED61-4F22-A906-34F13B1E3EB2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionItems", "_SolutionItems", "{F190BACF-80EF-438E-B36F-1F150E3B42FB}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

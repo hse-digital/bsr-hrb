@@ -13,7 +13,7 @@
 }
 
 // GOVUK-RADIO
-.govuk-radio-no-margin-bottom > .govuk-radios__item {
+.govuk-radio-no-margin-bottom>.govuk-radios__item {
   margin-bottom: 0px !important;
 }
 
@@ -99,7 +99,7 @@ a.govuk-back-link {
 
 @media (min-width: 28.125em) {
   .app-task-list__task-name {
-      float: left;
+    float: left;
   }
 }
 
@@ -112,7 +112,7 @@ a.govuk-back-link {
 
 @media (min-width: 40.0625em) {
   .app-task-list {
-      min-width: 550px;
+    min-width: 550px;
   }
 }
 
@@ -129,22 +129,22 @@ a.govuk-back-link {
 
 @media print {
   .app-task-list__section {
-      font-family: sans-serif;
+    font-family: sans-serif;
   }
 }
 
 @media (min-width: 40.0625em) {
   .app-task-list__section {
-      font-size: 24px;
-      font-size: 1.5rem;
-      line-height: 1.25;
+    font-size: 24px;
+    font-size: 1.5rem;
+    line-height: 1.25;
   }
 }
 
 @media print {
   .app-task-list__section {
-      font-size: 18pt;
-      line-height: 1.15;
+    font-size: 18pt;
+    line-height: 1.15;
   }
 }
 
@@ -154,8 +154,8 @@ a.govuk-back-link {
 
 @media (min-width: 40.0625em) {
   .app-task-list__section-number {
-      min-width: 30px;
-      padding-right: 0;
+    min-width: 30px;
+    padding-right: 0;
   }
 }
 
@@ -174,33 +174,46 @@ a.govuk-back-link {
 
 @media print {
   .app-task-list__items {
-      font-family: sans-serif;
+    font-family: sans-serif;
   }
 }
 
 @media (min-width: 40.0625em) {
   .app-task-list__items {
-      font-size: 19px;
-      font-size: 1.1875rem;
-      line-height: 1.3157894737;
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
   }
 }
 
 @media print {
   .app-task-list__items {
-      font-size: 14pt;
-      line-height: 1.15;
+    font-size: 14pt;
+    line-height: 1.15;
   }
 }
 
 @media (min-width: 40.0625em) {
   .app-task-list__items {
-      margin-bottom: 60px;
+    margin-bottom: 60px;
   }
 }
 
 @media (min-width: 40.0625em) {
   .app-task-list__items {
-      padding-left: 30px;
+    padding-left: 30px;
   }
+}
+
+.plainText legend {
+  font-size: 19px;
+  font-size: 1.1875rem;
+  line-height: 1.3157894737;
+  font-weight: 400;
+}
+
+.smallTitle legend {
+  font-size: 19px;
+  font-size: 1.1875rem;
+  margin-bottom: 5px;
 }

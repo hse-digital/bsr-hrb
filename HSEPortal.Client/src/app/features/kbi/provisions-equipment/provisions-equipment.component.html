@@ -1,0 +1,27 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+                    <govuk-error-link anchorId="{{firstCheckboxAnchorId}}" message={{errorMessage}} />
+                </govuk-error-summary>
+
+                <h1 class="govuk-heading-l">Fire and smoke control equipment in the residential units of {{getInfraestructureName()}}</h1>
+                <govuk-body>This is not a complete list. It includes only the equipment we need to know about.</govuk-body>
+                <govuk-body>You should be able to get this information from the latest fire risk assessment.</govuk-body>
+
+                <govuk-checkbox-none title="What equipment is in the residential units?" hint="Select all that apply"  [errorText]="getErrorDescription(provisionsEquipmentHasErrors, errorMessage!)"
+                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.ProvisionsEquipment!">
+                    <checkbox-option text="Heat detectors" value="heat_detectors" id="heat_detectors" />
+                    <checkbox-option text="Smoke detectors" value="smoke_detectors" id="smoke_detectors" />
+                    <checkbox-option text="Sprinklers or misters" value="sprinklers" id="sprinklers" />
+                </govuk-checkbox-none>
+            </div>
+
+            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+            <save-and-come-back (onClick)="saveAndComeBack()" />
+        </div>
+    </div>
+</div>

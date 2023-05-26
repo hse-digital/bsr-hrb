@@ -1,4 +1,0 @@
-C:/Users/OrlandoBellochDiaz/source/repos/Codec/HSEPortal/HSEPortal.Client/obj/Debug/HSEPortal.Client.esproj.SuggestedBindingRedirects.cache
-C:/Users/OrlandoBellochDiaz/source/repos/Codec/HSEPortal/HSEPortal.Client/obj/Debug/HSEPortal.Client.esproj.CoreCompileInputs.cache
-D:/dev/hse/hseportal/HSEPortal.Client/obj/Debug/HSEPortal.Client.esproj.SuggestedBindingRedirects.cache
-D:/dev/hse/hseportal/HSEPortal.Client/obj/Debug/HSEPortal.Client.esproj.CoreCompileInputs.cache

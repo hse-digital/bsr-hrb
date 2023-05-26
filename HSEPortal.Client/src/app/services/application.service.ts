@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, QueryList } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
@@ -84,6 +84,11 @@ export class ApplicationService {
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
+  _currentKbiSectionIndex: number = 0;
+  get currenKbiSection() {
+    return this.model.Kbi?.KbiSections[this._currentKbiSectionIndex];
+  }
+
   async removeAp(index: number) {
     this.model.AccountablePersons.splice(index, 1);
     await this.updateApplication();
@@ -110,7 +115,7 @@ export class ApplicationService {
   }
 
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
-    var application = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
+    let application: BuildingRegistrationModel = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
     this.model = application;
     this.updateLocalStorage();
   }
@@ -173,6 +178,7 @@ export class BuildingRegistrationModel {
   PrincipalAccountableType?: string;
   AccountablePersons: AccountablePersonModel[] = [];
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
+  Kbi?: KbiModel;
 }
 
 export enum BuildingApplicationStatus {
@@ -182,7 +188,15 @@ export enum BuildingApplicationStatus {
   AccountablePersonsInProgress = 4,
   AccountablePersonsComplete = 8,
   PaymentInProgress = 16,
-  PaymentComplete = 32
+  PaymentComplete = 32,
+  KbiCheckBeforeInProgress = 64,
+  KbiCheckBeforeComplete = 128,
+  KbiStructureInformationInProgress = 256,
+  KbiStructureInformationComplete = 512,
+  KbiConnectionsInProgress = 1024,
+  KbiConnectionsComplete = 2048,
+  KbiSubmitInProgress = 4096,
+  KbiSubmitComplete = 8192
 }
 
 export class SectionModel {
@@ -259,4 +273,57 @@ export enum PaymentStatus {
   Pending,
   Success,
   Failed
+}
+
+export class KbiModel {
+  SectionStatus: { InProgress: boolean, Complete: boolean }[] = [];
+  KbiSections: KbiSectionModel[] = [];
+}
+
+export class KbiSectionModel {
+  StrategyEvacuateBuilding?: string;
+  ProvisionsEquipment?: string[];
+  FireSmokeProvisions?: string[];
+  FireSmokeProvisionLocations?: Record<string, string[]>;
+  Lifts?: string[];
+  ResidentialUnitFrontDoors?: {
+    NoFireResistance?: number,
+    ThirtyMinsFireResistance?: number,
+    SixtyMinsFireResistance?: number,
+    HundredTwentyMinsFireResistance?: number,
+    NotKnownFireResistance?: number,
+  } = {};
+  RoofType?: string;
+  RoofInsulation?: string;
+  RoofMaterial?: string;
+  FireDoorsCommon?: {
+    FireDoorThirtyMinute?: number,
+    FireDoorSixtyMinute?: number,
+    FireDoorHundredTwentyMinute?: number,
+    FireDoorUnknown?: number,
+  } = {};
+
+  EnergySupply?: string[];
+  InternalStaircasesAllFloors?: number;
+  TotalNumberStaircases?: number;
+  EnergyTypeStorage?: string[];
+  OnsiteEnergyGeneration?: string[];
+  BuildingStructureType?: string[];
+  ExternalWallMaterials?: string[];
+  WallACM?: string;
+  WallHPL?: string;
+  ExternalWallMaterialsPercentage?: Record<string, string>;
+
+  ExternalWallInsulation?: {
+    CheckBoxSelection?: string[],
+    OtherValue?: string,
+  } = {};
+  ExternalWallInsulationPercentages?: Record<string, number>;
+  ExternalFeatures?: string[];
+  FeatureMaterialsOutside?: Record<string, string[]>;
+
+  PrimaryUseOfBuilding?: string;
+
+  SecondaryUseBuilding?: string[];
+  FloorsBelowGroundLevel?: number;
 }

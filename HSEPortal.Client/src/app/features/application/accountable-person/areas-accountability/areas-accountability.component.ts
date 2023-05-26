@@ -56,7 +56,7 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
 
   addError(index: number) {
     let anchorId = this.getAnchorId(index);
-    let errorMessage = `Select areas of ${this.getInfraestructureName(index)} that the ${this.getApName()} is accountable for`;
+    let errorMessage = `Select areas of ${this.getInfraestructureName(index)} that the Principle Accountable Person is accountable for`;
     if (!this.errors?.find(x => x.anchorId == anchorId)) {
       this.errors?.push({ anchorId: anchorId, message: errorMessage });
     }

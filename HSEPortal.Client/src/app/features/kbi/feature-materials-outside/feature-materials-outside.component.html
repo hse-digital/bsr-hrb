@@ -1,0 +1,32 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link [anchorId]="firstCheckboxAnchorId" [message]=errorMessage />
+        </govuk-error-summary>
+
+        <govuk-checkbox-group [(model)]="applicationService.currenKbiSection!.FeatureMaterialsOutside![currentFeature!]" hint="Select no more than 2" [isPageHeading]=true
+            title="Which materials are used most in the {{getFeatureName()}} of {{getInfraestructureName()}}?" id="materials" #field [govukRequired]="field" 
+            [errorText]="getErrorDescription(featureMaterialsOutsideHasErrors, errorMessage!)">
+
+          <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.FeatureMaterialsOutside![currentFeature!]" text="Aluminium" value="aluminium" id="aluminium"/>
+          <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.FeatureMaterialsOutside![currentFeature!]" text="Concrete" value="concrete" id="concrete"/>
+          <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.FeatureMaterialsOutside![currentFeature!]" text="Glass" value="glass" id="glass"/>
+          <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.FeatureMaterialsOutside![currentFeature!]" text="Masonry" value="masonry" id="masonry"/>
+          <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.FeatureMaterialsOutside![currentFeature!]" text="Metal" value="metal" id="metal"/>
+          <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.FeatureMaterialsOutside![currentFeature!]" text="Plastic" value="plastic" id="plastic"/>
+          <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.FeatureMaterialsOutside![currentFeature!]" text="Slate" value="slate" id="slate"/>
+          <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.FeatureMaterialsOutside![currentFeature!]" text="Timber" value="timber" id="timber"/>
+          <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.FeatureMaterialsOutside![currentFeature!]" text="Other" value="other" id="other"/>
+            
+        </govuk-checkbox-group>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

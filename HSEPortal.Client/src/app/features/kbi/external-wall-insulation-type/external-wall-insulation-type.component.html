@@ -1,0 +1,37 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link *ngIf="externalWallInsulationTypeHasErrors" [anchorId]="errorAnchorId" [message]="errorMessage" /> 
+        </govuk-error-summary>
+
+        <h1 class="govuk-heading-l">What type of insulation is used in the outside walls of {{getInfraestructureName()}}?</h1>
+        <govuk-body>This is not a complete list. It includes only the types of energy storage we need to know about.</govuk-body>
+
+        <govuk-checkbox-none hint="Select all that apply" (onKeyupEnter)="saveAndContinue()" [errorText]="getErrorDescription(externalWallInsulationTypeHasErrors, errorMessage!)"
+            [(model)]="applicationService.currenKbiSection!.ExternalWallInsulation!.CheckBoxSelection!">
+          <checkbox-option text="Fibre Insulation - glass or mineral wool" value="fibre_glass_mineral_wool" id="fibre_glass_mineral_wool" />
+          <checkbox-option text="Fibre Insulation - wood or sheep wool" value="fibre_wood_sheep_wool" id="fibre_wood_sheep_wool" />
+          <checkbox-option text="Foil bubble or multifoil insulation" value="foil_bubble_multifoil_insulation" id="foil_bubble_multifoil_insulation" /> 
+          <checkbox-option text="Phenolic foam" value="phenolic_foam" id="phenolic_foam" />
+          <checkbox-option text="Polystyrene insulation - expanded polystyrene (EPS) or extruded polystyrene (XPS)" value="eps_xps" id="eps_xps" />
+          <checkbox-option text="Polyurethane (PUR) or polyisocyanurate (PIR or ISO)" value="pur_pir_iso" id="pur_pir_iso" />
+          <checkbox-option text="Other" value="other" id="other">
+            <govuk-input #field [govukRequired]="field" id="other" [errorText]="getErrorDescription(otherError, 'Enter the other insulation material used')"
+              label="Tell us what other insulation material is used. Do not enter brand names." 
+              [(model)]="applicationService.currenKbiSection!.ExternalWallInsulation!.OtherValue!"
+              [errorText]="" class="govuk-!-margin-bottom-5 govuk-input--width-20 panel panel-border-wide"
+              (onKeyupEnter)="saveAndContinue()" />
+          </checkbox-option>
+        </govuk-checkbox-none>
+
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>
