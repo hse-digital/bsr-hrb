@@ -23,7 +23,8 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   @ViewChildren(NotAllocatedAccountabilityComponent) checkboxes?: QueryList<NotAllocatedAccountabilityComponent>;
 
   errors?: { anchorId: string, message: string }[] = [];
-  notAllocatedAreas: string[][] = []
+  notAllocatedAreas: string[][] = [];
+  allAccountabilityAreasHaveBeenAllocated: boolean = false;
 
   areasAccountabilityMapper: Record<string, string> = {
     "routes": "routes that residents can walk through",
@@ -39,6 +40,7 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
     this.applicationService.model.Sections.forEach(section => {
       this.notAllocatedAreas.push(AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section))
     });
+    this.allAccountabilityAreasHaveBeenAllocated = this.notAllocatedAreas.every(x => x.length == 0);
   }
 
   canContinue(): boolean {
@@ -113,6 +115,7 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    return this.applicationService.model.Sections.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0)
+    return true;
+    // return this.applicationService.model.Sections.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0)
   }
 }
