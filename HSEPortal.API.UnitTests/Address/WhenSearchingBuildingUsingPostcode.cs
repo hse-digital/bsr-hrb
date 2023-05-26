@@ -34,7 +34,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
             {
                 postcode = buckinghamPalacePostcode,
                 dataset = "LPI",
-                fq = "CLASSIFICATION_CODE:PP",
+                fq = new [] {"CLASSIFICATION_CODE:PP", "COUNTRY_CODE:E"},
                 key = integrationsOptions.OrdnanceSurveyApiKey
             })
             .WithVerb(HttpMethod.Get);
@@ -51,7 +51,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
 
         responseAddress.MaxResults.Should().Be(postcodeResponse.header.maxresults);
         responseAddress.Offset.Should().Be(postcodeResponse.header.offset);
-        responseAddress.TotalResults.Should().Be(2);
+        responseAddress.TotalResults.Should().Be(1);
 
         responseAddress.Results[0].UPRN.Should().Be(postcodeResponse.results[0].LPI.UPRN);
         responseAddress.Results[0].USRN.Should().Be(postcodeResponse.results[0].LPI.USRN);
@@ -82,7 +82,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
     }
 
     [Fact]
-    public async Task ShouldFilterResultsThatAreNotEnglandOrWales()
+    public async Task ShouldFilterResultsThatAreNotEngland()
     {
         var postcodeResponse = BuildPostcodeResponseJson();
         HttpTest.RespondWithJson(postcodeResponse);
@@ -92,9 +92,9 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
 
         responseAddress.MaxResults.Should().Be(postcodeResponse.header.maxresults);
         responseAddress.Offset.Should().Be(postcodeResponse.header.offset);
-        responseAddress.TotalResults.Should().Be(2);
+        responseAddress.TotalResults.Should().Be(1);
 
-        responseAddress.Results.Any(x => x.Country is not ("E" or "W")).Should().BeFalse();
+        responseAddress.Results.Any(x => x.Country is not "E").Should().BeFalse();
     }
 
     private OrdnanceSurveyPostcodeResponse BuildPostcodeResponseJson()
@@ -131,14 +131,6 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
                         LOCAL_CUSTODIAN_CODE = 5990,
                         LOCAL_CUSTODIAN_CODE_DESCRIPTION = "CITY OF WESTMINSTER",
                         MATCH = 1.0,
-                    }
-                },
-                new()
-                {
-                    LPI = new LPI
-                    {
-                        UPRN = "123123",
-                        COUNTRY_CODE = "W",
                     }
                 },
                 new()
