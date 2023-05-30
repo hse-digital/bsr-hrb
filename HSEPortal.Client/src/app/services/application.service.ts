@@ -326,4 +326,6 @@ export class KbiSectionModel {
 
   SecondaryUseBuilding?: string[];
   FloorsBelowGroundLevel?: number;
+  PrimaryUseBuildingBelowGroundLevel?: string;
+  ChangePrimaryUse?: string;
 }

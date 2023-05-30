@@ -29,6 +29,8 @@ import { FeatureMaterialsOutsideComponent } from './feature-materials-outside/fe
 import { PrimaryUseOfBuildingComponent } from './primary-use-of-building/primary-use-of-building.component';
 import { SecondaryUseBuildingComponent } from './secondary-use-building/secondary-use-building.component';
 import { FloorsBelowGroundLevelComponent } from './floors-below-ground-level/floors-below-ground-level.component';
+import { ChangePrimaryUseComponent } from './change-primary-use/change-primary-use.component';
+import { PrimaryUseBuildingBelowGroundLevelComponent } from './primary-use-building-below-ground-level/primary-use-building-below-ground-level.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -37,7 +39,9 @@ export class KbiNavigation extends BaseNavigation {
     super();
   }
 
-  private floorsBelowGroundLevelNavigationNode = new FloorsBelowGroundLevelNavigationNode();
+  private changePrimaryUseNavigationNode = new ChangePrimaryUseNavigationNode();
+  private primaryUseBuildingBelowGroundLevelNavigationNode = new PrimaryUseBuildingBelowGroundLevelNavigationNode(this.changePrimaryUseNavigationNode);
+  private floorsBelowGroundLevelNavigationNode = new FloorsBelowGroundLevelNavigationNode(this.primaryUseBuildingBelowGroundLevelNavigationNode, this.changePrimaryUseNavigationNode);
   private secondaryUseBuildingNavigationNode = new SecondaryUseBuildingNavigationNode(this.floorsBelowGroundLevelNavigationNode);
   private primaryUseBuildingNavigationNode = new PrimaryUseBuildingNavigationNode(this.secondaryUseBuildingNavigationNode);
   private featuresMaterialsOutsideNavigationNode = new FeaturesMaterialsOutsideNavigationNode(this.primaryUseBuildingNavigationNode);
@@ -469,14 +473,46 @@ class SecondaryUseBuildingNavigationNode extends KbiNavigationNode {
 }
 
 class FloorsBelowGroundLevelNavigationNode extends KbiNavigationNode {
-  constructor() {
+  constructor(private primaryUseBuildingBelowGroundLevelNavigationNode: PrimaryUseBuildingBelowGroundLevelNavigationNode,
+      private changePrimaryUseNavigationNode: ChangePrimaryUseNavigationNode) {
     super();
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
     if (!kbi.FloorsBelowGroundLevel) {
       return FloorsBelowGroundLevelComponent.route;
+    } else if (kbi.FloorsBelowGroundLevel >= 1) {
+      return this.primaryUseBuildingBelowGroundLevelNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+    } else if (kbi.FloorsBelowGroundLevel == 0 && kbi.PrimaryUseOfBuilding === "residential_dwellings") {
+      return this.changePrimaryUseNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
     return FloorsBelowGroundLevelComponent.route;
+  }
+}
+
+class PrimaryUseBuildingBelowGroundLevelNavigationNode extends KbiNavigationNode {
+  constructor(private changePrimaryUseNavigationNode: ChangePrimaryUseNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.PrimaryUseBuildingBelowGroundLevel || kbi.PrimaryUseBuildingBelowGroundLevel.length == 0) {
+      return PrimaryUseBuildingBelowGroundLevelComponent.route;
+    } else if (kbi.PrimaryUseOfBuilding === "residential_dwellings") {
+      return this.changePrimaryUseNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+    } else {
+      // navigate to material changes 937
+      return PrimaryUseBuildingBelowGroundLevelComponent.route;
+    }
+  }
+}
+
+class ChangePrimaryUseNavigationNode extends KbiNavigationNode {
+  constructor() {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    return ChangePrimaryUseComponent.route;
   }
 }
