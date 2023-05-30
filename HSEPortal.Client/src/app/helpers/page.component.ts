@@ -2,7 +2,7 @@ import { Component, Injector, OnInit, QueryList, ViewChildren } from "@angular/c
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from "rxjs";
 import { GetInjector } from "./injector.helper";
-import { ApplicationService, BuildingApplicationStatus } from "../services/application.service";
+import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus, BuildingRegistrationModel, KbiSectionModel, SectionModel } from "../services/application.service";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from "../services/title.service";
 import { GovukRequiredDirective } from "../components/required.directive";
@@ -37,6 +37,17 @@ export abstract class PageComponent<T> implements CanActivate, OnInit {
     ngOnInit(): void {
         this.onInit(this.applicationService);
     }
+
+    get applicationModel(): BuildingRegistrationModel { return this.applicationService.model; }
+
+    get currentAccountablePerson(): AccountablePersonModel { return this.applicationService.currentAccountablePerson; }
+    get currentAccountablePersonIndex(): number { return this.applicationService._currentAccountablePersonIndex; }
+
+    get currentSection(): SectionModel { return this.applicationService.currentSection; }
+    get currentSectionIndex(): number { return this.applicationService._currentSectionIndex; }
+
+    get currentKbiSection(): KbiSectionModel | undefined { return this.applicationService.currenKbiSection; }
+    get currentKbiSectionIndex(): number { return this.applicationService._currentKbiSectionIndex; }
 
     async saveAndContinue(): Promise<void> {
         this.processing = true;
@@ -74,7 +85,7 @@ export abstract class PageComponent<T> implements CanActivate, OnInit {
     }
 
     canActivate(route: ActivatedRouteSnapshot, _: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-        if (!this.canAccess(this.applicationService,route)) {
+        if (!this.canAccess(this.applicationService, route)) {
             this.navigationService.navigate(NotFoundComponent.route);
             return false;
         }

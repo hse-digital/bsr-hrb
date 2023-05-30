@@ -1,44 +1,47 @@
-import { AfterViewInit, Component, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
+import { Component } from '@angular/core';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { ApHelper } from 'src/app/helpers/ap-helper';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { OrganisationNameComponent } from '../organisation-name/organisation-name.component';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { ApplicationService } from 'src/app/services/application.service';
 
 @Component({
   templateUrl: './organisation-type.component.html'
 })
-export class OrganisationTypeComponent extends BaseComponent implements IHasNextPage, AfterViewInit {
+export class OrganisationTypeComponent extends PageComponent<ApOrganisationType> {
   static route: string = 'organisation-type';
 
   static title: string = "What is the PAP Organisation Type? - Register a high-rise building - GOV.UK";
   static apTitle: string = "AP Organisation Type - Register a high-rise building - GOV.UK";
 
-  organisationTypeHasErrors = false;
-
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
-
-  ngAfterViewInit() {
-    if (this.applicationService._currentAccountablePersonIndex > 0) {
+  override onInit(applicationService: ApplicationService): void {
+    if (applicationService._currentAccountablePersonIndex > 0) {
       this.titleService.setTitle(OrganisationTypeComponent.apTitle);
     }
+
+    this.model = {
+      organisationType: applicationService.currentAccountablePerson.OrganisationType,
+      organisationTypeDescription: applicationService.currentAccountablePerson.OrganisationType
+    };
   }
 
-  canContinue(): boolean {
-    this.organisationTypeHasErrors = !this.applicationService.currentAccountablePerson.OrganisationType;
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    applicationService.currentAccountablePerson.OrganisationType = this.model?.organisationType;
+    applicationService.currentAccountablePerson.OrganisationTypeDescription = this.model?.organisationTypeDescription;
+  }
+
+  organisationTypeHasErrors = false;
+  override isValid(): boolean {
+    this.organisationTypeHasErrors = !this.model?.organisationType;
     return !this.organisationTypeHasErrors;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(OrganisationNameComponent.route, activatedRoute);
+  override navigateNext(): Promise<boolean> {
+    return this.navigationService.navigateRelative(OrganisationNameComponent.route, this.activatedRoute);
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot) {
+    return ApHelper.isApAvailable(routeSnapshot, applicationService) && ApHelper.isOrganisation(routeSnapshot, applicationService);
   }
 
   getPrincipalOrOther() {
@@ -46,15 +49,15 @@ export class OrganisationTypeComponent extends BaseComponent implements IHasNext
   }
 
   title() {
-    return `${this.isPrincipal() ? 'Principal' : 'Other'} accountable person for ${this.applicationService.model.BuildingName}`;
+    return `${this.isPrincipal() ? 'Principal' : 'Other'} accountable person for ${this.applicationModel.BuildingName}`;
   }
 
   isPrincipal() {
-    return this.applicationService._currentAccountablePersonIndex == 0;
+    return this.currentAccountablePersonIndex == 0;
   }
+}
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
-      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
-  }
+class ApOrganisationType {
+  organisationType?: string;
+  organisationTypeDescription?: string;
 }

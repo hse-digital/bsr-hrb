@@ -10,6 +10,7 @@ export class ApplicationService {
 
   _currentSectionIndex;
   _currentAccountablePersonIndex;
+  _currentKbiSectionIndex: number = 0;
 
   get currentSection(): SectionModel {
     return this.model.Sections[this._currentSectionIndex];
@@ -17,6 +18,10 @@ export class ApplicationService {
 
   get currentAccountablePerson(): AccountablePersonModel {
     return this.model.AccountablePersons[this._currentAccountablePersonIndex];
+  }
+
+  get currenKbiSection(): KbiSectionModel | undefined {
+    return this.model.Kbi?.KbiSections[this._currentKbiSectionIndex];
   }
 
   constructor(private httpClient: HttpClient) {
@@ -82,11 +87,6 @@ export class ApplicationService {
     this._currentAccountablePersonIndex = this.model.AccountablePersons.length - 1;
 
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
-  }
-
-  _currentKbiSectionIndex: number = 0;
-  get currenKbiSection() {
-    return this.model.Kbi?.KbiSections[this._currentKbiSectionIndex];
   }
 
   async removeAp(index: number) {
