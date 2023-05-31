@@ -1,0 +1,38 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <div class="govuk-form-group">
+            <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+              <govuk-error-link anchorId="{{firstCheckboxAnchorId}}" message={{errorMessage}} />
+            </govuk-error-summary>
+
+            <h1 class="govuk-heading-l">Features on {{getInfraestructureName()}}</h1>
+
+            <govuk-checkbox-none title="Select all that apply. Machinery could be for heating, ventulation or energy generation"
+                                 hint="Select all that apply. Machinery could be for heating, ventulation or energy generation"
+                                 [errorText]="getErrorDescription(externalFeaturesHasErrors, errorMessage!)"
+                                 (onKeyupEnter)="saveAndContinue()"
+                                 [(model)]="applicationService.currenKbiSection!.ExternalFeatures!">
+              <checkbox-option text="Asbestos Removal and remediation on multiple floors" value="asbestos_removal" id="asbestos_removal" />
+              <checkbox-option text="Balconies Added" value="balconies_added" id="balconies_added" />
+              <checkbox-option text="Changes in number of residential units" value="changes_residential_units" id="changes_residential_units" />
+              <checkbox-option text="Communal walkway between structures" value="communal_walkway" id="communal_walkway" />
+              <checkbox-option text="Escape route onto and across the roof" value="escape_route_roof" id="escape_route_roof" />
+              <checkbox-option text="External staircases" value="external_staircases" id="external_staircases" />
+              <checkbox-option text="Machinery in an outbuilding" value="machinery_outbuilding" id="machinery_outbuilding" />
+              <checkbox-option text="Machinery in a room on the roof" value="machinery_roof_room" id="machinery_roof_room" />
+              <checkbox-option text="Machinery on the roof" value="machinery_roof" id="machinery_roof" />
+              <checkbox-option text="Phone masts" value="phone_masts" id="phone_masts" />
+              <checkbox-option text="Roof lights" value="roof_lights" id="roof_lights" />
+              <checkbox-option text="Solar shading" value="solar_shading" id="solar_shading" />
+            </govuk-checkbox-none>
+            <checkbox-option text="Not Known" value="not_known" id="not_known" />
+          </div>
+
+            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+            <save-and-come-back (onClick)="saveAndComeBack()" />
+        </div>
+    </div>
+</div>
