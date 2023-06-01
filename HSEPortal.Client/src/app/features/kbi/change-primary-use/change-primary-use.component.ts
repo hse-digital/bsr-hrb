@@ -6,6 +6,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { PreviousUseBuildingComponent } from '../previous-use-building/previous-use-building.component';
 
 @Component({
   selector: 'hse-change-primary-use',
@@ -39,7 +40,10 @@ export class ChangePrimaryUseComponent  extends BaseComponent implements IHasNex
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ChangePrimaryUseComponent.route, activatedRoute);
+    if (this.applicationService.currenKbiSection?.ChangePrimaryUse === "yes") {
+      return navigationService.navigateRelative(PreviousUseBuildingComponent.route, activatedRoute);  
+    }
+    return navigationService.navigateRelative(ChangePrimaryUseComponent.route, activatedRoute); // user goes to material changes 937
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

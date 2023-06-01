@@ -31,6 +31,8 @@ import { SecondaryUseBuildingComponent } from './secondary-use-building/secondar
 import { FloorsBelowGroundLevelComponent } from './floors-below-ground-level/floors-below-ground-level.component';
 import { ChangePrimaryUseComponent } from './change-primary-use/change-primary-use.component';
 import { PrimaryUseBuildingBelowGroundLevelComponent } from './primary-use-building-below-ground-level/primary-use-building-below-ground-level.component';
+import { PreviousUseBuildingComponent } from './previous-use-building/previous-use-building.component';
+import { CertificatesYearChangeComponent } from './certificates-year-change/certificates-year-change.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -39,7 +41,9 @@ export class KbiNavigation extends BaseNavigation {
     super();
   }
 
-  private changePrimaryUseNavigationNode = new ChangePrimaryUseNavigationNode();
+  private certificatesYearChangeNavigationNode = new CertificatesYearChangeNavigationNode();
+  private previousUseBuildingNavigationNode = new PreviousUseBuildingNavigationNode(this.certificatesYearChangeNavigationNode);
+  private changePrimaryUseNavigationNode = new ChangePrimaryUseNavigationNode(this.previousUseBuildingNavigationNode);
   private primaryUseBuildingBelowGroundLevelNavigationNode = new PrimaryUseBuildingBelowGroundLevelNavigationNode(this.changePrimaryUseNavigationNode);
   private floorsBelowGroundLevelNavigationNode = new FloorsBelowGroundLevelNavigationNode(this.primaryUseBuildingBelowGroundLevelNavigationNode, this.changePrimaryUseNavigationNode);
   private secondaryUseBuildingNavigationNode = new SecondaryUseBuildingNavigationNode(this.floorsBelowGroundLevelNavigationNode);
@@ -508,11 +512,39 @@ class PrimaryUseBuildingBelowGroundLevelNavigationNode extends KbiNavigationNode
 }
 
 class ChangePrimaryUseNavigationNode extends KbiNavigationNode {
+  constructor(private previousUseBuildingNavigationNode: PreviousUseBuildingNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.ChangePrimaryUse || kbi.ChangePrimaryUse.length == 0) {
+      return ChangePrimaryUseComponent.route;
+    } else if (kbi.ChangePrimaryUse === "yes") {
+      return this.previousUseBuildingNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+    }
+    return ChangePrimaryUseComponent.route; // navigate to material changes 937
+  }
+}
+
+class PreviousUseBuildingNavigationNode extends KbiNavigationNode {
+  constructor(private certificatesYearChangeNavigationNode: CertificatesYearChangeNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    if (!kbi.PreviousUseBuilding || kbi.PreviousUseBuilding.length == 0) {
+      return PreviousUseBuildingComponent.route;
+    }
+    return this.certificatesYearChangeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+}
+
+class CertificatesYearChangeNavigationNode extends KbiNavigationNode {
   constructor() {
     super();
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    return ChangePrimaryUseComponent.route;
+    return CertificatesYearChangeComponent.route;
   }
 }
