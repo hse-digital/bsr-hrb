@@ -62,7 +62,10 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
 
     if (this.undergoneBuildingMaterialChangesHasErrors) this.firstCheckboxAnchorId = `asbestos_removal-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
 
-    return this.applicationService.currenKbiSection!.ExternalFeatures!.length > 0 ;
+    console.log(this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges);
+    console.log(this.undergoneBuildingMaterialChangesHasErrors);
+
+    return this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.length > 0;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
