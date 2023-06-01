@@ -18,12 +18,15 @@ export class GovukCheckboxNoneComponent implements AfterViewInit {
   @Input() checkboxGroupId!: string;
   @Input() errorText?: string;
   @Input() noneOptionText: string = "None of these";
+  @Input() unknownOptionText?: string;
   @Input() noneOptionValue: string = "none";
+  @Input() unknownOptionValue: string = "unknown";
 
   @ContentChildren(CheckboxOptionComponent) public checkboxes?: QueryList<CheckboxOptionComponent>;
 
   @ViewChildren("checkbox") public checkboxElements?: QueryList<GovukCheckboxComponent>;
   @ViewChild("noneCheckbox") public noneCheckbox?: GovukCheckboxComponent;
+  @ViewChild("unknownCheckbox") public unknownCheckbox?: GovukCheckboxComponent;
 
   radioModel: string[] = [];
 
@@ -42,10 +45,18 @@ export class GovukCheckboxNoneComponent implements AfterViewInit {
   noneOptionClicked() {
     this.model = ['none'];
     this.checkboxElements?.forEach(element => element.checked = false);
+    this.unknownCheckbox!.checked = false;
+  }
+
+  unknownOptionClicked() {
+    this.model = ['unknown'];
+    this.checkboxElements?.forEach(element => element.checked = false);
+    this.noneCheckbox!.checked = false;
   }
 
   optionClicked() {
     this.noneCheckbox!.checked = false;
+    this.unknownCheckbox!.checked = false;
   }
 
   public ngAfterViewInit(): void {
