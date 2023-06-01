@@ -8,6 +8,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { FeatureMaterialsOutsideComponent } from '../feature-materials-outside/feature-materials-outside.component';
+import { MostRecentChangeComponent } from '../most-recent-material-change/most-recent-material-change.component';
 import { PrimaryUseOfBuildingComponent } from '../primary-use-of-building/primary-use-of-building.component';
 
 @Component({
@@ -83,7 +84,8 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
     }
     //If UndergoneBuildingMaterialChanges contains more than one options but does not include floors_added or none or unknown
     else if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.length > 1 && !this.applicationService.currenKbiSection?.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
-      console.log('Then I am navigated to the most recent change page ');
+      return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
+
     }
     //If UndergoneBuildingMaterialChanges contains one options but does not include floors_added or none or unknown
     else if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.length == 1 && !this.applicationService.currenKbiSection?.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {

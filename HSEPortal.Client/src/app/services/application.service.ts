@@ -329,5 +329,6 @@ export class KbiSectionModel {
   PrimaryUseBuildingBelowGroundLevel?: string;
   ChangePrimaryUse?: string;
   UndergoneBuildingMaterialChanges?: string[];
+  MostRecentMaterialChange?: string;
 
 }
