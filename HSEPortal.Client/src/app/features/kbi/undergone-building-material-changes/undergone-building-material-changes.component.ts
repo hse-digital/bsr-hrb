@@ -16,22 +16,39 @@ import { PrimaryUseOfBuildingComponent } from '../primary-use-of-building/primar
 })
 export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'undergone-building-material-changes';
-  static title: string = "Features on outside walls - Register a high-rise building - GOV.UK";
+  static title: string = "Building works since original build - Register a high-rise building - GOV.UK";
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChild(GovukCheckboxNoneComponent) equipmentCheckboxGroup?: GovukCheckboxNoneComponent;
 
   firstCheckboxAnchorId?: string;
   errorMessage?: string;
-  externalFeaturesHasErrors = false;
+  undergoneBuildingMaterialChangesHasErrors = false;
+  concreteLargePanelSystemSelected: boolean = false;
+
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.ExternalFeatures) { this.applicationService.currenKbiSection!.ExternalFeatures = []; }
-    this.errorMessage = `Select the features on ${this.getInfraestructureName()}`;
+    if (!this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges) { this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges = []; }
+    this.errorMessage = `Select building works since on ${this.getInfraestructureName()} was originally built`;
+
+    //Set concreteLargePanelSystemSelected to true if BuildingStructureType contains concrete_large_panels_1960 or concrete_large_panels_1970
+    if (this.applicationService.currenKbiSection!.BuildingStructureType?.some(x => x == 'concrete_large_panels_1960' || x == 'concrete_large_panels_1970')) {
+      this.concreteLargePanelSystemSelected = true;
+    }
+    else {
+      //remove reinforcement_works_large_panel_system from UndergoneBuildingMaterialChanges
+      if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges?.some(x => x == 'reinforcement_works_large_panel_system')) {
+        this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges = this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges?.filter(x => x != 'reinforcement_works_large_panel_system');
+        //Uncheck checkbox reinforcement_works_large_panel_system from equipmentCheckboxGroup
+        if (this.equipmentCheckboxGroup?.checkboxElements?.some(x => x.innerId == 'reinforcement_works_large_panel_system')) {
+          this.equipmentCheckboxGroup!.checkboxElements.find(x => x.innerId == 'reinforcement_works_large_panel_system')!.checked = false;
+        }
+      }
+    }
   }
 
   getInfraestructureName() {
@@ -41,23 +58,23 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
   }
 
   canContinue(): boolean {
-    this.externalFeaturesHasErrors = !this.applicationService.currenKbiSection!.ExternalFeatures || this.applicationService.currenKbiSection!.ExternalFeatures.length == 0;
+    this.undergoneBuildingMaterialChangesHasErrors = !this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges || this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges.length == 0;
 
-    if (this.externalFeaturesHasErrors) this.firstCheckboxAnchorId = `advertising-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
+    if (this.undergoneBuildingMaterialChangesHasErrors) this.firstCheckboxAnchorId = `asbestos_removal-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
 
     return this.applicationService.currenKbiSection!.ExternalFeatures!.length > 0 ;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    const features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
+/*    const features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
     if(this.applicationService.currenKbiSection?.ExternalFeatures?.some(x => features.includes(x))) {
       let feature = this.applicationService.currenKbiSection?.ExternalFeatures?.find(x => features.includes(x));
       return navigationService.navigateRelative(FeatureMaterialsOutsideComponent.route, activatedRoute, {
         feature: feature,
       });
-    }
+    }*/
 
-    return navigationService.navigateRelative(PrimaryUseOfBuildingComponent.route, activatedRoute);
+    return navigationService.navigateRelative(UndergoneBuildingMaterialChangesComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
