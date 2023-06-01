@@ -77,6 +77,25 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
       });
     }*/
 
+    //If UndergoneBuildingMaterialChanges contains 'none' or 'unknown'
+    if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.some(x => x == 'none' || x == 'unknown')) {
+      console.log('Then I am navigated to the KBI check answers page (/check-answers-building-information');
+    }
+    //If UndergoneBuildingMaterialChanges contains more than one options but does not include floors_added or none or unknown
+    else if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.length > 1 && !this.applicationService.currenKbiSection?.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
+      console.log('Then I am navigated to the most recent change page ');
+    }
+    //If UndergoneBuildingMaterialChanges contains one options but does not include floors_added or none or unknown
+    else if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.length == 1 && !this.applicationService.currenKbiSection?.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
+      console.log('Then I am navigated to the year of change page');
+    }
+    //If UndergoneBuildingMaterialChanges contains floors_added
+    else if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')) {
+      console.log('Then I am navigated to the structure type for extra floors page');
+    }
+
+
+
     return navigationService.navigateRelative(UndergoneBuildingMaterialChangesComponent.route, activatedRoute);
   }
 

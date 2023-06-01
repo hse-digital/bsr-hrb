@@ -43,14 +43,12 @@ export class GovukCheckboxNoneComponent implements AfterViewInit {
   constructor(private changeDetectorRef: ChangeDetectorRef) { }
 
   noneOptionClicked() {
-    console.log(this.model)
     this.model = ['none'];
     this.checkboxElements?.forEach(element => element.checked = false);
     this.unknownCheckbox!.checked = false;
   }
 
   unknownOptionClicked() {
-    console.log(this.model)
     this.model = ['unknown'];
     this.checkboxElements?.forEach(element => element.checked = false);
     this.noneCheckbox!.checked = false;
