@@ -331,5 +331,6 @@ export class KbiSectionModel {
   ChangePrimaryUse?: string;
   UndergoneBuildingMaterialChanges?: string[];
   MostRecentMaterialChange?: string;
+  YearMostRecentMaterialChange?: string;
 
 }

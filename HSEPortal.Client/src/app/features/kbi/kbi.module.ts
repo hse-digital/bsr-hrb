@@ -40,6 +40,7 @@ import { ChangePrimaryUseComponent } from './change-primary-use/change-primary-u
 import { UndergoneBuildingMaterialChangesComponent } from './undergone-building-material-changes/undergone-building-material-changes.component';
 import { MostRecentChangeComponent } from './most-recent-material-change/most-recent-material-change.component';
 import { AddedFloorsTypeComponent } from './added-floors-type/added-floors-type.component';
+import { YearMostRecentChangeComponent } from './year-most-recent-change/year-most-recent-change.component';
 
 
 const routes = new HseRoutes([
@@ -78,6 +79,7 @@ const routes = new HseRoutes([
   HseRoute.protected(UndergoneBuildingMaterialChangesComponent.route, UndergoneBuildingMaterialChangesComponent, UndergoneBuildingMaterialChangesComponent.title),
   HseRoute.protected(MostRecentChangeComponent.route, MostRecentChangeComponent, MostRecentChangeComponent.title),
   HseRoute.protected(AddedFloorsTypeComponent.route, AddedFloorsTypeComponent, AddedFloorsTypeComponent.title),
+  HseRoute.protected(YearMostRecentChangeComponent.route, YearMostRecentChangeComponent, YearMostRecentChangeComponent.title),
 ]);
 
 @NgModule({
@@ -115,7 +117,8 @@ const routes = new HseRoutes([
     ChangePrimaryUseComponent,
     UndergoneBuildingMaterialChangesComponent,
     MostRecentChangeComponent,
-    AddedFloorsTypeComponent
+    AddedFloorsTypeComponent,
+    YearMostRecentChangeComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

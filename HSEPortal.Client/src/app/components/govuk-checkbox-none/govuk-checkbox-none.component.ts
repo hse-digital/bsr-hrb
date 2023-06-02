@@ -45,7 +45,9 @@ export class GovukCheckboxNoneComponent implements AfterViewInit {
   noneOptionClicked() {
     this.model = ['none'];
     this.checkboxElements?.forEach(element => element.checked = false);
-    this.unknownCheckbox!.checked = false;
+    if (!!this.unknownOptionText) {
+      this.unknownCheckbox!.checked = false;
+    }
   }
 
   unknownOptionClicked() {
@@ -57,7 +59,9 @@ export class GovukCheckboxNoneComponent implements AfterViewInit {
   optionClicked() {
 
     this.noneCheckbox!.checked = false;
-    this.unknownCheckbox!.checked = false;
+    if (!!this.unknownOptionText) {
+      this.unknownCheckbox!.checked = false;
+    }
 
   }
 

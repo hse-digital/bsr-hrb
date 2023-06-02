@@ -9,6 +9,8 @@ import { TitleService } from 'src/app/services/title.service';
 import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
 import { RoofTypeComponent } from '../roof-type/roof-type.component';
 import { trigger } from '@angular/animations';
+import { MostRecentChangeComponent } from '../most-recent-material-change/most-recent-material-change.component';
+import { YearMostRecentChangeComponent } from '../year-most-recent-change/year-most-recent-change.component';
 
 @Component({
   selector: 'hse-added-floors-type',
@@ -30,7 +32,7 @@ export class AddedFloorsTypeComponent extends BaseComponent implements IHasNextP
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.BuildingStructureType) { this.applicationService.currenKbiSection!.BuildingStructureType = []; }
+    if (!this.applicationService.currenKbiSection!.AddedFloorsType) { this.applicationService.currenKbiSection!.AddedFloorsType = []; }
     this.errorMessage = `Select structure type for extra floors`;
   }
 
@@ -50,8 +52,13 @@ export class AddedFloorsTypeComponent extends BaseComponent implements IHasNextP
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(AddedFloorsTypeComponent.route, activatedRoute);
-    //TODO update next page logic for this page
+    if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.length > 1) {
+      return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
+    }
+    else {
+
+      return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
+    }
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

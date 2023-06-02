@@ -11,6 +11,7 @@ import { AddedFloorsTypeComponent } from '../added-floors-type/added-floors-type
 import { FeatureMaterialsOutsideComponent } from '../feature-materials-outside/feature-materials-outside.component';
 import { MostRecentChangeComponent } from '../most-recent-material-change/most-recent-material-change.component';
 import { PrimaryUseOfBuildingComponent } from '../primary-use-of-building/primary-use-of-building.component';
+import { YearMostRecentChangeComponent } from '../year-most-recent-change/year-most-recent-change.component';
 
 @Component({
   selector: 'hse-undergone-building-material-changes',
@@ -37,15 +38,12 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
     if (!this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges) { this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges = []; }
     this.errorMessage = `Select building works since on ${this.getInfraestructureName()} was originally built`;
 
-    //Set concreteLargePanelSystemSelected to true if BuildingStructureType contains concrete_large_panels_1960 or concrete_large_panels_1970
     if (this.applicationService.currenKbiSection!.BuildingStructureType?.some(x => x == 'concrete_large_panels_1960' || x == 'concrete_large_panels_1970')) {
       this.concreteLargePanelSystemSelected = true;
     }
     else {
-      //remove reinforcement_works_large_panel_system from UndergoneBuildingMaterialChanges
       if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges?.some(x => x == 'reinforcement_works_large_panel_system')) {
         this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges = this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges?.filter(x => x != 'reinforcement_works_large_panel_system');
-        //Uncheck checkbox reinforcement_works_large_panel_system from equipmentCheckboxGroup
         if (this.equipmentCheckboxGroup?.checkboxElements?.some(x => x.innerId == 'reinforcement_works_large_panel_system')) {
           this.equipmentCheckboxGroup!.checkboxElements.find(x => x.innerId == 'reinforcement_works_large_panel_system')!.checked = false;
         }
@@ -64,29 +62,28 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
 
     if (this.undergoneBuildingMaterialChangesHasErrors) this.firstCheckboxAnchorId = `asbestos_removal-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
 
-    console.log(this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges);
-    console.log(this.undergoneBuildingMaterialChangesHasErrors);
 
     return this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.length > 0;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
 
-    //If UndergoneBuildingMaterialChanges contains 'none' or 'unknown'
     if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.some(x => x == 'none' || x == 'unknown')) {
       console.log('Then I am navigated to the KBI check answers page (/check-answers-building-information');
     }
-    //If UndergoneBuildingMaterialChanges contains more than one options but does not include floors_added or none or unknown
     else if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.length > 1 && !this.applicationService.currenKbiSection?.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
       return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
 
     }
-    //If UndergoneBuildingMaterialChanges contains one options but does not include floors_added or none or unknown
     else if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.length == 1 && !this.applicationService.currenKbiSection?.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
-      console.log('Then I am navigated to the year of change page');
+      if (this.applicationService.currenKbiSection!.MostRecentMaterialChange
+        && !this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.includes(this.applicationService.currenKbiSection!.MostRecentMaterialChange)) {
+        this.applicationService.currenKbiSection!.MostRecentMaterialChange = this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges![0];
+      }
+      return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
     }
-    //If UndergoneBuildingMaterialChanges contains floors_added
     else if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')) {
+      this.applicationService.currenKbiSection!.MostRecentMaterialChange = this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges![0];
       return navigationService.navigateRelative(AddedFloorsTypeComponent.route, activatedRoute);
     }
 
