@@ -7,6 +7,7 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { AddedFloorsTypeComponent } from '../added-floors-type/added-floors-type.component';
 import { FeatureMaterialsOutsideComponent } from '../feature-materials-outside/feature-materials-outside.component';
 import { MostRecentChangeComponent } from '../most-recent-material-change/most-recent-material-change.component';
 import { PrimaryUseOfBuildingComponent } from '../primary-use-of-building/primary-use-of-building.component';
@@ -70,13 +71,6 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-/*    const features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
-    if(this.applicationService.currenKbiSection?.ExternalFeatures?.some(x => features.includes(x))) {
-      let feature = this.applicationService.currenKbiSection?.ExternalFeatures?.find(x => features.includes(x));
-      return navigationService.navigateRelative(FeatureMaterialsOutsideComponent.route, activatedRoute, {
-        feature: feature,
-      });
-    }*/
 
     //If UndergoneBuildingMaterialChanges contains 'none' or 'unknown'
     if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.some(x => x == 'none' || x == 'unknown')) {
@@ -93,7 +87,7 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
     }
     //If UndergoneBuildingMaterialChanges contains floors_added
     else if (this.applicationService.currenKbiSection!.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')) {
-      console.log('Then I am navigated to the structure type for extra floors page');
+      return navigationService.navigateRelative(AddedFloorsTypeComponent.route, activatedRoute);
     }
 
 
@@ -104,6 +98,7 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return true;
     //return !!this.applicationService.currenKbiSection?.ExternalWallInsulation?.CheckBoxSelection && (this.applicationService.currenKbiSection!.ExternalWallInsulation?.CheckBoxSelection![0] == 'none' || !!(this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages));
+    //TODO update can access logic for this page
   }
 
 }

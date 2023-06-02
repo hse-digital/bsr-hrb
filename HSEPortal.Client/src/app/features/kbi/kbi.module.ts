@@ -39,6 +39,7 @@ import { PrimaryUseBuildingBelowGroundLevelComponent } from './primary-use-build
 import { ChangePrimaryUseComponent } from './change-primary-use/change-primary-use.component';
 import { UndergoneBuildingMaterialChangesComponent } from './undergone-building-material-changes/undergone-building-material-changes.component';
 import { MostRecentChangeComponent } from './most-recent-material-change/most-recent-material-change.component';
+import { AddedFloorsTypeComponent } from './added-floors-type/added-floors-type.component';
 
 
 const routes = new HseRoutes([
@@ -76,6 +77,7 @@ const routes = new HseRoutes([
   HseRoute.protected(ChangePrimaryUseComponent.route, ChangePrimaryUseComponent, ChangePrimaryUseComponent.title),
   HseRoute.protected(UndergoneBuildingMaterialChangesComponent.route, UndergoneBuildingMaterialChangesComponent, UndergoneBuildingMaterialChangesComponent.title),
   HseRoute.protected(MostRecentChangeComponent.route, MostRecentChangeComponent, MostRecentChangeComponent.title),
+  HseRoute.protected(AddedFloorsTypeComponent.route, AddedFloorsTypeComponent, AddedFloorsTypeComponent.title),
 ]);
 
 @NgModule({
@@ -112,7 +114,8 @@ const routes = new HseRoutes([
     PrimaryUseBuildingBelowGroundLevelComponent,
     ChangePrimaryUseComponent,
     UndergoneBuildingMaterialChangesComponent,
-    MostRecentChangeComponent
+    MostRecentChangeComponent,
+    AddedFloorsTypeComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

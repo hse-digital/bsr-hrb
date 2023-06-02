@@ -1,0 +1,35 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+                    <govuk-error-link anchorId="{{firstCheckboxAnchorId}}" message={{errorMessage}} />
+                </govuk-error-summary>
+
+                <h1 class="govuk-heading-l">Structure type of floors added to {{getInfraestructureName()}}</h1>
+                <govuk-body>This is not a complete list. It includes only the structure types we need to know about</govuk-body>
+
+                <govuk-checkbox-none title="What is the type of structure?" hint="Select all that apply"  [errorText]="getErrorDescription(addedFloorsTypeTypeHasErrors, errorMessage!)"
+                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.AddedFloorsType!">
+                    <checkbox-option text="Composite steel and concrete" value="composite_steel_concrete" id="composite_steel_concrete" />
+                    <checkbox-option text="Concrete large panel system - 1960s" value="concrete_large_panels_1960" id="concrete_large_panels_1960" />
+                    <checkbox-option text="Concrete large panel system - 1970 onwards" value="concrete_large_panels_1970" id="concrete_large_panels_1970" />
+                    <checkbox-option text="Modular - concrete" value="modular_concrete" id="modular_concrete" />
+                    <checkbox-option text="Concrete - other" value="concrete_other" id="concrete_other" />
+                    <checkbox-option text="Lightweight metal structure, like aluminium" value="lightweight_metal" id="lightweight_metal" />
+                    <checkbox-option text="Masonry" value="Masonry" id="Masonry" />
+                    <checkbox-option text="Modular - steel" value="modular_steel" id="modular_steel" />
+                    <checkbox-option text="Steel frame" value="steel_frame" id="steel_frame" />
+                    <checkbox-option text="Modular - other metal" value="modular_other_metal" id="modular_other_metal" />
+                    <checkbox-option text="Modular - timber" value="modular_timber" id="modular_timber" />
+                    <checkbox-option text="Timber" value="timber" id="timber" />
+                </govuk-checkbox-none>
+            </div>
+
+            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+            <save-and-come-back (onClick)="saveAndComeBack()" />
+        </div>
+    </div>
+</div>

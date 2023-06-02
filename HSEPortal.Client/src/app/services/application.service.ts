@@ -309,6 +309,7 @@ export class KbiSectionModel {
   EnergyTypeStorage?: string[];
   OnsiteEnergyGeneration?: string[];
   BuildingStructureType?: string[];
+  AddedFloorsType?: string[];
   ExternalWallMaterials?: string[];
   WallACM?: string;
   WallHPL?: string;
