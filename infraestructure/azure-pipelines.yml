@@ -62,9 +62,10 @@ stages:
         inputs:
           command: 'test'
           projects: '**/HSEPortal.API.IntegrationTests.csproj'
-    - job: SeleniumTests
+    - job: Selenium Tests
       dependsOn: IntegrationTesting
       steps:
+      - checkout: "HSE Testing"
       - task: UsePythonVersion@0
         displayName: 'Use Python $(python.version)'
         inputs:
