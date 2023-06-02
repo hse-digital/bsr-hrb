@@ -20,6 +20,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionItems", "_Solution
 		readme.md = readme.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Infrastructure", "_Infrastructure", "{BE296ACF-1033-40F3-889E-E6D442177757}"
+	ProjectSection(SolutionItems) = preProject
+		infraestructure\azure-pipelines.yml = infraestructure\azure-pipelines.yml
+		infraestructure\deploy.yml = infraestructure\deploy.yml
+		infraestructure\main.bicep = infraestructure\main.bicep
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
