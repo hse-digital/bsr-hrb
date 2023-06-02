@@ -79,15 +79,15 @@ stages:
         condition: succeededOrFailed()
         displayName: 'Publish Test Results'
         inputs:
-        testResultsFiles: outputxunit.xml
+          testResultsFiles: outputxunit.xml
 
       - task: PublishBuildArtifacts@1
         condition: succeededOrFailed()
         displayName: 'Publish test report'
         inputs:
-        PathtoPublish: 'report.html'
-        ArtifactName: 'report'
-        publishLocation: 'Container'
+          PathtoPublish: 'report.html'
+          ArtifactName: 'report'
+          publishLocation: 'Container'
 
 - stage: QA
   dependsOn: DEV
