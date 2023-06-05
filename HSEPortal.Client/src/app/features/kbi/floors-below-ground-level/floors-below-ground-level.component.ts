@@ -33,10 +33,12 @@ export class FloorsBelowGroundLevelComponent extends BaseComponent implements IH
     let input = this.applicationService.currenKbiSection!.FloorsBelowGroundLevel;
     this.floorsBelowGroundLevelHasErrors = true;
     if (!input || !FieldValidations.IsWholeNumber(input) || !FieldValidations.IsAPositiveNumber(input)) {
-      this.errorMessage = `Enter the number of floors below ground level in ${this.getInfraestructureName()}`;
-    } else if (input > 20) {
       this.errorMessage = `Number of floors below ground level in ${this.getInfraestructureName()} must be a whole number fewer than 20`;
-    } else {
+    } else if ( input > 20) {
+      this.errorMessage = `Number of floors below ground level in ${this.getInfraestructureName()} must be a whole number fewer than 20`;
+    }
+
+    else {
       this.floorsBelowGroundLevelHasErrors = false;
     }
     return !this.floorsBelowGroundLevelHasErrors;

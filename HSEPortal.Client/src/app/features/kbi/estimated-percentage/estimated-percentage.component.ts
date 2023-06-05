@@ -87,7 +87,7 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
     error.hasError = true;
     if (!percentage || percentage.trim().length == 0) {
       error.message = `Estimate the percentage of ${label} on the outside walls of ${this.getInfraestructureName()}`;
-    } else if (!Number(percentage)) {
+    } else if (!Number(percentage) && percentage != "0") {
       error.message = `Percentage of ${label} must be a number`;
     } else if (!FieldValidations.IsGreaterThanZero(Number(percentage))) {
       error.message = `${label} must be 1% or more`;
