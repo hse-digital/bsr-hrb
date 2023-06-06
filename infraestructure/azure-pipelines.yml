@@ -62,33 +62,33 @@ stages:
         inputs:
           command: 'test'
           projects: '**/HSEPortal.API.IntegrationTests.csproj'
-    #- job: SeleniumTests
-    #  dependsOn: IntegrationTesting
-    #  steps:
-    #  - checkout: "HSE Testing"
-    #  - task: UsePythonVersion@0
-    #    displayName: 'Use Python $(python.version)'
-    #    inputs:
-    #      versionSpec: '$(python.version)'
-    #  - script: pip install robotframework robotframework-seleniumlibrary robotframework-imaplibrary2 && npm install chromedriver
-    #    displayName: 'Install dependencies'
+    - job: SeleniumTests
+      dependsOn: IntegrationTesting
+      steps:
+      - checkout: "HSE Testing"
+      - task: UsePythonVersion@0
+        displayName: 'Use Python $(python.version)'
+        inputs:
+          versionSpec: '$(python.version)'
+      - script: pip install robotframework robotframework-seleniumlibrary robotframework-imaplibrary2 && npm install chromedriver
+        displayName: 'Install dependencies'
 
-    #  - powershell: robot --pythonpath . -x outputxunit.xml -v link:$(Swa.Url) tests
-    #    displayName: 'Run tests'
+      - powershell: robot --pythonpath . -x outputxunit.xml -v link:$(Swa.Url) tests
+        displayName: 'Run tests'
 
-    #  - task: PublishTestResults@2
-    #    condition: succeededOrFailed()
-    #    displayName: 'Publish Test Results'
-    #    inputs:
-    #      testResultsFiles: outputxunit.xml
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFiles: outputxunit.xml
 
-    #  - task: PublishBuildArtifacts@1
-    #    condition: succeededOrFailed()
-    #    displayName: 'Publish test report'
-    #    inputs:
-    #      PathtoPublish: 'report.html'
-    #      ArtifactName: 'report'
-    #      publishLocation: 'Container'
+      - task: PublishBuildArtifacts@1
+        condition: succeededOrFailed()
+        displayName: 'Publish test report'
+        inputs:
+          PathtoPublish: 'report.html'
+          ArtifactName: 'report'
+          publishLocation: 'Container'
 
 - stage: QA
   dependsOn: DEV
