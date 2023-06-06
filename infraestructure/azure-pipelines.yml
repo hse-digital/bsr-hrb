@@ -3,7 +3,8 @@ trigger:
 
 variables: 
   python.version: '3.7'
-
+  github.token: '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'
+  
 resources:
   repositories:
   - repository: "HSE Testing"
@@ -70,7 +71,7 @@ stages:
       - checkout: "HSE Testing"
       - task: UsePythonVersion@0
         displayName: 'Use Python $(python.version)'
-        githubToken: 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
+        githubToken: $(github.token)
         inputs:
           versionSpec: '$(python.version)'
       - script: |
