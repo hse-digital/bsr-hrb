@@ -75,9 +75,7 @@ stages:
           versionSpec: '$(python.version)'
       - script: |
             python -m pip install --upgrade pip
-            pip install -r requirements.txt
-        displayName: 'Install dependencies'
-      - script: pip install robotframework robotframework-seleniumlibrary robotframework-imaplibrary2 && npm install chromedriver
+            pip install robotframework robotframework-seleniumlibrary robotframework-imaplibrary2 && npm install chromedriver
         displayName: 'Install dependencies'
 
       - powershell: robot --pythonpath . -x outputxunit.xml -v link:$(Swa.Url) tests
