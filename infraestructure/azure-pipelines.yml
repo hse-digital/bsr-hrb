@@ -42,58 +42,58 @@ stages:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)/HSEPortalAPI.zip'
           ArtifactName: HSEPortalAPI
 
-#- stage: DEV
-#  dependsOn: UnitTest
-#  variables: 
-#  - group: HSEPortal-DEV
-#  jobs:
-#    - template: deploy.yml
-#      parameters:
-#        subscription: 's118-dev-bsr-acs-services'
-#        appBuildCommand: 'npm run buildnonprod'
-#    - job: IntegrationTesting
-#      dependsOn: Deploy
-#      steps:
-#      - task: FileTransform@1
-#        displayName: 'Set variables for integration testing'
-#        inputs:
-#          folderPath: '**/HSEPortal.API.IntegrationTests'
-#          fileType: 'json'
-#          targetFiles: 'appsettings.json'
-#      - task: DotNetCoreCLI@2
-#        displayName: 'Run Integration Tests'
-#        inputs:
-#          command: 'test'
-#          projects: '**/HSEPortal.API.IntegrationTests.csproj'
-#    - job: SeleniumTests
-#      dependsOn: IntegrationTesting
-#      steps:
-#      - checkout: "HSE Testing"
-#      - task: UsePythonVersion@0
-#        displayName: 'Use Python $(python.version)'
-#        inputs:
-#          versionSpec: '$(python.version)'
-#      - script: |
-#            python -m pip install --upgrade pip
-#            pip install robotframework robotframework-seleniumlibrary robotframework-imaplibrary2 && npm install chromedriver
-#        displayName: 'Install dependencies'
+- stage: DEV
+  dependsOn: UnitTest
+  variables: 
+  - group: HSEPortal-DEV
+  jobs:
+    - template: deploy.yml
+      parameters:
+        subscription: 's118-dev-bsr-acs-services'
+        appBuildCommand: 'npm run buildnonprod'
+    - job: IntegrationTesting
+      dependsOn: Deploy
+      steps:
+      - task: FileTransform@1
+        displayName: 'Set variables for integration testing'
+        inputs:
+          folderPath: '**/HSEPortal.API.IntegrationTests'
+          fileType: 'json'
+          targetFiles: 'appsettings.json'
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Integration Tests'
+        inputs:
+          command: 'test'
+          projects: '**/HSEPortal.API.IntegrationTests.csproj'
+    #- job: SeleniumTests
+    #  dependsOn: IntegrationTesting
+    #  steps:
+    #  - checkout: "HSE Testing"
+    #  - task: UsePythonVersion@0
+    #    displayName: 'Use Python $(python.version)'
+    #    inputs:
+    #      versionSpec: '$(python.version)'
+    #  - script: |
+    #        python -m pip install --upgrade pip
+    #        pip install robotframework robotframework-seleniumlibrary robotframework-imaplibrary2 && npm install chromedriver
+    #    displayName: 'Install dependencies'
 
-#      - powershell: robot --pythonpath . -x outputxunit.xml -v link:$(Swa.Url) tests
-#        displayName: 'Run tests'
+    #  - powershell: robot --pythonpath . -x outputxunit.xml -v link:$(Swa.Url) tests
+    #    displayName: 'Run tests'
 
-#      - task: PublishTestResults@2
-#        condition: succeededOrFailed()
-#        displayName: 'Publish Test Results'
-#        inputs:
-#          testResultsFiles: outputxunit.xml
+    #  - task: PublishTestResults@2
+    #    condition: succeededOrFailed()
+    #    displayName: 'Publish Test Results'
+    #    inputs:
+    #      testResultsFiles: outputxunit.xml
 
-#      - task: PublishBuildArtifacts@1
-#        condition: succeededOrFailed()
-#        displayName: 'Publish test report'
-#        inputs:
-#          PathtoPublish: 'report.html'
-#          ArtifactName: 'report'
-#          publishLocation: 'Container'
+    #  - task: PublishBuildArtifacts@1
+    #    condition: succeededOrFailed()
+    #    displayName: 'Publish test report'
+    #    inputs:
+    #      PathtoPublish: 'report.html'
+    #      ArtifactName: 'report'
+    #      publishLocation: 'Container'
 
 - stage: QA
   dependsOn: DEV
