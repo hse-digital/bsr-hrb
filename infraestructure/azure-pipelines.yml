@@ -1,6 +1,8 @@
 trigger:
   - main
 
+variables: 
+  python.version: '3.7'
 
 resources:
   repositories:
@@ -68,8 +70,13 @@ stages:
       - checkout: "HSE Testing"
       - task: UsePythonVersion@0
         displayName: 'Use Python $(python.version)'
+        githubToken: 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
         inputs:
           versionSpec: '$(python.version)'
+      - script: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+        displayName: 'Install dependencies'
       - script: pip install robotframework robotframework-seleniumlibrary robotframework-imaplibrary2 && npm install chromedriver
         displayName: 'Install dependencies'
 
