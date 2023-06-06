@@ -1,0 +1,49 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+                    <govuk-error-link *ngIf="errors!.noFireResistance!.hasError" anchorId="input-no-resistance" [message]="errors!.noFireResistance!.errorMessage" />
+                    <govuk-error-link *ngIf="errors!.thirtyMinsFireResistance!.hasError" anchorId="input-thirty-mins" [message]="errors!.thirtyMinsFireResistance.errorMessage" />
+                    <govuk-error-link *ngIf="errors!.sixtyMinsFireResistance!.hasError" anchorId="input-sixty-mins" [message]="errors!.sixtyMinsFireResistance!.errorMessage" />
+                    <govuk-error-link *ngIf="errors!.hundredTwentyMinsFireResistance!.hasError" anchorId="input-hundred-twenty-mins" [message]="errors!.hundredTwentyMinsFireResistance!.errorMessage" />
+                    <govuk-error-link *ngIf="errors!.notKnownFireResistance!.hasError" anchorId="input-not-known" [message]="errors!.notKnownFireResistance!.errorMessage" />
+                </govuk-error-summary>
+
+                <h1 class="govuk-heading-l">Number of residential unit front doors in {{getInfraestructureName()}}</h1>
+
+                <govuk-input id="no-resistance" label="Doors with no certified fire resistance" #field [govukRequired]="field"
+                    [(model)]="applicationService.currenKbiSection!.Fire.ResidentialUnitFrontDoors!.NoFireResistance"
+                    [errorText]="getErrorDescription(errors!.noFireResistance!.hasError , errors!.noFireResistance!.errorMessage)"
+                    class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+
+                <govuk-input id="thirty-mins" label="Doors with 30-minute certified fire resistance" #field [govukRequired]="field"
+                    [(model)]="applicationService.currenKbiSection!.Fire.ResidentialUnitFrontDoors!.ThirtyMinsFireResistance"
+                    [errorText]="getErrorDescription(errors!.thirtyMinsFireResistance!.hasError , errors!.thirtyMinsFireResistance!.errorMessage)"
+                    class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+
+                <govuk-input id="sixty-mins" label="Doors with 60-minute certified fire resistance" #field [govukRequired]="field"
+                    [(model)]="applicationService.currenKbiSection!.Fire.ResidentialUnitFrontDoors!.SixtyMinsFireResistance"
+                    [errorText]="getErrorDescription(errors!.sixtyMinsFireResistance!.hasError , errors!.sixtyMinsFireResistance!.errorMessage)"
+                    class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+
+                <govuk-input id="hundred-twenty-mins" label="Doors with 120-minute certified fire resistance" #field [govukRequired]="field"
+                    [(model)]="applicationService.currenKbiSection!.Fire.ResidentialUnitFrontDoors!.HundredTwentyMinsFireResistance"
+                    [errorText]="getErrorDescription(errors!.hundredTwentyMinsFireResistance!.hasError , errors!.hundredTwentyMinsFireResistance!.errorMessage)"
+                    class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+
+                <govuk-input id="not-known" label="Doors that certified fire resistance is not known" #field [govukRequired]="field"
+                    [(model)]="applicationService.currenKbiSection!.Fire.ResidentialUnitFrontDoors!.NotKnownFireResistance"
+                    [errorText]="getErrorDescription(errors!.notKnownFireResistance!.hasError , errors!.notKnownFireResistance!.errorMessage)"
+                    class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+
+            </div>
+
+            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+            <save-and-come-back (onClick)="saveAndComeBack()" />
+        </div>
+    </div>
+</div>

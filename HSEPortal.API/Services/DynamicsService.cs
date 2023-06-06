@@ -615,10 +615,10 @@ public class DynamicsService
 
     private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure)
     {
-        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{dynamicsStructure.bsr_name.EscapeSingleQuote()}' and bsr_postcode eq '{dynamicsStructure.bsr_postcode}'"));
-        if (existingStructure.value.Any())
+        var existingStructure = await FindExistingStructureAsync(dynamicsStructure.bsr_name.EscapeSingleQuote(), dynamicsStructure.bsr_postcode);
+        if (existingStructure != null)
         {
-            dynamicsStructure = dynamicsStructure with { bsr_blockid = existingStructure.value[0].bsr_blockid };
+            dynamicsStructure = dynamicsStructure with { bsr_blockid = existingStructure.bsr_blockid };
             await dynamicsApi.Update($"{structureDefinition.Endpoint}({dynamicsStructure.bsr_blockid})", dynamicsStructure);
             return dynamicsStructure;
         }
@@ -626,6 +626,12 @@ public class DynamicsService
         var response = await dynamicsApi.Create(structureDefinition.Endpoint, dynamicsStructure);
         var structureId = ExtractEntityIdFromHeader(response.Headers);
         return dynamicsStructure with { bsr_blockid = structureId };
+    }
+
+    public async Task<DynamicsStructure> FindExistingStructureAsync(string name, string postcode)
+    {
+        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{name}' and bsr_postcode eq '{postcode}'"));
+        return existingStructure.value.FirstOrDefault();
     }
 
     private async Task<DynamicsBuildingApplication> CreateBuildingApplicationAsync(Contact contact, Building building)

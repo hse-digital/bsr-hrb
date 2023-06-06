@@ -1,0 +1,27 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+                    <govuk-error-link anchorId="{{firstCheckboxAnchorId}}" message={{errorMessage}} />
+                </govuk-error-summary>
+
+                <h1 class="govuk-heading-l">On site energy generation for {{getInfraestructureName()}}</h1>
+                <govuk-body>This is not a complete list. It includes only the types of energy generation we need to know about.</govuk-body>
+
+                <govuk-checkbox-none title="Types of on site energy generation" hint="Select all that apply"  [errorText]="getErrorDescription(onsiteEnergyGenerationHasErrors, errorMessage!)"
+                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.Energy.OnsiteEnergyGeneration!" noneOptionText="None" fieldsetClass="smallTitle">
+                    <checkbox-option text="Air or ground source heat pumps" value="air-ground-source-heat-pumps" id="air-ground-source-heat-pumps" />
+                    <checkbox-option text="Biomass boiler" value="biomass-boiler" id="biomass-boiler" />
+                    <checkbox-option text="Solar panels or wind turbines" value="solar-wind" id="solar-wind" />
+                    <checkbox-option text="Other" value="other" id="other" />
+                </govuk-checkbox-none>
+            </div>
+
+            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+            <save-and-come-back (onClick)="saveAndComeBack()" />
+        </div>
+    </div>
+</div>

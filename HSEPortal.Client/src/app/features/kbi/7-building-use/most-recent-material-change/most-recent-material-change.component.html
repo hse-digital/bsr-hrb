@@ -1,0 +1,22 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="{{firstRadioAnchorId}}" message="{{errorMessage}}" />
+        </govuk-error-summary>
+
+        <govuk-radio-group [errorText]="getErrorDescription(mostRecentChangeHasErrors, errorMessage!)" [(model)]="applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange" [isPageHeading]="true"
+                           title="Most recent work completed on {{getInfraestructureName()}}" fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'>
+
+          <govuk-radio *ngFor="let material of applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges" onKeyupEnter="onKeyupEnter.emit()" [model]="applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange" id="{{material}}" label="{{getMaterialName(material)}}" value="{{material}}" name="materials-group" />
+
+        </govuk-radio-group>
+      </div>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

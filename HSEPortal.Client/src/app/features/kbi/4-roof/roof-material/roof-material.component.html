@@ -1,0 +1,38 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="composite-panels-input" message="{{getErrorMessage()}}" />
+        </govuk-error-summary>
+
+        <govuk-radio-group [errorText]="getErrorDescription(roofMaterialHasErrors, getErrorMessage())" [(model)]="applicationService.currenKbiSection!.Roof.RoofMaterial" [isPageHeading]="true"
+                           title="What material covers the largest surface area on {{getInfraestructureName()}}'s roof?" fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="composite-panels" value="composite-panels" label="Composite panels" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="fibre-cement" value="fibre-cement" label="Fibre cement asbestos" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="metal-sheet" value="metal-sheet" label="Metal sheet" hint="Includes aluminium, zinc or lead" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="plastic-sheet" value="plastic-sheet" label="Plastic sheet" hint="Includes PVC, UPVC, or fibre reinforced plastic" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="polycarbonate-sheet" value="polycarbonate-sheet" label="Polycarbonate sheet"/>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="other-sheet-material" value="other-sheet-material" label="Other sheet material" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="rolled-liquid-bitumen-felt" value="rolled-liquid-bitumen-felt" label="Rolled or liquid - bitumen felt" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="rolled-liquid-other-felt" value="rolled-liquid-other-felt" label="Rolled or liquid - other felt" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="rolled-liquid-rubber" value="rolled-liquid-rubber" label="Rolled or liquid rubber" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="rolled-liquid-hot-cold-roof" value="rolled-liquid-hot-cold-roof" label="Rolled or liquid hot or cold roof systems" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="raac" value="raac" label="Reinforced autoclaved aerated concrete (RAAC)" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="shingles" value="shingles" label="Shingles" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="slate" value="slate" label="Slate" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="tiles" value="tiles" label="Tiles" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="green-roof" value="green-roof" label="Green roof" hint="Also known as a living roof or sedum roof" />
+          
+          <div class="govuk-radios__divider">or</div>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofMaterial" name="materials-group" id="none" value="none" label="None of these" />
+      </govuk-radio-group>
+
+      </div>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

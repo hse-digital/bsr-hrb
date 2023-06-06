@@ -63,21 +63,9 @@ export class TaskListComponent implements CanActivate, OnInit {
     return this.navigationService.navigateAppend(CheckBeforeStartComponent.route, this.activatedRoute);
   }
 
-  async navigateToSection(index: number) {
-    this.applicationService._currentSectionIndex = index;
-    this.applicationService._currentKbiSectionIndex = index;
-    return this.navigateToKbiSections();
-  }
-
-  async navigateToKbiSections() {
-    const route = this.kbiNavigation.getNextRoute();
-    if (route.indexOf('?') > -1) {
-      let segments = route.split('?');
-      let equipment = segments[1].substring(segments[1].indexOf('=') + 1);
-      await this.navigationService.navigateAppend(segments[0], this.activatedRoute, { equipment: equipment });
-    } else {
-      await this.navigationService.navigateAppend(route, this.activatedRoute);
-    }
+  async navigateToSection(index: number, sectionName: string) {
+    let route = this.kbiNavigation.getNextRoute();
+    await this.navigationService.navigateAppend(`${index+1}-${sectionName}/${route}`, this.activatedRoute);
   }
 
   navigateToConnections() {

@@ -281,6 +281,22 @@ export class KbiModel {
 }
 
 export class KbiSectionModel {
+  Fire: Fire = {};
+  Energy: Energy = {};
+  BuildingStructure: BuildingStructure = {};
+  Roof: Roof = {};
+  Staircases: Staircases = {}
+  Walls: Walls = {};
+  BuildingUse: BuildingUse = {};
+  Connections: Connections = {};
+  Submit: Submit = {};
+
+  StructureName?: string;
+  Postcode?: string;
+  StrategyEvacuateBuilding?: string;
+}
+
+export class Fire {
   StrategyEvacuateBuilding?: string;
   ProvisionsEquipment?: string[];
   FireSmokeProvisions?: string[];
@@ -293,27 +309,40 @@ export class KbiSectionModel {
     HundredTwentyMinsFireResistance?: number,
     NotKnownFireResistance?: number,
   } = {};
-  RoofType?: string;
-  RoofInsulation?: string;
-  RoofMaterial?: string;
   FireDoorsCommon?: {
     FireDoorThirtyMinute?: number,
     FireDoorSixtyMinute?: number,
     FireDoorHundredTwentyMinute?: number,
     FireDoorUnknown?: number,
   } = {};
+}
 
+export class Energy {
   EnergySupply?: string[];
-  InternalStaircasesAllFloors?: number;
-  TotalNumberStaircases?: number;
   EnergyTypeStorage?: string[];
   OnsiteEnergyGeneration?: string[];
+}
+
+export class BuildingStructure {
   BuildingStructureType?: string[];
+}
+
+export class Roof {
+  RoofType?: string;
+  RoofInsulation?: string;
+  RoofMaterial?: string;
+}
+
+export class Staircases {
+  TotalNumberStaircases?: number;
+  InternalStaircasesAllFloors?: number;
+}
+
+export class Walls {
   ExternalWallMaterials?: string[];
   WallACM?: string;
   WallHPL?: string;
   ExternalWallMaterialsPercentage?: Record<string, string>;
-
   ExternalWallInsulation?: {
     CheckBoxSelection?: string[],
     OtherValue?: string,
@@ -321,11 +350,26 @@ export class KbiSectionModel {
   ExternalWallInsulationPercentages?: Record<string, number>;
   ExternalFeatures?: string[];
   FeatureMaterialsOutside?: Record<string, string[]>;
+}
 
+export class BuildingUse {
+  AddedFloorsType?: string[];
   PrimaryUseOfBuilding?: string;
-
   SecondaryUseBuilding?: string[];
   FloorsBelowGroundLevel?: number;
   PrimaryUseBuildingBelowGroundLevel?: string;
   ChangePrimaryUse?: string;
+  PreviousUseBuilding?: string;
+  YearChangeInUse?: number;
+  UndergoneBuildingMaterialChanges?: string[];
+  MostRecentMaterialChange?: string;
+  YearMostRecentMaterialChange?: string;
+}
+
+export class Connections {
+
+}
+
+export class Submit {
+
 }

@@ -21,7 +21,9 @@ public record DynamicsStructure(string bsr_name = null, int? bsr_nooffloorsabove
     [property: JsonPropertyName("bsr_BuildingId@odata.bind")]
     string buildingReferenceId = null,
     [property: JsonPropertyName("bsr_CompletionCertificate@odata.bind")]
-    string certificateReferenceId = null) : DynamicsEntity<Structure>;
+    string certificateReferenceId = null,
+    [property: JsonPropertyName("bsr_evacuationpolicy_blockid@odata.bind")]
+    string bsr_evacuationpolicy_blockid = null) : DynamicsEntity<Structure>;
 
 public static class DynamicsSectionArea
 {
@@ -50,6 +52,19 @@ public static class DynamicsYearRangeIds
         ["2023-onwards"] = "2b75c692-d8b2-ed11-83ff-0022481b5e4f",
         ["not-completed"] = "65fcfda4-d8b2-ed11-83ff-0022481b5e4f"
     };
+}
+
+public static class DynamicsSectionEvacuation
+{
+    public static readonly IDictionary<string, string> Ids = new Dictionary<string, string>
+    {
+        ["phased"] = "971b1641-27eb-ed11-8847-6045bd0d6904",
+        ["progressive_horizontal"] = "966abb53-27eb-ed11-8847-6045bd0d6904",
+        ["simultaneous"] = "b2fc2760-27eb-ed11-8847-6045bd0d6904",
+        ["stay_put"] = "d5be516c-27eb-ed11-8847-6045bd0d6904",
+        ["temporary_simultaneous"] = "371d5378-27eb-ed11-8847-6045bd0d6904",
+    };
+    
 }
 
 public enum PeopleLivingInStructure

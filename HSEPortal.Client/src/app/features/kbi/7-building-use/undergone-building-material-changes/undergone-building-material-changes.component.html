@@ -1,0 +1,42 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <div class="govuk-form-group">
+            <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+              <govuk-error-link anchorId="{{firstCheckboxAnchorId}}" message={{errorMessage}} />
+            </govuk-error-summary>
+
+            <h1 class="govuk-heading-l">Building works since {{getInfraestructureName()}} was originally built</h1>
+            <h2 class="govuk-heading-s">This is not a complete list. It inculdes onlly the building works we need to know about. You will have needed a building control application to carry out any of these building works.</h2>
+
+
+            <govuk-checkbox-none title="Building works"
+                                 hint="Select all that apply (even if there has only been a partial change)"
+                                 [errorText]="getErrorDescription(undergoneBuildingMaterialChangesHasErrors, errorMessage!)"
+                                 (onKeyupEnter)="saveAndContinue()"
+                                 [(model)]="applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!"
+                                 unknownOptionText="Not Known">
+              <checkbox-option text="Asbestos removal and remediation on multiple floors" value="asbestos_removal" id="asbestos_removal" />
+              <checkbox-option text="Balconies added" value="balconies_added" id="balconies_added" />
+              <checkbox-option text="Changes in number of residential units" value="changes_residential_units" id="changes_residential_units" />
+              <checkbox-option text="Changes in number or location of staircase cores" value="changes_staircase_cores" id="changes_staircase_cores" />
+              <checkbox-option text="Changes to windows" value="changes_windows" id="changes_windows" />
+              <checkbox-option text="Complete rewiring of buildings or floors" value="complete_rewiring" id="complete_rewiring" />
+              <checkbox-option text="Floors added" value="floors_added" id="floors_added" />
+              <checkbox-option text="Floors removed" value="floors_removed" id="floors_removed" />
+              <checkbox-option text="Installation, replacement or removal of active or passive fire systems" value="installation_replacement_removal_fire_systems" id="installation_replacement_removal_fire_systems" />
+              <checkbox-option text="Installation, replacement or removal of emergency or other lighting" value="installation_replacement_removal_lighting" id="installation_replacement_removal_lighting" />
+              <checkbox-option text="Installation, replacement or removal of cold water systems in multiple residential units" value="installation_replacement_removal_cold_water_systems" id="installation_replacement_removal_cold_water_systems" />
+              <checkbox-option text="Installation, replacement or removal of gas supply to building" value="installation_replacement_removal_gas_supply" id="installation_replacement_gas_supply" />
+              <checkbox-option *ngIf="concreteLargePanelSystemSelected" text="Reinforcement works to large panel system structure" value="reinforcement_works_large_panel_system" id="reinforcement_works_large_panel_system" />
+              <checkbox-option text="Work connected to external walls" value="work_external_walls" id="work_external_walls" hint="Includes replacement of cavity barriers, insulation or cladding (like ACM)" />
+            </govuk-checkbox-none>
+          </div>
+
+            <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+            <save-and-come-back (onClick)="saveAndComeBack()" />
+        </div>
+    </div>
+</div>
