@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using HSEPortal.API.Functions;
+﻿using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
 
@@ -33,21 +32,42 @@ public class KbiService
         await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
     }
 
-    public async Task<DynamicsStructure> UpdateSectionFireData(KbiSyncData kbiSyncData)
+    public async Task UpdateSectionFireData(KbiSyncData kbiSyncData)
     {
+        var fireData = kbiSyncData.KbiSectionModel.Fire;
         var structure = kbiSyncData.DynamicsStructure;
 
         // evacuation policy
-        structure = structure with { bsr_evacuationpolicy_blockid = $"/bsr_evacuationpolicies({DynamicsSectionEvacuation.Ids[kbiSyncData.KbiSectionModel.StrategyEvacuateBuilding]})" };
+        structure = structure with { bsr_evacuationpolicy_blockid = $"/bsr_evacuationpolicies({DynamicsSectionEvacuation.Ids[fireData.StrategyEvacuateBuilding]})" };
 
         // fire and smoke control equipment
-        var fireAndSmokeProvisions = await GetOrCreateFireOrSmokeProvisions(structure.bsr_blockid);
-        fireAndSmokeProvisions = fireAndSmokeProvisions with
+        foreach (var provision in fireData.FireSmokeProvisions)
         {
-            // ProvisionsEquipment
+            var locations = fireData.FireSmokeProvisionLocations[provision];
+            await GetOrCreateFireOrSmokeProvisions(structure.bsr_blockid, provision, locations);
+        }
+
+        // lifts
+        foreach (var lift in fireData.Lifts)
+        {
+            await CreateOrUpdateLift(structure.bsr_blockid, lift);
+        }
+
+        // doors
+        structure = structure with
+        {
+            bsr_doorsthatcertifiedfireresistanceisnotknow = fireData.FireDoorsCommon.FireDoorUnknown,
+            bsr_doorwith120minutecertifiedfireresistance = fireData.FireDoorsCommon.FireDoorHundredTwentyMinute,
+            bsr_doorswith30minutescertifiedfireresistance = fireData.FireDoorsCommon.FireDoorThirtyMinute,
+            bsr_doorswith60minutescertifiedfireresistance = fireData.FireDoorsCommon.FireDoorSixtyMinute,
+            bsr_doorswithnocertifiedfireresistance = fireData.ResidentialUnitFrontDoors.NoFireResistance,
+            bsr_doorthatcertifiedfireresistanceisnotknown = fireData.ResidentialUnitFrontDoors.NotKnownFireResistance,
+            bsr_doorswith120minutecertifiedfireresistance = fireData.ResidentialUnitFrontDoors.HundredTwentyMinsFireResistance,
+            bsr_doorswith30minutecertifiedfireresistance = fireData.ResidentialUnitFrontDoors.ThirtyMinsFireResistance,
+            bsr_doorswith60minutecertifiedfireresistance = fireData.ResidentialUnitFrontDoors.SixtyMinsFireResistance
         };
 
-        return structure;
+        await dynamicsApi.Update($"bsr_blocks({structure.bsr_blockid})", structure);
     }
 
     public async Task UpdateSectionEnergyData(KbiSyncData kbiSyncData)
@@ -80,18 +100,97 @@ public class KbiService
         await Task.CompletedTask;
     }
 
-    private async Task<DynamicsFireAndSmokeProvisions> GetOrCreateFireOrSmokeProvisions(string blockId)
+    private async Task GetOrCreateFireOrSmokeProvisions(string blockId, string provision, string[] locations)
     {
-        var record = await dynamicsApi.Get<DynamicsResponse<DynamicsFireAndSmokeProvisions>>("bsr_blockfiresmokeprovisions", ("$filter", $"_bsr_blockid_value eq '{blockId}'"));
+        var provisionId = FireSmokeProvision.Ids[provision];
+        var record = new DynamicsFireAndSmokeProvisions
+        {
+            _bsr_blockid_value = blockId,
+            bsr_FireSmokeProvisionId = $"/bsr_blockfiresmokeprovisions({provisionId})"
+        };
+
+        foreach (var location in locations)
+        {
+            var residentialAreaId = ResidentialAreas.Ids[location];
+            record = record with
+            {
+                bsr_ResidentialAreaId = $"/bsr_residentialareas({residentialAreaId})"
+            };
+
+            var records = await dynamicsApi.Get<DynamicsResponse<DynamicsFireAndSmokeProvisions>>("bsr_blockfiresmokeprovisions",
+                ("$filter", $"_bsr_blockid_value eq '{blockId}' and _bsr_firesmokeprovisionid_value eq '{residentialAreaId}'")
+            );
+            if (!records.value.Any())
+            {
+                await dynamicsApi.Create("bsr_blockfiresmokeprovisions", record);
+            }
+        }
+    }
+
+    private async Task CreateOrUpdateLift(string blockId, string lift)
+    {
+        var liftId = Lifts.Ids[lift];
+        var record = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureLift>>("bsr_structurelifts", ("$filter", $"_bsr_structure_value eq '{blockId}' and _bsr_lifts_value eq '{liftId}'"));
         if (!record.value.Any())
         {
-            return new DynamicsFireAndSmokeProvisions(_bsr_blockid_value: blockId);
-        }
+            var dynamicsStructureLift = new DynamicsStructureLift
+            {
+                structureId = blockId,
+                liftId = $"/bsr_lifts({liftId})"
+            };
 
-        return record.value[0];
+            await dynamicsApi.Create("bsr_structurelifts", dynamicsStructureLift);
+        }
     }
 }
 
-public record DynamicsFireAndSmokeProvisions(string bsr_blockfiresmokeprovisionid = null, string _bsr_blockid_value = null,
-    [property: JsonPropertyName("bsr_FireSmokeProvisionId@odata.bind")]
-    string bsr_FireSmokeProvisionId = null);
+public static class FireSmokeProvision
+{
+    public static Dictionary<string, string> Ids = new()
+    {
+        ["none"] = "244e900d-2ceb-ed11-8847-6045bd0d6904",
+        ["alarm_heat_smoke"] = "1178b809-2beb-ed11-8847-6045bd0d6904",
+        ["alarm_call_points"] = "d144bc2d-2beb-ed11-8847-6045bd0d6904",
+        ["fire_dampers"] = "cecbdf40-2beb-ed11-8847-6045bd0d6904",
+        ["fire_extinguishers"] = "",
+        ["fire_shutters"] = "204f6b4d-2beb-ed11-8847-6045bd0d6904",
+        ["heat_detectors"] = "9cfda059-2beb-ed11-8847-6045bd0d6904",
+        ["risers_dry"] = "0bd544a6-2beb-ed11-8847-6045bd0d6904",
+        ["risers_wet"] = "bfde41ac-2beb-ed11-8847-6045bd0d6904",
+        ["smoke_aovs"] = "bf07bec4-2beb-ed11-8847-6045bd0d6904",
+        ["smoke_manual"] = "d69dbad0-2beb-ed11-8847-6045bd0d6904",
+        ["smoke_detectors"] = "2fece3e2-2beb-ed11-8847-6045bd0d6904",
+        ["sprinklers_misters"] = "fd1010ef-2beb-ed11-8847-6045bd0d6904"
+    };
+}
+
+public static class Lifts
+{
+    public static Dictionary<string, string> Ids = new()
+    {
+        ["evacuation"] = "310e3c9a-57eb-ed11-8847-6045bd0d6904",
+        ["firefighters"] = "65d444cb-57eb-ed11-8847-6045bd0d6904",
+        ["fire-fighting"] = "967ddde3-57eb-ed11-8847-6045bd0d6904",
+        ["modernised"] = "368a4404-58eb-ed11-8847-6045bd0d6904",
+        ["firemen"] = "ac73d81c-58eb-ed11-8847-6045bd0d6904",
+    };
+}
+
+public static class ResidentialAreas
+{
+    public static Dictionary<string, string> Ids = new()
+    {
+        ["basement"] = "7113402c-35eb-ed11-8847-6045bd0d6904",
+        ["bin_store"] = "31178f39-35eb-ed11-8847-6045bd0d6904",
+        ["car_park"] = "e9a5aa45-35eb-ed11-8847-6045bd0d6904",
+        ["common_balcony"] = "727ea951-35eb-ed11-8847-6045bd0d6904",
+        ["common_corridor"] = "6a53305e-35eb-ed11-8847-6045bd0d6904",
+        ["common_staircase"] = "9d2ea870-35eb-ed11-8847-6045bd0d6904",
+        ["external_staircase"] = "6c2ccd7c-35eb-ed11-8847-6045bd0d6904",
+        ["lobby"] = "564aeb88-35eb-ed11-8847-6045bd0d6904",
+        ["share_space_equipment"] = "6db8149b-35eb-ed11-8847-6045bd0d6904",
+        ["share_space_no_equipment"] = "56b85ef7-35eb-ed11-8847-6045bd0d6904",
+        ["rooftop"] = "b1218e03-36eb-ed11-8847-6045bd0d6904",
+        ["other"] = "73a08609-36eb-ed11-8847-6045bd0d6904",
+    };
+}
