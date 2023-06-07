@@ -371,6 +371,7 @@ export class Connections {
   OtherHighRiseBuildingConnections?: string;
   HowOtherHighRiseBuildingAreConnected?: string[];
   OtherBuildingConnections?: string;
+  HowOtherBuildingAreConnected?: string[];
 }
 
 export class Submit {
