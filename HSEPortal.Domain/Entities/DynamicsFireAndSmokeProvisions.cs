@@ -23,5 +23,17 @@ public record DynamicsStructureLift
     
     [property: JsonPropertyName("bsr_structure@odata.bind")]
     public string structureId { get; set; }
+}
+
+public record DynamicsStructureEnergy
+{
+    public string bsr_structureenergyId { get; set; }
     
+    [property: JsonPropertyName("bsr_energy@odata.bind")]
+    public string energyId { get; set; }
+    
+    [property: JsonPropertyName("bsr_structure@odata.bind")]
+    public string structureId { get; set; }
+    
+    public long bsr_energytype { get; set; }
 }

@@ -72,7 +72,47 @@ public class KbiService
 
     public async Task UpdateSectionEnergyData(KbiSyncData kbiSyncData)
     {
-        await Task.CompletedTask;
+        var energyData = kbiSyncData.KbiSectionModel.Energy;
+        var structure = kbiSyncData.DynamicsStructure;
+
+        foreach (var storage in energyData.EnergyTypeStorage)
+        {
+            var storageId = Energies.Ids[storage];
+            var dynamicsStructureEnergy = new DynamicsStructureEnergy
+            {
+                structureId = structure.bsr_blockid,
+                energyId = $"/bsr_energysupplies({storageId})",
+                bsr_energytype = 760_810_000
+            };
+
+            await CreateStructureEnergyIfNotExists(structure, storageId, dynamicsStructureEnergy);
+        }
+
+        foreach (var onsite in energyData.OnsiteEnergyGeneration)
+        {
+            var onsiteId = Energies.Ids[onsite];
+            var dynamicsStructureEnergy = new DynamicsStructureEnergy
+            {
+                structureId = structure.bsr_blockid,
+                energyId = $"/bsr_energysupplies({onsiteId})",
+                bsr_energytype = 760_810_001
+            };;
+
+            await CreateStructureEnergyIfNotExists(structure, onsiteId, dynamicsStructureEnergy);
+        }
+
+        foreach (var supply in energyData.EnergySupply)
+        {
+            var supplyId = Energies.Ids[supply];
+            var dynamicsStructureEnergy = new DynamicsStructureEnergy
+            {
+                structureId = structure.bsr_blockid,
+                energyId = $"/bsr_energysupplies({supplyId})",
+                bsr_energytype = 760_810_002
+            };
+
+            await CreateStructureEnergyIfNotExists(structure, supplyId, dynamicsStructureEnergy);
+        }
     }
 
     public async Task UpdateSectionStructureData(KbiSyncData kbiSyncData)
@@ -142,6 +182,15 @@ public class KbiService
             await dynamicsApi.Create("bsr_structurelifts", dynamicsStructureLift);
         }
     }
+
+    private async Task CreateStructureEnergyIfNotExists(DynamicsStructure structure, string energyId, DynamicsStructureEnergy dynamicsStructureEnergy)
+    {
+        var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureEnergy>>("bsr_structureenergies", ("$filter", $"_bsr_structure_value eq '{structure.bsr_blockid}' and _bsr_energy_value eq '{energyId}'"));
+        if (!records.value.Any())
+        {
+            await dynamicsApi.Create("bsr_structureenergies", dynamicsStructureEnergy);
+        }
+    }
 }
 
 public static class FireSmokeProvision
@@ -192,5 +241,30 @@ public static class ResidentialAreas
         ["share_space_no_equipment"] = "56b85ef7-35eb-ed11-8847-6045bd0d6904",
         ["rooftop"] = "b1218e03-36eb-ed11-8847-6045bd0d6904",
         ["other"] = "73a08609-36eb-ed11-8847-6045bd0d6904",
+    };
+}
+
+public static class Energies
+{
+    public static Dictionary<string, string> Ids = new()
+    {
+        // storage
+        ["hydrogen_batteries"] = "f4d28f53-3cf3-ed11-8848-6045bd0d6904",
+        ["lithium_ion_batteries"] = "888eb25f-3cf3-ed11-8848-6045bd0d6904",
+        ["other"] = "b81d1666-3cf3-ed11-8848-6045bd0d6904",
+        
+        // supply
+        ["energy-supply-communal"] = "5311d6a8-3cf3-ed11-8848-6045bd0d6904",
+        ["energy-supply-mains-electric"] = "215eeab4-3cf3-ed11-8848-6045bd0d6904",
+        ["energy-supply-mains-hydrogen"] = "da689ec1-3cf3-ed11-8848-6045bd0d6904",
+        ["energy-supply-mains-gas"] = "7aa3bac7-3cf3-ed11-8848-6045bd0d6904",
+        ["energy-supply-oil"] = "0cfdb2cd-3cf3-ed11-8848-6045bd0d6904",
+        ["energy-supply-other"] = "516024da-3cf3-ed11-8848-6045bd0d6904",
+        
+        // onsite
+        ["air-ground-source-heat-pumps"] = "b9561d7e-3cf3-ed11-8848-6045bd0d6904",
+        ["biomass-boiler"] = "34c31c84-3cf3-ed11-8848-6045bd0d6904",
+        ["solar-wind"] = "89731490-3cf3-ed11-8848-6045bd0d6904",
+        ["other"] = "7940a79c-3cf3-ed11-8848-6045bd0d6904"
     };
 }
