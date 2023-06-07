@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
 
@@ -15,19 +16,68 @@ public class KbiService
         this.dynamicsApi = dynamicsApi;
     }
 
-    public async Task UpdateSectionFireData(KbiSectionModel kbiSectionModel)
+    public Task<DynamicsStructure> GetDynamicsStructure(string structureName, string postcode)
     {
-        var structure = await dynamicsService.FindExistingStructureAsync(kbiSectionModel.StructureName, kbiSectionModel.Postcode);
+        return dynamicsService.FindExistingStructureAsync(structureName, postcode);
+    }
+
+    public async Task UpdateKbiStructureStart(KbiSyncData kbiSyncData)
+    {
+        var structure = kbiSyncData.DynamicsStructure;
+        structure = structure with { bsr_kbistartdate = DateTime.Now };
+
+        var building = await dynamicsApi.Get<DynamicsBuilding>($"bsr_buildings({structure._bsr_buildingid_value})");
+        building = building with { bsr_kbistartdate = structure.bsr_kbistartdate };
+
+        await dynamicsApi.Update($"bsr_blocks({structure.bsr_blockid})", structure);
+        await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
+    }
+
+    public async Task<DynamicsStructure> UpdateSectionFireData(KbiSyncData kbiSyncData)
+    {
+        var structure = kbiSyncData.DynamicsStructure;
 
         // evacuation policy
-        structure = structure with { bsr_evacuationpolicy_blockid = $"/bsr_evacuationpolicies({DynamicsSectionEvacuation.Ids[kbiSectionModel.StrategyEvacuateBuilding]})" };
-        
+        structure = structure with { bsr_evacuationpolicy_blockid = $"/bsr_evacuationpolicies({DynamicsSectionEvacuation.Ids[kbiSyncData.KbiSectionModel.StrategyEvacuateBuilding]})" };
+
         // fire and smoke control equipment
         var fireAndSmokeProvisions = await GetOrCreateFireOrSmokeProvisions(structure.bsr_blockid);
         fireAndSmokeProvisions = fireAndSmokeProvisions with
         {
             // ProvisionsEquipment
         };
+
+        return structure;
+    }
+
+    public async Task UpdateSectionEnergyData(KbiSyncData kbiSyncData)
+    {
+        await Task.CompletedTask;
+    }
+
+    public async Task UpdateSectionStructureData(KbiSyncData kbiSyncData)
+    {
+        await Task.CompletedTask;
+    }
+
+    public async Task UpdateSectionRoofData(KbiSyncData kbiSyncData)
+    {
+        await Task.CompletedTask;
+    }
+
+    public async Task UpdateSectionStaircasesData(KbiSyncData kbiSyncData)
+    {
+        await Task.CompletedTask;
+    }
+
+    public async Task UpdateSectionWallsData(KbiSyncData kbiSyncData)
+    {
+        await Task.CompletedTask;
+    }
+
+    public async Task UpdateSectionBuildingUseData(KbiSyncData kbiSyncData)
+    {
+        await Task.CompletedTask;
     }
 
     private async Task<DynamicsFireAndSmokeProvisions> GetOrCreateFireOrSmokeProvisions(string blockId)
