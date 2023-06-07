@@ -79,7 +79,7 @@ export class MostRecentChangeComponent  extends BaseComponent implements IHasNex
 
   private materialNameMapper: Record<string, string> = {
     "asbestos_removal": "Asbestos removal and remediation on multiple floors",
-    "balconies_added": "Balconies added to",
+    "balconies_added": "Balconies added",
     "changes_residential_units": "Changes in number of residential units",
     "changes_staircase_cores": "Changes in number or location of staircase cores",
     "changes_windows": "Changes to windows",
