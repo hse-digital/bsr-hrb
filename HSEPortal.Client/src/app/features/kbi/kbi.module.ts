@@ -19,6 +19,8 @@ import { KbiBuildingUseModule } from './7-building-use/kbi.building-use.module';
 import { KbiConnectionsModule } from './8-connections/kbi.connections.module';
 import { KbiSubmitModule } from './9-submit/kbi.submit.module';
 import { KbiSectionsComponent } from './sections/kbi.sections.component';
+import { KbiCheckAnswersModule } from './check-answers-building-information/kbi.check-answers-building-information.module';
+
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
@@ -31,6 +33,7 @@ const routes = new HseRoutes([
     HseRoute.forLoadChildren(KbiStaircasesModule.baseRoute, () => import('./5-staircases/kbi.staircases.module').then(m => m.KbiStaircasesModule)),
     HseRoute.forLoadChildren(KbiWallsModule.baseRoute, () => import('./6-walls/kbi.walls.module').then(m => m.KbiWallsModule)),
     HseRoute.forLoadChildren(KbiBuildingUseModule.baseRoute, () => import('./7-building-use/kbi.building-use.module').then(m => m.KbiBuildingUseModule)),
+    HseRoute.forLoadChildren(KbiCheckAnswersModule.baseRoute, () => import('./check-answers-building-information/kbi.check-answers-building-information.module').then(m => m.KbiCheckAnswersModule)),
   ])),
   HseRoute.forLoadChildren(KbiConnectionsModule.baseRoute, () => import('./8-connections/kbi.connections.module').then(m => m.KbiConnectionsModule)),
   HseRoute.forLoadChildren(KbiSubmitModule.baseRoute, () => import('./9-submit/kbi.submit.module').then(m => m.KbiSubmitModule)),
@@ -40,8 +43,7 @@ const routes = new HseRoutes([
   declarations: [
     CheckBeforeStartComponent,
     TaskListComponent,
-    KbiSectionsComponent
-  ],
+    KbiSectionsComponent  ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

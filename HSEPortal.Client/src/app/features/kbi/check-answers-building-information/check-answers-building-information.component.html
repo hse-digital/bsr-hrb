@@ -1,0 +1,24 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <h1 class="govuk-heading-l">Check your building informations answers for {{getInfraestructureName()}}</h1>
+
+        <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="input-floors-above" message="Answer all questions" />
+        </govuk-error-summary>
+
+        <fire-and-smoke-controls-answers [fireAndSmokeControls]="kbiSection.Fire"/>
+
+
+
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>
