@@ -7,6 +7,8 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { HowOtherHighRiseBuildingsConnectedComponent } from '../how-other-high-rise-buildings-connected/how-other-high-rise-buildings-connected.component';
+import { OtherBuildingConnectionsComponent } from '../other-building-connections/other-building-connections.component';
 
 @Component({
   selector: 'hse-other-high-rise-building-connections',
@@ -42,11 +44,14 @@ export class OtherHighRiseBuildingConnectionsComponent extends BaseComponent imp
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(OtherHighRiseBuildingConnectionsComponent.route, activatedRoute);
+    if(this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections === "yes") {
+      return navigationService.navigateRelative(HowOtherHighRiseBuildingsConnectedComponent.route, activatedRoute);
+    }
+    return navigationService.navigateRelative(OtherBuildingConnectionsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
+    return !!this.applicationService.currenKbiSection?.Connections.StructureConnections && this.applicationService.currenKbiSection!.Connections.StructureConnections.length > 0;
   }
 
 }

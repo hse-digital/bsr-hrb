@@ -3,9 +3,10 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent, GovukCheckboxComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { OtherHighRiseBuildingConnectionsComponent } from '../other-high-rise-building-connections/other-high-rise-building-connections.component';
 
 @Component({
   selector: 'hse-structure-connections',
@@ -60,11 +61,16 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(StructureConnectionsComponent.route, activatedRoute);
+    return navigationService.navigateRelative(OtherHighRiseBuildingConnectionsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
+    return this.applicationService.model.NumberOfSections != 'one' && this.applicationService.model.Sections.length > 1 
+      && this.containsFlag(BuildingApplicationStatus.KbiStructureInformationComplete);
+  }
+
+  containsFlag(flag: BuildingApplicationStatus) {
+    return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
 
 }

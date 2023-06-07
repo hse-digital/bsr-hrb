@@ -7,6 +7,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { HowOtherBuildingsConnectedComponent } from '../how-other-buildings-connected/how-other-buildings-connected.component';
 
 @Component({
   selector: 'hse-other-building-connections',
@@ -42,11 +43,18 @@ export class OtherBuildingConnectionsComponent extends BaseComponent implements 
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(OtherBuildingConnectionsComponent.route, activatedRoute);
+    if(this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections === "yes") {
+      return navigationService.navigateRelative(HowOtherBuildingsConnectedComponent.route, activatedRoute);
+    }
+    return navigationService.navigateRelative(OtherBuildingConnectionsComponent.route, activatedRoute); // user goes to check answer page
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
+    let notOtherHighRiseBuildingConnections = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections) 
+      && this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections === "no";
+    let thereAreOtherHighRiseBuildingConnections = !!this.applicationService.currenKbiSection?.Connections.HowOtherHighRiseBuildingAreConnected 
+      && this.applicationService.currenKbiSection?.Connections.HowOtherHighRiseBuildingAreConnected.length > 0;
+    return notOtherHighRiseBuildingConnections || thereAreOtherHighRiseBuildingConnections;
   }
 
 }

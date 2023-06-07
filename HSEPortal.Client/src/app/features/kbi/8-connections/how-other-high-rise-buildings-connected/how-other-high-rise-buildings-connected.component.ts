@@ -3,9 +3,11 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent, GovukCheckboxComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { OtherBuildingConnectionsComponent } from '../other-building-connections/other-building-connections.component';
 
 @Component({
   selector: 'hse-how-other-high-rise-buildings-connected',
@@ -45,10 +47,11 @@ export class HowOtherHighRiseBuildingsConnectedComponent  extends BaseComponent 
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(HowOtherHighRiseBuildingsConnectedComponent.route, activatedRoute);
+    return navigationService.navigateRelative(OtherBuildingConnectionsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
+    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections) 
+      && this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections === "yes";
   }
 }

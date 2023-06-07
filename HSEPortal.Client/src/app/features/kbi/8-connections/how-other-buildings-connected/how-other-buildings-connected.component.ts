@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent, GovukCheckboxComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
@@ -45,10 +46,11 @@ export class HowOtherBuildingsConnectedComponent extends BaseComponent implement
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(HowOtherBuildingsConnectedComponent.route, activatedRoute);
+    return navigationService.navigateRelative(HowOtherBuildingsConnectedComponent.route, activatedRoute); // user goes to check answer page.
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
+    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.currenKbiSection!.Connections.OtherBuildingConnections) 
+      && this.applicationService.currenKbiSection!.Connections.OtherBuildingConnections === "yes";
   }
 }
