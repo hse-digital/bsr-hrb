@@ -8,7 +8,10 @@ import { ComponentsModule } from "src/app/components/components.module";
 import { PipesModule } from "src/app/pipes/pipes.module";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
+import { EnergySupplyAndStorageAnswersComponent } from "./energy-supply-and-storage-answers.component";
 import { FireAndSmokeControlsAnswersComponent } from "./fire-and-smoke-controls-answers.component";
+import { RoofAnswersComponent } from "./roof-answers.component";
+import { StructuralTypeAndMaterialsAnswersComponent } from "./structural-type-and-materials-answers.component";
 
 
 const routes = new HseRoutes([
@@ -19,6 +22,9 @@ const routes = new HseRoutes([
   declarations: [
     BuildingInformationCheckAnswersComponent,
     FireAndSmokeControlsAnswersComponent,
+    EnergySupplyAndStorageAnswersComponent,
+    StructuralTypeAndMaterialsAnswersComponent,
+    RoofAnswersComponent,
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

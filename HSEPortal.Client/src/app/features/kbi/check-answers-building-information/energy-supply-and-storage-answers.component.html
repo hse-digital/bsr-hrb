@@ -1,0 +1,26 @@
+<govuk-summary-list>
+
+
+  <ng-container>
+
+    <govuk-summary-list-row key="Energy Storage" (onKeyupEnter)="navigate('type')" (onClick)="navigate('type')" [showAction]=true>
+      <ng-container *ngFor="let type of energySupplyAndStorage!.EnergyTypeStorage!">
+        <div>{{getEnergyStorageName(type)}}</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="On site generation" (onKeyupEnter)="navigate('onsite-generation')" (onClick)="navigate('onsite-generation')" [showAction]=true>
+      <ng-container *ngFor="let type of energySupplyAndStorage!.OnsiteEnergyGeneration!">
+        <div>{{getOnSiteGenerationName(type)}}</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Energy supplies" (onKeyupEnter)="navigate('supply')" (onClick)="navigate('supply')" [showAction]=true>
+      <ng-container *ngFor="let type of energySupplyAndStorage!.EnergySupply!">
+        <div>{{getEnergySupplyName(type)}}</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+  </ng-container>
+
+</govuk-summary-list>
