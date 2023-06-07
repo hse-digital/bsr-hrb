@@ -42,7 +42,7 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
       return sections.slice(0, sections.length - 1)
         .map(x => x.Name)
         .reduce((a, b) => `${a}, ${b}`)
-        ?.concat(' and ', this.applicationService.model.Sections.at(sections.length)!.Name!)!;
+        ?.concat(' and ', this.applicationService.model.Sections.at(sections.length - 1)!.Name!)!;
     }
     return `${sections[0].Name} and ${sections[1].Name}`;
   }

@@ -1,0 +1,29 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="yes-input" [message]=errorMessage />
+        </govuk-error-summary>
+
+        <h1 class="govuk-heading-l">Connections between {{getBuildingName()}} and other high-rise residential buildings</h1>
+
+        <govuk-body>High-rise residential buildings have 7 floors or more, or are 18 metres in height or more, and have at least 2 residential units.</govuk-body>
+        <govuk-body>A building may be connected to another by a shared wall, basement, lobby or walkway.</govuk-body>
+
+        <govuk-radio-group title="Is {{getBuildingName()}} connected to any other high-rise residential buildings?" 
+                [isPageHeading]=false [(model)]="applicationService.currenKbiSection!.Connections!.OtherHighRiseBuildingConnections" #field [govukRequired]="field"
+                id="building-connections" [errorText]="getErrorDescription(otherHighRiseBuildingConnectionsHasErrors, errorMessage!)" class="smallTitle margin-bottom-15">
+            <govuk-radio [model]="applicationService.currenKbiSection!.Connections!.OtherHighRiseBuildingConnections" name="application-group" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
+            <govuk-radio [model]="applicationService.currenKbiSection!.Connections!.OtherHighRiseBuildingConnections" name="application-group" id="no" value="no" label="No" (onKeyupEnter)="saveAndContinue()" />
+    
+        </govuk-radio-group>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>
