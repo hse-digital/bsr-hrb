@@ -33,8 +33,7 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
   }
 
   getSubTitle() {
-    let buildingName = this.applicationService.model.BuildingName;
-    return `${buildingName} is made up of ${this.getAllSectionNames()}`;
+    return `${this.getBuildingName()} is made up of ${this.getAllSectionNames()}`;
   }
 
   private getAllSectionNames(): string {
