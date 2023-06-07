@@ -28,8 +28,8 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection?.Connections) this.applicationService.currenKbiSection!.Connections = {}
-    if (!this.applicationService.currenKbiSection!.Connections.StructureConnections) { this.applicationService.currenKbiSection!.Connections.StructureConnections = []; }
+    if (!this.applicationService.currentKbiModel?.Connections) this.applicationService.currentKbiModel!.Connections = {}
+    if (!this.applicationService.currentKbiModel!.Connections.StructureConnections) { this.applicationService.currentKbiModel!.Connections.StructureConnections = []; }
     this.errorMessage = `Select how the structures in ${this.getBuildingName()} are connected`;
   }
 
@@ -53,7 +53,7 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
   }
 
   canContinue(): boolean {
-    this.structureConnectionsHasErrors = !this.applicationService.currenKbiSection!.Connections.StructureConnections || this.applicationService.currenKbiSection!.Connections.StructureConnections.length == 0;
+    this.structureConnectionsHasErrors = !this.applicationService.currentKbiModel!.Connections.StructureConnections || this.applicationService.currentKbiModel!.Connections.StructureConnections.length == 0;
 
     if (this.structureConnectionsHasErrors) this.firstCheckboxAnchorId = `bridge-walkway-${this.checkboxes?.first.innerId}`;
 
@@ -70,6 +70,7 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
   }
 
   containsFlag(flag: BuildingApplicationStatus) {
+    return true;
     return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
 

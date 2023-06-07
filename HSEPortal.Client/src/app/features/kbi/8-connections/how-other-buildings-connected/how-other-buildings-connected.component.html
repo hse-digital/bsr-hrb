@@ -8,18 +8,18 @@
           <govuk-error-link [anchorId]="firstCheckboxAnchorId" [message]=errorMessage />
         </govuk-error-summary>
 
-        <govuk-checkbox-group [(model)]="applicationService.currenKbiSection!.Connections!.HowOtherBuildingAreConnected!" hint="Select all that apply" [isPageHeading]=true 
+        <govuk-checkbox-group [(model)]="applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!" hint="Select all that apply" [isPageHeading]=true 
             title="What connects {{getBuildingName()}} to other buildings?" id="structure-connections" #field [govukRequired]="field" [errorText]="getErrorDescription(howBuildingsAreConnectedHasErrors, errorMessage!)">
 
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.HowOtherBuildingAreConnected!" text="Bridge or walkway between sections" value="bridge-walkway" id="bridge-walkway"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.HowOtherBuildingAreConnected!" text="Car park below ground" value="car-park" id="car-park"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.HowOtherBuildingAreConnected!" text="Ground floor" value="ground-floor" id="ground-floor" hint="like a shared entrance hall"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.HowOtherBuildingAreConnected!" text="Levels below ground with a residential unit" value="levels-below-ground-residential-unit" id="levels-below-ground-residential-unit"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.HowOtherBuildingAreConnected!" text="Levels below ground without a residential unit" value="levels-below-ground-no-residential-unit" id="levels-below-ground-no-residential-unit"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.HowOtherBuildingAreConnected!" text="Shared wall with emergency door" value="shared-wall-emergency-door" id="shared-wall-emergency-door"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.HowOtherBuildingAreConnected!" text="Shared wall with everyday use door" value="shared-wall-everyday-door" id="shared-wall-everyday-door"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.HowOtherBuildingAreConnected!" text="Shared wall with no door" value="shared-wall-no-door" id="shared-wall-no-door"/>
-            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.HowOtherBuildingAreConnected!" text="Other" value="other" id="other"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!" text="Bridge or walkway between sections" value="bridge-walkway" id="bridge-walkway"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!" text="Car park below ground" value="car-park" id="car-park"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!" text="Ground floor" value="ground-floor" id="ground-floor" hint="like a shared entrance hall"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!" text="Levels below ground with a residential unit" value="levels-below-ground-residential-unit" id="levels-below-ground-residential-unit"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!" text="Levels below ground without a residential unit" value="levels-below-ground-no-residential-unit" id="levels-below-ground-no-residential-unit"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!" text="Shared wall with emergency door" value="shared-wall-emergency-door" id="shared-wall-emergency-door"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!" text="Shared wall with everyday use door" value="shared-wall-everyday-door" id="shared-wall-everyday-door"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!" text="Shared wall with no door" value="shared-wall-no-door" id="shared-wall-no-door"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!" text="Other" value="other" id="other"/>
 
         </govuk-checkbox-group>
       </div>

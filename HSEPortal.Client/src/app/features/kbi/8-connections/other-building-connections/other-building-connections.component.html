@@ -9,10 +9,10 @@
         </govuk-error-summary>
 
         <govuk-radio-group title="Is {{getBuildingName()}} connected to any other buildings?" 
-                [isPageHeading]=true [(model)]="applicationService.currenKbiSection!.Connections!.OtherBuildingConnections" #field [govukRequired]="field"
+                [isPageHeading]=true [(model)]="applicationService.currentKbiModel!.Connections!.OtherBuildingConnections" #field [govukRequired]="field"
                 id="building-connections" [errorText]="getErrorDescription(otherBuildingConnectionsHasErrors, errorMessage!)">
-            <govuk-radio [model]="applicationService.currenKbiSection!.Connections!.OtherBuildingConnections" name="application-group" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
-            <govuk-radio [model]="applicationService.currenKbiSection!.Connections!.OtherBuildingConnections" name="application-group" id="no" value="no" label="No" (onKeyupEnter)="saveAndContinue()" />
+            <govuk-radio [model]="applicationService.currentKbiModel!.Connections!.OtherBuildingConnections" name="application-group" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
+            <govuk-radio [model]="applicationService.currentKbiModel!.Connections!.OtherBuildingConnections" name="application-group" id="no" value="no" label="No" (onKeyupEnter)="saveAndContinue()" />
     
         </govuk-radio-group>
       </div>

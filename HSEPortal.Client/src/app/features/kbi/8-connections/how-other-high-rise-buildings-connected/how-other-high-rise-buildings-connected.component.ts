@@ -29,8 +29,8 @@ export class HowOtherHighRiseBuildingsConnectedComponent  extends BaseComponent 
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection?.Connections) this.applicationService.currenKbiSection!.Connections = {}
-    if (!this.applicationService.currenKbiSection!.Connections.HowOtherHighRiseBuildingAreConnected) { this.applicationService.currenKbiSection!.Connections.HowOtherHighRiseBuildingAreConnected = []; }
+    if (!this.applicationService.currentKbiModel?.Connections) this.applicationService.currentKbiModel!.Connections = {}
+    if (!this.applicationService.currentKbiModel!.Connections.HowOtherHighRiseBuildingAreConnected) { this.applicationService.currentKbiModel!.Connections.HowOtherHighRiseBuildingAreConnected = []; }
     this.errorMessage = `Select what connects ${this.getBuildingName()} to other high-rise residential buildings`;
   }
 
@@ -39,7 +39,7 @@ export class HowOtherHighRiseBuildingsConnectedComponent  extends BaseComponent 
   }
 
   canContinue(): boolean {
-    this.howHighRiseBuildingsAreConnectedHasErrors = !this.applicationService.currenKbiSection!.Connections.HowOtherHighRiseBuildingAreConnected || this.applicationService.currenKbiSection!.Connections.HowOtherHighRiseBuildingAreConnected.length == 0;
+    this.howHighRiseBuildingsAreConnectedHasErrors = !this.applicationService.currentKbiModel!.Connections.HowOtherHighRiseBuildingAreConnected || this.applicationService.currentKbiModel!.Connections.HowOtherHighRiseBuildingAreConnected.length == 0;
 
     if (this.howHighRiseBuildingsAreConnectedHasErrors) this.firstCheckboxAnchorId = `bridge-walkway-${this.checkboxes?.first.innerId}`;
 
@@ -51,7 +51,7 @@ export class HowOtherHighRiseBuildingsConnectedComponent  extends BaseComponent 
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections) 
-      && this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections === "yes";
+    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel!.Connections.OtherHighRiseBuildingConnections) 
+      && this.applicationService.currentKbiModel!.Connections.OtherHighRiseBuildingConnections === "yes";
   }
 }

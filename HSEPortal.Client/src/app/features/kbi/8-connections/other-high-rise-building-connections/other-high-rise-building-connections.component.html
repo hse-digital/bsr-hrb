@@ -14,10 +14,10 @@
         <govuk-body>A building may be connected to another by a shared wall, basement, lobby or walkway.</govuk-body>
 
         <govuk-radio-group title="Is {{getBuildingName()}} connected to any other high-rise residential buildings?" 
-                [isPageHeading]=false [(model)]="applicationService.currenKbiSection!.Connections!.OtherHighRiseBuildingConnections" #field [govukRequired]="field"
+                [isPageHeading]=false [(model)]="applicationService.currentKbiModel!.Connections!.OtherHighRiseBuildingConnections" #field [govukRequired]="field"
                 id="building-connections" [errorText]="getErrorDescription(otherHighRiseBuildingConnectionsHasErrors, errorMessage!)" class="smallTitle margin-bottom-15">
-            <govuk-radio [model]="applicationService.currenKbiSection!.Connections!.OtherHighRiseBuildingConnections" name="application-group" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
-            <govuk-radio [model]="applicationService.currenKbiSection!.Connections!.OtherHighRiseBuildingConnections" name="application-group" id="no" value="no" label="No" (onKeyupEnter)="saveAndContinue()" />
+            <govuk-radio [model]="applicationService.currentKbiModel!.Connections!.OtherHighRiseBuildingConnections" name="application-group" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
+            <govuk-radio [model]="applicationService.currentKbiModel!.Connections!.OtherHighRiseBuildingConnections" name="application-group" id="no" value="no" label="No" (onKeyupEnter)="saveAndContinue()" />
     
         </govuk-radio-group>
       </div>

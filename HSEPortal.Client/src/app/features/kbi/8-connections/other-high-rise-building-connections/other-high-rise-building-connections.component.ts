@@ -29,7 +29,7 @@ export class OtherHighRiseBuildingConnectionsComponent extends BaseComponent imp
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection?.Connections) this.applicationService.currenKbiSection!.Connections = {}
+    if (!this.applicationService.currentKbiModel?.Connections) this.applicationService.currentKbiModel!.Connections = {}
     this.errorMessage = `Select whether ${this.getBuildingName()} connects to other high-rise residential buildings`;
   }
 
@@ -38,20 +38,20 @@ export class OtherHighRiseBuildingConnectionsComponent extends BaseComponent imp
   }
 
   canContinue(): boolean {
-    this.otherHighRiseBuildingConnectionsHasErrors = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections);
+    this.otherHighRiseBuildingConnectionsHasErrors = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel!.Connections.OtherHighRiseBuildingConnections);
 
     return !this.otherHighRiseBuildingConnectionsHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if(this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections === "yes") {
+    if(this.applicationService.currentKbiModel!.Connections.OtherHighRiseBuildingConnections === "yes") {
       return navigationService.navigateRelative(HowOtherHighRiseBuildingsConnectedComponent.route, activatedRoute);
     }
     return navigationService.navigateRelative(OtherBuildingConnectionsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Connections.StructureConnections && this.applicationService.currenKbiSection!.Connections.StructureConnections.length > 0;
+    return !!this.applicationService.currentKbiModel?.Connections.StructureConnections && this.applicationService.currentKbiModel!.Connections.StructureConnections.length > 0;
   }
 
 }

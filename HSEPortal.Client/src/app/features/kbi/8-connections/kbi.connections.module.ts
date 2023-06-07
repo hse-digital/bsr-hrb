@@ -12,6 +12,7 @@ import { OtherHighRiseBuildingConnectionsComponent } from './other-high-rise-bui
 import { HowOtherHighRiseBuildingsConnectedComponent } from './how-other-high-rise-buildings-connected/how-other-high-rise-buildings-connected.component';
 import { OtherBuildingConnectionsComponent } from './other-building-connections/other-building-connections.component';
 import { HowOtherBuildingsConnectedComponent } from './how-other-buildings-connected/how-other-buildings-connected.component';
+import { ConnectionsCheckAnswerComponent } from './connections-check-answer/connections-check-answer.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(StructureConnectionsComponent.route, StructureConnectionsComponent, StructureConnectionsComponent.title),
@@ -19,6 +20,7 @@ const routes = new HseRoutes([
   HseRoute.protected(HowOtherHighRiseBuildingsConnectedComponent.route, HowOtherHighRiseBuildingsConnectedComponent, HowOtherHighRiseBuildingsConnectedComponent.title),
   HseRoute.protected(OtherBuildingConnectionsComponent.route, OtherBuildingConnectionsComponent, OtherBuildingConnectionsComponent.title),
   HseRoute.protected(HowOtherBuildingsConnectedComponent.route, HowOtherBuildingsConnectedComponent, HowOtherBuildingsConnectedComponent.title),
+  HseRoute.protected(ConnectionsCheckAnswerComponent.route, ConnectionsCheckAnswerComponent, ConnectionsCheckAnswerComponent.title),
 ]);
 
 @NgModule({
@@ -27,7 +29,8 @@ const routes = new HseRoutes([
     OtherHighRiseBuildingConnectionsComponent,
     HowOtherHighRiseBuildingsConnectedComponent,
     OtherBuildingConnectionsComponent,
-    HowOtherBuildingsConnectedComponent
+    HowOtherBuildingsConnectedComponent,
+    ConnectionsCheckAnswerComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

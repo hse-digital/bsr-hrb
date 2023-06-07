@@ -8,6 +8,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { HowOtherBuildingsConnectedComponent } from '../how-other-buildings-connected/how-other-buildings-connected.component';
+import { ConnectionsCheckAnswerComponent } from '../connections-check-answer/connections-check-answer.component';
 
 @Component({
   selector: 'hse-other-building-connections',
@@ -28,7 +29,7 @@ export class OtherBuildingConnectionsComponent extends BaseComponent implements 
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection?.Connections) this.applicationService.currenKbiSection!.Connections = {}
+    if (!this.applicationService.currentKbiModel?.Connections) this.applicationService.currentKbiModel!.Connections = {}
     this.errorMessage = `Select whether ${this.getBuildingName()} is connected to any other buildings`;
   }
 
@@ -37,23 +38,23 @@ export class OtherBuildingConnectionsComponent extends BaseComponent implements 
   }
 
   canContinue(): boolean {
-    this.otherBuildingConnectionsHasErrors = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.currenKbiSection!.Connections.OtherBuildingConnections);
+    this.otherBuildingConnectionsHasErrors = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel!.Connections.OtherBuildingConnections);
 
     return !this.otherBuildingConnectionsHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if(this.applicationService.currenKbiSection!.Connections.OtherBuildingConnections === "yes") {
+    if(this.applicationService.currentKbiModel!.Connections.OtherBuildingConnections === "yes") {
       return navigationService.navigateRelative(HowOtherBuildingsConnectedComponent.route, activatedRoute);
     }
-    return navigationService.navigateRelative(OtherBuildingConnectionsComponent.route, activatedRoute); // user goes to check answer page
+    return navigationService.navigateRelative(ConnectionsCheckAnswerComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    let notOtherHighRiseBuildingConnections = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections) 
-      && this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections === "no";
-    let thereAreOtherHighRiseBuildingConnections = !!this.applicationService.currenKbiSection?.Connections.HowOtherHighRiseBuildingAreConnected 
-      && this.applicationService.currenKbiSection?.Connections.HowOtherHighRiseBuildingAreConnected.length > 0;
+    let notOtherHighRiseBuildingConnections = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel!.Connections.OtherHighRiseBuildingConnections) 
+      && this.applicationService.currentKbiModel!.Connections.OtherHighRiseBuildingConnections === "no";
+    let thereAreOtherHighRiseBuildingConnections = !!this.applicationService.currentKbiModel?.Connections.HowOtherHighRiseBuildingAreConnected 
+      && this.applicationService.currentKbiModel?.Connections.HowOtherHighRiseBuildingAreConnected.length > 0;
     return notOtherHighRiseBuildingConnections || thereAreOtherHighRiseBuildingConnections;
   }
 

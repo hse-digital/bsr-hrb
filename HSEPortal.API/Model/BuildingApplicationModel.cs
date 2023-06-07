@@ -96,7 +96,10 @@ public enum BuildingApplicationStatus
     KbiSubmitComplete = 8192
 }
 
-public record KbiModel(KbiSectionModel[] KbiSections, SectionStatus[] SectionStatus);
+public record KbiModel(KbiSectionModel[] KbiSections,
+        SectionStatus[] SectionStatus,
+        Connections Connections,
+        Submit Submit);
 
 public record SectionStatus(bool InProgress, bool Complete);
 
@@ -107,8 +110,6 @@ public record KbiSectionModel(Fire Fire,
         Staircases Staircases,
         Walls Walls,
         BuildingUse BuildingUse,
-        Connections Connections,
-        Submit Submit,
         
         string StructureName,
         string Postcode,

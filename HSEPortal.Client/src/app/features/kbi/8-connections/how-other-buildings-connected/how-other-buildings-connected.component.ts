@@ -7,6 +7,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { ConnectionsCheckAnswerComponent } from '../connections-check-answer/connections-check-answer.component';
 
 @Component({
   selector: 'hse-how-other-buildings-connected',
@@ -28,8 +29,8 @@ export class HowOtherBuildingsConnectedComponent extends BaseComponent implement
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection?.Connections) this.applicationService.currenKbiSection!.Connections = {}
-    if (!this.applicationService.currenKbiSection!.Connections.HowOtherBuildingAreConnected) { this.applicationService.currenKbiSection!.Connections.HowOtherBuildingAreConnected = []; }
+    if (!this.applicationService.currentKbiModel?.Connections) this.applicationService.currentKbiModel!.Connections = {}
+    if (!this.applicationService.currentKbiModel!.Connections.HowOtherBuildingAreConnected) { this.applicationService.currentKbiModel!.Connections.HowOtherBuildingAreConnected = []; }
     this.errorMessage = `Select what connects ${this.getBuildingName()} to the other buildings`;
   }
 
@@ -38,7 +39,7 @@ export class HowOtherBuildingsConnectedComponent extends BaseComponent implement
   }
 
   canContinue(): boolean {
-    this.howBuildingsAreConnectedHasErrors = !this.applicationService.currenKbiSection!.Connections.HowOtherBuildingAreConnected || this.applicationService.currenKbiSection!.Connections.HowOtherBuildingAreConnected.length == 0;
+    this.howBuildingsAreConnectedHasErrors = !this.applicationService.currentKbiModel!.Connections.HowOtherBuildingAreConnected || this.applicationService.currentKbiModel!.Connections.HowOtherBuildingAreConnected.length == 0;
 
     if (this.howBuildingsAreConnectedHasErrors) this.firstCheckboxAnchorId = `bridge-walkway-${this.checkboxes?.first.innerId}`;
 
@@ -46,11 +47,11 @@ export class HowOtherBuildingsConnectedComponent extends BaseComponent implement
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(HowOtherBuildingsConnectedComponent.route, activatedRoute); // user goes to check answer page.
+    return navigationService.navigateRelative(ConnectionsCheckAnswerComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.currenKbiSection!.Connections.OtherBuildingConnections) 
-      && this.applicationService.currenKbiSection!.Connections.OtherBuildingConnections === "yes";
+    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel!.Connections.OtherBuildingConnections) 
+      && this.applicationService.currentKbiModel!.Connections.OtherBuildingConnections === "yes";
   }
 }
