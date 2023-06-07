@@ -43,6 +43,7 @@ export class StructuralTypeAndMaterialsAnswersComponent {
   }
 
   getModularMaterials() {
+    //Get all modular materials
     const modularMaterials = this.buildingStructure?.BuildingStructureType?.filter(material => material.toLowerCase().includes("modular")).map(material => this.getMaterialName(material));
 
     if (modularMaterials!.length > 0) {
@@ -56,6 +57,10 @@ export class StructuralTypeAndMaterialsAnswersComponent {
   }
 
   getNonModularMaterials() {
+    //Get all non modular materials
+
+
+
     const nonModularMaterials = this.buildingStructure?.BuildingStructureType?.filter(material => !material.toLowerCase().includes("modular")).map(material => this.getMaterialName(material));
 
     if (nonModularMaterials!.length > 0) {
