@@ -8,7 +8,7 @@ public record DynamicsBuilding(string bsr_name = null, string bsr_buildingid = n
     [property: JsonPropertyName("bsr_papid@odata.bind")]
     string bsrPapReferenceId = null) : DynamicsEntity<Building>
 {
-    public DateTime bsr_kbistartdate { get; set; }
+    public string bsr_kbistartdate { get; set; }
 }
 
 public record DynamicsPapLookup(

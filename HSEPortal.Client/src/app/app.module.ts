@@ -20,6 +20,7 @@ import { ApplicationModule } from './features/application/application.module';
 import { TimeoutModalComponent } from './features/timeout/timeout.modal';
 import { HelpPagesModule } from './components/footer/help-pages.module';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { KbiService } from './services/kbi.service';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
@@ -53,7 +54,7 @@ const routes = new HseRoutes([
     HseAngularModule,
     HttpClientModule
   ],
-  providers: [HttpClient, ApplicationService],
+  providers: [HttpClient, ApplicationService, KbiService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

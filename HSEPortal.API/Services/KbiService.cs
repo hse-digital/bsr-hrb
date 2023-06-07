@@ -1,4 +1,5 @@
-﻿using HSEPortal.API.Functions;
+﻿using System.Globalization;
+using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
 
@@ -23,13 +24,16 @@ public class KbiService
     public async Task UpdateKbiStructureStart(KbiSyncData kbiSyncData)
     {
         var structure = kbiSyncData.DynamicsStructure;
-        structure = structure with { bsr_kbistartdate = DateTime.Now };
+        if (string.IsNullOrEmpty(structure.bsr_kbistartdate))
+        {
+            structure = structure with { bsr_kbistartdate = DateTime.Now.ToString(CultureInfo.InvariantCulture) };
 
-        var building = await dynamicsApi.Get<DynamicsBuilding>($"bsr_buildings({structure._bsr_buildingid_value})");
-        building = building with { bsr_kbistartdate = structure.bsr_kbistartdate };
+            var building = await dynamicsApi.Get<DynamicsBuilding>($"bsr_buildings({structure._bsr_buildingid_value})");
+            building = building with { bsr_kbistartdate = structure.bsr_kbistartdate.ToString(CultureInfo.InvariantCulture) };
 
-        await dynamicsApi.Update($"bsr_blocks({structure.bsr_blockid})", structure);
-        await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
+            await dynamicsApi.Update($"bsr_blocks({structure.bsr_blockid})", structure);
+            await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
+        }
     }
 
     public async Task UpdateSectionFireData(KbiSyncData kbiSyncData)
@@ -96,7 +100,8 @@ public class KbiService
                 structureId = structure.bsr_blockid,
                 energyId = $"/bsr_energysupplies({onsiteId})",
                 bsr_energytype = 760_810_001
-            };;
+            };
+            ;
 
             await CreateStructureEnergyIfNotExists(structure, onsiteId, dynamicsStructureEnergy);
         }
@@ -252,7 +257,7 @@ public static class Energies
         ["hydrogen_batteries"] = "f4d28f53-3cf3-ed11-8848-6045bd0d6904",
         ["lithium_ion_batteries"] = "888eb25f-3cf3-ed11-8848-6045bd0d6904",
         ["other"] = "b81d1666-3cf3-ed11-8848-6045bd0d6904",
-        
+
         // supply
         ["energy-supply-communal"] = "5311d6a8-3cf3-ed11-8848-6045bd0d6904",
         ["energy-supply-mains-electric"] = "215eeab4-3cf3-ed11-8848-6045bd0d6904",
@@ -260,7 +265,7 @@ public static class Energies
         ["energy-supply-mains-gas"] = "7aa3bac7-3cf3-ed11-8848-6045bd0d6904",
         ["energy-supply-oil"] = "0cfdb2cd-3cf3-ed11-8848-6045bd0d6904",
         ["energy-supply-other"] = "516024da-3cf3-ed11-8848-6045bd0d6904",
-        
+
         // onsite
         ["air-ground-source-heat-pumps"] = "b9561d7e-3cf3-ed11-8848-6045bd0d6904",
         ["biomass-boiler"] = "34c31c84-3cf3-ed11-8848-6045bd0d6904",

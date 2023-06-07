@@ -9,7 +9,7 @@ public record Structure(string Name, string FloorsAboveGround, string HeightInMe
 public record DynamicsStructure : DynamicsEntity<Structure>
 {
     public string bsr_blockid { get; init; }
-    public DateTime bsr_kbistartdate { get; set; }
+    public string bsr_kbistartdate { get; set; }
     public string bsr_name { get; set; }
     public int? bsr_nooffloorsabovegroundlevel { get; init; }
     public double? bsr_sectionheightinmetres { get; init; }
