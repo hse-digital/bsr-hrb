@@ -71,15 +71,60 @@ export class FireAndSmokeControlsAnswersComponent {
   getSmokeAndFireDeviceLocations() {
 
     if (this.fireAndSmokeControls.FireSmokeProvisionLocations!["smoke_detectors"]) {
-      const test = this.fireAndSmokeControls!.FireSmokeProvisionLocations!["smoke_detectors"].map((location: string) => {
-          (        location: string) => this.getLocationName(location);
-      });
-      console.log(test);
-      return this.fireAndSmokeControls!.FireSmokeProvisionLocations!["smoke_detectors"];
-      
+      return this.fireAndSmokeControls!.FireSmokeProvisionLocations!["smoke_detectors"].map(location => this.getLocationName(location));
     }
     else {
       return ["No smoke detectors"]
     }
   }
+
+  private LiftTypeMapper: Record<string, string> = {
+    "evacuation": "Evacuation lift",
+    "firefighters": "Firefighters lift",
+    "fire-fighting": "Fire-fighting lift",
+    "modernised": "Modernised lift for fire service use",
+    "firemen": "Firemen's lift",
+    "none": "None"
+  }
+  getLiftTypeName(liftTYpe: string) {
+    return this.LiftTypeMapper[liftTYpe];
+  }
+
+  getLiftTypes() {
+
+    if (this.fireAndSmokeControls.Lifts) {
+      return this.fireAndSmokeControls!.Lifts.map(lift => this.getLiftTypeName(lift));
+    }
+    else {
+      return ["No lifts"]
+    }
+  }
+
+  getTotalResidentialFireDoors() {
+
+    if (!!this.fireAndSmokeControls.ResidentialUnitFrontDoors) {
+      return Number(this.fireAndSmokeControls.ResidentialUnitFrontDoors.NoFireResistance!)
+        + Number(this.fireAndSmokeControls.ResidentialUnitFrontDoors.ThirtyMinsFireResistance!)
+        + Number(this.fireAndSmokeControls.ResidentialUnitFrontDoors.SixtyMinsFireResistance!)
+        + Number(this.fireAndSmokeControls.ResidentialUnitFrontDoors.HundredTwentyMinsFireResistance!)
+        + Number(this.fireAndSmokeControls.ResidentialUnitFrontDoors.NotKnownFireResistance!);
+    }
+    else {
+      return 0;
+    }
+  }
+    getTotalCommonFireDoors() {
+
+      if (!!this.fireAndSmokeControls.FireDoorsCommon) {
+        return Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorThirtyMinute!)
+          + Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorSixtyMinute!)
+          + Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorHundredTwentyMinute!)
+          + Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorUnknown!)
+      }
+      else {
+        return 0;
+      }
+
+  }
+
 }

@@ -5,20 +5,37 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
 
-        <h1 class="govuk-heading-l">Check your building informations answers for {{getInfraestructureName()}}</h1>
+        <h2 class="govuk-heading-l">Check your building informations answers for {{getInfraestructureName()}}</h2>
 
         <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
           <govuk-error-link anchorId="input-floors-above" message="Answer all questions" />
         </govuk-error-summary>
 
-        <fire-and-smoke-controls-answers [fireAndSmokeControls]="kbiSection.Fire"/>
+        <div [class.section-wrapper]>
+
+          <h1 class="govuk-heading-l" [class.section-header]>Fire and smoke controls</h1>
+
+          <fire-and-smoke-controls-answers [fireAndSmokeControls]="kbiSection.Fire" />
 
 
 
-      </div>
+          <div [class.section-wrapper]>
 
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()" />
-    </div>
+            <h2 class="govuk-heading-l" [class.section-header]>Energy supply and storage</h2>
+            <energy-supply-and-storage-answers [energySupplyAndStorage]="kbiSection.Energy" />
+
+          </div>
+
+          <div [class.section-wrapper]>
+
+            <h2 class="govuk-heading-l" [class.section-header]>Structural type and materials</h2>
+            <structural-type-and-materials-answers [buildingStructure]="kbiSection.BuildingStructure" />
+
+          </div>
+
+          <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+          <save-and-come-back (onClick)="saveAndComeBack()" />
+        </div>
+
   </div>
 </div>

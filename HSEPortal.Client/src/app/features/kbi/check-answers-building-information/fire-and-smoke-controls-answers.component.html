@@ -25,40 +25,51 @@
       </ng-container>
     </govuk-summary-list-row>
 
-  </ng-container>
-
-  <!--  <ng-container *ngIf="apIndex == 0">
-      <govuk-summary-list-row (onKeyupEnter)="navigateTo('principal')" (onClick)="navigateTo('principal')" key="Are you the principal accountable person?" [showAction]=true>{{ap.IsPrincipal == 'yes' ? 'Yes' : 'No'}}</govuk-summary-list-row>
-    </ng-container>
-
-    <ng-container *ngIf="apIndex > 0">
-      <govuk-summary-list-row (onKeyupEnter)="navigateTo('name')" (onClick)="navigateTo('name')" key="Name" [showAction]=true>{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
-      <govuk-summary-list-row (onKeyupEnter)="navigateTo('details')" (onClick)="navigateTo('details')" key="Contact Details" [showAction]=true>
-        <div>{{ap.Email}}</div>
-        <div>{{ap.PhoneNumber}}</div>
-      </govuk-summary-list-row>
-    </ng-container>
-
-    <govuk-summary-list-row (onClick)="navigateTo('address')" (onKeyupEnter)="navigateTo('address')" key="{{apIndex == 0 ? ' Your address' : 'Address'}}" [showAction]=true>
-      <address-description [address]="ap.Address" />
-    </govuk-summary-list-row>
-
-    <ng-container *ngIf="ap.IsPrincipal == 'no'">
-      <govuk-summary-list-row (onKeyupEnter)="navigateTo('pap-name')" (onClick)="navigateTo('pap-name')" key="Principal accountable person's name" [showAction]=true>{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
-      <govuk-summary-list-row (onKeyupEnter)="navigateTo('pap-details')" (onClick)="navigateTo('pap-details')" key="Principal accountable person's contact details" [showAction]=true>
-        <div>{{ap.Email}}</div>
-        <div>{{ap.PhoneNumber}}</div>
-      </govuk-summary-list-row>
-      <govuk-summary-list-row (onKeyupEnter)="navigateTo('pap-address')" (onClick)="navigateTo('pap-address')" key="Principal accountable person's address" [showAction]=true>
-        <address-description [address]="ap.PapAddress" />
-      </govuk-summary-list-row>
-    </ng-container>
-
-    <govuk-summary-list-row (onKeyupEnter)="navigateToAccountability()" (onClick)="navigateToAccountability()" key="Areas of accountability" [showAction]=true>
-      <ng-container *ngFor="let section of sectionsWithAccountability()">
-        <h2 class="govuk-heading-s">{{section.SectionName}}</h2>
-        <govuk-body class="govuk-!-margin-0 govuk-!-margin-bottom-3" *ngFor="let acc of section.Accountability">{{acc | accountabilityDescription}}</govuk-body>
+    <govuk-summary-list-row key="Types of lift" (onKeyupEnter)="navigate('lifts')" (onClick)="navigate('lifts')" [showAction]=true>
+      <ng-container *ngFor="let lift of getLiftTypes()">
+        <div>{{lift}}</div>
       </ng-container>
     </govuk-summary-list-row>
-  -->
+
+    <govuk-summary-list-row key="Residential front doors" (onKeyupEnter)="navigate('residential-unit-front-doors-fire-resistance')" (onClick)="navigate('residential-unit-front-doors-fire-resistance')" [showAction]=true>
+      <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.NoFireResistance! > 0">
+        <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.NoFireResistance!}} doors with no fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.ThirtyMinsFireResistance! > 0">
+        <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.ThirtyMinsFireResistance!}} doors with 30-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.SixtyMinsFireResistance! > 0">
+        <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.SixtyMinsFireResistance!}} doors with 60-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.HundredTwentyMinsFireResistance! > 0">
+        <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.HundredTwentyMinsFireResistance!}} doors with 120-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.NotKnownFireResistance! > 0">
+        <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.NotKnownFireResistance!}} doors that fire resistance is not known</div>
+      </ng-container>
+      <ng-container>
+        <div>{{getTotalResidentialFireDoors()}} doors in total</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Fire doors in common parts" (onKeyupEnter)="navigate('doors-common')" (onClick)="navigate('doors-common')" [showAction]=true>
+      <ng-container *ngIf="fireAndSmokeControls.FireDoorsCommon!.FireDoorThirtyMinute! > 0">
+        <div>{{fireAndSmokeControls.FireDoorsCommon!.FireDoorThirtyMinute!}} doors with 30-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.FireDoorsCommon!.FireDoorSixtyMinute! > 0">
+        <div>{{fireAndSmokeControls.FireDoorsCommon!.FireDoorSixtyMinute!}} doors with 60-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.FireDoorsCommon!.FireDoorHundredTwentyMinute! > 0">
+        <div>{{fireAndSmokeControls.FireDoorsCommon!.FireDoorHundredTwentyMinute!}} doors with 120-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.FireDoorsCommon!.FireDoorUnknown! > 0">
+        <div>{{fireAndSmokeControls.FireDoorsCommon!.FireDoorUnknown!}} doors that fire resistance is not known</div>
+      </ng-container>
+      <ng-container>
+        <div>{{getTotalCommonFireDoors()}} doors in total</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+  </ng-container>
+
 </govuk-summary-list>
