@@ -13,7 +13,7 @@
 
         <div [class.section-wrapper]>
 
-          <h1 class="govuk-heading-l" [class.section-header]>Fire and smoke controls</h1>
+          <h2 class="govuk-heading-m" [class.section-header]>Fire and smoke controls</h2>
 
           <fire-and-smoke-controls-answers [fireAndSmokeControls]="kbiSection.Fire" />
 
@@ -21,28 +21,46 @@
 
           <div [class.section-wrapper]>
 
-            <h2 class="govuk-heading-l" [class.section-header]>Energy supply and storage</h2>
+            <h2 class="govuk-heading-m" [class.section-header]>Energy supply and storage</h2>
             <energy-supply-and-storage-answers [energySupplyAndStorage]="kbiSection.Energy" />
 
           </div>
 
           <div [class.section-wrapper]>
 
-            <h2 class="govuk-heading-l" [class.section-header]>Structural type and materials</h2>
+            <h2 class="govuk-heading-m" [class.section-header]>Structural type and materials</h2>
             <structural-type-and-materials-answers [buildingStructure]="kbiSection.BuildingStructure" />
 
           </div>
 
           <div [class.section-wrapper]>
 
-            <h2 class="govuk-heading-l" [class.section-header]>Roof</h2>
+            <h2 class="govuk-heading-m" [class.section-header]>Roof</h2>
             <roof-answers [roof]="kbiSection.Roof" />
 
           </div>
 
-          <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-          <save-and-come-back (onClick)="saveAndComeBack()" />
+          <div [class.section-wrapper]>
+
+            <h2 class="govuk-heading-m" [class.section-header]>Staircases</h2>
+            <staircases-answers [staircases]="kbiSection.Staircases" />
+
+          </div>
+
+
         </div>
+
+        <div [class.section-wrapper]>
+
+          <h2 class="govuk-heading-m" [class.section-header]>External walls</h2>
+          <external-walls-features-answers [externalWalls]="kbiSection.Walls" />
+
+        </div>
+
+
+        <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+        <save-and-come-back (onClick)="saveAndComeBack()" />
+      </div>
 
   </div>
 </div>
