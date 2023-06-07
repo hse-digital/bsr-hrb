@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseNavigation, KbiNavigationNode } from '../../services/navigation';
-import { ApplicationService, KbiSectionModel, BuildingApplicationStatus } from '../../services/application.service';
+import { ApplicationService, KbiSectionModel, BuildingApplicationStatus, KbiModel } from '../../services/application.service';
 import { CheckBeforeStartComponent } from 'src/app/features/kbi/check-before-start/check-before-start.component';
 import { EvacuationStrategyComponent } from 'src/app/features/kbi/1-fire/evacuation-strategy/evacuation-strategy.component';
 import { ProvisionsEquipmentComponent } from 'src/app/features/kbi/1-fire/provisions-equipment/provisions-equipment.component';
@@ -50,6 +50,7 @@ import { OtherHighRiseBuildingConnectionsComponent } from './8-connections/other
 import { HowOtherHighRiseBuildingsConnectedComponent } from './8-connections/how-other-high-rise-buildings-connected/how-other-high-rise-buildings-connected.component';
 import { OtherBuildingConnectionsComponent } from './8-connections/other-building-connections/other-building-connections.component';
 import { HowOtherBuildingsConnectedComponent } from './8-connections/how-other-buildings-connected/how-other-buildings-connected.component';
+import { ConnectionsCheckAnswerComponent } from './8-connections/connections-check-answer/connections-check-answer.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -58,8 +59,9 @@ export class KbiNavigation extends BaseNavigation {
     super();
   }
 
-  private howOtherBuildingsConnectedNavigationNode = new HowOtherBuildingsConnectedNavigationNode(); // goes to check answer page
-  private otherBuildingConnectionsNavigationNode = new OtherBuildingConnectionsNavigationNode(this.howOtherBuildingsConnectedNavigationNode); // goes to check answer page
+  private connectionsCheckAnswerNavigationNode = new ConnectionsCheckAnswerNavigationNode(this.applicationService);
+  private howOtherBuildingsConnectedNavigationNode = new HowOtherBuildingsConnectedNavigationNode(this.connectionsCheckAnswerNavigationNode);
+  private otherBuildingConnectionsNavigationNode = new OtherBuildingConnectionsNavigationNode(this.howOtherBuildingsConnectedNavigationNode, this.connectionsCheckAnswerNavigationNode);
   private howOtherHighRiseBuildingsConnectedNavigationNode = new HowOtherHighRiseBuildingsConnectedNavigationNode(this.otherBuildingConnectionsNavigationNode);
   private otherHighRiseBuildingConnectionsNavigationNode = new OtherHighRiseBuildingConnectionsNavigationNode(this.howOtherHighRiseBuildingsConnectedNavigationNode, this.otherBuildingConnectionsNavigationNode);
   private structureConnectionsNavigationNode = new StructureConnectionsNavigationNode(this.otherHighRiseBuildingConnectionsNavigationNode);
@@ -672,7 +674,7 @@ class StructureConnectionsNavigationNode extends KbiNavigationNode {
     super();
   }
 
-  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if(!kbi.Connections?.StructureConnections || kbi.Connections.StructureConnections.length == 0) {
       return StructureConnectionsComponent.route;
     }
@@ -688,7 +690,7 @@ class OtherHighRiseBuildingConnectionsNavigationNode extends KbiNavigationNode {
     super();
   }
 
-  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if (!kbi.Connections?.OtherHighRiseBuildingConnections || !FieldValidations.IsNotNullOrWhitespace(kbi.Connections?.OtherHighRiseBuildingConnections)) {
       return OtherHighRiseBuildingConnectionsComponent.route;
     } else if (kbi.Connections.OtherHighRiseBuildingConnections === "yes") {
@@ -705,7 +707,7 @@ class HowOtherHighRiseBuildingsConnectedNavigationNode extends KbiNavigationNode
     super();
   }
 
-  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if (!kbi.Connections.HowOtherHighRiseBuildingAreConnected || kbi.Connections.HowOtherHighRiseBuildingAreConnected.length == 0) {
       return HowOtherHighRiseBuildingsConnectedComponent.route;
     }
@@ -716,32 +718,83 @@ class HowOtherHighRiseBuildingsConnectedNavigationNode extends KbiNavigationNode
 
 class OtherBuildingConnectionsNavigationNode extends KbiNavigationNode {
 
-  constructor(private howOtherBuildingsConnectedNavigationNode: HowOtherBuildingsConnectedNavigationNode) {
+  constructor(private howOtherBuildingsConnectedNavigationNode: HowOtherBuildingsConnectedNavigationNode,
+      private connectionCheckAnswersNavigationNode: ConnectionsCheckAnswerNavigationNode) {
     super();
   }
 
-  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if(!kbi.Connections.OtherBuildingConnections || !FieldValidations.IsNotNullOrWhitespace(kbi.Connections.OtherBuildingConnections)) {
       return OtherBuildingConnectionsComponent.route;
     } else if (kbi.Connections.OtherBuildingConnections === "yes") {
       return this.howOtherBuildingsConnectedNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
-    return ""; // goes to check answer page
+    return this.connectionCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 
 }
 
 class HowOtherBuildingsConnectedNavigationNode extends KbiNavigationNode {
 
-  constructor() {
+  constructor(private connectionCheckAnswersNavigationNode: ConnectionsCheckAnswerNavigationNode) {
     super();
   }
 
-  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if (!kbi.Connections.HowOtherBuildingAreConnected || kbi.Connections.HowOtherBuildingAreConnected.length == 0) {
       return HowOtherBuildingsConnectedComponent.route;
     }
-    return ""; // user goes to check answer page.
+    return this.connectionCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+}
+
+class ConnectionsCheckAnswerNavigationNode  extends KbiNavigationNode {
+
+  constructor(private applicationService: ApplicationService) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if (!this.canContinue()) {
+      return ConnectionsCheckAnswerComponent.route;
+    }
+    return ""; // user goes to declaration page.
+  }
+  
+  private canContinue(): boolean {
+    let canContinue = true;
+
+    canContinue &&= !!this.applicationService.currentKbiModel?.Connections?.StructureConnections && this.applicationService.currentKbiModel?.Connections?.StructureConnections.length > 0;
+    
+    canContinue &&= FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel?.Connections?.OtherHighRiseBuildingConnections); 
+    
+    if(this.applicationService.currentKbiModel?.Connections?.OtherHighRiseBuildingConnections === 'yes') canContinue &&= !!this.applicationService.currentKbiModel?.Connections?.HowOtherHighRiseBuildingAreConnected && this.applicationService.currentKbiModel?.Connections?.HowOtherHighRiseBuildingAreConnected.length > 0;
+    
+    canContinue &&= FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel?.Connections?.OtherBuildingConnections); 
+    
+    if(this.applicationService.currentKbiModel?.Connections?.OtherBuildingConnections === 'yes') canContinue &&= !!this.applicationService.currentKbiModel?.Connections?.HowOtherBuildingAreConnected && this.applicationService.currentKbiModel?.Connections?.HowOtherBuildingAreConnected.length > 0;
+
+    return canContinue;
+  }
+
+}
+
+class KbiDeclarationNavigationNode  extends KbiNavigationNode {
+
+  constructor(private applicationService: ApplicationService) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if (this.containsFlag(BuildingApplicationStatus.KbiConnectionsComplete)) {
+      return "";
+    }
+    return ""; 
+  }
+
+  private containsFlag(flag: BuildingApplicationStatus) {
+    return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
 
 }
