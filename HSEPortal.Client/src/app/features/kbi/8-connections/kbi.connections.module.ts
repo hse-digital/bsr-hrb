@@ -9,16 +9,19 @@ import { PipesModule } from "src/app/pipes/pipes.module";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { StructureConnectionsComponent } from './structure-connections/structure-connections.component';
 import { OtherHighRiseBuildingConnectionsComponent } from './other-high-rise-building-connections/other-high-rise-building-connections.component';
+import { HowOtherHighRiseBuildingsConnectedComponent } from './how-other-high-rise-buildings-connected/how-other-high-rise-buildings-connected.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(StructureConnectionsComponent.route, StructureConnectionsComponent, StructureConnectionsComponent.title),
   HseRoute.protected(OtherHighRiseBuildingConnectionsComponent.route, OtherHighRiseBuildingConnectionsComponent, OtherHighRiseBuildingConnectionsComponent.title),
+  HseRoute.protected(HowOtherHighRiseBuildingsConnectedComponent.route, HowOtherHighRiseBuildingsConnectedComponent, HowOtherHighRiseBuildingsConnectedComponent.title),
 ]);
 
 @NgModule({
   declarations: [
     StructureConnectionsComponent,
-    OtherHighRiseBuildingConnectionsComponent
+    OtherHighRiseBuildingConnectionsComponent,
+    HowOtherHighRiseBuildingsConnectedComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

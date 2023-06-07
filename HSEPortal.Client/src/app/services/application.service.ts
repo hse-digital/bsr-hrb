@@ -369,6 +369,7 @@ export class BuildingUse {
 export class Connections {
   StructureConnections?: string[];
   OtherHighRiseBuildingConnections?: string;
+  HowOtherHighRiseBuildingAreConnected?: string[];
 }
 
 export class Submit {

@@ -164,6 +164,7 @@ public record BuildingUse (string PrimaryUseOfBuilding,
         string YearMostRecentMaterialChange);
 
 public record Connections (string[] StructureConnections,
-        string OtherHighRiseBuildingConnections);
-        
+        string OtherHighRiseBuildingConnections,
+        string[] HowOtherHighRiseBuildingAreConnected);
+
 public record Submit ();
