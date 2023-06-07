@@ -54,14 +54,18 @@ export class MostRecentChangeComponent  extends BaseComponent implements IHasNex
 
     if (this.mostRecentChangeHasErrors) this.firstRadioAnchorId = `${this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0]}-input`;
 
-
-    console.log(this.errorMessage);
-
     return !this.mostRecentChangeHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
+    if (this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange === "unknown") {
+      console.log("Navigate to check answers")
+      return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
+
+    }
+    else {
+      return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
+    }
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
