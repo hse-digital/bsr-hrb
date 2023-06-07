@@ -43,7 +43,7 @@ export class OtherBuildingConnectionsComponent extends BaseComponent implements 
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if(this.applicationService.currenKbiSection!.Connections.OtherHighRiseBuildingConnections === "yes") {
+    if(this.applicationService.currenKbiSection!.Connections.OtherBuildingConnections === "yes") {
       return navigationService.navigateRelative(HowOtherBuildingsConnectedComponent.route, activatedRoute);
     }
     return navigationService.navigateRelative(OtherBuildingConnectionsComponent.route, activatedRoute); // user goes to check answer page
