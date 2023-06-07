@@ -1,0 +1,35 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link [anchorId]="firstCheckboxAnchorId" [message]=errorMessage />
+        </govuk-error-summary>
+
+        <h1 class="govuk-heading-l">What connects the structures of {{getBuildingName()}}?</h1>
+
+        <govuk-checkbox-group [(model)]="applicationService.currenKbiSection!.Connections!.StructureConnections!" hint="Select all that apply" [isPageHeading]=false 
+            title="{{getSubTitle()}}" class="plainText"
+            id="structure-connections" #field [govukRequired]="field" [errorText]="getErrorDescription(structureConnectionsHasErrors, errorMessage!)">
+
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.StructureConnections!" text="Bridge or walkway between sections" value="bridge-walkway" id="bridge-walkway"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.StructureConnections!" text="Car park below ground" value="car-park" id="car-park"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.StructureConnections!" text="Ground floor" value="ground-floor" id="ground-floor"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.StructureConnections!" text="like a shared entrance hall" value="shared-entrance-hall" id="shared-entrance-hall"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.StructureConnections!" text="Levels below ground with a residential unit" value="levels-below-ground-residential-unit" id="levels-below-ground-residential-unit"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.StructureConnections!" text="Levels below ground without a residential unit" value="levels-below-ground-no-residential-unit" id="levels-below-ground-no-residential-unit"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.StructureConnections!" text="Shared wall with emergency door" value="shared-wall-emergency-door" id="shared-wall-emergency-door"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.StructureConnections!" text="Shared wall with everyday use door" value="shared-wall-everyday-door" id="shared-wall-everyday-door"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.StructureConnections!" text="Shared wall with no door" value="shared-wall-no-door" id="shared-wall-no-door"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Connections!.StructureConnections!" text="Other" value="other" id="other"/>
+
+        </govuk-checkbox-group>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

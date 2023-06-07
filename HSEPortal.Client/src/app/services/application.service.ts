@@ -367,7 +367,7 @@ export class BuildingUse {
 }
 
 export class Connections {
-
+  StructureConnections?: string[];
 }
 
 export class Submit {
