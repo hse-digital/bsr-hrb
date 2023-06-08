@@ -37,3 +37,28 @@ public record DynamicsStructureEnergy
     [property: JsonPropertyName("bsr_structure@odata.bind")]
     public string structureId { get; set; }
 }
+
+public record DynamicsStructureMaterial
+{
+    [property: JsonPropertyName("bsr_structure@odata.bind")]
+    public string structureId { get; set; }
+    
+    [property: JsonPropertyName("bsr_material@odata.bind")]
+    public string materialId { get; set; }
+
+    public int? bsr_aluminiumcompositematerialacm { get; set; }
+    public int? bsr_highpressurelaminatehpl { get; set; }
+    public int? bsr_percentageofmaterial { get; set; }
+}
+
+public record DynamicsExternalFeature
+{
+    [property: JsonPropertyName("bsr_BlockId@odata.bind")]
+    public string structureId { get; set; }
+    
+    [property: JsonPropertyName("bsr_ExternalFeatureTypeId@odata.bind")]
+    public string featureId { get; set; }
+    
+    [property: JsonPropertyName("bsr_MaterialId@odata.bind")]
+    public string materialId { get; set; }
+}

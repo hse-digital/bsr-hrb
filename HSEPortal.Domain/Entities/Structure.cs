@@ -57,6 +57,13 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     public int? bsr_doorswith120minutecertifiedfireresistance { get; set; }
     public int? bsr_doorswith30minutecertifiedfireresistance { get; set; }
     public int? bsr_doorswith60minutecertifiedfireresistance { get; set; }
+    public int? bsr_typeofroof { get; set; }
+    public int? bsr_roofstructurelayerofinsulation { get; set; }
+    
+    [property: JsonPropertyName("bsr_primarymaterialofroof@odata.bind")]
+    public string primaryRoofMaterialId { get; set; }
+    public int? bsr_totalnumberofstaircases { get; set; }
+    public int? bsr_numberofinternalstaircasesfromgroundlevel { get; set; }
 }
 
 public static class DynamicsSectionArea
