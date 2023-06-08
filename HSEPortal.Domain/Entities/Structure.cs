@@ -6,24 +6,58 @@ public record Structure(string Name, string FloorsAboveGround, string HeightInMe
     string PeopleLivingInStructure, string ConstructionYearOption, string ExactYear = null,
     string YearRange = null, string Id = null) : Entity(Id);
 
-public record DynamicsStructure(string bsr_name = null, int? bsr_nooffloorsabovegroundlevel = null, double? bsr_sectionheightinmetres = null,
-    int? bsr_numberofresidentialunits = null, PeopleLivingInStructure? bsr_arepeoplelivingintheblock = null, ConstructionYearOption? bsr_doyouknowtheblocksexactconstructionyear = null,
-    string bsr_blockid = null,
-    string bsr_addressline1 = null, string bsr_addressline2 = null, string bsr_city = null, string bsr_postcode = null, string bsr_uprn = null, string bsr_usrn = null, AddressType? bsr_addresstype = null, YesNoOption? bsr_manualaddress = null,
-    [property: JsonPropertyName("bsr_Country@odata.bind")]
-    string countryReferenceId = null,
-    [property: JsonPropertyName("bsr_exactconstructionyearid@odata.bind")]
-    string exactConstructionYearReferenceId = null,
-    [property: JsonPropertyName("bsr_SectionCompletionYearRange@odata.bind")]
-    string sectionCompletionYearRangeReferenceId = null,
-    [property: JsonPropertyName("bsr_BuildingApplicationID@odata.bind")]
-    string buildingApplicationReferenceId = null,
-    [property: JsonPropertyName("bsr_BuildingId@odata.bind")]
-    string buildingReferenceId = null,
-    [property: JsonPropertyName("bsr_CompletionCertificate@odata.bind")]
-    string certificateReferenceId = null,
-    [property: JsonPropertyName("bsr_evacuationpolicy_blockid@odata.bind")]
-    string bsr_evacuationpolicy_blockid = null) : DynamicsEntity<Structure>;
+public record DynamicsStructure : DynamicsEntity<Structure>
+{
+    public string bsr_blockid { get; init; }
+    public string bsr_kbistartdate { get; set; }
+    public string bsr_name { get; set; }
+    public int? bsr_nooffloorsabovegroundlevel { get; init; }
+    public double? bsr_sectionheightinmetres { get; init; }
+    public int? bsr_numberofresidentialunits { get; init; }
+    public PeopleLivingInStructure? bsr_arepeoplelivingintheblock { get; init; }
+    public ConstructionYearOption? bsr_doyouknowtheblocksexactconstructionyear { get; init; }
+    public string bsr_addressline1 { get; init; }
+    public string bsr_addressline2 { get; init; }
+    public string bsr_city { get; init; }
+    public string bsr_postcode { get; init; }
+    public string bsr_uprn { get; init; }
+    public string bsr_usrn { get; init; }
+    public AddressType? bsr_addresstype { get; init; }
+    public YesNoOption? bsr_manualaddress { get; init; }
+    
+    public string _bsr_buildingid_value { get; set; }
+
+    [JsonPropertyName("bsr_Country@odata.bind")]
+    public string countryReferenceId { get; init; }
+
+    [JsonPropertyName("bsr_exactconstructionyearid@odata.bind")]
+    public string exactConstructionYearReferenceId { get; init; }
+
+    [JsonPropertyName("bsr_SectionCompletionYearRange@odata.bind")]
+    public string sectionCompletionYearRangeReferenceId { get; init; }
+
+    [JsonPropertyName("bsr_BuildingApplicationID@odata.bind")]
+    public string buildingApplicationReferenceId { get; init; }
+
+    [JsonPropertyName("bsr_BuildingId@odata.bind")]
+    public string buildingReferenceId { get; init; }
+
+    [JsonPropertyName("bsr_CompletionCertificate@odata.bind")]
+    public string certificateReferenceId { get; init; }
+
+    [JsonPropertyName("bsr_evacuationpolicy_blockid@odata.bind")]
+    public string bsr_evacuationpolicy_blockid { get; init; }
+
+    public int bsr_doorsthatcertifiedfireresistanceisnotknow { get; set; }
+    public int bsr_doorwith120minutecertifiedfireresistance { get; set; }
+    public int bsr_doorswith30minutescertifiedfireresistance { get; set; }
+    public int bsr_doorswith60minutescertifiedfireresistance { get; set; }
+    public int bsr_doorswithnocertifiedfireresistance { get; set; }
+    public int bsr_doorthatcertifiedfireresistanceisnotknown { get; set; }
+    public int bsr_doorswith120minutecertifiedfireresistance { get; set; }
+    public int bsr_doorswith30minutecertifiedfireresistance { get; set; }
+    public int bsr_doorswith60minutecertifiedfireresistance { get; set; }
+}
 
 public static class DynamicsSectionArea
 {
@@ -64,7 +98,6 @@ public static class DynamicsSectionEvacuation
         ["stay_put"] = "d5be516c-27eb-ed11-8847-6045bd0d6904",
         ["temporary_simultaneous"] = "371d5378-27eb-ed11-8847-6045bd0d6904",
     };
-    
 }
 
 public enum PeopleLivingInStructure

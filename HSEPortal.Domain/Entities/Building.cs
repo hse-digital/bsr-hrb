@@ -6,7 +6,10 @@ public record Building(string Name, string Id = null) : Entity(Id);
 
 public record DynamicsBuilding(string bsr_name = null, string bsr_buildingid = null,
     [property: JsonPropertyName("bsr_papid@odata.bind")]
-    string bsrPapReferenceId = null) : DynamicsEntity<Building>;
+    string bsrPapReferenceId = null) : DynamicsEntity<Building>
+{
+    public string bsr_kbistartdate { get; set; }
+}
 
 public record DynamicsPapLookup(
     [property: JsonPropertyName("bsr_papid_account@odata.bind")]
