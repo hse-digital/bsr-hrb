@@ -48,7 +48,9 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
       else if (Number(this.applicationService.currenKbiSection!.BuildingUse.YearMostRecentMaterialChange)) {
         if (!!this.applicationService!.currentSection!.YearOfCompletion) {
           if (Number(this.applicationService!.currentSection!.YearOfCompletion)) {
-            this.errorMessage = `Year of ${this.getMaterialName(this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange!).toLowerCase()} must be after the building was completed in ${this.applicationService!.currentSection!.YearOfCompletion}`;
+            if (Number(this.applicationService!.currenKbiSection?.BuildingUse.YearMostRecentMaterialChange) < Number(this.applicationService!.currentSection!.YearOfCompletion!)) {
+              this.errorMessage = `Year of ${this.getMaterialName(this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange!).toLowerCase()} must be after the building was completed in ${this.applicationService!.currentSection!.YearOfCompletion}`;
+            }
           }
         }
         else if (!!this.applicationService!.currentSection!.YearOfCompletionRange) {

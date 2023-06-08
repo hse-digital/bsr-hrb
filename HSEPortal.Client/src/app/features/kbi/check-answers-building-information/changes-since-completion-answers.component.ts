@@ -4,6 +4,7 @@ import { BuildingUse} from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { KbiFireModule } from "../1-fire/kbi.fire.module";
 import { KbiStructureModule } from "../3-structure/kbi.structure.module";
+import { KbiBuildingUseModule } from "../7-building-use/kbi.building-use.module";
 
 @Component({
   selector: 'changes-since-completion-answers',
@@ -19,7 +20,7 @@ export class ChangesSinceCompletionAnswers {
 
   navigate(url: string) {
     console.log(`${KbiFireModule.baseRoute}/${url}`);
-    this.navigationService.navigateRelative(`../${KbiStructureModule.baseRoute}/${url}`, this.activatedRoute);
+    this.navigationService.navigateRelative(`../${KbiBuildingUseModule.baseRoute}/${url}`, this.activatedRoute);
   }
 
   private materialNameMapper: Record<string, string> = {
@@ -59,7 +60,22 @@ export class ChangesSinceCompletionAnswers {
     "unknown": "Not Known",
   }
   getBuildingWorksName(name: string) {
-    return this.materialNameMapper[name];
+    return this.buildingWorksMapper[name];
+  }
+
+  private buildingUseMapper: Record<string, string> = {
+    "assembly_and_recreation": "Assembly and recreation",
+    "assembly_recreation": "Assembly and recreation",
+    "office": "Office",
+    "residential_institution": "Residential institution",
+    "other_residential_use": "Other residential use",
+    "shop_commercial": "Shop and commercial",
+    "other_non_residential": "Other non-residential",
+    "none": "None"
+
+  }
+  getBuildingUse(name: string) {
+    return this.buildingUseMapper[name];
   }
 
 }

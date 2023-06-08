@@ -11,12 +11,15 @@
       </ng-container>
     </govuk-summary-list-row>
 
-<!--    <govuk-summary-list-row key="Balconies materials" (onKeyupEnter)="navigate('external-feature-materials')" (onClick)="navigate('external-feature-materials')" [showAction]=true>
+    <govuk-summary-list-row key="Balconies materials" (onKeyupEnter)="navigate('external-feature-materials')" (onClick)="navigate('external-feature-materials')" [showAction]=true>
 
-        <ng-container *ngIf="externalFeatures!.FeatureMaterialsOutside['balconies']">
+      <ng-container *ngIf="externalFeatures!.FeatureMaterialsOutside!['balconies']">
+        <ng-container *ngFor="let material of externalFeatures!.FeatureMaterialsOutside!['balconies']">
+          <div>{{getMaterialName(material)}}</div>
         </ng-container>
+      </ng-container>
 
-    </govuk-summary-list-row>-->
+    </govuk-summary-list-row>
 
   </ng-container>
 

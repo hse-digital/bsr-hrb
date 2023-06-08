@@ -7,6 +7,7 @@ import { HseAngularModule } from "hse-angular";
 import { ComponentsModule } from "src/app/components/components.module";
 import { PipesModule } from "src/app/pipes/pipes.module";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
+import { ChangesSinceCompletionAnswers } from "./changes-since-completion-answers.component";
 import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
 import { EnergySupplyAndStorageAnswersComponent } from "./energy-supply-and-storage-answers.component";
 import { ExternalFeaturesAnswersComponent } from "./external-features-answers.component";
@@ -35,6 +36,7 @@ const routes = new HseRoutes([
     ExternalFeaturesAnswersComponent,
     UsesGroundLevelAndAboveAnswersComponent,
     UsesBelowGroundLevelAnswersComponent,
+    ChangesSinceCompletionAnswers,
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
