@@ -9,11 +9,14 @@ import { PipesModule } from "src/app/pipes/pipes.module";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
 import { EnergySupplyAndStorageAnswersComponent } from "./energy-supply-and-storage-answers.component";
+import { ExternalFeaturesAnswersComponent } from "./external-features-answers.component";
 import { ExternalWallsAnswersComponent } from "./external-walls-features-answers-answers.component";
 import { FireAndSmokeControlsAnswersComponent } from "./fire-and-smoke-controls-answers.component";
 import { RoofAnswersComponent } from "./roof-answers.component";
 import { StaircasesAnswersComponent } from "./staircase-answers.component.component";
 import { StructuralTypeAndMaterialsAnswersComponent } from "./structural-type-and-materials-answers.component";
+import { UsesBelowGroundLevelAnswersComponent } from "./uses-below-ground-level-answers.component";
+import { UsesGroundLevelAndAboveAnswersComponent } from "./uses-ground-level-and-above-answers.component";
 
 
 const routes = new HseRoutes([
@@ -29,6 +32,9 @@ const routes = new HseRoutes([
     RoofAnswersComponent,
     StaircasesAnswersComponent,
     ExternalWallsAnswersComponent,
+    ExternalFeaturesAnswersComponent,
+    UsesGroundLevelAndAboveAnswersComponent,
+    UsesBelowGroundLevelAnswersComponent,
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

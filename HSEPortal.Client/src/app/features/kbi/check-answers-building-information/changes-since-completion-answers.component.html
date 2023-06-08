@@ -1,0 +1,54 @@
+<govuk-summary-list>
+
+
+  <ng-container>
+
+    <ng-container *ngIf="buildingUse.UndergoneBuildingMaterialChanges">
+
+    </ng-container>
+
+      <govuk-summary-list-row key="Change of use" (onKeyupEnter)="navigate('building-structure-type')" (onClick)="navigate('building-structure-type')" [showAction]=true>
+        <ng-container *ngFor="let type of getNonModularMaterials()">
+          <div>{{type}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+
+      <govuk-summary-list-row key="Year if change of us" (onKeyupEnter)="navigate('building-structure-type')" (onClick)="navigate('building-structure-type')" [showAction]=true>
+        <ng-container *ngFor="let type of getModularMaterials()">
+          <div>{{type}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+
+      <govuk-summary-list-row key="Previous primary use" (onKeyupEnter)="navigate('building-structure-type')" (onClick)="navigate('building-structure-type')" [showAction]=true>
+        <ng-container *ngFor="let type of getModularMaterials()">
+          <div>{{type}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+
+      <govuk-summary-list-row key="Building works" (onKeyupEnter)="navigate('building-structure-type')" (onClick)="navigate('building-structure-type')" [showAction]=true>
+        <ng-container *ngFor="let type of getModularMaterials()">
+          <div>{{type}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+
+      <govuk-summary-list-row key="Structure type of added floors" (onKeyupEnter)="navigate('building-structure-type')" (onClick)="navigate('building-structure-type')" [showAction]=true>
+        <ng-container *ngFor="let type of getModularMaterials()">
+          <div>{{type}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+
+      <govuk-summary-list-row key="Most recent building work" (onKeyupEnter)="navigate('building-structure-type')" (onClick)="navigate('building-structure-type')" [showAction]=true>
+        <ng-container *ngFor="let type of getModularMaterials()">
+          <div>{{type}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+
+      <govuk-summary-list-row key="Year of most recent building work" (onKeyupEnter)="navigate('building-structure-type')" (onClick)="navigate('building-structure-type')" [showAction]=true>
+        <ng-container *ngFor="let type of getModularMaterials()">
+          <div>{{type}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+
+    </ng-container>
+
+</govuk-summary-list>

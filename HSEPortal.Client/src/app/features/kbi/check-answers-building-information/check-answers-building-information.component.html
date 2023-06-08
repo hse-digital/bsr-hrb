@@ -57,6 +57,34 @@
 
         </div>
 
+        <div [class.section-wrapper]>
+
+          <h2 class="govuk-heading-m" [class.section-header]>External features</h2>
+          <external-features-answers [externalFeatures]="kbiSection.Walls" />
+
+        </div>
+
+        <div [class.section-wrapper]>
+
+          <h2 class="govuk-heading-m" [class.section-header]>Uses at ground level and above</h2>
+          <uses-ground-level-and-above-answers [buildingUse]="kbiSection.BuildingUse" />
+
+        </div>
+
+        <div [class.section-wrapper]>
+
+          <h2 class="govuk-heading-m" [class.section-header]>Uses below ground level</h2>
+          <uses-below-ground-level-answers [buildingUse]="kbiSection.BuildingUse" />
+
+        </div>
+
+        <div [class.section-wrapper]>
+
+          <h2 class="govuk-heading-m" [class.section-header]>Changes since completion</h2>
+          <external-features-answers [externalFeatures]="kbiSection.Walls" />
+
+        </div>
+
 
         <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
         <save-and-come-back (onClick)="saveAndComeBack()" />

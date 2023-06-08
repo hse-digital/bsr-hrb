@@ -1,0 +1,23 @@
+<govuk-summary-list>
+
+
+  <ng-container>
+
+    <govuk-summary-list-row key="Attached features" (onKeyupEnter)="navigate('external-features')" (onClick)="navigate('external-features')" [showAction]=true>
+      <ng-container *ngIf="externalFeatures.ExternalFeatures">
+        <ng-container *ngFor="let type of externalFeatures!.ExternalFeatures!">
+          <div>{{getFeatureName(type)}}</div>
+        </ng-container>
+      </ng-container>
+    </govuk-summary-list-row>
+
+<!--    <govuk-summary-list-row key="Balconies materials" (onKeyupEnter)="navigate('external-feature-materials')" (onClick)="navigate('external-feature-materials')" [showAction]=true>
+
+        <ng-container *ngIf="externalFeatures!.FeatureMaterialsOutside['balconies']">
+        </ng-container>
+
+    </govuk-summary-list-row>-->
+
+  </ng-container>
+
+</govuk-summary-list>

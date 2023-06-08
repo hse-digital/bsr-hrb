@@ -17,7 +17,6 @@ export class FireAndSmokeControlsAnswersComponent {
   }
 
   navigate(url: string) {
-    console.log(`${KbiFireModule.baseRoute}/${url}`);
     this.navigationService.navigateRelative(`../${KbiFireModule.baseRoute}/${url}`, this.activatedRoute);
   }
 
