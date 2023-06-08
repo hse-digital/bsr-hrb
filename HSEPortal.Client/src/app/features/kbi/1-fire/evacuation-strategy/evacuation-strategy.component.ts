@@ -7,6 +7,7 @@ import { ApplicationService, BuildingApplicationStatus, KbiModel } from 'src/app
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { ProvisionsEquipmentComponent } from '../provisions-equipment/provisions-equipment.component';
+import { KbiService } from 'src/app/services/kbi.service';
 
 @Component({
   selector: 'hse-evacuation-strategy',
@@ -20,19 +21,21 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   errorMessage?: string;
 
   evacuationStrategyHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private kbiService: KbiService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
-  ngOnInit(): void {
-    if(!this.applicationService.currenKbiSection?.Fire) this.applicationService.currenKbiSection!.Fire = {}
+  async ngOnInit() {
+    if (!this.applicationService.currenKbiSection?.Fire) this.applicationService.currenKbiSection!.Fire = {}
     this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].InProgress = true;
     this.errorMessage = `Select the strategy you use to evacuate the residential part of ${this.getInfraestructureName()}`;
+
+    await this.kbiService.startKbi(this.applicationService.currenKbiSection!);
   }
 
-  getInfraestructureName(){
-    return this.applicationService.model.NumberOfSections === 'one' 
-      ? this.applicationService.model.BuildingName 
+  getInfraestructureName() {
+    return this.applicationService.model.NumberOfSections === 'one'
+      ? this.applicationService.model.BuildingName
       : this.applicationService.currentSection.Name;
   }
 
@@ -46,9 +49,9 @@ export class EvacuationStrategyComponent extends BaseComponent implements IHasNe
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.model.Kbi 
-        && !!this.applicationService.model.Kbi.SectionStatus 
-        && this.applicationService.model.Kbi.SectionStatus.length > 0 
-        && (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete;
+    return !!this.applicationService.model.Kbi
+      && !!this.applicationService.model.Kbi.SectionStatus
+      && this.applicationService.model.Kbi.SectionStatus.length > 0
+      && (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete;
   }
 }

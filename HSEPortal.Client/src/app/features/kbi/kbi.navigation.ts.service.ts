@@ -638,8 +638,10 @@ class MostRecentChangeNavigationNode extends KbiNavigationNode {
     if (!kbi.BuildingUse.MostRecentMaterialChange) {
       return `${KbiBuildingUseModule.baseRoute}/${MostRecentChangeComponent.route}`;
     }
-    else 
-    {
+    else if (kbi.BuildingUse.MostRecentMaterialChange === "unknown") {
+      return `${KbiBuildingUseModule.baseRoute}/${MostRecentChangeComponent.route}`; //TODO update to check answer page
+    }
+    else {
       return this.yearMostRecentChangeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
   }

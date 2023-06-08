@@ -113,56 +113,57 @@ public record KbiSectionModel(Fire Fire,
         
         string StructureName,
         string Postcode,
-        string StrategyEvacuateBuilding);
+        string StrategyEvacuateBuilding,
+        string ApplicationId);
 
 public record ExternalWallInsulation(string[] CheckBoxSelection, string OtherValue);
 
-public record Fire(string StrategyEvacuateBuilding, 
-        string[] ProvisionsEquipment, 
-        string[] FireSmokeProvisions,
-        Dictionary<string, string[]> FireSmokeProvisionLocations, 
-        string[] Lifts, 
-        ResidentialUnitFrontDoors ResidentialUnitFrontDoors, 
-        FireDoorsCommon FireDoorsCommon);
+public record Fire(string StrategyEvacuateBuilding,
+    string[] ProvisionsEquipment,
+    string[] FireSmokeProvisions,
+    Dictionary<string, string[]> FireSmokeProvisionLocations,
+    string[] Lifts,
+    ResidentialUnitFrontDoors ResidentialUnitFrontDoors,
+    FireDoorsCommon FireDoorsCommon);
 
 public record FireDoorsCommon(string FireDoorThirtyMinute, string FireDoorSixtyMinute, string FireDoorHundredTwentyMinute, string FireDoorUnknown);
 
 public record ResidentialUnitFrontDoors(string NoFireResistance, string ThirtyMinsFireResistance, string SixtyMinsFireResistance,
     string HundredTwentyMinsFireResistance, string NotKnownFireResistance);
 
-public record Energy (string[] EnergySupply,
-        string[] EnergyTypeStorage, 
-        string[] OnsiteEnergyGeneration);
+public record Energy(string[] EnergySupply,
+    string[] EnergyTypeStorage,
+    string[] OnsiteEnergyGeneration);
 
-public record BuildingStructure (string[] BuildingStructureType);
+public record BuildingStructure(string[] BuildingStructureType);
 
-public record Roof (string RoofType, 
-        string RoofInsulation, 
-        string RoofMaterial);
+public record Roof(string RoofType,
+    string RoofInsulation,
+    string RoofMaterial);
 
-public record Staircases (string InternalStaircasesAllFloors, 
-        string TotalNumberStaircases);
+public record Staircases(string InternalStaircasesAllFloors,
+    string TotalNumberStaircases);
 
-public record Walls (string[] ExternalWallMaterials, 
-        string WallACM, 
-        string WallHPL, 
-        Dictionary<string, string> ExternalWallMaterialsPercentage,
-        ExternalWallInsulation ExternalWallInsulation, 
-        Dictionary<string, string> ExternalWallInsulationPercentages, 
-        string[] ExternalFeatures,
-        Dictionary<string, string[]> FeatureMaterialsOutside);
+public record Walls(string[] ExternalWallMaterials,
+    string WallACM,
+    string WallHPL,
+    Dictionary<string, string> ExternalWallMaterialsPercentage,
+    ExternalWallInsulation ExternalWallInsulation,
+    Dictionary<string, string> ExternalWallInsulationPercentages,
+    string[] ExternalFeatures,
+    Dictionary<string, string[]> FeatureMaterialsOutside);
 
-public record BuildingUse (string PrimaryUseOfBuilding, 
-        string[] SecondaryUseBuilding, 
-        string FloorsBelowGroundLevel,
-        string PrimaryUseBuildingBelowGroundLevel, 
-        string ChangePrimaryUse, 
-        string PreviousUseBuilding, 
-        string YearChangeInUse,
-        string[] AddedFloorsType,
-        string[] UndergoneBuildingMaterialChanges,
-        string MostRecentMaterialChange,
-        string YearMostRecentMaterialChange);
+public record BuildingUse(string PrimaryUseOfBuilding,
+    string[] SecondaryUseBuilding,
+    string FloorsBelowGroundLevel,
+    string PrimaryUseBuildingBelowGroundLevel,
+    string ChangePrimaryUse,
+    string PreviousUseBuilding,
+    string YearChangeInUse,
+    string[] AddedFloorsType,
+    string[] UndergoneBuildingMaterialChanges,
+    string MostRecentMaterialChange,
+    string YearMostRecentMaterialChange);
 
 public record Connections (string[] StructureConnections,
         string OtherHighRiseBuildingConnections,

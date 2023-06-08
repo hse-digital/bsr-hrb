@@ -5,6 +5,7 @@ import { ApplicationService, BuildingApplicationStatus, KbiModel, KbiSectionMode
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { KbiNavigation } from 'src/app/features/kbi/kbi.navigation.ts.service';
+import { KbiService } from 'src/app/services/kbi.service';
 
 @Component({
   selector: 'hse-task-list',
@@ -18,20 +19,30 @@ export class TaskListComponent implements CanActivate, OnInit {
   checkingStatus = true;
 
   constructor(public applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute,
-    private kbiNavigation: KbiNavigation) {
-
+    private kbiService: KbiService, private kbiNavigation: KbiNavigation) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (!this.applicationService.model.Kbi) {
       this.applicationService.model.Kbi = new KbiModel();
-      this.applicationService.model.Sections.forEach(x => this.applicationService.model.Kbi!.KbiSections.push(new KbiSectionModel()));
+      this.applicationService.model.Sections.forEach(x => {
+        var kbiSection = new KbiSectionModel();
+        kbiSection.StructureName = x.Name;
+        kbiSection.Postcode = x.Addresses[0].Postcode;
+
+        this.applicationService.model.Kbi!.KbiSections.push(kbiSection);
+      });
+
       this.applicationService._currentSectionIndex = 0;
+      this.applicationService._currentKbiSectionIndex = 0;
     }
+
     if (!this.applicationService.model.Kbi.SectionStatus || this.applicationService.model.Kbi.SectionStatus.length == 0) {
       this.applicationService.model.Kbi.SectionStatus = [];
       this.applicationService.model.Sections.map(x => this.applicationService.model.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
     }
+
+    await this.applicationService.updateApplication();
   }
 
   isSectionInProgress(index: number) {
@@ -65,7 +76,15 @@ export class TaskListComponent implements CanActivate, OnInit {
 
   async navigateToSection(index: number, sectionName: string) {
     let route = this.kbiNavigation.getNextRoute();
-    await this.navigationService.navigateAppend(`${index+1}-${sectionName}/${route}`, this.activatedRoute);
+
+    await this.kbiService.startKbi(this.applicationService.model.Kbi!.KbiSections[index]);
+
+    let sectionId = `${index + 1}`;
+    if (sectionName !== void 0) {
+      sectionId = `${sectionId}-${sectionName}`;
+    }
+
+    await this.navigationService.navigateAppend(`${sectionId}/${route}`, this.activatedRoute);
   }
 
   navigateToConnections() {
