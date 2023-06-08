@@ -31,7 +31,11 @@ export class CheckBeforeStartComponent implements CanActivate, OnInit {
     await this.applicationService.updateApplication();
 
     let section = this.applicationService.model.Sections[0];
-    let sectionRoute = `1-${section.Name}`;
+    let sectionRoute = `1`;
+    if (section.Name !== void 0) {
+      sectionRoute = `${sectionRoute}-${section.Name}`;
+    }
+
     return this.navigationService.navigateRelative(`${sectionRoute}/${KbiFireModule.baseRoute}/${EvacuationStrategyComponent.route}`, this.activatedRoute);
   }
 }

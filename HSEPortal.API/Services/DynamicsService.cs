@@ -628,9 +628,20 @@ public class DynamicsService
         return dynamicsStructure with { bsr_blockid = structureId };
     }
 
-    public async Task<DynamicsStructure> FindExistingStructureAsync(string name, string postcode)
+    public async Task<DynamicsStructure> FindExistingStructureAsync(string name, string postcode, string buildingApplicationId = null)
     {
-        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{name}' and bsr_postcode eq '{postcode}'"));
+        var filter = $"bsr_postcode eq '{postcode}'";
+        if (!string.IsNullOrEmpty(name))
+        {
+            filter = $"{filter} and bsr_name eq '{name}'";
+        }
+
+        if (!string.IsNullOrEmpty(buildingApplicationId))
+        {
+            filter = $"{filter} and _bsr_buildingapplicationid_value eq '{buildingApplicationId}'";
+        }
+        
+        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", filter));
         return existingStructure.value.FirstOrDefault();
     }
 
