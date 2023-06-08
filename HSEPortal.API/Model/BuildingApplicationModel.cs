@@ -124,10 +124,10 @@ public record Fire(string StrategyEvacuateBuilding,
         ResidentialUnitFrontDoors ResidentialUnitFrontDoors, 
         FireDoorsCommon FireDoorsCommon);
 
-public record FireDoorsCommon(int FireDoorThirtyMinute, int FireDoorSixtyMinute, int FireDoorHundredTwentyMinute, int FireDoorUnknown);
+public record FireDoorsCommon(string FireDoorThirtyMinute, string FireDoorSixtyMinute, string FireDoorHundredTwentyMinute, string FireDoorUnknown);
 
-public record ResidentialUnitFrontDoors(int NoFireResistance, int ThirtyMinsFireResistance, int SixtyMinsFireResistance,
-    int HundredTwentyMinsFireResistance, int NotKnownFireResistance);
+public record ResidentialUnitFrontDoors(string NoFireResistance, string ThirtyMinsFireResistance, string SixtyMinsFireResistance,
+    string HundredTwentyMinsFireResistance, string NotKnownFireResistance);
 
 public record Energy (string[] EnergySupply,
         string[] EnergyTypeStorage, 

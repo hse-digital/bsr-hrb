@@ -45,18 +45,18 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     [JsonPropertyName("bsr_CompletionCertificate@odata.bind")]
     public string certificateReferenceId { get; init; }
 
-    [JsonPropertyName("bsr_evacuationpolicy_blockid@odata.bind")]
+    [JsonPropertyName("bsr_evacuationpolicy_blockId@odata.bind")]
     public string bsr_evacuationpolicy_blockid { get; init; }
 
-    public int bsr_doorsthatcertifiedfireresistanceisnotknow { get; set; }
-    public int bsr_doorwith120minutecertifiedfireresistance { get; set; }
-    public int bsr_doorswith30minutescertifiedfireresistance { get; set; }
-    public int bsr_doorswith60minutescertifiedfireresistance { get; set; }
-    public int bsr_doorswithnocertifiedfireresistance { get; set; }
-    public int bsr_doorthatcertifiedfireresistanceisnotknown { get; set; }
-    public int bsr_doorswith120minutecertifiedfireresistance { get; set; }
-    public int bsr_doorswith30minutecertifiedfireresistance { get; set; }
-    public int bsr_doorswith60minutecertifiedfireresistance { get; set; }
+    public int? bsr_doorsthatcertifiedfireresistanceisnotknow { get; set; }
+    public int? bsr_doorwith120minutecertifiedfireresistance { get; set; }
+    public int? bsr_doorswith30minutescertifiedfireresistance { get; set; }
+    public int? bsr_doorswith60minutescertifiedfireresistance { get; set; }
+    public int? bsr_doorswithnocertifiedfireresistance { get; set; }
+    public int? bsr_doorthatcertifiedfireresistanceisnotknown { get; set; }
+    public int? bsr_doorswith120minutecertifiedfireresistance { get; set; }
+    public int? bsr_doorswith30minutecertifiedfireresistance { get; set; }
+    public int? bsr_doorswith60minutecertifiedfireresistance { get; set; }
 }
 
 public static class DynamicsSectionArea

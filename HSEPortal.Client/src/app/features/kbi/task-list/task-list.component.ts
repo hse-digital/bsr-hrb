@@ -22,16 +22,27 @@ export class TaskListComponent implements CanActivate, OnInit {
     private kbiService: KbiService, private kbiNavigation: KbiNavigation) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (!this.applicationService.model.Kbi) {
       this.applicationService.model.Kbi = new KbiModel();
-      this.applicationService.model.Sections.forEach(x => this.applicationService.model.Kbi!.KbiSections.push(new KbiSectionModel()));
+      this.applicationService.model.Sections.forEach(x => {
+        var kbiSection = new KbiSectionModel();
+        kbiSection.StructureName = x.Name;
+        kbiSection.Postcode = x.Addresses[0].Postcode;
+
+        this.applicationService.model.Kbi!.KbiSections.push(kbiSection);
+      });
+
       this.applicationService._currentSectionIndex = 0;
+      this.applicationService._currentKbiSectionIndex = 0;
     }
+
     if (!this.applicationService.model.Kbi.SectionStatus || this.applicationService.model.Kbi.SectionStatus.length == 0) {
       this.applicationService.model.Kbi.SectionStatus = [];
       this.applicationService.model.Sections.map(x => this.applicationService.model.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
     }
+
+    await this.applicationService.updateApplication();
   }
 
   isSectionInProgress(index: number) {
@@ -65,9 +76,10 @@ export class TaskListComponent implements CanActivate, OnInit {
 
   async navigateToSection(index: number, sectionName: string) {
     let route = this.kbiNavigation.getNextRoute();
-    
+    console.log(route);
+
     await this.kbiService.startKbi(this.applicationService.model.Kbi!.KbiSections[index]);
-    await this.navigationService.navigateAppend(`${index+1}-${sectionName}/${route}`, this.activatedRoute);
+    await this.navigationService.navigateAppend(`${index + 1}-${sectionName}/${route}`, this.activatedRoute);
   }
 
   navigateToConnections() {

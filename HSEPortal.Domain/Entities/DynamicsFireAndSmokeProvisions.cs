@@ -5,7 +5,9 @@ namespace HSEPortal.Domain.Entities;
 public record DynamicsFireAndSmokeProvisions
 {
     public string bsr_blockfiresmokeprovisionid { get; set; }
-    public string _bsr_blockid_value { get; set; }
+    
+    [property: JsonPropertyName("bsr_BlockId@odata.bind")]
+    public string blockId { get; set; }
 
     [property: JsonPropertyName("bsr_FireSmokeProvisionId@odata.bind")]
     public string bsr_FireSmokeProvisionId { get; set; }
@@ -34,6 +36,4 @@ public record DynamicsStructureEnergy
     
     [property: JsonPropertyName("bsr_structure@odata.bind")]
     public string structureId { get; set; }
-    
-    public long bsr_energytype { get; set; }
 }

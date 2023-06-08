@@ -22,6 +22,7 @@ export class ApplicationService {
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('application_data') ?? {};
     this._currentSectionIndex = this.model?.Sections?.length - 1 ?? 0;
+    this._currentKbiSectionIndex = this._currentSectionIndex;
     this._currentAccountablePersonIndex = this.model?.AccountablePersons?.length - 1 ?? 0;
   }
 
