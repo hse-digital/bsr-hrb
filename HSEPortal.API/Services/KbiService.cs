@@ -23,12 +23,12 @@ public class KbiService
 
     public async Task UpdateKbiStructureStart(KbiSyncData kbiSyncData)
     {
-        var structure = kbiSyncData.DynamicsStructure;
-        if (string.IsNullOrEmpty(structure.bsr_kbistartdate))
+        var structure = new DynamicsStructure { bsr_blockid = kbiSyncData.DynamicsStructure.bsr_blockid };
+        if (string.IsNullOrEmpty(kbiSyncData.DynamicsStructure.bsr_kbistartdate))
         {
             structure = structure with { bsr_kbistartdate = DateTime.Now.ToString(CultureInfo.InvariantCulture) };
 
-            var building = await dynamicsApi.Get<DynamicsBuilding>($"bsr_buildings({structure._bsr_buildingid_value})");
+            var building = await dynamicsApi.Get<DynamicsBuilding>($"bsr_buildings({kbiSyncData.DynamicsStructure._bsr_buildingid_value})");
             building = building with { bsr_kbistartdate = structure.bsr_kbistartdate.ToString(CultureInfo.InvariantCulture) };
 
             await dynamicsApi.Update($"bsr_blocks({structure.bsr_blockid})", structure);
@@ -39,10 +39,9 @@ public class KbiService
     public async Task UpdateSectionFireData(KbiSyncData kbiSyncData)
     {
         var fireData = kbiSyncData.KbiSectionModel.Fire;
-        var structure = kbiSyncData.DynamicsStructure;
 
         // evacuation policy
-        structure = structure with { bsr_evacuationpolicy_blockid = $"/bsr_evacuationpolicies({DynamicsSectionEvacuation.Ids[fireData.StrategyEvacuateBuilding]})" };
+        var structure = new DynamicsStructure { bsr_blockid = kbiSyncData.DynamicsStructure.bsr_blockid, bsr_evacuationpolicy_blockid = $"/bsr_evacuationpolicies({DynamicsSectionEvacuation.Ids[fireData.StrategyEvacuateBuilding]})" };
 
         // fire and smoke control equipment
         foreach (var provision in fireData.FireSmokeProvisions)
@@ -60,15 +59,15 @@ public class KbiService
         // doors
         structure = structure with
         {
-            bsr_doorsthatcertifiedfireresistanceisnotknow = fireData.FireDoorsCommon.FireDoorUnknown,
-            bsr_doorwith120minutecertifiedfireresistance = fireData.FireDoorsCommon.FireDoorHundredTwentyMinute,
-            bsr_doorswith30minutescertifiedfireresistance = fireData.FireDoorsCommon.FireDoorThirtyMinute,
-            bsr_doorswith60minutescertifiedfireresistance = fireData.FireDoorsCommon.FireDoorSixtyMinute,
-            bsr_doorswithnocertifiedfireresistance = fireData.ResidentialUnitFrontDoors.NoFireResistance,
-            bsr_doorthatcertifiedfireresistanceisnotknown = fireData.ResidentialUnitFrontDoors.NotKnownFireResistance,
-            bsr_doorswith120minutecertifiedfireresistance = fireData.ResidentialUnitFrontDoors.HundredTwentyMinsFireResistance,
-            bsr_doorswith30minutecertifiedfireresistance = fireData.ResidentialUnitFrontDoors.ThirtyMinsFireResistance,
-            bsr_doorswith60minutecertifiedfireresistance = fireData.ResidentialUnitFrontDoors.SixtyMinsFireResistance
+            bsr_doorsthatcertifiedfireresistanceisnotknow = int.Parse(fireData.FireDoorsCommon.FireDoorUnknown),
+            bsr_doorwith120minutecertifiedfireresistance = int.Parse(fireData.FireDoorsCommon.FireDoorHundredTwentyMinute),
+            bsr_doorswith30minutescertifiedfireresistance = int.Parse(fireData.FireDoorsCommon.FireDoorThirtyMinute),
+            bsr_doorswith60minutescertifiedfireresistance = int.Parse(fireData.FireDoorsCommon.FireDoorSixtyMinute),
+            bsr_doorswithnocertifiedfireresistance = int.Parse(fireData.ResidentialUnitFrontDoors.NoFireResistance),
+            bsr_doorthatcertifiedfireresistanceisnotknown = int.Parse(fireData.ResidentialUnitFrontDoors.NotKnownFireResistance),
+            bsr_doorswith120minutecertifiedfireresistance = int.Parse(fireData.ResidentialUnitFrontDoors.HundredTwentyMinsFireResistance),
+            bsr_doorswith30minutecertifiedfireresistance = int.Parse(fireData.ResidentialUnitFrontDoors.ThirtyMinsFireResistance),
+            bsr_doorswith60minutecertifiedfireresistance = int.Parse(fireData.ResidentialUnitFrontDoors.SixtyMinsFireResistance)
         };
 
         await dynamicsApi.Update($"bsr_blocks({structure.bsr_blockid})", structure);
@@ -84,9 +83,8 @@ public class KbiService
             var storageId = Energies.Ids[storage];
             var dynamicsStructureEnergy = new DynamicsStructureEnergy
             {
-                structureId = structure.bsr_blockid,
-                energyId = $"/bsr_energysupplies({storageId})",
-                bsr_energytype = 760_810_000
+                structureId = $"/bsr_blocks({structure.bsr_blockid})",
+                energyId = $"/bsr_energysupplies({storageId})"
             };
 
             await CreateStructureEnergyIfNotExists(structure, storageId, dynamicsStructureEnergy);
@@ -97,11 +95,9 @@ public class KbiService
             var onsiteId = Energies.Ids[onsite];
             var dynamicsStructureEnergy = new DynamicsStructureEnergy
             {
-                structureId = structure.bsr_blockid,
-                energyId = $"/bsr_energysupplies({onsiteId})",
-                bsr_energytype = 760_810_001
+                structureId = $"/bsr_blocks({structure.bsr_blockid})",
+                energyId = $"/bsr_energysupplies({onsiteId})"
             };
-            ;
 
             await CreateStructureEnergyIfNotExists(structure, onsiteId, dynamicsStructureEnergy);
         }
@@ -111,9 +107,8 @@ public class KbiService
             var supplyId = Energies.Ids[supply];
             var dynamicsStructureEnergy = new DynamicsStructureEnergy
             {
-                structureId = structure.bsr_blockid,
-                energyId = $"/bsr_energysupplies({supplyId})",
-                bsr_energytype = 760_810_002
+                structureId = $"/bsr_blocks({structure.bsr_blockid})",
+                energyId = $"/bsr_energysupplies({supplyId})"
             };
 
             await CreateStructureEnergyIfNotExists(structure, supplyId, dynamicsStructureEnergy);
@@ -150,7 +145,7 @@ public class KbiService
         var provisionId = FireSmokeProvision.Ids[provision];
         var record = new DynamicsFireAndSmokeProvisions
         {
-            _bsr_blockid_value = blockId,
+            blockId = $"/bsr_blocks({blockId})",
             bsr_FireSmokeProvisionId = $"/bsr_blockfiresmokeprovisions({provisionId})"
         };
 
@@ -163,7 +158,7 @@ public class KbiService
             };
 
             var records = await dynamicsApi.Get<DynamicsResponse<DynamicsFireAndSmokeProvisions>>("bsr_blockfiresmokeprovisions",
-                ("$filter", $"_bsr_blockid_value eq '{blockId}' and _bsr_firesmokeprovisionid_value eq '{residentialAreaId}'")
+                ("$filter", $"_bsr_blockid_value eq '{blockId}' and _bsr_residentialareaid_value eq '{residentialAreaId}' and _bsr_firesmokeprovisionid_value eq '{provisionId}'")
             );
             if (!records.value.Any())
             {
@@ -180,7 +175,7 @@ public class KbiService
         {
             var dynamicsStructureLift = new DynamicsStructureLift
             {
-                structureId = blockId,
+                structureId = $"/bsr_blocks({blockId})",
                 liftId = $"/bsr_lifts({liftId})"
             };
 

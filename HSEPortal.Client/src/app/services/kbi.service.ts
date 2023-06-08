@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { KbiSectionModel } from "./application.service";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class KbiService {
@@ -9,10 +10,10 @@ export class KbiService {
   }
 
   async startKbi(sectionModel: KbiSectionModel): Promise<void> {
-    await this.httpClient.post('api/SyncKbiStructureStart', sectionModel);
+    await firstValueFrom(this.httpClient.post('api/SyncKbiStructureStart', sectionModel));
   }
 
   async syncFireEnergy(sectionModel: KbiSectionModel | undefined) {
-    await this.httpClient.post('api/SyncKbiFireAndEnergy', sectionModel);
+    await firstValueFrom(this.httpClient.post('api/SyncKbiFireAndEnergy', sectionModel));
   }
 }
