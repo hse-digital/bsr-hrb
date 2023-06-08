@@ -1,26 +1,26 @@
 import { Component, Input } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { Staircases } from "src/app/services/application.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApplicationService, Staircases } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
-import { KbiFireModule } from "../1-fire/kbi.fire.module";
-import { KbiEnergyModule } from "../2-energy/kbi.energy.module";
-import { KbiRoofModule } from "../4-roof/kbi.roof.module";
 import { KbiStaircasesModule } from "../5-staircases/kbi.staircases.module";
+import { TitleService } from "src/app/services/title.service";
+import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
+import { KbiNavigation } from "../kbi.navigation.ts.service";
 
 @Component({
   selector: 'staircases-answers',
   templateUrl: './staircase-answers.component.html'
 })
-export class StaircasesAnswersComponent {
+export class StaircasesAnswersComponent  extends BuildingInformationCheckAnswersComponent {
 
   @Input() staircases: Staircases = {};
 
-  constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
-
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
   }
 
   navigate(url: string) {
-    this.navigationService.navigateRelative(`../${KbiStaircasesModule.baseRoute}/${url}`, this.activatedRoute);
+    this.navigateTo(url, KbiStaircasesModule.baseRoute);
   }
 
 }

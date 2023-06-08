@@ -1,13 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { PaymentDeclarationComponent } from 'src/app/features/application/payment/payment-declaration/payment-declaration.component';
-import { PaymentModule } from 'src/app/features/application/payment/payment.module';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, KbiSectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { KbiCheckAnswersModule } from './kbi.check-answers-building-information.module';
+import { KbiNavigation } from '../kbi.navigation.ts.service';
 
 @Component({
   templateUrl: './check-answers-building-information.component.html',
@@ -18,24 +17,24 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   static route: string = 'check-answers-building-information';
   static title: string = "Check your building information answers - Register a high-rise building - GOV.UK";
 
-/*  checkAnswersArea = AccountabilityArea.CheckAnswers;
-*/
-
-
   kbiSection: KbiSectionModel = new KbiSectionModel;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private kbiNavigation: KbiNavigation) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {
+    let route = this.kbiNavigation.getNextRoute();
+    console.log(route);
+    //this.navigateWithReturn(`../${route}`);
+
     this.kbiSection = this.applicationService.currenKbiSection!;
   }
 
   hasIncompleteData = false;
   canContinue(): boolean {
     var canContinue = true;
-
+    
     this.hasIncompleteData = !canContinue;
     return canContinue;
   }
@@ -45,28 +44,21 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-/*    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsComplete;
-    
-    this.applicationService.updateApplication();
-
-    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
-      return navigationService.navigateRelative(`..`, activatedRoute);
-    }*/
-
-    //return navigationService.navigateRelative(`../${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`, activatedRoute);
     return navigationService.navigateRelative(BuildingInformationCheckAnswersComponent.route, activatedRoute);
-
-    //TODO navigate to connections
   }
 
   override canAccess(_: ActivatedRouteSnapshot): boolean {
     return true;
   }
 
-  navigateTo(url: string, apIndex: number) {
-/*    this.navigationService.navigateRelative(`accountable-person-${apIndex + 1}/${url}`, this.activatedRoute, {
-      return: 'check-answers'
-    });*/
+  navigateTo(url: string, group: string) {
+    this.navigateWithReturn(`../${group}/${url}`);
+  }
+
+  private navigateWithReturn(url: string) {
+    this.navigationService.navigateRelative(url, this.activatedRoute, {
+      return:`../${KbiCheckAnswersModule.baseRoute}/${BuildingInformationCheckAnswersComponent.route}`
+    });
   }
 
   getInfraestructureName() {

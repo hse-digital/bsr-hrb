@@ -1,26 +1,28 @@
 import { Component, Input } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { BuildingUse} from "src/app/services/application.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApplicationService, BuildingUse} from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { KbiFireModule } from "../1-fire/kbi.fire.module";
-import { KbiEnergyModule } from "../2-energy/kbi.energy.module";
 import { KbiBuildingUseModule } from "../7-building-use/kbi.building-use.module";
+import { TitleService } from "src/app/services/title.service";
+import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
+import { KbiNavigation } from "../kbi.navigation.ts.service";
 
 @Component({
   selector: 'uses-ground-level-and-above-answers',
   templateUrl: './uses-ground-level-and-above-answers.component.html'
 })
-export class UsesGroundLevelAndAboveAnswersComponent {
+export class UsesGroundLevelAndAboveAnswersComponent  extends BuildingInformationCheckAnswersComponent {
 
   @Input() buildingUse: BuildingUse = {};
 
-  constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
 
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
   }
 
   navigate(url: string) {
-    console.log(`${KbiFireModule.baseRoute}/${url}`);
-    this.navigationService.navigateRelative(`../${KbiBuildingUseModule.baseRoute}/${url}`, this.activatedRoute);
+    this.navigateTo(url, KbiBuildingUseModule.baseRoute);
   }
 
   private buildingUseMapper: Record<string, string> = {

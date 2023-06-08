@@ -1,8 +1,5 @@
 <govuk-summary-list>
 
-
-  <ng-container>
-
     <govuk-summary-list-row key="External wall materials" (onKeyupEnter)="navigate('external-materials')" (onClick)="navigate('external-materials')" [showAction]=true>
       <ng-container *ngFor="let type of externalWalls!.ExternalWallMaterials!">
         <div>{{getExternalWallMaterialName(type)}}</div>
@@ -44,7 +41,5 @@
         <div>{{getInsulationName(type)}}: {{externalWalls!.ExternalWallInsulationPercentages![type]}}%</div>
       </ng-container>
     </govuk-summary-list-row>
-
-  </ng-container>
 
 </govuk-summary-list>

@@ -1,8 +1,5 @@
 <govuk-summary-list>
 
-
-  <ng-container>
-
     <govuk-summary-list-row key="Structure Type" (onKeyupEnter)="navigate('building-structure-type')" (onClick)="navigate('building-structure-type')" [showAction]=true>
       <ng-container *ngFor="let type of getNonModularMaterials()">
         <div>{{type}}</div>
@@ -15,6 +12,5 @@
       </ng-container>
     </govuk-summary-list-row>
 
-  </ng-container>
 
 </govuk-summary-list>

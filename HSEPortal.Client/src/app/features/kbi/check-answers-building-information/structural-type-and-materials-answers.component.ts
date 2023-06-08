@@ -1,25 +1,28 @@
 import { Component, Input } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { BuildingStructure} from "src/app/services/application.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApplicationService, BuildingStructure} from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { KbiFireModule } from "../1-fire/kbi.fire.module";
 import { KbiStructureModule } from "../3-structure/kbi.structure.module";
+import { TitleService } from "src/app/services/title.service";
+import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
+import { KbiNavigation } from "../kbi.navigation.ts.service";
 
 @Component({
   selector: 'structural-type-and-materials-answers',
   templateUrl: './structural-type-and-materials-answers.component.html'
 })
-export class StructuralTypeAndMaterialsAnswersComponent {
+export class StructuralTypeAndMaterialsAnswersComponent  extends BuildingInformationCheckAnswersComponent {
 
   @Input() buildingStructure: BuildingStructure = {};
 
-  constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
 
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
   }
 
   navigate(url: string) {
-    console.log(`${KbiFireModule.baseRoute}/${url}`);
-    this.navigationService.navigateRelative(`../${KbiStructureModule.baseRoute}/${url}`, this.activatedRoute);
+    this.navigateTo(url, KbiStructureModule.baseRoute);
   }
 
   private materialNameMapper: Record<string, string> = {

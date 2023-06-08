@@ -1,8 +1,5 @@
 <govuk-summary-list>
 
-
-  <ng-container>
-
     <govuk-summary-list-row key="Evacuation strategy" (onKeyupEnter)="navigate('evacuation-strategy')" (onClick)="navigate('evacuation-strategy')" [showAction]=true>
       <div>{{getEvacuationType(fireAndSmokeControls!.StrategyEvacuateBuilding!)}}</div>
     </govuk-summary-list-row>
@@ -69,7 +66,5 @@
         <div>{{getTotalCommonFireDoors()}} doors in total</div>
       </ng-container>
     </govuk-summary-list-row>
-
-  </ng-container>
 
 </govuk-summary-list>

@@ -1,8 +1,5 @@
 <govuk-summary-list>
 
-
-  <ng-container>
-
   <govuk-summary-list-row key="Type of roof surface" (onKeyupEnter)="navigate('roof-type')" (onClick)="navigate('roof-type')" [showAction]=true>
     <div>{{getRoofType(roof!.RoofType!)}}</div>
   </govuk-summary-list-row>
@@ -14,7 +11,5 @@
   <govuk-summary-list-row key="Main roof material" (onKeyupEnter)="navigate('roof-material')" (onClick)="navigate('roof-material')" [showAction]=true>
     <div>{{getRoofMaterial(roof!.RoofMaterial!)}}</div>
   </govuk-summary-list-row>
-
-  </ng-container>
 
 </govuk-summary-list>

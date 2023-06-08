@@ -1,25 +1,34 @@
 import { Component, Input } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { Walls} from "src/app/services/application.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApplicationService, Walls} from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { KbiFireModule } from "../1-fire/kbi.fire.module";
 import { KbiStructureModule } from "../3-structure/kbi.structure.module";
 import { KbiWallsModule } from "../6-walls/kbi.walls.module";
+import { ExternalFeaturesComponent } from "../6-walls/external-features/external-features.component";
+import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
+import { TitleService } from "src/app/services/title.service";
+import { ExternalWallMaterialsComponent } from "../6-walls/external-wall-materials/external-wall-materials.component";
+import { KbiNavigation } from "../kbi.navigation.ts.service";
 
 @Component({
   selector: 'external-features-answers',
   templateUrl: './external-features-answers.component.html'
 })
-export class ExternalFeaturesAnswersComponent {
+export class ExternalFeaturesAnswersComponent extends BuildingInformationCheckAnswersComponent {
 
   @Input() externalFeatures: Walls = {};
 
-  constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
-
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
+  }
+  
+  navigateToExternalFeatures() {
+    this.navigateTo(ExternalFeaturesComponent.route, KbiWallsModule.baseRoute);
   }
 
-  navigate(url: string) {
-    this.navigationService.navigateRelative(`../${KbiWallsModule.baseRoute}/${url}`, this.activatedRoute);
+  nagivateToExternalFeaturesMaterials(){
+    this.navigateTo(ExternalWallMaterialsComponent.route, KbiWallsModule.baseRoute);
   }
 
   private featureNameMapper: Record<string, string> = {

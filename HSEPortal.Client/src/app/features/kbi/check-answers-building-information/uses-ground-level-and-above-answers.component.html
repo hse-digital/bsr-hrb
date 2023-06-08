@@ -1,8 +1,5 @@
 <govuk-summary-list>
 
-
-  <ng-container>
-
     <govuk-summary-list-row key="Primary use" (onKeyupEnter)="navigate('primary-use-of-building')" (onClick)="navigate('primary-use-of-building')" [showAction]=true>
       <div>{{getBuildingUse(buildingUse.PrimaryUseOfBuilding!)}}</div>
     </govuk-summary-list-row>
@@ -12,8 +9,5 @@
         <div>{{getBuildingUse(type)}}</div>
       </ng-container>
     </govuk-summary-list-row>
-
-
-  </ng-container>
 
 </govuk-summary-list>

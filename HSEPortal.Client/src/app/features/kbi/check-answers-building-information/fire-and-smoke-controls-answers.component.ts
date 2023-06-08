@@ -1,23 +1,26 @@
 import { Component, Input } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { Fire } from "src/app/services/application.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ApplicationService, Fire } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { KbiFireModule } from "../1-fire/kbi.fire.module";
+import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
+import { TitleService } from "src/app/services/title.service";
+import { KbiNavigation } from "../kbi.navigation.ts.service";
 
 @Component({
   selector: 'fire-and-smoke-controls-answers',
   templateUrl: './fire-and-smoke-controls-answers.component.html'
 })
-export class FireAndSmokeControlsAnswersComponent {
+export class FireAndSmokeControlsAnswersComponent extends BuildingInformationCheckAnswersComponent {
 
   @Input() fireAndSmokeControls: Fire = {};
 
-  constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
-
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
   }
 
   navigate(url: string) {
-    this.navigationService.navigateRelative(`../${KbiFireModule.baseRoute}/${url}`, this.activatedRoute);
+    this.navigateTo(url, KbiFireModule.baseRoute);
   }
 
   private equipmentNameMapper: Record<string, string> = {

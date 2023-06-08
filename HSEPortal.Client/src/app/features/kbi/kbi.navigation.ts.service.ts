@@ -44,6 +44,8 @@ import { UndergoneBuildingMaterialChangesComponent } from './7-building-use/unde
 import { MostRecentChangeComponent } from './7-building-use/most-recent-material-change/most-recent-material-change.component';
 import { YearMostRecentChangeComponent } from './7-building-use/year-most-recent-change/year-most-recent-change.component';
 import { AddedFloorsTypeComponent } from './7-building-use/added-floors-type/added-floors-type.component';
+import { KbiCheckAnswersModule } from './check-answers-building-information/kbi.check-answers-building-information.module';
+import { BuildingInformationCheckAnswersComponent } from './check-answers-building-information/check-answers-building-information.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -52,10 +54,11 @@ export class KbiNavigation extends BaseNavigation {
     super();
   }
 
-  private yearMostRecentChangeNavigationNode = new YearMostRecentChangeNavigationNode(); // add check answers navigation
-  private mostRecentChangeNavigationNode = new MostRecentChangeNavigationNode(this.yearMostRecentChangeNavigationNode); // add check answers navigation
+  private buildingInformationCheckAnswersNavigationNode  = new BuildingInformationCheckAnswersNavigationNode();
+  private yearMostRecentChangeNavigationNode = new YearMostRecentChangeNavigationNode(this.buildingInformationCheckAnswersNavigationNode);
+  private mostRecentChangeNavigationNode = new MostRecentChangeNavigationNode(this.yearMostRecentChangeNavigationNode, this.buildingInformationCheckAnswersNavigationNode);
   private addedFloorsTypeNavigationNode = new AddedFloorsTypeNavigationNode(this.yearMostRecentChangeNavigationNode, this.mostRecentChangeNavigationNode);
-  private undergoneBuildingMaterialChangesNavigationNode = new UndergoneBuildingMaterialChangesNavigationNode(this.addedFloorsTypeNavigationNode, this.yearMostRecentChangeNavigationNode, this.mostRecentChangeNavigationNode); // add check answers navigation 
+  private undergoneBuildingMaterialChangesNavigationNode = new UndergoneBuildingMaterialChangesNavigationNode(this.addedFloorsTypeNavigationNode, this.yearMostRecentChangeNavigationNode, this.mostRecentChangeNavigationNode, this.buildingInformationCheckAnswersNavigationNode);
   private certificatesYearChangeNavigationNode = new CertificatesYearChangeNavigationNode(this.undergoneBuildingMaterialChangesNavigationNode);
   private previousUseBuildingNavigationNode = new PreviousUseBuildingNavigationNode(this.certificatesYearChangeNavigationNode);
   private changePrimaryUseNavigationNode = new ChangePrimaryUseNavigationNode(this.previousUseBuildingNavigationNode, this.undergoneBuildingMaterialChangesNavigationNode);
@@ -564,7 +567,10 @@ class CertificatesYearChangeNavigationNode extends KbiNavigationNode {
 
 class UndergoneBuildingMaterialChangesNavigationNode extends KbiNavigationNode {
 
-  constructor(private addedFloorsTypeNavigationNode: AddedFloorsTypeNavigationNode, private yearMostRecentChangeNavigationNode: YearMostRecentChangeNavigationNode, private mostRecentChangeNavigationNode: MostRecentChangeNavigationNode) {
+  constructor(private addedFloorsTypeNavigationNode: AddedFloorsTypeNavigationNode,
+      private yearMostRecentChangeNavigationNode: YearMostRecentChangeNavigationNode, 
+      private mostRecentChangeNavigationNode: MostRecentChangeNavigationNode,
+      private buildingInformationCheckAnswersNavigationNode: BuildingInformationCheckAnswersNavigationNode) {
     super();
   }
 
@@ -572,7 +578,7 @@ class UndergoneBuildingMaterialChangesNavigationNode extends KbiNavigationNode {
     if (!kbi.BuildingUse.UndergoneBuildingMaterialChanges || kbi.BuildingUse.UndergoneBuildingMaterialChanges.length == 0) {
       return `${KbiBuildingUseModule.baseRoute}/${UndergoneBuildingMaterialChangesComponent.route}`;
     } else if (kbi.BuildingUse.UndergoneBuildingMaterialChanges.length == 1 && kbi.BuildingUse.UndergoneBuildingMaterialChanges[0] === "none") {
-      // goes to check answer page.
+      return this.buildingInformationCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     } else if (kbi.BuildingUse.UndergoneBuildingMaterialChanges.length > 1 && !kbi.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown'))
     {
       return this.mostRecentChangeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -616,7 +622,8 @@ class AddedFloorsTypeNavigationNode extends KbiNavigationNode {
 
 class MostRecentChangeNavigationNode extends KbiNavigationNode {
 
-  constructor(private yearMostRecentChangeNavigationNode: YearMostRecentChangeNavigationNode) {
+  constructor(private yearMostRecentChangeNavigationNode: YearMostRecentChangeNavigationNode,
+      private buildingInformationCheckAnswersNavigationNode: BuildingInformationCheckAnswersNavigationNode) {
     super();
   }
 
@@ -625,7 +632,7 @@ class MostRecentChangeNavigationNode extends KbiNavigationNode {
       return `${KbiBuildingUseModule.baseRoute}/${MostRecentChangeComponent.route}`;
     }
     else if (kbi.BuildingUse.MostRecentMaterialChange === "unknown") {
-      return `${KbiBuildingUseModule.baseRoute}/${MostRecentChangeComponent.route}`; //TODO update to check answer page
+      return this.buildingInformationCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
     else {
       return this.yearMostRecentChangeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -636,7 +643,7 @@ class MostRecentChangeNavigationNode extends KbiNavigationNode {
 
 class YearMostRecentChangeNavigationNode extends KbiNavigationNode {
 
-  constructor() {
+  constructor(private buildingInformationCheckAnswersNavigationNode: BuildingInformationCheckAnswersNavigationNode) {
     super();
   }
 
@@ -644,10 +651,18 @@ class YearMostRecentChangeNavigationNode extends KbiNavigationNode {
     if (!kbi.BuildingUse.YearMostRecentMaterialChange) {
       return `${KbiBuildingUseModule.baseRoute}/${YearMostRecentChangeComponent.route}`;
     }
-    else{
-      //add check answer page
-      return `${KbiBuildingUseModule.baseRoute}/${YearMostRecentChangeComponent.route}`;
-    }
+    return this.buildingInformationCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 
+}
+
+class BuildingInformationCheckAnswersNavigationNode extends KbiNavigationNode {
+
+  constructor() {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    return `${KbiCheckAnswersModule.baseRoute}/${BuildingInformationCheckAnswersComponent.route}`;
+  }
 }
