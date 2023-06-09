@@ -52,6 +52,8 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationInProgress;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationComplete;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
     if(this.applicationService.model.Sections.length == 1) {
       return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`, activatedRoute);
