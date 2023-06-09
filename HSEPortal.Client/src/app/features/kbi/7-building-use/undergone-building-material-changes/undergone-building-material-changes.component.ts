@@ -10,6 +10,8 @@ import { TitleService } from 'src/app/services/title.service';
 import { AddedFloorsTypeComponent } from '../added-floors-type/added-floors-type.component';
 import { MostRecentChangeComponent } from '../most-recent-material-change/most-recent-material-change.component';
 import { YearMostRecentChangeComponent } from '../year-most-recent-change/year-most-recent-change.component';
+import { BuildingInformationCheckAnswersComponent } from '../../check-answers-building-information/check-answers-building-information.component';
+import { KbiCheckAnswersModule } from '../../check-answers-building-information/kbi.check-answers-building-information.module';
 
 @Component({
   selector: 'hse-undergone-building-material-changes',
@@ -67,7 +69,7 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
 
     if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'none' || x == 'unknown')) {
-      console.log('Then I am navigated to the KBI check answers page (/check-answers-building-information');
+      return navigationService.navigateRelative(`../check-answers/check-answers-building-information`, activatedRoute);
     }
     else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
       return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
@@ -84,9 +86,6 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
       this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0];
       return navigationService.navigateRelative(AddedFloorsTypeComponent.route, activatedRoute);
     }
-
-
-
     return navigationService.navigateRelative(UndergoneBuildingMaterialChangesComponent.route, activatedRoute);
   }
 

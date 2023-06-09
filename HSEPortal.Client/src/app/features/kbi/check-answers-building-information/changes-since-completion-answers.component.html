@@ -1,0 +1,52 @@
+<govuk-summary-list>
+    <ng-container *ngIf="buildingUse.ChangePrimaryUse === 'yes'">
+
+      <govuk-summary-list-row key="Change of use" (onKeyupEnter)="navigate('change-primary-use')" (onClick)="navigate('change-primary-use')" [showAction]=true>
+        <ng-container>
+          <div>Yes</div>
+        </ng-container>
+      </govuk-summary-list-row>
+
+      <govuk-summary-list-row key="Year of change of use" (onKeyupEnter)="navigate('year-change-use')" (onClick)="navigate('year-change-use')" [showAction]=true>
+        <ng-container>
+          <div>{{buildingUse.YearChangeInUse}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+
+      <govuk-summary-list-row key="Previous primary use" (onKeyupEnter)="navigate('previous-primary-use')" (onClick)="navigate('previous-primary-use')" [showAction]=true>
+        <ng-container>
+          <div>{{getBuildingUse(buildingUse.PreviousUseBuilding!)}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+
+    </ng-container>
+
+
+    <ng-container *ngIf="buildingUse.ChangePrimaryUse === 'no'">
+
+      <govuk-summary-list-row key="Change of use" (onKeyupEnter)="navigate('change-primary-use')" (onClick)="navigate('change-primary-use')" [showAction]=true>
+        <div>No</div>
+      </govuk-summary-list-row>
+
+    </ng-container>
+
+    <govuk-summary-list-row key="Building works" (onKeyupEnter)="navigate('undergone-building-material-changes')" (onClick)="navigate('undergone-building-material-changes')" [showAction]=true>
+      <div *ngFor="let material of applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges">
+        {{material}}
+      </div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Structure type of added floors" (onKeyupEnter)="navigate('added-floors-type')" (onClick)="navigate('added-floors-type')" [showAction]=true>
+      <div *ngFor="let material of applicationService.currentKbiSection!.BuildingUse.AddedFloorsType">
+        {{material}}
+      </div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Most recent building work" (onKeyupEnter)="navigate('most-recent-material-change')" (onClick)="navigate('most-recent-material-change')" [showAction]=true>
+      <div>{{applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange}}</div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Year of most recent building work" (onKeyupEnter)="navigate('year-most-recent-change')" (onClick)="navigate('year-most-recent-change')" [showAction]=true>
+      <div>{{applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange}}</div>
+    </govuk-summary-list-row>
+</govuk-summary-list>

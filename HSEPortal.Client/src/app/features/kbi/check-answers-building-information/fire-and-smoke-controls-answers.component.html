@@ -1,0 +1,73 @@
+<govuk-summary-list>
+
+    <govuk-summary-list-row key="Evacuation strategy" (onKeyupEnter)="navigate('evacuation-strategy')" (onClick)="navigate('evacuation-strategy')" [showAction]=true>
+      <div>{{getEvacuationType(fireAndSmokeControls!.StrategyEvacuateBuilding!)}}</div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Smoke controls in residential parts" (onKeyupEnter)="navigate('provisions-equipment')" (onClick)="navigate('provisions-equipment')" [showAction]=true>
+      <ng-container *ngFor="let provision of fireAndSmokeControls!.ProvisionsEquipment">
+        <div>{{getProvisionEquipment(provision)}}</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Smoke controls in common parts" (onKeyupEnter)="navigate('smoke-provisions')" (onClick)="navigate('smoke-provisions')" [showAction]=true>
+      <ng-container *ngFor="let smokeControl of fireAndSmokeControls!.FireSmokeProvisions">
+        <div>{{getEquipmentName(smokeControl)}}</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <ng-container *ngFor="let equipment of fireAndSmokeControls!.FireSmokeProvisions">
+      <govuk-summary-list-row key="{{getEquipmentName(equipment)}}" (onKeyupEnter)="navigate('smoke-provision-locations')" (onClick)="navigate('smoke-provision-locations')" [showAction]=true>
+        <ng-container *ngFor="let location of getSmokeAndFireDeviceLocations(equipment)">
+          <div>{{location}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+    </ng-container>
+
+
+    <govuk-summary-list-row key="Types of lift" (onKeyupEnter)="navigate('lifts')" (onClick)="navigate('lifts')" [showAction]=true>
+      <ng-container *ngFor="let lift of getLiftTypes()">
+        <div>{{lift}}</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Residential front doors" (onKeyupEnter)="navigate('residential-unit-front-doors-fire-resistance')" (onClick)="navigate('residential-unit-front-doors-fire-resistance')" [showAction]=true>
+      <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.NoFireResistance! > 0">
+        <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.NoFireResistance!}} doors with no fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.ThirtyMinsFireResistance! > 0">
+        <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.ThirtyMinsFireResistance!}} doors with 30-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.SixtyMinsFireResistance! > 0">
+        <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.SixtyMinsFireResistance!}} doors with 60-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.HundredTwentyMinsFireResistance! > 0">
+        <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.HundredTwentyMinsFireResistance!}} doors with 120-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.NotKnownFireResistance! > 0">
+        <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.NotKnownFireResistance!}} doors that fire resistance is not known</div>
+      </ng-container>
+      <ng-container>
+        <div>{{getTotalResidentialFireDoors()}} doors in total</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Fire doors in common parts" (onKeyupEnter)="navigate('doors-common')" (onClick)="navigate('doors-common')" [showAction]=true>
+      <ng-container *ngIf="fireAndSmokeControls.FireDoorsCommon!.FireDoorThirtyMinute! > 0">
+        <div>{{fireAndSmokeControls.FireDoorsCommon!.FireDoorThirtyMinute!}} doors with 30-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.FireDoorsCommon!.FireDoorSixtyMinute! > 0">
+        <div>{{fireAndSmokeControls.FireDoorsCommon!.FireDoorSixtyMinute!}} doors with 60-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.FireDoorsCommon!.FireDoorHundredTwentyMinute! > 0">
+        <div>{{fireAndSmokeControls.FireDoorsCommon!.FireDoorHundredTwentyMinute!}} doors with 120-minute fire resistance</div>
+      </ng-container>
+      <ng-container *ngIf="fireAndSmokeControls.FireDoorsCommon!.FireDoorUnknown! > 0">
+        <div>{{fireAndSmokeControls.FireDoorsCommon!.FireDoorUnknown!}} doors that fire resistance is not known</div>
+      </ng-container>
+      <ng-container>
+        <div>{{getTotalCommonFireDoors()}} doors in total</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+</govuk-summary-list>
