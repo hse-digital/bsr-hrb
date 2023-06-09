@@ -67,7 +67,7 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
 
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
+    return navigationService.navigateRelative(`../check-answers/check-answers-building-information`, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

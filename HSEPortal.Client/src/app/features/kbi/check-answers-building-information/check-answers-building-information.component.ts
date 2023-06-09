@@ -34,7 +34,11 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   hasIncompleteData = false;
   canContinue(): boolean {
     var canContinue = true;
-    
+
+    this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].InProgress = false;
+    this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].Complete = true;
+
+
     this.hasIncompleteData = !canContinue;
     return canContinue;
   }
@@ -44,7 +48,16 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(BuildingInformationCheckAnswersComponent.route, activatedRoute);
+    if(this.applicationService.model.Kbi!.SectionStatus.length == 1) {
+      //return navigationService.navigateRelative(.route, activatedRoute); goes to high rise building connections
+    } else if (!this.allKbiSectionCompleted()) {
+      // goes to task list
+    }
+    return navigationService.navigateRelative(BuildingInformationCheckAnswersComponent.route, activatedRoute); // goes to connection between blocks
+  }
+
+  private allKbiSectionCompleted(){
+    return this.applicationService.model.Kbi!.SectionStatus.map(x => x.Complete).reduce((a, b) => a && b);
   }
 
   override canAccess(_: ActivatedRouteSnapshot): boolean {

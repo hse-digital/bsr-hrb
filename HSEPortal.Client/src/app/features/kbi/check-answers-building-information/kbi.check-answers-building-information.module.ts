@@ -19,7 +19,6 @@ import { StructuralTypeAndMaterialsAnswersComponent } from "./structural-type-an
 import { UsesBelowGroundLevelAnswersComponent } from "./uses-below-ground-level-answers.component";
 import { UsesGroundLevelAndAboveAnswersComponent } from "./uses-ground-level-and-above-answers.component";
 
-
 const routes = new HseRoutes([
   HseRoute.protected(BuildingInformationCheckAnswersComponent.route, BuildingInformationCheckAnswersComponent, BuildingInformationCheckAnswersComponent.title),
 ]);

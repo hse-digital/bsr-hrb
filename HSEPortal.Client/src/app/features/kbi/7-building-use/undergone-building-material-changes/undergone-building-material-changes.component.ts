@@ -69,7 +69,7 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
 
     if (this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'none' || x == 'unknown')) {
-      //return navigationService.navigateRelative(`../${KbiCheckAnswersModule.baseRoute}/${BuildingInformationCheckAnswersComponent.route}`, activatedRoute);
+      return navigationService.navigateRelative(`../check-answers/check-answers-building-information`, activatedRoute);
     }
     else if (this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 && !this.applicationService.currenKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
       return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);

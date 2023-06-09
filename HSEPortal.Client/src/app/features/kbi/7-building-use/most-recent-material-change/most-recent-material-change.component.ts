@@ -59,8 +59,7 @@ export class MostRecentChangeComponent  extends BaseComponent implements IHasNex
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     if (this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange === "unknown") {
-      return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
-
+      return navigationService.navigateRelative(`../check-answers/check-answers-building-information`, activatedRoute);
     }
     else {
       return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
