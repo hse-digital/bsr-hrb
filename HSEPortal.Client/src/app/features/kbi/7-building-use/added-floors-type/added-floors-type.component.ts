@@ -30,7 +30,7 @@ export class AddedFloorsTypeComponent extends BaseComponent implements IHasNextP
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.BuildingUse.AddedFloorsType) { this.applicationService.currenKbiSection!.BuildingUse.AddedFloorsType = []; }
+    if (!this.applicationService.currentKbiSection!.BuildingUse.AddedFloorsType) { this.applicationService.currentKbiSection!.BuildingUse.AddedFloorsType = []; }
     this.errorMessage = `Select structure type for extra floors`;
   }
 
@@ -41,8 +41,8 @@ export class AddedFloorsTypeComponent extends BaseComponent implements IHasNextP
   }
 
   canContinue(): boolean {
-    this.addedFloorsTypeTypeHasErrors = !this.applicationService.currenKbiSection!.BuildingUse.AddedFloorsType 
-      || this.applicationService.currenKbiSection!.BuildingUse.AddedFloorsType.length == 0;
+    this.addedFloorsTypeTypeHasErrors = !this.applicationService.currentKbiSection!.BuildingUse.AddedFloorsType 
+      || this.applicationService.currentKbiSection!.BuildingUse.AddedFloorsType.length == 0;
 
     if (this.addedFloorsTypeTypeHasErrors) this.firstCheckboxAnchorId = `composite_steel_concrete-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -50,7 +50,7 @@ export class AddedFloorsTypeComponent extends BaseComponent implements IHasNextP
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1) {
+    if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1) {
       return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
     }
     else {
@@ -61,8 +61,8 @@ export class AddedFloorsTypeComponent extends BaseComponent implements IHasNextP
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
 
-    return !!this.applicationService.currenKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges
-      && this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 0
-      && !!this.applicationService.currenKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges.find(x => x === 'floors_added');
+    return !!this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges
+      && this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 0
+      && !!this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges.find(x => x === 'floors_added');
   }
 }

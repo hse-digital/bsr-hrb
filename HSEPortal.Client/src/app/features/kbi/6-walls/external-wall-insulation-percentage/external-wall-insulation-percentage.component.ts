@@ -66,25 +66,25 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
   ngOnInit(): void {
     //Initilise the percentage values
-    if (!this.applicationService.currenKbiSection?.Walls.ExternalWallInsulationPercentages || Object.keys(this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages).length == 0) {
-      this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages = {};
-      this.applicationService.currenKbiSection?.Walls.ExternalWallInsulation!.CheckBoxSelection!.forEach(insulationType => {
-        this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages![insulationType]
+    if (!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulationPercentages || Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages).length == 0) {
+      this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages = {};
+      this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation!.CheckBoxSelection!.forEach(insulationType => {
+        this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![insulationType]
       });
     }
 
     // check missing locations (in case the user modifies fire-smoke-provisions)
-    if (Object.keys(this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages).length != this.applicationService.currenKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.length) {
-      this.applicationService.currenKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.filter(x => !this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages![x]).forEach(missingInsulation => {
-        this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages![missingInsulation];
+    if (Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages).length != this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.length) {
+      this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.filter(x => !this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![x]).forEach(missingInsulation => {
+        this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![missingInsulation];
       });
     }
 
-    //If value doesnt exist in this this.applicationService.currenKbiSection?.externalWallInsulation?.checkBoxSelection remove from locations (in case the user modifies external-wall-insulation-type)
-    if (Object.keys(this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages).length != this.applicationService.currenKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.length) {
-      Object.keys(this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages).forEach(insulationType => {
-        if (!this.applicationService.currenKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.includes(insulationType)) {
-          delete this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages![insulationType];
+    //If value doesnt exist in this this.applicationService.currentKbiSection?.externalWallInsulation?.checkBoxSelection remove from locations (in case the user modifies external-wall-insulation-type)
+    if (Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages).length != this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.length) {
+      Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages).forEach(insulationType => {
+        if (!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.includes(insulationType)) {
+          delete this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![insulationType];
         }
       });
     }
@@ -96,9 +96,9 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
     this.errors = []
 
-    for (var insulationType in this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages) {
+    for (var insulationType in this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages) {
       //Check is not null or whitespace
-      this.validateInputs(this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages[insulationType], insulationType)
+      this.validateInputs(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages[insulationType], insulationType)
     }
 
     this.validateTotalPercentage();
@@ -118,7 +118,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection && this.applicationService.currenKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection![0] != 'none';
+    return !!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection && this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection![0] != 'none';
 
 
   }
@@ -146,7 +146,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
     }
 
     if (this.errors.length > 0) {
-      this.firstErrorAnchorId = this.applicationService.currenKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection![0];
+      this.firstErrorAnchorId = this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection![0];
 
     }
   }
@@ -154,8 +154,8 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   validateTotalPercentage(): void {
 
     //add up all the percentages from the inputs using reduce function
-    let totalPercentage = Object.values(this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages!).reduce((totalPercentage, percentage) => totalPercentage + +percentage, 0);
-    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqualHundred"], errorAnchorId: Object.keys(this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages!)[0] });
+    let totalPercentage = Object.values(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages!).reduce((totalPercentage, percentage) => totalPercentage + +percentage, 0);
+    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqualHundred"], errorAnchorId: Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages!)[0] });
 
   }
 

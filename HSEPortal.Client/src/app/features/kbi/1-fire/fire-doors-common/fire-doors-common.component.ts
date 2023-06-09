@@ -43,16 +43,16 @@ export class FireDoorsCommonComponent extends BaseComponent implements IHasNextP
   };
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.Fire.FireDoorsCommon) {
-      this.applicationService.currenKbiSection!.Fire.FireDoorsCommon = {};
+    if (!this.applicationService.currentKbiSection!.Fire.FireDoorsCommon) {
+      this.applicationService.currentKbiSection!.Fire.FireDoorsCommon = {};
     }
   }
 
   canContinue() {
-    this.errors.fireDoorThirtyMinute = this.validateNumericInput(this.applicationService.currenKbiSection?.Fire.FireDoorsCommon?.FireDoorThirtyMinute, this.errors.fireDoorThirtyMinute, "fireDoorThirtyMinute");
-    this.errors.fireDoorSixtyMinute = this.validateNumericInput(this.applicationService.currenKbiSection?.Fire.FireDoorsCommon?.FireDoorSixtyMinute, this.errors.fireDoorSixtyMinute, "fireDoorSixtyMinute");
-    this.errors.fireDoorHundredTwentyMinute = this.validateNumericInput(this.applicationService.currenKbiSection?.Fire.FireDoorsCommon?.FireDoorHundredTwentyMinute, this.errors.fireDoorHundredTwentyMinute, "fireDoorHundredTwentyMinute");
-    this.errors.fireDoorUnknown = this.validateNumericInput(this.applicationService.currenKbiSection?.Fire.FireDoorsCommon?.FireDoorUnknown, this.errors.fireDoorUnknown, "fireDoorUnknown");
+    this.errors.fireDoorThirtyMinute = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorThirtyMinute, this.errors.fireDoorThirtyMinute, "fireDoorThirtyMinute");
+    this.errors.fireDoorSixtyMinute = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorSixtyMinute, this.errors.fireDoorSixtyMinute, "fireDoorSixtyMinute");
+    this.errors.fireDoorHundredTwentyMinute = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorHundredTwentyMinute, this.errors.fireDoorHundredTwentyMinute, "fireDoorHundredTwentyMinute");
+    this.errors.fireDoorUnknown = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorUnknown, this.errors.fireDoorUnknown, "fireDoorUnknown");
 
     return !this.errors.fireDoorThirtyMinute.hasError
       && !this.errors.fireDoorSixtyMinute.hasError
@@ -72,11 +72,11 @@ export class FireDoorsCommonComponent extends BaseComponent implements IHasNextP
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
 
-    return !!this.applicationService.currenKbiSection?.Fire.ResidentialUnitFrontDoors?.NoFireResistance
-      && !!this.applicationService.currenKbiSection?.Fire.ResidentialUnitFrontDoors?.ThirtyMinsFireResistance
-      && !!this.applicationService.currenKbiSection?.Fire.ResidentialUnitFrontDoors?.SixtyMinsFireResistance
-      && !!this.applicationService.currenKbiSection?.Fire.ResidentialUnitFrontDoors?.HundredTwentyMinsFireResistance
-      && !!this.applicationService.currenKbiSection?.Fire.ResidentialUnitFrontDoors?.NoFireResistance
+    return !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.NoFireResistance
+      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.ThirtyMinsFireResistance
+      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.SixtyMinsFireResistance
+      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.HundredTwentyMinsFireResistance
+      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.NoFireResistance
   }
 
   validateNumericInput(input: number | undefined, error: Error, key: string): Error {

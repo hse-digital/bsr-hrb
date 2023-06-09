@@ -37,7 +37,7 @@ export class WallsAcmComponent extends BaseComponent implements IHasNextPage, On
   }
 
   canContinue(): boolean {
-    this.wallsAcmHasErrors = !this.applicationService.currenKbiSection!.Walls.WallACM;
+    this.wallsAcmHasErrors = !this.applicationService.currentKbiSection!.Walls.WallACM;
     return !this.wallsAcmHasErrors;
   }
 
@@ -49,13 +49,13 @@ export class WallsAcmComponent extends BaseComponent implements IHasNextPage, On
   }
 
   doesExternalWallMaterialsIncludes(material: string) {
-    return this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials!.includes(material);
+    return this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes(material);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Walls.ExternalWallMaterials 
-      && this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials!.length > 0 
-      && this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials!.includes('acm');
+    return !!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials 
+      && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.length > 0 
+      && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes('acm');
   }
 
 }

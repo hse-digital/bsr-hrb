@@ -35,38 +35,38 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
   ngOnInit(): void {
     this.getNextPendingFeature();
 
-    if (!this.applicationService.currenKbiSection?.Walls.FeatureMaterialsOutside || Object.keys(this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside).length == 0) {
+    if (!this.applicationService.currentKbiSection?.Walls.FeatureMaterialsOutside || Object.keys(this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside).length == 0) {
       this.initFeatureMaterialsOutside();
     } else {
       this.mapExternalFeatures();
     }
 
-    let keys = Object.keys(this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside!);
+    let keys = Object.keys(this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside!);
     if (!keys.includes(this.currentFeature!)) {
       this.currentFeature = keys[0];
     }
   }
 
   getNextPendingFeature() {
-    let currentSection = this.applicationService.currenKbiSection!;
+    let currentSection = this.applicationService.currentKbiSection!;
     this.currentFeature = currentSection.Walls.ExternalFeatures!.filter(x => this.features.indexOf(x) > -1).find(x => currentSection.Walls.FeatureMaterialsOutside === void 0 || !currentSection.Walls.FeatureMaterialsOutside![x] || currentSection!.Walls.FeatureMaterialsOutside![x].length == 0);
   }
 
   initFeatureMaterialsOutside() {
-    this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside = {};
-    this.applicationService.currenKbiSection?.Walls.ExternalFeatures?.forEach(feature => {
-      this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside![feature] = [];
+    this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside = {};
+    this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.forEach(feature => {
+      this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![feature] = [];
     });
   }
 
   mapExternalFeatures() {
     let aux: Record<string, string[]> = {};
-    this.applicationService.currenKbiSection?.Walls.ExternalFeatures?.filter(x => this.features.includes(x)).forEach(x =>
-      aux[x] = (!!this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside![x] && this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside![x].length > 0)
-        ? this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside![x]
+    this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => this.features.includes(x)).forEach(x =>
+      aux[x] = (!!this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x] && this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x].length > 0)
+        ? this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x]
         : []
     );
-    this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside = aux;
+    this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside = aux;
   }
 
   ngAfterViewInit(): void {
@@ -96,9 +96,9 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
 
   canContinue(): boolean {
     this.featureMaterialsOutsideHasErrors = true;
-    if (!this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside || this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside[this.currentFeature!].length == 0) {
+    if (!this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside || this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside[this.currentFeature!].length == 0) {
       this.errorMessage = `Select which materials are used most in the ${this.getFeatureName()} of ${this.getInfraestructureName()}`;
-    } else if (this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside[this.currentFeature!].length > 2) {
+    } else if (this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside[this.currentFeature!].length > 2) {
       this.errorMessage = "Select no more than 2 materials";
     } else {
       this.featureMaterialsOutsideHasErrors = false;
@@ -108,7 +108,7 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let selectedFeatures = this.applicationService.currenKbiSection?.Walls.ExternalFeatures?.filter(x => this.features.includes(x)) ?? [];
+    let selectedFeatures = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => this.features.includes(x)) ?? [];
     let nextFeatureIndex = selectedFeatures.indexOf(this.currentFeature!) + 1;
     if (nextFeatureIndex >= selectedFeatures.length) {
       return navigationService.navigateRelative(`../${KbiBuildingUseModule.baseRoute}/${PrimaryUseOfBuildingComponent.route}`, activatedRoute);
@@ -119,7 +119,7 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    let selectedFeatures = this.applicationService.currenKbiSection?.Walls.ExternalFeatures?.filter(x => this.features.includes(x)) ?? [];
+    let selectedFeatures = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => this.features.includes(x)) ?? [];
     return selectedFeatures.length > 0;
   }
 

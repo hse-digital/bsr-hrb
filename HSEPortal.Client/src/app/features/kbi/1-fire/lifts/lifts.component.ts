@@ -29,7 +29,7 @@ export class LiftsComponent  extends BaseComponent implements IHasNextPage, OnIn
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.Fire.Lifts) { this.applicationService.currenKbiSection!.Fire.Lifts = []; }
+    if (!this.applicationService.currentKbiSection!.Fire.Lifts) { this.applicationService.currentKbiSection!.Fire.Lifts = []; }
     this.errorMessage = `Select the types of lift in ${this.getInfraestructureName()}`;
   }
 
@@ -40,8 +40,8 @@ export class LiftsComponent  extends BaseComponent implements IHasNextPage, OnIn
   }
 
   canContinue(): boolean {
-    this.liftsHasErrors = !this.applicationService.currenKbiSection!.Fire.Lifts 
-      || this.applicationService.currenKbiSection!.Fire.Lifts.length == 0;
+    this.liftsHasErrors = !this.applicationService.currentKbiSection!.Fire.Lifts 
+      || this.applicationService.currentKbiSection!.Fire.Lifts.length == 0;
 
     if (this.liftsHasErrors) this.firstCheckboxAnchorId = `evacuation-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -53,9 +53,9 @@ export class LiftsComponent  extends BaseComponent implements IHasNextPage, OnIn
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    let fireSmokeProvisionIsNone = !!this.applicationService.currenKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currenKbiSection?.Fire.FireSmokeProvisions?.length == 1 && this.applicationService.currenKbiSection!.Fire.FireSmokeProvisions![0] == 'none';
-    return fireSmokeProvisionIsNone || (!!this.applicationService.currenKbiSection?.Fire.FireSmokeProvisionLocations 
-              && Object.keys(this.applicationService.currenKbiSection?.Fire.FireSmokeProvisionLocations).length > 0
-              && this.applicationService.currenKbiSection.Fire.FireSmokeProvisions!.every(x => this.applicationService.currenKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0));
+    let fireSmokeProvisionIsNone = !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.length == 1 && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![0] == 'none';
+    return fireSmokeProvisionIsNone || (!!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations 
+              && Object.keys(this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations).length > 0
+              && this.applicationService.currentKbiSection.Fire.FireSmokeProvisions!.every(x => this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0));
   }
 }

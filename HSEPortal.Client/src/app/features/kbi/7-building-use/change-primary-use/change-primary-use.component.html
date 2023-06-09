@@ -10,11 +10,11 @@
 
                 <govuk-radio-group title="Has {{getInfraestructureName()}} had a different primary use in the past?"
                     [isPageHeading]=true id="primary-use" #field [govukRequired]="field" 
-                    [(model)]="applicationService.currenKbiSection!.BuildingUse.ChangePrimaryUse" 
+                    [(model)]="applicationService.currentKbiSection!.BuildingUse.ChangePrimaryUse" 
                     [errorText]="getErrorDescription(changePrimaryUseHasErrors, errorMessage!)"
                     hintText="For example, an office or factory could have been converted into residential units">
-                    <govuk-radio [model]="applicationService.currenKbiSection!.BuildingUse.ChangePrimaryUse" name="application-group" label="Yes" id="yes" value="yes" (onKeyupEnter)="saveAndContinue()" />
-                    <govuk-radio [model]="applicationService.currenKbiSection!.BuildingUse.ChangePrimaryUse" name="application-group" label="No" id="no" value="no" (onKeyupEnter)="saveAndContinue()" />
+                    <govuk-radio [model]="applicationService.currentKbiSection!.BuildingUse.ChangePrimaryUse" name="application-group" label="Yes" id="yes" value="yes" (onKeyupEnter)="saveAndContinue()" />
+                    <govuk-radio [model]="applicationService.currentKbiSection!.BuildingUse.ChangePrimaryUse" name="application-group" label="No" id="no" value="no" (onKeyupEnter)="saveAndContinue()" />
                     </govuk-radio-group>
             </div>
 

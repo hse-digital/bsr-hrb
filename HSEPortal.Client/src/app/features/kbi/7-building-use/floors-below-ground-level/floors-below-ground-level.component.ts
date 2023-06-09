@@ -32,7 +32,7 @@ export class FloorsBelowGroundLevelComponent extends BaseComponent implements IH
   }
 
   canContinue() {
-    let input = this.applicationService.currenKbiSection!.BuildingUse.FloorsBelowGroundLevel;
+    let input = this.applicationService.currentKbiSection!.BuildingUse.FloorsBelowGroundLevel;
     this.floorsBelowGroundLevelHasErrors = true;
     if (!input || !FieldValidations.IsWholeNumber(input) || !FieldValidations.IsAPositiveNumber(input)) {
       this.errorMessage = `Number of floors below ground level in ${this.getInfraestructureName()} must be a whole number fewer than 20`;
@@ -53,9 +53,9 @@ export class FloorsBelowGroundLevelComponent extends BaseComponent implements IH
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let input = this.applicationService.currenKbiSection?.BuildingUse.FloorsBelowGroundLevel;
+    let input = this.applicationService.currentKbiSection?.BuildingUse.FloorsBelowGroundLevel;
     if (input == 0) {
-      let route = this.applicationService.currenKbiSection?.BuildingUse.PrimaryUseOfBuilding == this.RESIDENTIAL_DWELLINGS
+      let route = this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding == this.RESIDENTIAL_DWELLINGS
         ? ChangePrimaryUseComponent.route
         : UndergoneBuildingMaterialChangesComponent.route; // route to "any material changes"
       return navigationService.navigateRelative(route, activatedRoute);
@@ -64,6 +64,6 @@ export class FloorsBelowGroundLevelComponent extends BaseComponent implements IH
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.BuildingUse.SecondaryUseBuilding && this.applicationService.currenKbiSection!.BuildingUse.SecondaryUseBuilding.length > 0;
+    return !!this.applicationService.currentKbiSection?.BuildingUse.SecondaryUseBuilding && this.applicationService.currentKbiSection!.BuildingUse.SecondaryUseBuilding.length > 0;
   }
 }

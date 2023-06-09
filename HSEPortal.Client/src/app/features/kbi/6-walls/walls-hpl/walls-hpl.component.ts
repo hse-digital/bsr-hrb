@@ -36,7 +36,7 @@ export class WallsHplComponent extends BaseComponent implements IHasNextPage, On
   }
 
   canContinue(): boolean {
-    this.wallsHplHasErrors = !this.applicationService.currenKbiSection!.Walls.WallHPL;
+    this.wallsHplHasErrors = !this.applicationService.currentKbiSection!.Walls.WallHPL;
     return !this.wallsHplHasErrors;
   }
 
@@ -45,11 +45,11 @@ export class WallsHplComponent extends BaseComponent implements IHasNextPage, On
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    let canAccess: boolean = !!this.applicationService.currenKbiSection?.Walls.ExternalWallMaterials 
-                            && this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials!.length > 0
-                            && this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials!.includes('hpl');
-    if(this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials!.includes('acm')) {
-      canAccess &&= !!this.applicationService.currenKbiSection?.Walls.WallACM;
+    let canAccess: boolean = !!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials 
+                            && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.length > 0
+                            && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes('hpl');
+    if(this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes('acm')) {
+      canAccess &&= !!this.applicationService.currentKbiSection?.Walls.WallACM;
     } 
     return canAccess;
   }

@@ -11,13 +11,13 @@
         <h1 class="govuk-heading-l">Energy supplies to {{getInfraestructureName()}}</h1>
         <govuk-body>This is not a complete list. It includes only the types of energy supplies we need to know about.</govuk-body>
 
-        <govuk-checkbox-group title="Types of energy supply" hint="Select all that apply" [(model)]="applicationService.currenKbiSection!.Energy.EnergySupply!" #field [govukRequired]="field" [errorText]="getErrorDescription(energySupplyHasErrors, errorMessage!)">
-          <govuk-checkbox id="communal" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Energy.EnergySupply!" text="District or communal heating" value="energy-supply-communal" />
-          <govuk-checkbox id="mains-electric" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Energy.EnergySupply!" text="Mains electricity supply" value="energy-supply-mains-electric" />
-          <!--<govuk-checkbox id ="mains-hydrogen" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.EnergySupply!" text="Mains hydrogen supply" value="energy-supply-mains-hydrogen"/> Add Back as part of #4067--> 
-          <govuk-checkbox id="mains-gas" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Energy.EnergySupply!" text="Mains gas supply" value="energy-supply-mains-gas" />
-          <govuk-checkbox id="oil" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Energy.EnergySupply!" text="Oil" value="energy-supply-oil" />
-          <govuk-checkbox id="other" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Energy.EnergySupply!" text="Other" value="energy-supply-other" />
+        <govuk-checkbox-group title="Types of energy supply" hint="Select all that apply" [(model)]="applicationService.currentKbiSection!.Energy.EnergySupply!" #field [govukRequired]="field" [errorText]="getErrorDescription(energySupplyHasErrors, errorMessage!)">
+          <govuk-checkbox id="communal" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Energy.EnergySupply!" text="District or communal heating" value="energy-supply-communal" />
+          <govuk-checkbox id="mains-electric" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Energy.EnergySupply!" text="Mains electricity supply" value="energy-supply-mains-electric" />
+          <!--<govuk-checkbox id ="mains-hydrogen" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.EnergySupply!" text="Mains hydrogen supply" value="energy-supply-mains-hydrogen"/> Add Back as part of #4067--> 
+          <govuk-checkbox id="mains-gas" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Energy.EnergySupply!" text="Mains gas supply" value="energy-supply-mains-gas" />
+          <govuk-checkbox id="oil" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Energy.EnergySupply!" text="Oil" value="energy-supply-oil" />
+          <govuk-checkbox id="other" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Energy.EnergySupply!" text="Other" value="energy-supply-other" />
         </govuk-checkbox-group>
       </div>
       

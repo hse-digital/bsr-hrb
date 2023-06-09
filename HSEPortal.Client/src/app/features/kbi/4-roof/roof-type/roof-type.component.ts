@@ -24,7 +24,7 @@ export class RoofTypeComponent  extends BaseComponent implements IHasNextPage, O
   }
 
   ngOnInit(): void {
-    if(!this.applicationService.currenKbiSection?.Roof) this.applicationService.currenKbiSection!.Roof = {}
+    if(!this.applicationService.currentKbiSection?.Roof) this.applicationService.currentKbiSection!.Roof = {}
   }
   
   getInfraestructureName() {
@@ -38,7 +38,7 @@ export class RoofTypeComponent  extends BaseComponent implements IHasNextPage, O
   }
 
   canContinue(): boolean {
-    this.roofTypeHasErrors = !this.applicationService.currenKbiSection!.Roof.RoofType;
+    this.roofTypeHasErrors = !this.applicationService.currentKbiSection!.Roof.RoofType;
     return !this.roofTypeHasErrors;
   }
 
@@ -47,7 +47,7 @@ export class RoofTypeComponent  extends BaseComponent implements IHasNextPage, O
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.BuildingStructure.BuildingStructureType && this.applicationService.currenKbiSection!.BuildingStructure.BuildingStructureType.length > 0;
+    return !!this.applicationService.currentKbiSection?.BuildingStructure.BuildingStructureType && this.applicationService.currentKbiSection!.BuildingStructure.BuildingStructureType.length > 0;
   }
 
 }

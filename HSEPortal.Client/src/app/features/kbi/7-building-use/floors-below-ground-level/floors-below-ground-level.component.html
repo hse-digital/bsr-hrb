@@ -15,7 +15,7 @@
 
 
                 <govuk-input id="floors" #field [govukRequired]="field"
-                    [(model)]="applicationService.currenKbiSection!.BuildingUse.FloorsBelowGroundLevel"
+                    [(model)]="applicationService.currentKbiSection!.BuildingUse.FloorsBelowGroundLevel"
                     [errorText]="getErrorDescription(floorsBelowGroundLevelHasErrors , errorMessage!)"
                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
 

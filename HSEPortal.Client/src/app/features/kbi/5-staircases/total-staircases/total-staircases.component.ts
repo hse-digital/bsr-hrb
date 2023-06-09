@@ -32,7 +32,7 @@ export class TotalStaircasesComponent extends BaseComponent implements IHasNextP
   }
 
   ngOnInit(): void {
-    if(!this.applicationService.currenKbiSection?.Staircases) this.applicationService.currenKbiSection!.Staircases = {}
+    if(!this.applicationService.currentKbiSection?.Staircases) this.applicationService.currentKbiSection!.Staircases = {}
   }
 
   canContinue(): boolean {
@@ -49,9 +49,9 @@ export class TotalStaircasesComponent extends BaseComponent implements IHasNextP
 
   validateTotalNumberStaircases() {
     this.errors.totalNumberStaircases.hasError = true;
-    if (!this.applicationService.currenKbiSection!.Staircases.TotalNumberStaircases) {
+    if (!this.applicationService.currentKbiSection!.Staircases.TotalNumberStaircases) {
       this.errors.totalNumberStaircases.message = "Enter the total number of staircases";
-    } else if (!FieldValidations.IsWholeNumber(this.applicationService.currenKbiSection!.Staircases.TotalNumberStaircases) || !FieldValidations.IsAPositiveNumber(this.applicationService.currenKbiSection!.Staircases.TotalNumberStaircases) || this.applicationService.currenKbiSection!.Staircases.TotalNumberStaircases > 99) {
+    } else if (!FieldValidations.IsWholeNumber(this.applicationService.currentKbiSection!.Staircases.TotalNumberStaircases) || !FieldValidations.IsAPositiveNumber(this.applicationService.currentKbiSection!.Staircases.TotalNumberStaircases) || this.applicationService.currentKbiSection!.Staircases.TotalNumberStaircases > 99) {
       this.errors.totalNumberStaircases.message = "Total number of staircases must be a whole number and 99 or fewer";
     } else {
       this.errors.totalNumberStaircases.hasError = false;
@@ -61,9 +61,9 @@ export class TotalStaircasesComponent extends BaseComponent implements IHasNextP
 
   validateInternalStaircasesAllFloors() {
     this.errors.internalStaircasesAllFloors.hasError = true;
-    if (!this.applicationService.currenKbiSection!.Staircases.InternalStaircasesAllFloors) {
+    if (!this.applicationService.currentKbiSection!.Staircases.InternalStaircasesAllFloors) {
       this.errors.internalStaircasesAllFloors.message = "Enter the number of staircases serving all floors from ground level";
-    } else if (!FieldValidations.IsWholeNumber(this.applicationService.currenKbiSection!.Staircases.InternalStaircasesAllFloors) || !FieldValidations.IsAPositiveNumber(this.applicationService.currenKbiSection!.Staircases.InternalStaircasesAllFloors) || this.applicationService.currenKbiSection!.Staircases.InternalStaircasesAllFloors > 99) {
+    } else if (!FieldValidations.IsWholeNumber(this.applicationService.currentKbiSection!.Staircases.InternalStaircasesAllFloors) || !FieldValidations.IsAPositiveNumber(this.applicationService.currentKbiSection!.Staircases.InternalStaircasesAllFloors) || this.applicationService.currentKbiSection!.Staircases.InternalStaircasesAllFloors > 99) {
       this.errors.internalStaircasesAllFloors.message = "Number of staircases serving all floors from ground level must be a whole number and 99 or fewer";
     } else {
       this.errors.internalStaircasesAllFloors.hasError = false;
@@ -73,8 +73,8 @@ export class TotalStaircasesComponent extends BaseComponent implements IHasNextP
 
   validateInternalIsGreaterThanTotalNumberStaircases() {
     this.errors.internalLowerOrEqualThanTotalNumberStaircases.hasError = false;
-    if (!!this.applicationService.currenKbiSection!.Staircases.TotalNumberStaircases && !!this.applicationService.currenKbiSection!.Staircases.InternalStaircasesAllFloors
-      && Number(this.applicationService.currenKbiSection!.Staircases.TotalNumberStaircases) < Number(this.applicationService.currenKbiSection!.Staircases.InternalStaircasesAllFloors)) {
+    if (!!this.applicationService.currentKbiSection!.Staircases.TotalNumberStaircases && !!this.applicationService.currentKbiSection!.Staircases.InternalStaircasesAllFloors
+      && Number(this.applicationService.currentKbiSection!.Staircases.TotalNumberStaircases) < Number(this.applicationService.currentKbiSection!.Staircases.InternalStaircasesAllFloors)) {
       this.errors.internalLowerOrEqualThanTotalNumberStaircases.hasError = true;
     }
     return this.errors.internalLowerOrEqualThanTotalNumberStaircases.hasError;
@@ -91,7 +91,7 @@ export class TotalStaircasesComponent extends BaseComponent implements IHasNextP
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Roof.RoofMaterial;
+    return !!this.applicationService.currentKbiSection?.Roof.RoofMaterial;
   }
 
 }

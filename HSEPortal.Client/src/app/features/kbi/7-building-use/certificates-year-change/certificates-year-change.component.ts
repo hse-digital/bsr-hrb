@@ -26,15 +26,17 @@ export class CertificatesYearChangeComponent extends BaseComponent implements IH
   }
 
   canContinue(): boolean {
+    var currentSection = this.applicationService.model.Sections[this.applicationService._currentKbiSectionIndex];
+
     this.certificatesYearChangesHasErrors = true;
-    if (!this.applicationService.currenKbiSection?.BuildingUse.YearChangeInUse || this.applicationService.currenKbiSection?.BuildingUse.YearChangeInUse.toString().trim().length == 0) {
+    if (!this.applicationService.currentKbiSection?.BuildingUse.YearChangeInUse || this.applicationService.currentKbiSection?.BuildingUse.YearChangeInUse.toString().trim().length == 0) {
       return true; // This screen is optional.
-    } else if ( this.applicationService.currenKbiSection.BuildingUse.YearChangeInUse.toString().trim().length != 4
-      || !FieldValidations.IsWholeNumber(this.applicationService.currenKbiSection?.BuildingUse.YearChangeInUse)
-      || !FieldValidations.IsGreaterThanZero(this.applicationService.currenKbiSection?.BuildingUse.YearChangeInUse)) {
+    } else if (this.applicationService.currentKbiSection.BuildingUse.YearChangeInUse.toString().trim().length != 4
+      || !FieldValidations.IsWholeNumber(this.applicationService.currentKbiSection?.BuildingUse.YearChangeInUse)
+      || !FieldValidations.IsGreaterThanZero(this.applicationService.currentKbiSection?.BuildingUse.YearChangeInUse)) {
       this.errorMessage = `Year ${this.getInfraestructureName()} changed use must be a real year. For example, '1994'`;
-    } else if (this.applicationService.currenKbiSection.BuildingUse.YearChangeInUse < Number(this.applicationService.currentSection.YearOfCompletion)) {
-      this.errorMessage = `Year ${this.getInfraestructureName()} changed use must be after the building was completed in ${this.applicationService.currentSection.YearOfCompletion}`;
+    } else if (this.applicationService.currentKbiSection.BuildingUse.YearChangeInUse <= Number(currentSection.YearOfCompletion)) {
+      this.errorMessage = `Year ${this.getInfraestructureName()} changed use must be after the building was completed in ${currentSection.YearOfCompletion}`;
     } else {
       this.certificatesYearChangesHasErrors = false;
     }
@@ -53,7 +55,7 @@ export class CertificatesYearChangeComponent extends BaseComponent implements IH
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.BuildingUse.PreviousUseBuilding && this.applicationService.currenKbiSection?.BuildingUse.PreviousUseBuilding.length > 0;
+    return !!this.applicationService.currentKbiSection?.BuildingUse.PreviousUseBuilding && this.applicationService.currentKbiSection?.BuildingUse.PreviousUseBuilding.length > 0;
   }
 
 

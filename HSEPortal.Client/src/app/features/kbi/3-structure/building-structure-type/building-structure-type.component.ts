@@ -30,8 +30,8 @@ export class BuildingStructureTypeComponent extends BaseComponent implements IHa
   }
 
   ngOnInit(): void {
-    if(!this.applicationService.currenKbiSection?.BuildingStructure) this.applicationService.currenKbiSection!.BuildingStructure = {}
-    if (!this.applicationService.currenKbiSection!.BuildingStructure.BuildingStructureType) { this.applicationService.currenKbiSection!.BuildingStructure.BuildingStructureType = []; }
+    if(!this.applicationService.currentKbiSection?.BuildingStructure) this.applicationService.currentKbiSection!.BuildingStructure = {}
+    if (!this.applicationService.currentKbiSection!.BuildingStructure.BuildingStructureType) { this.applicationService.currentKbiSection!.BuildingStructure.BuildingStructureType = []; }
     this.errorMessage = `Select the type of structure in ${this.getInfraestructureName()} , or select \'None of these\'`;
   }
 
@@ -42,8 +42,8 @@ export class BuildingStructureTypeComponent extends BaseComponent implements IHa
   }
 
   canContinue(): boolean {
-    this.buildingStructureTypeHasErrors = !this.applicationService.currenKbiSection!.BuildingStructure.BuildingStructureType 
-      || this.applicationService.currenKbiSection!.BuildingStructure.BuildingStructureType.length == 0;
+    this.buildingStructureTypeHasErrors = !this.applicationService.currentKbiSection!.BuildingStructure.BuildingStructureType 
+      || this.applicationService.currentKbiSection!.BuildingStructure.BuildingStructureType.length == 0;
 
     if (this.buildingStructureTypeHasErrors) this.firstCheckboxAnchorId = `composite_steel_concrete-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -55,6 +55,6 @@ export class BuildingStructureTypeComponent extends BaseComponent implements IHa
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Energy.EnergySupply && this.applicationService.currenKbiSection!.Energy.EnergySupply!.length > 0;
+    return !!this.applicationService.currentKbiSection?.Energy.EnergySupply && this.applicationService.currentKbiSection!.Energy.EnergySupply!.length > 0;
   }
 }

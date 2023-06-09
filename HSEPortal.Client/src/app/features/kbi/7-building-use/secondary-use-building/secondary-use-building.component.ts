@@ -29,7 +29,7 @@ export class SecondaryUseBuildingComponent extends BaseComponent implements IHas
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.BuildingUse.SecondaryUseBuilding) { this.applicationService.currenKbiSection!.BuildingUse.SecondaryUseBuilding = []; }
+    if (!this.applicationService.currentKbiSection!.BuildingUse.SecondaryUseBuilding) { this.applicationService.currentKbiSection!.BuildingUse.SecondaryUseBuilding = []; }
     this.errorMessage = `Select the secondary uses for ${this.getInfraestructureName()}`;
   }
 
@@ -40,8 +40,8 @@ export class SecondaryUseBuildingComponent extends BaseComponent implements IHas
   }
 
   canContinue(): boolean {
-    this.secondaryUseBuildingHasErrors = !this.applicationService.currenKbiSection?.BuildingUse.SecondaryUseBuilding 
-      || this.applicationService.currenKbiSection!.BuildingUse.SecondaryUseBuilding.length == 0;
+    this.secondaryUseBuildingHasErrors = !this.applicationService.currentKbiSection?.BuildingUse.SecondaryUseBuilding 
+      || this.applicationService.currentKbiSection!.BuildingUse.SecondaryUseBuilding.length == 0;
 
     if (this.secondaryUseBuildingHasErrors) this.firstCheckboxAnchorId = `assembly_recreation-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -53,7 +53,7 @@ export class SecondaryUseBuildingComponent extends BaseComponent implements IHas
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.BuildingUse.PrimaryUseOfBuilding && this.applicationService.currenKbiSection?.BuildingUse.PrimaryUseOfBuilding.length > 0;
+    return !!this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding && this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding.length > 0;
   }
 
 }

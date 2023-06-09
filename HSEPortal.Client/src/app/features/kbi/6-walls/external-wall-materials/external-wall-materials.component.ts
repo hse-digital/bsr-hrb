@@ -30,8 +30,8 @@ export class ExternalWallMaterialsComponent extends BaseComponent implements IHa
   }
 
   ngOnInit(): void {
-    if(!this.applicationService.currenKbiSection?.Walls) this.applicationService.currenKbiSection!.Walls = {}
-    if (!this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials) { this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials = []; }
+    if(!this.applicationService.currentKbiSection?.Walls) this.applicationService.currentKbiSection!.Walls = {}
+    if (!this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials) { this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials = []; }
     this.errorMessage = `Select what materials are visible on the outside of the walls of ${this.getInfraestructureName()}`;
   }
 
@@ -42,11 +42,11 @@ export class ExternalWallMaterialsComponent extends BaseComponent implements IHa
   }
 
   canContinue(): boolean {
-    this.externalWallMaterialsHasErrors = !this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials || this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials.length == 0;
+    this.externalWallMaterialsHasErrors = !this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials || this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials.length == 0;
 
     if (this.externalWallMaterialsHasErrors) this.firstCheckboxAnchorId = `acm-${this.checkboxes?.first.innerId}`;
-    else if (this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials!.indexOf('glass') == -1)
-      this.applicationService.currenKbiSection?.Walls.ExternalWallMaterials?.push('glass');
+    else if (this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.indexOf('glass') == -1)
+      this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.push('glass');
 
     return !this.externalWallMaterialsHasErrors;
   }
@@ -61,12 +61,12 @@ export class ExternalWallMaterialsComponent extends BaseComponent implements IHa
   }
 
   doesExternalWallMaterialsIncludes(material: string) {
-    return this.applicationService.currenKbiSection!.Walls.ExternalWallMaterials!.includes(material);
+    return this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes(material);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Staircases.TotalNumberStaircases
-      && !!this.applicationService.currenKbiSection?.Staircases.InternalStaircasesAllFloors;
+    return !!this.applicationService.currentKbiSection?.Staircases.TotalNumberStaircases
+      && !!this.applicationService.currentKbiSection?.Staircases.InternalStaircasesAllFloors;
   }
 
 }

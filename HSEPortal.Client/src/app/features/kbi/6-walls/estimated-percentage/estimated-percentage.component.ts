@@ -35,45 +35,45 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
     this.errors = [];
     if (!this.externalWallMaterials) this.externalWallMaterials = [];
 
-    if (!this.applicationService.currenKbiSection?.Walls.ExternalWallMaterialsPercentage || Object.keys(this.applicationService.currenKbiSection!.Walls.ExternalWallMaterialsPercentage).length == 0) {
+    if (!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage || Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage).length == 0) {
       this.initExternalWallMaterialsPercentage();
     } else {
       this.mapExternalWallMaterials();
     }
 
-    this.applicationService.currenKbiSection?.Walls.ExternalWallMaterials?.forEach(x => {
+    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x => {
       this.externalWallMaterials.push({ value: x, id: x } as Material);
       this.errors.push({ hasError: false, message: '', id: x } as Error);
     });
   }
 
   initExternalWallMaterialsPercentage() {
-    this.applicationService.currenKbiSection!.Walls.ExternalWallMaterialsPercentage = {};
-    this.applicationService.currenKbiSection?.Walls.ExternalWallMaterials?.forEach(material => {
-      this.applicationService.currenKbiSection!.Walls.ExternalWallMaterialsPercentage![material] = '';
+    this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = {};
+    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(material => {
+      this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![material] = '';
     });
   }
 
   mapExternalWallMaterials() {
     let aux: Record<string, string> = {};
-    this.applicationService.currenKbiSection?.Walls.ExternalWallMaterials?.forEach(x =>
-      aux[x] = !!this.applicationService.currenKbiSection!.Walls.ExternalWallMaterialsPercentage![x]
-        ? this.applicationService.currenKbiSection!.Walls.ExternalWallMaterialsPercentage![x]
+    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x =>
+      aux[x] = !!this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![x]
+        ? this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![x]
         : ''
     );
-    this.applicationService.currenKbiSection!.Walls.ExternalWallMaterialsPercentage = aux;
+    this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = aux;
   }
 
   initErrors() {
     this.errors = [];
-    this.applicationService.currenKbiSection?.Walls.ExternalWallMaterials?.forEach(x => {
+    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x => {
       this.errors.push({ hasError: false, message: '', id: x } as Error);
     });
   }
 
   canContinue(): boolean {
     this.initErrors();
-    this.applicationService.currenKbiSection?.Walls.ExternalWallMaterials?.forEach(x => this.validateInput(x));
+    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x => this.validateInput(x));
     this.validateSumAllPercentageMustBe100();
     this.estimatedPercentageHasErrors = this.errors.map(x => x.hasError).reduce((previous, current) => previous || current);
     return !this.estimatedPercentageHasErrors;
@@ -81,7 +81,7 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
 
   validateInput(input: string) {
     let error = this.errors.find(x => x.id == input)!;
-    let percentage = this.applicationService.currenKbiSection?.Walls.ExternalWallMaterialsPercentage![input];
+    let percentage = this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage![input];
     let label = ExternalWallMaterialsPipe.externalWallMaterials[input];
 
     error.hasError = true;
@@ -101,7 +101,7 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
   }
 
   validateSumAllPercentageMustBe100() {
-    let percentages = Object.values(this.applicationService.currenKbiSection?.Walls.ExternalWallMaterialsPercentage!);
+    let percentages = Object.values(this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage!);
     let totalPercentage = percentages.map(x => Number(x)).reduce((previous, current) => previous + current);
     if (totalPercentage != 100) this.errors.push({ hasError: true, id: this.errors[0].id, message: "Percentage of all materials must total 100" } as Error);
   }
@@ -121,11 +121,11 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    let externalWallMaterials = this.applicationService.currenKbiSection?.Walls.ExternalWallMaterials;
+    let externalWallMaterials = this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials;
     
     let canAccess = !!externalWallMaterials && externalWallMaterials.length > 0;
-    if (canAccess && externalWallMaterials!.indexOf('acm') > -1) canAccess &&= !!this.applicationService.currenKbiSection?.Walls.WallACM;
-    if (canAccess && externalWallMaterials!.indexOf('hpl') > -1) canAccess &&= !!this.applicationService.currenKbiSection?.Walls.WallHPL;
+    if (canAccess && externalWallMaterials!.indexOf('acm') > -1) canAccess &&= !!this.applicationService.currentKbiSection?.Walls.WallACM;
+    if (canAccess && externalWallMaterials!.indexOf('hpl') > -1) canAccess &&= !!this.applicationService.currentKbiSection?.Walls.WallHPL;
     return canAccess;
   }
 
