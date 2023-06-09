@@ -9,6 +9,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { BuildingStructureTypeComponent } from '../../3-structure/building-structure-type/building-structure-type.component';
 import { KbiStructureModule } from '../../3-structure/kbi.structure.module';
+import { KbiService } from 'src/app/services/kbi.service';
 
 @Component({
   selector: 'hse-energy-supply',
@@ -25,7 +26,7 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   energySupplyHasErrors = false;
   firstCheckboxAnchorId?: string;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private kbiService: KbiService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
@@ -51,6 +52,11 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     return navigationService.navigateRelative(`../${KbiStructureModule.baseRoute}/${BuildingStructureTypeComponent.route}`, activatedRoute);
+  }
+
+  override async onSave(): Promise<void> {
+    var sectionModel = this.applicationService.currenKbiSection;
+    await this.kbiService.syncFireEnergy(sectionModel);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

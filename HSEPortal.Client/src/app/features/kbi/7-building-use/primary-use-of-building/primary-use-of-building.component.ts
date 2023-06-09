@@ -7,6 +7,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { SecondaryUseBuildingComponent } from '../secondary-use-building/secondary-use-building.component';
+import { KbiService } from 'src/app/services/kbi.service';
 
 @Component({
   selector: 'hse-primary-use-of-building',
@@ -22,15 +23,17 @@ export class PrimaryUseOfBuildingComponent extends BaseComponent implements IHas
 
   primaryUseOfBuildingHasErrors = false;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private kbiService: KbiService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if(!this.applicationService.currenKbiSection?.BuildingUse) this.applicationService.currenKbiSection!.BuildingUse = {}
     if (!this.applicationService.currenKbiSection!.BuildingUse.PrimaryUseOfBuilding) { this.applicationService.currenKbiSection!.BuildingUse.PrimaryUseOfBuilding = ""; }
 
     this.errorMessage = `Select the primary use for ${this.getInfraestructureName()}`;
+
+    await this.kbiService.syncStructureRoofStaircasesAndWalls(this.applicationService.currenKbiSection!);
   }
 
   getInfraestructureName(){
