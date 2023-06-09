@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseNavigation, KbiNavigationNode } from '../../services/navigation';
-import { ApplicationService, KbiSectionModel, BuildingApplicationStatus } from '../../services/application.service';
+import { ApplicationService, KbiSectionModel, BuildingApplicationStatus, KbiModel } from '../../services/application.service';
 import { CheckBeforeStartComponent } from 'src/app/features/kbi/check-before-start/check-before-start.component';
 import { EvacuationStrategyComponent } from 'src/app/features/kbi/1-fire/evacuation-strategy/evacuation-strategy.component';
 import { ProvisionsEquipmentComponent } from 'src/app/features/kbi/1-fire/provisions-equipment/provisions-equipment.component';
@@ -44,6 +44,20 @@ import { UndergoneBuildingMaterialChangesComponent } from './7-building-use/unde
 import { MostRecentChangeComponent } from './7-building-use/most-recent-material-change/most-recent-material-change.component';
 import { YearMostRecentChangeComponent } from './7-building-use/year-most-recent-change/year-most-recent-change.component';
 import { AddedFloorsTypeComponent } from './7-building-use/added-floors-type/added-floors-type.component';
+import { KbiCheckAnswersModule } from './check-answers-building-information/kbi.check-answers-building-information.module';
+import { BuildingInformationCheckAnswersComponent } from './check-answers-building-information/check-answers-building-information.component';
+import { StructureConnectionsComponent } from './8-connections/structure-connections/structure-connections.component';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { OtherHighRiseBuildingConnectionsComponent } from './8-connections/other-high-rise-building-connections/other-high-rise-building-connections.component';
+import { HowOtherHighRiseBuildingsConnectedComponent } from './8-connections/how-other-high-rise-buildings-connected/how-other-high-rise-buildings-connected.component';
+import { OtherBuildingConnectionsComponent } from './8-connections/other-building-connections/other-building-connections.component';
+import { HowOtherBuildingsConnectedComponent } from './8-connections/how-other-buildings-connected/how-other-buildings-connected.component';
+import { ConnectionsCheckAnswerComponent } from './8-connections/connections-check-answer/connections-check-answer.component';
+import { DeclarationComponent } from './9-submit/declaration/declaration.component';
+import { ConfirmComponent } from './9-submit/confirm/confirm.component';
+import { KbiConnectionsModule } from './8-connections/kbi.connections.module';
+import { KbiSubmitModule } from './9-submit/kbi.submit.module';
+import { TaskListComponent } from './task-list/task-list.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -52,10 +66,20 @@ export class KbiNavigation extends BaseNavigation {
     super();
   }
 
-  private yearMostRecentChangeNavigationNode = new YearMostRecentChangeNavigationNode(); // add check answers navigation
-  private mostRecentChangeNavigationNode = new MostRecentChangeNavigationNode(this.yearMostRecentChangeNavigationNode); // add check answers navigation
+  private kbiConfirmNavigationNode = new KbiConfirmNavigationNode(this.applicationService);
+  private kbiDeclarationNavigationNode = new KbiDeclarationNavigationNode(this.applicationService, this.kbiConfirmNavigationNode);
+  private connectionsCheckAnswerNavigationNode = new ConnectionsCheckAnswerNavigationNode(this.applicationService, this.kbiDeclarationNavigationNode);
+  private howOtherBuildingsConnectedNavigationNode = new HowOtherBuildingsConnectedNavigationNode(this.connectionsCheckAnswerNavigationNode);
+  private otherBuildingConnectionsNavigationNode = new OtherBuildingConnectionsNavigationNode(this.howOtherBuildingsConnectedNavigationNode, this.connectionsCheckAnswerNavigationNode);
+  private howOtherHighRiseBuildingsConnectedNavigationNode = new HowOtherHighRiseBuildingsConnectedNavigationNode(this.otherBuildingConnectionsNavigationNode);
+  private otherHighRiseBuildingConnectionsNavigationNode = new OtherHighRiseBuildingConnectionsNavigationNode(this.howOtherHighRiseBuildingsConnectedNavigationNode, this.otherBuildingConnectionsNavigationNode);
+  private structureConnectionsNavigationNode = new StructureConnectionsNavigationNode(this.otherHighRiseBuildingConnectionsNavigationNode);
+
+  private buildingInformationCheckAnswersNavigationNode  = new BuildingInformationCheckAnswersNavigationNode(this.applicationService, this.structureConnectionsNavigationNode, this.otherHighRiseBuildingConnectionsNavigationNode);
+  private yearMostRecentChangeNavigationNode = new YearMostRecentChangeNavigationNode(this.buildingInformationCheckAnswersNavigationNode);
+  private mostRecentChangeNavigationNode = new MostRecentChangeNavigationNode(this.yearMostRecentChangeNavigationNode, this.buildingInformationCheckAnswersNavigationNode);
   private addedFloorsTypeNavigationNode = new AddedFloorsTypeNavigationNode(this.yearMostRecentChangeNavigationNode, this.mostRecentChangeNavigationNode);
-  private undergoneBuildingMaterialChangesNavigationNode = new UndergoneBuildingMaterialChangesNavigationNode(this.addedFloorsTypeNavigationNode, this.yearMostRecentChangeNavigationNode, this.mostRecentChangeNavigationNode); // add check answers navigation 
+  private undergoneBuildingMaterialChangesNavigationNode = new UndergoneBuildingMaterialChangesNavigationNode(this.addedFloorsTypeNavigationNode, this.yearMostRecentChangeNavigationNode, this.mostRecentChangeNavigationNode, this.buildingInformationCheckAnswersNavigationNode);
   private certificatesYearChangeNavigationNode = new CertificatesYearChangeNavigationNode(this.undergoneBuildingMaterialChangesNavigationNode);
   private previousUseBuildingNavigationNode = new PreviousUseBuildingNavigationNode(this.certificatesYearChangeNavigationNode);
   private changePrimaryUseNavigationNode = new ChangePrimaryUseNavigationNode(this.previousUseBuildingNavigationNode, this.undergoneBuildingMaterialChangesNavigationNode);
@@ -564,7 +588,10 @@ class CertificatesYearChangeNavigationNode extends KbiNavigationNode {
 
 class UndergoneBuildingMaterialChangesNavigationNode extends KbiNavigationNode {
 
-  constructor(private addedFloorsTypeNavigationNode: AddedFloorsTypeNavigationNode, private yearMostRecentChangeNavigationNode: YearMostRecentChangeNavigationNode, private mostRecentChangeNavigationNode: MostRecentChangeNavigationNode) {
+  constructor(private addedFloorsTypeNavigationNode: AddedFloorsTypeNavigationNode,
+      private yearMostRecentChangeNavigationNode: YearMostRecentChangeNavigationNode, 
+      private mostRecentChangeNavigationNode: MostRecentChangeNavigationNode,
+      private buildingInformationCheckAnswersNavigationNode: BuildingInformationCheckAnswersNavigationNode) {
     super();
   }
 
@@ -572,7 +599,7 @@ class UndergoneBuildingMaterialChangesNavigationNode extends KbiNavigationNode {
     if (!kbi.BuildingUse.UndergoneBuildingMaterialChanges || kbi.BuildingUse.UndergoneBuildingMaterialChanges.length == 0) {
       return `${KbiBuildingUseModule.baseRoute}/${UndergoneBuildingMaterialChangesComponent.route}`;
     } else if (kbi.BuildingUse.UndergoneBuildingMaterialChanges.length == 1 && kbi.BuildingUse.UndergoneBuildingMaterialChanges[0] === "none") {
-      // goes to check answer page.
+      return this.buildingInformationCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     } else if (kbi.BuildingUse.UndergoneBuildingMaterialChanges.length > 1 && !kbi.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown'))
     {
       return this.mostRecentChangeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -616,7 +643,8 @@ class AddedFloorsTypeNavigationNode extends KbiNavigationNode {
 
 class MostRecentChangeNavigationNode extends KbiNavigationNode {
 
-  constructor(private yearMostRecentChangeNavigationNode: YearMostRecentChangeNavigationNode) {
+  constructor(private yearMostRecentChangeNavigationNode: YearMostRecentChangeNavigationNode,
+      private buildingInformationCheckAnswersNavigationNode: BuildingInformationCheckAnswersNavigationNode) {
     super();
   }
 
@@ -625,7 +653,7 @@ class MostRecentChangeNavigationNode extends KbiNavigationNode {
       return `${KbiBuildingUseModule.baseRoute}/${MostRecentChangeComponent.route}`;
     }
     else if (kbi.BuildingUse.MostRecentMaterialChange === "unknown") {
-      return `${KbiBuildingUseModule.baseRoute}/${MostRecentChangeComponent.route}`; //TODO update to check answer page
+      return this.buildingInformationCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
     else {
       return this.yearMostRecentChangeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -636,7 +664,7 @@ class MostRecentChangeNavigationNode extends KbiNavigationNode {
 
 class YearMostRecentChangeNavigationNode extends KbiNavigationNode {
 
-  constructor() {
+  constructor(private buildingInformationCheckAnswersNavigationNode: BuildingInformationCheckAnswersNavigationNode) {
     super();
   }
 
@@ -644,10 +672,179 @@ class YearMostRecentChangeNavigationNode extends KbiNavigationNode {
     if (!kbi.BuildingUse.YearMostRecentMaterialChange) {
       return `${KbiBuildingUseModule.baseRoute}/${YearMostRecentChangeComponent.route}`;
     }
-    else{
-      //add check answer page
-      return `${KbiBuildingUseModule.baseRoute}/${YearMostRecentChangeComponent.route}`;
-    }
+    return this.buildingInformationCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 
+}
+
+class BuildingInformationCheckAnswersNavigationNode extends KbiNavigationNode {
+
+  constructor(private applicationService: ApplicationService, 
+      private structureConnectionsNavigationNode: StructureConnectionsNavigationNode, 
+      private otherHighRiseBuildingConnectionsNavigationNode: OtherHighRiseBuildingConnectionsNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    let kbiModel = this.applicationService.currentKbiModel!;
+    if(this.applicationService.model.Kbi!.SectionStatus.length == 1) {
+      return this.otherHighRiseBuildingConnectionsNavigationNode.getNextRoute(kbiModel, kbiSectionIndex)
+    } else if (!this.allKbiSectionCompleted()) {
+      //return `${KbiFireModule.baseRoute}/${EvacuationStrategyComponent.route}`;
+    }
+    return this.structureConnectionsNavigationNode.getNextRoute(kbiModel, kbiSectionIndex);
+  }
+
+  private allKbiSectionCompleted(){
+    return this.applicationService.model.Kbi!.SectionStatus.map(x => x.Complete).reduce((a, b) => a && b);
+  }
+}
+
+class StructureConnectionsNavigationNode extends KbiNavigationNode {
+
+  constructor(private otherHighRiseBuildingConnectionsNavigationNode: OtherHighRiseBuildingConnectionsNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if(!kbi.Connections?.StructureConnections || kbi.Connections.StructureConnections.length == 0) {
+      return `${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`;
+    }
+    return this.otherHighRiseBuildingConnectionsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+}
+
+class OtherHighRiseBuildingConnectionsNavigationNode extends KbiNavigationNode {
+
+  constructor(private howOtherHighRiseBuildingsConnectedNavigationNode: HowOtherHighRiseBuildingsConnectedNavigationNode,
+      private otherBuildingConnectionsNavigationNode: OtherBuildingConnectionsNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if (!kbi.Connections?.OtherHighRiseBuildingConnections || !FieldValidations.IsNotNullOrWhitespace(kbi.Connections?.OtherHighRiseBuildingConnections)) {
+      return `${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`;
+    } else if (kbi.Connections.OtherHighRiseBuildingConnections === "yes") {
+      return this.howOtherHighRiseBuildingsConnectedNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+    }
+    return this.otherBuildingConnectionsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+}
+
+class HowOtherHighRiseBuildingsConnectedNavigationNode extends KbiNavigationNode {
+
+  constructor(private otherBuildingConnectionsNavigationNode: OtherBuildingConnectionsNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if (!kbi.Connections.HowOtherHighRiseBuildingAreConnected || kbi.Connections.HowOtherHighRiseBuildingAreConnected.length == 0) {
+      return `${KbiConnectionsModule.baseRoute}/${HowOtherHighRiseBuildingsConnectedComponent.route}`;
+    }
+    return this.otherBuildingConnectionsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+}
+
+class OtherBuildingConnectionsNavigationNode extends KbiNavigationNode {
+
+  constructor(private howOtherBuildingsConnectedNavigationNode: HowOtherBuildingsConnectedNavigationNode,
+      private connectionCheckAnswersNavigationNode: ConnectionsCheckAnswerNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if(!kbi.Connections.OtherBuildingConnections || !FieldValidations.IsNotNullOrWhitespace(kbi.Connections.OtherBuildingConnections)) {
+      return `${KbiConnectionsModule.baseRoute}/${OtherBuildingConnectionsComponent.route}`;
+    } else if (kbi.Connections.OtherBuildingConnections === "yes") {
+      return this.howOtherBuildingsConnectedNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+    }
+    return this.connectionCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+}
+
+class HowOtherBuildingsConnectedNavigationNode extends KbiNavigationNode {
+
+  constructor(private connectionCheckAnswersNavigationNode: ConnectionsCheckAnswerNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if (!kbi.Connections.HowOtherBuildingAreConnected || kbi.Connections.HowOtherBuildingAreConnected.length == 0) {
+      return `${KbiConnectionsModule.baseRoute}/${HowOtherBuildingsConnectedComponent.route}`;
+    }
+    return this.connectionCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+}
+
+class ConnectionsCheckAnswerNavigationNode  extends KbiNavigationNode {
+
+  constructor(private applicationService: ApplicationService, private kbiDeclarationNavigationNode: KbiDeclarationNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if (!this.canContinue()) {
+      return `${KbiConnectionsModule.baseRoute}/${ConnectionsCheckAnswerComponent.route}`;
+    }
+    return this.kbiDeclarationNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+  
+  private canContinue(): boolean {
+    let canContinue = true;
+
+    canContinue &&= !!this.applicationService.currentKbiModel?.Connections?.StructureConnections && this.applicationService.currentKbiModel?.Connections?.StructureConnections.length > 0;
+    
+    canContinue &&= FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel?.Connections?.OtherHighRiseBuildingConnections); 
+    
+    if(this.applicationService.currentKbiModel?.Connections?.OtherHighRiseBuildingConnections === 'yes') canContinue &&= !!this.applicationService.currentKbiModel?.Connections?.HowOtherHighRiseBuildingAreConnected && this.applicationService.currentKbiModel?.Connections?.HowOtherHighRiseBuildingAreConnected.length > 0;
+    
+    canContinue &&= FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel?.Connections?.OtherBuildingConnections); 
+    
+    if(this.applicationService.currentKbiModel?.Connections?.OtherBuildingConnections === 'yes') canContinue &&= !!this.applicationService.currentKbiModel?.Connections?.HowOtherBuildingAreConnected && this.applicationService.currentKbiModel?.Connections?.HowOtherBuildingAreConnected.length > 0;
+
+    return canContinue;
+  }
+
+}
+
+class KbiDeclarationNavigationNode extends KbiNavigationNode {
+
+  constructor(private applicationService: ApplicationService, private kbiConfirmNavigationNode: KbiConfirmNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress)) {
+      return `${KbiSubmitModule.baseRoute}/${DeclarationComponent.route}`;
+    }
+    return this.kbiConfirmNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+  private containsFlag(flag: BuildingApplicationStatus) {
+    return (this.applicationService.model.ApplicationStatus & flag) == flag;
+  }
+
+}
+
+class KbiConfirmNavigationNode extends KbiNavigationNode {
+
+  constructor(private applicationService: ApplicationService) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete)) {
+      return `${KbiSubmitModule.baseRoute}/${ConfirmComponent.route}`;
+    }
+    return `${KbiSubmitModule.baseRoute}/${ConfirmComponent.route}`;
+  }
+
+  private containsFlag(flag: BuildingApplicationStatus) {
+    return (this.applicationService.model.ApplicationStatus & flag) == flag;
+  }
 }

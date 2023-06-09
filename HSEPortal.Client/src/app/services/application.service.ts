@@ -110,6 +110,10 @@ export class ApplicationService {
     return this.model.Kbi?.KbiSections[this._currentKbiSectionIndex];
   }
 
+  get currentKbiModel() {
+    return this.model.Kbi;
+  }
+
   async removeAp(index: number) {
     this.model.AccountablePersons.splice(index, 1);
     await this.updateApplication();
@@ -299,6 +303,8 @@ export enum PaymentStatus {
 export class KbiModel {
   SectionStatus: { InProgress: boolean, Complete: boolean }[] = [];
   KbiSections: KbiSectionModel[] = [];
+  Connections: Connections = {};
+  Submit: Submit = {};
 }
 
 export class KbiSectionModel {
@@ -309,8 +315,6 @@ export class KbiSectionModel {
   Staircases: Staircases = {}
   Walls: Walls = {};
   BuildingUse: BuildingUse = {};
-  Connections: Connections = {};
-  Submit: Submit = {};
 
   StructureName?: string;
   Postcode?: string;
@@ -388,7 +392,11 @@ export class BuildingUse {
 }
 
 export class Connections {
-
+  StructureConnections?: string[];
+  OtherHighRiseBuildingConnections?: string;
+  HowOtherHighRiseBuildingAreConnected?: string[];
+  OtherBuildingConnections?: string;
+  HowOtherBuildingAreConnected?: string[];
 }
 
 export class Submit {

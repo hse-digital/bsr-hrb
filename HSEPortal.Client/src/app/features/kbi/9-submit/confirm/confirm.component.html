@@ -1,0 +1,29 @@
+<govuk-back-link>Back</govuk-back-link>
+  
+  <div class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+  
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">Structure and safety information submitted for {{applicationService.model.BuildingName}}</h1>
+            <div class="govuk-panel__body">
+              Your application number<br><strong>{{applicationService.model.id}}</strong>
+            </div>
+          </div>
+  
+        <govuk-body>We have sent a confirmation email to {{applicationService.model.ContactEmailAddress}}. If you cannot find the email, check your junk or spam folders.</govuk-body>
+        
+        <govuk-body>If you did not get the email, <a href="https://www.hse.gov.uk/contact/tell-us-about-a-health-and-safety-issue.htm" class="govuk-link" tabindex="0" role="link">contact us</a>.</govuk-body>
+
+        <h2 class="govuk-heading-m">What happens next</h2>
+
+        <govuk-body>We have received your information.</govuk-body>
+        <govuk-body><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Get a copy of the information you submitted (opens in a new tab)</a>.</govuk-body>
+        <govuk-body>We will contact you by email if we need more information.</govuk-body>
+        <govuk-body>You can <a class="govuk-link" href="/" role="link">register another building</a>.</govuk-body>
+        <govuk-body>You can also <a class="govuk-link" href="" role="link">get a copy of the registration information you submitted as part of your application</a>.</govuk-body>
+        <govuk-body><a class="govuk-link" href="https://www.gov.uk/done/register-a-high-rise-building" role="link">What did you think of this service?</a> (takes 30 seconds)</govuk-body>
+
+      </div>
+    </div>
+  </div>

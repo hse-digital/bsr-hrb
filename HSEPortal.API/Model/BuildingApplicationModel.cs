@@ -96,23 +96,25 @@ public enum BuildingApplicationStatus
     KbiSubmitComplete = 8192
 }
 
-public record KbiModel(KbiSectionModel[] KbiSections, SectionStatus[] SectionStatus);
+public record KbiModel(KbiSectionModel[] KbiSections,
+        SectionStatus[] SectionStatus,
+        Connections Connections,
+        Submit Submit);
 
 public record SectionStatus(bool InProgress, bool Complete);
 
-public record KbiSectionModel(Fire Fire,
-    Energy Energy,
-    BuildingStructure BuildingStructure,
-    Roof Roof,
-    Staircases Staircases,
-    Walls Walls,
-    BuildingUse BuildingUse,
-    Connections Connections,
-    Submit Submit,
-    string StructureName,
-    string Postcode,
-    string StrategyEvacuateBuilding,
-    string ApplicationId);
+public record KbiSectionModel(Fire Fire, 
+        Energy Energy,
+        BuildingStructure BuildingStructure,
+        Roof Roof,
+        Staircases Staircases,
+        Walls Walls,
+        BuildingUse BuildingUse,
+        
+        string StructureName,
+        string Postcode,
+        string StrategyEvacuateBuilding,
+        string ApplicationId);
 
 public record ExternalWallInsulation(string[] CheckBoxSelection, string OtherValue);
 
@@ -163,6 +165,10 @@ public record BuildingUse(string PrimaryUseOfBuilding,
     string MostRecentMaterialChange,
     string YearMostRecentMaterialChange);
 
-public record Connections();
+public record Connections (string[] StructureConnections,
+        string OtherHighRiseBuildingConnections,
+        string[] HowOtherHighRiseBuildingAreConnected,
+        string OtherBuildingConnections,
+        string[] HowOtherBuildingAreConnected);
 
-public record Submit();
+public record Submit ();

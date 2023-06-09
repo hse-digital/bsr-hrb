@@ -8,6 +8,7 @@ import { OrganisationTypeDescriptionPipe } from './organisation-type-description
 import { LeadJobRoleDescriptionPipe } from './lead-job-role-description.pipe';
 import { AccountabilityDescriptionPipe } from './accountability-description.pipe';
 import { ExternalWallMaterialsPipe } from './external-wall-materials.pipe';
+import { ConnectionTypesPipe } from './connection-types.pipe';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { ExternalWallMaterialsPipe } from './external-wall-materials.pipe';
     OrganisationTypeDescriptionPipe,
     LeadJobRoleDescriptionPipe,
     AccountabilityDescriptionPipe,
-    ExternalWallMaterialsPipe
+    ExternalWallMaterialsPipe,
+    ConnectionTypesPipe
   ],
   exports: [
     PeopleLivingInSectionDescriptionPipe,
@@ -30,7 +32,8 @@ import { ExternalWallMaterialsPipe } from './external-wall-materials.pipe';
     OrganisationTypeDescriptionPipe,
     LeadJobRoleDescriptionPipe,
     AccountabilityDescriptionPipe,
-    ExternalWallMaterialsPipe
+    ExternalWallMaterialsPipe,
+    ConnectionTypesPipe
   ]
 })
 export class PipesModule { }

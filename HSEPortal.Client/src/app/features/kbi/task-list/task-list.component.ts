@@ -6,6 +6,11 @@ import { CheckBeforeStartComponent } from '../check-before-start/check-before-st
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { KbiNavigation } from 'src/app/features/kbi/kbi.navigation.ts.service';
 import { KbiService } from 'src/app/services/kbi.service';
+import { KbiConnectionsModule } from '../8-connections/kbi.connections.module';
+import { KbiSubmitModule } from '../9-submit/kbi.submit.module';
+import { StructureConnectionsComponent } from '../8-connections/structure-connections/structure-connections.component';
+import { OtherHighRiseBuildingConnectionsComponent } from '../8-connections/other-high-rise-building-connections/other-high-rise-building-connections.component';
+import { DeclarationComponent } from '../9-submit/declaration/declaration.component';
 
 @Component({
   selector: 'hse-task-list',
@@ -58,7 +63,6 @@ export class TaskListComponent implements CanActivate, OnInit {
 
   async navigateToSection(index: number, sectionName: string) {
     let route = this.kbiNavigation.getNextRoute();
-
     await this.kbiService.startKbi(this.applicationService.model.Kbi!.KbiSections[index]);
 
     let sectionId = `${index + 1}`;
@@ -66,15 +70,24 @@ export class TaskListComponent implements CanActivate, OnInit {
       sectionId = `${sectionId}-${sectionName}`;
     }
 
-    await this.navigationService.navigateAppend(`${sectionId}/${route}`, this.activatedRoute);
+    if (route.startsWith(KbiConnectionsModule.baseRoute) || route.startsWith(KbiSubmitModule.baseRoute)) {
+      await this.navigationService.navigateAppend(`${route}`, this.activatedRoute);
+    } else {
+      await this.navigationService.navigateAppend(`${sectionId}/${route}`, this.activatedRoute);
+    }
+
   }
 
-  navigateToConnections() {
-
+  async navigateToConnections() {
+    if (this.applicationService.model.Sections.length == 1) {
+      await this.navigationService.navigateAppend(`${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`, this.activatedRoute);
+    } else {
+      await this.navigationService.navigateAppend(`${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`, this.activatedRoute);
+    }
   }
 
-  navigateToSubmit() {
-
+  async navigateToSubmit() {
+    await this.navigationService.navigateAppend(`${KbiSubmitModule.baseRoute}/${DeclarationComponent.route}`, this.activatedRoute);
   }
 
   containsFlag(flag: BuildingApplicationStatus) {
