@@ -43,7 +43,7 @@ const routes = new HseRoutes([
   declarations: [
     CheckBeforeStartComponent,
     TaskListComponent,
-    KbiSectionsComponent  ],
+    KbiSectionsComponent],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
