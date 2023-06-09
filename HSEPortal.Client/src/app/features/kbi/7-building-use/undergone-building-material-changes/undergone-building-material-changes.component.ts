@@ -33,15 +33,15 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges) { this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges = []; }
-    this.errorMessage = `Select building works since on ${this.getInfraestructureName()} was originally built`;
+    if (!this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges) { this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges = []; }
+    this.errorMessage = `Select building works since ${this.getInfraestructureName()} was originally built`;
 
-    if (this.applicationService.currenKbiSection!.BuildingStructure.BuildingStructureType?.some(x => x == 'concrete_large_panels_1960' || x == 'concrete_large_panels_1970')) {
+    if (this.applicationService.currentKbiSection!.BuildingStructure.BuildingStructureType?.some(x => x == 'concrete_large_panels_1960' || x == 'concrete_large_panels_1970')) {
       this.concreteLargePanelSystemSelected = true;
     }
     else {
-      if (this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'reinforcement_works_large_panel_system')) {
-        this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges = this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges?.filter(x => x != 'reinforcement_works_large_panel_system');
+      if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'reinforcement_works_large_panel_system')) {
+        this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges = this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges?.filter(x => x != 'reinforcement_works_large_panel_system');
         if (this.equipmentCheckboxGroup?.checkboxElements?.some(x => x.innerId == 'reinforcement_works_large_panel_system')) {
           this.equipmentCheckboxGroup!.checkboxElements.find(x => x.innerId == 'reinforcement_works_large_panel_system')!.checked = false;
         }
@@ -56,32 +56,32 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
   }
 
   canContinue(): boolean {
-    this.undergoneBuildingMaterialChangesHasErrors = !this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges || this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges.length == 0;
+    this.undergoneBuildingMaterialChangesHasErrors = !this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges || this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges.length == 0;
 
     if (this.undergoneBuildingMaterialChangesHasErrors) this.firstCheckboxAnchorId = `asbestos_removal-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
 
 
-    return this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 0;
+    return this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 0;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
 
-    if (this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'none' || x == 'unknown')) {
+    if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'none' || x == 'unknown')) {
       console.log('Then I am navigated to the KBI check answers page (/check-answers-building-information');
     }
-    else if (this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 && !this.applicationService.currenKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
+    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
       return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
 
     }
-    else if (this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1 && !this.applicationService.currenKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
-      if (this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange
-        && !this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.includes(this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange)) {
-        this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange = this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0];
+    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1 && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
+      if (this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange
+        && !this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.includes(this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange)) {
+        this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0];
       }
       return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
     }
-    else if (this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')) {
-      this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange = this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0];
+    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')) {
+      this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0];
       return navigationService.navigateRelative(AddedFloorsTypeComponent.route, activatedRoute);
     }
 
@@ -92,7 +92,7 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return true;
-    //return !!this.applicationService.currenKbiSection?.ExternalWallInsulation?.CheckBoxSelection && (this.applicationService.currenKbiSection!.ExternalWallInsulation?.CheckBoxSelection![0] == 'none' || !!(this.applicationService.currenKbiSection!.ExternalWallInsulationPercentages));
+    //return !!this.applicationService.currentKbiSection?.ExternalWallInsulation?.CheckBoxSelection && (this.applicationService.currentKbiSection!.ExternalWallInsulation?.CheckBoxSelection![0] == 'none' || !!(this.applicationService.currentKbiSection!.ExternalWallInsulationPercentages));
     //TODO update can access logic for this page
   }
 

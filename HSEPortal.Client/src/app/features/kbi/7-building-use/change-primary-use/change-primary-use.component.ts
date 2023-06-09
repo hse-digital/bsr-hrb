@@ -7,6 +7,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { PreviousUseBuildingComponent } from '../previous-use-building/previous-use-building.component';
+import { UndergoneBuildingMaterialChangesComponent } from '../undergone-building-material-changes/undergone-building-material-changes.component';
 
 @Component({
   selector: 'hse-change-primary-use',
@@ -35,19 +36,20 @@ export class ChangePrimaryUseComponent  extends BaseComponent implements IHasNex
   }
 
   canContinue(): boolean {
-    this.changePrimaryUseHasErrors = !this.applicationService.currenKbiSection?.BuildingUse.ChangePrimaryUse || this.applicationService.currenKbiSection?.BuildingUse.ChangePrimaryUse.length == 0;
+    this.changePrimaryUseHasErrors = !this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse || this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse.length == 0;
     return !this.changePrimaryUseHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currenKbiSection?.BuildingUse.ChangePrimaryUse === "yes") {
+    if (this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse === "yes") {
       return navigationService.navigateRelative(PreviousUseBuildingComponent.route, activatedRoute);  
     }
-    return navigationService.navigateRelative(ChangePrimaryUseComponent.route, activatedRoute); // user goes to material changes 937
+
+    return navigationService.navigateRelative(UndergoneBuildingMaterialChangesComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.BuildingUse.FloorsBelowGroundLevel;
+    return !!this.applicationService.currentKbiSection?.BuildingUse.FloorsBelowGroundLevel;
   }
 
 }

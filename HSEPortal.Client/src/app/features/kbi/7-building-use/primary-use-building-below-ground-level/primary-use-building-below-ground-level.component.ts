@@ -36,19 +36,19 @@ export class PrimaryUseBuildingBelowGroundLevelComponent extends BaseComponent i
   }
 
   canContinue(): boolean {
-    this.primaryUseBuildingBelowGroundLevelHasErrors = !this.applicationService.currenKbiSection?.BuildingUse.PrimaryUseBuildingBelowGroundLevel || this.applicationService.currenKbiSection?.BuildingUse.PrimaryUseBuildingBelowGroundLevel.length == 0;
+    this.primaryUseBuildingBelowGroundLevelHasErrors = !this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseBuildingBelowGroundLevel || this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseBuildingBelowGroundLevel.length == 0;
     return !this.primaryUseBuildingBelowGroundLevelHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currenKbiSection?.BuildingUse.PrimaryUseOfBuilding == "residential_dwellings") {
+    if (this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding == "residential_dwellings") {
       return navigationService.navigateRelative(ChangePrimaryUseComponent.route, activatedRoute);
     }
     return navigationService.navigateRelative(UndergoneBuildingMaterialChangesComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.BuildingUse.FloorsBelowGroundLevel && this.applicationService.currenKbiSection?.BuildingUse.FloorsBelowGroundLevel > 0;
+    return !!this.applicationService.currentKbiSection?.BuildingUse.FloorsBelowGroundLevel && this.applicationService.currentKbiSection?.BuildingUse.FloorsBelowGroundLevel > 0;
   }
 
 }

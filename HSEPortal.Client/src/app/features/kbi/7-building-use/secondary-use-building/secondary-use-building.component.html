@@ -12,7 +12,7 @@
                     hint="Select all that apply" noneOptionText="No secondary use" [isPageHeading]="true"
                     [errorText]="getErrorDescription(secondaryUseBuildingHasErrors, errorMessage!)"
                     (onKeyupEnter)="saveAndContinue()"
-                    [(model)]="applicationService.currenKbiSection!.BuildingUse.SecondaryUseBuilding!">
+                    [(model)]="applicationService.currentKbiSection!.BuildingUse.SecondaryUseBuilding!">
                     <checkbox-option text="Assembly and recreation" hint="Any place of assembly, entertainment or recreation, like a bingo hall, theatre, dance school, gym or public library." value="assembly_recreation" id="assembly_recreation" />
                     <checkbox-option text="Office" hint="Any office, bank or building society, police or fire station." value="office" id="office" />
                     <checkbox-option text="Residential dwellings" hint="Like flats or maisonettes." value="residential dwellings" id="residential dwellings" />

@@ -12,7 +12,7 @@ import { YearMostRecentChangeComponent } from '../year-most-recent-change/year-m
   selector: 'hse-most-recent-material-change',
   templateUrl: './most-recent-material-change.component.html'
 })
-export class MostRecentChangeComponent  extends BaseComponent implements IHasNextPage {
+export class MostRecentChangeComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'most-recent-material-change';
   static title: string = "Most recent work done - Register a high-rise building - GOV.UK";
 
@@ -26,39 +26,35 @@ export class MostRecentChangeComponent  extends BaseComponent implements IHasNex
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
-  
+
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
       : this.applicationService.currentSection.Name;
   }
 
-
-
-
-
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange) { this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange = ""; }
+    if (!this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange) { this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = ""; }
 
     //If MostRecentMaterialChange is set to an option not available UndergoneBuildingMaterialChanges set MostRecentMaterialChange to empty
-    if (this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange
-      && !this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.includes(this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange)) {
-      this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange = "";
+    if (this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange
+      && !this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.includes(this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange)) {
+      this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = "";
     }
 
-    this.errorMessage = `Select building works since on ${this.getInfraestructureName()} was originally built`;
+    this.errorMessage = `Select the most recent change made to ${this.getInfraestructureName()}.`;
   }
 
   canContinue(): boolean {
-    this.mostRecentChangeHasErrors = !this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange;
+    this.mostRecentChangeHasErrors = !this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange;
 
-    if (this.mostRecentChangeHasErrors) this.firstRadioAnchorId = `${this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0]}-input`;
+    if (this.mostRecentChangeHasErrors) this.firstRadioAnchorId = `${this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0]}-input`;
 
     return !this.mostRecentChangeHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange === "unknown") {
+    if (this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange === "unknown") {
       return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
 
     }
@@ -68,12 +64,11 @@ export class MostRecentChangeComponent  extends BaseComponent implements IHasNex
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges
-      && (this.applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges.length > 1)
+    return !!this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges
+      && (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges.length > 1)
 
-      
+
       ;
-    return true;
   }
 
   private materialNameMapper: Record<string, string> = {

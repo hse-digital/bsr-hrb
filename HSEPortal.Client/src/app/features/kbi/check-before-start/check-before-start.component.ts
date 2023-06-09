@@ -18,6 +18,7 @@ export class CheckBeforeStartComponent implements CanActivate, OnInit {
   }
 
   async ngOnInit() {
+    this.applicationService.initKbi();
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiCheckBeforeInProgress;
     await this.applicationService.updateApplication();
   }

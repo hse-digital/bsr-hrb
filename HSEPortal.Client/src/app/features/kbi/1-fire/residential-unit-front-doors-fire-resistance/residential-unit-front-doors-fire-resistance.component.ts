@@ -43,17 +43,17 @@ export class ResidentialUnitFrontDoorsFireResistanceComponent extends BaseCompon
   };
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.Fire.ResidentialUnitFrontDoors) {
-      this.applicationService.currenKbiSection!.Fire.ResidentialUnitFrontDoors = {};
+    if (!this.applicationService.currentKbiSection!.Fire.ResidentialUnitFrontDoors) {
+      this.applicationService.currentKbiSection!.Fire.ResidentialUnitFrontDoors = {};
     }
   }
 
   canContinue() {
-    this.errors.noFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.Fire.ResidentialUnitFrontDoors?.NoFireResistance, this.errors.noFireResistance, "noFireResistance");
-    this.errors.thirtyMinsFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.Fire.ResidentialUnitFrontDoors?.ThirtyMinsFireResistance, this.errors.thirtyMinsFireResistance, "thirtyMinsFireResistance");
-    this.errors.sixtyMinsFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.Fire.ResidentialUnitFrontDoors?.SixtyMinsFireResistance, this.errors.sixtyMinsFireResistance, "sixtyMinsFireResistance");
-    this.errors.hundredTwentyMinsFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.Fire.ResidentialUnitFrontDoors?.HundredTwentyMinsFireResistance, this.errors.hundredTwentyMinsFireResistance, "hundredTwentyMinsFireResistance");
-    this.errors.notKnownFireResistance = this.validateNumericInput(this.applicationService.currenKbiSection?.Fire.ResidentialUnitFrontDoors?.NotKnownFireResistance, this.errors.notKnownFireResistance, "notKnownFireResistance");
+    this.errors.noFireResistance = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.NoFireResistance, this.errors.noFireResistance, "noFireResistance");
+    this.errors.thirtyMinsFireResistance = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.ThirtyMinsFireResistance, this.errors.thirtyMinsFireResistance, "thirtyMinsFireResistance");
+    this.errors.sixtyMinsFireResistance = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.SixtyMinsFireResistance, this.errors.sixtyMinsFireResistance, "sixtyMinsFireResistance");
+    this.errors.hundredTwentyMinsFireResistance = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.HundredTwentyMinsFireResistance, this.errors.hundredTwentyMinsFireResistance, "hundredTwentyMinsFireResistance");
+    this.errors.notKnownFireResistance = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.NotKnownFireResistance, this.errors.notKnownFireResistance, "notKnownFireResistance");
 
     return !this.errors.noFireResistance.hasError
       && !this.errors.thirtyMinsFireResistance.hasError
@@ -75,7 +75,7 @@ export class ResidentialUnitFrontDoorsFireResistanceComponent extends BaseCompon
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Fire.Lifts && this.applicationService.currenKbiSection!.Fire.Lifts!.length > 0
+    return !!this.applicationService.currentKbiSection?.Fire.Lifts && this.applicationService.currentKbiSection!.Fire.Lifts!.length > 0
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

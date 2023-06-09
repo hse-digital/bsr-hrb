@@ -1,4 +1,4 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
@@ -12,7 +12,7 @@ import { CertificatesYearChangeComponent } from '../certificates-year-change/cer
   selector: 'hse-previous-use-building',
   templateUrl: './previous-use-building.component.html'
 })
-export class PreviousUseBuildingComponent  extends BaseComponent implements IHasNextPage {
+export class PreviousUseBuildingComponent extends BaseComponent implements IHasNextPage {
   static route: string = 'previous-primary-use';
   static title: string = "Previous primary use - Register a high-rise building - GOV.UK";
 
@@ -21,9 +21,9 @@ export class PreviousUseBuildingComponent  extends BaseComponent implements IHas
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
-  }  
-  
-  getErrorMessage(){
+  }
+
+  getErrorMessage() {
     return `Select the previous primary use of ${this.getInfraestructureName()}`;
   }
 
@@ -34,7 +34,7 @@ export class PreviousUseBuildingComponent  extends BaseComponent implements IHas
   }
 
   canContinue(): boolean {
-    this.previousUseBuildingHasErrors = !this.applicationService.currenKbiSection?.BuildingUse.PreviousUseBuilding || this.applicationService.currenKbiSection?.BuildingUse.PreviousUseBuilding.length == 0;
+    this.previousUseBuildingHasErrors = !this.applicationService.currentKbiSection?.BuildingUse.PreviousUseBuilding || this.applicationService.currentKbiSection?.BuildingUse.PreviousUseBuilding.length == 0;
     return !this.previousUseBuildingHasErrors;
   }
 
@@ -43,7 +43,7 @@ export class PreviousUseBuildingComponent  extends BaseComponent implements IHas
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.BuildingUse.ChangePrimaryUse && this.applicationService.currenKbiSection?.BuildingUse.ChangePrimaryUse === "yes";
+    return !!this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse && this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse === "yes";
   }
 
 }

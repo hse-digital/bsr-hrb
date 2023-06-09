@@ -12,7 +12,7 @@
         <govuk-body>This is not a complete list. It includes only the types of energy storage we need to know about.</govuk-body>
 
         <govuk-checkbox-none hint="Select all that apply" (onKeyupEnter)="saveAndContinue()" [errorText]="getErrorDescription(externalWallInsulationTypeHasErrors, errorMessage!)"
-            [(model)]="applicationService.currenKbiSection!.Walls.ExternalWallInsulation!.CheckBoxSelection!">
+            [(model)]="applicationService.currentKbiSection!.Walls.ExternalWallInsulation!.CheckBoxSelection!">
           <checkbox-option text="Fibre Insulation - glass or mineral wool" value="fibre_glass_mineral_wool" id="fibre_glass_mineral_wool" />
           <checkbox-option text="Fibre Insulation - wood or sheep wool" value="fibre_wood_sheep_wool" id="fibre_wood_sheep_wool" />
           <checkbox-option text="Foil bubble or multifoil insulation" value="foil_bubble_multifoil_insulation" id="foil_bubble_multifoil_insulation" /> 
@@ -22,7 +22,7 @@
           <checkbox-option text="Other" value="other" id="other">
             <govuk-input #field [govukRequired]="field" id="other" [errorText]="getErrorDescription(otherError, 'Enter the other insulation material used')"
               label="Tell us what other insulation material is used. Do not enter brand names." 
-              [(model)]="applicationService.currenKbiSection!.Walls.ExternalWallInsulation!.OtherValue!"
+              [(model)]="applicationService.currentKbiSection!.Walls.ExternalWallInsulation!.OtherValue!"
               [errorText]="" class="govuk-!-margin-bottom-5 govuk-input--width-20 panel panel-border-wide"
               (onKeyupEnter)="saveAndContinue()" />
           </checkbox-option>

@@ -13,7 +13,7 @@
                 <govuk-body>You should be able to get this information from the latest fire risk assessment.</govuk-body>
 
                 <govuk-checkbox-none title="What equipment is in the residential units?" hint="Select all that apply"  [errorText]="getErrorDescription(provisionsEquipmentHasErrors, errorMessage!)"
-                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currenKbiSection!.Fire.ProvisionsEquipment!">
+                    (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currentKbiSection!.Fire.ProvisionsEquipment!">
                     <checkbox-option text="Heat detectors" value="heat_detectors" id="heat_detectors" />
                     <checkbox-option text="Smoke detectors" value="smoke_detectors" id="smoke_detectors" />
                     <checkbox-option text="Sprinklers or misters" value="sprinklers" id="sprinklers" />

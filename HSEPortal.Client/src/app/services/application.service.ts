@@ -84,8 +84,29 @@ export class ApplicationService {
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
+  initKbi() {
+    if (!this.model.Kbi) {
+      this.model.Kbi = new KbiModel();
+      this.model.Sections.forEach(x => {
+        var kbiSection = new KbiSectionModel();
+        kbiSection.StructureName = x.Name;
+        kbiSection.Postcode = x.Addresses[0].Postcode;
+
+        this.model.Kbi!.KbiSections.push(kbiSection);
+      });
+
+      this._currentSectionIndex = 0;
+      this._currentKbiSectionIndex = 0;
+    }
+
+    if (!this.model.Kbi.SectionStatus || this.model.Kbi.SectionStatus.length == 0) {
+      this.model.Kbi.SectionStatus = [];
+      this.model.Sections.map(x => this.model.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
+    }
+  }
+
   _currentKbiSectionIndex: number = 0;
-  get currenKbiSection() {
+  get currentKbiSection() {
     return this.model.Kbi?.KbiSections[this._currentKbiSectionIndex];
   }
 

@@ -23,25 +23,7 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   async ngOnInit() {
-    if (!this.applicationService.model.Kbi) {
-      this.applicationService.model.Kbi = new KbiModel();
-      this.applicationService.model.Sections.forEach(x => {
-        var kbiSection = new KbiSectionModel();
-        kbiSection.StructureName = x.Name;
-        kbiSection.Postcode = x.Addresses[0].Postcode;
-
-        this.applicationService.model.Kbi!.KbiSections.push(kbiSection);
-      });
-
-      this.applicationService._currentSectionIndex = 0;
-      this.applicationService._currentKbiSectionIndex = 0;
-    }
-
-    if (!this.applicationService.model.Kbi.SectionStatus || this.applicationService.model.Kbi.SectionStatus.length == 0) {
-      this.applicationService.model.Kbi.SectionStatus = [];
-      this.applicationService.model.Sections.map(x => this.applicationService.model.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
-    }
-
+    this.applicationService.initKbi();
     await this.applicationService.updateApplication();
   }
 
