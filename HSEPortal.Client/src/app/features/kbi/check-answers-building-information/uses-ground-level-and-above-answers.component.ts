@@ -2,7 +2,6 @@ import { Component, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApplicationService, BuildingUse} from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
-import { KbiFireModule } from "../1-fire/kbi.fire.module";
 import { KbiBuildingUseModule } from "../7-building-use/kbi.building-use.module";
 import { TitleService } from "src/app/services/title.service";
 import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
@@ -29,15 +28,16 @@ export class UsesGroundLevelAndAboveAnswersComponent  extends BuildingInformatio
     "assembly_and_recreation": "Assembly and recreation",
     "assembly_recreation": "Assembly and recreation",
     "office": "Office",
+    "residential_dwellings": "Residential dwellings",
     "residential_institution": "Residential institution",
     "other_residential_use": "Other residential use",
+    "shop_and_commercial": "Shop and commercial",
     "shop_commercial": "Shop and commercial",
     "other_non_residential": "Other non-residential",
     "none": "None"
-
   }
   getBuildingUse(name: string) {
     return this.buildingUseMapper[name];
-  }
+  } 
 
 }

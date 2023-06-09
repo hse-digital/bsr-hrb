@@ -70,6 +70,7 @@ export class ExternalWallsAnswersComponent extends BuildingInformationCheckAnswe
     "eps_xps": "Polystyrene insulation - expanded polystyrene (EPS) or extruded polystyrene (XPS)",
     "pur_pir_iso": "Polyurethane (PUR) or polyisocyanurate (PIR or ISO)",
     "other": "Other",
+    "none": "None"
   }
   getInsulationName(equipment: string) {
     return this.insulationTypeMapper[equipment];
@@ -83,5 +84,8 @@ export class ExternalWallsAnswersComponent extends BuildingInformationCheckAnswe
     return this.externalWalls!.ExternalWallMaterials!.indexOf('acm') > -1;
   }
 
+  isNone() {
+    return this.externalWalls!.ExternalWallInsulation!.CheckBoxSelection!.includes("none");
+  }
 
 }
