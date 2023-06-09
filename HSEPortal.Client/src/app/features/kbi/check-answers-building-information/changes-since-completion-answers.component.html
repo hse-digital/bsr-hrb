@@ -1,5 +1,5 @@
 <govuk-summary-list>
-    <ng-container ng-If="buildingUse.ChangePrimaryUse === 'yes'">
+    <ng-container *ng-If="buildingUse.ChangePrimaryUse === 'yes'">
 
       <govuk-summary-list-row key="Change of use" (onKeyupEnter)="navigate('change-primary-use')" (onClick)="navigate('change-primary-use')" [showAction]=true>
         <ng-container>
@@ -22,7 +22,7 @@
     </ng-container>
 
 
-    <ng-container ng-If="buildingUse.ChangePrimaryUse === 'no'">
+    <ng-container *ng-If="buildingUse.ChangePrimaryUse === 'no'">
 
       <govuk-summary-list-row key="Change of use" (onKeyupEnter)="navigate('change-primary-use')" (onClick)="navigate('change-primary-use')" [showAction]=true>
         <div>No</div>

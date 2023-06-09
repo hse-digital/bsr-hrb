@@ -23,6 +23,15 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
     this.navigateTo(url, KbiFireModule.baseRoute);
   }
 
+  private provisionEquipment: Record<string, string> = {
+    "heat_detectors": "Heat detectors", 
+    "smoke_detectors": "Smoke detectors", 
+    "sprinklers": "Sprinklers or misters" 
+  }
+  getProvisionEquipment(name: string) {
+    return this.provisionEquipment[name];
+  }
+
   private equipmentNameMapper: Record<string, string> = {
     "alarm_heat_smoke": "Alarm sounders (connected to detectors)",
     "alarm_call_points": "Alarm sounders (connected to call points)",
@@ -36,6 +45,7 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
     "smoke_manual": "Manual smoke control systems",
     "smoke_detectors": "Smoke detectors",
     "sprinklers_misters": "Sprinklers and misters",
+    "none": "None"
   }
   getEquipmentName(equipment: string) {
     return this.equipmentNameMapper[equipment];
@@ -70,10 +80,10 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
     return this.locationNameMapper[location];
   }
 
-  getSmokeAndFireDeviceLocations() {
+  getSmokeAndFireDeviceLocations(device: string) {
 
-    if (this.fireAndSmokeControls.FireSmokeProvisionLocations!["smoke_detectors"]) {
-      return this.fireAndSmokeControls!.FireSmokeProvisionLocations!["smoke_detectors"].map(location => this.getLocationName(location));
+    if (this.fireAndSmokeControls.FireSmokeProvisionLocations![device]) {
+      return this.fireAndSmokeControls!.FireSmokeProvisionLocations![device].map(location => this.getLocationName(location));
     }
     else {
       return ["No smoke detectors"]

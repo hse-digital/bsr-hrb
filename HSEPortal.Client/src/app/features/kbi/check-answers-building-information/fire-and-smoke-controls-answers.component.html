@@ -5,8 +5,8 @@
     </govuk-summary-list-row>
 
     <govuk-summary-list-row key="Smoke controls in residential parts" (onKeyupEnter)="navigate('provisions-equipment')" (onClick)="navigate('provisions-equipment')" [showAction]=true>
-      <ng-container *ngFor="let smokeControl of fireAndSmokeControls!.ProvisionsEquipment">
-        <div>{{getEquipmentName(smokeControl)}}</div>
+      <ng-container *ngFor="let provision of fireAndSmokeControls!.ProvisionsEquipment">
+        <div>{{getProvisionEquipment(provision)}}</div>
       </ng-container>
     </govuk-summary-list-row>
 
@@ -16,11 +16,14 @@
       </ng-container>
     </govuk-summary-list-row>
 
-    <govuk-summary-list-row key="Smoke detector head access" (onKeyupEnter)="navigate('smoke-provision-locations')" (onClick)="navigate('smoke-provision-locations')" [showAction]=true>
-      <ng-container *ngFor="let location of getSmokeAndFireDeviceLocations()">
-        <div>{{location}}</div>
-      </ng-container>
-    </govuk-summary-list-row>
+    <ng-container *ngFor="let equipment of fireAndSmokeControls!.FireSmokeProvisions">
+      <govuk-summary-list-row key="{{getEquipmentName(equipment)}}" (onKeyupEnter)="navigate('smoke-provision-locations')" (onClick)="navigate('smoke-provision-locations')" [showAction]=true>
+        <ng-container *ngFor="let location of getSmokeAndFireDeviceLocations(equipment)">
+          <div>{{location}}</div>
+        </ng-container>
+      </govuk-summary-list-row>
+    </ng-container>
+
 
     <govuk-summary-list-row key="Types of lift" (onKeyupEnter)="navigate('lifts')" (onClick)="navigate('lifts')" [showAction]=true>
       <ng-container *ngFor="let lift of getLiftTypes()">

@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApplicationService, Walls} from "src/app/services/application.service";
+import { ApplicationService, Walls } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { KbiFireModule } from "../1-fire/kbi.fire.module";
 import { KbiStructureModule } from "../3-structure/kbi.structure.module";
@@ -10,6 +10,7 @@ import { BuildingInformationCheckAnswersComponent } from "./check-answers-buildi
 import { TitleService } from "src/app/services/title.service";
 import { ExternalWallMaterialsComponent } from "../6-walls/external-wall-materials/external-wall-materials.component";
 import { KbiNavigation } from "../kbi.navigation.ts.service";
+import { FeatureMaterialsOutsideComponent } from "../6-walls/feature-materials-outside/feature-materials-outside.component";
 
 @Component({
   selector: 'external-features-answers',
@@ -22,13 +23,33 @@ export class ExternalFeaturesAnswersComponent extends BuildingInformationCheckAn
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
     super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
   }
-  
+
   navigateToExternalFeatures() {
     this.navigateTo(ExternalFeaturesComponent.route, KbiWallsModule.baseRoute);
   }
 
-  nagivateToExternalFeaturesMaterials(){
-    this.navigateTo(ExternalWallMaterialsComponent.route, KbiWallsModule.baseRoute);
+  nagivateToExternalFeaturesMaterials() {
+    this.navigateTo(FeatureMaterialsOutsideComponent.route, KbiWallsModule.baseRoute);
+  }
+
+  private externalFeaturesMapper: Record<string, string> = {
+    "advertising": "Advertising hoarding attached to a wall",
+    "balconies": "Balconies",
+    "communal_recreation_area": "Communal recreation area on the roof",
+    "communal_walkway": "Communal walkway between structures",
+    "escape_route_roof": "Escape route onto and across the roof",
+    "external_staircases": "External staircases",
+    "machinery_outbuilding": "Machinery in an outbuilding",
+    "machinery_roof_room": "Machinery in a room on the roof",
+    "machinery_roof": "Machinery on the roof",
+    "phone_masts": "Phone masts",
+    "roof_lights": "Roof lights",
+    "solar_shading": "Solar shading",
+    "other": "Other",
+    "none": "None"
+  }
+  getExternalFeature(name: string) {
+    return this.externalFeaturesMapper[name] ?? "";
   }
 
   private featureNameMapper: Record<string, string> = {
@@ -45,29 +66,34 @@ export class ExternalFeaturesAnswersComponent extends BuildingInformationCheckAn
     return this.featureNameMapper[name];
   }
 
-  getBalconiesMaterial() {
-    if (!this.externalFeatures.FeatureMaterialsOutside!["balconies"]) {
-      return ["Not applicable"];
+  // getBalconiesMaterial() {
+  //   if (!this.externalFeatures.FeatureMaterialsOutside!["balconies"]) {
+  //     return ["Not applicable"];
 
-    }
-    else {
-      return this.externalFeatures.FeatureMaterialsOutside!["balconies"]!;
-    }
+  //   }
+  //   else {
+  //     return this.externalFeatures.FeatureMaterialsOutside!["balconies"]!;
+  //   }
+  // }
+
+  hasFeature(name: string) {
+    if(!this.applicationService.currenKbiSection?.Walls.FeatureMaterialsOutside) return false;
+    return Object.keys(this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside!).includes(name);
+  }
+
+  getMaterials(feature: string){
+    return this.hasFeature(feature) ? this.externalFeatures?.FeatureMaterialsOutside![feature] : [];
   }
 
   private materialsMapper: Record<string, string> = {
-    "acm": "Aluminium composite materials (ACM)",
-    "hpl": "High pressure laminate (HPL)",
-    "metal-composite-panels": "Metal composite panels",
-    "other-composite-panels": "Other composite panels",
-    "concrete": "Concrete",
-    "green-walls": "Green walls",
-    "masonry": "Masonry",
-    "metal-panels": "Metal panels",
-    "render": "Render",
-    "tiles": "Tiles",
-    "timber": "Timber",
-    "glass": "Glass",
+    "aluminium":   "Aluminium", 
+    "concrete": "Concrete", 
+    "glass": "Glass", 
+    "masonry": "Masonry", 
+    "metal": "Metal", 
+    "plastic": "Plastic", 
+    "slate": "Slate", 
+    "timber": "Timber", 
     "other": "Other"
   }
   getMaterialName(name: string) {

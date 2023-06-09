@@ -30,11 +30,12 @@ export class UsesBelowGroundLevelAnswersComponent  extends BuildingInformationCh
     "residential_institution": "Residential institution",
     "other_residential_use": "Other residential use",
     "shop_commercial": "Shop and commercial",
-    "other_non_residential": "Other non-residential",
+    "other_non-residential": "Other non-residential",
     "none": "None"
 
   }
   getBuildingUse(name: string) {
+    console.log(name);
     return this.buildingUseMapper[name];
   }
 
