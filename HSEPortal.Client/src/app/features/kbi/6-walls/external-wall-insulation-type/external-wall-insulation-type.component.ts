@@ -32,8 +32,8 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
   }
 
   ngOnInit(): void {
-    if (this.applicationService.currenKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection === void 0) {
-      this.applicationService.currenKbiSection!.Walls.ExternalWallInsulation = { CheckBoxSelection: [], OtherValue: '' };
+    if (this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection === void 0) {
+      this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation = { CheckBoxSelection: [], OtherValue: '' };
     }
   }
 
@@ -52,7 +52,7 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
   }
 
   validateCheckboxSelection() {
-    if (this.applicationService!.currenKbiSection!.Walls.ExternalWallInsulation!.CheckBoxSelection!.length == 0) {
+    if (this.applicationService!.currentKbiSection!.Walls.ExternalWallInsulation!.CheckBoxSelection!.length == 0) {
       this.errorMessage = `Select what type of insulation is used in the outside walls of ${this.getInfraestructureName()}, or select \'None\'`;
       this.errorAnchorId = `fibre_glass_mineral_wool-${this.checkboxGroup?.checkboxElements?.first.innerId}`;
       this.externalWallInsulationTypeHasErrors = true;
@@ -60,8 +60,8 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
   }
 
   validateOtherOptionText() {
-    if (this.applicationService.currenKbiSection!.Walls.ExternalWallInsulation!.CheckBoxSelection!.includes('other')
-      && !FieldValidations.IsNotNullOrWhitespace(this.applicationService.currenKbiSection!.Walls.ExternalWallInsulation!.OtherValue)) {
+    if (this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation!.CheckBoxSelection!.includes('other')
+      && !FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation!.OtherValue)) {
       this.errorMessage = "Enter the other insulation material used";
       this.errorAnchorId = "input-other";
       this.externalWallInsulationTypeHasErrors = this.otherError = true;
@@ -69,15 +69,15 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currenKbiSection!.Walls.ExternalWallInsulation!.CheckBoxSelection!.includes('none')) {
+    if (this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation!.CheckBoxSelection!.includes('none')) {
       return navigationService.navigateRelative(ExternalFeaturesComponent.route, activatedRoute);
     }
     return navigationService.navigateRelative(ExternalWallInsulationPercentageComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Walls.ExternalWallMaterialsPercentage
-      && Object.keys(this.applicationService.currenKbiSection?.Walls.ExternalWallMaterialsPercentage).length > 0
-      && Object.keys(this.applicationService.currenKbiSection?.Walls.ExternalWallMaterialsPercentage).every(x => !!this.applicationService.currenKbiSection?.Walls.ExternalWallMaterialsPercentage![x] && this.applicationService.currenKbiSection?.Walls.ExternalWallMaterialsPercentage[x].length > 0);
+    return !!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage
+      && Object.keys(this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage).length > 0
+      && Object.keys(this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage).every(x => !!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage![x] && this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage[x].length > 0);
   }
 }

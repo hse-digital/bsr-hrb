@@ -14,7 +14,7 @@
                                      hint="Select all that apply. Machinery could be for heating, ventulation or energy generation"
                                      [errorText]="getErrorDescription(externalFeaturesHasErrors, errorMessage!)"
                                      (onKeyupEnter)="saveAndContinue()"
-                                     [(model)]="applicationService.currenKbiSection!.Walls.ExternalFeatures!">
+                                     [(model)]="applicationService.currentKbiSection!.Walls.ExternalFeatures!">
                     <checkbox-option text="Advertising hoarding attached to a wall" value="advertising" id="advertising" />
                     <checkbox-option text="Balconies" value="balconies" id="balconies" />
                     <checkbox-option text="Communal recreation area on the roof" value="communal_recreation_area" id="communal_recreation_area" />

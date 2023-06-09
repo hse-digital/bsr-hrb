@@ -29,8 +29,8 @@ export class EnergyTypeComponent  extends BaseComponent implements IHasNextPage,
   }
 
   ngOnInit(): void {
-    if(!this.applicationService.currenKbiSection?.Energy) this.applicationService.currenKbiSection!.Energy = {}
-    if (!this.applicationService.currenKbiSection!.Energy.EnergyTypeStorage) { this.applicationService.currenKbiSection!.Energy.EnergyTypeStorage = []; }
+    if(!this.applicationService.currentKbiSection?.Energy) this.applicationService.currentKbiSection!.Energy = {}
+    if (!this.applicationService.currentKbiSection!.Energy.EnergyTypeStorage) { this.applicationService.currentKbiSection!.Energy.EnergyTypeStorage = []; }
     this.errorMessage = `Select the types of energy supply in ${this.getInfraestructureName()}`;
   }
 
@@ -41,8 +41,8 @@ export class EnergyTypeComponent  extends BaseComponent implements IHasNextPage,
   }
 
   canContinue(): boolean {
-    this.energyTypeHasErrors = !this.applicationService.currenKbiSection!.Energy.EnergyTypeStorage 
-      || this.applicationService.currenKbiSection!.Energy.EnergyTypeStorage.length == 0;
+    this.energyTypeHasErrors = !this.applicationService.currentKbiSection!.Energy.EnergyTypeStorage 
+      || this.applicationService.currentKbiSection!.Energy.EnergyTypeStorage.length == 0;
 
     if (this.energyTypeHasErrors) this.firstCheckboxAnchorId = `hydrogen_batteries-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -54,9 +54,9 @@ export class EnergyTypeComponent  extends BaseComponent implements IHasNextPage,
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Fire.FireDoorsCommon?.FireDoorThirtyMinute
-        && !!this.applicationService.currenKbiSection?.Fire.FireDoorsCommon?.FireDoorSixtyMinute
-        && !!this.applicationService.currenKbiSection?.Fire.FireDoorsCommon?.FireDoorHundredTwentyMinute
-        && !!this.applicationService.currenKbiSection?.Fire.FireDoorsCommon?.FireDoorUnknown
+    return !!this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorThirtyMinute
+        && !!this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorSixtyMinute
+        && !!this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorHundredTwentyMinute
+        && !!this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorUnknown
       }
 }

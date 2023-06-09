@@ -31,8 +31,8 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
   }
 
   ngOnInit(): void {
-    if (this.applicationService.currenKbiSection!.Walls.ExternalFeatures === void 0) {
-      this.applicationService.currenKbiSection!.Walls.ExternalFeatures = [];
+    if (this.applicationService.currentKbiSection!.Walls.ExternalFeatures === void 0) {
+      this.applicationService.currentKbiSection!.Walls.ExternalFeatures = [];
     }
 
     this.errorMessage = `Select the features on ${this.getInfraestructureName()}`;
@@ -43,7 +43,7 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
   }
 
   canContinue(): boolean {
-    this.externalFeaturesHasErrors = !this.applicationService.currenKbiSection!.Walls.ExternalFeatures || this.applicationService.currenKbiSection!.Walls.ExternalFeatures.length == 0;
+    this.externalFeaturesHasErrors = !this.applicationService.currentKbiSection!.Walls.ExternalFeatures || this.applicationService.currentKbiSection!.Walls.ExternalFeatures.length == 0;
     if (this.externalFeaturesHasErrors) {
       this.firstCheckboxAnchorId = `advertising-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     }
@@ -53,7 +53,7 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     const features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
-    if (this.applicationService.currenKbiSection?.Walls.ExternalFeatures?.some(x => features.includes(x))) {
+    if (this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.some(x => features.includes(x))) {
       return navigationService.navigateRelative(FeatureMaterialsOutsideComponent.route, activatedRoute);
     }
 
@@ -62,7 +62,7 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection && (this.applicationService.currenKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection![0] == 'none' || !!(this.applicationService.currenKbiSection!.Walls.ExternalWallInsulationPercentages));
+    return !!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection && (this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection![0] == 'none' || !!(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages));
   }
 
 }

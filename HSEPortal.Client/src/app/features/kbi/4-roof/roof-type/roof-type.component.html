@@ -8,11 +8,11 @@
           <govuk-error-link anchorId="flat-roof-input" message="{{getErrorMessage()}}" />
         </govuk-error-summary>
 
-        <govuk-radio-group [errorText]="getErrorDescription(roofTypeHasErrors, getErrorMessage())" [(model)]="applicationService.currenKbiSection!.Roof.RoofType" [isPageHeading]="true"
+        <govuk-radio-group [errorText]="getErrorDescription(roofTypeHasErrors, getErrorMessage())" [(model)]="applicationService.currentKbiSection!.Roof.RoofType" [isPageHeading]="true"
                            title="Type of roof on {{getInfraestructureName()}}" fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'>
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofType" name="materials-group" id="flat-roof" value="flat-roof" label="Flat roof" />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofType" name="materials-group" id="pitched-roof" value="pitched-roof" label="Pitched roof" />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currenKbiSection!.Roof.RoofType" name="materials-group" id="mix-flat-pitched" value="mix-flat-pitched" label="Mix of flat and pitched" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Roof.RoofType" name="materials-group" id="flat-roof" value="flat-roof" label="Flat roof" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Roof.RoofType" name="materials-group" id="pitched-roof" value="pitched-roof" label="Pitched roof" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Roof.RoofType" name="materials-group" id="mix-flat-pitched" value="mix-flat-pitched" label="Mix of flat and pitched" />
         </govuk-radio-group>
 
       </div>

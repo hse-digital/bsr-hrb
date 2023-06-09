@@ -9,14 +9,13 @@
             </govuk-error-summary>
 
             <h1 class="govuk-heading-l">Building works since {{getInfraestructureName()}} was originally built</h1>
-            <h2 class="govuk-heading-s">This is not a complete list. It inculdes onlly the building works we need to know about. You will have needed a building control application to carry out any of these building works.</h2>
-
+            <govuk-body>This is not a complete list. It includes only the building works we need to know about. You will have needed a building control application to carry out any of these building works.</govuk-body>
 
             <govuk-checkbox-none title="Building works"
                                  hint="Select all that apply (even if there has only been a partial change)"
                                  [errorText]="getErrorDescription(undergoneBuildingMaterialChangesHasErrors, errorMessage!)"
                                  (onKeyupEnter)="saveAndContinue()"
-                                 [(model)]="applicationService.currenKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!"
+                                 [(model)]="applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!"
                                  unknownOptionText="Not Known">
               <checkbox-option text="Asbestos removal and remediation on multiple floors" value="asbestos_removal" id="asbestos_removal" />
               <checkbox-option text="Balconies added" value="balconies_added" id="balconies_added" />

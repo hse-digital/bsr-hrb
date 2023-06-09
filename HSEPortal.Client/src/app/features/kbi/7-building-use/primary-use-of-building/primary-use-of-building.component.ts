@@ -28,12 +28,12 @@ export class PrimaryUseOfBuildingComponent extends BaseComponent implements IHas
   }
 
   async ngOnInit() {
-    if(!this.applicationService.currenKbiSection?.BuildingUse) this.applicationService.currenKbiSection!.BuildingUse = {}
-    if (!this.applicationService.currenKbiSection!.BuildingUse.PrimaryUseOfBuilding) { this.applicationService.currenKbiSection!.BuildingUse.PrimaryUseOfBuilding = ""; }
+    if(!this.applicationService.currentKbiSection?.BuildingUse) this.applicationService.currentKbiSection!.BuildingUse = {}
+    if (!this.applicationService.currentKbiSection!.BuildingUse.PrimaryUseOfBuilding) { this.applicationService.currentKbiSection!.BuildingUse.PrimaryUseOfBuilding = ""; }
 
     this.errorMessage = `Select the primary use for ${this.getInfraestructureName()}`;
 
-    await this.kbiService.syncStructureRoofStaircasesAndWalls(this.applicationService.currenKbiSection!);
+    await this.kbiService.syncStructureRoofStaircasesAndWalls(this.applicationService.currentKbiSection!);
   }
 
   getInfraestructureName(){
@@ -43,7 +43,7 @@ export class PrimaryUseOfBuildingComponent extends BaseComponent implements IHas
   }
 
   canContinue(): boolean {
-    this.primaryUseOfBuildingHasErrors = !this.applicationService.currenKbiSection?.BuildingUse.PrimaryUseOfBuilding || this.applicationService.currenKbiSection?.BuildingUse.PrimaryUseOfBuilding === "";
+    this.primaryUseOfBuildingHasErrors = !this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding || this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding === "";
     return !this.primaryUseOfBuildingHasErrors;
   }
 
@@ -53,6 +53,6 @@ export class PrimaryUseOfBuildingComponent extends BaseComponent implements IHas
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
 
-    return !!this.applicationService.currenKbiSection!.Walls.ExternalFeatures && this.applicationService.currenKbiSection!.Walls.ExternalFeatures!.length > 0
+    return !!this.applicationService.currentKbiSection!.Walls.ExternalFeatures && this.applicationService.currentKbiSection!.Walls.ExternalFeatures!.length > 0
   }
 }

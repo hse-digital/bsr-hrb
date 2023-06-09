@@ -30,7 +30,7 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection!.Fire.FireSmokeProvisions) { this.applicationService.currenKbiSection!.Fire.FireSmokeProvisions = []; }
+    if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions) { this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions = []; }
     this.errorMessage = `Select the fire and smoke control equipment in the residential common parts of ${this.getInfraestructureName()}`;
   }
 
@@ -41,8 +41,8 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   }
 
   canContinue(): boolean {
-    this.fireSmokeProvisionsHasErrors = !this.applicationService.currenKbiSection!.Fire.FireSmokeProvisions 
-      || this.applicationService.currenKbiSection!.Fire.FireSmokeProvisions.length == 0;
+    this.fireSmokeProvisionsHasErrors = !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions 
+      || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions.length == 0;
 
     if (this.fireSmokeProvisionsHasErrors) this.firstCheckboxAnchorId = `alarm_heat_smoke-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     
@@ -50,14 +50,14 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if(!this.applicationService.currenKbiSection!.Fire.FireSmokeProvisions?.includes('none')) {
+    if(!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.includes('none')) {
       return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute);  
     }
     return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Fire.ProvisionsEquipment 
-        && this.applicationService.currenKbiSection!.Fire.ProvisionsEquipment.length > 0;
+    return !!this.applicationService.currentKbiSection?.Fire.ProvisionsEquipment 
+        && this.applicationService.currentKbiSection!.Fire.ProvisionsEquipment.length > 0;
   }
 }

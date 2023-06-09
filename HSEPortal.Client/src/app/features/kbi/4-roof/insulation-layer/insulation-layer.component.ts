@@ -34,7 +34,7 @@ export class InsulationLayerComponent  extends BaseComponent implements IHasNext
   }
 
   canContinue(): boolean {
-    this.roofInsulationHasErrors = !this.applicationService.currenKbiSection!.Roof.RoofInsulation;
+    this.roofInsulationHasErrors = !this.applicationService.currentKbiSection!.Roof.RoofInsulation;
     return !this.roofInsulationHasErrors;
   }
 
@@ -43,7 +43,7 @@ export class InsulationLayerComponent  extends BaseComponent implements IHasNext
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currenKbiSection?.Roof.RoofType;
+    return !!this.applicationService.currentKbiSection?.Roof.RoofType;
   }
 
 }

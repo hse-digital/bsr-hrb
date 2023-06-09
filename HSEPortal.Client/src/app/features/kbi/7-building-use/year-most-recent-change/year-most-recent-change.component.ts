@@ -32,37 +32,32 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
 
 
   ngOnInit(): void {
-    if (!this.applicationService.currenKbiSection?.BuildingUse.YearMostRecentMaterialChange) {
-      this.applicationService.currenKbiSection!.BuildingUse.YearMostRecentMaterialChange;
+    if (!this.applicationService.currentKbiSection?.BuildingUse.YearMostRecentMaterialChange) {
+      this.applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange;
     }
   }
 
   canContinue() {
     this.errorMessage = "";
-    
-    //If this.applicationService.currenKbiSection!.YearMostRecentMaterialChange is not null, then we need to validate it
-    if (this.applicationService.currenKbiSection!.BuildingUse.YearMostRecentMaterialChange) {
-      if (!Number(this.applicationService.currenKbiSection!.BuildingUse.YearMostRecentMaterialChange) || this.applicationService.currenKbiSection!.BuildingUse.YearMostRecentMaterialChange.length != 4) {
-        this.errorMessage = `Year of ${this.getMaterialName(this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange!).toLowerCase()} must be a real year.For example, '1994'`;
-      }
-      else if (Number(this.applicationService.currenKbiSection!.BuildingUse.YearMostRecentMaterialChange)) {
-        if (!!this.applicationService!.currentSection!.YearOfCompletion) {
-          if (Number(this.applicationService!.currentSection!.YearOfCompletion)) {
-            if (Number(this.applicationService!.currenKbiSection?.BuildingUse.YearMostRecentMaterialChange) < Number(this.applicationService!.currentSection!.YearOfCompletion!)) {
-              this.errorMessage = `Year of ${this.getMaterialName(this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange!).toLowerCase()} must be after the building was completed in ${this.applicationService!.currentSection!.YearOfCompletion}`;
-            }
-          }
-        }
-        else if (!!this.applicationService!.currentSection!.YearOfCompletionRange) {
-          if (Number(this.applicationService!.currenKbiSection?.BuildingUse.YearMostRecentMaterialChange) < this.getYearFromRange(this.applicationService!.currentSection!.YearOfCompletionRange!)) {
-            this.errorMessage = `Year of ${this.getMaterialName(this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange!).toLowerCase()} must be after the building was completed in ${this.getYearFromRange(this.applicationService!.currentSection!.YearOfCompletionRange!)}`;
-          }
+
+    //If this.applicationService.currentKbiSection!.YearMostRecentMaterialChange is not null, then we need to validate it
+    if (this.applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange) {
+      let currentSection = this.applicationService.currentSection!;
+      let currentKbiSection = this.applicationService.currentKbiSection!;
+      let materialName = this.getMaterialName(currentKbiSection.BuildingUse.MostRecentMaterialChange!).toLowerCase();
+      let mostRecentChange = Number(currentKbiSection.BuildingUse.YearMostRecentMaterialChange);
+
+      if (!mostRecentChange || currentKbiSection.BuildingUse.YearMostRecentMaterialChange?.length != 4) {
+        this.errorMessage = `Year of ${materialName} must be a real year.For example, '1994'`;
+      } else {
+        let yearOfCompletion = currentSection.YearOfCompletionOption == 'year-exact' ? Number(currentSection.YearOfCompletion) : this.getYearFromRange(currentSection.YearOfCompletionRange!);
+        if (mostRecentChange <= yearOfCompletion) {
+          this.errorMessage = `Year of ${materialName} must be after the building was completed in ${yearOfCompletion}`;
         }
       }
     }
 
     return !this.errorMessage;
-
   }
 
 
@@ -70,22 +65,11 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
     return navigationService.navigateRelative(`../check-answers/check-answers-building-information`, activatedRoute);
   }
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
+  override canAccess(_: ActivatedRouteSnapshot) {
+    let mostRecentChange = this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange;
+    let floorsAddedisIncluded = mostRecentChange?.includes("floors_added");
 
-    return !!this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange &&
-
-      (
-        this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange.length > 1 && (
-
-          (
-            this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange!.includes("floors_added")
-            && !!this.applicationService.currenKbiSection!.BuildingUse.AddedFloorsType
-          )
-          ||
-          !this.applicationService.currenKbiSection!.BuildingUse.MostRecentMaterialChange!.includes("floors_added")
-        )
-      )
-
+    return mostRecentChange !== void 0 && (!floorsAddedisIncluded || this.applicationService.currentKbiSection!.BuildingUse.AddedFloorsType !== void 0);
   }
 
 
