@@ -51,7 +51,8 @@ export class OtherHighRiseBuildingConnectionsComponent extends BaseComponent imp
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiModel?.Connections.StructureConnections && this.applicationService.currentKbiModel!.Connections.StructureConnections.length > 0;
+    return true;
+    //return !!this.applicationService.currentKbiModel?.Connections.StructureConnections && this.applicationService.currentKbiModel!.Connections.StructureConnections.length > 0;
   }
 
 }

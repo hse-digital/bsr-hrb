@@ -13,7 +13,6 @@ import { OtherBuildingConnectionsComponent } from '../other-building-connections
 import { HowOtherBuildingsConnectedComponent } from '../how-other-buildings-connected/how-other-buildings-connected.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { KbiSubmitModule } from '../../9-submit/kbi.submit.module';
-import { ConfirmComponent } from '../../9-submit/confirm/confirm.component';
 import { DeclarationComponent } from '../../9-submit/declaration/declaration.component';
 
 @Component({
@@ -37,7 +36,7 @@ export class ConnectionsCheckAnswerComponent  extends BaseComponent implements I
   canContinue(): boolean {
     let canContinue = true;
 
-    canContinue &&= !!this.applicationService.currentKbiModel?.Connections?.StructureConnections && this.applicationService.currentKbiModel?.Connections?.StructureConnections.length > 0;
+    if (this.applicationService.model.Sections.length > 1) canContinue &&= !!this.applicationService.currentKbiModel?.Connections?.StructureConnections && this.applicationService.currentKbiModel?.Connections?.StructureConnections.length > 0;
     
     canContinue &&= FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel?.Connections?.OtherHighRiseBuildingConnections); 
     

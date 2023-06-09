@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, KbiSectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus, KbiSectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { KbiCheckAnswersModule } from './kbi.check-answers-building-information.module';
@@ -52,12 +52,16 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if(this.applicationService.model.Kbi!.SectionStatus.length == 1) {
-      return navigationService.navigateRelative(OtherHighRiseBuildingConnectionsComponent.route, activatedRoute);
-    } else if (!this.allKbiSectionCompleted()) {
-      return navigationService.navigateRelative(`../../${TaskListComponent.route}`, activatedRoute);
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
+    if(this.applicationService.model.Sections.length == 1) {
+      return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`, activatedRoute);
     }
     return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`, activatedRoute);
+    // if(this.applicationService.model.Kbi!.SectionStatus.length == 1) {
+    //   return navigationService.navigateRelative(OtherHighRiseBuildingConnectionsComponent.route, activatedRoute);
+    // } else if (!this.allKbiSectionCompleted()) {
+    //   return navigationService.navigateRelative(`../../${TaskListComponent.route}`, activatedRoute);
+    // }
   }
 
   private allKbiSectionCompleted(){
