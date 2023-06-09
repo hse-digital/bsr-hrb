@@ -10,12 +10,16 @@ import { DeclarationComponent } from '../declaration/declaration.component';
   selector: 'hse-confirm',
   templateUrl: './confirm.component.html'
 })
-export class ConfirmComponent extends BaseComponent {
+export class ConfirmComponent extends BaseComponent implements OnInit {
   static route: string = 'information-submitted';
   static title: string = "Structure and safety information submitted - Register a high-rise building - GOV.UK";
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
+  }
+
+  ngOnInit(): void {
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitComplete;
   }
 
   canContinue(): boolean {

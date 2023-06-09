@@ -22,7 +22,6 @@ export class DeclarationComponent extends BaseComponent implements OnInit {
   }
 
   canContinue(): boolean {
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitComplete;
     return true;
   }
 

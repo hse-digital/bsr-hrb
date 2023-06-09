@@ -52,6 +52,7 @@ import { OtherBuildingConnectionsComponent } from './8-connections/other-buildin
 import { HowOtherBuildingsConnectedComponent } from './8-connections/how-other-buildings-connected/how-other-buildings-connected.component';
 import { ConnectionsCheckAnswerComponent } from './8-connections/connections-check-answer/connections-check-answer.component';
 import { DeclarationComponent } from './9-submit/declaration/declaration.component';
+import { ConfirmComponent } from './9-submit/confirm/confirm.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -60,7 +61,8 @@ export class KbiNavigation extends BaseNavigation {
     super();
   }
 
-  private kbiDeclarationNavigationNode = new KbiDeclarationNavigationNode(this.applicationService);
+  private kbiConfirmNavigationNode = new KbiConfirmNavigationNode(this.applicationService);
+  private kbiDeclarationNavigationNode = new KbiDeclarationNavigationNode(this.applicationService, this.kbiConfirmNavigationNode);
   private connectionsCheckAnswerNavigationNode = new ConnectionsCheckAnswerNavigationNode(this.applicationService, this.kbiDeclarationNavigationNode);
   private howOtherBuildingsConnectedNavigationNode = new HowOtherBuildingsConnectedNavigationNode(this.connectionsCheckAnswerNavigationNode);
   private otherBuildingConnectionsNavigationNode = new OtherBuildingConnectionsNavigationNode(this.howOtherBuildingsConnectedNavigationNode, this.connectionsCheckAnswerNavigationNode);
@@ -784,9 +786,9 @@ class ConnectionsCheckAnswerNavigationNode  extends KbiNavigationNode {
 
 }
 
-class KbiDeclarationNavigationNode  extends KbiNavigationNode {
+class KbiDeclarationNavigationNode extends KbiNavigationNode {
 
-  constructor(private applicationService: ApplicationService) {
+  constructor(private applicationService: ApplicationService, private kbiConfirmNavigationNode: KbiConfirmNavigationNode) {
     super();
   }
 
@@ -794,11 +796,29 @@ class KbiDeclarationNavigationNode  extends KbiNavigationNode {
     if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress)) {
       return DeclarationComponent.route;
     }
-    return DeclarationComponent.route; // user goes to confirm page.
+    return this.kbiConfirmNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 
   private containsFlag(flag: BuildingApplicationStatus) {
     return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
 
+}
+
+class KbiConfirmNavigationNode extends KbiNavigationNode {
+
+  constructor(private applicationService: ApplicationService) {
+    super();
+  }
+
+  override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
+    if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete)) {
+      return ConfirmComponent.route;
+    }
+    return ConfirmComponent.route; // user goes to summary page.
+  }
+
+  private containsFlag(flag: BuildingApplicationStatus) {
+    return (this.applicationService.model.ApplicationStatus & flag) == flag;
+  }
 }
