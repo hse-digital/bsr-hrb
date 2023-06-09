@@ -28,7 +28,7 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
     console.log(route);
     //this.navigateWithReturn(`../${route}`);
 
-    this.kbiSection = this.applicationService.currenKbiSection!;
+    this.kbiSection = this.applicationService.currentKbiSection!;
   }
 
   hasIncompleteData = false;

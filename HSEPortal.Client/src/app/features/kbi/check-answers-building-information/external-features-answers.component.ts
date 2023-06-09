@@ -77,8 +77,8 @@ export class ExternalFeaturesAnswersComponent extends BuildingInformationCheckAn
   // }
 
   hasFeature(name: string) {
-    if(!this.applicationService.currenKbiSection?.Walls.FeatureMaterialsOutside) return false;
-    return Object.keys(this.applicationService.currenKbiSection!.Walls.FeatureMaterialsOutside!).includes(name);
+    if(!this.applicationService.currentKbiSection?.Walls.FeatureMaterialsOutside) return false;
+    return Object.keys(this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside!).includes(name);
   }
 
   getMaterials(feature: string){
