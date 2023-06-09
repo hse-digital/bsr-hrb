@@ -7,6 +7,10 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { KbiCheckAnswersModule } from './kbi.check-answers-building-information.module';
 import { KbiNavigation } from '../kbi.navigation.ts.service';
+import { StructureConnectionsComponent } from '../8-connections/structure-connections/structure-connections.component';
+import { TaskListComponent } from '../task-list/task-list.component';
+import { OtherHighRiseBuildingConnectionsComponent } from '../8-connections/other-high-rise-building-connections/other-high-rise-building-connections.component';
+import { KbiConnectionsModule } from '../8-connections/kbi.connections.module';
 
 @Component({
   templateUrl: './check-answers-building-information.component.html',
@@ -49,11 +53,11 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     if(this.applicationService.model.Kbi!.SectionStatus.length == 1) {
-      //return navigationService.navigateRelative(.route, activatedRoute); goes to high rise building connections
+      return navigationService.navigateRelative(OtherHighRiseBuildingConnectionsComponent.route, activatedRoute);
     } else if (!this.allKbiSectionCompleted()) {
-      // goes to task list
+      return navigationService.navigateRelative(`../../${TaskListComponent.route}`, activatedRoute);
     }
-    return navigationService.navigateRelative(BuildingInformationCheckAnswersComponent.route, activatedRoute); // goes to connection between blocks
+    return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`, activatedRoute);
   }
 
   private allKbiSectionCompleted(){

@@ -55,6 +55,9 @@ import { HowOtherBuildingsConnectedComponent } from './8-connections/how-other-b
 import { ConnectionsCheckAnswerComponent } from './8-connections/connections-check-answer/connections-check-answer.component';
 import { DeclarationComponent } from './9-submit/declaration/declaration.component';
 import { ConfirmComponent } from './9-submit/confirm/confirm.component';
+import { KbiConnectionsModule } from './8-connections/kbi.connections.module';
+import { KbiSubmitModule } from './9-submit/kbi.submit.module';
+import { TaskListComponent } from './task-list/task-list.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -676,12 +679,24 @@ class YearMostRecentChangeNavigationNode extends KbiNavigationNode {
 
 class BuildingInformationCheckAnswersNavigationNode extends KbiNavigationNode {
 
-  constructor(private applicationService: ApplicationService, private structureConnectionsNavigationNode: StructureConnectionsNavigationNode, private otherHighRiseBuildingConnectionsNavigationNode: OtherHighRiseBuildingConnectionsNavigationNode ) {
+  constructor(private applicationService: ApplicationService, 
+      private structureConnectionsNavigationNode: StructureConnectionsNavigationNode, 
+      private otherHighRiseBuildingConnectionsNavigationNode: OtherHighRiseBuildingConnectionsNavigationNode) {
     super();
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    return this.structureConnectionsNavigationNode.getNextRoute(this.applicationService.currentKbiModel!, kbiSectionIndex);
+    let kbiModel = this.applicationService.currentKbiModel!;
+    if(this.applicationService.model.Kbi!.SectionStatus.length == 1) {
+      return this.otherHighRiseBuildingConnectionsNavigationNode.getNextRoute(kbiModel, kbiSectionIndex)
+    } else if (!this.allKbiSectionCompleted()) {
+      //return `${KbiFireModule.baseRoute}/${EvacuationStrategyComponent.route}`;
+    }
+    return this.structureConnectionsNavigationNode.getNextRoute(kbiModel, kbiSectionIndex);
+  }
+
+  private allKbiSectionCompleted(){
+    return this.applicationService.model.Kbi!.SectionStatus.map(x => x.Complete).reduce((a, b) => a && b);
   }
 }
 
@@ -693,7 +708,7 @@ class StructureConnectionsNavigationNode extends KbiNavigationNode {
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if(!kbi.Connections?.StructureConnections || kbi.Connections.StructureConnections.length == 0) {
-      return StructureConnectionsComponent.route;
+      return `${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`;
     }
     return this.otherHighRiseBuildingConnectionsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
@@ -709,7 +724,7 @@ class OtherHighRiseBuildingConnectionsNavigationNode extends KbiNavigationNode {
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if (!kbi.Connections?.OtherHighRiseBuildingConnections || !FieldValidations.IsNotNullOrWhitespace(kbi.Connections?.OtherHighRiseBuildingConnections)) {
-      return OtherHighRiseBuildingConnectionsComponent.route;
+      return `${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`;
     } else if (kbi.Connections.OtherHighRiseBuildingConnections === "yes") {
       return this.howOtherHighRiseBuildingsConnectedNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
@@ -726,7 +741,7 @@ class HowOtherHighRiseBuildingsConnectedNavigationNode extends KbiNavigationNode
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if (!kbi.Connections.HowOtherHighRiseBuildingAreConnected || kbi.Connections.HowOtherHighRiseBuildingAreConnected.length == 0) {
-      return HowOtherHighRiseBuildingsConnectedComponent.route;
+      return `${KbiConnectionsModule.baseRoute}/${HowOtherHighRiseBuildingsConnectedComponent.route}`;
     }
     return this.otherBuildingConnectionsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
@@ -742,7 +757,7 @@ class OtherBuildingConnectionsNavigationNode extends KbiNavigationNode {
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if(!kbi.Connections.OtherBuildingConnections || !FieldValidations.IsNotNullOrWhitespace(kbi.Connections.OtherBuildingConnections)) {
-      return OtherBuildingConnectionsComponent.route;
+      return `${KbiConnectionsModule.baseRoute}/${OtherBuildingConnectionsComponent.route}`;
     } else if (kbi.Connections.OtherBuildingConnections === "yes") {
       return this.howOtherBuildingsConnectedNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
@@ -759,7 +774,7 @@ class HowOtherBuildingsConnectedNavigationNode extends KbiNavigationNode {
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if (!kbi.Connections.HowOtherBuildingAreConnected || kbi.Connections.HowOtherBuildingAreConnected.length == 0) {
-      return HowOtherBuildingsConnectedComponent.route;
+      return `${KbiConnectionsModule.baseRoute}/${HowOtherBuildingsConnectedComponent.route}`;
     }
     return this.connectionCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
@@ -774,7 +789,7 @@ class ConnectionsCheckAnswerNavigationNode  extends KbiNavigationNode {
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if (!this.canContinue()) {
-      return ConnectionsCheckAnswerComponent.route;
+      return `${KbiConnectionsModule.baseRoute}/${ConnectionsCheckAnswerComponent.route}`;
     }
     return this.kbiDeclarationNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
@@ -805,7 +820,7 @@ class KbiDeclarationNavigationNode extends KbiNavigationNode {
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress)) {
-      return DeclarationComponent.route;
+      return `${KbiSubmitModule.baseRoute}/${DeclarationComponent.route}`;
     }
     return this.kbiConfirmNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
@@ -824,9 +839,9 @@ class KbiConfirmNavigationNode extends KbiNavigationNode {
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
     if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete)) {
-      return ConfirmComponent.route;
+      return `${KbiSubmitModule.baseRoute}/${ConfirmComponent.route}`;
     }
-    return ConfirmComponent.route; // user goes to summary page.
+    return `${KbiSubmitModule.baseRoute}/${ConfirmComponent.route}`;
   }
 
   private containsFlag(flag: BuildingApplicationStatus) {

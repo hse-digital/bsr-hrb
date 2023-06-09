@@ -4,6 +4,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { ConfirmComponent } from '../confirm/confirm.component';
 
 @Component({
   selector: 'hse-declaration',
@@ -26,7 +27,7 @@ export class DeclarationComponent extends BaseComponent implements OnInit {
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(DeclarationComponent.route, activatedRoute);
+    return navigationService.navigateRelative(ConfirmComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

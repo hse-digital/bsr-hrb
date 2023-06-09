@@ -31,7 +31,7 @@ export class ConfirmComponent extends BaseComponent implements OnInit {
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete);
+    return this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress);
   }
 
   containsFlag(flag: BuildingApplicationStatus) {

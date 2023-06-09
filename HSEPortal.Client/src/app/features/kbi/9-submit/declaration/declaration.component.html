@@ -26,11 +26,12 @@
 
         <govuk-body>We may ask you for written evidence that the principal accountable person has authorised you to submit this information for them.</govuk-body>
         <govuk-body>After you have submitted this information, you cannot use this service to amend your answers.</govuk-body>
+  
+        <govuk-button (onClick)="saveAndContinue()">Declare and submit</govuk-button>
+        <save-and-come-back (onClick)="saveAndComeBack()" />
         
       </div>
-  
-      <govuk-button (onClick)="saveAndContinue()">Declare and submit</govuk-button>
-      <save-and-come-back (onClick)="saveAndComeBack()" />
+
 
     </div>
   </div>

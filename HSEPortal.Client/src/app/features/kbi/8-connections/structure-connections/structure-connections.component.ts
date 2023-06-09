@@ -65,7 +65,8 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return this.applicationService.model.NumberOfSections != 'one' && this.applicationService.model.Sections.length > 1 
+    return true;
+    return this.applicationService.model.NumberOfSections != 'one' && this.applicationService.model.Sections.length > 1
       && this.containsFlag(BuildingApplicationStatus.KbiStructureInformationComplete);
   }
 

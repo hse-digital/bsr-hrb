@@ -12,6 +12,9 @@ import { HowOtherHighRiseBuildingsConnectedComponent } from '../how-other-high-r
 import { OtherBuildingConnectionsComponent } from '../other-building-connections/other-building-connections.component';
 import { HowOtherBuildingsConnectedComponent } from '../how-other-buildings-connected/how-other-buildings-connected.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { KbiSubmitModule } from '../../9-submit/kbi.submit.module';
+import { ConfirmComponent } from '../../9-submit/confirm/confirm.component';
+import { DeclarationComponent } from '../../9-submit/declaration/declaration.component';
 
 @Component({
   selector: 'hse-connections-check-answer',
@@ -49,17 +52,18 @@ export class ConnectionsCheckAnswerComponent  extends BaseComponent implements I
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ConnectionsCheckAnswerComponent.route, activatedRoute); // goes to declaration page
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsComplete;
+    return navigationService.navigateRelative(`../${KbiSubmitModule.baseRoute}/${DeclarationComponent.route}`, activatedRoute);
   }
 
   override async onSave(): Promise<void> {
-    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.BlocksInBuildingComplete;
+    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.KbiConnectionsComplete;
     
     await this.applicationService.syncBuildingStructures();
   }
 
   override canAccess(_: ActivatedRouteSnapshot): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingInProgress) == BuildingApplicationStatus.BlocksInBuildingInProgress;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiConnectionsInProgress) == BuildingApplicationStatus.KbiConnectionsInProgress;
   }
 
   navigateToStructureConnections() {

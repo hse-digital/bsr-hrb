@@ -35,7 +35,6 @@ export class UsesBelowGroundLevelAnswersComponent  extends BuildingInformationCh
 
   }
   getBuildingUse(name: string) {
-    console.log(name);
     return this.buildingUseMapper[name];
   }
 
