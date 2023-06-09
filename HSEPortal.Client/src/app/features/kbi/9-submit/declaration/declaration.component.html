@@ -1,0 +1,36 @@
+<govuk-breadcrumb-group>
+    <govuk-breadcrumb text="Home" link="https://www.gov.uk/" [firstChild]=true></govuk-breadcrumb>
+  </govuk-breadcrumb-group>
+  
+  <div class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+  
+        <h1 class="govuk-heading-xl">Declaration</h1>
+  
+        <govuk-body>By submitting this information about , you are confirming that:</govuk-body>
+        
+        <govuk-list classes='govuk-list--bullet'>
+            <govuk-list-item text="you have taken reasonable steps to find out the information" />
+            <govuk-list-item text="to the best of your knowledge, the details you're giving are correct" />
+        </govuk-list>
+        
+        <h2 class="govuk-heading-m">If you are submitting the information for the principal accountable person</h2>
+
+        <govuk-body>By submitting this information, you're also confirming that the principal accountable person:</govuk-body>
+
+        <govuk-list classes='govuk-list--bullet'>
+            <govuk-list-item text="instructed you in writing to submit the information for them" />
+            <govuk-list-item text="gave you the details or they are the result of your own investigations" />
+        </govuk-list>
+
+        <govuk-body>We may ask you for written evidence that the principal accountable person has authorised you to submit this information for them.</govuk-body>
+        <govuk-body>After you have submitted this information, you cannot use this service to amend your answers.</govuk-body>
+        
+      </div>
+  
+      <govuk-button (onClick)="saveAndContinue()">Declare and submit</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+
+    </div>
+  </div>

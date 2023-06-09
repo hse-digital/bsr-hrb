@@ -51,6 +51,7 @@ import { HowOtherHighRiseBuildingsConnectedComponent } from './8-connections/how
 import { OtherBuildingConnectionsComponent } from './8-connections/other-building-connections/other-building-connections.component';
 import { HowOtherBuildingsConnectedComponent } from './8-connections/how-other-buildings-connected/how-other-buildings-connected.component';
 import { ConnectionsCheckAnswerComponent } from './8-connections/connections-check-answer/connections-check-answer.component';
+import { DeclarationComponent } from './9-submit/declaration/declaration.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -59,7 +60,8 @@ export class KbiNavigation extends BaseNavigation {
     super();
   }
 
-  private connectionsCheckAnswerNavigationNode = new ConnectionsCheckAnswerNavigationNode(this.applicationService);
+  private kbiDeclarationNavigationNode = new KbiDeclarationNavigationNode(this.applicationService);
+  private connectionsCheckAnswerNavigationNode = new ConnectionsCheckAnswerNavigationNode(this.applicationService, this.kbiDeclarationNavigationNode);
   private howOtherBuildingsConnectedNavigationNode = new HowOtherBuildingsConnectedNavigationNode(this.connectionsCheckAnswerNavigationNode);
   private otherBuildingConnectionsNavigationNode = new OtherBuildingConnectionsNavigationNode(this.howOtherBuildingsConnectedNavigationNode, this.connectionsCheckAnswerNavigationNode);
   private howOtherHighRiseBuildingsConnectedNavigationNode = new HowOtherHighRiseBuildingsConnectedNavigationNode(this.otherBuildingConnectionsNavigationNode);
@@ -753,7 +755,7 @@ class HowOtherBuildingsConnectedNavigationNode extends KbiNavigationNode {
 
 class ConnectionsCheckAnswerNavigationNode  extends KbiNavigationNode {
 
-  constructor(private applicationService: ApplicationService) {
+  constructor(private applicationService: ApplicationService, private kbiDeclarationNavigationNode: KbiDeclarationNavigationNode) {
     super();
   }
 
@@ -761,7 +763,7 @@ class ConnectionsCheckAnswerNavigationNode  extends KbiNavigationNode {
     if (!this.canContinue()) {
       return ConnectionsCheckAnswerComponent.route;
     }
-    return ""; // user goes to declaration page.
+    return this.kbiDeclarationNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
   
   private canContinue(): boolean {
@@ -789,10 +791,10 @@ class KbiDeclarationNavigationNode  extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
-    if (this.containsFlag(BuildingApplicationStatus.KbiConnectionsComplete)) {
-      return "";
+    if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress)) {
+      return DeclarationComponent.route;
     }
-    return ""; 
+    return DeclarationComponent.route; // user goes to confirm page.
   }
 
   private containsFlag(flag: BuildingApplicationStatus) {
