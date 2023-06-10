@@ -28,10 +28,6 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   ngOnInit(): void {
-    let route = this.kbiNavigation.getNextRoute();
-    console.log(route);
-    //this.navigateWithReturn(`../${route}`);
-
     this.kbiSection = this.applicationService.currentKbiSection!;
   }
 
@@ -48,9 +44,9 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   override async onSave(): Promise<void> {
-    //await this.applicationService.syncAccountablePersons();
   }
 
+  // UPDATE AFTER CHECK ANSWER IS COMPLETED.
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationInProgress;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationComplete;

@@ -36,7 +36,7 @@
       </ng-container>
     </govuk-summary-list-row>
 
-    <govuk-summary-list-row key="Percentage coverage" (onKeyupEnter)="navigate('external-insulation-percentage')" (onClick)="navigate('external-insulation-percentage')" [showAction]=true>
+    <govuk-summary-list-row *ngIf="!isNone()" key="Percentage coverage" (onKeyupEnter)="navigate('external-insulation-percentage')" (onClick)="navigate('external-insulation-percentage')" [showAction]=true>
       <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!.CheckBoxSelection!">
         <div>{{getInsulationName(type)}}: {{externalWalls!.ExternalWallInsulationPercentages![type]}}%</div>
       </ng-container>
