@@ -60,12 +60,12 @@ public class KbiService
         // doors
         structure = structure with
         {
-            bsr_doorsthatcertifiedfireresistanceisnotknow = int.Parse(fireData.FireDoorsCommon.FireDoorUnknown),
             bsr_doorwith120minutecertifiedfireresistance = int.Parse(fireData.FireDoorsCommon.FireDoorHundredTwentyMinute),
             bsr_doorswith30minutescertifiedfireresistance = int.Parse(fireData.FireDoorsCommon.FireDoorThirtyMinute),
             bsr_doorswith60minutescertifiedfireresistance = int.Parse(fireData.FireDoorsCommon.FireDoorSixtyMinute),
+            bsr_doorthatcertifiedfireresistanceisnotknown = int.Parse(fireData.FireDoorsCommon.FireDoorUnknown),
             bsr_doorswithnocertifiedfireresistance = int.Parse(fireData.ResidentialUnitFrontDoors.NoFireResistance),
-            bsr_doorthatcertifiedfireresistanceisnotknown = int.Parse(fireData.ResidentialUnitFrontDoors.NotKnownFireResistance),
+            bsr_doorsthatcertifiedfireresistanceisnotknow = int.Parse(fireData.ResidentialUnitFrontDoors.NotKnownFireResistance),
             bsr_doorswith120minutecertifiedfireresistance = int.Parse(fireData.ResidentialUnitFrontDoors.HundredTwentyMinsFireResistance),
             bsr_doorswith30minutecertifiedfireresistance = int.Parse(fireData.ResidentialUnitFrontDoors.ThirtyMinsFireResistance),
             bsr_doorswith60minutecertifiedfireresistance = int.Parse(fireData.ResidentialUnitFrontDoors.SixtyMinsFireResistance)
@@ -210,11 +210,20 @@ public class KbiService
         foreach (var insulation in walls.ExternalWallInsulation.CheckBoxSelection)
         {
             var materialId = Materials.InsulationIds[insulation];
+            var insulationPercentage = walls.ExternalWallInsulationPercentages.TryGetValue(insulation, out var percentage) ? int.Parse(percentage) : 0;
             structureMaterial = structureMaterial with
             {
                 materialId = $"/bsr_materials({materialId})",
-                bsr_percentageofmaterial = int.Parse(walls.ExternalWallInsulationPercentages[insulation]),
+                bsr_percentageofmaterial = insulationPercentage,
             };
+
+            if (insulation == "other")
+            {
+                structureMaterial = structureMaterial with
+                {
+                    bsr_otherspecifiedmaterial  = walls.ExternalWallInsulation.OtherValue
+                };
+            }
 
             var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureMaterial>>("bsr_structurematerials", ("$filter", $"_bsr_structure_value eq '{kbiSyncData.DynamicsStructure.bsr_blockid}' and bsr_structurematerialid eq '{materialId}'"));
             if (!records.value.Any())
@@ -445,8 +454,8 @@ public static class Materials
         ["foil_bubble_multifoil_insulation"] = "4ef620fb-77f9-ed11-8f6d-002248c725da",
         ["phenolic_foam"] = "36720913-78f9-ed11-8f6d-002248c725da",
         ["eps_xps"] = "2a8cb865-78f9-ed11-8f6d-002248c725da",
-        ["pur_pir_iso"] = "1a5717aa-78f9-ed11-8f6d-002248c725da",
         ["other"] = "10bd88b6-78f9-ed11-8f6d-002248c725da",
+        ["pur_pir_iso"] = "1a5717aa-78f9-ed11-8f6d-002248c725da",
         ["none"] = "cd4314c3-78f9-ed11-8f6d-002248c725da"
     };
 

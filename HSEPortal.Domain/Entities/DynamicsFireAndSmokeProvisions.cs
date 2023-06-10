@@ -49,6 +49,7 @@ public record DynamicsStructureMaterial
     public int? bsr_aluminiumcompositematerialacm { get; set; }
     public int? bsr_highpressurelaminatehpl { get; set; }
     public int? bsr_percentageofmaterial { get; set; }
+    public string bsr_otherspecifiedmaterial { get; set; }
 }
 
 public record DynamicsExternalFeature
