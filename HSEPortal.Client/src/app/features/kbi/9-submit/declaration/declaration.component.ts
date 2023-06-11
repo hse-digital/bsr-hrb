@@ -5,6 +5,7 @@ import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { ConfirmComponent } from '../confirm/confirm.component';
+import { KbiService } from 'src/app/services/kbi.service';
 
 @Component({
   selector: 'hse-declaration',
@@ -14,7 +15,7 @@ export class DeclarationComponent extends BaseComponent implements OnInit {
   static route: string = 'declaration';
   static title: string = "Declaration - Register a high-rise building - GOV.UK";
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private kbiService: KbiService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
@@ -24,6 +25,10 @@ export class DeclarationComponent extends BaseComponent implements OnInit {
 
   canContinue(): boolean {
     return true;
+  }
+
+  override async onSave(): Promise<void> {
+    await this.kbiService.syncBuildingConnectionsDeclaration(this.applicationService.currentKbiSection!);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

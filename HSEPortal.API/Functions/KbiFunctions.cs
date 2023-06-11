@@ -104,8 +104,8 @@ public class KbiFunctions
 
         var kbiSyncData = new KbiSyncData(dynamicsStructure, kbiSectionModel);
         await orchestrationContext.CallActivityAsync(nameof(UpdateSectionBuildingUseData), kbiSyncData);
-        //await orchestrationContext.CallActivityAsync(nameof(UpdateSectionConnectionsData), kbiSyncData); // pending angular development
-        //await orchestrationContext.CallActivityAsync(nameof(UpdateSectionDeclarationData), kbiSyncData); // pending angular development
+        await orchestrationContext.CallActivityAsync(nameof(UpdateSectionConnectionsData), kbiSyncData);
+        await orchestrationContext.CallActivityAsync(nameof(UpdateSectionDeclarationData), kbiSyncData);
     }
 
     [Function(nameof(GetDynamicsStructure))]
@@ -160,6 +160,18 @@ public class KbiFunctions
     public Task UpdateSectionBuildingUseData([ActivityTrigger] KbiSyncData kbySyncData)
     {
         return kbiService.UpdateSectionBuildingUseData(kbySyncData);
+    }
+
+    [Function(nameof(UpdateSectionConnectionsData))]
+    public Task UpdateSectionConnectionsData([ActivityTrigger] KbiSyncData kbySyncData)
+    {
+        return kbiService.UpdateSectionConnectionsData(kbySyncData);
+    }
+
+    [Function(nameof(UpdateSectionDeclarationData))]
+    public Task UpdateSectionDeclarationData([ActivityTrigger] KbiSyncData kbySyncData)
+    {
+        return kbiService.UpdateSectionDeclarationData(kbySyncData);
     }
 }
 

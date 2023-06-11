@@ -1,7 +1,9 @@
 ﻿using System.Globalization;
+using System.Reflection.Metadata;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
+using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Services;
 
@@ -9,11 +11,13 @@ public class KbiService
 {
     private readonly DynamicsService dynamicsService;
     private readonly DynamicsApi dynamicsApi;
+    private readonly DynamicsOptions dynamicsOptions;
 
-    public KbiService(DynamicsService dynamicsService, DynamicsApi dynamicsApi)
+    public KbiService(DynamicsService dynamicsService, DynamicsApi dynamicsApi, IOptions<DynamicsOptions> dynamicsOptions)
     {
         this.dynamicsService = dynamicsService;
         this.dynamicsApi = dynamicsApi;
+        this.dynamicsOptions = dynamicsOptions.Value;
     }
 
     public async Task<DynamicsStructure> GetDynamicsStructure(string structureName, string postcode, string applicationId)
@@ -221,7 +225,7 @@ public class KbiService
             {
                 structureMaterial = structureMaterial with
                 {
-                    bsr_otherspecifiedmaterial  = walls.ExternalWallInsulation.OtherValue
+                    bsr_otherspecifiedmaterial = walls.ExternalWallInsulation.OtherValue
                 };
             }
 
@@ -259,6 +263,85 @@ public class KbiService
     }
 
     public async Task UpdateSectionBuildingUseData(KbiSyncData kbiSyncData)
+    {
+        var structure = new DynamicsStructure { bsr_blockid = kbiSyncData.DynamicsStructure.bsr_blockid };
+        var building = kbiSyncData.KbiSectionModel.BuildingUse;
+
+        structure = structure with
+        {
+            primaryUseId = $"/bsr_blockuses({BuildingUse.Uses[building.PrimaryUseOfBuilding]})",
+            bsr_numberoffloorsbelowgroundlevel = int.Parse(building.FloorsBelowGroundLevel),
+            primaryUseBelowGroundId = $"/bsr_blockuses({BuildingUse.Uses[building.PrimaryUseBuildingBelowGroundLevel]})",
+            bsr_differentprimaryuseinthepast = building.ChangePrimaryUse == "yes",
+            bsr_changeofuseyearnew = building.YearChangeInUse
+        };
+
+        if (building.ChangePrimaryUse == "yes")
+        {
+            structure = structure with
+            {
+                previousUseId = $"/bsr_blockuses({BuildingUse.Uses[building.PreviousUseBuilding]})",
+            };
+        }
+
+        foreach (var secondaryUse in building.SecondaryUseBuilding)
+        {
+            var use = BuildingUse.Uses[secondaryUse];
+            var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureUse>>($"bsr_blockuses({use})/bsr_blockuse_block", ("$filter", $"bsr_blockid eq '{structure.bsr_blockid}'"));
+            if (!records.value.Any())
+            {
+                await dynamicsApi.Create($"bsr_blockuses({use})/bsr_blockuse_block/$ref", new DynamicsStructureUse
+                {
+                    relationshipId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_blocks({structure.bsr_blockid})"
+                });
+            }
+        }
+
+        foreach (var work in building.UndergoneBuildingMaterialChanges)
+        {
+            var workId = BuildingUse.MaterialChanges[work];
+            var structureWork = new DynamicsStructureWork
+            {
+                structureId = $"/bsr_blocks({structure.bsr_blockid})",
+                workId = $"/bsr_blockmaterialchanges({workId})"
+            };
+
+            if (work == "floors_added")
+            {
+                foreach (var workMaterial in building.AddedFloorsType)
+                {
+                    var materialId = Materials.Structural[workMaterial];
+                    structureWork = structureWork with
+                    {
+                        materialId = $"/bsr_materials({materialId})"
+                    };
+
+                    var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureWork>>($"bsr_structurebuildingworks", ("$filter", $"_bsr_buildingwork_value eq '{workId}' and _bsr_structure_value eq '{structure.bsr_blockid}' and _bsr_material_value eq '{materialId}'"));
+                    if (!records.value.Any())
+                    {
+                        await dynamicsApi.Create($"bsr_structurebuildingworks", structureWork);
+                    }
+                }
+            }
+            else
+            {
+                var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureWork>>($"bsr_structurebuildingworks", ("$filter", $"_bsr_buildingwork_value eq '{workId}' and _bsr_structure_value eq '{structure.bsr_blockid}'"));
+                if (!records.value.Any())
+                {
+                    await dynamicsApi.Create($"bsr_structurebuildingworks", structureWork);
+                }
+            }
+        }
+
+        await dynamicsApi.Update($"bsr_blocks({structure.bsr_blockid})", structure);
+    }
+
+    public async Task UpdateSectionConnectionsData(KbiSyncData kbiSyncData)
+    {
+        await Task.CompletedTask;
+    }
+
+    public async Task UpdateSectionDeclarationData(KbiSyncData kbiSyncData)
     {
         await Task.CompletedTask;
     }
@@ -489,6 +572,23 @@ public static class Materials
         ["timber"] = "d4d647e2-7cf9-ed11-8f6d-002248c725da",
         ["other"] = "e6e244e8-7cf9-ed11-8f6d-002248c725da",
     };
+
+    public static Dictionary<string, string> Structural = new()
+    {
+        ["composite_steel_concrete"] = "8a4d5b91-81f8-ed11-8f6d-002248c725da",
+        ["concrete_large_panels_1960"] = "629f509d-81f8-ed11-8f6d-002248c725da",
+        ["concrete_large_panels_1970"] = "91574ba3-81f8-ed11-8f6d-002248c725da",
+        ["modular_concrete"] = "910503bc-81f8-ed11-8f6d-002248c725da",
+        ["concrete_other"] = "3d4cfbc1-81f8-ed11-8f6d-002248c725da",
+        ["lightweight_metal"] = "ae9a2ece-81f8-ed11-8f6d-002248c725da",
+        ["Masonry"] = "56f639d4-81f8-ed11-8f6d-002248c725da",
+        ["modular_steel"] = "92cd57e0-81f8-ed11-8f6d-002248c725da",
+        ["steel_frame"] = "eeff5be6-81f8-ed11-8f6d-002248c725da",
+        ["modular_other_metal"] = "6c6cfff2-81f8-ed11-8f6d-002248c725da",
+        ["modular_timber"] = "7d6e1dff-81f8-ed11-8f6d-002248c725da",
+        ["timber"] = "dc8c2d05-82f8-ed11-8f6d-002248c725da",
+        ["none"] = "38d6adc2-14f3-ed11-8848-6045bd0d6610"
+    };
 }
 
 public static class RoofStructure
@@ -515,5 +615,42 @@ public static class Walls
         ["fire-classification"] = 760_810_000,
         ["large-scale-fire-test"] = 760_810_001,
         ["neither-these"] = 760_810_002,
+    };
+}
+
+public static class BuildingUse
+{
+    public static Dictionary<string, string> Uses = new()
+    {
+        ["assembly_recreation"] = "91b93aec-f4fa-ed11-8f6d-002248c725da",
+        ["assembly_and_recreation"] = "91b93aec-f4fa-ed11-8f6d-002248c725da",
+        ["office"] = "38c599a8-f5fa-ed11-8f6d-002248c725da",
+        ["residential_dwellings"] = "45b94422-f7fa-ed11-8f6d-002248c725da",
+        ["residential_institution"] = "9dff16b5-f5fa-ed11-8f6d-002248c725da",
+        ["other_residential_use"] = "913ec607-f6fa-ed11-8f6d-002248c725da",
+        ["shop_commercial"] = "bb5a8e49-f6fa-ed11-8f6d-002248c725da",
+        ["shop_and_commercial"] = "bb5a8e49-f6fa-ed11-8f6d-002248c725da",
+        ["other_non_residential"] = "2359b47a-f6fa-ed11-8f6d-002248c725da",
+        [""] = "ad72a7b8-f8fa-ed11-8f6d-002248c725da"
+    };
+
+    public static Dictionary<string, string> MaterialChanges = new()
+    {
+        ["asbestos_removal"] = "42928b0d-04fb-ed11-8f6d-002248c725da",
+        ["balconies_added"] = "dec8b41f-04fb-ed11-8f6d-002248c725da",
+        ["changes_residential_units"] = "fb0d0d33-04fb-ed11-8f6d-002248c725da",
+        ["changes_staircase_cores"] = "203fd551-04fb-ed11-8f6d-002248c725da",
+        ["changes_windows"] = "d3a5835f-04fb-ed11-8f6d-002248c725da",
+        ["complete_rewiring"] = "ac467284-04fb-ed11-8f6d-002248c725da",
+        ["floors_added"] = "e0444241-05fb-ed11-8f6d-002248c725da",
+        ["floors_removed"] = "c694754d-05fb-ed11-8f6d-002248c725da",
+        ["installation_replacement_removal_fire_systems"] = "77214267-07fb-ed11-8f6d-002248c725da",
+        ["installation_replacement_removal_lighting"] = "c6b0c186-07fb-ed11-8f6d-002248c725da",
+        ["installation_replacement_removal_cold_water_systems"] = "8e2f4ec5-07fb-ed11-8f6d-002248c725da",
+        ["installation_replacement_removal_gas_supply"] = "c0887822-08fb-ed11-8f6d-002248c725da",
+        ["reinforcement_works_large_panel_system"] = "217dfa41-08fb-ed11-8f6d-002248c725da",
+        ["work_external_walls"] = "e97d98c3-08fb-ed11-8f6d-002248c725da",
+        ["none"] = "995433ca-03fb-ed11-8f6d-002248c725da",
+        ["unknown"] = "b6edcc0b-0efb-ed11-8f6d-002248c725da"
     };
 }

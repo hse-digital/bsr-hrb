@@ -63,3 +63,23 @@ public record DynamicsExternalFeature
     [property: JsonPropertyName("bsr_MaterialId@odata.bind")]
     public string materialId { get; set; }
 }
+
+public record DynamicsStructureUse
+{
+    [property: JsonPropertyName("@odata.id")]
+    public string relationshipId { get; set; }
+    
+    public string bsr_blockuseid { get; set; }
+}
+
+public record DynamicsStructureWork
+{
+    [property: JsonPropertyName("bsr_structure@odata.bind")]
+    public string structureId { get; set; }
+    
+    [property: JsonPropertyName("bsr_buildingwork@odata.bind")]
+    public string workId { get; set; }
+    
+    [property: JsonPropertyName("bsr_material@odata.bind")]
+    public string materialId { get; set; }
+}

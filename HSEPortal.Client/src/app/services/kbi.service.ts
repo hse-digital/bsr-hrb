@@ -20,4 +20,8 @@ export class KbiService {
   async syncStructureRoofStaircasesAndWalls(sectionModel: KbiSectionModel | undefined) {
     await firstValueFrom(this.httpClient.post(`api/SyncKbiStructureRoofStaircasesAndWalls/${this.applicationService.model.id}`, sectionModel));
   }
+
+  async syncBuildingConnectionsDeclaration(sectionModel: KbiSectionModel | undefined) {
+    await firstValueFrom(this.httpClient.post(`api/SyncKbiBuildingUseConnectionsAndDeclaration/${this.applicationService.model.id}`, sectionModel));
+  }
 }
