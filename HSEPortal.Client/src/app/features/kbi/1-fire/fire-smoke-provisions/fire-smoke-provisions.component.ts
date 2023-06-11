@@ -41,23 +41,26 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   }
 
   canContinue(): boolean {
-    this.fireSmokeProvisionsHasErrors = !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions 
+    this.fireSmokeProvisionsHasErrors = !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions
       || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions.length == 0;
 
     if (this.fireSmokeProvisionsHasErrors) this.firstCheckboxAnchorId = `alarm_heat_smoke-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
-    
+
     return !this.fireSmokeProvisionsHasErrors;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if(!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.includes('none')) {
-      return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute);  
+    if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.includes('none')) {
+      return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute, {
+        equipment: this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![0]
+      });
     }
+
     return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.Fire.ProvisionsEquipment 
-        && this.applicationService.currentKbiSection!.Fire.ProvisionsEquipment.length > 0;
+    return !!this.applicationService.currentKbiSection?.Fire.ProvisionsEquipment
+      && this.applicationService.currentKbiSection!.Fire.ProvisionsEquipment.length > 0;
   }
 }

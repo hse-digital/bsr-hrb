@@ -73,7 +73,14 @@ export class TaskListComponent implements CanActivate, OnInit {
     if (route.startsWith(KbiConnectionsModule.baseRoute) || route.startsWith(KbiSubmitModule.baseRoute)) {
       await this.navigationService.navigateAppend(`${route}`, this.activatedRoute);
     } else {
-      await this.navigationService.navigateAppend(`${sectionId}/${route}`, this.activatedRoute);
+      let query = route.split('?');
+      let params: any = {};
+      if (query.length > 1) {
+        let queryParam = query[1].split('=');
+        params[queryParam[0]] = queryParam[1];
+      }
+
+      await this.navigationService.navigateAppend(`${sectionId}/${query[0]}`, this.activatedRoute, params);
     }
 
   }

@@ -8,6 +8,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { PrimaryUseOfBuildingComponent } from '../../7-building-use/primary-use-of-building/primary-use-of-building.component';
 import { KbiBuildingUseModule } from '../../7-building-use/kbi.building-use.module';
+import { ExternalFeaturesComponent } from '../external-features/external-features.component';
 
 @Component({
   selector: 'hse-feature-materials-outside',
@@ -26,8 +27,6 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
 
   currentFeature?: string;
 
-  private features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
-
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
@@ -40,16 +39,12 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
     } else {
       this.mapExternalFeatures();
     }
-
-    let keys = Object.keys(this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside!);
-    if (!keys.includes(this.currentFeature!)) {
-      this.currentFeature = keys[0];
-    }
   }
 
   getNextPendingFeature() {
-    let currentSection = this.applicationService.currentKbiSection!;
-    this.currentFeature = currentSection.Walls.ExternalFeatures!.filter(x => this.features.indexOf(x) > -1).find(x => currentSection.Walls.FeatureMaterialsOutside === void 0 || !currentSection.Walls.FeatureMaterialsOutside![x] || currentSection!.Walls.FeatureMaterialsOutside![x].length == 0);
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.currentFeature = params['feature'];
+    });
   }
 
   initFeatureMaterialsOutside() {
@@ -61,7 +56,7 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
 
   mapExternalFeatures() {
     let aux: Record<string, string[]> = {};
-    this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => this.features.includes(x)).forEach(x =>
+    this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => ExternalFeaturesComponent.features.includes(x)).forEach(x =>
       aux[x] = (!!this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x] && this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x].length > 0)
         ? this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x]
         : []
@@ -108,18 +103,17 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let selectedFeatures = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => this.features.includes(x)) ?? [];
+    let selectedFeatures = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => ExternalFeaturesComponent.features.includes(x)) ?? [];
     let nextFeatureIndex = selectedFeatures.indexOf(this.currentFeature!) + 1;
     if (nextFeatureIndex >= selectedFeatures.length) {
       return navigationService.navigateRelative(`../${KbiBuildingUseModule.baseRoute}/${PrimaryUseOfBuildingComponent.route}`, activatedRoute);
     }
 
-    this.currentFeature = this.features[nextFeatureIndex];
-    return Promise.resolve(true);
+    return navigationService.navigateRelative(FeatureMaterialsOutsideComponent.route, activatedRoute, { feature: selectedFeatures.at(nextFeatureIndex) });
   }
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    let selectedFeatures = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => this.features.includes(x)) ?? [];
+  override canAccess(_: ActivatedRouteSnapshot) {
+    let selectedFeatures = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => ExternalFeaturesComponent.features.includes(x)) ?? [];
     return selectedFeatures.length > 0;
   }
 

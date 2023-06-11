@@ -28,10 +28,6 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   ngOnInit(): void {
-    let route = this.kbiNavigation.getNextRoute();
-    console.log(route);
-    //this.navigateWithReturn(`../${route}`);
-
     this.kbiSection = this.applicationService.currentKbiSection!;
   }
 
@@ -48,17 +44,20 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   override async onSave(): Promise<void> {
-    //await this.applicationService.syncAccountablePersons();
   }
 
+  // UPDATE AFTER CHECK ANSWER IS COMPLETED.
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationInProgress;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationComplete;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
-    if(this.applicationService.model.Sections.length == 1) {
+
+    if (this.applicationService.model.Sections.length == 1) {
       return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`, activatedRoute);
     }
+
     return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`, activatedRoute);
+
     // if(this.applicationService.model.Kbi!.SectionStatus.length == 1) {
     //   return navigationService.navigateRelative(OtherHighRiseBuildingConnectionsComponent.route, activatedRoute);
     // } else if (!this.allKbiSectionCompleted()) {
@@ -66,7 +65,7 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
     // }
   }
 
-  private allKbiSectionCompleted(){
+  private allKbiSectionCompleted() {
     return this.applicationService.model.Kbi!.SectionStatus.map(x => x.Complete).reduce((a, b) => a && b);
   }
 
@@ -74,14 +73,17 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
     return true;
   }
 
-  navigateTo(url: string, group: string) {
-    this.navigateWithReturn(`../${group}/${url}`);
+  navigateTo(url: string, group: string, params?: any) {
+    this.navigateWithReturn(`../${group}/${url}`, params);
   }
 
-  private navigateWithReturn(url: string) {
-    this.navigationService.navigateRelative(url, this.activatedRoute, {
-      return:`../${KbiCheckAnswersModule.baseRoute}/${BuildingInformationCheckAnswersComponent.route}`
-    });
+  private navigateWithReturn(url: string, params?: any) {
+    let query = {
+      return: `../${KbiCheckAnswersModule.baseRoute}/${BuildingInformationCheckAnswersComponent.route}`,
+      ...params
+    };
+
+    this.navigationService.navigateRelative(url, this.activatedRoute, query);
   }
 
   getInfraestructureName() {

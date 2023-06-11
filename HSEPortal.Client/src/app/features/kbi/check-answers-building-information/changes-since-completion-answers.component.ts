@@ -79,4 +79,21 @@ export class ChangesSinceCompletionAnswers extends BuildingInformationCheckAnswe
     return this.buildingUseMapper[name];
   }
 
+  changeInNumberOfFloors() {
+    return this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')
+  }
+
+  notChangeInNumberOfFloors() {
+    return this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 
+       && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'none' || x == 'unknown')
+  }
+
+  onlyOneOptionSelected() {
+    let onlyOneMaterialChange = (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1);
+    let mostRecentChangeIsKnown = !this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange?.includes("unknown");
+    let isNoneOrUnknown = this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'none' || x == 'unknown')
+    
+    return !isNoneOrUnknown && (onlyOneMaterialChange || mostRecentChangeIsKnown);
+  }
+
 }
