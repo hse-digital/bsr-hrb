@@ -19,14 +19,15 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
     super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
   }
 
-  navigate(url: string) {
-    this.navigateTo(url, KbiFireModule.baseRoute);
+  navigate(url: string, equipment?: string) {
+    let query = equipment ? { equipment: equipment }: undefined;
+    this.navigateTo(url, KbiFireModule.baseRoute, query);
   }
 
   private provisionEquipment: Record<string, string> = {
-    "heat_detectors": "Heat detectors", 
-    "smoke_detectors": "Smoke detectors", 
-    "sprinklers": "Sprinklers or misters" 
+    "heat_detectors": "Heat detectors",
+    "smoke_detectors": "Smoke detectors",
+    "sprinklers": "Sprinklers or misters"
   }
   getProvisionEquipment(name: string) {
     return this.provisionEquipment[name];
@@ -125,17 +126,17 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
       return 0;
     }
   }
-    getTotalCommonFireDoors() {
+  getTotalCommonFireDoors() {
 
-      if (!!this.fireAndSmokeControls.FireDoorsCommon) {
-        return Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorThirtyMinute!)
-          + Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorSixtyMinute!)
-          + Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorHundredTwentyMinute!)
-          + Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorUnknown!)
-      }
-      else {
-        return 0;
-      }
+    if (!!this.fireAndSmokeControls.FireDoorsCommon) {
+      return Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorThirtyMinute!)
+        + Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorSixtyMinute!)
+        + Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorHundredTwentyMinute!)
+        + Number(this.fireAndSmokeControls.FireDoorsCommon.FireDoorUnknown!)
+    }
+    else {
+      return 0;
+    }
 
   }
 

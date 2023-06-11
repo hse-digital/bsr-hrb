@@ -17,7 +17,7 @@
     </govuk-summary-list-row>
 
     <ng-container *ngFor="let equipment of fireAndSmokeControls!.FireSmokeProvisions">
-      <govuk-summary-list-row key="{{getEquipmentName(equipment)}}" (onKeyupEnter)="navigate('smoke-provision-locations')" (onClick)="navigate('smoke-provision-locations')" [showAction]=true>
+      <govuk-summary-list-row key="{{getEquipmentName(equipment)}}" (onKeyupEnter)="navigate('smoke-provision-locations', equipment)" (onClick)="navigate('smoke-provision-locations', equipment)" [showAction]=true>
         <ng-container *ngFor="let location of getSmokeAndFireDeviceLocations(equipment)">
           <div>{{location}}</div>
         </ng-container>

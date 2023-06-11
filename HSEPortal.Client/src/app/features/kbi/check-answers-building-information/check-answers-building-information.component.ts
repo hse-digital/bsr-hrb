@@ -51,10 +51,13 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationInProgress;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationComplete;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
-    if(this.applicationService.model.Sections.length == 1) {
+
+    if (this.applicationService.model.Sections.length == 1) {
       return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`, activatedRoute);
     }
+
     return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`, activatedRoute);
+
     // if(this.applicationService.model.Kbi!.SectionStatus.length == 1) {
     //   return navigationService.navigateRelative(OtherHighRiseBuildingConnectionsComponent.route, activatedRoute);
     // } else if (!this.allKbiSectionCompleted()) {
@@ -62,7 +65,7 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
     // }
   }
 
-  private allKbiSectionCompleted(){
+  private allKbiSectionCompleted() {
     return this.applicationService.model.Kbi!.SectionStatus.map(x => x.Complete).reduce((a, b) => a && b);
   }
 
@@ -70,14 +73,17 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
     return true;
   }
 
-  navigateTo(url: string, group: string) {
-    this.navigateWithReturn(`../${group}/${url}`);
+  navigateTo(url: string, group: string, params?: any) {
+    this.navigateWithReturn(`../${group}/${url}`, params);
   }
 
-  private navigateWithReturn(url: string) {
-    this.navigationService.navigateRelative(url, this.activatedRoute, {
-      return:`../${KbiCheckAnswersModule.baseRoute}/${BuildingInformationCheckAnswersComponent.route}`
-    });
+  private navigateWithReturn(url: string, params?: any) {
+    let query = {
+      return: `../${KbiCheckAnswersModule.baseRoute}/${BuildingInformationCheckAnswersComponent.route}`,
+      ...params
+    };
+
+    this.navigationService.navigateRelative(url, this.activatedRoute, query);
   }
 
   getInfraestructureName() {

@@ -28,8 +28,12 @@ export class ExternalFeaturesAnswersComponent extends BuildingInformationCheckAn
     this.navigateTo(ExternalFeaturesComponent.route, KbiWallsModule.baseRoute);
   }
 
-  nagivateToExternalFeaturesMaterials() {
-    this.navigateTo(FeatureMaterialsOutsideComponent.route, KbiWallsModule.baseRoute);
+  nagivateToExternalFeaturesMaterials(feature: string) {
+    this.navigateTo(FeatureMaterialsOutsideComponent.route, KbiWallsModule.baseRoute, { feature: feature });
+  }
+
+  getAvailableFeatures() {
+    return this.externalFeatures.ExternalFeatures!.filter(x => ExternalFeaturesComponent.features.includes(x));
   }
 
   private externalFeaturesMapper: Record<string, string> = {
@@ -48,6 +52,7 @@ export class ExternalFeaturesAnswersComponent extends BuildingInformationCheckAn
     "other": "Other",
     "none": "None"
   }
+
   getExternalFeature(name: string) {
     return this.externalFeaturesMapper[name] ?? "";
   }

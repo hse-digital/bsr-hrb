@@ -9,8 +9,8 @@
   </govuk-summary-list-row>
 
   
-  <ng-container *ngFor="let type of externalFeatures!.ExternalFeatures!">
-    <govuk-summary-list-row key="{{getExternalFeature(type)}}" (onKeyupEnter)="nagivateToExternalFeaturesMaterials()" (onClick)="nagivateToExternalFeaturesMaterials()" [showAction]=true>
+  <ng-container *ngFor="let type of getAvailableFeatures()">
+    <govuk-summary-list-row key="{{getExternalFeature(type)}}" (onKeyupEnter)="nagivateToExternalFeaturesMaterials(type)" (onClick)="nagivateToExternalFeaturesMaterials(type)" [showAction]=true>
         <div *ngFor="let material of getMaterials(type)">{{getMaterialName(material)}}</div>
     </govuk-summary-list-row>
   </ng-container>
