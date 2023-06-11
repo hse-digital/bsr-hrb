@@ -24,7 +24,7 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     public string bsr_usrn { get; init; }
     public AddressType? bsr_addresstype { get; init; }
     public YesNoOption? bsr_manualaddress { get; init; }
-    
+
     public string _bsr_buildingid_value { get; set; }
 
     [JsonPropertyName("bsr_Country@odata.bind")]
@@ -59,11 +59,29 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     public int? bsr_doorswith60minutecertifiedfireresistance { get; set; }
     public int? bsr_typeofroof { get; set; }
     public int? bsr_roofstructurelayerofinsulation { get; set; }
-    
+
     [property: JsonPropertyName("bsr_primarymaterialofroof@odata.bind")]
     public string primaryRoofMaterialId { get; set; }
+
     public int? bsr_totalnumberofstaircases { get; set; }
     public int? bsr_numberofinternalstaircasesfromgroundlevel { get; set; }
+
+    [property: JsonPropertyName("bsr_primaryuse@odata.bind")]
+    public string primaryUseId { get; set; }
+
+    [property: JsonPropertyName("bsr_primaryuseofbuildingbelowgroundlevel@odata.bind")]
+    public string primaryUseBelowGroundId { get; set; }
+
+    [property: JsonPropertyName("bsr_previoususeofbuilding@odata.bind")]
+    public string previousUseId { get; set; }
+
+    public int? bsr_numberoffloorsbelowgroundlevel { get; set; }
+    
+    public bool? bsr_differentprimaryuseinthepast { get; set; }
+    public string bsr_changeofuseyearnew { get; set; }
+    public string bsr_yearofmostrecentchangenew { get; set; }
+    public string bsr_kbicompletiondate { get; set; }
+    public bool? bsr_kbicomplete { get; set; }
 }
 
 public static class DynamicsSectionArea

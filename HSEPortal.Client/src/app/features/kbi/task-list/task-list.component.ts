@@ -62,7 +62,7 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   async navigateToSection(index: number, sectionName: string) {
-    let route = this.kbiNavigation.getNextRoute();
+    let route = this.kbiNavigation.getNextRoute(index);
     await this.kbiService.startKbi(this.applicationService.model.Kbi!.KbiSections[index]);
 
     let sectionId = `${index + 1}`;

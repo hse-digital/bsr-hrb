@@ -6,6 +6,7 @@ import { KbiBuildingUseModule } from "../7-building-use/kbi.building-use.module"
 import { TitleService } from "src/app/services/title.service";
 import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
 import { KbiNavigation } from "../kbi.navigation.ts.service";
+import { KbiService } from "src/app/services/kbi.service";
 
 @Component({
   selector: 'uses-ground-level-and-above-answers',
@@ -16,8 +17,8 @@ export class UsesGroundLevelAndAboveAnswersComponent  extends BuildingInformatio
   @Input() buildingUse: BuildingUse = {};
 
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
-    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation, kbiService: KbiService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation, kbiService);
   }
 
   navigate(url: string) {

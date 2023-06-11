@@ -11,6 +11,7 @@ import { TitleService } from "src/app/services/title.service";
 import { ExternalWallMaterialsComponent } from "../6-walls/external-wall-materials/external-wall-materials.component";
 import { KbiNavigation } from "../kbi.navigation.ts.service";
 import { FeatureMaterialsOutsideComponent } from "../6-walls/feature-materials-outside/feature-materials-outside.component";
+import { KbiService } from "src/app/services/kbi.service";
 
 @Component({
   selector: 'external-features-answers',
@@ -20,8 +21,8 @@ export class ExternalFeaturesAnswersComponent extends BuildingInformationCheckAn
 
   @Input() externalFeatures: Walls = {};
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
-    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation, kbiService: KbiService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation, kbiService);
   }
 
   navigateToExternalFeatures() {

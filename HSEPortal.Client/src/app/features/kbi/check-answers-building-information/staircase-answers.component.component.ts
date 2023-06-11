@@ -6,6 +6,7 @@ import { KbiStaircasesModule } from "../5-staircases/kbi.staircases.module";
 import { TitleService } from "src/app/services/title.service";
 import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
 import { KbiNavigation } from "../kbi.navigation.ts.service";
+import { KbiService } from "src/app/services/kbi.service";
 
 @Component({
   selector: 'staircases-answers',
@@ -15,8 +16,8 @@ export class StaircasesAnswersComponent  extends BuildingInformationCheckAnswers
 
   @Input() staircases: Staircases = {};
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
-    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation, kbiService: KbiService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation, kbiService);
   }
 
   navigate(url: string) {

@@ -99,7 +99,8 @@ public enum BuildingApplicationStatus
 public record KbiModel(KbiSectionModel[] KbiSections,
         SectionStatus[] SectionStatus,
         Connections Connections,
-        Submit Submit);
+        Submit Submit,
+        string ApplicationId);
 
 public record SectionStatus(bool InProgress, bool Complete);
 

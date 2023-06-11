@@ -47,13 +47,13 @@ export class AppComponent implements AfterViewInit {
   }
 
   initTimer() {
-    this.idleTimerService.initTimer(13 * 60, () => {
-      if (typeof window !== 'undefined' && (this.doesUrlContains("/application/", "/new-application/", "/returning-application"))) {
-        this.showTimeoutDialog = true;
-      } else {
-        this.initTimer();
-      }
-    });
+    // this.idleTimerService.initTimer(13 * 60, () => {
+    //   if (typeof window !== 'undefined' && (this.doesUrlContains("/application/", "/new-application/", "/returning-application"))) {
+    //     this.showTimeoutDialog = true;
+    //   } else {
+    //     this.initTimer();
+    //   }
+    // });
   }
 
   private doesUrlContains(...segment: string[]) {

@@ -6,6 +6,7 @@ import { KbiFireModule } from "../1-fire/kbi.fire.module";
 import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
 import { TitleService } from "src/app/services/title.service";
 import { KbiNavigation } from "../kbi.navigation.ts.service";
+import { KbiService } from "src/app/services/kbi.service";
 
 @Component({
   selector: 'fire-and-smoke-controls-answers',
@@ -15,8 +16,8 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
 
   @Input() fireAndSmokeControls: Fire = {};
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
-    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation, kbiService: KbiService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation, kbiService);
   }
 
   navigate(url: string, equipment?: string) {
