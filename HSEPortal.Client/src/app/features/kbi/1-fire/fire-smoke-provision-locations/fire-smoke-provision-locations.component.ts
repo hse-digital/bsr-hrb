@@ -46,8 +46,9 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
     }
 
     // getting current equipment
-    let nextEquipment = this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions!.find(x => !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x] || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length == 0);
-    this.currentEquipment = nextEquipment ?? this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions![0];
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.currentEquipment = params['equipment'] ?? this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions![0];
+    });
 
     // if equipment doesn't exist, go to "not found" page
     if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations[this.currentEquipment!]) {
@@ -100,12 +101,10 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
       return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
     }
 
-    this.currentEquipment = nextEquipment;
-    return Promise.resolve(true);
+    return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute, { equipment: nextEquipment });
   }
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions
-      && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.length > 0;
+  override canAccess(_: ActivatedRouteSnapshot) {
+    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.length > 0;
   }
 }

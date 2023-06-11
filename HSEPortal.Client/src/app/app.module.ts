@@ -31,7 +31,7 @@ const routes = new HseRoutes([
   HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forLoadChildren(HelpPagesModule.baseRoute, () => import('./components/footer/help-pages.module').then(m => m.HelpPagesModule)),
   HseRoute.forLoadChildren(ApplicationModule.baseRoute, () => import('./features/application/application.module').then(m => m.ApplicationModule)),
-  HseRoute.unsafe('**', undefined, NotFoundComponent.route)
+  // HseRoute.unsafe('**', undefined, NotFoundComponent.route)
 ]);
 
 @NgModule({

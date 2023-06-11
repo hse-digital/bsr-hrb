@@ -18,6 +18,7 @@ import { KbiBuildingUseModule } from '../../7-building-use/kbi.building-use.modu
 export class ExternalFeaturesComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'external-features';
   static title: string = "Features on outside walls - Register a high-rise building - GOV.UK";
+  static features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChild(GovukCheckboxNoneComponent) equipmentCheckboxGroup?: GovukCheckboxNoneComponent;
@@ -52,13 +53,12 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    const features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
-    if (this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.some(x => features.includes(x))) {
-      return navigationService.navigateRelative(FeatureMaterialsOutsideComponent.route, activatedRoute);
+    if (this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.some(x => ExternalFeaturesComponent.features.includes(x))) {
+      let feature = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.find(x => ExternalFeaturesComponent.features.includes(x));
+      return navigationService.navigateRelative(FeatureMaterialsOutsideComponent.route, activatedRoute, { feature: feature });
     }
 
     return navigationService.navigateRelative(`../${KbiBuildingUseModule.baseRoute}/${PrimaryUseOfBuildingComponent.route}`, activatedRoute);
-    //return navigationService.navigateRelative(PrimaryUseOfBuildingComponent.route, activatedRoute);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
