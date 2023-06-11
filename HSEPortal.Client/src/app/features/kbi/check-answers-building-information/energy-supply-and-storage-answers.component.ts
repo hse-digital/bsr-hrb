@@ -10,6 +10,7 @@ import { EnergyTypeComponent } from "../2-energy/energy-type/energy-type.compone
 import { OnSiteEnergyGenerationComponent } from "../2-energy/on-site-energy-generation/on-site-energy-generation.component";
 import { EnergySupplyComponent } from "../2-energy/energy-supply/energy-supply.component";
 import { KbiNavigation } from "../kbi.navigation.ts.service";
+import { KbiService } from "src/app/services/kbi.service";
 
 @Component({
   selector: 'energy-supply-and-storage-answers',
@@ -19,8 +20,8 @@ export class EnergySupplyAndStorageAnswersComponent extends BuildingInformationC
 
   @Input() energySupplyAndStorage: Energy = {};
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
-    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation, kbiService: KbiService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation, kbiService);
   }
 
   navigateToEnergyStorage() {
@@ -34,7 +35,7 @@ export class EnergySupplyAndStorageAnswersComponent extends BuildingInformationC
   navigateToEnergySupplies() {
     this.navigateTo(EnergySupplyComponent.route, KbiEnergyModule.baseRoute);
   }
-  
+
   private energyStorageMapper: Record<string, string> = {
     "hydrogen_batteries": "Hydrogen batteries",
     "lithium_ion_batteries": "Lithium ion batteries",

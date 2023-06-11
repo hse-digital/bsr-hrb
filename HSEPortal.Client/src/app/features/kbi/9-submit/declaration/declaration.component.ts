@@ -28,7 +28,7 @@ export class DeclarationComponent extends BaseComponent implements OnInit {
   }
 
   override async onSave(): Promise<void> {
-    await this.kbiService.syncBuildingConnectionsDeclaration(this.applicationService.currentKbiSection!);
+    await this.kbiService.syncConnectionsAndDeclaration(this.applicationService.model.Kbi!);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

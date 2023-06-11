@@ -7,6 +7,7 @@ import { KbiStructureModule } from "../3-structure/kbi.structure.module";
 import { TitleService } from "src/app/services/title.service";
 import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
 import { KbiNavigation } from "../kbi.navigation.ts.service";
+import { KbiService } from "src/app/services/kbi.service";
 
 @Component({
   selector: 'structural-type-and-materials-answers',
@@ -17,8 +18,8 @@ export class StructuralTypeAndMaterialsAnswersComponent  extends BuildingInforma
   @Input() buildingStructure: BuildingStructure = {};
 
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation) {
-    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation);
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation, kbiService: KbiService) {
+    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation, kbiService);
   }
 
   navigate(url: string) {

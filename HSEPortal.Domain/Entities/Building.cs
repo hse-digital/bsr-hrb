@@ -11,6 +11,8 @@ public record DynamicsBuilding(string bsr_name = null, string bsr_buildingid = n
     public string bsr_kbistartdate { get; set; }
     public string bsr_kbicompletiondate { get; set; }
     public bool? bsr_kbideclaration { get; set; }
+    public bool? bsr_connectiontootherhighriseresidentialbuilding { get; set; }
+    public bool? bsr_connectiontootherbuilding { get; set; }
 }
 
 public record DynamicsPapLookup(

@@ -11,6 +11,7 @@ import { StructureConnectionsComponent } from '../8-connections/structure-connec
 import { TaskListComponent } from '../task-list/task-list.component';
 import { OtherHighRiseBuildingConnectionsComponent } from '../8-connections/other-high-rise-building-connections/other-high-rise-building-connections.component';
 import { KbiConnectionsModule } from '../8-connections/kbi.connections.module';
+import { KbiService } from 'src/app/services/kbi.service';
 
 @Component({
   templateUrl: './check-answers-building-information.component.html',
@@ -23,7 +24,8 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
 
   kbiSection: KbiSectionModel = new KbiSectionModel;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private kbiNavigation: KbiNavigation) {
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private kbiNavigation: KbiNavigation,
+    private kbiService: KbiService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
@@ -44,25 +46,23 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   override async onSave(): Promise<void> {
+    await this.kbiService.syncBuilding(this.applicationService.currentKbiSection!);
   }
 
-  // UPDATE AFTER CHECK ANSWER IS COMPLETED.
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationInProgress;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationComplete;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
 
-    if (this.applicationService.model.Sections.length == 1) {
-      return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`, activatedRoute);
+    if (this.allKbiSectionCompleted()) {
+      if (this.applicationService.model.Sections.length == 1) {
+        return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`, activatedRoute);
+      }
+
+      return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`, activatedRoute);
     }
 
-    return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`, activatedRoute);
-
-    // if(this.applicationService.model.Kbi!.SectionStatus.length == 1) {
-    //   return navigationService.navigateRelative(OtherHighRiseBuildingConnectionsComponent.route, activatedRoute);
-    // } else if (!this.allKbiSectionCompleted()) {
-    //   return navigationService.navigateRelative(`../../${TaskListComponent.route}`, activatedRoute);
-    // }
+    return navigationService.navigateRelative(`../../${TaskListComponent.route}`, activatedRoute);
   }
 
   private allKbiSectionCompleted() {

@@ -346,7 +346,58 @@ public class KbiService
 
     public async Task UpdateSectionConnectionsData(KbiSyncData kbiSyncData)
     {
-        await Task.CompletedTask;
+        var connections = kbiSyncData.KbiModel.Connections;
+        var buildingId = kbiSyncData.DynamicsStructure._bsr_buildingid_value;
+        
+        var building = await dynamicsApi.Get<DynamicsBuilding>($"bsr_buildings({buildingId})");
+        building = building with
+        {
+            bsr_connectiontootherhighriseresidentialbuilding = connections.OtherHighRiseBuildingConnections == "yes",
+            bsr_connectiontootherbuilding = connections.OtherBuildingConnections == "yes"
+        };
+
+        await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
+
+        if (kbiSyncData.KbiModel.KbiSections.Length > 1)
+        {
+            foreach (var connection in connections.StructureConnections)
+            {
+                await AddConnectionIfDoesntExist(buildingId, connection, BuildingConnection.Structural);
+            }
+        }
+
+        if (connections.OtherHighRiseBuildingConnections == "yes")
+        {
+            foreach (var connection in connections.HowOtherHighRiseBuildingAreConnected)
+            {
+                await AddConnectionIfDoesntExist(buildingId, connection, BuildingConnection.HighRiseResidentialBuilding);
+            }
+        }
+
+        if (connections.OtherBuildingConnections == "yes")
+        {
+            foreach (var connection in connections.HowOtherBuildingAreConnected)
+            {
+                await AddConnectionIfDoesntExist(buildingId, connection, BuildingConnection.AnotherBuilding);
+            }
+        }
+    }
+
+    private async Task AddConnectionIfDoesntExist(string buildingId, string connection, BuildingConnection buildingConnection)
+    {
+        var connectionTypeId = BuildingConnections.Ids[connection];
+        var connectedStructure = new DynamicsConnectedStructure
+        {
+            buildingId = $"/bsr_buildings({buildingId})",
+            connectionTypeId = $"/bsr_structureconnectiontypes({connectionTypeId})",
+            bsr_buildingconnection = (int)buildingConnection
+        };
+
+        var records = await dynamicsApi.Get<DynamicsResponse<DynamicsConnectedStructure>>($"bsr_connectedblocks", ("$filter", $"_bsr_structureconnectiontypeid_value eq '{connectionTypeId}' and _bsr_building_value eq '{buildingId}' and bsr_buildingconnection eq {connectedStructure.bsr_buildingconnection}"));
+        if (!records.value.Any())
+        {
+            await dynamicsApi.Create($"bsr_connectedblocks", connectedStructure);
+        }
     }
 
     public async Task UpdateSectionDeclarationData(KbiSyncData kbiSyncData)
@@ -430,7 +481,7 @@ public static class FireSmokeProvision
         ["alarm_heat_smoke"] = "1178b809-2beb-ed11-8847-6045bd0d6904",
         ["alarm_call_points"] = "d144bc2d-2beb-ed11-8847-6045bd0d6904",
         ["fire_dampers"] = "cecbdf40-2beb-ed11-8847-6045bd0d6904",
-        ["fire_extinguishers"] = "",
+        ["fire_extinguishers"] = "cecbdf40-2beb-ed11-8847-6045bd0d6904", // THIS IS WRONG, WAITING FOR THE CORRECT ID
         ["fire_shutters"] = "204f6b4d-2beb-ed11-8847-6045bd0d6904",
         ["heat_detectors"] = "9cfda059-2beb-ed11-8847-6045bd0d6904",
         ["risers_dry"] = "0bd544a6-2beb-ed11-8847-6045bd0d6904",
@@ -676,4 +727,27 @@ public static class BuildingUse
         ["none"] = "995433ca-03fb-ed11-8f6d-002248c725da",
         ["unknown"] = "b6edcc0b-0efb-ed11-8f6d-002248c725da"
     };
+}
+
+public static class BuildingConnections
+{
+    public static Dictionary<string, string> Ids = new()
+    {
+        ["bridge-walkway"] = "554316de-cdfb-ed11-8f6d-002248c725da",
+        ["car-park"] = "70c776fd-cdfb-ed11-8f6d-002248c725da",
+        ["ground-floor"] = "c856e00a-cefb-ed11-8f6d-002248c725da",
+        ["levels-below-ground-residential-unit"] = "8ce79549-cefb-ed11-8f6d-002248c725da",
+        ["levels-below-ground-no-residential-unit"] = "f537f163-cefb-ed11-8f6d-002248c725da",
+        ["shared-wall-emergency-door"] = "b8292476-cefb-ed11-8f6d-002248c725da",
+        ["shared-wall-everyday-door"] = "6d7b4495-cefb-ed11-8f6d-002248c725da",
+        ["shared-wall-no-door"] = "738887ad-cefb-ed11-8f6d-002248c725da",
+        ["other"] = "d3a5b6b3-cefb-ed11-8f6d-002248c725da"
+    };
+}
+
+public enum BuildingConnection
+{
+    Structural = 760_810_000,
+    HighRiseResidentialBuilding = 760_810_001,
+    AnotherBuilding = 760_810_002
 }

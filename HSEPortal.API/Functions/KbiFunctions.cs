@@ -48,12 +48,22 @@ public class KbiFunctions
         return request.CreateResponse();
     }
 
-    [Function(nameof(SyncKbiBuildingUseConnectionsAndDeclaration))]
-    public async Task<HttpResponseData> SyncKbiBuildingUseConnectionsAndDeclaration([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(SyncKbiBuildingUseConnectionsAndDeclaration)}/{{applicationId}}")] HttpRequestData request, [DurableClient] DurableTaskClient durableTaskClient,
+    [Function(nameof(SyncKbiBuildingUse))]
+    public async Task<HttpResponseData> SyncKbiBuildingUse([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(SyncKbiBuildingUse)}/{{applicationId}}")] HttpRequestData request, [DurableClient] DurableTaskClient durableTaskClient,
         string applicationId)
     {
         var kbiSectionModel = await request.ReadAsJsonAsync<KbiSectionModel>();
-        await durableTaskClient.ScheduleNewOrchestrationInstanceAsync(nameof(SynchroniseKbiBuildingUseConnectionsAndDeclaration), kbiSectionModel with { ApplicationId = applicationId });
+        await durableTaskClient.ScheduleNewOrchestrationInstanceAsync(nameof(SynchroniseKbiBuildingUse), kbiSectionModel with { ApplicationId = applicationId });
+
+        return request.CreateResponse();
+    }
+
+    [Function(nameof(SyncKbiConnectionsAndDeclaration))]
+    public async Task<HttpResponseData> SyncKbiConnectionsAndDeclaration([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(SyncKbiConnectionsAndDeclaration)}/{{applicationId}}")] HttpRequestData request, [DurableClient] DurableTaskClient durableTaskClient,
+        string applicationId)
+    {
+        var kbiModel = await request.ReadAsJsonAsync<KbiModel>();
+        await durableTaskClient.ScheduleNewOrchestrationInstanceAsync(nameof(SynchroniseConnectionsAndDeclaration), kbiModel with { ApplicationId = applicationId });
 
         return request.CreateResponse();
     }
@@ -95,8 +105,8 @@ public class KbiFunctions
         await orchestrationContext.CallActivityAsync(nameof(UpdateSectionWallsData), kbiSyncData);
     }
 
-    [Function(nameof(SynchroniseKbiBuildingUseConnectionsAndDeclaration))]
-    public async Task SynchroniseKbiBuildingUseConnectionsAndDeclaration([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
+    [Function(nameof(SynchroniseKbiBuildingUse))]
+    public async Task SynchroniseKbiBuildingUse([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
     {
         var kbiSectionModel = orchestrationContext.GetInput<KbiSectionModel>();
 
@@ -104,8 +114,22 @@ public class KbiFunctions
 
         var kbiSyncData = new KbiSyncData(dynamicsStructure, kbiSectionModel);
         await orchestrationContext.CallActivityAsync(nameof(UpdateSectionBuildingUseData), kbiSyncData);
+    }
+
+    [Function(nameof(SynchroniseConnectionsAndDeclaration))]
+    public async Task SynchroniseConnectionsAndDeclaration([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
+    {
+        var kbiModel = orchestrationContext.GetInput<KbiModel>();
+        var dynamicsStructure = await orchestrationContext.CallActivityAsync<DynamicsStructure>(nameof(GetDynamicsStructure), kbiModel.KbiSections[0] with { ApplicationId = kbiModel.ApplicationId });
+        var kbiSyncData = new KbiSyncData(dynamicsStructure, null, kbiModel);
+
         await orchestrationContext.CallActivityAsync(nameof(UpdateSectionConnectionsData), kbiSyncData);
-        await orchestrationContext.CallActivityAsync(nameof(UpdateSectionDeclarationData), kbiSyncData);
+
+        foreach (var section in kbiModel.KbiSections)
+        {
+            dynamicsStructure = await orchestrationContext.CallActivityAsync<DynamicsStructure>(nameof(GetDynamicsStructure), section with { ApplicationId = kbiModel.ApplicationId });
+            await orchestrationContext.CallActivityAsync(nameof(UpdateSectionDeclarationData), kbiSyncData with { DynamicsStructure = dynamicsStructure });
+        }
     }
 
     [Function(nameof(GetDynamicsStructure))]
@@ -163,9 +187,9 @@ public class KbiFunctions
     }
 
     [Function(nameof(UpdateSectionConnectionsData))]
-    public Task UpdateSectionConnectionsData([ActivityTrigger] KbiSyncData kbySyncData)
+    public Task UpdateSectionConnectionsData([ActivityTrigger] KbiSyncData kbiSyncData)
     {
-        return kbiService.UpdateSectionConnectionsData(kbySyncData);
+        return kbiService.UpdateSectionConnectionsData(kbiSyncData);
     }
 
     [Function(nameof(UpdateSectionDeclarationData))]
@@ -175,4 +199,4 @@ public class KbiFunctions
     }
 }
 
-public record KbiSyncData(DynamicsStructure DynamicsStructure, KbiSectionModel KbiSectionModel);
+public record KbiSyncData(DynamicsStructure DynamicsStructure, KbiSectionModel KbiSectionModel, KbiModel KbiModel = null);

@@ -17,7 +17,7 @@ import { KbiCheckAnswersModule } from '../../check-answers-building-information/
   selector: 'hse-undergone-building-material-changes',
   templateUrl: './undergone-building-material-changes.component.html'
 })
-export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent implements IHasNextPage, OnInit {
+export class UndergoneBuildingMaterialChangesComponent extends BaseComponent implements IHasNextPage, OnInit {
   static route: string = 'undergone-building-material-changes';
   static title: string = "Building works since original build - Register a high-rise building - GOV.UK";
 
@@ -73,13 +73,13 @@ export class UndergoneBuildingMaterialChangesComponent  extends BaseComponent im
     }
     else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
       return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
-
     }
     else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1 && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
       if (this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange
         && !this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.includes(this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange)) {
         this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0];
       }
+      // TODO: FIX THIS ERROR
       return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
     }
     else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')) {

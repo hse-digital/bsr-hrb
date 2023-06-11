@@ -23,7 +23,6 @@ import { EstimatedPercentageComponent } from './6-walls/estimated-percentage/est
 import { EnergySupplyComponent } from './2-energy/energy-supply/energy-supply.component';
 import { ExternalWallInsulationTypeComponent } from './6-walls/external-wall-insulation-type/external-wall-insulation-type.component';
 import { ExternalWallInsulationPercentageComponent } from './6-walls/external-wall-insulation-percentage/external-wall-insulation-percentage.component';
-import { ExternalFeaturesComponent } from './6-walls/external-features/external-features.component';
 import { FeatureMaterialsOutsideComponent } from './6-walls/feature-materials-outside/feature-materials-outside.component';
 import { PrimaryUseOfBuildingComponent } from './7-building-use/primary-use-of-building/primary-use-of-building.component';
 import { SecondaryUseBuildingComponent } from './7-building-use/secondary-use-building/secondary-use-building.component';
@@ -109,18 +108,14 @@ export class KbiNavigation extends BaseNavigation {
   private evacuationStrategyNavigationNode = new EvacuationStrategyNavigationNode(this.provisionsEquipmentNavigationNode);
   private checkBeforeStartNavigationNode = new CheckBeforeStartNavigationNode(this.applicationService, this.evacuationStrategyNavigationNode);
 
-  override getNextRoute(): string {
+  override getNextRoute(sectionIndex?: number): string {
     if (this.applicationService.model.Kbi?.KbiSections == null || this.applicationService.model.Kbi!.KbiSections.length == 0) {
       return CheckBeforeStartComponent.route;
     }
 
-    for (let sectionIndex = 0; sectionIndex < this.applicationService.model.Kbi!.KbiSections.length; sectionIndex++) {
-      let kbiSection = this.applicationService.model.Kbi!.KbiSections[sectionIndex];
-      let sectionRoute = this.checkBeforeStartNavigationNode.getNextRoute(kbiSection, sectionIndex);
-      return `${sectionRoute}`;
-    }
-
-    return `/`;
+    let kbiSection = this.applicationService.model.Kbi!.KbiSections[sectionIndex!];
+    let sectionRoute = this.checkBeforeStartNavigationNode.getNextRoute(kbiSection, sectionIndex!);
+    return `${sectionRoute}`;
   }
 }
 

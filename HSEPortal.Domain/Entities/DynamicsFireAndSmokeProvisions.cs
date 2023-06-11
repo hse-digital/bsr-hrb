@@ -83,3 +83,14 @@ public record DynamicsStructureWork
     [property: JsonPropertyName("bsr_material@odata.bind")]
     public string materialId { get; set; }
 }
+
+public record DynamicsConnectedStructure
+{
+    public int? bsr_buildingconnection { get; set; }
+    
+    [property: JsonPropertyName("bsr_building@odata.bind")]
+    public string buildingId { get; set; }
+
+    [property: JsonPropertyName("bsr_StructureConnectionTypeId@odata.bind")]
+    public string connectionTypeId { get; set; }
+}
