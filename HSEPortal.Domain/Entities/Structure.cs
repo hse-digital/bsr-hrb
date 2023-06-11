@@ -79,6 +79,9 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     
     public bool? bsr_differentprimaryuseinthepast { get; set; }
     public string bsr_changeofuseyearnew { get; set; }
+    public string bsr_yearofmostrecentchangenew { get; set; }
+    public string bsr_kbicompletiondate { get; set; }
+    public bool? bsr_kbicomplete { get; set; }
 }
 
 public static class DynamicsSectionArea

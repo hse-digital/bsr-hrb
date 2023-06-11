@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Reflection.Metadata;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
@@ -284,6 +283,15 @@ public class KbiService
             };
         }
 
+        if (!string.IsNullOrEmpty(building.YearMostRecentMaterialChange))
+        {
+            structure = structure with
+            {
+                //bsr_recentworkcompleted missing options
+                bsr_yearofmostrecentchangenew = building.YearMostRecentMaterialChange
+            };
+        }
+
         foreach (var secondaryUse in building.SecondaryUseBuilding)
         {
             var use = BuildingUse.Uses[secondaryUse];
@@ -343,7 +351,22 @@ public class KbiService
 
     public async Task UpdateSectionDeclarationData(KbiSyncData kbiSyncData)
     {
-        await Task.CompletedTask;
+        var structure = new DynamicsStructure { bsr_blockid = kbiSyncData.DynamicsStructure.bsr_blockid };
+        structure = structure with
+        {
+            bsr_kbicompletiondate = DateTime.Now.ToString(CultureInfo.InvariantCulture),
+            bsr_kbicomplete = true
+        };
+
+        var building = await dynamicsApi.Get<DynamicsBuilding>($"bsr_buildings({kbiSyncData.DynamicsStructure._bsr_buildingid_value})");
+        building = building with
+        {
+            bsr_kbicompletiondate = structure.bsr_kbicompletiondate.ToString(CultureInfo.InvariantCulture),
+            bsr_kbideclaration = true,
+        };
+
+        await dynamicsApi.Update($"bsr_blocks({structure.bsr_blockid})", structure);
+        await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
     }
 
     private async Task GetOrCreateFireOrSmokeProvisions(string blockId, string provision, string[] locations)
