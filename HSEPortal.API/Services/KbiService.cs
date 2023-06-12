@@ -272,7 +272,7 @@ public class KbiService
             bsr_numberoffloorsbelowgroundlevel = int.Parse(building.FloorsBelowGroundLevel),
             primaryUseBelowGroundId = $"/bsr_blockuses({BuildingUse.Uses[building.PrimaryUseBuildingBelowGroundLevel]})",
             bsr_differentprimaryuseinthepast = building.ChangePrimaryUse == "yes",
-            bsr_changeofuseyearnew = building.YearChangeInUse
+            bsr_changeofuseyearnew = building.YearChangeInUse,
         };
 
         if (building.ChangePrimaryUse == "yes")
@@ -287,9 +287,17 @@ public class KbiService
         {
             structure = structure with
             {
-                //bsr_recentworkcompleted missing options
                 bsr_yearofmostrecentchangenew = building.YearMostRecentMaterialChange
             };
+        }
+
+        if (!string.IsNullOrEmpty(building.MostRecentMaterialChange))
+        {
+            var workId = BuildingUse.MaterialChanges[building.MostRecentMaterialChange];
+            structure = structure with
+            {
+                recentWorkId = $"/bsr_blockmaterialchanges({workId})"
+            }; 
         }
 
         foreach (var secondaryUse in building.SecondaryUseBuilding)
@@ -348,7 +356,7 @@ public class KbiService
     {
         var connections = kbiSyncData.KbiModel.Connections;
         var buildingId = kbiSyncData.DynamicsStructure._bsr_buildingid_value;
-        
+
         var building = await dynamicsApi.Get<DynamicsBuilding>($"bsr_buildings({buildingId})");
         building = building with
         {

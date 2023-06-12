@@ -82,6 +82,9 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     public string bsr_yearofmostrecentchangenew { get; set; }
     public string bsr_kbicompletiondate { get; set; }
     public bool? bsr_kbicomplete { get; set; }
+    
+    [JsonPropertyName("bsr_mostrecentworkcompleted@odata.bind")]
+    public string recentWorkId { get; set; }
 }
 
 public static class DynamicsSectionArea
