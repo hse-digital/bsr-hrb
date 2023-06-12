@@ -57,7 +57,6 @@ export class ConnectionsCheckAnswerComponent  extends BaseComponent implements I
 
   override async onSave(): Promise<void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.KbiConnectionsComplete;
-    
     await this.applicationService.syncBuildingStructures();
   }
 

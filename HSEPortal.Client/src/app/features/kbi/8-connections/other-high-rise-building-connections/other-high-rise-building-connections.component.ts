@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent, GovukCheckboxComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
@@ -28,9 +28,12 @@ export class OtherHighRiseBuildingConnectionsComponent extends BaseComponent imp
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (!this.applicationService.currentKbiModel?.Connections) this.applicationService.currentKbiModel!.Connections = {}
     this.errorMessage = `Select whether ${this.getBuildingName()} connects to other high-rise residential buildings`;
+
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
+    await this.applicationService.updateApplication();
   }
 
   getBuildingName() {
