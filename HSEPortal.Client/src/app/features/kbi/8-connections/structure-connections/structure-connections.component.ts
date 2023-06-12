@@ -27,9 +27,18 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
-  ngOnInit(): void {
-    if (!this.applicationService.currentKbiModel?.Connections) this.applicationService.currentKbiModel!.Connections = {}
-    if (!this.applicationService.currentKbiModel!.Connections.StructureConnections) { this.applicationService.currentKbiModel!.Connections.StructureConnections = []; }
+  async ngOnInit() {
+    if (!this.applicationService.currentKbiModel?.Connections) {
+      this.applicationService.currentKbiModel!.Connections = {};
+    }
+
+    if (!this.applicationService.currentKbiModel!.Connections.StructureConnections) {
+      this.applicationService.currentKbiModel!.Connections.StructureConnections = [];
+    }
+
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
+    await this.applicationService.updateApplication();
+    
     this.errorMessage = `Select how the structures in ${this.getBuildingName()} are connected`;
   }
 
@@ -66,13 +75,10 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return true;
-    return this.applicationService.model.NumberOfSections != 'one' && this.applicationService.model.Sections.length > 1
-      && this.containsFlag(BuildingApplicationStatus.KbiStructureInformationComplete);
   }
 
   containsFlag(flag: BuildingApplicationStatus) {
     return true;
-    return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
 
 }

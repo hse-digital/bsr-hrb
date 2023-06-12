@@ -46,13 +46,15 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   override async onSave(): Promise<void> {
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationInProgress;
+    if (this.applicationService._currentKbiSectionIndex == (this.applicationService.model.Kbi?.KbiSections.length! - 1)) {
+      this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationComplete;
+    }
+
     await this.kbiService.syncBuilding(this.applicationService.currentKbiSection!);
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationInProgress;
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationComplete;
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
 
     if (this.allKbiSectionCompleted()) {
       if (this.applicationService.model.Sections.length == 1) {
