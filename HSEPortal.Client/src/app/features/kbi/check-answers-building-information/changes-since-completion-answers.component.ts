@@ -56,7 +56,7 @@ export class ChangesSinceCompletionAnswers extends BuildingInformationCheckAnswe
     "installation_replacement_removal_fire_systems": "Changes to fire systems",
     "installation_replacement_removal_lighting": "Changes to lighting",
     "installation_replacement_removal_cold_water_systems": "Changes to cold water systems",
-    "otherinstallation_replacement_removal_gas_supply": "Changes to gas supply",
+    "installation_replacement_removal_gas_supply": "Changes to gas supply",
     "reinforcement_works_large_panel_system": "Reinforcement of large panel system structure",
     "work_external_walls": "Work connected to external walls",
     "unknown": "Not Known",
