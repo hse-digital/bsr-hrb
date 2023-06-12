@@ -1,0 +1,48 @@
+.check-answers-section {
+    margin-bottom: 60px;
+}
+
+.answers-heading-border {
+    border-bottom: 1px solid #b1b4b6 !important;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0 !important;
+    border-bottom: none !important;
+}
+
+.section-wrapper {
+    
+    h2 {
+        margin-bottom: 15px;
+        margin-top: 50px;
+    }
+
+    &.margin-bottom-30 h2 {
+        margin-top: 30px!important; 
+    }
+
+    .section-content {
+        padding: 20px;
+    }
+
+    .section-header {
+        padding: 15px 20px;
+        background: #f3f2f1;
+        font-family: "GDS Transport", arial, sans-serif;
+        font-weight: 600;
+        font-size: 1.1875rem;
+        margin-bottom: 0 !important;
+
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.govuk-summary-list:first-child {
+    border-bottom: none !important;
+}
+
+.govuk-summary-list:first-child {
+    border-top: none !important;
+}

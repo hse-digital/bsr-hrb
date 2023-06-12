@@ -20,11 +20,14 @@ import { KbiConnectionsModule } from './8-connections/kbi.connections.module';
 import { KbiSubmitModule } from './9-submit/kbi.submit.module';
 import { KbiSectionsComponent } from './sections/kbi.sections.component';
 import { KbiCheckAnswersModule } from './check-answers-building-information/kbi.check-answers-building-information.module';
+import { KbiSummaryComponent } from './kbi-summary/kbi-summary.component';
+import { KbiSummaryDeclarations } from './kbi-summary/kbi-summary.module';
 
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
   HseRoute.protected(TaskListComponent.route, TaskListComponent, TaskListComponent.title),
+  HseRoute.protected(KbiSummaryComponent.route, KbiSummaryComponent, KbiSummaryComponent.title),
   HseRoute.forChildren(":section", KbiSectionsComponent, new HseRoutes([
     HseRoute.forLoadChildren(KbiFireModule.baseRoute, () => import('./1-fire/kbi.fire.module').then(m => m.KbiFireModule)),
     HseRoute.forLoadChildren(KbiEnergyModule.baseRoute, () => import('./2-energy/kbi.energy.module').then(m => m.KbiEnergyModule)),
@@ -43,7 +46,9 @@ const routes = new HseRoutes([
   declarations: [
     CheckBeforeStartComponent,
     TaskListComponent,
-    KbiSectionsComponent],
+    KbiSectionsComponent,
+    ...KbiSummaryDeclarations
+  ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

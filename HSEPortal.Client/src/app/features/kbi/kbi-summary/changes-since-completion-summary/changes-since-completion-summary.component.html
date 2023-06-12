@@ -1,0 +1,42 @@
+<govuk-summary-list>
+    <ng-container *ngIf="buildingUse.ChangePrimaryUse === 'yes'">
+      <govuk-summary-list-row key="Change of use" [showAction]=false>
+        <div>Yes</div>
+      </govuk-summary-list-row>
+
+      <govuk-summary-list-row key="Previous primary use" [showAction]=false>
+        <div>{{getBuildingUse(buildingUse.PreviousUseBuilding!)}}</div>
+      </govuk-summary-list-row>
+
+      <govuk-summary-list-row key="Year of change of use" [showAction]=false>
+        <div>{{buildingUse.YearChangeInUse}}</div>
+      </govuk-summary-list-row>
+    </ng-container>
+
+
+    <ng-container *ngIf="buildingUse.ChangePrimaryUse === 'no'">
+      <govuk-summary-list-row key="Change of use" [showAction]=false>
+        <div>No</div>
+      </govuk-summary-list-row>
+    </ng-container>
+
+    <govuk-summary-list-row key="Building works" [showAction]=false>
+      <div *ngFor="let material of applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges">
+        {{getBuildingWorksName(material)}}
+      </div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row *ngIf="changeInNumberOfFloors()" key="Structure type of added floors" [showAction]=false>
+      <div *ngFor="let material of applicationService.currentKbiSection!.BuildingUse.AddedFloorsType">
+        {{getMaterialName(material)}}
+      </div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row *ngIf="notChangeInNumberOfFloors()" key="Most recent building work" [showAction]=false>
+      <div>{{getBuildingWorksName(applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange!)}}</div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row *ngIf="onlyOneOptionSelected()" key="Year of most recent building work" [showAction]=false>
+      <div>{{applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange}}</div>
+    </govuk-summary-list-row>
+</govuk-summary-list>

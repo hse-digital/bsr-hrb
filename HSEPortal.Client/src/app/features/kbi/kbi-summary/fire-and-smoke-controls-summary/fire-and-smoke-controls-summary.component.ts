@@ -1,28 +1,17 @@
-import { Component, Input } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ApplicationService, Fire } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { KbiFireModule } from "../1-fire/kbi.fire.module";
-import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
-import { TitleService } from "src/app/services/title.service";
-import { KbiNavigation } from "../kbi.navigation.ts.service";
-import { KbiService } from "src/app/services/kbi.service";
+import { Component, Input } from '@angular/core';
+import { Fire, ApplicationService } from 'src/app/services/application.service';
+import { KbiSummaryComponent } from '../kbi-summary.component';
 
 @Component({
-  selector: 'fire-and-smoke-controls-answers',
-  templateUrl: './fire-and-smoke-controls-answers.component.html'
+  selector: 'fire-and-smoke-controls-summary',
+  templateUrl: './fire-and-smoke-controls-summary.component.html'
 })
-export class FireAndSmokeControlsAnswersComponent extends BuildingInformationCheckAnswersComponent {
+export class FireAndSmokeControlsSummaryComponent extends KbiSummaryComponent {
 
   @Input() fireAndSmokeControls: Fire = {};
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation, kbiService: KbiService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation, kbiService);
-  }
-
-  navigate(url: string, equipment?: string) {
-    let query = equipment ? { equipment: equipment }: undefined;
-    this.navigateTo(url, KbiFireModule.baseRoute, query);
+  constructor(applicationService: ApplicationService) {
+    super(applicationService)
   }
 
   private provisionEquipment: Record<string, string> = {
@@ -129,6 +118,7 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
       return 0;
     }
   }
+  
   getTotalCommonFireDoors() {
 
     if (!!this.fireAndSmokeControls.FireDoorsCommon) {

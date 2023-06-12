@@ -39,8 +39,8 @@ export class EnergySupplyAndStorageAnswersComponent extends BuildingInformationC
   private energyStorageMapper: Record<string, string> = {
     "hydrogen_batteries": "Hydrogen batteries",
     "lithium_ion_batteries": "Lithium ion batteries",
-    "other": "Other"
-
+    "other": "Other",
+    "none": "None"
   }
   getEnergyStorageName(name: string) {
     return this.energyStorageMapper[name];
@@ -50,7 +50,8 @@ export class EnergySupplyAndStorageAnswersComponent extends BuildingInformationC
     "air-ground-source-heat-pumps": "Air or ground source heat pumps",
     "biomass-boiler": "Biomass boiler",
     "solar-wind": "Solar panels or wind turbines",
-    "other": "Other"
+    "other": "Other",
+    "none": "None"
   }
   getOnSiteGenerationName(name: string) {
     return this.onSiteGenerationMapper[name];
@@ -62,7 +63,8 @@ export class EnergySupplyAndStorageAnswersComponent extends BuildingInformationC
     "energy-supply-mains-hydrogen": "Mains hydrogen supply",
     "energy-supply-mains-gas": "Mains gas supply",
     "energy-supply-oil": "Oil",
-    "energy-supply-other": "Other"
+    "energy-supply-other": "Other",
+    "none": "None"
   }
   getEnergySupplyName(name: string) {
     return this.energySupplyName[name];

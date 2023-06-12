@@ -91,7 +91,7 @@ export class KbiNavigation extends BaseNavigation {
   private previousUseBuildingNavigationNode = new PreviousUseBuildingNavigationNode(this.certificatesYearChangeNavigationNode);
   private changePrimaryUseNavigationNode = new ChangePrimaryUseNavigationNode(this.previousUseBuildingNavigationNode, this.undergoneBuildingMaterialChangesNavigationNode);
   private primaryUseBuildingBelowGroundLevelNavigationNode = new PrimaryUseBuildingBelowGroundLevelNavigationNode(this.changePrimaryUseNavigationNode, this.undergoneBuildingMaterialChangesNavigationNode);
-  private floorsBelowGroundLevelNavigationNode = new FloorsBelowGroundLevelNavigationNode(this.primaryUseBuildingBelowGroundLevelNavigationNode, this.changePrimaryUseNavigationNode);
+  private floorsBelowGroundLevelNavigationNode = new FloorsBelowGroundLevelNavigationNode(this.primaryUseBuildingBelowGroundLevelNavigationNode, this.changePrimaryUseNavigationNode, this.undergoneBuildingMaterialChangesNavigationNode);
   private secondaryUseBuildingNavigationNode = new SecondaryUseBuildingNavigationNode(this.floorsBelowGroundLevelNavigationNode);
   private primaryUseBuildingNavigationNode = new PrimaryUseBuildingNavigationNode(this.secondaryUseBuildingNavigationNode);
   private featuresMaterialsOutsideNavigationNode = new FeaturesMaterialsOutsideNavigationNode(this.primaryUseBuildingNavigationNode);
@@ -465,24 +465,15 @@ class ExternalFeaturesNavigationNode extends KbiNavigationNode {
     private primaryUseBuildingNavigationNode: PrimaryUseBuildingNavigationNode) {
     super();
   }
-
+  
+  private features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
+  
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.Walls.FeatureMaterialsOutside || Object.keys(kbi.Walls.FeatureMaterialsOutside).length == 0) {
+    if (!kbi.Walls.ExternalFeatures || Object.keys(kbi.Walls.ExternalFeatures).length == 0) {
       return `${KbiWallsModule.baseRoute}/${ExternalFeaturesComponent.route}`;
-    } else if (Object.keys(kbi.Walls.FeatureMaterialsOutside).some(x => !kbi.Walls.FeatureMaterialsOutside![x] || kbi.Walls.FeatureMaterialsOutside![x].length == 0)) {
-
-      let nextFeature = '';
-      for (let externalFeature of kbi.Walls.ExternalFeatures!) {
-        let featureMaterials = kbi!.Walls.FeatureMaterialsOutside![externalFeature];
-        if (Object.keys(kbi.Walls.FeatureMaterialsOutside!).includes(externalFeature) && featureMaterials?.length == 0) {
-          nextFeature = externalFeature;
-          break;
-        }
-      }
-
-      return `${KbiWallsModule.baseRoute}/${FeatureMaterialsOutsideComponent.route}?feature=${nextFeature}`;
+    } else if (this.features.some(x => kbi.Walls.ExternalFeatures?.includes(x))) {
+      return this.featuresMaterialsOutsideNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
-
     return this.primaryUseBuildingNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 }
@@ -492,12 +483,30 @@ class FeaturesMaterialsOutsideNavigationNode extends KbiNavigationNode {
     super();
   }
 
+  private features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
+
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.Walls.FeatureMaterialsOutside || Object.keys(kbi.Walls.FeatureMaterialsOutside).length == 0 || Object.keys(kbi.Walls.FeatureMaterialsOutside).some(x => !kbi.Walls.FeatureMaterialsOutside![x] || kbi.Walls.FeatureMaterialsOutside![x].length == 0)) {
-      let nextFeature = kbi.Walls.ExternalFeatures!.find(x => !kbi!.Walls.FeatureMaterialsOutside![x] || kbi!.Walls.FeatureMaterialsOutside![x].length == 0);
+    let filteredExternalFeatures = kbi.Walls.ExternalFeatures?.filter( x => this.features.includes(x));
+    if (!!filteredExternalFeatures && filteredExternalFeatures.length > 0 && (!kbi.Walls.FeatureMaterialsOutside || Object.keys(kbi.Walls.FeatureMaterialsOutside).length == 0 || !this.areEqual(filteredExternalFeatures!, Object.keys(kbi.Walls.FeatureMaterialsOutside)) || this.hasEmptyValues(kbi.Walls.FeatureMaterialsOutside)) ) {
+      let nextFeature = this.getNextEmptyValue(filteredExternalFeatures, kbi.Walls.FeatureMaterialsOutside);
       return `${KbiWallsModule.baseRoute}/${FeatureMaterialsOutsideComponent.route}?feature=${nextFeature}`;
     }
     return this.primaryUseBuildingNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+  private areEqual(a: string[], b: string[]) {
+    return a.length === b.length && a.every(x => b.indexOf(x) > -1);
+  }
+
+  private hasEmptyValues(dictionary: Record<string, string[]>) {
+    return Object.keys(dictionary).some(x => !dictionary[x] || dictionary[x].length == 0 );
+  }
+
+  private getNextEmptyValue(array: string[], dictionary: Record<string, string[]> | undefined) {
+    if(!dictionary || Object.keys(dictionary).length == 0 || !this.areEqual(array!, Object.keys(dictionary))) {
+      return array[0];
+    }
+    return array.find(x => !dictionary[x] || dictionary[x].length == 0);    
   }
 }
 
@@ -529,19 +538,19 @@ class SecondaryUseBuildingNavigationNode extends KbiNavigationNode {
 
 class FloorsBelowGroundLevelNavigationNode extends KbiNavigationNode {
   constructor(private primaryUseBuildingBelowGroundLevelNavigationNode: PrimaryUseBuildingBelowGroundLevelNavigationNode,
-    private changePrimaryUseNavigationNode: ChangePrimaryUseNavigationNode) {
+    private changePrimaryUseNavigationNode: ChangePrimaryUseNavigationNode, private undergoneBuildingMaterialChangesNavigationNode: UndergoneBuildingMaterialChangesNavigationNode) {
     super();
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.BuildingUse.FloorsBelowGroundLevel) {
+    if (!kbi.BuildingUse.FloorsBelowGroundLevel || kbi.BuildingUse.FloorsBelowGroundLevel < 0) {
       return `${KbiBuildingUseModule.baseRoute}/${FloorsBelowGroundLevelComponent.route}`;
     } else if (kbi.BuildingUse.FloorsBelowGroundLevel >= 1) {
       return this.primaryUseBuildingBelowGroundLevelNavigationNode.getNextRoute(kbi, kbiSectionIndex);
-    } else if (kbi.BuildingUse.FloorsBelowGroundLevel == 0 && kbi.BuildingUse.PrimaryUseOfBuilding === "residential_dwellings") {
-      return this.changePrimaryUseNavigationNode.getNextRoute(kbi, kbiSectionIndex);
-    }
-    return `${KbiBuildingUseModule.baseRoute}/${FloorsBelowGroundLevelComponent.route}`;
+    } 
+    return kbi.BuildingUse.PrimaryUseOfBuilding === "residential_dwellings" 
+      ? this.changePrimaryUseNavigationNode.getNextRoute(kbi, kbiSectionIndex)
+      : this.undergoneBuildingMaterialChangesNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 }
 

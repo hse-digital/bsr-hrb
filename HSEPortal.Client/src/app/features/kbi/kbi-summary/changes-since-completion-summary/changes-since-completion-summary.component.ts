@@ -1,28 +1,17 @@
-import { Component, Input } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ApplicationService, BuildingUse} from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { KbiFireModule } from "../1-fire/kbi.fire.module";
-import { KbiBuildingUseModule } from "../7-building-use/kbi.building-use.module";
-import { TitleService } from "src/app/services/title.service";
-import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
-import { KbiNavigation } from "../kbi.navigation.ts.service";
-import { KbiService } from "src/app/services/kbi.service";
+import { Component, Input } from '@angular/core';
+import { KbiSummaryComponent } from '../kbi-summary.component';
+import { BuildingUse, ApplicationService } from 'src/app/services/application.service';
 
 @Component({
-  selector: 'changes-since-completion-answers',
-  templateUrl: './changes-since-completion-answers.component.html'
+  selector: 'changes-since-completion-summary',
+  templateUrl: './changes-since-completion-summary.component.html'
 })
-export class ChangesSinceCompletionAnswers extends BuildingInformationCheckAnswersComponent {
+export class ChangesSinceCompletionSummaryComponent extends KbiSummaryComponent {
 
-  @Input() buildingUse: BuildingUse = {};
+  @Input() public buildingUse: BuildingUse = {};
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, kbiNavigation: KbiNavigation, kbiService: KbiService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation, kbiService);
-  }
-
-  navigate(url: string) {
-    this.navigateTo(url, KbiBuildingUseModule.baseRoute);
+  constructor(applicationService: ApplicationService) {
+    super(applicationService)
   }
 
   private materialNameMapper: Record<string, string> = {
@@ -45,7 +34,7 @@ export class ChangesSinceCompletionAnswers extends BuildingInformationCheckAnswe
   }
 
   private buildingWorksMapper: Record<string, string> = {
-    "asbestos_removal": "Asbestos removal",
+    "asbestos_removal": "Asbestos remova",
     "balconies_added": "Balconies added",
     "changes_residential_units": "Change to number of residential units",
     "changes_staircase_cores": "Changes to staircases",
@@ -56,7 +45,7 @@ export class ChangesSinceCompletionAnswers extends BuildingInformationCheckAnswe
     "installation_replacement_removal_fire_systems": "Changes to fire systems",
     "installation_replacement_removal_lighting": "Changes to lighting",
     "installation_replacement_removal_cold_water_systems": "Changes to cold water systems",
-    "installation_replacement_removal_gas_supply": "Changes to gas supply",
+    "otherinstallation_replacement_removal_gas_supply": "Changes to gas supply",
     "reinforcement_works_large_panel_system": "Reinforcement of large panel system structure",
     "work_external_walls": "Work connected to external walls",
     "unknown": "Not Known",
@@ -97,5 +86,6 @@ export class ChangesSinceCompletionAnswers extends BuildingInformationCheckAnswe
     
     return !isNoneOrUnknown && (onlyOneMaterialChange || mostRecentChangeIsKnown);
   }
+
 
 }

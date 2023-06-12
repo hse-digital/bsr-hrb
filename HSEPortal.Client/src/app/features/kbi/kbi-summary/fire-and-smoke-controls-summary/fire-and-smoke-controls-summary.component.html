@@ -1,37 +1,36 @@
 <govuk-summary-list>
 
-    <govuk-summary-list-row key="Evacuation strategy" (onKeyupEnter)="navigate('evacuation-strategy')" (onClick)="navigate('evacuation-strategy')" [showAction]=true>
+    <govuk-summary-list-row key="Evacuation strategy" [showAction]=false>
       <div>{{getEvacuationType(fireAndSmokeControls!.StrategyEvacuateBuilding!)}}</div>
     </govuk-summary-list-row>
 
-    <govuk-summary-list-row key="Smoke controls in residential parts" (onKeyupEnter)="navigate('provisions-equipment')" (onClick)="navigate('provisions-equipment')" [showAction]=true>
+    <govuk-summary-list-row key="Smoke controls in residential parts" [showAction]=false>
       <ng-container *ngFor="let provision of fireAndSmokeControls!.ProvisionsEquipment">
         <div>{{getProvisionEquipment(provision)}}</div>
       </ng-container>
     </govuk-summary-list-row>
 
-    <govuk-summary-list-row key="Smoke controls in common parts" (onKeyupEnter)="navigate('smoke-provisions')" (onClick)="navigate('smoke-provisions')" [showAction]=true>
+    <govuk-summary-list-row key="Smoke controls in common parts" [showAction]=false>
       <ng-container *ngFor="let smokeControl of fireAndSmokeControls!.FireSmokeProvisions">
         <div>{{getEquipmentName(smokeControl)}}</div>
       </ng-container>
     </govuk-summary-list-row>
 
-    <ng-container *ngIf="!fireAndSmokeControls!.FireSmokeProvisions!.includes('none')">
-      <govuk-summary-list-row *ngFor="let equipment of fireAndSmokeControls!.FireSmokeProvisions" key="{{getEquipmentName(equipment)}}" (onKeyupEnter)="navigate('smoke-provision-locations', equipment)" (onClick)="navigate('smoke-provision-locations', equipment)" [showAction]=true>
+  <ng-container *ngIf="!fireAndSmokeControls!.FireSmokeProvisions!.includes('none')">
+      <govuk-summary-list-row *ngFor="let equipment of fireAndSmokeControls!.FireSmokeProvisions" key="{{getEquipmentName(equipment)}}" [showAction]=false>
         <ng-container *ngFor="let location of getSmokeAndFireDeviceLocations(equipment)">
           <div>{{location}}</div>
         </ng-container>
       </govuk-summary-list-row>
     </ng-container>
 
-
-    <govuk-summary-list-row key="Types of lift" (onKeyupEnter)="navigate('lifts')" (onClick)="navigate('lifts')" [showAction]=true>
+    <govuk-summary-list-row key="Types of lift" [showAction]=false>
       <ng-container *ngFor="let lift of getLiftTypes()">
         <div>{{lift}}</div>
       </ng-container>
     </govuk-summary-list-row>
 
-    <govuk-summary-list-row key="Residential front doors" (onKeyupEnter)="navigate('residential-unit-front-doors-fire-resistance')" (onClick)="navigate('residential-unit-front-doors-fire-resistance')" [showAction]=true>
+    <govuk-summary-list-row key="Residential front doors" [showAction]=false>
       <ng-container *ngIf="fireAndSmokeControls.ResidentialUnitFrontDoors!.NoFireResistance! > 0">
         <div>{{fireAndSmokeControls.ResidentialUnitFrontDoors!.NoFireResistance!}} doors with no fire resistance</div>
       </ng-container>
@@ -52,7 +51,7 @@
       </ng-container>
     </govuk-summary-list-row>
 
-    <govuk-summary-list-row key="Fire doors in common parts" (onKeyupEnter)="navigate('doors-common')" (onClick)="navigate('doors-common')" [showAction]=true>
+    <govuk-summary-list-row key="Fire doors in common parts" [showAction]=false>
       <ng-container *ngIf="fireAndSmokeControls.FireDoorsCommon!.FireDoorThirtyMinute! > 0">
         <div>{{fireAndSmokeControls.FireDoorsCommon!.FireDoorThirtyMinute!}} doors with 30-minute fire resistance</div>
       </ng-container>
@@ -65,9 +64,7 @@
       <ng-container *ngIf="fireAndSmokeControls.FireDoorsCommon!.FireDoorUnknown! > 0">
         <div>{{fireAndSmokeControls.FireDoorsCommon!.FireDoorUnknown!}} doors that fire resistance is not known</div>
       </ng-container>
-      <ng-container>
-        <div>{{getTotalCommonFireDoors()}} doors in total</div>
-      </ng-container>
+      <div>{{getTotalCommonFireDoors()}} doors in total</div>
     </govuk-summary-list-row>
 
 </govuk-summary-list>

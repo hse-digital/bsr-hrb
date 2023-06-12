@@ -47,7 +47,6 @@ const routes = new HseRoutes([
     FormsModule,
     PipesModule,
   ]
-
 })
 export class KbiCheckAnswersModule {
   static baseRoute: string = 'check-answers';
