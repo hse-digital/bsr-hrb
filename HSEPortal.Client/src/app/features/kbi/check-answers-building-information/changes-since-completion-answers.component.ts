@@ -45,7 +45,7 @@ export class ChangesSinceCompletionAnswers extends BuildingInformationCheckAnswe
   }
 
   private buildingWorksMapper: Record<string, string> = {
-    "asbestos_removal": "Asbestos remova",
+    "asbestos_removal": "Asbestos removal",
     "balconies_added": "Balconies added",
     "changes_residential_units": "Change to number of residential units",
     "changes_staircase_cores": "Changes to staircases",
