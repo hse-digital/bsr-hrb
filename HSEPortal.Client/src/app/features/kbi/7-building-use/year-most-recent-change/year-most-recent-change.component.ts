@@ -86,7 +86,7 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
     "installation_replacement_removal_fire_systems": "Changes to fire systems in",
     "installation_replacement_removal_lighting": "Changes to lighting in",
     "installation_replacement_removal_cold_water_systems": "Changes to cold water systems in",
-    "otherinstallation_replacement_removal_gas_supply": "Changes to gas supply to",
+    "installation_replacement_removal_gas_supply": "Changes to gas supply to",
     "reinforcement_works_large_panel_system": "Reinforcement of large panel system structure of",
     "work_external_walls": "Work connected to external walls of",
     "unknown": "Not Known",
