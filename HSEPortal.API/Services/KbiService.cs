@@ -481,7 +481,7 @@ public static class FireSmokeProvision
         ["alarm_heat_smoke"] = "1178b809-2beb-ed11-8847-6045bd0d6904",
         ["alarm_call_points"] = "d144bc2d-2beb-ed11-8847-6045bd0d6904",
         ["fire_dampers"] = "cecbdf40-2beb-ed11-8847-6045bd0d6904",
-        ["fire_extinguishers"] = "cecbdf40-2beb-ed11-8847-6045bd0d6904", // THIS IS WRONG, WAITING FOR THE CORRECT ID
+        ["fire_extinguishers"] = "63a19a9f-fb08-ee11-8f6e-002248c725da",
         ["fire_shutters"] = "204f6b4d-2beb-ed11-8847-6045bd0d6904",
         ["heat_detectors"] = "9cfda059-2beb-ed11-8847-6045bd0d6904",
         ["risers_dry"] = "0bd544a6-2beb-ed11-8847-6045bd0d6904",
