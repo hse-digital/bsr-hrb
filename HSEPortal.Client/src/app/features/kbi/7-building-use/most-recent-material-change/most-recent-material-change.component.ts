@@ -34,10 +34,12 @@ export class MostRecentChangeComponent extends BaseComponent implements IHasNext
   }
 
   ngOnInit(): void {
-    if (!this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange) { this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = ""; }
+    if (!this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange) {
+      this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = "";
+    }
 
     //If MostRecentMaterialChange is set to an option not available UndergoneBuildingMaterialChanges set MostRecentMaterialChange to empty
-    if (this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange
+    if (this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange != "unknown"
       && !this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.includes(this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange)) {
       this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = "";
     }
