@@ -10,8 +10,7 @@ import { TitleService } from 'src/app/services/title.service';
 import { AddedFloorsTypeComponent } from '../added-floors-type/added-floors-type.component';
 import { MostRecentChangeComponent } from '../most-recent-material-change/most-recent-material-change.component';
 import { YearMostRecentChangeComponent } from '../year-most-recent-change/year-most-recent-change.component';
-import { BuildingInformationCheckAnswersComponent } from '../../check-answers-building-information/check-answers-building-information.component';
-import { KbiCheckAnswersModule } from '../../check-answers-building-information/kbi.check-answers-building-information.module';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   selector: 'hse-undergone-building-material-changes',
@@ -90,9 +89,11 @@ export class UndergoneBuildingMaterialChangesComponent extends BaseComponent imp
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
-    //return !!this.applicationService.currentKbiSection?.ExternalWallInsulation?.CheckBoxSelection && (this.applicationService.currentKbiSection!.ExternalWallInsulation?.CheckBoxSelection![0] == 'none' || !!(this.applicationService.currentKbiSection!.ExternalWallInsulationPercentages));
-    //TODO update can access logic for this page
+    let notResidentialDwellings = this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding !== "residential_dwellings";
+    let noDifferentPrimaryUse = this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse === 'no';
+    let differentPrimaryUsePast = this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse === 'yes' && FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiSection?.BuildingUse.PreviousUseBuilding);
+
+    return notResidentialDwellings || noDifferentPrimaryUse || differentPrimaryUsePast;
   }
 
 }

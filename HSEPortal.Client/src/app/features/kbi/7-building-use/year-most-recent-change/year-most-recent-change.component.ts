@@ -66,12 +66,11 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    let mostRecentChange = this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange;
-    let floorsAddedisIncluded = mostRecentChange?.includes("floors_added");
-    let result = mostRecentChange !== void 0 && (!floorsAddedisIncluded || this.applicationService.currentKbiSection!.BuildingUse.AddedFloorsType !== void 0);
-    console.log(mostRecentChange);
-
-    return mostRecentChange !== void 0 && (!floorsAddedisIncluded || this.applicationService.currentKbiSection!.BuildingUse.AddedFloorsType !== void 0);
+    let onlyOneMaterialChange = (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1);
+    let mostRecentChangeIsKnown = !this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange?.includes("unknown");
+    let isNoneOrUnknown = this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'none' || x == 'unknown')
+    
+    return !isNoneOrUnknown && (onlyOneMaterialChange || mostRecentChangeIsKnown);
   }
 
 
