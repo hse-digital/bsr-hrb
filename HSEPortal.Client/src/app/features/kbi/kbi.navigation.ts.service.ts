@@ -41,7 +41,6 @@ import { PreviousUseBuildingComponent } from './7-building-use/previous-use-buil
 import { CertificatesYearChangeComponent } from './7-building-use/certificates-year-change/certificates-year-change.component';
 import { UndergoneBuildingMaterialChangesComponent } from './7-building-use/undergone-building-material-changes/undergone-building-material-changes.component';
 import { MostRecentChangeComponent } from './7-building-use/most-recent-material-change/most-recent-material-change.component';
-import { YearMostRecentChangeComponent } from './7-building-use/year-most-recent-change/year-most-recent-change.component';
 import { AddedFloorsTypeComponent } from './7-building-use/added-floors-type/added-floors-type.component';
 import { StructureConnectionsComponent } from './8-connections/structure-connections/structure-connections.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
@@ -55,7 +54,6 @@ import { ConfirmComponent } from './9-submit/confirm/confirm.component';
 import { KbiConnectionsModule } from './8-connections/kbi.connections.module';
 import { KbiSubmitModule } from './9-submit/kbi.submit.module';
 import { KbiCheckAnswersModule } from './check-answers-building-information/kbi.check-answers-building-information.module';
-import { SectionCheckAnswersComponent } from '../application/building-summary/check-answers/check-answers.component';
 import { BuildingInformationCheckAnswersComponent } from './check-answers-building-information/check-answers-building-information.component';
 import { ExternalFeaturesComponent } from './6-walls/external-features/external-features.component';
 

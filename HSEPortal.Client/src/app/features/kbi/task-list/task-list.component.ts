@@ -1,16 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { ApplicationService, BuildingApplicationStatus, KbiModel, KbiSectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { KbiNavigation } from 'src/app/features/kbi/kbi.navigation.ts.service';
 import { KbiService } from 'src/app/services/kbi.service';
 import { KbiConnectionsModule } from '../8-connections/kbi.connections.module';
 import { KbiSubmitModule } from '../9-submit/kbi.submit.module';
-import { StructureConnectionsComponent } from '../8-connections/structure-connections/structure-connections.component';
-import { OtherHighRiseBuildingConnectionsComponent } from '../8-connections/other-high-rise-building-connections/other-high-rise-building-connections.component';
-import { DeclarationComponent } from '../9-submit/declaration/declaration.component';
 
 @Component({
   selector: 'hse-task-list',
