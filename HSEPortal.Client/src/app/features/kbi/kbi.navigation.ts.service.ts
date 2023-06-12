@@ -54,6 +54,9 @@ import { DeclarationComponent } from './9-submit/declaration/declaration.compone
 import { ConfirmComponent } from './9-submit/confirm/confirm.component';
 import { KbiConnectionsModule } from './8-connections/kbi.connections.module';
 import { KbiSubmitModule } from './9-submit/kbi.submit.module';
+import { KbiCheckAnswersModule } from './check-answers-building-information/kbi.check-answers-building-information.module';
+import { SectionCheckAnswersComponent } from '../application/building-summary/check-answers/check-answers.component';
+import { BuildingInformationCheckAnswersComponent } from './check-answers-building-information/check-answers-building-information.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -64,14 +67,23 @@ export class KbiNavigation extends BaseNavigation {
 
   private kbiConfirmNavigationNode = new KbiConfirmNavigationNode(this.applicationService);
   private kbiDeclarationNavigationNode = new KbiDeclarationNavigationNode(this.applicationService, this.kbiConfirmNavigationNode);
-  private connectionsCheckAnswerNavigationNode = new ConnectionsCheckAnswerNavigationNode(this.applicationService, this.kbiDeclarationNavigationNode);
+
+  public getNextSubmitRoute() {
+    return this.kbiDeclarationNavigationNode.getNextRoute(this.applicationService.model.Kbi!, 0)
+  }
+
+  private connectionsCheckAnswerNavigationNode = new ConnectionsCheckAnswerNavigationNode(this.applicationService);
   private howOtherBuildingsConnectedNavigationNode = new HowOtherBuildingsConnectedNavigationNode(this.connectionsCheckAnswerNavigationNode);
   private otherBuildingConnectionsNavigationNode = new OtherBuildingConnectionsNavigationNode(this.howOtherBuildingsConnectedNavigationNode, this.connectionsCheckAnswerNavigationNode);
   private howOtherHighRiseBuildingsConnectedNavigationNode = new HowOtherHighRiseBuildingsConnectedNavigationNode(this.otherBuildingConnectionsNavigationNode);
   private otherHighRiseBuildingConnectionsNavigationNode = new OtherHighRiseBuildingConnectionsNavigationNode(this.howOtherHighRiseBuildingsConnectedNavigationNode, this.otherBuildingConnectionsNavigationNode);
   private structureConnectionsNavigationNode = new StructureConnectionsNavigationNode(this.otherHighRiseBuildingConnectionsNavigationNode);
 
-  private buildingInformationCheckAnswersNavigationNode = new BuildingInformationCheckAnswersNavigationNode(this.applicationService, this.structureConnectionsNavigationNode, this.otherHighRiseBuildingConnectionsNavigationNode);
+  public getNextConnectionRoute() {
+    return this.structureConnectionsNavigationNode.getNextRoute(this.applicationService.model.Kbi!, 0);
+  }
+
+  private buildingInformationCheckAnswersNavigationNode = new BuildingInformationCheckAnswersNavigationNode();
   private yearMostRecentChangeNavigationNode = new YearMostRecentChangeNavigationNode(this.buildingInformationCheckAnswersNavigationNode);
   private mostRecentChangeNavigationNode = new MostRecentChangeNavigationNode(this.yearMostRecentChangeNavigationNode, this.buildingInformationCheckAnswersNavigationNode);
   private addedFloorsTypeNavigationNode = new AddedFloorsTypeNavigationNode(this.yearMostRecentChangeNavigationNode, this.mostRecentChangeNavigationNode);
@@ -673,34 +685,18 @@ class YearMostRecentChangeNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.BuildingUse.YearMostRecentMaterialChange) {
-      return `${KbiBuildingUseModule.baseRoute}/${YearMostRecentChangeComponent.route}`;
-    }
     return this.buildingInformationCheckAnswersNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 
 }
 
 class BuildingInformationCheckAnswersNavigationNode extends KbiNavigationNode {
-
-  constructor(private applicationService: ApplicationService,
-    private structureConnectionsNavigationNode: StructureConnectionsNavigationNode,
-    private otherHighRiseBuildingConnectionsNavigationNode: OtherHighRiseBuildingConnectionsNavigationNode) {
+  constructor() {
     super();
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    let kbiModel = this.applicationService.currentKbiModel!;
-    if (this.applicationService.model.Kbi!.SectionStatus.length == 1) {
-      return this.otherHighRiseBuildingConnectionsNavigationNode.getNextRoute(kbiModel, kbiSectionIndex)
-    } else if (!this.allKbiSectionCompleted()) {
-      //return `${KbiFireModule.baseRoute}/${EvacuationStrategyComponent.route}`;
-    }
-    return this.structureConnectionsNavigationNode.getNextRoute(kbiModel, kbiSectionIndex);
-  }
-
-  private allKbiSectionCompleted() {
-    return this.applicationService.model.Kbi!.SectionStatus.map(x => x.Complete).reduce((a, b) => a && b);
+    return `${KbiCheckAnswersModule.baseRoute}/${BuildingInformationCheckAnswersComponent.route}`;
   }
 }
 
@@ -711,9 +707,10 @@ class StructureConnectionsNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
-    if (!kbi.Connections?.StructureConnections || kbi.Connections.StructureConnections.length == 0) {
+    if (kbi.KbiSections.length > 1 && (!kbi.Connections?.StructureConnections || kbi.Connections.StructureConnections.length == 0)) {
       return `${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`;
     }
+
     return this.otherHighRiseBuildingConnectionsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 
@@ -787,15 +784,12 @@ class HowOtherBuildingsConnectedNavigationNode extends KbiNavigationNode {
 
 class ConnectionsCheckAnswerNavigationNode extends KbiNavigationNode {
 
-  constructor(private applicationService: ApplicationService, private kbiDeclarationNavigationNode: KbiDeclarationNavigationNode) {
+  constructor(private applicationService: ApplicationService) {
     super();
   }
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
-    if (!this.canContinue()) {
-      return `${KbiConnectionsModule.baseRoute}/${ConnectionsCheckAnswerComponent.route}`;
-    }
-    return this.kbiDeclarationNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+    return `${KbiConnectionsModule.baseRoute}/${ConnectionsCheckAnswerComponent.route}`;
   }
 
   private canContinue(): boolean {

@@ -82,19 +82,16 @@ export class TaskListComponent implements CanActivate, OnInit {
 
       await this.navigationService.navigateAppend(`${sectionId}/${query[0]}`, this.activatedRoute, params);
     }
-
   }
 
   async navigateToConnections() {
-    if (this.applicationService.model.Sections.length == 1) {
-      await this.navigationService.navigateAppend(`${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`, this.activatedRoute);
-    } else {
-      await this.navigationService.navigateAppend(`${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`, this.activatedRoute);
-    }
+    var route = await this.kbiNavigation.getNextConnectionRoute();
+    await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
   async navigateToSubmit() {
-    await this.navigationService.navigateAppend(`${KbiSubmitModule.baseRoute}/${DeclarationComponent.route}`, this.activatedRoute);
+    var route = await this.kbiNavigation.getNextSubmitRoute();
+    await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
   containsFlag(flag: BuildingApplicationStatus) {
