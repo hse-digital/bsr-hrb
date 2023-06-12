@@ -57,6 +57,7 @@ import { KbiSubmitModule } from './9-submit/kbi.submit.module';
 import { KbiCheckAnswersModule } from './check-answers-building-information/kbi.check-answers-building-information.module';
 import { SectionCheckAnswersComponent } from '../application/building-summary/check-answers/check-answers.component';
 import { BuildingInformationCheckAnswersComponent } from './check-answers-building-information/check-answers-building-information.component';
+import { ExternalFeaturesComponent } from './6-walls/external-features/external-features.component';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -469,7 +470,7 @@ class ExternalFeaturesNavigationNode extends KbiNavigationNode {
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
     if (!kbi.Walls.FeatureMaterialsOutside || Object.keys(kbi.Walls.FeatureMaterialsOutside).length == 0) {
-      return FeatureMaterialsOutsideComponent.route;
+      return `${KbiWallsModule.baseRoute}/${ExternalFeaturesComponent.route}`;
     } else if (Object.keys(kbi.Walls.FeatureMaterialsOutside).some(x => !kbi.Walls.FeatureMaterialsOutside![x] || kbi.Walls.FeatureMaterialsOutside![x].length == 0)) {
 
       let nextFeature = '';
