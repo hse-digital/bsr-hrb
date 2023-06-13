@@ -44,9 +44,33 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
     this.fireSmokeProvisionsHasErrors = !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions
       || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions.length == 0;
 
-    if (this.fireSmokeProvisionsHasErrors) this.firstCheckboxAnchorId = `alarm_heat_smoke-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
+    if (this.fireSmokeProvisionsHasErrors) {
+      this.firstCheckboxAnchorId = `alarm_heat_smoke-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
+    } else {
+      this.mapLocations();
+    }
+
 
     return !this.fireSmokeProvisionsHasErrors;
+  }
+
+  mapLocations() {
+    // init locations
+    if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations || Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length == 0) {
+      this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = {};
+      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(equipment => {
+        this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![equipment] = [];
+      });
+    }
+
+    // Mapping locations
+    let aux: Record<string, string[]> = {};
+    this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(x =>
+      aux[x] = (!!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x] && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0)
+        ? this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]
+        : []
+    );
+    this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = aux;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
