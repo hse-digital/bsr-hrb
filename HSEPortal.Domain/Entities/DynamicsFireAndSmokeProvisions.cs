@@ -29,7 +29,7 @@ public record DynamicsStructureLift
 
 public record DynamicsStructureEnergy
 {
-    public string bsr_structureenergyId { get; set; }
+    public string bsr_structureenergyid { get; set; }
     
     [property: JsonPropertyName("bsr_energy@odata.bind")]
     public string energyId { get; set; }
@@ -45,7 +45,8 @@ public record DynamicsStructureMaterial
     
     [property: JsonPropertyName("bsr_material@odata.bind")]
     public string materialId { get; set; }
-
+    
+    public string bsr_structurematerialid { get; set; }
     public int? bsr_aluminiumcompositematerialacm { get; set; }
     public int? bsr_highpressurelaminatehpl { get; set; }
     public int? bsr_percentageofmaterial { get; set; }
@@ -62,6 +63,7 @@ public record DynamicsExternalFeature
     
     [property: JsonPropertyName("bsr_MaterialId@odata.bind")]
     public string materialId { get; set; }
+    public string bsr_blockexternalfeatureid { get; set; }
 }
 
 public record DynamicsStructureUse
@@ -82,6 +84,7 @@ public record DynamicsStructureWork
     
     [property: JsonPropertyName("bsr_material@odata.bind")]
     public string materialId { get; set; }
+    public string bsr_structurebuildingworkid { get; set; }
 }
 
 public record DynamicsConnectedStructure
@@ -93,4 +96,6 @@ public record DynamicsConnectedStructure
 
     [property: JsonPropertyName("bsr_StructureConnectionTypeId@odata.bind")]
     public string connectionTypeId { get; set; }
+    
+    public string bsr_connectedblockid { get; set; }
 }
