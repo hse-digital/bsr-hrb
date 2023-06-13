@@ -12,6 +12,7 @@ import { TaskListComponent } from '../task-list/task-list.component';
 import { OtherHighRiseBuildingConnectionsComponent } from '../8-connections/other-high-rise-building-connections/other-high-rise-building-connections.component';
 import { KbiConnectionsModule } from '../8-connections/kbi.connections.module';
 import { KbiService } from 'src/app/services/kbi.service';
+import { KbiValidator } from 'src/app/helpers/kbi-validator'
 
 @Component({
   templateUrl: './check-answers-building-information.component.html',
@@ -35,14 +36,12 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
 
   hasIncompleteData = false;
   canContinue(): boolean {
-    var canContinue = true;
-
     this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].InProgress = false;
     this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].Complete = true;
 
-
-    this.hasIncompleteData = !canContinue;
-    return canContinue;
+    this.hasIncompleteData = !KbiValidator.isKbiSectionValid(this.applicationService.currentKbiSection);
+    
+    return !this.hasIncompleteData;
   }
 
   override async onSave(): Promise<void> {
