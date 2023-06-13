@@ -48,7 +48,28 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
     this.validateCheckboxSelection();
     this.validateOtherOptionText();
 
+    if(!this.externalWallInsulationTypeHasErrors) {
+      this.mapPercentages();
+    }
+
     return !this.externalWallInsulationTypeHasErrors;
+  }
+
+  mapPercentages() {
+    if (!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulationPercentages || Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages).length == 0) {
+      this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages = {};
+      this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation!.CheckBoxSelection!.forEach(insulationType => {
+        this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![insulationType]
+      });
+    }
+
+    let aux: Record<string, number> = {};
+    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x =>
+      aux[x] = this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![x] !== undefined
+        ? this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![x]
+        : aux[x]
+    );
+    this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages = aux;
   }
 
   validateCheckboxSelection() {

@@ -48,7 +48,33 @@ export class ExternalWallMaterialsComponent extends BaseComponent implements IHa
     else if (this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.indexOf('glass') == -1)
       this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.push('glass');
 
+    
+    if (!this.externalWallMaterialsHasErrors) {
+      if (!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage || Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage).length == 0) {
+        this.initExternalWallMaterialsPercentage();
+      } else {
+        this.mapExternalWallMaterials();
+      }
+    }
+
     return !this.externalWallMaterialsHasErrors;
+  }
+
+  private initExternalWallMaterialsPercentage() {
+    this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = {};
+    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(material => {
+      this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![material] = '';
+    });
+  }
+
+  private mapExternalWallMaterials() {
+    let aux: Record<string, string> = {};
+    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x =>
+      aux[x] = !!this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![x]
+        ? this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![x]
+        : ''
+    );
+    this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = aux;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {

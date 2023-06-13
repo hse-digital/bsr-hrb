@@ -77,6 +77,7 @@ export class KbiValidator {
         }
 
         isValid &&= FieldValidations.IsNotNullAndValueIsNotNullOrWhitespace(Walls.ExternalWallMaterialsPercentage);
+        isValid &&= Object.keys(Walls.ExternalWallMaterialsPercentage!).map(x => Number(Walls.ExternalWallMaterialsPercentage![x])).reduce((previous, current) => previous + current) == 100;
 
         isValid &&= FieldValidations.IsNotNullOrEmpty(Walls.ExternalWallInsulation?.CheckBoxSelection);
         if(isValid && Walls.ExternalWallInsulation?.CheckBoxSelection?.includes('other')) {
@@ -85,6 +86,7 @@ export class KbiValidator {
         
         if(isValid && !Walls.ExternalWallInsulation?.CheckBoxSelection?.includes('none')) {
             isValid &&= FieldValidations.IsNotNullAndValueIsAPositiveNumber(Walls.ExternalWallInsulationPercentages);
+            isValid &&= Object.keys(Walls.ExternalWallInsulationPercentages!).map(x => Number(Walls.ExternalWallInsulationPercentages![x])).reduce((previous, current) => previous + current) == 100;
         }
         
         isValid &&= FieldValidations.IsNotNullOrEmpty(Walls.ExternalFeatures);
