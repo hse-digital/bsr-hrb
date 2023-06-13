@@ -2,12 +2,8 @@ import { FieldValidations } from './validators/fieldvalidations';
 import { Fire, Energy, BuildingStructure, Roof, KbiSectionModel, Staircases, Walls, BuildingUse } from '../services/application.service';
 
 export class KbiValidator {
-    
-    constructor(private FieldValidations: FieldValidations) {
 
-    }
-
-    validateFire(Fire: Fire) { 
+    static validateFire(Fire: Fire) { 
         let isValid = true;
 
         isValid &&= FieldValidations.IsNotNullOrWhitespace(Fire.StrategyEvacuateBuilding);
@@ -33,7 +29,7 @@ export class KbiValidator {
         return isValid;
     }
     
-    validateEnergy(Energy: Energy) { 
+    static validateEnergy(Energy: Energy) { 
         let isValid = true;
 
         isValid &&= FieldValidations.IsNotNullOrEmpty(Energy.EnergyTypeStorage);
@@ -43,11 +39,11 @@ export class KbiValidator {
         return isValid;
     }
     
-    validateBuildingStructure(BuildingStructure: BuildingStructure) { 
+    static validateBuildingStructure(BuildingStructure: BuildingStructure) { 
         return FieldValidations.IsNotNullOrEmpty(BuildingStructure.BuildingStructureType);
     }
 
-    validateRoof(Roof: Roof) { 
+    static validateRoof(Roof: Roof) { 
         let isValid = true;
 
         isValid &&= FieldValidations.IsNotNullOrWhitespace(Roof.RoofType);
@@ -57,7 +53,7 @@ export class KbiValidator {
         return isValid;
     }
 
-    validateStaircases(Staircases: Staircases) {
+    static validateStaircases(Staircases: Staircases) {
         let isValid = true;
 
         isValid &&= FieldValidations.IsAPositiveNumber(Staircases.InternalStaircasesAllFloors);
@@ -66,8 +62,8 @@ export class KbiValidator {
         return isValid;
     }
 
-    private features: string[] = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
-    validateWalls(Walls: Walls) {
+    private static features: string[] = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
+    static validateWalls(Walls: Walls) {
         let isValid = true;
 
         isValid &&= FieldValidations.IsNotNullOrEmpty(Walls.ExternalWallMaterials);
@@ -83,22 +79,29 @@ export class KbiValidator {
         isValid &&= FieldValidations.IsNotNullAndValueIsNotNullOrWhitespace(Walls.ExternalWallMaterialsPercentage);
 
         isValid &&= FieldValidations.IsNotNullOrEmpty(Walls.ExternalWallInsulation?.CheckBoxSelection);
-        isValid &&= FieldValidations.IsNotNullOrWhitespace(Walls.ExternalWallInsulation?.OtherValue);
+        if(isValid && Walls.ExternalWallInsulation?.CheckBoxSelection?.includes('other')) {
+            isValid &&= FieldValidations.IsNotNullOrWhitespace(Walls.ExternalWallInsulation?.OtherValue);
+        }
         
         if(isValid && !Walls.ExternalWallInsulation?.CheckBoxSelection?.includes('none')) {
             isValid &&= FieldValidations.IsNotNullAndValueIsAPositiveNumber(Walls.ExternalWallInsulationPercentages);
         }
         
         isValid &&= FieldValidations.IsNotNullOrEmpty(Walls.ExternalFeatures);
-
         if(isValid && this.features.some(x => Walls.ExternalFeatures?.includes(x))) {
+            let filteredExternalFeatures = Walls.ExternalFeatures!.filter(x => this.features.includes(x));
+            isValid &&= this.areEqual(filteredExternalFeatures, Object.keys(Walls.FeatureMaterialsOutside!));
             isValid &&= FieldValidations.IsNotNullAndValuesAreNotEmpty(Walls.FeatureMaterialsOutside);
         }
 
         return isValid;
     }
 
-    validateBuildingUse(BuildingUse: BuildingUse) { 
+    private static areEqual(a: string[], b: string[]) {
+        return a.length === b.length && a.every(x => b.indexOf(x) > -1);
+    }    
+
+    static validateBuildingUse(BuildingUse: BuildingUse) { 
         let isValid = true;
 
         isValid &&= FieldValidations.IsNotNullOrWhitespace(BuildingUse.PrimaryUseOfBuilding);
@@ -129,7 +132,9 @@ export class KbiValidator {
         return isValid;
     }
 
-    validateKbiSection(KbiSectionModel: KbiSectionModel) {
+    static isKbiSectionValid(KbiSectionModel: KbiSectionModel | undefined) {
+        if (!KbiSectionModel) return false;
+
         let isValid = true;
         
         isValid &&= this.validateFire(KbiSectionModel.Fire);
@@ -142,7 +147,7 @@ export class KbiValidator {
         return isValid;
     }
 
-    validateConnections() { }
-    validateSubmit() { }
+    static validateConnections() { }
+    static validateSubmit() { }
 
 }

@@ -49,7 +49,33 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
       this.firstCheckboxAnchorId = `advertising-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
     }
 
+    // Mapping between ExternalFeatures and FeatureMaterialsOutside. (check answers)
+    if (!this.externalFeaturesHasErrors && this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.some(x => ExternalFeaturesComponent.features.includes(x))) { 
+      if (!this.applicationService.currentKbiSection?.Walls.FeatureMaterialsOutside || Object.keys(this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside).length == 0) {
+        this.initFeatureMaterialsOutside();
+      } else {
+        this.mapExternalFeatures();
+      }
+    }
+
     return !this.externalFeaturesHasErrors;
+  }
+
+  private initFeatureMaterialsOutside() {
+    this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside = {};
+    this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.forEach(feature => {
+      this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![feature] = [];
+    });
+  }
+
+  private mapExternalFeatures() {
+    let aux: Record<string, string[]> = {};
+    this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => ExternalFeaturesComponent.features.includes(x)).forEach(x =>
+      aux[x] = (!!this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x] && this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x].length > 0)
+        ? this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x]
+        : []
+    );
+    this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside = aux;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
