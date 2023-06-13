@@ -44,7 +44,12 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
     if (this.applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange) {
       let currentSection = this.applicationService.currentSection!;
       let currentKbiSection = this.applicationService.currentKbiSection!;
-      let materialName = this.getMaterialName(currentKbiSection.BuildingUse.MostRecentMaterialChange!).toLowerCase();
+
+      let selectedMaterial = currentKbiSection.BuildingUse.UndergoneBuildingMaterialChanges?.length == 1
+        ? currentKbiSection.BuildingUse.UndergoneBuildingMaterialChanges[0]
+        : currentKbiSection.BuildingUse.MostRecentMaterialChange;
+      let materialName = this.getMaterialName(selectedMaterial ?? "unknown").toLowerCase();
+      
       let mostRecentChange = Number(currentKbiSection.BuildingUse.YearMostRecentMaterialChange);
 
       if (!mostRecentChange || currentKbiSection.BuildingUse.YearMostRecentMaterialChange?.length != 4) {
