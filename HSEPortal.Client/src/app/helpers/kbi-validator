@@ -1,0 +1,73 @@
+import { FieldValidations } from './validators/fieldvalidations';
+import { Fire, Energy, BuildingStructure, Roof, KbiSectionModel } from '../services/application.service';
+
+export class KbiValidator {
+    
+    constructor(private FieldValidations: FieldValidations) {
+
+    }
+
+    validateFire(Fire: Fire) { 
+        let isValid = true;
+
+        isValid &&= FieldValidations.IsNotNullOrWhitespace(Fire.StrategyEvacuateBuilding);
+        isValid &&= FieldValidations.IsNotNullOrEmpty(Fire.FireSmokeProvisions);
+        
+        if(!Fire.FireSmokeProvisions?.includes("none")) {
+            isValid &&= FieldValidations.IsNotNullAndValuesAreNotEmpty(Fire.FireSmokeProvisionLocations);
+        }
+
+        isValid &&= FieldValidations.IsNotNullOrEmpty(Fire.Lifts);
+        
+        isValid &&= FieldValidations.IsAPositiveNumber(Fire.FireDoorsCommon?.FireDoorUnknown);
+        isValid &&= FieldValidations.IsAPositiveNumber(Fire.FireDoorsCommon?.FireDoorThirtyMinute);
+        isValid &&= FieldValidations.IsAPositiveNumber(Fire.FireDoorsCommon?.FireDoorSixtyMinute);
+        isValid &&= FieldValidations.IsAPositiveNumber(Fire.FireDoorsCommon?.FireDoorHundredTwentyMinute);
+        
+        isValid &&= FieldValidations.IsAPositiveNumber(Fire.ResidentialUnitFrontDoors?.NotKnownFireResistance);
+        isValid &&= FieldValidations.IsAPositiveNumber(Fire.ResidentialUnitFrontDoors?.NoFireResistance);
+        isValid &&= FieldValidations.IsAPositiveNumber(Fire.ResidentialUnitFrontDoors?.ThirtyMinsFireResistance);
+        isValid &&= FieldValidations.IsAPositiveNumber(Fire.ResidentialUnitFrontDoors?.SixtyMinsFireResistance);
+        isValid &&= FieldValidations.IsAPositiveNumber(Fire.ResidentialUnitFrontDoors?.HundredTwentyMinsFireResistance);
+
+        return isValid;
+    }
+    
+    validateEnergy(Energy: Energy) { 
+        let isValid = true;
+
+        isValid &&= FieldValidations.IsNotNullOrEmpty(Energy.EnergyTypeStorage);
+        isValid &&= FieldValidations.IsNotNullOrEmpty(Energy.EnergySupply);
+        isValid &&= FieldValidations.IsNotNullOrEmpty(Energy.OnsiteEnergyGeneration);
+
+        return isValid;
+    }
+    
+    validateBuildingStructure(BuildingStructure: BuildingStructure) { 
+        return FieldValidations.IsNotNullOrEmpty(BuildingStructure.BuildingStructureType);
+    }
+
+    validateRoof(Roof: Roof) { 
+        let isValid = true;
+
+        return isValid;
+    }
+
+    validateStaircases() { }
+    validateWalls() { }
+    validateBuildingUse() { }
+    validateConnections() { }
+    validateSubmit() { }
+
+    validateKbiSection(KbiSectionModel: KbiSectionModel) {
+        let isValid = true;
+        
+        isValid &&= this.validateFire(KbiSectionModel.Fire);
+        isValid &&= this.validateEnergy(KbiSectionModel.Energy);
+        isValid &&= this.validateBuildingStructure(KbiSectionModel.BuildingStructure);
+        isValid &&= this.validateRoof(KbiSectionModel.Roof);
+
+        return isValid;
+    }
+
+}
