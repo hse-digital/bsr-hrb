@@ -48,16 +48,28 @@ public class KbiService
         var structure = new DynamicsStructure { bsr_blockid = kbiSyncData.DynamicsStructure.bsr_blockid, bsr_evacuationpolicy_blockid = $"/bsr_evacuationpolicies({DynamicsSectionEvacuation.Ids[fireData.StrategyEvacuateBuilding]})" };
 
         // fire and smoke control equipment
+        var existingFireControlEquipment = await dynamicsApi.Get<DynamicsResponse<DynamicsFireAndSmokeProvisions>>("bsr_blockfiresmokeprovisions", ("$filter", $"_bsr_blockid_value eq '{structure.bsr_blockid}'"));
+        foreach (var item in existingFireControlEquipment.value)
+        {
+            await dynamicsApi.Delete($"/bsr_blockfiresmokeprovisions({item.bsr_blockfiresmokeprovisionid})");
+        }
+
         foreach (var provision in fireData.FireSmokeProvisions)
         {
             var locations = fireData.FireSmokeProvisionLocations[provision];
-            await GetOrCreateFireOrSmokeProvisions(structure.bsr_blockid, provision, locations);
+            await CreateFireOrSmokeProvisions(structure.bsr_blockid, provision, locations);
         }
 
         // lifts
+        var existingLifts = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureLift>>("bsr_structurelifts", ("$filter", $"_bsr_structure_value eq '{structure.bsr_blockid}'"));
+        foreach (var item in existingLifts.value)
+        {
+            await dynamicsApi.Delete($"/bsr_structurelifts({item.bsr_structureliftid})");
+        }
+
         foreach (var lift in fireData.Lifts)
         {
-            await CreateOrUpdateLift(structure.bsr_blockid, lift);
+            await CreateLift(structure.bsr_blockid, lift);
         }
 
         // doors
@@ -82,40 +94,48 @@ public class KbiService
         var energyData = kbiSyncData.KbiSectionModel.Energy;
         var structure = kbiSyncData.DynamicsStructure;
 
+        var existingEnergyStructures = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureEnergy>>("bsr_structureenergies", ("$filter", $"_bsr_structure_value eq '{structure.bsr_blockid}'"));
+        foreach (var energyStructure in existingEnergyStructures.value)
+        {
+            await dynamicsApi.Delete($"/bsr_structureenergies({energyStructure.bsr_structureenergyid})");
+        }
+
+        var dynamicsStructureEnergy = new DynamicsStructureEnergy
+        {
+            structureId = $"/bsr_blocks({structure.bsr_blockid})",
+        };
+
         foreach (var storage in energyData.EnergyTypeStorage)
         {
-            var storageId = Energies.Ids[storage];
-            var dynamicsStructureEnergy = new DynamicsStructureEnergy
+            var storageId = Energies.StorageIds[storage];
+            dynamicsStructureEnergy = dynamicsStructureEnergy with
             {
-                structureId = $"/bsr_blocks({structure.bsr_blockid})",
                 energyId = $"/bsr_energysupplies({storageId})"
             };
 
-            await CreateStructureEnergyIfNotExists(structure, storageId, dynamicsStructureEnergy);
+            await dynamicsApi.Create("bsr_structureenergies", dynamicsStructureEnergy);
         }
 
         foreach (var onsite in energyData.OnsiteEnergyGeneration)
         {
-            var onsiteId = Energies.Ids[onsite];
-            var dynamicsStructureEnergy = new DynamicsStructureEnergy
+            var onsiteId = Energies.OnsiteIds[onsite];
+            dynamicsStructureEnergy = dynamicsStructureEnergy with
             {
-                structureId = $"/bsr_blocks({structure.bsr_blockid})",
                 energyId = $"/bsr_energysupplies({onsiteId})"
             };
 
-            await CreateStructureEnergyIfNotExists(structure, onsiteId, dynamicsStructureEnergy);
+            await dynamicsApi.Create("bsr_structureenergies", dynamicsStructureEnergy);
         }
 
         foreach (var supply in energyData.EnergySupply)
         {
-            var supplyId = Energies.Ids[supply];
-            var dynamicsStructureEnergy = new DynamicsStructureEnergy
+            var supplyId = Energies.SupplyIds[supply];
+            dynamicsStructureEnergy = dynamicsStructureEnergy with
             {
-                structureId = $"/bsr_blocks({structure.bsr_blockid})",
                 energyId = $"/bsr_energysupplies({supplyId})"
             };
 
-            await CreateStructureEnergyIfNotExists(structure, supplyId, dynamicsStructureEnergy);
+            await dynamicsApi.Create("bsr_structureenergies", dynamicsStructureEnergy);
         }
     }
 
@@ -126,6 +146,12 @@ public class KbiService
             structureId = $"/bsr_blocks({kbiSyncData.DynamicsStructure.bsr_blockid})",
         };
 
+        var structureMaterials = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureMaterial>>("bsr_structurematerials", ("$filter", $"_bsr_structure_value eq '{kbiSyncData.DynamicsStructure.bsr_blockid}'"));
+        foreach (var item in structureMaterials.value)
+        {
+            await dynamicsApi.Delete($"/bsr_structurematerials({item.bsr_structurematerialid})");
+        }
+
         foreach (var material in kbiSyncData.KbiSectionModel.BuildingStructure.BuildingStructureType)
         {
             var materialId = Materials.Ids[material];
@@ -134,11 +160,7 @@ public class KbiService
                 materialId = $"/bsr_materials({materialId})"
             };
 
-            var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureMaterial>>("bsr_structurematerials", ("$filter", $"_bsr_structure_value eq '{kbiSyncData.DynamicsStructure.bsr_blockid}' and bsr_structurematerialid eq '{materialId}'"));
-            if (!records.value.Any())
-            {
-                await dynamicsApi.Create("bsr_structurematerials", structureMaterial);
-            }
+            await dynamicsApi.Create("bsr_structurematerials", structureMaterial);
         }
     }
 
@@ -203,11 +225,7 @@ public class KbiService
                 };
             }
 
-            var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureMaterial>>("bsr_structurematerials", ("$filter", $"_bsr_structure_value eq '{kbiSyncData.DynamicsStructure.bsr_blockid}' and bsr_structurematerialid eq '{materialId}'"));
-            if (!records.value.Any())
-            {
-                await dynamicsApi.Create("bsr_structurematerials", structureMaterial);
-            }
+            await dynamicsApi.Create("bsr_structurematerials", structureMaterial);
         }
 
         foreach (var insulation in walls.ExternalWallInsulation.CheckBoxSelection)
@@ -228,11 +246,13 @@ public class KbiService
                 };
             }
 
-            var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureMaterial>>("bsr_structurematerials", ("$filter", $"_bsr_structure_value eq '{kbiSyncData.DynamicsStructure.bsr_blockid}' and bsr_structurematerialid eq '{materialId}'"));
-            if (!records.value.Any())
-            {
-                await dynamicsApi.Create("bsr_structurematerials", structureMaterial);
-            }
+            await dynamicsApi.Create("bsr_structurematerials", structureMaterial);
+        }
+
+        var existingExternalFeatures = await dynamicsApi.Get<DynamicsResponse<DynamicsExternalFeature>>("bsr_blockexternalfeatures", ("$filter", $"_bsr_blockid_value eq '{kbiSyncData.DynamicsStructure.bsr_blockid}'"));
+        foreach (var item in existingExternalFeatures.value)
+        {
+            await dynamicsApi.Delete(($"/bsr_blockexternalfeatures({item.bsr_blockexternalfeatureid})"));
         }
 
         foreach (var feature in walls.ExternalFeatures)
@@ -244,19 +264,15 @@ public class KbiService
                 featureId = $"/bsr_externalfeaturetypes({featureId})"
             };
 
-            foreach (var material in walls.FeatureMaterialsOutside[feature])
+            walls.FeatureMaterialsOutside.TryGetValue(feature, out var materials);
+            foreach (var material in materials ?? Array.Empty<string>())
             {
                 var materialId = Materials.ExternalFeatureIds[material];
                 structureFeature = structureFeature with
                 {
                     materialId = $"/bsr_materials({materialId})",
                 };
-
-                var records = await dynamicsApi.Get<DynamicsResponse<DynamicsExternalFeature>>("bsr_blockexternalfeatures", ("$filter", $"_bsr_blockid_value eq '{kbiSyncData.DynamicsStructure.bsr_blockid}' and _bsr_externalfeaturetypeid_value eq '{featureId}' and _bsr_materialid_value eq '{materialId}'"));
-                if (!records.value.Any())
-                {
-                    await dynamicsApi.Create("bsr_blockexternalfeatures", structureFeature);
-                }
+                await dynamicsApi.Create("bsr_blockexternalfeatures", structureFeature);
             }
         }
     }
@@ -297,7 +313,7 @@ public class KbiService
             structure = structure with
             {
                 recentWorkId = $"/bsr_blockmaterialchanges({workId})"
-            }; 
+            };
         }
 
         foreach (var secondaryUse in building.SecondaryUseBuilding)
@@ -311,6 +327,13 @@ public class KbiService
                     relationshipId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_blocks({structure.bsr_blockid})"
                 });
             }
+        }
+
+
+        var materialChanges = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureWork>>("bsr_structurebuildingworks", ("$filter", $"_bsr_structure_value eq '{structure.bsr_blockid}'"));
+        foreach (var item in materialChanges.value)
+        {
+            await dynamicsApi.Delete($"/bsr_structurebuildingworks({item.bsr_structurebuildingworkid})");
         }
 
         foreach (var work in building.UndergoneBuildingMaterialChanges)
@@ -331,21 +354,12 @@ public class KbiService
                     {
                         materialId = $"/bsr_materials({materialId})"
                     };
-
-                    var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureWork>>($"bsr_structurebuildingworks", ("$filter", $"_bsr_buildingwork_value eq '{workId}' and _bsr_structure_value eq '{structure.bsr_blockid}' and _bsr_material_value eq '{materialId}'"));
-                    if (!records.value.Any())
-                    {
-                        await dynamicsApi.Create($"bsr_structurebuildingworks", structureWork);
-                    }
+                    await dynamicsApi.Create($"bsr_structurebuildingworks", structureWork);
                 }
             }
             else
             {
-                var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureWork>>($"bsr_structurebuildingworks", ("$filter", $"_bsr_buildingwork_value eq '{workId}' and _bsr_structure_value eq '{structure.bsr_blockid}'"));
-                if (!records.value.Any())
-                {
-                    await dynamicsApi.Create($"bsr_structurebuildingworks", structureWork);
-                }
+                await dynamicsApi.Create($"bsr_structurebuildingworks", structureWork);
             }
         }
 
@@ -366,11 +380,17 @@ public class KbiService
 
         await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
 
+        var existingConnections = await dynamicsApi.Get<DynamicsResponse<DynamicsConnectedStructure>>("bsr_connectedblocks", ("$filter", $"_bsr_building_value eq '{buildingId}'"));
+        foreach (var item in existingConnections.value)
+        {
+            await dynamicsApi.Delete($"/bsr_connectedblocks({item.bsr_connectedblockid})");
+        }
+
         if (kbiSyncData.KbiModel.KbiSections.Length > 1)
         {
             foreach (var connection in connections.StructureConnections)
             {
-                await AddConnectionIfDoesntExist(buildingId, connection, BuildingConnection.Structural);
+                await AddConnection(buildingId, connection, BuildingConnection.Structural);
             }
         }
 
@@ -378,7 +398,7 @@ public class KbiService
         {
             foreach (var connection in connections.HowOtherHighRiseBuildingAreConnected)
             {
-                await AddConnectionIfDoesntExist(buildingId, connection, BuildingConnection.HighRiseResidentialBuilding);
+                await AddConnection(buildingId, connection, BuildingConnection.HighRiseResidentialBuilding);
             }
         }
 
@@ -386,12 +406,12 @@ public class KbiService
         {
             foreach (var connection in connections.HowOtherBuildingAreConnected)
             {
-                await AddConnectionIfDoesntExist(buildingId, connection, BuildingConnection.AnotherBuilding);
+                await AddConnection(buildingId, connection, BuildingConnection.AnotherBuilding);
             }
         }
     }
 
-    private async Task AddConnectionIfDoesntExist(string buildingId, string connection, BuildingConnection buildingConnection)
+    private async Task AddConnection(string buildingId, string connection, BuildingConnection buildingConnection)
     {
         var connectionTypeId = BuildingConnections.Ids[connection];
         var connectedStructure = new DynamicsConnectedStructure
@@ -400,12 +420,7 @@ public class KbiService
             connectionTypeId = $"/bsr_structureconnectiontypes({connectionTypeId})",
             bsr_buildingconnection = (int)buildingConnection
         };
-
-        var records = await dynamicsApi.Get<DynamicsResponse<DynamicsConnectedStructure>>($"bsr_connectedblocks", ("$filter", $"_bsr_structureconnectiontypeid_value eq '{connectionTypeId}' and _bsr_building_value eq '{buildingId}' and bsr_buildingconnection eq {connectedStructure.bsr_buildingconnection}"));
-        if (!records.value.Any())
-        {
-            await dynamicsApi.Create($"bsr_connectedblocks", connectedStructure);
-        }
+        await dynamicsApi.Create($"bsr_connectedblocks", connectedStructure);
     }
 
     public async Task UpdateSectionDeclarationData(KbiSyncData kbiSyncData)
@@ -428,7 +443,7 @@ public class KbiService
         await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
     }
 
-    private async Task GetOrCreateFireOrSmokeProvisions(string blockId, string provision, string[] locations)
+    private async Task CreateFireOrSmokeProvisions(string blockId, string provision, string[] locations)
     {
         var provisionId = FireSmokeProvision.Ids[provision];
         var record = new DynamicsFireAndSmokeProvisions
@@ -445,39 +460,20 @@ public class KbiService
                 bsr_ResidentialAreaId = $"/bsr_residentialareas({residentialAreaId})"
             };
 
-            var records = await dynamicsApi.Get<DynamicsResponse<DynamicsFireAndSmokeProvisions>>("bsr_blockfiresmokeprovisions",
-                ("$filter", $"_bsr_blockid_value eq '{blockId}' and _bsr_residentialareaid_value eq '{residentialAreaId}' and _bsr_firesmokeprovisionid_value eq '{provisionId}'")
-            );
-            if (!records.value.Any())
-            {
-                await dynamicsApi.Create("bsr_blockfiresmokeprovisions", record);
-            }
+            await dynamicsApi.Create("bsr_blockfiresmokeprovisions", record);
         }
     }
 
-    private async Task CreateOrUpdateLift(string blockId, string lift)
+    private async Task CreateLift(string blockId, string lift)
     {
         var liftId = Lifts.Ids[lift];
-        var record = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureLift>>("bsr_structurelifts", ("$filter", $"_bsr_structure_value eq '{blockId}' and _bsr_lifts_value eq '{liftId}'"));
-        if (!record.value.Any())
+        var dynamicsStructureLift = new DynamicsStructureLift
         {
-            var dynamicsStructureLift = new DynamicsStructureLift
-            {
-                structureId = $"/bsr_blocks({blockId})",
-                liftId = $"/bsr_lifts({liftId})"
-            };
+            structureId = $"/bsr_blocks({blockId})",
+            liftId = $"/bsr_lifts({liftId})"
+        };
 
-            await dynamicsApi.Create("bsr_structurelifts", dynamicsStructureLift);
-        }
-    }
-
-    private async Task CreateStructureEnergyIfNotExists(DynamicsStructure structure, string energyId, DynamicsStructureEnergy dynamicsStructureEnergy)
-    {
-        var records = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureEnergy>>("bsr_structureenergies", ("$filter", $"_bsr_structure_value eq '{structure.bsr_blockid}' and _bsr_energy_value eq '{energyId}'"));
-        if (!records.value.Any())
-        {
-            await dynamicsApi.Create("bsr_structureenergies", dynamicsStructureEnergy);
-        }
+        await dynamicsApi.Create("bsr_structurelifts", dynamicsStructureLift);
     }
 }
 
@@ -534,22 +530,27 @@ public static class ResidentialAreas
 
 public static class Energies
 {
-    public static Dictionary<string, string> Ids = new()
+    public static Dictionary<string, string> StorageIds = new()
     {
         // storage
         ["hydrogen_batteries"] = "f4d28f53-3cf3-ed11-8848-6045bd0d6904",
         ["lithium_ion_batteries"] = "888eb25f-3cf3-ed11-8848-6045bd0d6904",
-        ["other"] = "b81d1666-3cf3-ed11-8848-6045bd0d6904",
+        ["other"] = "b81d1666-3cf3-ed11-8848-6045bd0d6904"
+    };
 
+    public static Dictionary<string, string> SupplyIds = new()
+    {
         // supply
         ["energy-supply-communal"] = "5311d6a8-3cf3-ed11-8848-6045bd0d6904",
         ["energy-supply-mains-electric"] = "215eeab4-3cf3-ed11-8848-6045bd0d6904",
         ["energy-supply-mains-hydrogen"] = "da689ec1-3cf3-ed11-8848-6045bd0d6904",
         ["energy-supply-mains-gas"] = "7aa3bac7-3cf3-ed11-8848-6045bd0d6904",
         ["energy-supply-oil"] = "0cfdb2cd-3cf3-ed11-8848-6045bd0d6904",
-        ["energy-supply-other"] = "516024da-3cf3-ed11-8848-6045bd0d6904",
+        ["energy-supply-other"] = "516024da-3cf3-ed11-8848-6045bd0d6904"
+    };
 
-        // onsite
+    public static Dictionary<string, string> OnsiteIds = new()
+    {
         ["air-ground-source-heat-pumps"] = "b9561d7e-3cf3-ed11-8848-6045bd0d6904",
         ["biomass-boiler"] = "34c31c84-3cf3-ed11-8848-6045bd0d6904",
         ["solar-wind"] = "89731490-3cf3-ed11-8848-6045bd0d6904",

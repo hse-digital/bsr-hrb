@@ -83,4 +83,14 @@ public class DynamicsApi
 
         return response.AccessToken;
     }
+
+    public async Task Delete(string path)
+    {
+        var token = await GetAuthenticationTokenAsync();
+
+        await dynamicsOptions.EnvironmentUrl
+            .AppendPathSegments("api", "data", "v9.2", path)
+            .WithOAuthBearerToken(token)
+            .DeleteAsync();
+    }
 }
