@@ -825,7 +825,8 @@ class KbiDeclarationNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
-    if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress)) {
+    if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress) 
+      || (this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress) && !this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete))) {
       return `${KbiSubmitModule.baseRoute}/${DeclarationComponent.route}`;
     }
     return this.kbiConfirmNavigationNode.getNextRoute(kbi, kbiSectionIndex);
