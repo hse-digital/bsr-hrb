@@ -182,6 +182,10 @@ export class ApplicationService {
   async getApplicationPayments(): Promise<any[]> {
     return await firstValueFrom(this.httpClient.get<any[]>(`api/GetApplicationPaymentStatus/${this.model.id}`));
   }
+
+  async getSubmissionDate(): Promise<string> {
+    return await firstValueFrom(this.httpClient.get<string>(`api/GetSubmissionDate/${this.model.id}`));
+  }
 }
 
 export class BuildingRegistrationModel {

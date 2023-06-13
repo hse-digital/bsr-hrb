@@ -725,4 +725,10 @@ public class DynamicsService
 
         return id.Groups[1].Value;
     }
+
+    public async Task<string> GetSubmissionDate(string applicationNumber)
+    {
+        var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
+        return buildingApplication.bsr_submittedon;
+    }
 }
