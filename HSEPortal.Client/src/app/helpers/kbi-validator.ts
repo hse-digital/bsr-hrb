@@ -149,7 +149,4 @@ export class KbiValidator {
         return isValid;
     }
 
-    static validateConnections() { }
-    static validateSubmit() { }
-
 }
