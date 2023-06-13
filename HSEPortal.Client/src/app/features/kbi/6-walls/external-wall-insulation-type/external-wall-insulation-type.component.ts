@@ -64,11 +64,7 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
     }
 
     let aux: Record<string, number> = {};
-    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x =>
-      aux[x] = this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![x] !== undefined
-        ? this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![x]
-        : aux[x]
-    );
+    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x => aux[x]);
     this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages = aux;
   }
 
