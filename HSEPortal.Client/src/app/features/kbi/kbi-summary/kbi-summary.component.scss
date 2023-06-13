@@ -21,7 +21,6 @@
     &.margin-bottom-30 h2 {
         margin-top: 30px!important; 
     }
-
     .section-content {
         padding: 20px;
     }
@@ -45,4 +44,8 @@
 
 .govuk-summary-list:first-child {
     border-top: none !important;
+}
+
+.gap {
+    margin-bottom: 60px;
 }
