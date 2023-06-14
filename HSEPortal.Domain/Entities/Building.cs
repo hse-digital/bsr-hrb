@@ -13,6 +13,7 @@ public record DynamicsBuilding(string bsr_name = null, string bsr_buildingid = n
     public bool? bsr_kbideclaration { get; set; }
     public bool? bsr_connectiontootherhighriseresidentialbuilding { get; set; }
     public bool? bsr_connectiontootherbuilding { get; set; }
+    public bool? bsr_manualvalidationrequired { get; set; }
 }
 
 public record DynamicsPapLookup(
