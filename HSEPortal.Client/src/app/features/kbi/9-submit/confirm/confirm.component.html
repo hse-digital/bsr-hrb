@@ -20,9 +20,9 @@
       <govuk-body>We have received your information.</govuk-body>
       <govuk-body><a class="govuk-link" [routerLink]="['../../summary']" href="" target="_blank" role="link" tabindex="0">Get a copy of the information you submitted (opens in a new tab)</a>.</govuk-body>
       <govuk-body>We will contact you by email if we need more information.</govuk-body>
-      <govuk-body>You can <a class="govuk-link" (click)="newApplication()" role="link">register another building</a>.</govuk-body>
-      <govuk-body>You can also <a class="govuk-link" [routerLink]="['../../../summary']" target="_blank"  href="" role="link">get a copy of the registration information you submitted as part of your application</a>.</govuk-body>
-      <govuk-body><a class="govuk-link" href="https://forms.office.com/e/dRsZyPur6S" role="link">What did you think of this service?</a> (takes 30 seconds)</govuk-body>
+      <govuk-body>You can <a class="govuk-link" (click)="newApplication()" role="link" tabindex="0" (keyup.enter)="newApplication()">register another building</a>.</govuk-body>
+      <govuk-body>You can also <a class="govuk-link" [routerLink]="['../../../summary']" target="_blank"  href="" role="link" tabindex="0">get a copy of the registration information you submitted as part of your application</a>.</govuk-body>
+      <govuk-body><a class="govuk-link" href="https://forms.office.com/e/dRsZyPur6S" role="link" tabindex="0">What did you think of this service?</a> (takes 30 seconds)</govuk-body>
 
     </div>
   </div>
