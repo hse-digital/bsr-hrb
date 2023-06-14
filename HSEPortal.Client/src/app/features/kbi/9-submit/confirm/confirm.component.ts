@@ -39,8 +39,7 @@ export class ConfirmComponent extends BaseComponent implements OnInit {
   }
 
   async newApplication() {
-    this.applicationService.newApplication();
-    await this.navigationService.navigate('/new-application/building-name');
+    await this.navigationService.navigate('/select');
   }
 
 }
