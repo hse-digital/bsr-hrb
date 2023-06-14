@@ -378,8 +378,6 @@ public class KbiService
             bsr_connectiontootherbuilding = connections.OtherBuildingConnections == "yes"
         };
 
-        await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
-
         var existingConnections = await dynamicsApi.Get<DynamicsResponse<DynamicsConnectedStructure>>("bsr_connectedblocks", ("$filter", $"_bsr_building_value eq '{buildingId}'"));
         foreach (var item in existingConnections.value)
         {
@@ -388,6 +386,10 @@ public class KbiService
 
         if (kbiSyncData.KbiModel.KbiSections.Length > 1)
         {
+            building = building with
+            {
+                bsr_manualvalidationrequired = connections.StructureConnections.Any(x => x is "shared-wall-emergency-door" or "shared-wall-everyday-door")
+            };
             foreach (var connection in connections.StructureConnections)
             {
                 await AddConnection(buildingId, connection, BuildingConnection.Structural);
@@ -409,6 +411,8 @@ public class KbiService
                 await AddConnection(buildingId, connection, BuildingConnection.AnotherBuilding);
             }
         }
+
+        await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
     }
 
     private async Task AddConnection(string buildingId, string connection, BuildingConnection buildingConnection)
