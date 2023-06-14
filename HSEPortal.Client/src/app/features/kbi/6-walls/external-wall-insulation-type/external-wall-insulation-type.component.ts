@@ -61,11 +61,17 @@ export class ExternalWallInsulationTypeComponent extends BaseComponent implement
       this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation!.CheckBoxSelection!.forEach(insulationType => {
         this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![insulationType]
       });
+    } else {
+      let aux: Record<string, number> = {};
+      this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation!.CheckBoxSelection!?.forEach(x =>{
+        if (!!this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![x]) {
+          aux[x] = this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![x];
+        } else {
+          aux[x];
+        }
+      });
+      this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages = aux;
     }
-
-    let aux: Record<string, number> = {};
-    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x => aux[x]);
-    this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages = aux;
   }
 
   validateCheckboxSelection() {
