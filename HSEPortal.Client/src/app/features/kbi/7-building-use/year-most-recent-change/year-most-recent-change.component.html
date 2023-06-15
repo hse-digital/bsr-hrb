@@ -9,7 +9,7 @@
           <govuk-error-link anchorId="input-change-year" message={{errorMessage}} />
         </govuk-error-summary>
 
-        <h1 class="govuk-heading-l">{{getMaterialName(applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange!)}} {{getInfraestructureName()}} (optional)</h1>
+        <h1 class="govuk-heading-l">{{getSelectedMaterialName()}} {{getInfraestructureName()}} (optional)</h1>
 
         <govuk-input id="change-year" label="What year was this work completed?"
                      [(model)]="applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange"

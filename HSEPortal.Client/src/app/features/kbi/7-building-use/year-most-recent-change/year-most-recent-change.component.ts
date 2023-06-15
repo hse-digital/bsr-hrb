@@ -45,15 +45,12 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
       let currentSection = this.applicationService.currentSection!;
       let currentKbiSection = this.applicationService.currentKbiSection!;
 
-      let selectedMaterial = currentKbiSection.BuildingUse.UndergoneBuildingMaterialChanges?.length == 1
-        ? currentKbiSection.BuildingUse.UndergoneBuildingMaterialChanges[0]
-        : currentKbiSection.BuildingUse.MostRecentMaterialChange;
-      let materialName = this.getMaterialName(selectedMaterial ?? "unknown").toLowerCase();
+      let materialName = this.getSelectedMaterialName().toLowerCase();
       
       let mostRecentChange = Number(currentKbiSection.BuildingUse.YearMostRecentMaterialChange);
 
       if (!mostRecentChange || currentKbiSection.BuildingUse.YearMostRecentMaterialChange?.length != 4) {
-        this.errorMessage = `Year of ${materialName} must be a real year.For example, '1994'`;
+        this.errorMessage = `Year of ${materialName} must be a real year. For example, '1994'`;
       } else {
         let yearOfCompletion = currentSection.YearOfCompletionOption == 'year-exact' ? Number(currentSection.YearOfCompletion) : this.getYearFromRange(currentSection.YearOfCompletionRange!);
         if (mostRecentChange <= yearOfCompletion) {
@@ -78,6 +75,12 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
     return !isNoneOrUnknown && (onlyOneMaterialChange || mostRecentChangeIsKnown);
   }
 
+  getSelectedMaterialName() {
+    let selectedMaterial = this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges?.length == 1
+      ? this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges[0]
+      : this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange;
+    return this.getMaterialName(selectedMaterial ?? "unknown");
+  }
 
   private materialNameMapper: Record<string, string> = {
     "asbestos_removal": "Asbestos removal and remediation in",
