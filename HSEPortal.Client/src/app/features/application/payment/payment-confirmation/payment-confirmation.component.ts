@@ -72,4 +72,12 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
 
     return true;
   }
+
+  async continueToKbi() {
+    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete) {
+      await this.navigationService.navigateRelative("../kbi", this.activatedRoute);
+    } else {
+      await this.navigationService.navigateRelative("../kbi/check-before-start", this.activatedRoute);
+    }
+  }
 }

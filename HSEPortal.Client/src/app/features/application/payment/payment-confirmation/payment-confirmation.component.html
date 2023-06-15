@@ -33,7 +33,7 @@
 
         <govuk-body>Or you can <a href="#" class="govuk-link" (click)="registerAnotherBuilding()">register another building</a>.</govuk-body>
 
-        <govuk-button [routerLink]="['../../kbi/check-before-start']">Continue to structure and safety information</govuk-button>
+        <govuk-button (onClick)="continueToKbi()">Continue to structure and safety information</govuk-button>
       </div> 
     </div>
   </div>
