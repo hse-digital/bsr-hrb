@@ -69,7 +69,11 @@ export class ReturningApplicationVerifyComponent implements OnInit {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
 
       var applicationStatus = this.applicationService.model.ApplicationStatus;
-      if ((applicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
+      if ((applicationStatus & BuildingApplicationStatus.KbiSubmitComplete) == BuildingApplicationStatus.KbiSubmitComplete) {
+        this.navigationService.navigate(`application/${this.applicationNumber}/kbi/submit/information-submitted`);
+      } else if ((applicationStatus & BuildingApplicationStatus.KbiCheckBeforeInProgress) == BuildingApplicationStatus.KbiCheckBeforeInProgress) {
+        this.navigationService.navigate(`application/${this.applicationNumber}/kbi`);
+      } else if ((applicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
         this.navigationService.navigate(`application/${this.applicationNumber}/payment/confirm`);
       } else {
         this.navigationService.navigate(`application/${this.applicationNumber}`);

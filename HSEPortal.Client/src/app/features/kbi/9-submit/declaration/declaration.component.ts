@@ -19,8 +19,9 @@ export class DeclarationComponent extends BaseComponent implements OnInit {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitInProgress;
+    await this.applicationService.updateApplication();
   }
 
   canContinue(): boolean {

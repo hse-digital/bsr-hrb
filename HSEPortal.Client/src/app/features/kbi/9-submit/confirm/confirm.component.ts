@@ -18,8 +18,9 @@ export class ConfirmComponent extends BaseComponent implements OnInit {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitComplete;
+    await this.applicationService.updateApplication();
   }
 
   canContinue(): boolean {
