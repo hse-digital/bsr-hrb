@@ -1,0 +1,26 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link *ngIf="certificatesYearChangesHasErrors" anchorId="input-certificate-year" [message]="errorMessage" />
+        </govuk-error-summary>
+
+        <h1 class="govuk-heading-l">What year did {{getInfraestructureName()}} change use? (optional)</h1>
+
+        <govuk-input class="govuk-input--width-4"
+                     hint="This is the year on the completion certificate that was issued when this change of use happened. If you do not know, leave this blank." #field [govukRequired]="field"
+                     [errorText]="getErrorDescription(certificatesYearChangesHasErrors, errorMessage!)"
+                     id="certificate-year" [(model)]="applicationService.currentKbiSection!.BuildingUse.YearChangeInUse"
+                     (onKeyupEnter)="saveAndContinue()" />
+
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

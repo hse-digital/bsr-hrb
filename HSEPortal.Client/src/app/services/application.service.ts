@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, QueryList } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
@@ -84,6 +84,36 @@ export class ApplicationService {
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
+  initKbi() {
+    if (!this.model.Kbi) {
+      this.model.Kbi = new KbiModel();
+      this.model.Sections.forEach(x => {
+        var kbiSection = new KbiSectionModel();
+        kbiSection.StructureName = x.Name;
+        kbiSection.Postcode = x.Addresses[0].Postcode;
+
+        this.model.Kbi!.KbiSections.push(kbiSection);
+      });
+
+      this._currentSectionIndex = 0;
+      this._currentKbiSectionIndex = 0;
+    }
+
+    if (!this.model.Kbi.SectionStatus || this.model.Kbi.SectionStatus.length == 0) {
+      this.model.Kbi.SectionStatus = [];
+      this.model.Sections.map(x => this.model.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
+    }
+  }
+
+  _currentKbiSectionIndex: number = 0;
+  get currentKbiSection() {
+    return this.model.Kbi?.KbiSections[this._currentKbiSectionIndex];
+  }
+
+  get currentKbiModel() {
+    return this.model.Kbi;
+  }
+
   async removeAp(index: number) {
     this.model.AccountablePersons.splice(index, 1);
     await this.updateApplication();
@@ -110,7 +140,7 @@ export class ApplicationService {
   }
 
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
-    var application = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
+    let application: BuildingRegistrationModel = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress}/${otpToken}`));
     this.model = application;
     this.updateLocalStorage();
   }
@@ -152,6 +182,10 @@ export class ApplicationService {
   async getApplicationPayments(): Promise<any[]> {
     return await firstValueFrom(this.httpClient.get<any[]>(`api/GetApplicationPaymentStatus/${this.model.id}`));
   }
+
+  async getSubmissionDate(): Promise<string> {
+    return await firstValueFrom(this.httpClient.get<string>(`api/GetSubmissionDate/${this.model.id}`));
+  }
 }
 
 export class BuildingRegistrationModel {
@@ -173,6 +207,7 @@ export class BuildingRegistrationModel {
   PrincipalAccountableType?: string;
   AccountablePersons: AccountablePersonModel[] = [];
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
+  Kbi?: KbiModel;
 }
 
 export enum BuildingApplicationStatus {
@@ -182,7 +217,15 @@ export enum BuildingApplicationStatus {
   AccountablePersonsInProgress = 4,
   AccountablePersonsComplete = 8,
   PaymentInProgress = 16,
-  PaymentComplete = 32
+  PaymentComplete = 32,
+  KbiCheckBeforeInProgress = 64,
+  KbiCheckBeforeComplete = 128,
+  KbiStructureInformationInProgress = 256,
+  KbiStructureInformationComplete = 512,
+  KbiConnectionsInProgress = 1024,
+  KbiConnectionsComplete = 2048,
+  KbiSubmitInProgress = 4096,
+  KbiSubmitComplete = 8192
 }
 
 export class SectionModel {
@@ -259,4 +302,107 @@ export enum PaymentStatus {
   Pending,
   Success,
   Failed
+}
+
+export class KbiModel {
+  SectionStatus: { InProgress: boolean, Complete: boolean }[] = [];
+  KbiSections: KbiSectionModel[] = [];
+  Connections: Connections = {};
+  Submit: Submit = {};
+}
+
+export class KbiSectionModel {
+  Fire: Fire = {};
+  Energy: Energy = {};
+  BuildingStructure: BuildingStructure = {};
+  Roof: Roof = {};
+  Staircases: Staircases = {}
+  Walls: Walls = {};
+  BuildingUse: BuildingUse = {};
+
+  StructureName?: string;
+  Postcode?: string;
+  StrategyEvacuateBuilding?: string;
+}
+
+export class Fire {
+  StrategyEvacuateBuilding?: string;
+  ProvisionsEquipment?: string[];
+  FireSmokeProvisions?: string[];
+  FireSmokeProvisionLocations?: Record<string, string[]>;
+  Lifts?: string[];
+  ResidentialUnitFrontDoors?: {
+    NoFireResistance?: number,
+    ThirtyMinsFireResistance?: number,
+    SixtyMinsFireResistance?: number,
+    HundredTwentyMinsFireResistance?: number,
+    NotKnownFireResistance?: number,
+  } = {};
+  FireDoorsCommon?: {
+    FireDoorThirtyMinute?: number,
+    FireDoorSixtyMinute?: number,
+    FireDoorHundredTwentyMinute?: number,
+    FireDoorUnknown?: number,
+  } = {};
+}
+
+export class Energy {
+  EnergySupply?: string[];
+  EnergyTypeStorage?: string[];
+  OnsiteEnergyGeneration?: string[];
+}
+
+export class BuildingStructure {
+  BuildingStructureType?: string[];
+}
+
+export class Roof {
+  RoofType?: string;
+  RoofInsulation?: string;
+  RoofMaterial?: string;
+}
+
+export class Staircases {
+  TotalNumberStaircases?: number;
+  InternalStaircasesAllFloors?: number;
+}
+
+export class Walls {
+  ExternalWallMaterials?: string[];
+  WallACM?: string;
+  WallHPL?: string;
+  ExternalWallMaterialsPercentage?: Record<string, string>;
+  ExternalWallInsulation?: {
+    CheckBoxSelection?: string[],
+    OtherValue?: string,
+  } = {};
+  ExternalWallInsulationPercentages?: Record<string, number>;
+  ExternalFeatures?: string[];
+  FeatureMaterialsOutside?: Record<string, string[]>;
+}
+
+export class BuildingUse {
+  AddedFloorsType?: string[];
+  PrimaryUseOfBuilding?: string;
+  SecondaryUseBuilding?: string[];
+  FloorsBelowGroundLevel?: number;
+  PrimaryUseBuildingBelowGroundLevel?: string;
+  ChangePrimaryUse?: string;
+  PreviousUseBuilding?: string;
+  YearChangeInUse?: number;
+  UndergoneBuildingMaterialChanges?: string[];
+  MostRecentMaterialChange?: string;
+  YearMostRecentMaterialChange?: string;
+}
+
+export class Connections {
+  StructureConnections?: string[];
+  OtherHighRiseBuildingConnections?: string;
+  HowOtherHighRiseBuildingAreConnected?: string[];
+  OtherBuildingConnections?: string;
+  HowOtherBuildingAreConnected?: string[];
+}
+
+export class Submit {
+
 }

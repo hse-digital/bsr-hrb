@@ -2,7 +2,7 @@ import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { NotFoundComponent } from "../components/not-found/not-found.component";
-import { ApplicationService } from "../services/application.service";
+import { ApplicationService, BuildingApplicationStatus } from "../services/application.service";
 import { NavigationService } from "../services/navigation.service";
 import { TitleService } from "../services/title.service";
 import { IHasNextPage } from "./has-next-page.interface";
@@ -18,7 +18,7 @@ export abstract class BaseComponent implements CanActivate {
   updateOnSave: boolean = true;
   constructor(protected router: Router, protected applicationService: ApplicationService, protected navigationService: NavigationService, protected activatedRoute: ActivatedRoute, protected titleService: TitleService) {
     this.screenReaderNotification("");
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.subscribe((params: { [x: string]: string | undefined; }) => {
       this.returnUrl = params['return'];
     });
   }
@@ -30,7 +30,7 @@ export abstract class BaseComponent implements CanActivate {
     if (!this.canAccess(routeSnapshot)) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
-    } else if (!this.isSummaryPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
+    } else if (!this.isSummaryPage() && !this.isKbiPage() && !this.isReturningApplicationPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
       this.navigationService.navigate(ApplicationSubmittedHelper.getPaymentConfirmationRoute(this.applicationService));
       return false;
     }
@@ -38,8 +38,16 @@ export abstract class BaseComponent implements CanActivate {
     return true;
   }
 
-  private isSummaryPage(){
+  private isSummaryPage() {
     return location.href.endsWith(`/${this.applicationService.model.id}/summary`);
+  }
+
+  private isKbiPage() {
+    return location.href.includes(`/${this.applicationService.model.id}/kbi`);
+  }
+
+  private isReturningApplicationPage() {
+    return location.href.includes(`returning-application`);
   }
 
   hasErrors = false;
@@ -76,7 +84,10 @@ export abstract class BaseComponent implements CanActivate {
     } else {
       this.screenReaderNotification();
       await this.applicationService.updateApplication();
-      this.navigationService.navigate(`application/${this.applicationService.model.id}`);
+      let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete
+        ? `application/${this.applicationService.model.id}/kbi`
+        : `application/${this.applicationService.model.id}`;
+      this.navigationService.navigate(route);
     }
   }
 

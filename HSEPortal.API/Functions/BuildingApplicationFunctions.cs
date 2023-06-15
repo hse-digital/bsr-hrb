@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
@@ -46,6 +47,13 @@ public class BuildingApplicationFunctions
         List<BuildingApplicationModel> buildingApplications)
     {
         return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
+    }
+
+    [Function(nameof(GetSubmissionDate))]
+    public async Task<HttpResponseData> GetSubmissionDate([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetSubmissionDate/{applicationNumber}")] HttpRequestData request, string applicationNumber)
+    {
+        string submissionDate = await dynamicsService.GetSubmissionDate(applicationNumber);
+        return await request.CreateObjectResponseAsync(submissionDate);
     }
 
     [Function(nameof(GetApplication))]

@@ -1,0 +1,25 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="input-change-year" message={{errorMessage}} />
+        </govuk-error-summary>
+
+        <h1 class="govuk-heading-l">{{getMaterialName(applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange!)}} {{getInfraestructureName()}} (optional)</h1>
+
+        <govuk-input id="change-year" label="What year was this work completed?"
+                     [(model)]="applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange"
+                     [errorText]="getErrorDescription(yearMostRecentChangeHasError , errorMessage!)"
+                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" #field [govukRequired]="field"/>
+
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

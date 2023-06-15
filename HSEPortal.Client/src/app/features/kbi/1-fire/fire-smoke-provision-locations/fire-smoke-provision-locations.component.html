@@ -1,0 +1,34 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link [anchorId]="firstCheckboxAnchorId" [message]=errorMessage />
+        </govuk-error-summary>
+
+        <govuk-checkbox-group [(model)]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" hint="Select all that apply" [isPageHeading]=true
+            id="locations" #field [govukRequired]="field" title="Where are the {{getEquipmentName(currentEquipment!)}} in {{getInfraestructureName()}}?" [errorText]="getErrorDescription(locationsHasErrors, errorMessage!)">
+
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Basement" value="basement" id="basement"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Bin store" value="bin_store" id="bin_store"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Car park" value="car_park" id="car_park"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Common balcony" value="common_balcony" id="common_balcony"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Common corridor" value="common_corridor" id="common_corridor"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Common staircase" value="common_staircase" id="common_staircase"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="External staircase" value="external_staircase" id="external_staircase"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Lobby" value="lobby" id="lobby"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Shared space with equipment" value="share_space_equipment" id="share_space_equipment" hint="like a utility room, meter room, or shared laundry room" />
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Shared space with no equipment" value="share_space_no_equipment" id="share_space_no_equipment" hint="like a communal lounge" />
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Rooftop" value="rooftop" id="rooftop"/>
+            <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![currentEquipment!]" text="Other" value="other" id="other"/>
+
+        </govuk-checkbox-group>
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

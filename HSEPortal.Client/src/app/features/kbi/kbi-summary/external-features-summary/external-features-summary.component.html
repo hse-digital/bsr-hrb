@@ -1,0 +1,15 @@
+<govuk-summary-list>
+
+    <govuk-summary-list-row key="Attached features" [showAction]=false>
+      <ng-container *ngFor="let type of externalFeatures!.ExternalFeatures!">
+        <div>{{getExternalFeature(type)}}</div>
+      </ng-container>  
+    </govuk-summary-list-row>  
+    
+    <ng-container *ngFor="let type of getAvailableFeatures()">
+      <govuk-summary-list-row key="{{getExternalFeature(type)}}" [showAction]=false>
+          <div *ngFor="let material of getMaterials(type)">{{getMaterialName(material)}}</div>
+      </govuk-summary-list-row>
+    </ng-container>
+
+</govuk-summary-list>

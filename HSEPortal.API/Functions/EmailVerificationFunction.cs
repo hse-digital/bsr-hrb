@@ -1,4 +1,6 @@
 using System.Net;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
@@ -38,6 +40,43 @@ public class EmailVerificationFunction
         {
             HttpResponse = request.CreateResponse()
         };
+    }
+
+    public ValidationSummary ValidateKey(string key)
+    {
+        var errors = new List<string>();
+        if (key != "e55cb4f7-5036-4fb9-b15b-102df960089f")
+        {
+            errors.Add("Invalid Test key");
+        }
+
+        return new ValidationSummary(!errors.Any(), errors.ToArray());
+    }
+
+    [Function(nameof(GetOTPToken))]
+    public async Task<CustomHttpResponseData> GetOTPToken([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
+    {
+        var keyValidation =ValidateKey(request.GetQueryParameters()["key"]);
+        if(!keyValidation.IsValid)
+        {
+            return await request.BuildValidationErrorResponseDataAsync(keyValidation);
+        }
+
+        var emailVerificationModel = new EmailVerificationModel(request.GetQueryParameters()["email"]);
+        var validation = emailVerificationModel.Validate();
+        if (!validation.IsValid)
+        {
+            return await request.BuildValidationErrorResponseDataAsync(validation);
+        }
+
+        var otpToken = otpService.GenerateToken(emailVerificationModel.EmailAddress);
+
+        var resp = new CustomHttpResponseData
+        {
+            HttpResponse = await request.CreateObjectResponseAsync(new { OTPCode = otpToken })
+        };
+
+        return resp;
     }
 
     [Function(nameof(ValidateOTPToken))]

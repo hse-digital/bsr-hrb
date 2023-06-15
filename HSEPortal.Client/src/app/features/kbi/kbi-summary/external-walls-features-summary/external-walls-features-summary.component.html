@@ -1,0 +1,43 @@
+<govuk-summary-list>
+
+    <govuk-summary-list-row key="External wall materials" [showAction]=false>
+      <ng-container *ngFor="let type of externalWalls!.ExternalWallMaterials!">
+        <div>{{getExternalWallMaterialName(type)}}</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row *ngIf="hasAcm()" key="ACM fire tests" [showAction]=false>
+      <div>{{getACMFireTests(externalWalls!.WallACM!)}}</div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row *ngIf="hasHpl()" key="HPL fire tests" [showAction]=false>
+      <div>{{getHPLFireTests(externalWalls!.WallHPL!)}}</div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Percentage coverage" [showAction]=false>
+      <ng-container *ngFor="let type of externalWalls!.ExternalWallMaterials!">
+        <div>{{getExternalWallMaterialName(type)}}: {{externalWalls!.ExternalWallMaterialsPercentage![type]}}%</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Outside walls insulation type" [showAction]=false>
+      <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!.CheckBoxSelection!">
+
+        <ng-container *ngIf="type !== 'other'">
+          <div #showType>{{getInsulationName(type)}} </div>
+        </ng-container>
+
+        <ng-container *ngIf="type === 'other'">
+          <div #showTypeAndOther>{{getInsulationName(type)}} - {{externalWalls!.ExternalWallInsulation!.OtherValue!}}</div>
+        </ng-container>
+
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row *ngIf="!isNone()" key="Percentage coverage" [showAction]=false>
+      <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!.CheckBoxSelection!">
+        <div>{{getInsulationName(type)}}: {{externalWalls!.ExternalWallInsulationPercentages![type]}}%</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+</govuk-summary-list>

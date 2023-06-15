@@ -2,6 +2,7 @@
 using HSEPortal.Domain.Entities;
 
 namespace HSEPortal.Domain.DynamicsDefinitions;
+
 public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsStructure>
 {
     public override string Endpoint => "bsr_blocks";
@@ -10,8 +11,16 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
     {
         var peopleLivingInStructure = GetPeopleLivingInStructure(entity.PeopleLivingInStructure);
         var constructionYearOption = GetConstructionYearOption(entity.ConstructionYearOption);
-        
-        return new DynamicsStructure(entity.Name, int.Parse(entity.FloorsAboveGround), Math.Round(float.Parse(entity.HeightInMeters, CultureInfo.InvariantCulture), 2), int.Parse(entity.NumberOfResidentialUnits), peopleLivingInStructure, constructionYearOption);
+
+        return new DynamicsStructure
+        {
+            bsr_name = entity.Name,
+            bsr_nooffloorsabovegroundlevel = int.Parse(entity.FloorsAboveGround),
+            bsr_sectionheightinmetres = Math.Round(float.Parse(entity.HeightInMeters, CultureInfo.InvariantCulture), 2),
+            bsr_numberofresidentialunits = int.Parse(entity.NumberOfResidentialUnits),
+            bsr_arepeoplelivingintheblock = peopleLivingInStructure,
+            bsr_doyouknowtheblocksexactconstructionyear = constructionYearOption
+        };
     }
 
     public override Structure BuildEntity(DynamicsStructure dynamicsEntity)

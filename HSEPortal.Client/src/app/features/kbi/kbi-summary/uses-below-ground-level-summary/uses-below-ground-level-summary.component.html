@@ -1,0 +1,11 @@
+<govuk-summary-list>
+
+    <govuk-summary-list-row key="Number of floors below ground level" [showAction]=false>
+      <div>{{buildingUse.FloorsBelowGroundLevel!}}</div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row *ngIf="(buildingUse?.FloorsBelowGroundLevel ?? -1) > 0" key="Primary use of floors below ground level" [showAction]=false>
+      <div>{{getBuildingUse(buildingUse.PrimaryUseBuildingBelowGroundLevel!)}}</div>
+    </govuk-summary-list-row>
+
+</govuk-summary-list>
