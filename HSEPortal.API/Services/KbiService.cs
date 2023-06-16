@@ -45,7 +45,11 @@ public class KbiService
         var fireData = kbiSyncData.KbiSectionModel.Fire;
 
         // evacuation policy
-        var structure = new DynamicsStructure { bsr_blockid = kbiSyncData.DynamicsStructure.bsr_blockid, bsr_evacuationpolicy_blockid = $"/bsr_evacuationpolicies({DynamicsSectionEvacuation.Ids[fireData.StrategyEvacuateBuilding]})" };
+        var structure = new DynamicsStructure
+        {
+            bsr_blockid = kbiSyncData.DynamicsStructure.bsr_blockid,
+            bsr_evacuationpolicy_blockid = $"/bsr_evacuationpolicies({DynamicsSectionEvacuation.Ids[fireData.StrategyEvacuateBuilding]})"
+        };
 
         // fire and smoke control equipment
         var existingFireControlEquipment = await dynamicsApi.Get<DynamicsResponse<DynamicsFireAndSmokeProvisions>>("bsr_blockfiresmokeprovisions", ("$filter", $"_bsr_blockid_value eq '{structure.bsr_blockid}'"));
@@ -264,14 +268,21 @@ public class KbiService
                 featureId = $"/bsr_externalfeaturetypes({featureId})"
             };
 
-            walls.FeatureMaterialsOutside.TryGetValue(feature, out var materials);
-            foreach (var material in materials ?? Array.Empty<string>())
+            if (walls.FeatureMaterialsOutside != null)
             {
-                var materialId = Materials.ExternalFeatureIds[material];
-                structureFeature = structureFeature with
+                walls.FeatureMaterialsOutside.TryGetValue(feature, out var materials);
+                foreach (var material in materials ?? Array.Empty<string>())
                 {
-                    materialId = $"/bsr_materials({materialId})",
-                };
+                    var materialId = Materials.ExternalFeatureIds[material];
+                    structureFeature = structureFeature with
+                    {
+                        materialId = $"/bsr_materials({materialId})",
+                    };
+                    await dynamicsApi.Create("bsr_blockexternalfeatures", structureFeature);
+                }
+            }
+            else
+            {
                 await dynamicsApi.Create("bsr_blockexternalfeatures", structureFeature);
             }
         }
@@ -286,10 +297,17 @@ public class KbiService
         {
             primaryUseId = $"/bsr_blockuses({BuildingUse.Uses[building.PrimaryUseOfBuilding]})",
             bsr_numberoffloorsbelowgroundlevel = int.Parse(building.FloorsBelowGroundLevel),
-            primaryUseBelowGroundId = $"/bsr_blockuses({BuildingUse.Uses[building.PrimaryUseBuildingBelowGroundLevel]})",
             bsr_differentprimaryuseinthepast = building.ChangePrimaryUse == "yes",
             bsr_changeofuseyearnew = building.YearChangeInUse,
         };
+
+        if (!string.IsNullOrEmpty(building.PrimaryUseBuildingBelowGroundLevel))
+        {
+            structure = structure with
+            {
+                primaryUseBelowGroundId = $"/bsr_blockuses({BuildingUse.Uses[building.PrimaryUseBuildingBelowGroundLevel]})",
+            };
+        }
 
         if (building.ChangePrimaryUse == "yes")
         {
@@ -510,6 +528,7 @@ public static class Lifts
         ["fire-fighting"] = "967ddde3-57eb-ed11-8847-6045bd0d6904",
         ["modernised"] = "368a4404-58eb-ed11-8847-6045bd0d6904",
         ["firemen"] = "ac73d81c-58eb-ed11-8847-6045bd0d6904",
+        ["none"] = "0a00235a-260c-ee11-8f6e-002248c727e7"
     };
 }
 
@@ -539,7 +558,8 @@ public static class Energies
         // storage
         ["hydrogen_batteries"] = "f4d28f53-3cf3-ed11-8848-6045bd0d6904",
         ["lithium_ion_batteries"] = "888eb25f-3cf3-ed11-8848-6045bd0d6904",
-        ["other"] = "b81d1666-3cf3-ed11-8848-6045bd0d6904"
+        ["other"] = "b81d1666-3cf3-ed11-8848-6045bd0d6904",
+        ["none"] = "da8571ff-250c-ee11-8f6e-002248c727e7"
     };
 
     public static Dictionary<string, string> SupplyIds = new()
@@ -550,7 +570,9 @@ public static class Energies
         ["energy-supply-mains-hydrogen"] = "da689ec1-3cf3-ed11-8848-6045bd0d6904",
         ["energy-supply-mains-gas"] = "7aa3bac7-3cf3-ed11-8848-6045bd0d6904",
         ["energy-supply-oil"] = "0cfdb2cd-3cf3-ed11-8848-6045bd0d6904",
-        ["energy-supply-other"] = "516024da-3cf3-ed11-8848-6045bd0d6904"
+        ["energy-supply-other"] = "516024da-3cf3-ed11-8848-6045bd0d6904",
+        ["other"] = "b81d1666-3cf3-ed11-8848-6045bd0d6904",
+        ["none"] = "2b250036-260c-ee11-8f6e-002248c727e7"
     };
 
     public static Dictionary<string, string> OnsiteIds = new()
@@ -558,7 +580,8 @@ public static class Energies
         ["air-ground-source-heat-pumps"] = "b9561d7e-3cf3-ed11-8848-6045bd0d6904",
         ["biomass-boiler"] = "34c31c84-3cf3-ed11-8848-6045bd0d6904",
         ["solar-wind"] = "89731490-3cf3-ed11-8848-6045bd0d6904",
-        ["other"] = "7940a79c-3cf3-ed11-8848-6045bd0d6904"
+        ["other"] = "7940a79c-3cf3-ed11-8848-6045bd0d6904",
+        ["none"] = "ffd9c61d-260c-ee11-8f6e-002248c727e7"
     };
 }
 
@@ -717,8 +740,10 @@ public static class BuildingUse
         ["other_residential_use"] = "913ec607-f6fa-ed11-8f6d-002248c725da",
         ["shop_commercial"] = "bb5a8e49-f6fa-ed11-8f6d-002248c725da",
         ["shop_and_commercial"] = "bb5a8e49-f6fa-ed11-8f6d-002248c725da",
+        ["other_non-residential"] = "2359b47a-f6fa-ed11-8f6d-002248c725da",
         ["other_non_residential"] = "2359b47a-f6fa-ed11-8f6d-002248c725da",
-        [""] = "ad72a7b8-f8fa-ed11-8f6d-002248c725da"
+        [""] = "ad72a7b8-f8fa-ed11-8f6d-002248c725da",
+        ["none"] = "44aaf725-280c-ee11-8f6e-002248c727e7"
     };
 
     public static Dictionary<string, string> MaterialChanges = new()

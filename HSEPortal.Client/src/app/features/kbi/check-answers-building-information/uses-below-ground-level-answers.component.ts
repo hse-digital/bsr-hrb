@@ -29,10 +29,12 @@ export class UsesBelowGroundLevelAnswersComponent  extends BuildingInformationCh
     "assembly_recreation": "Assembly and recreation",
     "residential_dwellings": "Residential dwellings",
     "office": "Office",
+    "residential_dwellings": "Residential dwellings",
     "residential_institution": "Residential institution",
     "other_residential_use": "Other residential use",
     "shop_commercial": "Shop and commercial",
     "other_non-residential": "Other non-residential",
+    "other_non_residential": "Other non-residential",
     "none": "None"
 
   }
