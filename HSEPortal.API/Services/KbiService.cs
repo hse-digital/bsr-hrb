@@ -380,7 +380,12 @@ public class KbiService
                 await dynamicsApi.Create($"bsr_structurebuildingworks", structureWork);
             }
         }
-
+        
+        structure = structure with
+        {
+            bsr_kbicompletiondate = DateTime.Now.ToString(CultureInfo.InvariantCulture),
+            bsr_kbicomplete = true
+        };
         await dynamicsApi.Update($"bsr_blocks({structure.bsr_blockid})", structure);
     }
 
@@ -447,21 +452,13 @@ public class KbiService
 
     public async Task UpdateSectionDeclarationData(KbiSyncData kbiSyncData)
     {
-        var structure = new DynamicsStructure { bsr_blockid = kbiSyncData.DynamicsStructure.bsr_blockid };
-        structure = structure with
-        {
-            bsr_kbicompletiondate = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-            bsr_kbicomplete = true
-        };
-
         var building = await dynamicsApi.Get<DynamicsBuilding>($"bsr_buildings({kbiSyncData.DynamicsStructure._bsr_buildingid_value})");
         building = building with
         {
-            bsr_kbicompletiondate = structure.bsr_kbicompletiondate.ToString(CultureInfo.InvariantCulture),
+            bsr_kbicompletiondate = DateTime.Now.ToString(CultureInfo.InvariantCulture),
             bsr_kbideclaration = true,
         };
 
-        await dynamicsApi.Update($"bsr_blocks({structure.bsr_blockid})", structure);
         await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
     }
 
