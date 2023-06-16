@@ -13,7 +13,7 @@
 
         <govuk-input id="change-year" label="What year was this work completed?"
                      [(model)]="applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange"
-                     [errorText]="getErrorDescription(yearMostRecentChangeHasError , errorMessage!)"
+                     [errorText]="getErrorDescription(yearMostRecentChangeHasError , errorMessage!)" type="number"
                      class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" #field [govukRequired]="field"/>
 
       </div>

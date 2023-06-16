@@ -14,7 +14,7 @@
                 <govuk-input id="floors" #field [govukRequired]="field" label="Count any floor whose ceiling is below ground level, like a basement." labelClass="govuk-!-margin-bottom-3"
                     [(model)]="applicationService.currentKbiSection!.BuildingUse.FloorsBelowGroundLevel"
                     [errorText]="getErrorDescription(floorsBelowGroundLevelHasErrors , errorMessage!)"
-                    class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" />
+                    class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" type="number" />
 
                 <govuk-details summaryText="Help with ground level">
                     <p>Ground level is the level of land immediately next to {{getInfraestructureName()}}. If that land is uneven, count from the lowest part of the land immediately next to {{getInfraestructureName()}}.</p>
