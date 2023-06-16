@@ -8,9 +8,7 @@
                     <govuk-error-link anchorId="{{firstCheckboxAnchorId}}" message={{errorMessage}} />
                 </govuk-error-summary>
 
-                <h1 class="govuk-heading-l">Features on {{getInfraestructureName()}}</h1>
-
-                <govuk-checkbox-none title="Select all that apply. Machinery could be for heating, ventulation or energy generation"
+                <govuk-checkbox-none title="Features on {{getInfraestructureName()}}" [isPageHeading]="true"
                                      hint="Select all that apply. Machinery could be for heating, ventulation or energy generation"
                                      [errorText]="getErrorDescription(externalFeaturesHasErrors, errorMessage!)"
                                      (onKeyupEnter)="saveAndContinue()"

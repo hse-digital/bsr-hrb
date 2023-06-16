@@ -59,8 +59,15 @@ export class UndergoneBuildingMaterialChangesComponent extends BaseComponent imp
   canContinue(): boolean {
     this.undergoneBuildingMaterialChangesHasErrors = !this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges || this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges.length == 0;
 
-    if (this.undergoneBuildingMaterialChangesHasErrors) this.firstCheckboxAnchorId = `asbestos_removal-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
-
+    if (this.undergoneBuildingMaterialChangesHasErrors) {this.firstCheckboxAnchorId = `asbestos_removal-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;}
+    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 
+      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange) 
+      && this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange != "unknown"
+      && !this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.includes(this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange!)) {
+      
+      this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = "";
+    
+    }
 
     return this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 0;
   }
@@ -74,11 +81,6 @@ export class UndergoneBuildingMaterialChangesComponent extends BaseComponent imp
       return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
     }
     else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1 && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
-      if (this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange
-        && !this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.includes(this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange)) {
-        this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0];
-      }
-      // TODO: FIX THIS ERROR
       return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
     }
     else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')) {
