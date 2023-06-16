@@ -64,6 +64,18 @@ public class KbiService
             await CreateFireOrSmokeProvisions(structure.bsr_blockid, provision, locations);
         }
 
+        foreach (var provision in fireData.ProvisionsEquipment)
+        {
+            var provisionId = FireSmokeProvision.Ids[provision];
+            var record = new DynamicsFireAndSmokeProvisions
+            {
+                blockId = $"/bsr_blocks({structure.bsr_blockid})",
+                bsr_FireSmokeProvisionId = $"/bsr_blockfiresmokeprovisions({provisionId})"
+            };
+            
+            await dynamicsApi.Create("bsr_blockfiresmokeprovisions", record);
+        }
+
         // lifts
         var existingLifts = await dynamicsApi.Get<DynamicsResponse<DynamicsStructureLift>>("bsr_structurelifts", ("$filter", $"_bsr_structure_value eq '{structure.bsr_blockid}'"));
         foreach (var item in existingLifts.value)
@@ -471,15 +483,22 @@ public class KbiService
             bsr_FireSmokeProvisionId = $"/bsr_blockfiresmokeprovisions({provisionId})"
         };
 
-        foreach (var location in locations)
+        if (locations.Length == 0)
         {
-            var residentialAreaId = ResidentialAreas.Ids[location];
-            record = record with
-            {
-                bsr_ResidentialAreaId = $"/bsr_residentialareas({residentialAreaId})"
-            };
-
             await dynamicsApi.Create("bsr_blockfiresmokeprovisions", record);
+        }
+        else
+        {
+            foreach (var location in locations)
+            {
+                var residentialAreaId = ResidentialAreas.Ids[location];
+                record = record with
+                {
+                    bsr_ResidentialAreaId = $"/bsr_residentialareas({residentialAreaId})"
+                };
+
+                await dynamicsApi.Create("bsr_blockfiresmokeprovisions", record);
+            }
         }
     }
 
