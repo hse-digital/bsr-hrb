@@ -20,7 +20,7 @@
                      [errorText]="getErrorDescription(errors.length>0, getErrorForOption(insulation)!)"
                      class="govuk-!-margin-bottom-5 govuk-input--width-5"
                      (onKeyupEnter)="saveAndContinue()"
-                     suffix="%"/>
+                     suffix="%" type="number"/>
       </div>
 
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
