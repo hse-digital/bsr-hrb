@@ -62,6 +62,7 @@ export class ChangesSinceCompletionSummaryComponent extends KbiSummaryComponent 
     "residential_institution": "Residential institution",
     "other_residential_use": "Other residential use",
     "shop_commercial": "Shop and commercial",
+    "other_non-residential": "Other non-residential",
     "other_non_residential": "Other non-residential",
     "none": "None"
 
