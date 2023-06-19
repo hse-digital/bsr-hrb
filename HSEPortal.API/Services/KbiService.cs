@@ -480,7 +480,8 @@ public class KbiService
         var record = new DynamicsFireAndSmokeProvisions
         {
             blockId = $"/bsr_blocks({blockId})",
-            bsr_FireSmokeProvisionId = $"/bsr_blockfiresmokeprovisions({provisionId})"
+            bsr_FireSmokeProvisionId = $"/bsr_blockfiresmokeprovisions({provisionId})",
+            bsr_firesmokeprovisiontypecode = 760_810_000
         };
 
         if (locations.Length == 0)
@@ -494,7 +495,8 @@ public class KbiService
                 var residentialAreaId = ResidentialAreas.Ids[location];
                 record = record with
                 {
-                    bsr_ResidentialAreaId = $"/bsr_residentialareas({residentialAreaId})"
+                    bsr_ResidentialAreaId = $"/bsr_residentialareas({residentialAreaId})",
+                    bsr_firesmokeprovisiontypecode = 760_810_001
                 };
 
                 await dynamicsApi.Create("bsr_blockfiresmokeprovisions", record);
