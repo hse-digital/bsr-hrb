@@ -533,7 +533,8 @@ public static class FireSmokeProvision
         ["smoke_aovs"] = "bf07bec4-2beb-ed11-8847-6045bd0d6904",
         ["smoke_manual"] = "d69dbad0-2beb-ed11-8847-6045bd0d6904",
         ["smoke_detectors"] = "2fece3e2-2beb-ed11-8847-6045bd0d6904",
-        ["sprinklers_misters"] = "fd1010ef-2beb-ed11-8847-6045bd0d6904"
+        ["sprinklers_misters"] = "fd1010ef-2beb-ed11-8847-6045bd0d6904",
+        ["sprinklers"] = "fd1010ef-2beb-ed11-8847-6045bd0d6904"
     };
 }
 
