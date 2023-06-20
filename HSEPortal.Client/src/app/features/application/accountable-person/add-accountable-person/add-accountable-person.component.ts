@@ -6,8 +6,8 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { AccountablePersonTypeComponent } from './accountable-person-type.component';
+import { AreasAccountabilityComponent } from '../areas-accountability/areas-accountability.component';
 
 @Component({
   selector: 'hse-add-accountable-person',
@@ -19,9 +19,7 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  addAccountablePerson?: string;
   addAccountablePersonHasError = false;
-
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
@@ -33,17 +31,17 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
   }
 
   canContinue(): boolean {
-    this.addAccountablePersonHasError = !this.addAccountablePerson;
+    this.addAccountablePersonHasError = !this.applicationService.currentAccountablePerson.AddAnother;
     return !this.addAccountablePersonHasError;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.addAccountablePerson == 'yes') {
+    if (this.applicationService.currentAccountablePerson.AddAnother == 'yes') {
       let newAp = this.applicationService.startNewAccountablePerson();
       return navigationService.navigateRelative(`${newAp}/${AccountablePersonTypeComponent.route}`, activatedRoute);
     }
 
-    return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
+    return navigationService.navigateRelative(AreasAccountabilityComponent.route, activatedRoute);
   }
 
   principalName() {

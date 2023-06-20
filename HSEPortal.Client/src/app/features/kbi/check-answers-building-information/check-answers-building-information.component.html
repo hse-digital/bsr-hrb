@@ -1,0 +1,58 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <h2 class="govuk-heading-l">Check your building informations answers for {{getInfraestructureName()}}</h2>
+
+        <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
+          <govuk-error-link anchorId="input-floors-above" message="Answer all questions" />
+        </govuk-error-summary>
+
+        <div [class.section-wrapper]>
+          <h2 class="govuk-heading-m" [class.section-header]>Fire and smoke controls</h2>
+          <fire-and-smoke-controls-answers [fireAndSmokeControls]="kbiSection.Fire" />
+          <div [class.section-wrapper]>
+            <h2 class="govuk-heading-m" [class.section-header]>Energy supply and storage</h2>
+            <energy-supply-and-storage-answers [energySupplyAndStorage]="kbiSection.Energy" />
+          </div>
+          <div [class.section-wrapper]>
+            <h2 class="govuk-heading-m" [class.section-header]>Structural type and materials</h2>
+            <structural-type-and-materials-answers [buildingStructure]="kbiSection.BuildingStructure" />
+          </div>
+          <div [class.section-wrapper]>
+            <h2 class="govuk-heading-m" [class.section-header]>Roof</h2>
+            <roof-answers [roof]="kbiSection.Roof" />
+          </div>
+          <div [class.section-wrapper]>
+            <h2 class="govuk-heading-m" [class.section-header]>Staircases</h2>
+            <staircases-answers [staircases]="kbiSection.Staircases" />
+          </div>
+        </div>
+        <div [class.section-wrapper]>
+          <h2 class="govuk-heading-m" [class.section-header]>External walls</h2>
+          <external-walls-features-answers [externalWalls]="kbiSection.Walls" />
+        </div>
+        <div [class.section-wrapper]>
+          <h2 class="govuk-heading-m" [class.section-header]>External features</h2>
+          <external-features-answers [externalFeatures]="kbiSection.Walls" />
+        </div>
+        <div [class.section-wrapper]>
+          <h2 class="govuk-heading-m" [class.section-header]>Uses at ground level and above</h2>
+          <uses-ground-level-and-above-answers [buildingUse]="kbiSection.BuildingUse" />
+        </div>
+        <div [class.section-wrapper]>
+          <h2 class="govuk-heading-m" [class.section-header]>Uses below ground level</h2>
+          <uses-below-ground-level-answers [buildingUse]="kbiSection.BuildingUse" />
+        </div>
+        <div [class.section-wrapper]>
+          <h2 class="govuk-heading-m" [class.section-header]>Changes since completion</h2>
+          <changes-since-completion-answers [buildingUse]="kbiSection.BuildingUse" />
+        </div>
+        <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+        <save-and-come-back (onClick)="saveAndComeBack()" />
+      </div>
+    </div>
+  </div>

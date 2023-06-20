@@ -1,0 +1,13 @@
+<govuk-summary-list>
+
+    <govuk-summary-list-row key="Primary use" (onKeyupEnter)="navigate('primary-use-of-building')" (onClick)="navigate('primary-use-of-building')" [showAction]=true>
+      <div>{{getBuildingUse(buildingUse.PrimaryUseOfBuilding!)}}</div>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Secondary uses" (onKeyupEnter)="navigate('secondary-uses')" (onClick)="navigate('secondary-uses')" [showAction]=true>
+      <ng-container *ngFor="let type of buildingUse!.SecondaryUseBuilding!">
+        <div>{{getBuildingUse(type)}}</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+</govuk-summary-list>

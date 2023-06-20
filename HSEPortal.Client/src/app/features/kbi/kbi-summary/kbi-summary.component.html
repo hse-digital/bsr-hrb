@@ -1,0 +1,85 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <h1 class="govuk-heading-l">Summary of structure and safety information for
+          {{applicationService.model.BuildingName}}</h1>
+
+        <div class="section-wrapper margin-bottom-30 gap">
+          <h2 class="govuk-heading-m" [class.section-header]>Application details</h2>
+          <govuk-summary-list>
+            <govuk-summary-list-row key="Application reference" [showAction]=false>{{applicationService.model.id}}</govuk-summary-list-row>
+            <govuk-summary-list-row key="Building name" [showAction]=false>{{applicationService.model.BuildingName}}</govuk-summary-list-row>
+            <govuk-summary-list-row key="Date submitted" [showAction]=false>{{submissionDate | date}}</govuk-summary-list-row>
+          </govuk-summary-list>
+        </div>
+
+        <ng-container *ngFor="let kbiSection of applicationService.model.Kbi!.KbiSections" class="margin-bottom-30">
+
+          <h2 class="govuk-heading-m no-margin-bottom" *ngIf="applicationService.model.Kbi!.KbiSections.length > 1">{{kbiSection.StructureName}}</h2>
+
+          <div class="section-wrapper margin-bottom-30">
+            <h2 class="govuk-heading-m" [class.section-header]>Fire and smoke controls</h2>
+            <fire-and-smoke-controls-summary [fireAndSmokeControls]="kbiSection.Fire" />
+          </div>
+
+          <div class="section-wrapper">
+            <h2 class="govuk-heading-m" [class.section-header]>Energy supply and storage</h2>
+            <energy-supply-and-storage-summary [energySupplyAndStorage]="kbiSection.Energy" />
+          </div>
+
+          <div class="section-wrapper">
+            <h2 class="govuk-heading-m" [class.section-header]>Structural type and materials</h2>
+            <structural-type-and-materials-summary [buildingStructure]="kbiSection.BuildingStructure" />
+          </div>
+
+          <div class="section-wrapper">
+            <h2 class="govuk-heading-m" [class.section-header]>Roof</h2>
+            <roof-summary [roof]="kbiSection.Roof" />
+          </div>
+
+          <div class="section-wrapper">
+            <h2 class="govuk-heading-m" [class.section-header]>Staircases</h2>
+            <staircases-summary [staircases]="kbiSection.Staircases" />
+          </div>
+
+          <div class="section-wrapper">
+            <h2 class="govuk-heading-m" [class.section-header]>External walls</h2>
+            <external-walls-features-summary [externalWalls]="kbiSection.Walls" />
+          </div>
+
+          <div class="section-wrapper">
+            <h2 class="govuk-heading-m" [class.section-header]>External features</h2>
+            <external-features-summary [externalFeatures]="kbiSection.Walls" />
+          </div>
+
+          <div class="section-wrapper">
+            <h2 class="govuk-heading-m" [class.section-header]>Uses at ground level and above</h2>
+            <uses-ground-level-and-above-summary [buildingUse]="kbiSection.BuildingUse" />
+          </div>
+
+          <div class="section-wrapper">
+            <h2 class="govuk-heading-m" [class.section-header]>Uses below ground level</h2>
+            <uses-below-ground-level-summary [buildingUse]="kbiSection.BuildingUse" />
+          </div>
+
+          <div class="section-wrapper">
+            <h2 class="govuk-heading-m" [class.section-header]>Changes since completion</h2>
+            <changes-since-completion-summary [buildingUse]="kbiSection.BuildingUse" />
+          </div>
+
+          <div class="gap"></div>
+        </ng-container>
+
+        <div class="section-wrapper">
+          <h2 class="govuk-heading-m" [class.section-header]>Connections</h2>
+          <connections-summary [connections]="applicationService.model.Kbi!.Connections" />
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -101,7 +101,7 @@ public class DynamicsService
         var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
         if (buildingApplication == null)
             return new List<DynamicsPayment>();
-        
+
         var payments = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"_bsr_buildingapplicationid_value eq '{buildingApplication.bsr_buildingapplicationid}'"));
 
         return payments.value;
@@ -117,9 +117,9 @@ public class DynamicsService
             {
                 #region PAP
 
+                string leadContactId;
                 if (accountablePerson.Role is "employee" or "registering_for")
                 {
-                    string leadContactId;
                     var existingLeadContact = await FindExistingContactAsync(accountablePerson.LeadFirstName, accountablePerson.LeadLastName, accountablePerson.LeadEmail, accountablePerson.LeadPhoneNumber);
                     if (existingLeadContact == null)
                     {
@@ -161,16 +161,41 @@ public class DynamicsService
 
                     await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", new DynamicsBuildingApplication { papLeadContactReferenceId = $"/contacts({leadContactId})" });
                 }
-                else if (accountablePerson.Role == "named_contact")
+                else
                 {
                     var leadContact = await dynamicsApi.Update($"contacts({dynamicsBuildingApplication._bsr_registreeid_value})", new DynamicsContact
                     {
                         jobRoleReferenceId = $"/bsr_jobroles({DynamicsJobRole.Ids[accountablePerson.LeadJobRole]})"
                     });
 
-                    var leadContactId = ExtractEntityIdFromHeader(leadContact.Headers);
+                    leadContactId = ExtractEntityIdFromHeader(leadContact.Headers);
                     await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", new DynamicsBuildingApplication { papLeadContactReferenceId = $"/contacts({leadContactId})" });
                     await AssignContactType(leadContactId, DynamicsContactTypes.PAPOrganisationLeadContact);
+                }
+
+                foreach (var accountability in accountablePerson.SectionsAccountability)
+                {
+                    var sectionName = accountability.SectionName ?? dynamicsBuildingApplication.bsr_Building.bsr_name;
+                    var areas = accountability.Accountability;
+
+                    var structures = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{sectionName.EscapeSingleQuote()}' and _bsr_buildingid_value eq '{dynamicsBuildingApplication._bsr_building_value}'"));
+                    var structure = structures.value.First();
+
+                    foreach (var area in areas)
+                    {
+                        var existingAp = await FindExistingAp(structure.bsr_blockid, accountId, area);
+                        if (existingAp == null)
+                        {
+                            await dynamicsApi.Create("bsr_accountablepersons", new DynamicsAccountablePerson
+                            {
+                                bsr_accountablepersontype = accountablePerson.Type == "organisation" ? DynamicAccountablePersonType.Organisation : DynamicAccountablePersonType.Individual,
+                                papAccountReferenceId = $"/accounts({accountId})",
+                                structureReferenceId = $"/bsr_blocks({structure.bsr_blockid})",
+                                sectionAreaReferenceId = $"/bsr_blockareas({DynamicsSectionArea.Ids[area]})",
+                                leadContactReferenceId = $"/contacts({leadContactId})"
+                            });
+                        }
+                    }
                 }
 
                 #endregion
@@ -216,7 +241,7 @@ public class DynamicsService
                         {
                             await dynamicsApi.Create("bsr_accountablepersons", new DynamicsAccountablePerson
                             {
-                                bsr_accountablepersontype = DynamicAccountablePersonType.Organisation,
+                                bsr_accountablepersontype = accountablePerson.Type == "organisation" ? DynamicAccountablePersonType.Organisation : DynamicAccountablePersonType.Individual,
                                 papAccountReferenceId = $"/accounts({accountId})",
                                 structureReferenceId = $"/bsr_blocks({structure.bsr_blockid})",
                                 sectionAreaReferenceId = $"/bsr_blockareas({DynamicsSectionArea.Ids[area]})",
@@ -309,6 +334,30 @@ public class DynamicsService
             countryReferenceId = apAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[apAddress.Country]})" : null,
             bsr_manualaddress = apAddress.IsManual ? YesNoOption.Yes : YesNoOption.No
         });
+
+        foreach (var accountability in accountablePerson.SectionsAccountability ?? Array.Empty<SectionAccountability>())
+        {
+            var sectionName = accountability.SectionName ?? dynamicsBuildingApplication.bsr_Building.bsr_name;
+            var areas = accountability.Accountability;
+
+            var structures = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{sectionName.EscapeSingleQuote()}' and _bsr_buildingid_value eq '{dynamicsBuildingApplication._bsr_building_value}'"));
+            var structure = structures.value.First();
+
+            foreach (var area in areas)
+            {
+                var existingAp = await FindExistingAp(structure.bsr_blockid, dynamicsBuildingApplication._bsr_registreeid_value, area);
+                if (existingAp == null)
+                {
+                    await dynamicsApi.Create("bsr_accountablepersons", new DynamicsAccountablePerson
+                    {
+                        bsr_accountablepersontype = DynamicAccountablePersonType.Individual,
+                        papContactReferenceId = $"/contacts({dynamicsBuildingApplication._bsr_registreeid_value})",
+                        structureReferenceId = $"/bsr_blocks({structure.bsr_blockid})",
+                        sectionAreaReferenceId = $"/bsr_blockareas({DynamicsSectionArea.Ids[area]})"
+                    });
+                }
+            }
+        }
 
         return $"/contacts({dynamicsBuildingApplication._bsr_registreeid_value})";
     }
@@ -428,7 +477,8 @@ public class DynamicsService
                 address1_postalcode = apAddress.Postcode,
                 bsr_manualaddress = apAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
                 countryReferenceId = apAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[apAddress.Country]})" : null,
-                acountTypeReferenceId = $"/bsr_accounttypes({DynamicsAccountType.Ids[$"{accountablePerson.OrganisationType}"]})"
+                acountTypeReferenceId = $"/bsr_accounttypes({DynamicsAccountType.Ids[$"{accountablePerson.OrganisationType}"]})",
+                bsr_otherorganisationtype = accountablePerson.OrganisationTypeDescription
             });
 
             return ExtractEntityIdFromHeader(response.Headers);
@@ -565,10 +615,10 @@ public class DynamicsService
 
     private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure)
     {
-        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", $"bsr_name eq '{dynamicsStructure.bsr_name.EscapeSingleQuote()}' and bsr_postcode eq '{dynamicsStructure.bsr_postcode}'"));
-        if (existingStructure.value.Any())
+        var existingStructure = await FindExistingStructureAsync(dynamicsStructure.bsr_name.EscapeSingleQuote(), dynamicsStructure.bsr_postcode);
+        if (existingStructure != null)
         {
-            dynamicsStructure = dynamicsStructure with { bsr_blockid = existingStructure.value[0].bsr_blockid };
+            dynamicsStructure = dynamicsStructure with { bsr_blockid = existingStructure.bsr_blockid };
             await dynamicsApi.Update($"{structureDefinition.Endpoint}({dynamicsStructure.bsr_blockid})", dynamicsStructure);
             return dynamicsStructure;
         }
@@ -576,6 +626,23 @@ public class DynamicsService
         var response = await dynamicsApi.Create(structureDefinition.Endpoint, dynamicsStructure);
         var structureId = ExtractEntityIdFromHeader(response.Headers);
         return dynamicsStructure with { bsr_blockid = structureId };
+    }
+
+    public async Task<DynamicsStructure> FindExistingStructureAsync(string name, string postcode, string buildingApplicationId = null)
+    {
+        var filter = $"bsr_postcode eq '{postcode}'";
+        if (!string.IsNullOrEmpty(name))
+        {
+            filter = $"{filter} and bsr_name eq '{name}'";
+        }
+
+        if (!string.IsNullOrEmpty(buildingApplicationId))
+        {
+            filter = $"{filter} and _bsr_buildingapplicationid_value eq '{buildingApplicationId}'";
+        }
+        
+        var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", filter));
+        return existingStructure.value.FirstOrDefault();
     }
 
     private async Task<DynamicsBuildingApplication> CreateBuildingApplicationAsync(Contact contact, Building building)
@@ -657,5 +724,11 @@ public class DynamicsService
         var id = Regex.Match(header.Value, @"\((.+)\)");
 
         return id.Groups[1].Value;
+    }
+
+    public async Task<string> GetSubmissionDate(string applicationNumber)
+    {
+        var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
+        return buildingApplication.bsr_submittedon;
     }
 }

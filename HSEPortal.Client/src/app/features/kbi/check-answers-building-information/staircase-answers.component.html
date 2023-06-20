@@ -1,0 +1,11 @@
+<govuk-summary-list>
+
+  <govuk-summary-list-row key="Total staircases" (onKeyupEnter)="navigate('total')" (onClick)="navigate('total')" [showAction]=true>
+    <div>{{staircases.TotalNumberStaircases!}}</div>
+  </govuk-summary-list-row>
+
+  <govuk-summary-list-row key="Interior from ground floor" (onKeyupEnter)="navigate('total')" (onClick)="navigate('total')" [showAction]=true>
+    <div>{{staircases.InternalStaircasesAllFloors!}}</div>
+  </govuk-summary-list-row>
+
+</govuk-summary-list>

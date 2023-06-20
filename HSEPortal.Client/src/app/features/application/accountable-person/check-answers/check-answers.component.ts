@@ -9,6 +9,7 @@ import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus }
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { AccountabilityArea } from 'src/app/components/pap-accountability/pap-accountability.component';
+import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper';
 
 @Component({
   templateUrl: './check-answers.component.html',
@@ -89,6 +90,8 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
         canContinue &&= (ap.SectionsAccountability?.findIndex(x => (x.Accountability?.length ?? 0) > 0) ?? -1) > -1;
       }
     }
+    
+    canContinue &&= this.applicationService.model.Sections.every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section).length == 0);
 
     this.hasIncompleteData = !canContinue;
     return canContinue;

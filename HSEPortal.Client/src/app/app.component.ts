@@ -4,9 +4,9 @@ import { ApplicationService } from './services/application.service';
 import { IdleTimerService } from './services/idle-timer.service';
 import { CookiesBannerModel, CookiesBannerService } from './services/cookies-banner.service';
 import { GovukCookieBannerComponent } from 'hse-angular';
-import { HelpPagesModule } from './features/footer/help-pages.module';
+import { HelpPagesModule } from './components/footer/help-pages.module';
 import { NavigationService } from './services/navigation.service';
-import { CookiesComponent } from './features/footer/cookies/cookies.component';
+import { CookiesComponent } from './components/footer/cookies/cookies.component';
 import { environment } from 'src/environments/environment';
 
 @Component({

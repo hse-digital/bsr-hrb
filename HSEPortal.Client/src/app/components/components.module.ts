@@ -12,9 +12,12 @@ import { NotFoundAddressComponent } from "./address/not-found-address.component"
 import { SelectAddressComponent } from "./address/select-address.component";
 import { TooManyAddressComponent } from "./address/too-many-address.component";
 import { AddressDescriptionComponent } from "./address-description.component";
-import { SaveAndComeBackLaterComponent } from "./save-and-come-back.component";
 import { PapAccountabilityComponent } from "./pap-accountability/pap-accountability.component";
 import { GovukRequiredDirective } from "./required.directive";
+import { AccountabilityComponent } from './accountability/accountability.component';
+import { NotAllocatedAccountabilityComponent } from './not-allocated-accountability/not-allocated-accountability.component';
+import { GovukCheckboxNoneComponent } from './govuk-checkbox-none/govuk-checkbox-none.component';
+import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.component';
 
 @NgModule({
   declarations: [
@@ -26,9 +29,12 @@ import { GovukRequiredDirective } from "./required.directive";
     TooManyAddressComponent,
     SelectAddressComponent,
     AddressDescriptionComponent,
-    SaveAndComeBackLaterComponent,
     PapAccountabilityComponent,
-    GovukRequiredDirective
+    GovukRequiredDirective,
+    AccountabilityComponent,
+    NotAllocatedAccountabilityComponent,
+    GovukCheckboxNoneComponent,
+    CheckboxOptionComponent
   ],
   imports: [
     HseAngularModule,
@@ -38,9 +44,12 @@ import { GovukRequiredDirective } from "./required.directive";
   exports: [
     AddressComponent,
     AddressDescriptionComponent,
-    SaveAndComeBackLaterComponent,
     PapAccountabilityComponent,
-    GovukRequiredDirective
+    GovukRequiredDirective,
+    AccountabilityComponent,
+    NotAllocatedAccountabilityComponent,
+    GovukCheckboxNoneComponent,
+    CheckboxOptionComponent
   ],
   providers: [HttpClient, AddressService]
 })

@@ -1,0 +1,5 @@
+<govuk-checkbox-group [title]="title" hint="Select all that apply." #field [govukRequired]="field"
+    [id]="id" [errorText]="errorText" [(model)]="model">
+    <govuk-checkbox #checkbox [id]="id" *ngFor="let person of accountablePersons; let personIndex = index" (onKeyupEnter)="onKeyupEnter.emit()"
+        [text]="person" value="{{personIndex}}" [model]="model" (onClicked)="onModelChange.emit(personIndex)" />
+</govuk-checkbox-group>
