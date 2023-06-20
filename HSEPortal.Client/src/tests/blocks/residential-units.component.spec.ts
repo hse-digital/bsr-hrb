@@ -2,9 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ComponentsModule } from 'src/app/components/components.module';
-import { SectionResidentialUnitsComponent } from 'src/app/features/application/sections/residential-units/residential-units.component';
+
 import { ApplicationService } from 'src/app/services/application.service';
 import { TestHelper } from '../test-helper';
+import { SectionResidentialUnitsComponent } from 'src/app/features/application/building-summary/residential-units/residential-units.component';
 
 let component: SectionResidentialUnitsComponent;
 let fixture: ComponentFixture<SectionResidentialUnitsComponent>;

@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { SectionHeightComponent } from 'src/app/features/application/sections/height/height.component';
+
 import { ApplicationService } from 'src/app/services/application.service';
 import { TestHelper } from '../test-helper';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { SectionHeightComponent } from 'src/app/features/application/building-summary/height/height.component';
 
 let component: SectionHeightComponent;
 let fixture: ComponentFixture<SectionHeightComponent>;

@@ -5,7 +5,8 @@ import { ComponentsModule } from 'src/app/components/components.module';
 
 import { ApplicationService } from 'src/app/services/application.service';
 import { TestHelper } from '../test-helper';
-import { SectionYearRangeComponent } from 'src/app/features/application/sections/year-range/year-range.component';
+import { SectionYearRangeComponent } from 'src/app/features/application/building-summary/year-range/year-range.component';
+
 
 let component: SectionYearRangeComponent;
 let fixture: ComponentFixture<SectionYearRangeComponent>;

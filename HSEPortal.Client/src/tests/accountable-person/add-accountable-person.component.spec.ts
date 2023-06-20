@@ -43,7 +43,7 @@ describe('AddAccountablePersonComponent', () => {
     .setDescription('Should show an error when addAccountablePerson is empty or undefined.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
       setup(applicationService);
-      component.addAccountablePerson = value;
+      applicationService.currentAccountablePerson.AddAnother = value;
       component.hasErrors = !component.canContinue();
       expect(component.hasErrors).toBeTrue();
       expect(component.addAccountablePersonHasError).toBeTrue();
@@ -53,7 +53,7 @@ describe('AddAccountablePersonComponent', () => {
     .setDescription('Should NOT show an error when addAccountablePerson is empty or undefined.')
     .setTestCase((applicationService: ApplicationService, value: any) => {
       setup(applicationService);
-      component.addAccountablePerson = value;
+      applicationService.currentAccountablePerson.AddAnother = value;
       component.hasErrors = !component.canContinue();
       expect(component.hasErrors).toBeFalse();
       expect(component.addAccountablePersonHasError).toBeFalse();

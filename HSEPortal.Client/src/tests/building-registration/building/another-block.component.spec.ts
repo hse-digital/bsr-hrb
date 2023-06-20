@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ComponentsModule } from 'src/app/components/components.module';
-import { AddMoreSectionsComponent } from 'src/app/features/application/sections/add-more-sections/add-more-sections.component';
+import { AddMoreSectionsComponent } from 'src/app/features/application/building-summary/add-more-sections/add-more-sections.component';
 
 import { ApplicationService, SectionModel } from 'src/app/services/application.service';
 import { TestHelper } from 'src/tests/test-helper';

@@ -3,9 +3,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ComponentsModule } from 'src/app/components/components.module';
 
-import { SectionNameComponent } from 'src/app/features/application/sections/name/name.component';
 import { ApplicationService } from 'src/app/services/application.service';
 import { TestHelper } from '../test-helper';
+import { SectionNameComponent } from 'src/app/features/application/building-summary/name/name.component';
 
 let component: SectionNameComponent;
 let fixture: ComponentFixture<SectionNameComponent>;

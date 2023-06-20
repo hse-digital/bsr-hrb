@@ -3,10 +3,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
 import { ComponentsModule } from 'src/app/components/components.module';
-import { SectionPeopleLivingInBuildingComponent } from 'src/app/features/application/sections/people-living-in-building/people-living-in-building.component';
+
 
 import { ApplicationService } from 'src/app/services/application.service';
 import { TestHelper } from '../test-helper';
+import { SectionPeopleLivingInBuildingComponent } from 'src/app/features/application/building-summary/people-living-in-building/people-living-in-building.component';
 
 let component: SectionPeopleLivingInBuildingComponent;
 let fixture: ComponentFixture<SectionPeopleLivingInBuildingComponent>;
