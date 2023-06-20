@@ -283,10 +283,9 @@ public class KbiService
                 featureId = $"/bsr_externalfeaturetypes({featureId})"
             };
 
-            if (walls.FeatureMaterialsOutside != null)
+            if (walls.FeatureMaterialsOutside != null && walls.FeatureMaterialsOutside.TryGetValue(feature, out var materials) && materials.Length > 0)
             {
-                walls.FeatureMaterialsOutside.TryGetValue(feature, out var materials);
-                foreach (var material in materials ?? Array.Empty<string>())
+                foreach (var material in materials)
                 {
                     var materialId = Materials.ExternalFeatureIds[material];
                     structureFeature = structureFeature with
