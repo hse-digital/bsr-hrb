@@ -48,8 +48,8 @@ describe('EnergySupplyComponent showError', () => {
         expect(component).toBeTruthy();
     });
 
-    let testCasesShowError: { description: string, strategy?: string }[] = [
-        { description: 'should show an error when the EnergySupply is empty.', strategy: '' },
+    let testCasesShowError: { description: string, strategy?: string[] }[] = [
+        { description: 'should show an error when the EnergySupply is empty.', strategy: [] },
         { description: 'should show an error when the EnergySupply is undefined.', strategy: undefined },
     ];
 
@@ -80,7 +80,7 @@ describe('EnergySupplyComponent showError', () => {
             httpTestingController.match(`/api/UpdateApplication/${applicationService.model.id}`);
             httpTestingController.verify();
 
-        }, "energy-supply-communal", "energy-supply-mains-electric", "energy-supply-oil", "energy-supply-other" ).execute();
+        }, ["energy-supply-communal", "energy-supply-mains-electric", "energy-supply-oil"], ["energy-supply-other"] ).execute();
 
 });
 

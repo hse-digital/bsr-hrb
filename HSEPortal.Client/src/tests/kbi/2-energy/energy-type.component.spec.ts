@@ -47,7 +47,7 @@ describe('EnergyTypeComponent showError', () => {
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeFalse();
 
-        }, "hydrogen_batteries", "lithium_ion_batteries").execute();
+        }, ["hydrogen_batteries", "lithium_ion_batteries"], ["lithium_ion_batteries"]).execute();
 
     new TestHelper()
         .setDescription('should show an error when EnergyTypeStorage is empty or undefined.')
@@ -57,7 +57,7 @@ describe('EnergyTypeComponent showError', () => {
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeTrue();
 
-        }, "", undefined).execute();
+        }, [], undefined).execute();
 
 });
 

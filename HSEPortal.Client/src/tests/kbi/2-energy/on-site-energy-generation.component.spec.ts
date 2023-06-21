@@ -49,8 +49,8 @@ describe('OnSiteEnergyGenerationComponent showError', () => {
         expect(component).toBeTruthy();
     });
 
-    let testCasesShowError: { description: string, strategy?: string }[] = [
-        { description: 'should show an error when the OnsiteEnergyGeneration is empty.', strategy: '' },
+    let testCasesShowError: { description: string, strategy?: string[] }[] = [
+        { description: 'should show an error when the OnsiteEnergyGeneration is empty.', strategy: [] },
         { description: 'should show an error when the OnsiteEnergyGeneration is undefined.', strategy: undefined },
     ];
 
@@ -75,7 +75,7 @@ describe('OnSiteEnergyGenerationComponent showError', () => {
             component.hasErrors = !component.canContinue();
             expect(component.onsiteEnergyGenerationHasErrors).toBeFalse();
             
-        }, "air-ground-source-heat-pumps", "biomass-boiler", "solar-wind" ).execute();
+        }, ["air-ground-source-heat-pumps", "biomass-boiler", "solar-wind"], ["air-ground-source-heat-pumps", "biomass-boiler"], ["air-ground-source-heat-pumps"] ).execute();
 
 });
 
