@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { EvacuationStrategyComponent } from '../1-fire/evacuation-strategy/evacuation-strategy.component';
-import { KbiFireModule } from '../1-fire/kbi.fire.module';
 
 @Component({
   selector: 'hse-check-before-start',
@@ -37,6 +35,10 @@ export class CheckBeforeStartComponent implements CanActivate, OnInit {
       sectionRoute = `${sectionRoute}-${section.Name}`;
     }
 
-    return this.navigationService.navigateRelative(`${sectionRoute}/${KbiFireModule.baseRoute}/${EvacuationStrategyComponent.route}`, this.activatedRoute);
+    return this.navigationService.navigateRelative('', this.activatedRoute);
+  }
+
+  getBuildingName() {
+    return this.applicationService.model.BuildingName;
   }
 }

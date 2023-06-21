@@ -66,10 +66,7 @@ export class MostRecentChangeComponent extends BaseComponent implements IHasNext
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return !!this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges
-      && (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges.length > 1)
-
-
-      ;
+      && (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges.length > 1);
   }
 
   private materialNameMapper: Record<string, string> = {

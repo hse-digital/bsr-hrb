@@ -34,9 +34,7 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   isSectionComplete(index: number) {
-    return index < 0
-      ? this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete)
-      : this.applicationService.model.Kbi?.SectionStatus?.at(index)?.Complete;
+    return index < 0 || this.applicationService.model.Kbi?.SectionStatus?.at(index)?.Complete;
   }
 
   getNumberOfCompletedSteps() {
