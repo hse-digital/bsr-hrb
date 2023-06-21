@@ -29,6 +29,7 @@ async function setup(applicationService: ApplicationService) {
     applicationService.model.Kbi!.KbiSections[0]!.Walls.ExternalWallMaterials = ["masonry", "render", "tiles", "timber"];
     applicationService.model.Kbi!.KbiSections[0]!.Walls.ExternalWallMaterialsPercentage = {};
 
+    component.errors = [];
     component.ngOnInit();
 
     fixture.detectChanges();
@@ -106,6 +107,15 @@ describe('EstimatedPercentageComponent showError', () => {
                     [{ externalMaterial: "masonry", value: "-33" },
                     { externalMaterial: "render", value: "33.5" },
                     { externalMaterial: "tiles", value: "33.5" }]
+            }
+        },
+        {
+            description: "should show an error when there are empty percentages.",
+            test: {
+                externalMaterials: ["masonry", "render", "tiles"], percentages:
+                    [{ externalMaterial: "masonry", value: "" },
+                    { externalMaterial: "render", value: "33.5" },
+                    { externalMaterial: "tiles", value: "" }]
             }
         }
     ];
