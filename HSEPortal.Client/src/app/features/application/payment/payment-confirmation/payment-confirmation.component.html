@@ -6,34 +6,33 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
 
-        <h1 class="govuk-heading-l">Registration application submitted for {{applicationService.model.BuildingName ?? '[Building name]'}}</h1>
+        <h1 class="govuk-heading-l">Registration application submitted for {{applicationService.model.BuildingName}}</h1>
 
-        <govuk-body>Your application reference is <b>{{applicationService.model.id ?? "[Application number]"}}</b>.</govuk-body>
+        <govuk-body>Your application reference is <b>{{applicationService.model.id}}</b>.</govuk-body>
 
-        <govuk-body>We've emailed confirmation of your payment to {{payment?.Email}}. If you cannot find the email, check your junk or spam folders. If you did not get the email, <a href="https://www.hse.gov.uk/contact/tell-us-about-a-health-and-safety-issue.htm" target="_blank" class="govuk-link">contact us</a>.</govuk-body>
+        <govuk-body>We've confirmed your payment by email to {{payment?.Email}}. If you cannot find that email, check your junk or spam folders. If you did not get the email, <a href="https://www.hse.gov.uk/contact/tell-us-about-a-health-and-safety-issue.htm" target="_blank" class="govuk-link">contact us</a>.</govuk-body>
 
         <govuk-body *ngIf="notPap()">We have also sent an email to the principal accountable person that outlines their duties at this stage.</govuk-body>
 
-        <h2 class="govuk-heading-m">View your application</h2>
-        <govuk-body>You can <a class="govuk-link" [routerLink]="['../../summary']" href="" target="_blank" role="link" tabindex="0">view your application (opens in a new tab)</a>.</govuk-body>
+        <govuk-body><a class="govuk-link" [routerLink]="['../../summary']" href="" target="_blank" role="link" tabindex="0">Get a copy of the information you submitted (opens in a new tab)</a>.</govuk-body>
 
         <h2 class="govuk-heading-m">What happens next</h2>
 
-        <govuk-body>We'll contact you:</govuk-body>
-        <govuk-list classes='govuk-list--bullet govuk-!-margin-bottom-6'>
-          <govuk-list-item text="with your building registration number, when we've registered your building" />
-          <govuk-list-item text="if we need more information" />
-          <govuk-list-item text="if we cannot register your building as a high-rise residential building" />
-        </govuk-list>
+        <govuk-body>We'll look at your application to register this building.</govuk-body>
+        <govuk-body>We'll contact you when we have decided if your building should be registered. We'll also contact you if we need more information.</govuk-body>
+        <govuk-body>You need to give us some information about {{applicationService.model.BuildingName}}'s structure and fire safety. <a class="govuk-link" href="https://www.gov.uk/government/publications/giving-bsr-structure-and-fire-safety-information-key-building-information" role="link" tabindex="0">Find out more about the information we need</a>.</govuk-body>
 
-        <govuk-body>We're registering all the high-rise residential buildings in England. This is likely to take several months. You may not hear from us for a while. But we have your application.</govuk-body>
-        <govuk-body>You need to prepare some information about the structure and safety of the building. We'll contact you again to tell you when you'll need to give that information to us.</govuk-body>
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+            You must give us structure and fire safety information for {{applicationService.model.BuildingName}} by 30 September 2023.
+          </strong>
+        </div>
 
-        <govuk-body><a href="https://forms.office.com/e/dRsZyPur6S" class="govuk-link" target="_blank" tabindex="0" role="link">Help us improve this service</a>.</govuk-body>
+        <govuk-button (onClick)="continueToKbi()">Continue</govuk-button>
 
         <govuk-body>Or you can <a href="#" class="govuk-link" (click)="registerAnotherBuilding()">register another building</a>.</govuk-body>
-
-        <govuk-button (onClick)="continueToKbi()">Continue to structure and safety information</govuk-button>
       </div> 
     </div>
   </div>
