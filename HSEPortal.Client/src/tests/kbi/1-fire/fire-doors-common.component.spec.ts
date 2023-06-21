@@ -75,6 +75,6 @@ describe('FireDoorsCommonComponent showError', () => {
         }, 1, 3, 10, 88, 99, 500, 897).execute();
 
         function randomOffset() {
-            return Math.floor(Math.random() * 100);;
+            return Math.floor(Math.random() * 100);
         }
 });

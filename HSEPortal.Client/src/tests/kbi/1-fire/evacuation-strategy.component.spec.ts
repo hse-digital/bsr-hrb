@@ -8,7 +8,7 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { TestHelper } from 'src/tests/test-helper';
 import { EvacuationStrategyComponent } from 'src/app/features/kbi/1-fire/evacuation-strategy/evacuation-strategy.component';
 import { KbiService } from 'src/app/services/kbi.service';
-import { HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 let component: EvacuationStrategyComponent;
 let fixture: ComponentFixture<EvacuationStrategyComponent>;
@@ -27,19 +27,20 @@ async function setup(applicationService: ApplicationService) {
     fixture.detectChanges();
 }
 
-xdescribe('EvacuationStrategyComponent showError', () => {
+describe('EvacuationStrategyComponent showError', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [EvacuationStrategyComponent,],
-            imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
-            providers: [ApplicationService, KbiService, HttpTestingController]
+            imports: [RouterTestingModule, HseAngularModule, ComponentsModule, HttpClientTestingModule],
+            providers: [ApplicationService, KbiService]
         }).compileComponents();        
+
+        httpTestingController = TestBed.inject(HttpTestingController);
 
         fixture = TestBed.createComponent(EvacuationStrategyComponent);
         component = fixture.componentInstance;
 
-        httpTestingController = TestBed.inject(HttpTestingController);
     });
 
     it('should create', () => {
@@ -59,7 +60,7 @@ xdescribe('EvacuationStrategyComponent showError', () => {
                 applicationService.currentKbiSection!.Fire.StrategyEvacuateBuilding = value;
                 component.hasErrors = !component.canContinue();
 
-                httpTestingController.expectOne(`http://localhost:9876/api/SyncKbiStructureStart/${applicationService.model.id}`);
+                httpTestingController.expectOne(`api/SyncKbiStructureStart/${applicationService.model.id}`);
                 httpTestingController.verify();
 
                 expect(component.evacuationStrategyHasErrors).toBeTrue();
@@ -76,7 +77,7 @@ xdescribe('EvacuationStrategyComponent showError', () => {
             component.hasErrors = !component.canContinue();
             expect(component.evacuationStrategyHasErrors).toBeFalse();
 
-            httpTestingController.expectOne(`http://localhost:9876/api/SyncKbiStructureStart/${applicationService.model.id}`);
+            httpTestingController.expectOne(`api/SyncKbiStructureStart/${applicationService.model.id}`);
             httpTestingController.verify();
         }, 'Evacuation strategy').execute();
 
