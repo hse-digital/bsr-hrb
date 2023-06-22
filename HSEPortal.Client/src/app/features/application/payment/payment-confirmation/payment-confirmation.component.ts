@@ -40,7 +40,7 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
     });
   }
 
-  private async getApplicationPaymentReference(){
+  private async getApplicationPaymentReference() {
     var payments = await this.applicationService.getApplicationPayments()
     return await payments.find(x => x.bsr_govukpaystatus == "success")?.bsr_transactionid;
   }
@@ -74,10 +74,6 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   }
 
   async continueToKbi() {
-    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete) {
-      await this.navigationService.navigateRelative("../kbi", this.activatedRoute);
-    } else {
-      await this.navigationService.navigateRelative("../kbi/check-before-start", this.activatedRoute);
-    }
+    await this.navigationService.navigateRelative("../kbi", this.activatedRoute);
   }
 }

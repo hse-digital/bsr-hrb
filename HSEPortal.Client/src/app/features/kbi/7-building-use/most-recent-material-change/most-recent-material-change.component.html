@@ -11,9 +11,9 @@
         <govuk-radio-group [errorText]="getErrorDescription(mostRecentChangeHasErrors, errorMessage!)" [(model)]="applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange" [isPageHeading]="true"
                            title="Most recent work completed on {{getInfraestructureName()}}" fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'>
 
-          <govuk-radio *ngFor="let material of applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges" onKeyupEnter="onKeyupEnter.emit()" [model]="applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange" id="{{material}}" label="{{getMaterialName(material)}}" value="{{material}}" name="materials-group" />
+          <govuk-radio *ngFor="let material of applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges" (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange" id="{{material}}" label="{{getMaterialName(material)}}" value="{{material}}" name="materials-group" />
           <div class="govuk-radios__divider">or</div>
-          <govuk-radio onKeyupEnter="onKeyupEnter.emit()" [model]="applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange" id="not-known" label="Not known" value="unknown" name="materials-group" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange" id="not-known" label="Not known" value="unknown" name="materials-group" />
         </govuk-radio-group>
       </div>
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>

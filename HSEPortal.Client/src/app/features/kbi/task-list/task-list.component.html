@@ -1,85 +1,82 @@
 <div class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-            <h1 class="govuk-heading-l">Give structure and safety information for {{applicationService.model.BuildingName ?? ""}}</h1>
+      <h1 class="govuk-heading-l">Give structure and safety information for {{applicationService.model.BuildingName ?? ""}}</h1>
 
-            <h2 class="govuk-heading-m">Application incomplete</h2>
-            <govuk-body class="govuk-!-margin-bottom-4">You have completed {{getNumberOfCompletedSteps()}} of {{ 3 + applicationService.model.Sections.length }} sections.</govuk-body>
+      <h2 class="govuk-heading-m">Application incomplete</h2>
+      <govuk-body class="govuk-!-margin-bottom-4">You have completed {{getNumberOfCompletedSteps()}} of {{ 3 + applicationService.model.Sections.length }} sections.</govuk-body>
 
-            <h2 class="govuk-heading-m">Returning to this application</h2>
-            <govuk-body class="govuk-!-margin-bottom-4">We will save the information you give to us on each page.</govuk-body>
-            <govuk-body class="govuk-!-margin-bottom-4">Your application number and instructions on how to return later have been sent to {{applicationService.model.ContactEmailAddress }}.</govuk-body>
+      <h2 class="govuk-heading-m">Returning to this application</h2>
+      <govuk-body class="govuk-!-margin-bottom-4">We will save the information you give to us on each page.</govuk-body>
+      <govuk-body class="govuk-!-margin-bottom-4">Your application number and instructions on how to return later have been sent to {{applicationService.model.ContactEmailAddress }}.</govuk-body>
 
 
-            <ol class="app-task-list">
-                <li>
-                  <h2 class="app-task-list__section">
-                    <span class="app-task-list__section-number">1.</span>
-                    Check before you start
-                  </h2>
-                  <ul class="app-task-list__items">
-                    <li class="app-task-list__item firstItem">
-                      <span class="app-task-list__task-name">
-                        <a task class="govuk-link" (keyup.enter)="navigateToCheckBeforeStart()" (click)="navigateToCheckBeforeStart()" tabindex="0" role="link">Check you have the information you need</a>
-                      </span>
-                      <govuk-tag tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.KbiCheckBeforeInProgress) && !containsFlag(applicationStatus.KbiCheckBeforeComplete)">NOT STARTED YET</govuk-tag>
-                      <govuk-tag tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.KbiCheckBeforeInProgress) && !containsFlag(applicationStatus.KbiCheckBeforeComplete)">IN PROGRESS</govuk-tag>
-                      <govuk-tag tag *ngIf="containsFlag(applicationStatus.KbiCheckBeforeComplete)">COMPLETE</govuk-tag>
-                    </li>
-                    
-                  </ul>
-                </li>
-                <li>
-                  <h2 class="app-task-list__section">
-                    <span class="app-task-list__section-number">2.</span>
-                    Prepare information
-                  </h2>
-                  <ul class="app-task-list__items">
+      <ol class="app-task-list">
+        <li>
+          <h2 class="app-task-list__section">
+            <span class="app-task-list__section-number">1.</span>
+            Check before you start
+          </h2>
+          <ul class="app-task-list__items">
+            <li class="app-task-list__item firstItem">
+              <span class="app-task-list__task-name">
+                <a task class="govuk-link" (keyup.enter)="navigateToCheckBeforeStart()" (click)="navigateToCheckBeforeStart()" tabindex="0" role="link">Check you have the information you need</a>
+              </span>
+            </li>
 
-                    <li class="app-task-list__item" [ngClass]="{'firstItem': i == 0}" *ngFor="let section of applicationService.model.Sections; let i = index">
-                        <span class="app-task-list__task-name">
-                          <span task *ngIf="!containsFlag(applicationStatus.KbiCheckBeforeComplete) || !isSectionComplete(i - 1)">{{ getSectionName(i) }} information</span>
-                          <a task *ngIf="containsFlag(applicationStatus.KbiCheckBeforeComplete) && isSectionComplete(i - 1)" class="govuk-link" (keyup.enter)="navigateToSection(i, section.Name!)" (click)="navigateToSection(i, section.Name!)" role="link" tabindex="0">{{ getSectionName(i) }} information</a>
-                        </span>
-                        <govuk-tag tag class="govuk-tag--grey" *ngIf="!isSectionInProgress(i) && !isSectionComplete(i - 1) && !isSectionComplete(i)">CANNOT START YET</govuk-tag>
-                        <govuk-tag tag class="govuk-tag--grey" *ngIf="!isSectionInProgress(i) && !isSectionComplete(i) && isSectionComplete(i - 1)">NOT STARTED YET</govuk-tag>
-                        <govuk-tag tag class="govuk-tag--blue" *ngIf="isSectionInProgress(i) && !isSectionComplete(i)">IN PROGRESS</govuk-tag>
-                        <govuk-tag tag *ngIf="!isSectionInProgress(i) && isSectionComplete(i)">COMPLETE</govuk-tag>
-                    </li>
+          </ul>
+        </li>
+        <li>
+          <h2 class="app-task-list__section">
+            <span class="app-task-list__section-number">2.</span>
+            Prepare information
+          </h2>
+          <ul class="app-task-list__items">
 
-                    <li class="app-task-list__item">
-                      <span class="app-task-list__task-name">
-                        <span task *ngIf="!containsFlag(applicationStatus.KbiCheckBeforeComplete) || !containsFlag(applicationStatus.KbiStructureInformationComplete)">Connections</span>
-                        <a task *ngIf="containsFlag(applicationStatus.KbiCheckBeforeComplete) && containsFlag(applicationStatus.KbiStructureInformationComplete)" class="govuk-link" (keyup.enter)="navigateToConnections()" (click)="navigateToConnections()" role="link" tabindex="0">Connections</a>
-                      </span>
-                      <govuk-tag tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.KbiStructureInformationComplete) && !containsFlag(applicationStatus.KbiConnectionsComplete)">CANNOT START YET</govuk-tag>
-                      <govuk-tag tag class="govuk-tag--grey" *ngIf="containsFlag(applicationStatus.KbiStructureInformationComplete) && !containsFlag(applicationStatus.KbiConnectionsInProgress) && !containsFlag(applicationStatus.KbiConnectionsComplete)">NOT STARTED YET</govuk-tag>
-                      <govuk-tag tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.KbiConnectionsInProgress) && !containsFlag(applicationStatus.KbiConnectionsComplete)">IN PROGRESS</govuk-tag>
-                      <govuk-tag tag *ngIf="containsFlag(applicationStatus.KbiConnectionsComplete)">COMPLETE</govuk-tag>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                    <h2 class="app-task-list__section">
-                      <span class="app-task-list__section-number">3.</span>
-                      Submit
-                    </h2>
-                    <ul class="app-task-list__items">
-                      <li class="app-task-list__item firstItem">
-                        <span class="app-task-list__task-name">
-                          <span task *ngIf="!containsFlag(applicationStatus.KbiCheckBeforeComplete) || !containsFlag(applicationStatus.KbiStructureInformationComplete) || !containsFlag(applicationStatus.KbiConnectionsComplete)">Submit</span>
-                          <a task *ngIf="containsFlag(applicationStatus.KbiCheckBeforeComplete) && containsFlag(applicationStatus.KbiStructureInformationComplete) && containsFlag(applicationStatus.KbiConnectionsComplete)" class="govuk-link" (keyup.enter)="navigateToSubmit()" (click)="navigateToSubmit()" role="link" tabindex="0">Submit</a>
-                        </span>
-                        <govuk-tag tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.KbiConnectionsComplete) && !containsFlag(applicationStatus.KbiSubmitComplete)">CANNOT START YET</govuk-tag>
-                        <govuk-tag tag class="govuk-tag--grey" *ngIf="containsFlag(applicationStatus.KbiConnectionsComplete) && !containsFlag(applicationStatus.KbiSubmitInProgress) && !containsFlag(applicationStatus.KbiSubmitComplete)">NOT STARTED YET</govuk-tag>
-                        <govuk-tag tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.KbiSubmitInProgress) && !containsFlag(applicationStatus.KbiSubmitComplete)">IN PROGRESS</govuk-tag>
-                        <govuk-tag tag *ngIf="containsFlag(applicationStatus.KbiSubmitComplete)">COMPLETE</govuk-tag>
-                      </li>
-                    </ul>
-                  </li>
-              </ol>
-        </div>
+            <li class="app-task-list__item" [ngClass]="{'firstItem': i == 0}" *ngFor="let section of applicationService.model.Sections; let i = index">
+              <span class="app-task-list__task-name">
+                <span task *ngIf="!isSectionComplete(i - 1)">{{ getSectionName(i) }} information</span>
+                <a task *ngIf="i == 0 || isSectionComplete(i - 1)" class="govuk-link" (keyup.enter)="navigateToSection(i, section.Name!)" (click)="navigateToSection(i, section.Name!)" role="link" tabindex="0">{{ getSectionName(i) }} information</a>
+              </span>
+              <govuk-tag tag class="govuk-tag--grey" *ngIf="!isSectionInProgress(i) && !isSectionComplete(i - 1) && !isSectionComplete(i) && i > 0">CANNOT START YET</govuk-tag>
+              <govuk-tag tag class="govuk-tag--grey" *ngIf="!isSectionInProgress(i) && !isSectionComplete(i) && isSectionComplete(i - 1)">NOT STARTED YET</govuk-tag>
+              <govuk-tag tag class="govuk-tag--blue" *ngIf="isSectionInProgress(i) && !isSectionComplete(i)">IN PROGRESS</govuk-tag>
+              <govuk-tag tag *ngIf="!isSectionInProgress(i) && isSectionComplete(i)">COMPLETE</govuk-tag>
+            </li>
 
+            <li class="app-task-list__item">
+              <span class="app-task-list__task-name">
+                <span task *ngIf="!containsFlag(applicationStatus.KbiStructureInformationComplete)">Connections</span>
+                <a task *ngIf="containsFlag(applicationStatus.KbiStructureInformationComplete)" class="govuk-link" (keyup.enter)="navigateToConnections()" (click)="navigateToConnections()" role="link" tabindex="0">Connections</a>
+              </span>
+              <govuk-tag tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.KbiStructureInformationComplete) && !containsFlag(applicationStatus.KbiConnectionsComplete)">CANNOT START YET</govuk-tag>
+              <govuk-tag tag class="govuk-tag--grey" *ngIf="containsFlag(applicationStatus.KbiStructureInformationComplete) && !containsFlag(applicationStatus.KbiConnectionsInProgress) && !containsFlag(applicationStatus.KbiConnectionsComplete)">NOT STARTED YET</govuk-tag>
+              <govuk-tag tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.KbiConnectionsInProgress) && !containsFlag(applicationStatus.KbiConnectionsComplete)">IN PROGRESS</govuk-tag>
+              <govuk-tag tag *ngIf="containsFlag(applicationStatus.KbiConnectionsComplete)">COMPLETE</govuk-tag>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <h2 class="app-task-list__section">
+            <span class="app-task-list__section-number">3.</span>
+            Submit
+          </h2>
+          <ul class="app-task-list__items">
+            <li class="app-task-list__item firstItem">
+              <span class="app-task-list__task-name">
+                <span task *ngIf="!containsFlag(applicationStatus.KbiStructureInformationComplete) || !containsFlag(applicationStatus.KbiConnectionsComplete)">Submit</span>
+                <a task *ngIf="containsFlag(applicationStatus.KbiStructureInformationComplete) && containsFlag(applicationStatus.KbiConnectionsComplete)" class="govuk-link" (keyup.enter)="navigateToSubmit()" (click)="navigateToSubmit()" role="link" tabindex="0">Submit</a>
+              </span>
+              <govuk-tag tag class="govuk-tag--grey" *ngIf="!containsFlag(applicationStatus.KbiConnectionsComplete) && !containsFlag(applicationStatus.KbiSubmitComplete)">CANNOT START YET</govuk-tag>
+              <govuk-tag tag class="govuk-tag--grey" *ngIf="containsFlag(applicationStatus.KbiConnectionsComplete) && !containsFlag(applicationStatus.KbiSubmitInProgress) && !containsFlag(applicationStatus.KbiSubmitComplete)">NOT STARTED YET</govuk-tag>
+              <govuk-tag tag class="govuk-tag--blue" *ngIf="containsFlag(applicationStatus.KbiSubmitInProgress) && !containsFlag(applicationStatus.KbiSubmitComplete)">IN PROGRESS</govuk-tag>
+              <govuk-tag tag *ngIf="containsFlag(applicationStatus.KbiSubmitComplete)">COMPLETE</govuk-tag>
+            </li>
+          </ul>
+        </li>
+      </ol>
     </div>
+
+  </div>
 </div>

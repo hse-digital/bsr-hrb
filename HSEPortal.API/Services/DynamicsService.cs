@@ -40,7 +40,7 @@ public class DynamicsService
     {
         await dynamicsOptions.EmailVerificationFlowUrl.PostJsonAsync(new
         {
-            emailAddress = emailVerificationModel.EmailAddress,
+            emailAddress = emailVerificationModel.EmailAddress.ToLower(),
             otp = otpToken,
             hrbRegUrl = swaOptions.Url
         });

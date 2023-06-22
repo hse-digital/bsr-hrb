@@ -8,11 +8,12 @@ import { TitleService } from 'src/app/services/title.service';
 import { KbiCheckAnswersModule } from './kbi.check-answers-building-information.module';
 import { KbiNavigation } from '../kbi.navigation.ts.service';
 import { StructureConnectionsComponent } from '../8-connections/structure-connections/structure-connections.component';
-import { TaskListComponent } from '../task-list/task-list.component';
 import { OtherHighRiseBuildingConnectionsComponent } from '../8-connections/other-high-rise-building-connections/other-high-rise-building-connections.component';
 import { KbiConnectionsModule } from '../8-connections/kbi.connections.module';
 import { KbiService } from 'src/app/services/kbi.service';
 import { KbiValidator } from 'src/app/helpers/kbi-validator'
+import { KbiFireModule } from '../1-fire/kbi.fire.module';
+import { EvacuationStrategyComponent } from '../1-fire/evacuation-strategy/evacuation-strategy.component';
 
 @Component({
   templateUrl: './check-answers-building-information.component.html',
@@ -40,7 +41,7 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
     this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].Complete = true;
 
     this.hasIncompleteData = !KbiValidator.isKbiSectionValid(this.applicationService.currentKbiSection);
-    
+
     return !this.hasIncompleteData;
   }
 
@@ -63,7 +64,14 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
       return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${StructureConnectionsComponent.route}`, activatedRoute);
     }
 
-    return navigationService.navigateRelative(`../../${TaskListComponent.route}`, activatedRoute);
+    let nextSectionIndex = this.applicationService._currentKbiSectionIndex + 1;
+    let sectionRoute = (nextSectionIndex + 1).toString();
+    let nextSection = this.applicationService.model.Sections[nextSectionIndex];
+    if (nextSection.Name !== void 0) {
+      sectionRoute = `${sectionRoute}-${nextSection.Name}`;
+    }
+
+    return this.navigationService.navigateRelative(`../../${sectionRoute}/${KbiFireModule.baseRoute}/${EvacuationStrategyComponent.route}`, this.activatedRoute);
   }
 
   private allKbiSectionCompleted() {

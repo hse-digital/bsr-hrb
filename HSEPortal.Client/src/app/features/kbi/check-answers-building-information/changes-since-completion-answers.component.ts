@@ -8,6 +8,7 @@ import { TitleService } from "src/app/services/title.service";
 import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
 import { KbiNavigation } from "../kbi.navigation.ts.service";
 import { KbiService } from "src/app/services/kbi.service";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 
 @Component({
   selector: 'changes-since-completion-answers',
@@ -73,6 +74,7 @@ export class ChangesSinceCompletionAnswers extends BuildingInformationCheckAnswe
     "residential_institution": "Residential institution",
     "other_residential_use": "Other residential use",
     "shop_commercial": "Shop and commercial",
+    "other_non-residential": "Other non-residential",
     "other_non_residential": "Other non-residential",
     "none": "None"
 
@@ -92,7 +94,7 @@ export class ChangesSinceCompletionAnswers extends BuildingInformationCheckAnswe
 
   onlyOneOptionSelected() {
     let onlyOneMaterialChange = (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1);
-    let mostRecentChangeIsKnown = !this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange?.includes("unknown");
+    let mostRecentChangeIsKnown = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange) && this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange != "unknown";
     let isNoneOrUnknown = this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'none' || x == 'unknown')
     
     return !isNoneOrUnknown && (onlyOneMaterialChange || mostRecentChangeIsKnown);

@@ -14,6 +14,7 @@ public record DynamicsFireAndSmokeProvisions
 
     [property: JsonPropertyName("bsr_ResidentialAreaId@odata.bind")]
     public string bsr_ResidentialAreaId { get; set; }
+    public int? bsr_firesmokeprovisiontypecode { get; set; }
 }
 
 public record DynamicsStructureLift

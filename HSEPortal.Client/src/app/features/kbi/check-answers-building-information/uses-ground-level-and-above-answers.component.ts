@@ -34,6 +34,7 @@ export class UsesGroundLevelAndAboveAnswersComponent  extends BuildingInformatio
     "other_residential_use": "Other residential use",
     "shop_and_commercial": "Shop and commercial",
     "shop_commercial": "Shop and commercial",
+    "other_non-residential": "Other non-residential",
     "other_non_residential": "Other non-residential",
     "none": "None"
   }
