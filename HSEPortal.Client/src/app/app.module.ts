@@ -23,7 +23,9 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { KbiService } from './services/kbi.service';
 
 const routes = new HseRoutes([
-  HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
+  HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title), HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
+  HseRoute.unsafe('select', undefined, ApplicationSelectorComponent.route),
+  
   HseRoute.unsafe(HomeComponent.route, HomeComponent, undefined, HomeComponent.title),
   HseRoute.unsafe(TimeoutComponent.route, TimeoutComponent, undefined, TimeoutComponent.title),
   HseRoute.unsafe(NotFoundComponent.route, NotFoundComponent, undefined, NotFoundComponent.title),

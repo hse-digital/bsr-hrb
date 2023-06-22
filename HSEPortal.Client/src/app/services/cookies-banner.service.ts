@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { LocalStorage } from '../helpers/local-storage';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class CookiesBannerService {
 
   cookiesModel!: CookiesBannerModel;
-
   cookieKey: string = "nonEsentialCookies";
   confirmBannerLocalStorageKey: string = "confirmBanner";
   cookieExpiresDays = 365;
 
-  constructor() {
+  constructor(private cookieService: CookieService) {
     this.initCookiesModel();
   }
 
@@ -25,6 +25,10 @@ export class CookiesBannerService {
     this.cookiesModel.cookiesAccepted = true;
     this.cookiesModel.showConfirmBanner = showConfirmBanner;
     this.updateCookieValue();
+
+    if (typeof window !== 'undefined') {
+      (<any>window).clarity('consent');
+    }
   }
 
   rejectCookies(showConfirmBanner: boolean) {
@@ -32,6 +36,17 @@ export class CookiesBannerService {
     this.cookiesModel.showCookies = this.cookiesModel.cookiesAccepted = false;
     this.cookiesModel.showConfirmBanner = showConfirmBanner;
     this.updateCookieValue();
+
+    this.cookieService.delete("_clsk", "/", ".hse.gov.uk");
+    this.cookieService.delete("_ga_Q39686J738", "/", ".hse.gov.uk");
+    this.cookieService.delete("_ga", "/", ".hse.gov.uk");
+    this.cookieService.delete("_clck", "/", ".hse.gov.uk");
+    this.cookieService.delete("MUID", "/", ".clarity.ms", true, "None");
+    this.cookieService.delete("CLID", "/", "www.clarity.ms", true, "None");
+
+    if (typeof window !== 'undefined') {
+      (<any>window).clarity('stop');
+    }
   }
 
   removeConfirmationBanner() {
@@ -83,8 +98,8 @@ export class CookiesBannerService {
 }
 
 export class CookiesBannerModel {
-  showCookies: boolean = true; 
-  showConfirmBanner: boolean = false; 
+  showCookies: boolean = true;
+  showConfirmBanner: boolean = false;
   cookiesAccepted: boolean = false;
 }
 

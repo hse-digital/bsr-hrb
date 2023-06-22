@@ -11,3 +11,4 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\HSEPortalClient</BuildOutputFolder>
   </PropertyGroup>
 </Project>
+

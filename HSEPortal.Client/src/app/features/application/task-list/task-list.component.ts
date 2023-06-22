@@ -25,7 +25,7 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, 
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService,
     private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }

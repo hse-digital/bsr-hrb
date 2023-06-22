@@ -75,6 +75,63 @@
         </tbody>
       </table>
 
+      <govuk-body>With your permission, we use Microsoft Clarity to collect data about how you use our service. This information helps us to improve our service.</govuk-body>
+      <govuk-body>Microsoft is not allowed to use or share our analytics data with anyone.</govuk-body>
+      <govuk-body>Microsoft Clarity stores anonymised information about:</govuk-body>
+      <govuk-list classes='govuk-list--bullet'>
+        <govuk-list-item text="how you got to Register a high-rise building" />
+        <govuk-list-item text="the pages you visit on the service and how long you spend on them" />
+        <govuk-list-item text="any errors you see while using the service" />
+        <govuk-list-item text="any fields, links or buttons you click on while using our service" />
+      </govuk-list>
+
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Name</th>
+            <th scope="col" class="govuk-table__header">Purpose</th>
+            <th scope="col" class="govuk-table__header">Expires</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">_clck</td>
+            <td class="govuk-table__cell">Checks if you've visited Register a high-rise building before. This helps us count how many people return to our service.</td>
+            <td class="govuk-table__cell">13 months</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">_clsk</td>
+            <td class="govuk-table__cell">Checks if you've visited Register a high-rise building before. This helps us count how many people visit our service.</td>
+            <td class="govuk-table__cell">1 year</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">CLID</td>
+            <td class="govuk-table__cell">Identifies the first time you visited Register a high-rise building. This helps us count how many people visit and return to our service.</td>
+            <td class="govuk-table__cell">13 months</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">MUID</td>
+            <td class="govuk-table__cell">Identifies unique web browsers visiting Microsoft sites. Microsoft uses these cookies for advertising, site analytics, and other operational purposes.</td>
+            <td class="govuk-table__cell">13 months</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">ANONCHK</td>
+            <td class="govuk-table__cell">Indicates whether MUID is transferred to ANID, a cookie used for advertising. Microsoft Clarity does not use ANID and so this is always set to 0.</td>
+            <td class="govuk-table__cell">13 months</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">MR</td>
+            <td class="govuk-table__cell">Indicates whether to refresh MUID.</td>
+            <td class="govuk-table__cell">13 months</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">SM</td>
+            <td class="govuk-table__cell">Microsoft uses this to synchronise the MUID across Microsoft domains.</td>
+            <td class="govuk-table__cell">13 months</td>
+          </tr>
+        </tbody>
+      </table>
+
       <govuk-radio-group title="Do you want to accept analytics cookies?" class="govuk-!-margin-bottom-4" [(model)]="cookieModel">
         <govuk-radio name="cookies" id="cookies-yes" value="true" label="Yes" (onKeyupEnter)="saveCookieSettings()" [model]="cookieModel" />
         <govuk-radio name="cookies" id="cookies-no" value="false" label="No" (onKeyupEnter)="saveCookieSettings()" [model]="cookieModel" />

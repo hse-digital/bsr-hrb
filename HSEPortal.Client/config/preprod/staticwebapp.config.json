@@ -5,7 +5,7 @@
   "globalHeaders": {
     "X-Frame-Options": "SAMEORIGIN",
     "X-XSS-Protection": 0,
-    "Content-Security-Policy": "script-src 'self' kit.fontawesome.com www.googletagmanager.com 'nonce-hsehighrise';",
+    "Content-Security-Policy": "script-src 'self' kit.fontawesome.com www.googletagmanager.com www.clarity.ms 'unsafe-inline';",
     "Strict-Transport-Security": "max-age=31536000;includeSubDomains;preload"
   }
 }

@@ -1,0 +1,25 @@
+{
+  "navigationFallback": {
+    "rewrite": "/index.html"
+  },
+  "globalHeaders": {
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-XSS-Protection": 0,
+    "Content-Security-Policy": "script-src 'self' kit.fontawesome.com www.googletagmanager.com www.clarity.ms 'unsafe-inline';",
+    "Strict-Transport-Security": "max-age=31536000;includeSubDomains;preload"
+  },
+  "networking": {
+    "allowedIpRanges": [
+      "AzureFrontDoor.Backend"
+    ]
+  },
+  "forwardingGateway": {
+    "requiredHeaders": {
+      "X-Azure-FDID": "aa61674e-8ecf-44b0-93c8-87770c420b55"
+    },
+    "allowedForwardedHosts": [
+      "p101-prod-itf-acs-afd-ep-bsr-cnf2g7cdfydeaxbj.z01.azurefd.net",
+      "register-high-rise-building.hse.gov.uk"
+    ]
+  }
+}

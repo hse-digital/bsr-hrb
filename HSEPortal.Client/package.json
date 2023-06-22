@@ -28,6 +28,7 @@
     "express": "^4.15.2",
     "govuk-frontend": "^4.4.1",
     "hse-angular": "file:../packages/hse-angular-0.0.94.tgz",
+    "ngx-cookie-service": "^15.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
