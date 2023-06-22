@@ -5,15 +5,19 @@ namespace HSEPortal.API.Services;
 
 public class OTPService
 {
-    public virtual string GenerateToken(string secretKey, DateTime? baseDateTime = null)
+    public virtual string GenerateToken(string secretKey, DateTime? baseDateTime = null, bool forceLowerCase = true)
     {
-        var totp = new Totp(Encoding.UTF8.GetBytes(secretKey), step: 60 * 60);
+        var secret = forceLowerCase ? secretKey.ToLower() : secretKey;
+        
+        var totp = new Totp(Encoding.UTF8.GetBytes(secret), step: 60 * 60);
         return totp.ComputeTotp(baseDateTime ?? DateTime.UtcNow);
     }
 
-    public virtual bool ValidateToken(string otpToken, string secretKey)
+    public virtual bool ValidateToken(string otpToken, string secretKey, bool forceLowerCase = true)
     {
-        var totp = new Totp(Encoding.UTF8.GetBytes(secretKey), step: 60 * 60);
+        var secret = forceLowerCase ? secretKey.ToLower() : secretKey;
+        
+        var totp = new Totp(Encoding.UTF8.GetBytes(secret), step: 60 * 60);
         return totp.VerifyTotp(otpToken, out _);
     } 
 }

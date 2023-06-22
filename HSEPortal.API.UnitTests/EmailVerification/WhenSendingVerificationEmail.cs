@@ -10,13 +10,13 @@ namespace HSEPortal.API.UnitTests.EmailVerification;
 
 public class WhenSendingVerificationEmail : UnitTestBase
 {
-    private readonly EmailVerificationFunction emailVerificationFunction;
+    private EmailVerificationFunction emailVerificationFunction;
     private readonly string otpToken = "123456";
     private readonly string email = "user@domain.com";
 
     public WhenSendingVerificationEmail()
     {
-        var otpService = Mock.Of<OTPService>(x => x.GenerateToken(email, null) == otpToken);
+        var otpService = Mock.Of<OTPService>(x => x.GenerateToken(It.IsAny<string>(), null, true) == otpToken);
         emailVerificationFunction = new EmailVerificationFunction(DynamicsService, otpService, FeatureOptions);
     }
 
@@ -32,6 +32,23 @@ public class WhenSendingVerificationEmail : UnitTestBase
             .WithRequestJson(new
             {
                 emailAddress = emailVerificationModel.EmailAddress,
+                otp = otpToken,
+            });
+    }
+
+    [Fact]
+    public async Task ShouldSetEmailToLowerCase()
+    {
+        var upperCaseEmail = "DsantIN@CODEC.iE";
+        var emailVerificationModel = new EmailVerificationModel(upperCaseEmail);
+
+        var requestData = BuildHttpRequestData(emailVerificationModel);
+        await emailVerificationFunction.SendVerificationEmail(requestData);
+
+        HttpTest.ShouldHaveCalled(DynamicsOptions.EmailVerificationFlowUrl)
+            .WithRequestJson(new
+            {
+                emailAddress = upperCaseEmail.ToLower(),
                 otp = otpToken,
             });
     }
