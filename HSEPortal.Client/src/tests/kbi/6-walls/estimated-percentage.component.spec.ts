@@ -122,18 +122,18 @@ describe('EstimatedPercentageComponent showError', () => {
 
     testCasesErrors.forEach( x => {
         new TestHelper()
-        .setDescription(x.description)
-        .setTestCase((applicationService: ApplicationService, value: TestError) => {
-            setup(applicationService);
+            .setDescription(x.description)
+            .setTestCase((applicationService: ApplicationService, value: TestError) => {
+                setup(applicationService);
 
-            applicationService.currentKbiSection!.Walls.ExternalWallMaterials = value.externalMaterials;
-            applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = {};
-            value.percentages.forEach(x => applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![x.externalMaterial] = x.value);
+                applicationService.currentKbiSection!.Walls.ExternalWallMaterials = value.externalMaterials;
+                applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = {};
+                value.percentages.forEach(x => applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![x.externalMaterial] = x.value);
 
-            component.hasErrors = !component.canContinue();
-            expect(component.hasErrors).toBeTrue();
+                component.hasErrors = !component.canContinue();
+                expect(component.hasErrors).toBeTrue();
 
-        }, x.test).execute();
+            }, x.test).execute();
     });
     
 
