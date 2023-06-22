@@ -15,7 +15,7 @@
                     hintText="For example, an office or factory could have been converted into residential units">
                     <govuk-radio [model]="applicationService.currentKbiSection!.BuildingUse.ChangePrimaryUse" name="application-group" label="Yes" id="yes" value="yes" (onKeyupEnter)="saveAndContinue()" />
                     <govuk-radio [model]="applicationService.currentKbiSection!.BuildingUse.ChangePrimaryUse" name="application-group" label="No" id="no" value="no" (onKeyupEnter)="saveAndContinue()" />
-                    </govuk-radio-group>
+                </govuk-radio-group>
             </div>
 
             <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
