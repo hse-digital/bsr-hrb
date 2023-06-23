@@ -5,7 +5,9 @@ import { AccountablePersonModel, ApplicationService } from 'src/app/services/app
 import { AccountablePersonComponent } from 'src/app/features/application/accountable-person/accountable-person/accountable-person.component';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { TestHelper } from '../test-helper';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
+let httpTestingController: HttpTestingController;
 let component: AccountablePersonComponent;
 let fixture: ComponentFixture<AccountablePersonComponent>;
 
@@ -19,10 +21,11 @@ describe('AccountablePersonComponent showError', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AccountablePersonComponent],
-      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule, HttpClientTestingModule],
       providers: [ApplicationService]
     }).compileComponents();
 
+    httpTestingController = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(AccountablePersonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -39,6 +42,8 @@ describe('AccountablePersonComponent showError', () => {
       applicationService.model.PrincipalAccountableType = value;
       component.hasErrors = !component.canContinue();
       expect(component.accountablePersonHasErrors).toBeTrue();
+      httpTestingController.match(`api/UpdateApplication/undefined`);
+      httpTestingController.verify();
     }, undefined, '').execute();
 
   new TestHelper()
@@ -48,6 +53,9 @@ describe('AccountablePersonComponent showError', () => {
       applicationService.model.PrincipalAccountableType = value;
       component.hasErrors = !component.canContinue();
       expect(component.accountablePersonHasErrors).toBeFalse();
+
+      httpTestingController.match(`api/UpdateApplication/undefined`);
+      httpTestingController.verify();
     }, 'organisation').execute();
 });
 
@@ -56,9 +64,11 @@ describe('AccountablePersonComponent getErrorDescription(hasError, errorText)', 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AccountablePersonComponent],
-      imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
+      imports: [RouterTestingModule, HseAngularModule, ComponentsModule, HttpClientTestingModule],
       providers: [ApplicationService]
     }).compileComponents();
+
+    httpTestingController = TestBed.inject(HttpTestingController);
 
     fixture = TestBed.createComponent(AccountablePersonComponent);
     component = fixture.componentInstance;
@@ -73,6 +83,8 @@ describe('AccountablePersonComponent getErrorDescription(hasError, errorText)', 
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.accountablePersonHasErrors, 'Error message')).toBeDefined();
       expect(component.getErrorDescription(component.accountablePersonHasErrors, 'Error message')).toEqual('Error message');
+      httpTestingController.match(`api/UpdateApplication/undefined`);
+      httpTestingController.verify();
     }, undefined).execute();
   
   new TestHelper()
@@ -82,5 +94,7 @@ describe('AccountablePersonComponent getErrorDescription(hasError, errorText)', 
       applicationService.model.PrincipalAccountableType = value;
       component.hasErrors = !component.canContinue();
       expect(component.getErrorDescription(component.accountablePersonHasErrors, 'Error message')).toBeUndefined();
+      httpTestingController.match(`api/UpdateApplication/undefined`);
+      httpTestingController.verify();
     }, 'individual').execute();
 });
