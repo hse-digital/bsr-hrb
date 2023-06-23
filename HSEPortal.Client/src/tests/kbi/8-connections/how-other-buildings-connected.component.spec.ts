@@ -17,6 +17,7 @@ function setup(applicationService: ApplicationService) {
     applicationService.model.Sections = [{ Name: "Section1", Addresses: [{ Postcode: "ABC", IsManual: false }] }];
 
     applicationService.initKbi();
+    component.ngOnInit();
     
     fixture.detectChanges();
 }
@@ -45,7 +46,7 @@ describe('HowOtherBuildingsConnectedComponent showError', () => {
             setup(applicationService);
             applicationService.model.Kbi!.Connections.HowOtherBuildingAreConnected = value;
             component.hasErrors = !component.canContinue();
-            expect(component.howBuildingsAreConnectedHasErrors).toBeFalse();
+            expect(component.howBuildingsAreConnectedHasErrors).toBeTrue();
 
         }, undefined, []).execute();
 
