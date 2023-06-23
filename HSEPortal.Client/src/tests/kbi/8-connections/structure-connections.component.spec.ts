@@ -22,7 +22,7 @@ async function setup(applicationService: ApplicationService) {
     ];
 
     applicationService.initKbi();
-    await component.ngOnInit();
+    component.ngOnInit();
 
     fixture.detectChanges();
 }
@@ -48,26 +48,28 @@ describe('StructureConnectionsComponent showError', () => {
 
     new TestHelper()
         .setDescription('should show an error when the StructureConnections is undefined or empty.')
-        .setTestCase( async (applicationService: ApplicationService, value: any) => {
-            await setup(applicationService);
+        .setTestCase((applicationService: ApplicationService, value: any) => {
+            setup(applicationService);
             applicationService.model.Kbi!.Connections.StructureConnections = value;
             component.hasErrors = !component.canContinue();
             expect(component.structureConnectionsHasErrors).toBeTrue();
 
             httpTestingController.match(`api/SyncKbiStructureRoofStaircasesAndWalls/${applicationService.model.id}`);
+            httpTestingController.match(`api/UpdateApplication/${applicationService.model.id}`);
             httpTestingController.verify();
 
         }, undefined, []).execute();
 
     new TestHelper()
         .setDescription('should NOT show an error when the StructureConnections is defined and not empty.')
-        .setTestCase( async (applicationService: ApplicationService, value: any) => {
-            await setup(applicationService);
+        .setTestCase((applicationService: ApplicationService, value: any) => {
+            setup(applicationService);
             applicationService.model.Kbi!.Connections.StructureConnections = value;
             component.hasErrors = !component.canContinue();
             expect(component.structureConnectionsHasErrors).toBeFalse();
 
             httpTestingController.match(`api/SyncKbiStructureRoofStaircasesAndWalls/${applicationService.model.id}`);
+            httpTestingController.match(`api/UpdateApplication/${applicationService.model.id}`);
             httpTestingController.verify();
 
         }, ["bridge-walkway", "car-park", "ground-floor"], ["levels-below-ground-residential-unit", "shared-wall-emergency-door", "shared-wall-no-door"]).execute();
