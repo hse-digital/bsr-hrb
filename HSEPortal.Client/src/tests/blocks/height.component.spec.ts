@@ -13,6 +13,8 @@ let fixture: ComponentFixture<SectionHeightComponent>;
 function setup(applicationService: ApplicationService) {
   applicationService.newApplication();
   applicationService.startSectionsEdit();
+
+  fixture.detectChanges();
 }
 
 describe('SectionHeightComponent showError', () => {
@@ -26,7 +28,7 @@ describe('SectionHeightComponent showError', () => {
 
     fixture = TestBed.createComponent(SectionHeightComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    
   });
 
   it('should create', () => {
@@ -72,7 +74,6 @@ describe('SectionHeightComponent getErrorDescription(hasError, errorText)', () =
 
     fixture = TestBed.createComponent(SectionHeightComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
 
   });
 

@@ -15,6 +15,8 @@ let fixture: ComponentFixture<SectionPeopleLivingInBuildingComponent>;
 function setup(applicationService: ApplicationService) {
   applicationService.newApplication();
   applicationService.startSectionsEdit();
+  
+  fixture.detectChanges();
 }
 
 describe('SectionPeopleLivingInBuildingComponent showError', () => {
@@ -28,7 +30,6 @@ describe('SectionPeopleLivingInBuildingComponent showError', () => {
 
     fixture = TestBed.createComponent(SectionPeopleLivingInBuildingComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -64,7 +65,6 @@ describe('SectionPeopleLivingInBuildingComponent getErrorDescription(hasError, e
     }).compileComponents();
     fixture = TestBed.createComponent(SectionPeopleLivingInBuildingComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   new TestHelper()

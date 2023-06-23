@@ -13,7 +13,8 @@ let fixture: ComponentFixture<SectionFloorsAboveComponent>;
 
 function setup(applicationService: ApplicationService) {
   applicationService.newApplication();
-  applicationService.startSectionsEdit();
+  applicationService.startSectionsEdit();  
+  fixture.detectChanges();
 }
 
 describe('SectionFloorsAboveComponent showError', () => {
@@ -27,7 +28,6 @@ describe('SectionFloorsAboveComponent showError', () => {
 
     fixture = TestBed.createComponent(SectionFloorsAboveComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -74,7 +74,6 @@ describe('SectionFloorsAboveComponent getErrorDescription(hasError, errorText)',
 
     fixture = TestBed.createComponent(SectionFloorsAboveComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   new TestHelper()

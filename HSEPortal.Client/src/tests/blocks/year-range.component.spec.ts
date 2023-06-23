@@ -14,6 +14,7 @@ let fixture: ComponentFixture<SectionYearRangeComponent>;
 function setup(applicationService: ApplicationService) {
     applicationService.newApplication();
     applicationService.startSectionsEdit();
+    fixture.detectChanges();
 }
 
 describe('SectionYearRangeComponent showError', () => {
@@ -27,7 +28,6 @@ describe('SectionYearRangeComponent showError', () => {
 
         fixture = TestBed.createComponent(SectionYearRangeComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
     });
 
     it('should create', () => {

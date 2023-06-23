@@ -7,13 +7,13 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { TestHelper } from '../test-helper';
 import { SectionYearOfCompletionComponent } from 'src/app/features/application/building-summary/year-of-completion/year-of-completion.component';
 
-
 let component: SectionYearOfCompletionComponent;
 let fixture: ComponentFixture<SectionYearOfCompletionComponent>;
 
 function setup(applicationService: ApplicationService) {
     applicationService.newApplication();
     applicationService.startSectionsEdit();
+    fixture.detectChanges();
 }
 
 describe('SectionYearOfCompletionComponent showError', () => {
@@ -24,10 +24,10 @@ describe('SectionYearOfCompletionComponent showError', () => {
             imports: [RouterTestingModule, HseAngularModule, ComponentsModule],
             providers: [ApplicationService]
         }).compileComponents();
-
+        SectionYearOfCompletionComponent.prototype.sectionBuildingName  = (): string | undefined => { return "" };
         fixture = TestBed.createComponent(SectionYearOfCompletionComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
+        
     });
 
     it('should create', () => {
@@ -47,7 +47,7 @@ describe('SectionYearOfCompletionComponent showError', () => {
 
     let testCases = [
         { description: "should show an error when the YearOfCompletion is in the future", years: ["2040", "2060", "3000", 2040, 2060, 3000] },
-        { description: "should show an error when the YearOfCompletion is not a real year", years: ["123", "0", "123456", 0, 123 , 123456] },
+        { description: "should show an error when the YearOfCompletion is not a real year", years: ["123", "0", "123456", 0, 123, 123456] },
         { description: "should show an error when the YearOfCompletion is not a number", years: ["1.987", "2.000", "123.4", "1,234", 1.987, 2.000, 123.4] },
     ]
 
@@ -63,8 +63,6 @@ describe('SectionYearOfCompletionComponent showError', () => {
                 expect(component.exactYearHasErrors).toBeTrue();
             }, ...test.years).execute();
     });
-
-
 
     new TestHelper()
         .setDescription('should NOT show an error when the YearOfCompletion is valid')

@@ -14,6 +14,8 @@ function setup(applicationService: ApplicationService) {
   applicationService.newApplication();
   applicationService.startSectionsEdit();
   component.ngOnInit();
+  
+  fixture.detectChanges();
 }
 
 describe('SectionNameComponent showError', () => {
@@ -27,7 +29,6 @@ describe('SectionNameComponent showError', () => {
 
     fixture = TestBed.createComponent(SectionNameComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -71,7 +72,6 @@ describe('SectionNameComponent getErrorDescription(value, errorText)', () => {
 
     fixture = TestBed.createComponent(SectionNameComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   new TestHelper()

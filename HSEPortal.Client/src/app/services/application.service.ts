@@ -12,7 +12,6 @@ export class ApplicationService {
   _currentAccountablePersonIndex;
 
   get currentSection(): SectionModel {
-    if(!this.model.Sections || this.model.Sections.length == 0) return new SectionModel();
     return this.model.Sections[this._currentSectionIndex];
   }
 

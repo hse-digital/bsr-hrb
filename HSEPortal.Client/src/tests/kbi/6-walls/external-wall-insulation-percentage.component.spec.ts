@@ -41,6 +41,8 @@ describe('ExternalWallInsulationPercentageComponent showError', () => {
             imports: [RouterTestingModule, HseAngularModule, ComponentsModule, PipesModule],
             providers: [ApplicationService, KbiService]
         }).compileComponents();
+
+        ExternalWallInsulationPercentageComponent.prototype.getInfraestructureName = () => "";
     });
 
     type TestCase = { externalMaterials: string[], percentages: { externalMaterial: string, value: number }[] }

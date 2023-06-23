@@ -13,6 +13,7 @@ let fixture: ComponentFixture<SectionResidentialUnitsComponent>;
 function setup(applicationService: ApplicationService) {
   applicationService.newApplication();
   applicationService.startSectionsEdit();
+  fixture.detectChanges();
 }
 
 describe('SectionResidentialUnitsComponent showError', () => {
@@ -26,7 +27,6 @@ describe('SectionResidentialUnitsComponent showError', () => {
 
     fixture = TestBed.createComponent(SectionResidentialUnitsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -74,7 +74,6 @@ describe('SectionResidentialUnitsComponent getErrorDescription(hasError, errorTe
 
     fixture = TestBed.createComponent(SectionResidentialUnitsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   new TestHelper()

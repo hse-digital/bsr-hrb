@@ -20,6 +20,7 @@ let httpTestingController: HttpTestingController;
 
 function setup(applicationService: ApplicationService) {
     applicationService.newApplication();
+    applicationService.startSectionsEdit();
     applicationService.model.AccountablePersons = [];
     applicationService.startAccountablePersonEdit();
 
