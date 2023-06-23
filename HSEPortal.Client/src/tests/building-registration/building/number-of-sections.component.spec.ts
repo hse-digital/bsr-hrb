@@ -10,10 +10,10 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { inject } from "@angular/core/testing";
 
 import { TestHelper } from 'src/tests/test-helper';
-import { CertificateNumberComponent } from './certificate-number.component';
+import { NumberOfSectionsComponment } from 'src/app/features/application/building-summary/number-of-sections/number-of-sections.component';
 
-let component: CertificateNumberComponent;
-let fixture: ComponentFixture<CertificateNumberComponent>;
+let component: NumberOfSectionsComponment;
+let fixture: ComponentFixture<NumberOfSectionsComponment>;
 
 let httpClient: HttpClient;
 let httpTestingController: HttpTestingController;
@@ -22,18 +22,16 @@ function setup(applicationService: ApplicationService) {
     applicationService.newApplication();
     applicationService.startSectionsEdit();
 
-    fixture = TestBed.createComponent(CertificateNumberComponent);
+    fixture = TestBed.createComponent(NumberOfSectionsComponment);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
-    component.isOptional = false;
 }
 
-describe('CertificateNumberComponent showError', () => {
+describe('NumberOfSectionsComponment showError', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [CertificateNumberComponent],
+            declarations: [NumberOfSectionsComponment],
             imports: [HttpClientTestingModule, RouterTestingModule, HseAngularModule, ComponentsModule],
             providers: [ApplicationService]
         }).compileComponents();
@@ -48,22 +46,22 @@ describe('CertificateNumberComponent showError', () => {
     }));
 
     new TestHelper()
-        .setDescription("should show an error if the certificate number reference is empty or undefined (isOptional = false)")
+        .setDescription("should show an error if the NumberOfSections is empty or undefined.")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.currentSection.CompletionCertificateReference = value;
+            applicationService.model.NumberOfSections = value;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeTrue();
-            expect(component.certificateHasErrors).toBeTrue();
+            expect(component.numberOfSectionsHasErrors).toBeTrue();
         }, '', undefined).execute();
 
     new TestHelper()
-        .setDescription("should NOT show an error if the certificate number reference is valid")
+        .setDescription("should NOT show an error if the NumberOfSections is valid")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.currentSection.CompletionCertificateReference = value;
+            applicationService.model.NumberOfSections = value;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeFalse();
-            expect(component.certificateHasErrors).toBeFalse();
-        }, "Completition Cerficate Reference").execute();
+            expect(component.numberOfSectionsHasErrors).toBeFalse();
+        }, "yes", "no").execute();
 });

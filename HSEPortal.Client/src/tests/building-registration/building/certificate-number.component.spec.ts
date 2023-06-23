@@ -10,10 +10,10 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { inject } from "@angular/core/testing";
 
 import { TestHelper } from 'src/tests/test-helper';
-import { CertificateIssuerComponent } from './certificate-issuer.component';
+import { CertificateNumberComponent } from 'src/app/features/application/building-summary/certificate-number/certificate-number.component';
 
-let component: CertificateIssuerComponent;
-let fixture: ComponentFixture<CertificateIssuerComponent>;
+let component: CertificateNumberComponent;
+let fixture: ComponentFixture<CertificateNumberComponent>;
 
 let httpClient: HttpClient;
 let httpTestingController: HttpTestingController;
@@ -22,18 +22,18 @@ function setup(applicationService: ApplicationService) {
     applicationService.newApplication();
     applicationService.startSectionsEdit();
 
-    fixture = TestBed.createComponent(CertificateIssuerComponent);
+    fixture = TestBed.createComponent(CertificateNumberComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 
     component.isOptional = false;
 }
 
-describe('CertificateIssuerComponent showError', () => {
+describe('CertificateNumberComponent showError', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [CertificateIssuerComponent],
+            declarations: [CertificateNumberComponent],
             imports: [HttpClientTestingModule, RouterTestingModule, HseAngularModule, ComponentsModule],
             providers: [ApplicationService]
         }).compileComponents();
@@ -48,22 +48,22 @@ describe('CertificateIssuerComponent showError', () => {
     }));
 
     new TestHelper()
-        .setDescription("should show an error if the certificate issuer is empty or undefined (isOptional = false)")
+        .setDescription("should show an error if the certificate number reference is empty or undefined (isOptional = false)")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.currentSection.CompletionCertificateIssuer = value;
+            applicationService.currentSection.CompletionCertificateReference = value;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeTrue();
             expect(component.certificateHasErrors).toBeTrue();
         }, '', undefined).execute();
 
     new TestHelper()
-        .setDescription("should NOT show an error if the certificate issuer is valid")
+        .setDescription("should NOT show an error if the certificate number reference is valid")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.currentSection.CompletionCertificateIssuer = value;
+            applicationService.currentSection.CompletionCertificateReference = value;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeFalse();
             expect(component.certificateHasErrors).toBeFalse();
-        }, "Cerficate Issuer").execute();
+        }, "Completition Cerficate Reference").execute();
 });

@@ -10,10 +10,10 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { inject } from "@angular/core/testing";
 
 import { TestHelper } from 'src/tests/test-helper';
-import { PapWhoAreYouComponent } from './pap-who-are-you.component';
+import { CertificateIssuerComponent } from 'src/app/features/application/building-summary/certificate-issuer/certificate-issuer.component';
 
-let component: PapWhoAreYouComponent;
-let fixture: ComponentFixture<PapWhoAreYouComponent>;
+let component: CertificateIssuerComponent;
+let fixture: ComponentFixture<CertificateIssuerComponent>;
 
 let httpClient: HttpClient;
 let httpTestingController: HttpTestingController;
@@ -21,19 +21,19 @@ let httpTestingController: HttpTestingController;
 function setup(applicationService: ApplicationService) {
     applicationService.newApplication();
     applicationService.startSectionsEdit();
-    applicationService.model.AccountablePersons = [];
-    applicationService.startAccountablePersonEdit();
 
-    fixture = TestBed.createComponent(PapWhoAreYouComponent);
+    fixture = TestBed.createComponent(CertificateIssuerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    component.isOptional = false;
 }
 
-describe('PapWhoAreYouComponent showError', () => {
+describe('CertificateIssuerComponent showError', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [PapWhoAreYouComponent],
+            declarations: [CertificateIssuerComponent],
             imports: [HttpClientTestingModule, RouterTestingModule, HseAngularModule, ComponentsModule],
             providers: [ApplicationService]
         }).compileComponents();
@@ -48,22 +48,22 @@ describe('PapWhoAreYouComponent showError', () => {
     }));
 
     new TestHelper()
-        .setDescription("should show an error if the role is empty or undefined")
+        .setDescription("should show an error if the certificate issuer is empty or undefined (isOptional = false)")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.currentAccountablePerson.Role = value;
+            applicationService.currentSection.CompletionCertificateIssuer = value;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeTrue();
-            expect(component.roleHasErrors).toBeTrue();
+            expect(component.certificateHasErrors).toBeTrue();
         }, '', undefined).execute();
 
     new TestHelper()
-        .setDescription("should NOT show an error if the role is valid")
+        .setDescription("should NOT show an error if the certificate issuer is valid")
         .setTestCase((applicationService: ApplicationService, value: any) => {
             setup(applicationService);
-            applicationService.currentAccountablePerson.Role = value;
+            applicationService.currentSection.CompletionCertificateIssuer = value;
             component.hasErrors = !component.canContinue();
             expect(component.hasErrors).toBeFalse();
-            expect(component.roleHasErrors).toBeFalse();
-        }, "Pap role").execute();
+            expect(component.certificateHasErrors).toBeFalse();
+        }, "Cerficate Issuer").execute();
 });
