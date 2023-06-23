@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { DebugElement, Type } from "@angular/core";
-import { ComponentFixture, inject } from "@angular/core/testing";
+import { ComponentFixture, inject, waitForAsync } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { ApplicationService } from "src/app/services/application.service";
 
@@ -38,6 +38,13 @@ export class TestHelper {
             this.applicationService = applicationService;
             await this.testCase();
         }));
+    }
+
+    executeAndWaitForAsync() {
+        it(this.description, waitForAsync(inject([ApplicationService], (applicationService: ApplicationService) => {
+            this.applicationService = applicationService;
+            this.testCase();
+        })));
     }
 
     disabled() {
