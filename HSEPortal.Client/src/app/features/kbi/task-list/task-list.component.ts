@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { ApplicationService, BuildingApplicationStatus, KbiModel, KbiSectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { KbiNavigation } from 'src/app/features/kbi/kbi.navigation.ts.service';
+import { KbiService } from 'src/app/services/kbi.service';
+import { KbiConnectionsModule } from '../8-connections/kbi.connections.module';
+import { KbiSubmitModule } from '../9-submit/kbi.submit.module';
 
 @Component({
   selector: 'hse-task-list',
@@ -18,20 +21,12 @@ export class TaskListComponent implements CanActivate, OnInit {
   checkingStatus = true;
 
   constructor(public applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute,
-    private kbiNavigation: KbiNavigation) {
-
+    private kbiService: KbiService, private kbiNavigation: KbiNavigation) {
   }
 
-  ngOnInit(): void {
-    if (!this.applicationService.model.Kbi) {
-      this.applicationService.model.Kbi = new KbiModel();
-      this.applicationService.model.Sections.forEach(x => this.applicationService.model.Kbi!.KbiSections.push(new KbiSectionModel()));
-      this.applicationService._currentSectionIndex = 0;
-    }
-    if (!this.applicationService.model.Kbi.SectionStatus || this.applicationService.model.Kbi.SectionStatus.length == 0) {
-      this.applicationService.model.Kbi.SectionStatus = [];
-      this.applicationService.model.Sections.map(x => this.applicationService.model.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
-    }
+  async ngOnInit() {
+    this.applicationService.initKbi();
+    await this.applicationService.updateApplication();
   }
 
   isSectionInProgress(index: number) {
@@ -39,9 +34,7 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   isSectionComplete(index: number) {
-    return index < 0
-      ? this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete)
-      : this.applicationService.model.Kbi?.SectionStatus?.at(index)?.Complete;
+    return index < 0 || this.applicationService.model.Kbi?.SectionStatus?.at(index)?.Complete;
   }
 
   getNumberOfCompletedSteps() {
@@ -63,29 +56,37 @@ export class TaskListComponent implements CanActivate, OnInit {
     return this.navigationService.navigateAppend(CheckBeforeStartComponent.route, this.activatedRoute);
   }
 
-  async navigateToSection(index: number) {
-    this.applicationService._currentSectionIndex = index;
-    this.applicationService._currentKbiSectionIndex = index;
-    return this.navigateToKbiSections();
-  }
+  async navigateToSection(index: number, sectionName: string) {
+    let route = this.kbiNavigation.getNextRoute(index);
+    await this.kbiService.startKbi(this.applicationService.model.Kbi!.KbiSections[index]);
 
-  async navigateToKbiSections() {
-    const route = this.kbiNavigation.getNextRoute();
-    if (route.indexOf('?') > -1) {
-      let segments = route.split('?');
-      let equipment = segments[1].substring(segments[1].indexOf('=') + 1);
-      await this.navigationService.navigateAppend(segments[0], this.activatedRoute, { equipment: equipment });
+    let sectionId = `${index + 1}`;
+    if (sectionName !== void 0) {
+      sectionId = `${sectionId}-${sectionName}`;
+    }
+
+    if (route.startsWith(KbiConnectionsModule.baseRoute) || route.startsWith(KbiSubmitModule.baseRoute)) {
+      await this.navigationService.navigateAppend(`${route}`, this.activatedRoute);
     } else {
-      await this.navigationService.navigateAppend(route, this.activatedRoute);
+      let query = route.split('?');
+      let params: any = {};
+      if (query.length > 1) {
+        let queryParam = query[1].split('=');
+        params[queryParam[0]] = queryParam[1];
+      }
+
+      await this.navigationService.navigateAppend(`${sectionId}/${query[0]}`, this.activatedRoute, params);
     }
   }
 
-  navigateToConnections() {
-
+  async navigateToConnections() {
+    var route = await this.kbiNavigation.getNextConnectionRoute();
+    await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
-  navigateToSubmit() {
-
+  async navigateToSubmit() {
+    var route = await this.kbiNavigation.getNextSubmitRoute();
+    await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
   containsFlag(flag: BuildingApplicationStatus) {

@@ -31,6 +31,7 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.Configure<SwaOptions>(builderContext.Configuration.GetSection(SwaOptions.Swa));
 
     serviceCollection.AddTransient<DynamicsService>();
+    serviceCollection.AddTransient<KbiService>();
     serviceCollection.AddTransient<DynamicsApi>();
     serviceCollection.AddTransient<OTPService>();
     serviceCollection.AddTransient<DynamicsModelDefinitionFactory>();

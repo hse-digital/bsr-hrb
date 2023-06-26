@@ -19,6 +19,7 @@ public class WhenValidatingApplicationNumber : IntegrationTestBase
 
     [Theory]
     [InlineData("dont@delete.com", "HBR170597960", HttpStatusCode.OK)]
+    [InlineData("DONT@DELETE.com", "HBR170597960", HttpStatusCode.OK)]
     [InlineData("DOESNT-EXIST", "DOESNT-EXIST", HttpStatusCode.BadRequest)]
     public async Task ShouldReturnApplicationExistsBasedOnNumberAndEmailAddress(string emailAddress, string applicationNumber, HttpStatusCode expectedResponse)
     {

@@ -9,103 +9,45 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
 import { HseRoute, HseRoutes } from 'src/app/services/hse.route';
 import { CheckBeforeStartComponent } from './check-before-start/check-before-start.component';
 import { TaskListComponent } from './task-list/task-list.component';
-import { EvacuationStrategyComponent } from './evacuation-strategy/evacuation-strategy.component';
-import { ProvisionsEquipmentComponent } from './provisions-equipment/provisions-equipment.component';
-import { FireSmokeProvisionsComponent } from './fire-smoke-provisions/fire-smoke-provisions.component';
-import { FireSmokeProvisionLocationsComponent } from './fire-smoke-provision-locations/fire-smoke-provision-locations.component';
-import { LiftsComponent } from './lifts/lifts.component';
-import { FireDoorsCommonComponent } from './fire-doors-common/fire-doors-common.component';
-import { ResidentialUnitFrontDoorsFireResistanceComponent } from './residential-unit-front-doors-fire-resistance/residential-unit-front-doors-fire-resistance.component';
-import { RoofTypeComponent } from './roof-type/roof-type.component';
-import { InsulationLayerComponent } from './insulation-layer/insulation-layer.component';
-import { RoofMaterialComponent } from './roof-material/roof-material.component';
-import { EnergySupplyComponent } from './energy-supply/energy-supply.component';
-import { TotalStaircasesComponent } from './total-staircases/total-staircases.component';
-import { EnergyTypeComponent } from './energy-type/energy-type.component';
-import { OnSiteEnergyGenerationComponent } from './on-site-energy-generation/on-site-energy-generation.component';
-import { BuildingStructureTypeComponent } from './building-structure-type/building-structure-type.component';
-import { ExternalWallMaterialsComponent } from './external-wall-materials/external-wall-materials.component';
-import { WallsAcmComponent } from './walls-acm/walls-acm.component';
-import { WallsHplComponent } from './walls-hpl/walls-hpl.component';
-import { EstimatedPercentageComponent } from './estimated-percentage/estimated-percentage.component';
-import { ExternalWallInsulationTypeComponent } from './external-wall-insulation-type/external-wall-insulation-type.component';
-import { ExternalWallInsulationPercentageComponent } from './external-wall-insulation-percentage/external-wall-insulation-percentage.component';
-import { ExternalFeaturesComponent } from './external-features/external-features.component';
-import { FeatureMaterialsOutsideComponent } from './feature-materials-outside/feature-materials-outside.component';
-import { PrimaryUseOfBuildingComponent } from './primary-use-of-building/primary-use-of-building.component';
-import { SecondaryUseBuildingComponent } from './secondary-use-building/secondary-use-building.component';
-import { FloorsBelowGroundLevelComponent } from './floors-below-ground-level/floors-below-ground-level.component';
-import { PrimaryUseBuildingBelowGroundLevelComponent } from './primary-use-building-below-ground-level/primary-use-building-below-ground-level.component';
-import { ChangePrimaryUseComponent } from './change-primary-use/change-primary-use.component';
+import { KbiFireModule } from './1-fire/kbi.fire.module';
+import { KbiEnergyModule } from './2-energy/kbi.energy.module';
+import { KbiStructureModule } from './3-structure/kbi.structure.module';
+import { KbiRoofModule } from './4-roof/kbi.roof.module';
+import { KbiStaircasesModule } from './5-staircases/kbi.staircases.module';
+import { KbiWallsModule } from './6-walls/kbi.walls.module';
+import { KbiBuildingUseModule } from './7-building-use/kbi.building-use.module';
+import { KbiConnectionsModule } from './8-connections/kbi.connections.module';
+import { KbiSubmitModule } from './9-submit/kbi.submit.module';
+import { KbiSectionsComponent } from './sections/kbi.sections.component';
+import { KbiCheckAnswersModule } from './check-answers-building-information/kbi.check-answers-building-information.module';
+import { KbiSummaryComponent } from './kbi-summary/kbi-summary.component';
+import { KbiSummaryDeclarations } from './kbi-summary/kbi-summary.module';
+
 
 const routes = new HseRoutes([
   HseRoute.protected(CheckBeforeStartComponent.route, CheckBeforeStartComponent, CheckBeforeStartComponent.title),
   HseRoute.protected(TaskListComponent.route, TaskListComponent, TaskListComponent.title),
-  HseRoute.protected(EvacuationStrategyComponent.route, EvacuationStrategyComponent, EvacuationStrategyComponent.title),
-  HseRoute.protected(ProvisionsEquipmentComponent.route, ProvisionsEquipmentComponent, ProvisionsEquipmentComponent.title),
-  HseRoute.protected(FireSmokeProvisionsComponent.route, FireSmokeProvisionsComponent, FireSmokeProvisionsComponent.title),
-  HseRoute.protected(FireSmokeProvisionLocationsComponent.route, FireSmokeProvisionLocationsComponent, FireSmokeProvisionLocationsComponent.title),
-  HseRoute.protected(LiftsComponent.route, LiftsComponent, LiftsComponent.title),
-  HseRoute.protected(FireDoorsCommonComponent.route, FireDoorsCommonComponent, FireDoorsCommonComponent.title),
-  HseRoute.protected(ResidentialUnitFrontDoorsFireResistanceComponent.route, ResidentialUnitFrontDoorsFireResistanceComponent, ResidentialUnitFrontDoorsFireResistanceComponent.title),
-  HseRoute.protected(RoofTypeComponent.route, RoofTypeComponent, RoofTypeComponent.title),
-  HseRoute.protected(InsulationLayerComponent.route, InsulationLayerComponent, InsulationLayerComponent.title),
-  HseRoute.protected(RoofMaterialComponent.route, RoofMaterialComponent, RoofMaterialComponent.title),  
-  HseRoute.protected(TotalStaircasesComponent.route, TotalStaircasesComponent, TotalStaircasesComponent.title),
-  HseRoute.protected(EnergyTypeComponent.route, EnergyTypeComponent, EnergyTypeComponent.title),
-  HseRoute.protected(OnSiteEnergyGenerationComponent.route, OnSiteEnergyGenerationComponent, OnSiteEnergyGenerationComponent.title),
-  HseRoute.protected(EnergySupplyComponent.route, EnergySupplyComponent, EnergySupplyComponent.title),
-  HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title),
-  HseRoute.protected(ExternalWallMaterialsComponent.route, ExternalWallMaterialsComponent, ExternalWallMaterialsComponent.title),
-  HseRoute.protected(WallsAcmComponent.route, WallsAcmComponent, WallsAcmComponent.title),
-  HseRoute.protected(WallsHplComponent.route, WallsHplComponent, WallsHplComponent.title),
-  HseRoute.protected(EstimatedPercentageComponent.route, EstimatedPercentageComponent, EstimatedPercentageComponent.title),
-  HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title),
-  HseRoute.protected(BuildingStructureTypeComponent.route, BuildingStructureTypeComponent, BuildingStructureTypeComponent.title),
-  HseRoute.protected(ExternalWallInsulationTypeComponent.route, ExternalWallInsulationTypeComponent, ExternalWallInsulationTypeComponent.title),
-  HseRoute.protected(ExternalWallInsulationPercentageComponent.route, ExternalWallInsulationPercentageComponent, ExternalWallInsulationPercentageComponent.title),
-  HseRoute.protected(ExternalFeaturesComponent.route, ExternalFeaturesComponent, ExternalFeaturesComponent.title),
-  HseRoute.protected(FeatureMaterialsOutsideComponent.route, FeatureMaterialsOutsideComponent, FeatureMaterialsOutsideComponent.title),
-  HseRoute.protected(PrimaryUseOfBuildingComponent.route, PrimaryUseOfBuildingComponent, PrimaryUseOfBuildingComponent.title),
-  HseRoute.protected(SecondaryUseBuildingComponent.route, SecondaryUseBuildingComponent, SecondaryUseBuildingComponent.title),
-  HseRoute.protected(FloorsBelowGroundLevelComponent.route, FloorsBelowGroundLevelComponent, FloorsBelowGroundLevelComponent.title),
-  HseRoute.protected(PrimaryUseBuildingBelowGroundLevelComponent.route, PrimaryUseBuildingBelowGroundLevelComponent, PrimaryUseBuildingBelowGroundLevelComponent.title),
-  HseRoute.protected(ChangePrimaryUseComponent.route, ChangePrimaryUseComponent, ChangePrimaryUseComponent.title),
+  HseRoute.protected(KbiSummaryComponent.route, KbiSummaryComponent, KbiSummaryComponent.title),
+  HseRoute.forChildren(":section", KbiSectionsComponent, new HseRoutes([
+    HseRoute.forLoadChildren(KbiFireModule.baseRoute, () => import('./1-fire/kbi.fire.module').then(m => m.KbiFireModule)),
+    HseRoute.forLoadChildren(KbiEnergyModule.baseRoute, () => import('./2-energy/kbi.energy.module').then(m => m.KbiEnergyModule)),
+    HseRoute.forLoadChildren(KbiStructureModule.baseRoute, () => import('./3-structure/kbi.structure.module').then(m => m.KbiStructureModule)),
+    HseRoute.forLoadChildren(KbiRoofModule.baseRoute, () => import('./4-roof/kbi.roof.module').then(m => m.KbiRoofModule)),
+    HseRoute.forLoadChildren(KbiStaircasesModule.baseRoute, () => import('./5-staircases/kbi.staircases.module').then(m => m.KbiStaircasesModule)),
+    HseRoute.forLoadChildren(KbiWallsModule.baseRoute, () => import('./6-walls/kbi.walls.module').then(m => m.KbiWallsModule)),
+    HseRoute.forLoadChildren(KbiBuildingUseModule.baseRoute, () => import('./7-building-use/kbi.building-use.module').then(m => m.KbiBuildingUseModule)),
+    HseRoute.forLoadChildren(KbiCheckAnswersModule.baseRoute, () => import('./check-answers-building-information/kbi.check-answers-building-information.module').then(m => m.KbiCheckAnswersModule)),
+  ])),
+  HseRoute.forLoadChildren(KbiConnectionsModule.baseRoute, () => import('./8-connections/kbi.connections.module').then(m => m.KbiConnectionsModule)),
+  HseRoute.forLoadChildren(KbiSubmitModule.baseRoute, () => import('./9-submit/kbi.submit.module').then(m => m.KbiSubmitModule)),
 ]);
 
 @NgModule({
   declarations: [
     CheckBeforeStartComponent,
     TaskListComponent,
-    EvacuationStrategyComponent,
-    ProvisionsEquipmentComponent,
-    FireSmokeProvisionsComponent,
-    FireSmokeProvisionLocationsComponent,
-    LiftsComponent,
-    FireDoorsCommonComponent,
-    ResidentialUnitFrontDoorsFireResistanceComponent,
-    RoofTypeComponent,
-    InsulationLayerComponent,
-    RoofMaterialComponent,
-    EnergySupplyComponent,
-    TotalStaircasesComponent,
-    EnergyTypeComponent,
-    OnSiteEnergyGenerationComponent,
-    BuildingStructureTypeComponent,
-    ExternalWallInsulationTypeComponent,
-    ExternalWallInsulationPercentageComponent,
-    ExternalFeaturesComponent,
-    BuildingStructureTypeComponent,
-    ExternalWallMaterialsComponent,
-    WallsAcmComponent,
-    WallsHplComponent,
-    EstimatedPercentageComponent,
-    FeatureMaterialsOutsideComponent,
-    PrimaryUseOfBuildingComponent,
-    SecondaryUseBuildingComponent,
-    FloorsBelowGroundLevelComponent,
-    PrimaryUseBuildingBelowGroundLevelComponent,
-    ChangePrimaryUseComponent
+    KbiSectionsComponent,
+    ...KbiSummaryDeclarations
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

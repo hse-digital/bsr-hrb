@@ -1,7 +1,7 @@
-import { AccountablePersonModel, KbiSectionModel, SectionModel } from "./application.service";
+import { AccountablePersonModel, KbiModel, KbiSectionModel, SectionModel } from "./application.service";
 
 export abstract class BaseNavigation {
-  abstract getNextRoute(): string;
+  abstract getNextRoute(sectionIndex?: number): string;
 }
 
 export abstract class BuildingNavigationNode {
@@ -13,5 +13,5 @@ export abstract class ApNavigationNode {
 }
 
 export abstract class KbiNavigationNode {
-  abstract getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number ): string;
+  abstract getNextRoute(kbi: KbiSectionModel | KbiModel, kbiSectionIndex: number ): string;
 }

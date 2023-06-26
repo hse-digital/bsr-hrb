@@ -63,9 +63,9 @@ public record BuildingApplicationModel(
 }
 
 public record SectionModel(string Name,
-        string FloorsAbove, string Height, string PeopleLivingInBuilding,
-        string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange,
-        string CompletionCertificateIssuer, string CompletionCertificateReference, BuildingAddress[] Addresses = null);
+    string FloorsAbove, string Height, string PeopleLivingInBuilding,
+    string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange,
+    string CompletionCertificateIssuer, string CompletionCertificateReference, BuildingAddress[] Addresses = null);
 
 public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress Address, BuildingAddress PapAddress,
     string OrganisationName, string OrganisationType, string OrganisationTypeDescription,
@@ -96,22 +96,80 @@ public enum BuildingApplicationStatus
     KbiSubmitComplete = 8192
 }
 
-public record KbiModel(KbiSectionModel[] KbiSections, SectionStatus[] SectionStatus);
+public record KbiModel(KbiSectionModel[] KbiSections,
+        SectionStatus[] SectionStatus,
+        Connections Connections,
+        Submit Submit,
+        string ApplicationId);
 
 public record SectionStatus(bool InProgress, bool Complete);
 
-public record KbiSectionModel(string StrategyEvacuateBuilding, string[] ProvisionsEquipment, string[] FireSmokeProvisions, 
-    Dictionary<string, string[]> FireSmokeProvisionLocations, string[] Lifts, ResidentialUnitFrontDoors ResidentialUnitFrontDoors, 
-    string RoofType, string RoofInsulation, string RoofMaterial, FireDoorsCommon FireDoorsCommon, string[] EnergySupply, string[] BuildingStructureType,
-    string InternalStaircasesAllFloors, string TotalNumberStaircases, string[] EnergyTypeStorage, string[] OnsiteEnergyGeneration,
-    string[] ExternalWallMaterials, string WallACM, string WallHPL, Dictionary<string, string> ExternalWallMaterialsPercentage,
-    ExternalWallInsulation ExternalWallInsulation, Dictionary<string, string> ExternalWallInsulationPercentages, string[] ExternalFeatures,
-    Dictionary<string, string[]> FeatureMaterialsOutside, string PrimaryUseOfBuilding, string[] SecondaryUseBuilding, string FloorsBelowGroundLevel,
-    string PrimaryUseBuildingBelowGroundLevel, string ChangePrimaryUse);
+public record KbiSectionModel(Fire Fire, 
+        Energy Energy,
+        BuildingStructure BuildingStructure,
+        Roof Roof,
+        Staircases Staircases,
+        Walls Walls,
+        BuildingUse BuildingUse,
+        
+        string StructureName,
+        string Postcode,
+        string StrategyEvacuateBuilding,
+        string ApplicationId);
+
+public record ExternalWallInsulation(string[] CheckBoxSelection, string OtherValue);
+
+public record Fire(string StrategyEvacuateBuilding,
+    string[] ProvisionsEquipment,
+    string[] FireSmokeProvisions,
+    Dictionary<string, string[]> FireSmokeProvisionLocations,
+    string[] Lifts,
+    ResidentialUnitFrontDoors ResidentialUnitFrontDoors,
+    FireDoorsCommon FireDoorsCommon);
 
 public record FireDoorsCommon(string FireDoorThirtyMinute, string FireDoorSixtyMinute, string FireDoorHundredTwentyMinute, string FireDoorUnknown);
 
-public record ResidentialUnitFrontDoors(string NoFireResistance, string ThirtyMinsFireResistance, string SixtyMinsFireResistance, 
+public record ResidentialUnitFrontDoors(string NoFireResistance, string ThirtyMinsFireResistance, string SixtyMinsFireResistance,
     string HundredTwentyMinsFireResistance, string NotKnownFireResistance);
 
-public record ExternalWallInsulation(string[] CheckBoxSelection, string OtherValue);
+public record Energy(string[] EnergySupply,
+    string[] EnergyTypeStorage,
+    string[] OnsiteEnergyGeneration);
+
+public record BuildingStructure(string[] BuildingStructureType);
+
+public record Roof(string RoofType,
+    string RoofInsulation,
+    string RoofMaterial);
+
+public record Staircases(string InternalStaircasesAllFloors,
+    string TotalNumberStaircases);
+
+public record Walls(string[] ExternalWallMaterials,
+    string WallACM,
+    string WallHPL,
+    Dictionary<string, string> ExternalWallMaterialsPercentage,
+    ExternalWallInsulation ExternalWallInsulation,
+    Dictionary<string, string> ExternalWallInsulationPercentages,
+    string[] ExternalFeatures,
+    Dictionary<string, string[]> FeatureMaterialsOutside);
+
+public record BuildingUse(string PrimaryUseOfBuilding,
+    string[] SecondaryUseBuilding,
+    string FloorsBelowGroundLevel,
+    string PrimaryUseBuildingBelowGroundLevel,
+    string ChangePrimaryUse,
+    string PreviousUseBuilding,
+    string YearChangeInUse,
+    string[] AddedFloorsType,
+    string[] UndergoneBuildingMaterialChanges,
+    string MostRecentMaterialChange,
+    string YearMostRecentMaterialChange);
+
+public record Connections (string[] StructureConnections,
+        string OtherHighRiseBuildingConnections,
+        string[] HowOtherHighRiseBuildingAreConnected,
+        string OtherBuildingConnections,
+        string[] HowOtherBuildingAreConnected);
+
+public record Submit ();

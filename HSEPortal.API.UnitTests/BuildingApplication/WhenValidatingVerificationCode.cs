@@ -86,4 +86,16 @@ public class WhenValidatingVerificationCode : UnitTestBase
 
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task ShouldSetSecretToLowerCase()
+    {
+        var token = otpService.GenerateToken(emailAddress);
+        var model = new OTPValidationModel(token, emailAddress.ToUpper());
+
+        var request = BuildHttpRequestData(model);
+        var response = await emailVerificationFunction.ValidateOTPToken(request);
+
+        response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
 }

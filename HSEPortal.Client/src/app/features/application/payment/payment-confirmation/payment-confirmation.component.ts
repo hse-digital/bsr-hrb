@@ -40,7 +40,7 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
     });
   }
 
-  private async getApplicationPaymentReference(){
+  private async getApplicationPaymentReference() {
     var payments = await this.applicationService.getApplicationPayments()
     return await payments.find(x => x.bsr_govukpaystatus == "success")?.bsr_transactionid;
   }
@@ -71,5 +71,9 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
     }
 
     return true;
+  }
+
+  async continueToKbi() {
+    await this.navigationService.navigateRelative("../kbi", this.activatedRoute);
   }
 }

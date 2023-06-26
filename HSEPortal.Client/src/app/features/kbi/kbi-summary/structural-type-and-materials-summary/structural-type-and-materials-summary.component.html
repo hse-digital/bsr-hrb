@@ -1,0 +1,15 @@
+<govuk-summary-list>
+
+    <govuk-summary-list-row key="Structure Type" [showAction]=false>
+      <ng-container *ngFor="let type of getNonModularMaterials()">
+        <div>{{type}}</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row key="Modular Materials" [showAction]=false>
+      <ng-container *ngFor="let type of getModularMaterials()">
+        <div>{{type}}</div>
+      </ng-container>
+    </govuk-summary-list-row>
+
+</govuk-summary-list>

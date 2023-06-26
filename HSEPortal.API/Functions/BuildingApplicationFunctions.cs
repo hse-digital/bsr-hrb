@@ -43,10 +43,17 @@ public class BuildingApplicationFunctions
 
     [Function(nameof(ValidateApplicationNumber))]
     public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ValidateApplicationNumber/{emailAddress}/{applicationNumber}")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber} and c.ContactEmailAddress = {emailAddress}", Connection = "CosmosConnection")]
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber} and StringEquals(c.ContactEmailAddress, {emailAddress}, true)", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
         return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
+    }
+
+    [Function(nameof(GetSubmissionDate))]
+    public async Task<HttpResponseData> GetSubmissionDate([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetSubmissionDate/{applicationNumber}")] HttpRequestData request, string applicationNumber)
+    {
+        string submissionDate = await dynamicsService.GetSubmissionDate(applicationNumber);
+        return await request.CreateObjectResponseAsync(submissionDate);
     }
 
     [Function(nameof(GetApplication))]
