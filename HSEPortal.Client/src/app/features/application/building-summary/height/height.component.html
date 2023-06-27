@@ -11,16 +11,24 @@
 
         <h1 class="govuk-heading-l">Height of {{sectionBuildingName()}}</h1>
 
-        <govuk-body>Measure the height in metres from ground level to the top floor.</govuk-body>
-        <govuk-body>Do not measure the roof, unless there is a residential unit on it.</govuk-body>
-
-        <govuk-details summaryText="Help with top floor">
-          <p>The top floor is the top of the floor surface of the top storey of the building. Ignore any storey that is a roof-top machinery or roof-top plant area or consists exclusively of roof-top machinery or roof-top plant rooms.</p>
-        </govuk-details>
+        <govuk-body>If possible, give an accurate measurement of the height of {{sectionBuildingName()}}.</govuk-body>
+        <govuk-body>Measure from ground level to the top floor in metres.</govuk-body>
+        <govuk-body>Do not measure the roof, unless there's a residential unit on it.</govuk-body>
 
         <govuk-details summaryText="Help with ground level" id="help-with-ground-level">
-          <p>Ground level is the level of the land immediately next to {{sectionBuildingName()}}. If that land is uneven, measure from the lowest part of the land immediately next to {{sectionBuildingName()}}.</p>
+          <p>Ground level is the level of land immediately next to {{sectionBuildingName()}}. If that land is uneven, measure from the lowest level of the land.</p>
         </govuk-details>
+
+        <h2 class="govuk-heading-m">If you do not know the exact height</h2>
+        <govuk-body>You can estimate the height of {{sectionBuildingName()}} if it:</govuk-body>
+
+        <govuk-list classes='govuk-list--bullet'>
+          <govuk-list-item text="has at least 7 floors" />
+          <govuk-list-item text="is clearly over 18 metres" />
+        </govuk-list>
+
+        <govuk-body>Keep a record of how you estimated the height.</govuk-body>
+        <govuk-body>If {{sectionBuildingName()}} is around 18 metres, you should measure the height.</govuk-body>
 
         <govuk-input label="Height in metres" hint="For example, '18.75'."labelClass="govuk-label--s" id="height"
                      [(model)]="applicationService.currentSection.Height" #field [govukRequired]="field"
