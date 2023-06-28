@@ -242,6 +242,17 @@ export class SectionModel {
   CompletionCertificateIssuer?: any;
   CompletionCertificateReference?: any;
   Addresses: AddressModel[] = [];
+
+  Scope?: Scope;
+}
+
+export class Scope {
+  IsOutOfScope?: boolean;
+  OutOfScopeReason?: OutOfScopeReason;
+}
+
+export enum OutOfScopeReason {
+  Height, NumberResidentialUnits, PeopleLivingInBuilding
 }
 
 export class AccountablePersonModel {

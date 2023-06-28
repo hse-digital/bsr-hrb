@@ -9,6 +9,7 @@ import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from 'src/app/services/title.service';
 import { SectionHelper } from "src/app/helpers/section-helper";
+import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
 
 @Component({
   templateUrl: './residential-units.component.html'
@@ -51,7 +52,7 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
     let route: string = SectionPeopleLivingInBuildingComponent.route;
     if (this.applicationService.currentSection.ResidentialUnits! < 2) {
       route = this.applicationService.model.NumberOfSections == 'one' 
-        ? SectionResidentialUnitsComponent.route  // user goes to 6258 no need register (single structure)
+        ? NotNeedRegisterSingleStructureComponent.route
         : SectionResidentialUnitsComponent.route; // user goes to 6259 no need register (multi structure)
     }
     return navigationService.navigateRelative(route, activatedRoute);
