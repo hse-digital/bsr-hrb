@@ -7,6 +7,7 @@ import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from 'src/app/services/title.service';
+import { SectionResidentialUnitsComponent } from "../residential-units/residential-units.component";
 
 @Component({
   templateUrl: './height.component.html',
@@ -47,7 +48,12 @@ export class SectionHeightComponent extends BaseComponent implements IHasNextPag
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative('residential-units', activatedRoute);
+    if (this.applicationService.currentSection.Height! < 7) {
+      return this.applicationService.model.NumberOfSections == 'one' 
+        ? navigationService.navigateRelative(SectionHeightComponent.route, activatedRoute)  // user goes to 6258 no need register (single structure)
+        : navigationService.navigateRelative(SectionHeightComponent.route, activatedRoute); // user goes to 6259 no need register (multi structure)
+    }
+    return navigationService.navigateRelative(SectionResidentialUnitsComponent.route, activatedRoute);
   }
 
   sectionBuildingName() {
