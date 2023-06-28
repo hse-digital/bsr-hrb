@@ -116,15 +116,18 @@ class NumberOfFloorsNavigationNode extends BuildingNavigationNode {
 }
 
 class HeightNavigationNode extends BuildingNavigationNode {
-  constructor(private numberOfResidentialUnitsNavigationNode: NumberOfResidentialUnitsNavigationNode) {
+  constructor(private applicationService: ApplicationService, private numberOfResidentialUnitsNavigationNode: NumberOfResidentialUnitsNavigationNode) {
     super();
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.Height) {
       return SectionHeightComponent.route;
+    } else if (section.Height < 7) {
+      return this.applicationService.model.NumberOfSections == 'one' 
+        ? this.numberOfResidentialUnitsNavigationNode.getNextRoute(section, sectionIndex)  // user goes to 6258 no need register (single structure)
+        : this.numberOfResidentialUnitsNavigationNode.getNextRoute(section, sectionIndex); // user goes to 6259 no need register (multi structure)
     }
-
     return this.numberOfResidentialUnitsNavigationNode.getNextRoute(section, sectionIndex);
   }
 }
@@ -301,7 +304,7 @@ class AddAnotherSectionNavigationTree extends BuildingNavigationNode {
   private yearOfCompletionNavigationNode = new YearOfCompletionNavigationNode(this.yearRangeNavigationNode, this.completionCertificateIssuerNavigationNode, this.sectionAddressNavigationNode);
   private peopleLivingNavigationNode = new PeopleLivingNavigationNode(this.yearOfCompletionNavigationNode);
   private numberOfResidentialUnitsNavigationNode = new NumberOfResidentialUnitsNavigationNode(this.peopleLivingNavigationNode, this.yearOfCompletionNavigationNode);
-  private heightNavigationNode = new HeightNavigationNode(this.numberOfResidentialUnitsNavigationNode);
+  private heightNavigationNode = new HeightNavigationNode(this.applicationService, this.numberOfResidentialUnitsNavigationNode);
   private numberOfFloorsNavigationNode = new NumberOfFloorsNavigationNode(this.heightNavigationNode);
   private sectionNameNavigationNode = new SectionNameNavigationNode(this.numberOfFloorsNavigationNode);
 
