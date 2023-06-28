@@ -151,15 +151,18 @@ class NumberOfResidentialUnitsNavigationNode extends BuildingNavigationNode {
 }
 
 class PeopleLivingNavigationNode extends BuildingNavigationNode {
-  constructor(private yearOfCompletionNavigationNode: YearOfCompletionNavigationNode) {
+  constructor(private applicationService: ApplicationService, private yearOfCompletionNavigationNode: YearOfCompletionNavigationNode) {
     super();
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.PeopleLivingInBuilding) {
       return SectionPeopleLivingInBuildingComponent.route;
+    } else if (section.PeopleLivingInBuilding == 'no_wont_move') {
+      return this.applicationService.model.NumberOfSections == 'one'
+        ? this.yearOfCompletionNavigationNode.getNextRoute(section, sectionIndex)  // user goes to 6258 no need register (single structure)
+        : this.yearOfCompletionNavigationNode.getNextRoute(section, sectionIndex); // user goes to 6259 no need register (multi structure)
     }
-
     return this.yearOfCompletionNavigationNode.getNextRoute(section, sectionIndex);
   }
 }
@@ -301,7 +304,7 @@ class AddAnotherSectionNavigationTree extends BuildingNavigationNode {
   private completionCertificateIssuerNavigationNode = new CompletionCertificateIssuerNavigationNode(this.completionCertificateReferenceNavigationNode, this.sectionAddressNavigationNode);
   private yearRangeNavigationNode = new YearRangeNavigationNode(this.completionCertificateIssuerNavigationNode);
   private yearOfCompletionNavigationNode = new YearOfCompletionNavigationNode(this.yearRangeNavigationNode, this.completionCertificateIssuerNavigationNode, this.sectionAddressNavigationNode);
-  private peopleLivingNavigationNode = new PeopleLivingNavigationNode(this.yearOfCompletionNavigationNode);
+  private peopleLivingNavigationNode = new PeopleLivingNavigationNode(this.applicationService, this.yearOfCompletionNavigationNode);
   private numberOfResidentialUnitsNavigationNode = new NumberOfResidentialUnitsNavigationNode(this.applicationService, this.peopleLivingNavigationNode);
   private heightNavigationNode = new HeightNavigationNode(this.applicationService, this.numberOfResidentialUnitsNavigationNode);
   private numberOfFloorsNavigationNode = new NumberOfFloorsNavigationNode(this.heightNavigationNode);
