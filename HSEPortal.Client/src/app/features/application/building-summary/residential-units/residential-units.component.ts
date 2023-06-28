@@ -48,13 +48,12 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let route: string = '';
-    if (this.applicationService.currentSection.ResidentialUnits == 0) {
-      route = SectionYearOfCompletionComponent.route;
-    } else {
-      route = SectionPeopleLivingInBuildingComponent.route;
+    let route: string = SectionPeopleLivingInBuildingComponent.route;
+    if (this.applicationService.currentSection.ResidentialUnits! < 2) {
+      route = this.applicationService.model.NumberOfSections == 'one' 
+        ? SectionResidentialUnitsComponent.route  // user goes to 6258 no need register (single structure)
+        : SectionResidentialUnitsComponent.route; // user goes to 6259 no need register (multi structure)
     }
-
     return navigationService.navigateRelative(route, activatedRoute);
   }
 
