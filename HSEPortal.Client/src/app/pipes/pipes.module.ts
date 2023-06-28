@@ -9,6 +9,7 @@ import { LeadJobRoleDescriptionPipe } from './lead-job-role-description.pipe';
 import { AccountabilityDescriptionPipe } from './accountability-description.pipe';
 import { ExternalWallMaterialsPipe } from './external-wall-materials.pipe';
 import { ConnectionTypesPipe } from './connection-types.pipe';
+import { NotNeedRegisterReasonPipe } from './not-need-register-reason.pipe';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ConnectionTypesPipe } from './connection-types.pipe';
     LeadJobRoleDescriptionPipe,
     AccountabilityDescriptionPipe,
     ExternalWallMaterialsPipe,
-    ConnectionTypesPipe
+    ConnectionTypesPipe,
+    NotNeedRegisterReasonPipe
   ],
   exports: [
     PeopleLivingInSectionDescriptionPipe,
@@ -33,7 +35,8 @@ import { ConnectionTypesPipe } from './connection-types.pipe';
     LeadJobRoleDescriptionPipe,
     AccountabilityDescriptionPipe,
     ExternalWallMaterialsPipe,
-    ConnectionTypesPipe
+    ConnectionTypesPipe,
+    NotNeedRegisterReasonPipe
   ]
 })
 export class PipesModule { }

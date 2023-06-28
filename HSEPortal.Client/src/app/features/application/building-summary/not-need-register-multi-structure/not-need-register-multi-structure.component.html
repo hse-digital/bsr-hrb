@@ -1,0 +1,19 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <h1 class="govuk-heading-l">You do not need to tell us any more about {{sectionBuildingName()}}</h1>
+        
+        <govuk-body>{{this.applicationService.currentSection.Scope!.OutOfScopeReason! | NotNeedRegisterReason: this.applicationService }}</govuk-body>
+
+        <govuk-body>{{getClarification()}}</govuk-body>
+
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+    </div>
+  </div>
+</div>

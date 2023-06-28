@@ -8,7 +8,7 @@
             <h1 class="govuk-panel__title">You do not need to register {{sectionBuildingName()}}</h1>
         </div>
 
-        <govuk-body>{{getOutOfScopeReason()}}</govuk-body>
+        <govuk-body>{{this.applicationService.currentSection.Scope!.OutOfScopeReason! | NotNeedRegisterReason: this.applicationService }}</govuk-body>
 
         <govuk-body>You can only register a high-rise building if you plan to allow residents to occupy it. The guide 
             <a href="https://www.gov.uk/guidance/applying-to-register-a-high-rise-residential-building" class="govuk-link" tabindex="0" role="link">
