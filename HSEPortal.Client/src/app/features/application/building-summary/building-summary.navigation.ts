@@ -16,6 +16,7 @@ import { SectionCheckAnswersComponent } from "./check-answers/check-answers.comp
 import { Injectable } from "@angular/core";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
 import { NotNeedRegisterSingleStructureComponent } from "./not-need-register-single-structure/not-need-register-single-structure.component";
+import { NotNeedRegisterMultiStructureComponent } from "./not-need-register-multi-structure/not-need-register-multi-structure.component";
 
 @Injectable()
 export class BuildingSummaryNavigation extends BaseNavigation {
@@ -117,7 +118,9 @@ class NumberOfFloorsNavigationNode extends BuildingNavigationNode {
 }
 
 class HeightNavigationNode extends BuildingNavigationNode {
-  constructor(private applicationService: ApplicationService, private numberOfResidentialUnitsNavigationNode: NumberOfResidentialUnitsNavigationNode, private notNeedRegisterSingleStructureNavigationNode: NotNeedRegisterSingleStructureNavigationNode) {
+  constructor(private applicationService: ApplicationService, private numberOfResidentialUnitsNavigationNode: NumberOfResidentialUnitsNavigationNode,
+     private notNeedRegisterSingleStructureNavigationNode: NotNeedRegisterSingleStructureNavigationNode,
+     private notNeedRegisterMultiStructureNavigationNode: NotNeedRegisterMultiStructureNavigationNode) {
     super();
   }
 
@@ -127,14 +130,16 @@ class HeightNavigationNode extends BuildingNavigationNode {
     } else if (section.Height < 7) {
       return this.applicationService.model.NumberOfSections == 'one' 
         ? this.notNeedRegisterSingleStructureNavigationNode.getNextRoute(section, sectionIndex)
-        : this.numberOfResidentialUnitsNavigationNode.getNextRoute(section, sectionIndex); // user goes to 6259 no need register (multi structure)
+        : this.notNeedRegisterMultiStructureNavigationNode.getNextRoute(section, sectionIndex); // user goes to 6259 no need register (multi structure)
     }
     return this.numberOfResidentialUnitsNavigationNode.getNextRoute(section, sectionIndex);
   }
 }
 
 class NumberOfResidentialUnitsNavigationNode extends BuildingNavigationNode {
-  constructor(private applicationService: ApplicationService, private peopleLivingNavigationNode: PeopleLivingNavigationNode, private notNeedRegisterSingleStructureNavigationNode: NotNeedRegisterSingleStructureNavigationNode) {
+  constructor(private applicationService: ApplicationService, private peopleLivingNavigationNode: PeopleLivingNavigationNode, 
+     private notNeedRegisterSingleStructureNavigationNode: NotNeedRegisterSingleStructureNavigationNode,
+     private notNeedRegisterMultiStructureNavigationNode: NotNeedRegisterMultiStructureNavigationNode) {
     super();
   }
 
@@ -144,7 +149,7 @@ class NumberOfResidentialUnitsNavigationNode extends BuildingNavigationNode {
     } else if (section.ResidentialUnits < 2) {
       return this.applicationService.model.NumberOfSections == 'one'
         ? this.notNeedRegisterSingleStructureNavigationNode.getNextRoute(section, sectionIndex)
-        : this.peopleLivingNavigationNode.getNextRoute(section, sectionIndex); // user goes to 6259 no need register (multi structure)
+        : this.notNeedRegisterMultiStructureNavigationNode.getNextRoute(section, sectionIndex); 
     }
 
     return this.peopleLivingNavigationNode.getNextRoute(section, sectionIndex);
@@ -152,7 +157,9 @@ class NumberOfResidentialUnitsNavigationNode extends BuildingNavigationNode {
 }
 
 class PeopleLivingNavigationNode extends BuildingNavigationNode {
-  constructor(private applicationService: ApplicationService, private yearOfCompletionNavigationNode: YearOfCompletionNavigationNode, private notNeedRegisterSingleStructureNavigationNode: NotNeedRegisterSingleStructureNavigationNode) {
+  constructor(private applicationService: ApplicationService, private yearOfCompletionNavigationNode: YearOfCompletionNavigationNode, 
+     private notNeedRegisterSingleStructureNavigationNode: NotNeedRegisterSingleStructureNavigationNode,
+     private notNeedRegisterMultiStructureNavigationNode: NotNeedRegisterMultiStructureNavigationNode) {
     super();
   }
 
@@ -162,7 +169,7 @@ class PeopleLivingNavigationNode extends BuildingNavigationNode {
     } else if (section.PeopleLivingInBuilding == 'no_wont_move') {
       return this.applicationService.model.NumberOfSections == 'one'
         ? this.notNeedRegisterSingleStructureNavigationNode.getNextRoute(section, sectionIndex)
-        : this.yearOfCompletionNavigationNode.getNextRoute(section, sectionIndex); // user goes to 6259 no need register (multi structure)
+        : this.notNeedRegisterMultiStructureNavigationNode.getNextRoute(section, sectionIndex);
     }
     return this.yearOfCompletionNavigationNode.getNextRoute(section, sectionIndex);
   }
@@ -175,6 +182,17 @@ class NotNeedRegisterSingleStructureNavigationNode extends BuildingNavigationNod
 
   override getNextRoute(_: SectionModel, __: number): string {
     return NotNeedRegisterSingleStructureComponent.route;
+  }
+}
+
+class NotNeedRegisterMultiStructureNavigationNode extends BuildingNavigationNode {
+  constructor() {
+    super();
+  }
+
+  override getNextRoute(_: SectionModel, __: number): string {
+  // TODO: Implement navigation
+    return NotNeedRegisterMultiStructureComponent.route;
   }
 }
 
@@ -310,6 +328,7 @@ class AddAnotherSectionNavigationTree extends BuildingNavigationNode {
     super();
   }
 
+  private notNeedRegisterMultiStructureNavigationNode = new NotNeedRegisterMultiStructureNavigationNode();
   private notNeedRegisterSingleStructureNavigationNode = new NotNeedRegisterSingleStructureNavigationNode();
   private addAnotherSectionNavigationNode = new AddAnotherSectionNavigationNode(this.applicationService, this.checkAnswersNavigationNode);
   private sectionAddressNavigationNode = new SectionAddressNavigationNode(this.addAnotherSectionNavigationNode);
@@ -317,9 +336,9 @@ class AddAnotherSectionNavigationTree extends BuildingNavigationNode {
   private completionCertificateIssuerNavigationNode = new CompletionCertificateIssuerNavigationNode(this.completionCertificateReferenceNavigationNode, this.sectionAddressNavigationNode);
   private yearRangeNavigationNode = new YearRangeNavigationNode(this.completionCertificateIssuerNavigationNode);
   private yearOfCompletionNavigationNode = new YearOfCompletionNavigationNode(this.yearRangeNavigationNode, this.completionCertificateIssuerNavigationNode, this.sectionAddressNavigationNode);
-  private peopleLivingNavigationNode = new PeopleLivingNavigationNode(this.applicationService, this.yearOfCompletionNavigationNode, this.notNeedRegisterSingleStructureNavigationNode);
-  private numberOfResidentialUnitsNavigationNode = new NumberOfResidentialUnitsNavigationNode(this.applicationService, this.peopleLivingNavigationNode, this.notNeedRegisterSingleStructureNavigationNode);
-  private heightNavigationNode = new HeightNavigationNode(this.applicationService, this.numberOfResidentialUnitsNavigationNode, this.notNeedRegisterSingleStructureNavigationNode);
+  private peopleLivingNavigationNode = new PeopleLivingNavigationNode(this.applicationService, this.yearOfCompletionNavigationNode, this.notNeedRegisterSingleStructureNavigationNode, this.notNeedRegisterMultiStructureNavigationNode);
+  private numberOfResidentialUnitsNavigationNode = new NumberOfResidentialUnitsNavigationNode(this.applicationService, this.peopleLivingNavigationNode, this.notNeedRegisterSingleStructureNavigationNode, this.notNeedRegisterMultiStructureNavigationNode);
+  private heightNavigationNode = new HeightNavigationNode(this.applicationService, this.numberOfResidentialUnitsNavigationNode, this.notNeedRegisterSingleStructureNavigationNode, this.notNeedRegisterMultiStructureNavigationNode);
   private numberOfFloorsNavigationNode = new NumberOfFloorsNavigationNode(this.heightNavigationNode);
   private sectionNameNavigationNode = new SectionNameNavigationNode(this.numberOfFloorsNavigationNode);
 

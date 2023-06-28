@@ -34,6 +34,7 @@ export class NotNeedRegisterMultiStructureComponent  extends BaseComponent imple
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    // TODO: Implement navigation
     return navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, activatedRoute);
   }
 

@@ -9,6 +9,7 @@ import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from 'src/app/services/title.service';
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
+import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
@@ -39,7 +40,7 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
     if (this.applicationService.currentSection.PeopleLivingInBuilding == 'no_wont_move') {
       return this.applicationService.model.NumberOfSections == 'one' 
         ? navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, activatedRoute)
-        : navigationService.navigateRelative(SectionPeopleLivingInBuildingComponent.route, activatedRoute); // user goes to 6259 no need register (multi structure)
+        : navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, activatedRoute);
     }
     return navigationService.navigateRelative(SectionYearOfCompletionComponent.route, activatedRoute);
   }

@@ -10,6 +10,7 @@ import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from 'src/app/services/title.service';
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
+import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 
 @Component({
   templateUrl: './residential-units.component.html'
@@ -53,7 +54,7 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
     if (this.applicationService.currentSection.ResidentialUnits! < 2) {
       route = this.applicationService.model.NumberOfSections == 'one' 
         ? NotNeedRegisterSingleStructureComponent.route
-        : SectionResidentialUnitsComponent.route; // user goes to 6259 no need register (multi structure)
+        : NotNeedRegisterMultiStructureComponent.route;
     }
     return navigationService.navigateRelative(route, activatedRoute);
   }
