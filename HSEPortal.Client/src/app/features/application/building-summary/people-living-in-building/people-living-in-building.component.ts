@@ -35,7 +35,12 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(`${SectionYearOfCompletionComponent.route}`, activatedRoute);
+    if (this.applicationService.currentSection.PeopleLivingInBuilding == 'no_wont_move') {
+      return this.applicationService.model.NumberOfSections == 'one' 
+        ? navigationService.navigateRelative(SectionPeopleLivingInBuildingComponent.route, activatedRoute)  // user goes to 6258 no need register (single structure)
+        : navigationService.navigateRelative(SectionPeopleLivingInBuildingComponent.route, activatedRoute); // user goes to 6259 no need register (multi structure)
+    }
+    return navigationService.navigateRelative(SectionYearOfCompletionComponent.route, activatedRoute);
   }
 
   sectionBuildingName() {
