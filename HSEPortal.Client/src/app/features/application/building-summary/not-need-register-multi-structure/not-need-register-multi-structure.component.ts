@@ -6,6 +6,8 @@ import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService, OutOfScopeReason } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
+import { SectionNameComponent } from '../name/name.component';
+import { AddMoreSectionsComponent } from '../add-more-sections/add-more-sections.component';
 
 @Component({
   selector: 'hse-not-need-register-multi-structure',
@@ -33,9 +35,14 @@ export class NotNeedRegisterMultiStructureComponent  extends BaseComponent imple
     return true;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    // TODO: Implement navigation
-    return navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, activatedRoute);
+  async navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+    if (this.applicationService.model.Sections.length == 1) {
+      let section = this.applicationService.startNewSection();
+      let nextPage = `${section}/${SectionNameComponent.route}`;
+      await this.applicationService.updateApplication();
+      return navigationService.navigateRelative(nextPage, activatedRoute);
+    }
+    return navigationService.navigateRelative(AddMoreSectionsComponent.route, activatedRoute);
   }
 
   sectionBuildingName() {
