@@ -21,6 +21,7 @@ public class OrdnanceSurveyPostcodeResponseProfile : Profile
             .ForMember(x => x.Town, x => x.MapFrom(y => y.LPI != null ? y.LPI.TOWN_NAME : y.DPA.POST_TOWN))
             .ForMember(x => x.Country, x => x.MapFrom(y => y.LPI != null ? y.LPI.COUNTRY_CODE : y.DPA.COUNTRY_CODE))
             .ForMember(x => x.AdministrativeArea, x => x.MapFrom(y => y.LPI != null ? y.LPI.ADMINISTRATIVE_AREA : string.Empty))
-            .ForMember(x => x.BuildingName, x => x.MapFrom(y => y.LPI != null ? y.LPI.PAO_TEXT : y.DPA.SUB_BUILDING_NAME));
+            .ForMember(x => x.BuildingName, x => x.MapFrom(y => y.LPI != null ? y.LPI.PAO_TEXT : y.DPA.SUB_BUILDING_NAME))
+            .ForMember(x => x.ClassificationCode, x => x.MapFrom(y => y.LPI != null ? y.LPI.CLASSIFICATION_CODE : y.DPA.CLASSIFICATION_CODE));
     }
 }

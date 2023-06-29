@@ -552,7 +552,7 @@ public class DynamicsService
                     bsr_uprn = portalAddress.UPRN,
                     bsr_usrn = portalAddress.USRN,
                     bsr_manualaddress = portalAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
-                    countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null,
+                    countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null
                 });
             }
         }
@@ -608,6 +608,7 @@ public class DynamicsService
             bsr_uprn = primaryAddress.UPRN,
             bsr_usrn = primaryAddress.USRN,
             bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
+            bsr_classificationcode = primaryAddress.ClassificationCode,
         };
 
         return dynamicsStructure;

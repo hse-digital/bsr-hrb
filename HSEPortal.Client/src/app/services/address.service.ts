@@ -41,4 +41,5 @@ export class AddressModel {
   Town?: string;
   AdministrativeArea?: string;
   Postcode?: string;
+  ClassificationCode?: string;
 }
