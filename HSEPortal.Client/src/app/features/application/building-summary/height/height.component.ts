@@ -4,7 +4,7 @@ import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionHelper } from "src/app/helpers/section-helper";
-import { ApplicationService } from "src/app/services/application.service";
+import { ApplicationService, OutOfScopeReason } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from 'src/app/services/title.service';
 import { SectionResidentialUnitsComponent } from "../residential-units/residential-units.component";
@@ -40,9 +40,16 @@ export class SectionHeightComponent extends BaseComponent implements IHasNextPag
       this.errorMessage = this.errorMessage = 'Height in metres must be more than 2';
     } else {
       this.heightHasErrors = false;
+      this.IsOutOfScope(height);
     }
 
     return !this.heightHasErrors;
+  }
+
+  private IsOutOfScope(height: number) {
+    if (height < 7) {
+      this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.Height };
+    }
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -51,7 +58,7 @@ export class SectionHeightComponent extends BaseComponent implements IHasNextPag
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     if (this.applicationService.currentSection.Height! < 7) {
-      return this.applicationService.model.NumberOfSections == 'one' 
+      return this.applicationService.model.NumberOfSections == 'one'
         ? navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, activatedRoute)
         : navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, activatedRoute);
     }

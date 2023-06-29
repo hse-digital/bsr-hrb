@@ -1,7 +1,7 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { ApplicationService } from "src/app/services/application.service";
+import { ApplicationService, OutOfScopeReason } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionPeopleLivingInBuildingComponent } from "../people-living-in-building/people-living-in-building.component";
@@ -41,8 +41,15 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
       this.errorMessage = this.errorMessage = 'Number of residential units must be 9999 or less';
     } else {
       this.residentialUnitsHasErrors = false;
+      this.IsOutOfScope(residentialUnits);
     }
     return !this.residentialUnitsHasErrors;
+  }
+
+  private IsOutOfScope(residentialUnits: number) {
+    if (residentialUnits < 2) {
+      this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.NumberResidentialUnits };
+    }
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {

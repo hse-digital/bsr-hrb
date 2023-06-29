@@ -1,7 +1,7 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { ApplicationService } from "src/app/services/application.service";
+import { ApplicationService, OutOfScopeReason } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
@@ -29,7 +29,14 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
   canContinue(): boolean {
     let peopleLivingInBuilding = this.applicationService.currentSection.PeopleLivingInBuilding;
     this.peopleLivingHasErrors = !peopleLivingInBuilding;
+    this.IsOutOfScope(peopleLivingInBuilding);
     return !this.peopleLivingHasErrors;
+  }
+
+  private IsOutOfScope(peopleLivingInBuilding: string) {
+    if (!this.peopleLivingHasErrors && peopleLivingInBuilding == 'no_wont_move') {
+      this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.PeopleLivingInBuilding };
+    }
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
