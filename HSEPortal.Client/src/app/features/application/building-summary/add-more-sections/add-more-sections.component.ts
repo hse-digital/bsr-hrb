@@ -9,6 +9,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { SectionCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { SectionNameComponent } from '../name/name.component';
+import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper';
 
 @Component({
   templateUrl: './add-more-sections.component.html'
@@ -67,15 +68,15 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
   }
 
   private areAllSectionsOutOfScope() {
-    return this.applicationService.model.Sections.every(x => x.Scope?.IsOutOfScope);
+    return ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService);
   }
 
   private areAllSectionsDuplicated() {
-    return this.applicationService.model.Sections.every(x => x.Duplicate?.IsDuplicated);
+    return ScopeAndDuplicateHelper.AreAllSectionsDuplicated(this.applicationService);
   }
 
   private areAllSectionsRemoved() {
-    return this.applicationService.model.Sections.every(x => x.Duplicate?.Removed);
+    return ScopeAndDuplicateHelper.AreAllSectionsRemoved(this.applicationService);
   }
 
   getSectionNames() {
