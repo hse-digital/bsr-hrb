@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { SectionModel } from "src/app/services/application.service";
+import { OutOfScopeReason, SectionModel } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 
 @Component({
@@ -32,4 +32,13 @@ export class SectionAnswersComponent {
         return (this.section.YearOfCompletionOption == 'year-exact' && Number(this.section.YearOfCompletion) >= 1985) ||
             (this.section.YearOfCompletionOption == 'year-not-exact' && ['1985-to-2000', '2001-to-2006', '2007-to-2018', '2019-to-2022', '2023-onwards'].indexOf(this.section.YearOfCompletionRange!) > -1);
     }
+
+    showResidentialUnits() {
+        return !this.section.Scope?.IsOutOfScope || (this.section.Scope?.IsOutOfScope && this.section.Scope?.OutOfScopeReason != OutOfScopeReason.Height) 
+    }
+
+    showPeopleLivingBuilding() {
+        return !this.section.Scope?.IsOutOfScope || (this.section.Scope?.IsOutOfScope && this.section.Scope?.OutOfScopeReason == OutOfScopeReason.PeopleLivingInBuilding) 
+    }
+
 }
