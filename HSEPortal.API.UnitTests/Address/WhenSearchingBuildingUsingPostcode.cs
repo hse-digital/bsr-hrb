@@ -34,7 +34,7 @@ public class WhenSearchingBuildingUsingPostcode : UnitTestBase
             {
                 postcode = buckinghamPalacePostcode,
                 dataset = "LPI",
-                fq = new[] { "CLASSIFICATION_CODE:PP", "CLASSIFICATION_CODE:P", "COUNTRY_CODE:E" },
+                fq = new[] { "CLASSIFICATION_CODE:PP CLASSIFICATION_CODE:P", "COUNTRY_CODE:E" },
                 key = integrationsOptions.OrdnanceSurveyApiKey
             })
             .WithVerb(HttpMethod.Get);
