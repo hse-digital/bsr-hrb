@@ -244,6 +244,7 @@ export class SectionModel {
   Addresses: AddressModel[] = [];
 
   Scope?: Scope;
+  Duplicate?: Duplicate;
 }
 
 export class Scope {
@@ -253,6 +254,11 @@ export class Scope {
 
 export enum OutOfScopeReason {
   Height, NumberResidentialUnits, PeopleLivingInBuilding
+}
+
+export class Duplicate {
+  IsDuplicated?: boolean;
+  Removed?: boolean;
 }
 
 export class AccountablePersonModel {
