@@ -25,7 +25,7 @@ public class WhenGettingApplication : IntegrationTestBase
     [Fact]
     public async Task ShouldReturnApplicationFromCosmos()
     {
-        var token = otpService.GenerateToken(validEmailAddress);
+        var token = await otpService.GenerateToken(validEmailAddress);
         var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication", validApplicationId, validEmailAddress, token).GetJsonAsync<BuildingApplicationModel>();
 
         response.Id.Should().Be(validApplicationId);
@@ -36,7 +36,7 @@ public class WhenGettingApplication : IntegrationTestBase
     [InlineData(validApplicationId, "DOESNT_EXIST")]
     public async Task ShouldReturnBadRequestIfApplicationIdIsInvalid(string applicationId, string emailAddress)
     {
-        var token = otpService.GenerateToken(emailAddress);
+        var token = await otpService.GenerateToken(emailAddress);
         var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication", applicationId, emailAddress, token)
             .AllowAnyHttpStatus().GetAsync();
 

@@ -215,6 +215,14 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--PaymentAmount)'
                 }
                 {
+                    name: 'Integrations__CommonAPIEndpoint'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CommonAPIEndpoint)'
+                }
+                {
+                    name: 'Integrations__CommonAPIKey'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CommonAPIKey)'
+                }
+                {
                     name: 'Swa__Url'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Swa--Url)'
                 }

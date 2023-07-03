@@ -17,6 +17,7 @@ public class Startup
             .Build();
 
         services.Configure<DynamicsOptions>(config.GetSection(DynamicsOptions.Dynamics));
+        services.Configure<IntegrationsOptions>(config.GetSection(IntegrationsOptions.Integrations));
         services.Configure<SwaOptions>(config.GetSection(SwaOptions.Swa));
 
         services.AddTransient<DynamicsService>();

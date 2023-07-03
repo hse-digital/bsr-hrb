@@ -33,7 +33,7 @@ public class EmailVerificationFunction
             return await request.BuildValidationErrorResponseDataAsync(validation);
         }
 
-        var otpToken = otpService.GenerateToken(emailVerificationModel.EmailAddress);
+        var otpToken = await otpService.GenerateToken(emailVerificationModel.EmailAddress);
 
         await dynamicsService.SendVerificationEmail(emailVerificationModel, otpToken);
         return new CustomHttpResponseData
@@ -56,8 +56,8 @@ public class EmailVerificationFunction
     [Function(nameof(GetOTPToken))]
     public async Task<CustomHttpResponseData> GetOTPToken([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
     {
-        var keyValidation =ValidateKey(request.GetQueryParameters()["key"]);
-        if(!keyValidation.IsValid)
+        var keyValidation = ValidateKey(request.GetQueryParameters()["key"]);
+        if (!keyValidation.IsValid)
         {
             return await request.BuildValidationErrorResponseDataAsync(keyValidation);
         }
@@ -83,12 +83,15 @@ public class EmailVerificationFunction
     public async Task<CustomHttpResponseData> ValidateOTPToken([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
     {
         var otpValidationModel = await request.ReadAsJsonAsync<OTPValidationModel>();
-        var isTokenValid = otpValidationModel.Validate().IsValid && otpService.ValidateToken(otpValidationModel.OTPToken, otpValidationModel.EmailAddress);
+        var returnStatusCode = HttpStatusCode.BadRequest;
 
-        var returnStatusCode = HttpStatusCode.OK;
-        if (!featureOptions.DisableOtpValidation && !isTokenValid)
+        if (otpValidationModel.Validate().IsValid)
         {
-            returnStatusCode = HttpStatusCode.BadRequest;
+            var tokenIsValid = await otpService.ValidateToken(otpValidationModel.OTPToken, otpValidationModel.EmailAddress);
+            if (tokenIsValid)
+            {
+                returnStatusCode = HttpStatusCode.OK;
+            }
         }
 
         return new CustomHttpResponseData

@@ -16,8 +16,24 @@ public class WhenSendingVerificationEmail : UnitTestBase
 
     public WhenSendingVerificationEmail()
     {
-        var otpService = Mock.Of<OTPService>(x => x.GenerateToken(It.IsAny<string>(), null, true) == otpToken);
-        emailVerificationFunction = new EmailVerificationFunction(DynamicsService, otpService, FeatureOptions);
+        emailVerificationFunction = new EmailVerificationFunction(DynamicsService, OtpService, FeatureOptions);
+        HttpTest.RespondWithJson(new { Token = otpToken });
+    }
+
+    [Fact]
+    public async Task ShouldCallCommonAPIToGenerateToken()
+    {
+        var emailVerificationModel = new EmailVerificationModel(email);
+
+        var requestData = BuildHttpRequestData(emailVerificationModel);
+        await emailVerificationFunction.SendVerificationEmail(requestData);
+
+        HttpTest.ShouldHaveCalled($"{IntegrationOptions.CommonAPIEndpoint}/api/GenerateToken")
+            .WithHeader("x-functions-key", IntegrationOptions.CommonAPIKey)
+            .WithRequestJson(new
+            {
+                TokenData = email
+            });
     }
 
     [Fact]
