@@ -57,7 +57,6 @@ const routes = new HseRoutes([
   ],
   providers: [
     HttpClient,
-    ApplicationService,
     BuildingSummaryNavigation,
     AccountablePersonNavigation,
     KbiNavigation,

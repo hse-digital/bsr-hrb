@@ -3,7 +3,6 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
-import { ApplicationService } from "src/app/services/application.service";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { BuildingNameComponent } from "./building-name/building-name.component";
 import { ContactEmailValidationComponent } from "./contact-email/contact-email-validation.component";
@@ -33,7 +32,7 @@ const routes = new HseRoutes([
     CommonModule,
     HttpClientModule
   ],
-  providers: [HttpClient, ApplicationService, ...routes.getProviders()]
+  providers: [HttpClient, ...routes.getProviders()]
 })
 export class NewApplicationModule {
   static baseRoute: string = 'new-application';
