@@ -55,9 +55,9 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-
+    let InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
     if (this.allKbiSectionCompleted()) {
-      if (this.applicationService.model.Sections.length == 1) {
+      if (InScopeStructures.length == 1) {
         return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`, activatedRoute);
       }
 
@@ -66,7 +66,7 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
 
     let nextSectionIndex = this.applicationService._currentKbiSectionIndex + 1;
     let sectionRoute = (nextSectionIndex + 1).toString();
-    let nextSection = this.applicationService.model.Sections[nextSectionIndex];
+    let nextSection = InScopeStructures[nextSectionIndex];
     if (nextSection.Name !== void 0) {
       sectionRoute = `${sectionRoute}-${nextSection.Name}`;
     }
@@ -98,6 +98,6 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
-      : this.applicationService.currentSection.Name;
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 }

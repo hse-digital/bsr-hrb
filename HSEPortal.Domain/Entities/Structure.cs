@@ -2,8 +2,8 @@
 
 namespace HSEPortal.Domain.Entities;
 
-public record Structure(string Name, string FloorsAboveGround, string HeightInMeters, string NumberOfResidentialUnits,
-    string PeopleLivingInStructure, string ConstructionYearOption, string ExactYear = null,
+public record Structure(string Name, string FloorsAboveGround, string HeightInMeters, string NumberOfResidentialUnits = null,
+    string PeopleLivingInStructure = null, string ConstructionYearOption = null, string ExactYear = null,
     string YearRange = null, string Id = null) : Entity(Id);
 
 public record DynamicsStructure : DynamicsEntity<Structure>

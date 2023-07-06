@@ -67,7 +67,7 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
-      : this.applicationService.currentSection.Name;
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 
   private equipmentNameMapper: Record<string, string> = {

@@ -12,7 +12,7 @@
         <h1 class="govuk-heading-l">Areas of accountability for {{applicationService.model.BuildingName}}</h1>
         <govuk-body>{{getApName()}} is accountable for the structure and exterior of the building.</govuk-body>
 
-        <div class="govuk-!-margin-bottom-6" *ngFor="let section of applicationService.model.Sections; let i = index">
+        <div class="govuk-!-margin-bottom-6" *ngFor="let section of InScopeStructures; let i = index">
           <accountability [title]="getCheckboxTitle(i)" hint="Select all that apply" [id]="createSectionId(i)" [errorText]="getSectionError(i)"
             [(model)]="applicationService.model.AccountablePersons[0]!.SectionsAccountability![i].Accountability!"
             (onKeyupEnter)="saveAndContinue()">

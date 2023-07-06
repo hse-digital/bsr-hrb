@@ -1,0 +1,22 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <div class="govuk-panel" style="background-color: #f3f2f1">
+            <h1 class="govuk-panel__title">You do not need to register {{sectionBuildingName()}}</h1>
+        </div>
+
+        <out-of-scope-reason [SectionModel]="this.applicationService.currentSection" [SectionBuildingName]="this.sectionBuildingName()" [OutOfScopeReason]="this.applicationService.currentSection.Scope?.OutOfScopeReason" />
+
+        <govuk-body>{{this.getClarification()}}. The guide <a href="https://www.gov.uk/guidance/applying-to-register-a-high-rise-residential-building" class="govuk-link" tabindex="0" role="link">
+                Applying to register a high-rise residential building</a> will help you to understand which buildings you need to register.</govuk-body>
+
+        <govuk-body><a class="govuk-link" href="https://forms.office.com/pages/responsepage.aspx?id=vlNZax1rgEmya1btiwvz3EJQHLmQwn9GmXeovhFPjj5UNDNVNEU5RjVCVDIxQ0xNOVpYRk8zSjkwQi4u" role="link" tabindex="0">What did you think of this service?</a> (takes 30 seconds)</govuk-body>
+
+        <govuk-body>You can <a class="govuk-link" (click)="newApplication()" role="link" tabindex="0" (keyup.enter)="newApplication()">register another building</a>.</govuk-body>
+
+    </div>
+  </div>
+</div>

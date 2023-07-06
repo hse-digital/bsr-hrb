@@ -1,7 +1,7 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { ApplicationService } from "src/app/services/application.service";
+import { ApplicationService, OutOfScopeReason } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionPeopleLivingInBuildingComponent } from "../people-living-in-building/people-living-in-building.component";
@@ -9,6 +9,8 @@ import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from 'src/app/services/title.service';
 import { SectionHelper } from "src/app/helpers/section-helper";
+import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
+import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 
 @Component({
   templateUrl: './residential-units.component.html'
@@ -39,8 +41,17 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
       this.errorMessage = this.errorMessage = 'Number of residential units must be 9999 or less';
     } else {
       this.residentialUnitsHasErrors = false;
+      this.IsOutOfScope(residentialUnits);
     }
     return !this.residentialUnitsHasErrors;
+  }
+
+  private IsOutOfScope(residentialUnits: number) {
+    if (residentialUnits < 2) {
+      this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.NumberResidentialUnits };
+    } else {
+      this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
+    }
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -48,13 +59,12 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let route: string = '';
-    if (this.applicationService.currentSection.ResidentialUnits == 0) {
-      route = SectionYearOfCompletionComponent.route;
-    } else {
-      route = SectionPeopleLivingInBuildingComponent.route;
+    let route: string = SectionPeopleLivingInBuildingComponent.route;
+    if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
+      route = this.applicationService.model.NumberOfSections == 'one' 
+        ? NotNeedRegisterSingleStructureComponent.route
+        : NotNeedRegisterMultiStructureComponent.route;
     }
-
     return navigationService.navigateRelative(route, activatedRoute);
   }
 

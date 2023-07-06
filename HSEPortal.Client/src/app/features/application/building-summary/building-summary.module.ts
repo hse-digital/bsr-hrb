@@ -23,6 +23,8 @@ import { SectionResidentialUnitsComponent } from "./residential-units/residentia
 import { BuildingSummaryComponent } from "./building-summary.component";
 import { SectionYearOfCompletionComponent } from "./year-of-completion/year-of-completion.component";
 import { SectionYearRangeComponent } from "./year-range/year-range.component";
+import { NotNeedRegisterSingleStructureComponent } from './not-need-register-single-structure/not-need-register-single-structure.component';
+import { NotNeedRegisterMultiStructureComponent } from './not-need-register-multi-structure/not-need-register-multi-structure.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
@@ -41,6 +43,8 @@ const routes = new HseRoutes([
     HseRoute.protected(SectionAddressComponent.route, SectionAddressComponent, SectionAddressComponent.title),
     HseRoute.protected(SectionOtherAddressesComponent.route, SectionOtherAddressesComponent, SectionOtherAddressesComponent.title),
     HseRoute.protected(SectionPeopleLivingInBuildingComponent.route, SectionPeopleLivingInBuildingComponent, SectionPeopleLivingInBuildingComponent.title),
+    HseRoute.protected(NotNeedRegisterSingleStructureComponent.route, NotNeedRegisterSingleStructureComponent, NotNeedRegisterSingleStructureComponent.title),
+    HseRoute.protected(NotNeedRegisterMultiStructureComponent.route, NotNeedRegisterMultiStructureComponent, NotNeedRegisterMultiStructureComponent.title),
   ])),
 ]);
 
@@ -62,7 +66,9 @@ const routes = new HseRoutes([
     SectionOtherAddressesComponent,
     SectionAnswersComponent,
     CertificateIssuerComponent,
-    CertificateNumberComponent
+    CertificateNumberComponent,
+    NotNeedRegisterSingleStructureComponent,
+    NotNeedRegisterMultiStructureComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

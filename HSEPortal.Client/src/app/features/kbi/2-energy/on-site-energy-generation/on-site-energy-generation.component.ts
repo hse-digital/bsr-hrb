@@ -36,7 +36,7 @@ export class OnSiteEnergyGenerationComponent  extends BaseComponent implements I
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
-      : this.applicationService.currentSection.Name;
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 
   canContinue(): boolean {

@@ -4,15 +4,25 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-form-group">
+        
+        <div class="govuk-panel" style="background-color: #f3f2f1">
+          <h1 class="govuk-panel__title">You do not need to register {{applicationService.model.BuildingName}}</h1>
+        </div>    
 
-        <h1 class="govuk-heading-l">You do not need to register this building</h1>
+        <govuk-body>Based on the information you have told us:</govuk-body>
+        
+        <govuk-list classes='govuk-list--bullet'>
+          <govuk-list-item *ngFor="let section of applicationService.model.Sections" text="{{getOutOfScopeReason(section)}}" />
+          <govuk-list-item>there are no other structures within {{applicationService.model.BuildingName}}</govuk-list-item>
+        </govuk-list>
 
-        <govuk-body>Based on the answers you've given, there is no need to register this building.</govuk-body>
-        <govuk-body>You can <a class="govuk-link" (click)="registerAnother()" (keyup.enter)="registerAnother()" role="link">register another building.</a></govuk-body>
-
+        <govuk-body>The guide <a href="https://www.gov.uk/guidance/applying-to-register-a-high-rise-residential-building" class="govuk-link" tabindex="0" role="link">
+          Applying to register a high-rise residential building</a> will help you to understand which buildings you need to register.</govuk-body>
+      
+        <govuk-body><a class="govuk-link" href="https://forms.office.com/e/dRsZyPur6S" role="link" tabindex="0">What did you think of this service?</a> (takes 30 seconds)</govuk-body>
+        <govuk-body><a class="govuk-link" (click)="registerAnother()" role="link" tabindex="0" (keyup.enter)="registerAnother()">Register another building</a></govuk-body>
+        
       </div>
-
-      <govuk-body><a class="govuk-link" role="link" href="https://www.gov.uk/" tabindex="0">Back to GOV.UK home</a></govuk-body>
     </div>
   </div>
 </div>

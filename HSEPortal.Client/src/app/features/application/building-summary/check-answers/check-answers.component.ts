@@ -5,7 +5,7 @@ import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus, OutOfScopeReason, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
@@ -46,18 +46,27 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
       canContinue &&= FieldValidations.IsGreaterThanZero(section.FloorsAbove);
       canContinue &&= FieldValidations.IsGreaterThanZero(section.Height);
-      canContinue &&= FieldValidations.IsAPositiveNumber(section.ResidentialUnits);
+      if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.Height)) {
 
-      if (section.YearOfCompletionOption != 'not-completed') {
-        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
-      }
+        canContinue &&= FieldValidations.IsAPositiveNumber(section.ResidentialUnits);
+        
+        if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.NumberResidentialUnits) ) {
+        
+          if (section.YearOfCompletionOption != 'not-completed') {
+            canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
+          }
 
-      canContinue &&= (section.YearOfCompletionOption == "not-completed") || (section.YearOfCompletionOption == "year-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletion)) || (section.YearOfCompletionOption == "year-not-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletionRange));
-      canContinue &&= section.Addresses?.length > 0;
-
-      if ((section.YearOfCompletionOption == 'year-exact' && Number(section.YearOfCompletion) >= 2023) || (section.YearOfCompletionOption == 'year-not-exact' && section.YearOfCompletionRange == '2023-onwards')) {
-        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateIssuer);
-        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateReference);
+          if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.PeopleLivingInBuilding)) {
+            
+            canContinue &&= (section.YearOfCompletionOption == "not-completed") || (section.YearOfCompletionOption == "year-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletion)) || (section.YearOfCompletionOption == "year-not-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletionRange));
+            canContinue &&= section.Addresses?.length > 0;
+      
+            if ((section.YearOfCompletionOption == 'year-exact' && Number(section.YearOfCompletion) >= 2023) || (section.YearOfCompletionOption == 'year-not-exact' && section.YearOfCompletionRange == '2023-onwards')) {
+              canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateIssuer);
+              canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateReference);
+            }
+          }
+        }
       }
     }
 
@@ -65,12 +74,12 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     return canContinue;
   }
 
+  private isSectionOutOfScopeBecause(section: SectionModel, OutOfScopeReason: OutOfScopeReason) {
+    return section.Scope?.OutOfScopeReason == +OutOfScopeReason;
+  }
+
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
     var sectionsOutOfScope = this.getOutOfScopeSections();
-    if (sectionsOutOfScope.length == this.applicationService.model.Sections.length) {
-      // all blocks out of scope
-      return navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, activatedRoute);
-    }
 
     if (sectionsOutOfScope.length > 0) {
       // some blocks out of scope

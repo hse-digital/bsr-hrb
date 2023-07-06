@@ -9,6 +9,8 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { SectionCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { SectionNameComponent } from '../name/name.component';
+import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper';
+import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
 
 @Component({
   templateUrl: './add-more-sections.component.html'
@@ -53,9 +55,30 @@ export class AddMoreSectionsComponent extends BaseComponent implements IHasNextP
       nextPage = `${section}/${SectionNameComponent.route}`;
       await this.applicationService.updateApplication();
       return navigationService.navigateRelative(nextPage, activatedRoute);
+    } else {
+      if (this.areAllSectionsOutOfScope()) {
+        // User navigates to 6802 'you do not need to register - all structure info entered'
+        return navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, activatedRoute);
+      } else if (!this.areAllSectionsOutOfScope() && this.areAllSectionsDuplicated() && this.areAllSectionsRemoved()) {
+        // User navigates to 6498 'you do not need to register (building name) (4)'
+      } else if (!this.areAllSectionsOutOfScope() && (!this.areAllSectionsDuplicated() || !this.areAllSectionsRemoved())) {
+        return navigationService.navigateRelative(SectionCheckAnswersComponent.route, activatedRoute);
+      }
     }
 
     return navigationService.navigateRelative(SectionCheckAnswersComponent.route, activatedRoute);
+  }
+
+  private areAllSectionsOutOfScope() {
+    return ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService);
+  }
+
+  private areAllSectionsDuplicated() {
+    return ScopeAndDuplicateHelper.AreAllSectionsDuplicated(this.applicationService);
+  }
+
+  private areAllSectionsRemoved() {
+    return ScopeAndDuplicateHelper.AreAllSectionsRemoved(this.applicationService);
   }
 
   getSectionNames() {

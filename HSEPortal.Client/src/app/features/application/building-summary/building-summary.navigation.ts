@@ -15,6 +15,9 @@ import { SectionAddressComponent } from "./address/address.component";
 import { SectionCheckAnswersComponent } from "./check-answers/check-answers.component";
 import { Injectable } from "@angular/core";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
+import { NotNeedRegisterSingleStructureComponent } from "./not-need-register-single-structure/not-need-register-single-structure.component";
+import { NotNeedRegisterMultiStructureComponent } from "./not-need-register-multi-structure/not-need-register-multi-structure.component";
+import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 
 @Injectable()
 export class BuildingSummaryNavigation extends BaseNavigation {
@@ -116,32 +119,38 @@ class NumberOfFloorsNavigationNode extends BuildingNavigationNode {
 }
 
 class HeightNavigationNode extends BuildingNavigationNode {
-  constructor(private numberOfResidentialUnitsNavigationNode: NumberOfResidentialUnitsNavigationNode) {
+  constructor(private applicationService: ApplicationService, private numberOfResidentialUnitsNavigationNode: NumberOfResidentialUnitsNavigationNode,
+     private notNeedRegisterSingleStructureNavigationNode: NotNeedRegisterSingleStructureNavigationNode,
+     private notNeedRegisterMultiStructureNavigationNode: NotNeedRegisterMultiStructureNavigationNode) {
     super();
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.Height) {
       return SectionHeightComponent.route;
+    } else if (section.Height < 18 && section.FloorsAbove! < 7) {
+      return this.applicationService.model.NumberOfSections == 'one' 
+        ? this.notNeedRegisterSingleStructureNavigationNode.getNextRoute(section, sectionIndex)
+        : this.notNeedRegisterMultiStructureNavigationNode.getNextRoute(section, sectionIndex);
     }
-
     return this.numberOfResidentialUnitsNavigationNode.getNextRoute(section, sectionIndex);
   }
 }
 
 class NumberOfResidentialUnitsNavigationNode extends BuildingNavigationNode {
-  constructor(private peopleLivingNavigationNode: PeopleLivingNavigationNode,
-    private yearOfCompletionNavigationNode: YearOfCompletionNavigationNode) {
+  constructor(private applicationService: ApplicationService, private peopleLivingNavigationNode: PeopleLivingNavigationNode, 
+     private notNeedRegisterSingleStructureNavigationNode: NotNeedRegisterSingleStructureNavigationNode,
+     private notNeedRegisterMultiStructureNavigationNode: NotNeedRegisterMultiStructureNavigationNode) {
     super();
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.ResidentialUnits) {
       return SectionResidentialUnitsComponent.route;
-    }
-
-    if (section.ResidentialUnits == 0) {
-      return this.yearOfCompletionNavigationNode.getNextRoute(section, sectionIndex);
+    } else if (section.ResidentialUnits < 2) {
+      return this.applicationService.model.NumberOfSections == 'one'
+        ? this.notNeedRegisterSingleStructureNavigationNode.getNextRoute(section, sectionIndex)
+        : this.notNeedRegisterMultiStructureNavigationNode.getNextRoute(section, sectionIndex); 
     }
 
     return this.peopleLivingNavigationNode.getNextRoute(section, sectionIndex);
@@ -149,18 +158,44 @@ class NumberOfResidentialUnitsNavigationNode extends BuildingNavigationNode {
 }
 
 class PeopleLivingNavigationNode extends BuildingNavigationNode {
-  constructor(private yearOfCompletionNavigationNode: YearOfCompletionNavigationNode) {
+  constructor(private applicationService: ApplicationService, private yearOfCompletionNavigationNode: YearOfCompletionNavigationNode, 
+     private notNeedRegisterSingleStructureNavigationNode: NotNeedRegisterSingleStructureNavigationNode,
+     private notNeedRegisterMultiStructureNavigationNode: NotNeedRegisterMultiStructureNavigationNode) {
     super();
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (!section.PeopleLivingInBuilding) {
       return SectionPeopleLivingInBuildingComponent.route;
+    } else if (section.PeopleLivingInBuilding == 'no_wont_move') {
+      return this.applicationService.model.NumberOfSections == 'one'
+        ? this.notNeedRegisterSingleStructureNavigationNode.getNextRoute(section, sectionIndex)
+        : this.notNeedRegisterMultiStructureNavigationNode.getNextRoute(section, sectionIndex);
     }
-
     return this.yearOfCompletionNavigationNode.getNextRoute(section, sectionIndex);
   }
 }
+
+class NotNeedRegisterSingleStructureNavigationNode extends BuildingNavigationNode {
+  constructor() {
+    super();
+  }
+
+  override getNextRoute(_: SectionModel, __: number): string {
+    return NotNeedRegisterSingleStructureComponent.route;
+  }
+}
+
+class NotNeedRegisterMultiStructureNavigationNode extends BuildingNavigationNode {
+  constructor(private applicationService: ApplicationService, private addAnotherSectionNavigationNode: AddAnotherSectionNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(section: SectionModel, sectionIndex: number): string {
+    return this.addAnotherSectionNavigationNode.getNextRoute(section, sectionIndex);
+  }
+}
+
 
 class YearOfCompletionNavigationNode extends BuildingNavigationNode {
   constructor(private yearRangeNavigationNode: YearRangeNavigationNode,
@@ -280,8 +315,10 @@ class AddAnotherSectionNavigationNode extends BuildingNavigationNode {
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if (sectionIndex == this.applicationService.model.Sections.length - 1 && this.applicationService.model.NumberOfSections == 'two_or_more') {
       return AddMoreSectionsComponent.route;
+    } else if (ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService)) {
+      // goes to 6802 all structures are out of scope.
     }
-
+    // check if the all the structures are in scope or not.
     return this.CheckAnswersNavigationNode.getNextRoute(section, sectionIndex);
   }
 
@@ -294,14 +331,16 @@ class AddAnotherSectionNavigationTree extends BuildingNavigationNode {
   }
 
   private addAnotherSectionNavigationNode = new AddAnotherSectionNavigationNode(this.applicationService, this.checkAnswersNavigationNode);
+  private notNeedRegisterMultiStructureNavigationNode = new NotNeedRegisterMultiStructureNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode);
+  private notNeedRegisterSingleStructureNavigationNode = new NotNeedRegisterSingleStructureNavigationNode();
   private sectionAddressNavigationNode = new SectionAddressNavigationNode(this.addAnotherSectionNavigationNode);
   private completionCertificateReferenceNavigationNode = new CompletionCertificateReferenceNavigationNode(this.sectionAddressNavigationNode);
   private completionCertificateIssuerNavigationNode = new CompletionCertificateIssuerNavigationNode(this.completionCertificateReferenceNavigationNode, this.sectionAddressNavigationNode);
   private yearRangeNavigationNode = new YearRangeNavigationNode(this.completionCertificateIssuerNavigationNode);
   private yearOfCompletionNavigationNode = new YearOfCompletionNavigationNode(this.yearRangeNavigationNode, this.completionCertificateIssuerNavigationNode, this.sectionAddressNavigationNode);
-  private peopleLivingNavigationNode = new PeopleLivingNavigationNode(this.yearOfCompletionNavigationNode);
-  private numberOfResidentialUnitsNavigationNode = new NumberOfResidentialUnitsNavigationNode(this.peopleLivingNavigationNode, this.yearOfCompletionNavigationNode);
-  private heightNavigationNode = new HeightNavigationNode(this.numberOfResidentialUnitsNavigationNode);
+  private peopleLivingNavigationNode = new PeopleLivingNavigationNode(this.applicationService, this.yearOfCompletionNavigationNode, this.notNeedRegisterSingleStructureNavigationNode, this.notNeedRegisterMultiStructureNavigationNode);
+  private numberOfResidentialUnitsNavigationNode = new NumberOfResidentialUnitsNavigationNode(this.applicationService, this.peopleLivingNavigationNode, this.notNeedRegisterSingleStructureNavigationNode, this.notNeedRegisterMultiStructureNavigationNode);
+  private heightNavigationNode = new HeightNavigationNode(this.applicationService, this.numberOfResidentialUnitsNavigationNode, this.notNeedRegisterSingleStructureNavigationNode, this.notNeedRegisterMultiStructureNavigationNode);
   private numberOfFloorsNavigationNode = new NumberOfFloorsNavigationNode(this.heightNavigationNode);
   private sectionNameNavigationNode = new SectionNameNavigationNode(this.numberOfFloorsNavigationNode);
 

@@ -31,7 +31,11 @@ export abstract class BaseComponent implements CanActivate {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
     } else if (!this.isSummaryPage() && !this.isKbiPage() && !this.isReturningApplicationPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
-      this.navigationService.navigate(ApplicationSubmittedHelper.getPaymentConfirmationRoute(this.applicationService));
+      if (ApplicationSubmittedHelper.isKbiCompleted(this.applicationService)) {
+        this.navigationService.navigate(ApplicationSubmittedHelper.getApplicationCompletedRoute(this.applicationService));
+      } else {
+        this.navigationService.navigate(ApplicationSubmittedHelper.getPaymentConfirmationRoute(this.applicationService));
+      }
       return false;
     }
 

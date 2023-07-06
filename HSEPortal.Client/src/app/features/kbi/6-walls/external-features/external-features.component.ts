@@ -40,7 +40,7 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
   }
 
   getInfraestructureName() {
-    return this.applicationService.currentSection.Name ?? this.applicationService.model.BuildingName;
+    return this.applicationService.currentKbiSection!.StructureName ?? this.applicationService.model.BuildingName;
   }
 
   canContinue(): boolean {

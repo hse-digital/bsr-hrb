@@ -85,7 +85,8 @@ public class DynamicsService
     public async Task CreateBuildingStructures(Structures structures)
     {
         var structureDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<Structure, DynamicsStructure>();
-        foreach (var section in structures.BuildingStructures)
+        var InScopeStructures = structures.BuildingStructures.Where(x => x.Addresses != null && x.Addresses.Length > 0);
+        foreach (var section in InScopeStructures)
         {
             var dynamicsStructure = BuildDynamicsStructure(structures, section, structureDefinition);
             dynamicsStructure = await SetYearOfCompletion(section, dynamicsStructure);
@@ -605,11 +606,22 @@ public class DynamicsService
         var structure = new Structure(section.Name ?? structures.DynamicsBuildingApplication.bsr_Building?.bsr_name, section.FloorsAbove, section.Height, section.ResidentialUnits, section.PeopleLivingInBuilding, section.YearOfCompletionOption);
         var dynamicsStructure = structureDefinition.BuildDynamicsEntity(structure);
 
-        var primaryAddress = section.Addresses[0];
         dynamicsStructure = dynamicsStructure with
         {
             buildingReferenceId = $"/bsr_buildings({structures.DynamicsBuildingApplication._bsr_building_value})",
             buildingApplicationReferenceId = $"/bsr_buildingapplications({structures.DynamicsBuildingApplication.bsr_buildingapplicationid})",
+        };
+        
+        if (section.Addresses != null && section.Addresses.Length > 0) {
+            return AddPrimaryAddressTo(dynamicsStructure, section);
+        }
+
+        return dynamicsStructure;
+    }
+
+    private static DynamicsStructure AddPrimaryAddressTo(DynamicsStructure dynamicsStructure, SectionModel section) {
+        var primaryAddress = section.Addresses[0];
+        return dynamicsStructure with {
             bsr_addressline1 = string.Join(", ", primaryAddress.Address.Split(',').Take(3)),
             bsr_addressline2 = primaryAddress.AddressLineTwo,
             bsr_addresstype = AddressType.Primary,
@@ -621,8 +633,6 @@ public class DynamicsService
             bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
             bsr_classificationcode = primaryAddress.ClassificationCode,
         };
-
-        return dynamicsStructure;
     }
 
     private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure)

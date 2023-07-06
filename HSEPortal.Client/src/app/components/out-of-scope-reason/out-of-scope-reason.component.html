@@ -1,0 +1,5 @@
+<govuk-body *ngIf="showHeightReason()">You've told us that {{this.SectionBuildingName}} has <b>{{floorsAbove}} {{floorsAbove > 1 ? 'floors' : 'floor'}}</b> and is <b>{{height}} {{height > 1 ? 'metres' : 'metre'}}</b> in height.</govuk-body>
+
+<govuk-body *ngIf="showNumberResidentialUnitsReason()">You told us that {{this.SectionBuildingName}} has <b>{{residentialUnits}} residential {{residentialUnits != 1 ? 'units' : 'unit'}}</b>.</govuk-body>
+
+<govuk-body *ngIf="showPeopleLivingInBuildingReason()">You told us that <b>no one is living in {{this.SectionBuildingName}} and people will not be moving in</b>.</govuk-body>

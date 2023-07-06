@@ -69,7 +69,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
 
       var applicationStatus = this.applicationService.model.ApplicationStatus;
       if ((applicationStatus & BuildingApplicationStatus.KbiSubmitComplete) == BuildingApplicationStatus.KbiSubmitComplete) {
-        this.navigationService.navigate(`application/${this.applicationNumber}/kbi/submit/information-submitted`);
+        this.navigationService.navigate(`application/${this.applicationNumber}/application-completed`);
       } else if ((applicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
         this.navigationService.navigate(`application/${this.applicationNumber}/kbi`);
       } else {

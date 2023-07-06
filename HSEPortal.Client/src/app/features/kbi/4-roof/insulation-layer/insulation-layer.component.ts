@@ -30,7 +30,7 @@ export class InsulationLayerComponent  extends BaseComponent implements IHasNext
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
-      : this.applicationService.currentSection.Name;
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 
   canContinue(): boolean {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, SectionModel } from 'src/app/services/application.service';
 
 @Component({
   templateUrl: './kbi-summary.component.html',
@@ -11,6 +11,7 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
   static title: string = "Summary - structure and safety information - GOV.UK";
 
   submissionDate?: string;
+  InScopeStructures?: SectionModel[];
 
   constructor(public applicationService: ApplicationService) {
   }
@@ -20,10 +21,11 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
   }
 
   async ngOnInit() {
-    if (this.applicationService.model.Sections.length == 1) {
+    this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    if (this.InScopeStructures.length == 1) {
       this.applicationService.model.Kbi!.KbiSections[0].StructureName = this.applicationService.model.BuildingName;
     } else {
-      this.applicationService.model.Sections.forEach((x, index) => this.applicationService.model.Kbi!.KbiSections[index].StructureName = x.Name)
+      this.InScopeStructures.forEach((x, index) => this.applicationService.model.Kbi!.KbiSections[index].StructureName = x.Name)
     }
 
     this.submissionDate = await this.applicationService.getSubmissionDate();
