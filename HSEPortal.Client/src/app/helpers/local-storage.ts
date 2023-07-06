@@ -4,8 +4,8 @@ export class LocalStorage {
   }
 
   static getJSON(key: string) {
-    if (typeof localStorage !== 'undefined') {
-      var localStorageModel = localStorage.getItem(key);
+    if (typeof sessionStorage !== 'undefined') {
+      var localStorageModel = sessionStorage.getItem(key);
       if (localStorageModel) {
         return JSON.parse(atob(localStorageModel));
       }
@@ -15,16 +15,14 @@ export class LocalStorage {
   }
 
   static setJSON(key: string, value: any) {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(key, btoa(JSON.stringify(value)));
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem(key, btoa(JSON.stringify(value)));
     }
   }
 
   static remove(key: string) {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem(key);
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem(key);
     }
   }
-
 }
-
