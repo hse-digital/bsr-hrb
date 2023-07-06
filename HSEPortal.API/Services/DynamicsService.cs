@@ -46,13 +46,24 @@ public class DynamicsService
         });
     }
 
-    public Task<LocalAuthoritiesSearchResponse> SearchLocalAuthorities(string authorityName)
+    public Task<DynamicsOrganisationsSearchResponse> SearchLocalAuthorities(string authorityName)
     {
-        return dynamicsApi.Get<LocalAuthoritiesSearchResponse>("accounts", new[]
-        {
-            ("$filter", $"_bsr_accounttype_accountid_value eq '{dynamicsOptions.LocalAuthorityTypeId}' and contains(name, '{authorityName.EscapeSingleQuote()}')"),
-            ("$select", "name")
-        });
+        return SearchOrganisations(authorityName, dynamicsOptions.LocalAuthorityTypeId);
+    }
+
+    public Task<DynamicsOrganisationsSearchResponse> SearchSocialHousingOrganisations(string authorityName)
+    {
+        return SearchOrganisations(authorityName, DynamicsOptions.SocialHousingTypeId);
+    }
+
+    private Task<DynamicsOrganisationsSearchResponse> SearchOrganisations(string authorityName, string accountTypeId)
+    {
+        return dynamicsApi.Get<DynamicsOrganisationsSearchResponse>("accounts",
+            new[]
+            {
+                ("$filter", $"_bsr_accounttype_accountid_value eq '{accountTypeId}' and contains(name, '{authorityName.EscapeSingleQuote()}')"),
+                ("$select", "name")
+            });
     }
 
     public async Task<DynamicsBuildingApplication> GetBuildingApplicationUsingId(string applicationId)
