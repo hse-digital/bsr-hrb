@@ -121,8 +121,8 @@ export class ApplicationService {
     await this.updateApplication();
   }
 
-  async sendVerificationEmail(emailAddress: string): Promise<void> {
-    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": emailAddress }));
+  async sendVerificationEmail(emailAddress: string, applicationNumber: string, buildingName?: string): Promise<void> {
+    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": emailAddress, "ApplicationNumber": applicationNumber, "BuildingName": buildingName }));
   }
 
   async validateOTPToken(otpToken: string, emailAddress: string): Promise<void> {

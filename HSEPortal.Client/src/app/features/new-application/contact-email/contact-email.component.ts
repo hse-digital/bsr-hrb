@@ -30,7 +30,7 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
   }
 
   override async onSave(): Promise<void> {
-    await this.applicationService.sendVerificationEmail(this.applicationService.model.ContactEmailAddress!);
+    await this.applicationService.sendVerificationEmail(this.applicationService.model.ContactEmailAddress!, "HRB000000000", this.applicationService.model.BuildingName);
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {

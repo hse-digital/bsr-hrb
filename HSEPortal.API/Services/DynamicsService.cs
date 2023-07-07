@@ -36,12 +36,13 @@ public class DynamicsService
         return buildingApplicationModel with { Id = dynamicsBuildingApplication.bsr_applicationid };
     }
 
-    public async Task SendVerificationEmail(EmailVerificationModel emailVerificationModel, string otpToken)
+    public async Task SendVerificationEmail(string emailAddress, string buildingName, string otpToken)
     {
         await dynamicsOptions.EmailVerificationFlowUrl.PostJsonAsync(new
         {
-            emailAddress = emailVerificationModel.EmailAddress.ToLower(),
+            emailAddress = emailAddress.ToLower(),
             otp = otpToken,
+            buildingName = buildingName,
             hrbRegUrl = swaOptions.Url
         });
     }

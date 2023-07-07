@@ -1,9 +1,8 @@
 using System.Net.Mail;
-using System.Text.RegularExpressions;
 
 namespace HSEPortal.API.Model;
 
-public record EmailVerificationModel(string EmailAddress) : IValidatableModel
+public record EmailVerificationModel(string EmailAddress, string ApplicationNumber = null, string BuildingName = null) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
