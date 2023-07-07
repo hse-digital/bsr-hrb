@@ -1,8 +1,8 @@
 import { Component, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { BaseComponent } from "src/app/helpers/base.component";
-import { SectionHelper } from "src/app/helpers/section-helper";
+import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { ApplicationService, OutOfScopeReason, Scope, SectionModel } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from 'src/app/services/title.service';
@@ -30,8 +30,7 @@ export class BuildingOutOfScopeComponent extends BaseComponent {
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    let outOfScope = this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
-    return outOfScope.length == this.applicationService.model.Sections.length;
+    return ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService);
   }
 
   getOutOfScopeReason(section: SectionModel) {
