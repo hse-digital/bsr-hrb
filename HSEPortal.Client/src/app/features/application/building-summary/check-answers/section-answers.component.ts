@@ -2,6 +2,7 @@ import { Component, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { OutOfScopeReason, SectionModel } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
 
 @Component({
     selector: 'section-answers',
@@ -26,6 +27,10 @@ export class SectionAnswersComponent {
             return: 'check-answers',
             address: addressIndex + 1
         });
+    }
+
+    addMoreSections() {
+        this.navigationService.navigateRelative(`${AddMoreSectionsComponent.route}`, this.activatedRoute);
     }
 
     showCompletionCertificate() {

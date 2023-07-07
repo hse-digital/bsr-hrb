@@ -16,7 +16,6 @@ import { SectionCheckAnswersComponent } from "./check-answers/check-answers.comp
 import { Injectable } from "@angular/core";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
 import { NotNeedRegisterSingleStructureComponent } from "./not-need-register-single-structure/not-need-register-single-structure.component";
-import { NotNeedRegisterMultiStructureComponent } from "./not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 
 @Injectable()
@@ -271,6 +270,10 @@ class CompletionCertificateIssuerNavigationNode extends BuildingNavigationNode {
     }
 
     if (["Before-1900", "1901-to-1955", "1956-to-1969", "1970-to-1984"].indexOf(section.YearOfCompletionRange!) > -1) {
+      return false;
+    }
+
+    if (section.Addresses?.length > 0) {
       return false;
     }
 

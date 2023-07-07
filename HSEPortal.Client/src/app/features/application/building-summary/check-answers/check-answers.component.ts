@@ -11,7 +11,6 @@ import { TitleService } from 'src/app/services/title.service';
 import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
 import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
 import { NumberOfSectionsComponment } from '../number-of-sections/number-of-sections.component';
-import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
 import { MoreInformationComponent } from '../more-information/more-information.component';
 
 @Component({
@@ -49,18 +48,18 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
       if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.Height)) {
 
         canContinue &&= FieldValidations.IsAPositiveNumber(section.ResidentialUnits);
-        
-        if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.NumberResidentialUnits) ) {
-        
+
+        if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.NumberResidentialUnits)) {
+
           if (section.YearOfCompletionOption != 'not-completed') {
             canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
           }
 
           if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.PeopleLivingInBuilding)) {
-            
+
             canContinue &&= (section.YearOfCompletionOption == "not-completed") || (section.YearOfCompletionOption == "year-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletion)) || (section.YearOfCompletionOption == "year-not-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletionRange));
             canContinue &&= section.Addresses?.length > 0;
-      
+
             if ((section.YearOfCompletionOption == 'year-exact' && Number(section.YearOfCompletion) >= 2023) || (section.YearOfCompletionOption == 'year-not-exact' && section.YearOfCompletionRange == '2023-onwards')) {
               canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateIssuer);
               canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateReference);
@@ -99,7 +98,7 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   override async onSave(): Promise<void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.BlocksInBuildingComplete;
-    
+
     await this.applicationService.syncBuildingStructures();
   }
 
