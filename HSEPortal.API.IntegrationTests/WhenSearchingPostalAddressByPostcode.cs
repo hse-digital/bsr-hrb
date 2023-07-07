@@ -41,16 +41,4 @@ public class SearchPostalAddressByPostcode : IntegrationTestBase
         addressResponse.MaxResults.Should().BeGreaterThan(0);
         addressResponse.Results.Length.Should().BeGreaterThan(0);
     }
-
-    [Theory]
-    [MemberData(nameof(getPostcode))]
-    public async Task ShouldReturnClassificationCodesPPorP(string postcode)
-    {
-        var response = await swaOptions.Value.Url
-            .AppendPathSegments("api", "SearchPostalAddressByPostcode", postcode)
-            .AllowAnyHttpStatus()
-            .GetJsonAsync<BuildingAddressSearchResponse>();
-
-        response.Results.All(x => x.ClassificationCode.Equals("P") || x.ClassificationCode.Equals("PP"));
-    }
 }

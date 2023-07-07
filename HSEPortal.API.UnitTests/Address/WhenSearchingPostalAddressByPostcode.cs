@@ -34,7 +34,6 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
             {
                 postcode = buckinghamPalacePostcode,
                 dataset = "DPA",
-                fq = new[] { "CLASSIFICATION_CODE:PP CLASSIFICATION_CODE:P" },
                 key = integrationsOptions.OrdnanceSurveyApiKey
             })
             .WithVerb(HttpMethod.Get);

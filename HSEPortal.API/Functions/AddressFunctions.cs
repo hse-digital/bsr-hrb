@@ -44,7 +44,6 @@ public class AddressFunctions
         {
             postcode = postcode,
             dataset = "DPA",
-            fq = new[] { "CLASSIFICATION_CODE:PP CLASSIFICATION_CODE:P" },
             key = integrationOptions.OrdnanceSurveyApiKey
         });
 
