@@ -4,6 +4,7 @@ import { AddressResponseModel, AddressService } from 'src/app/services/address.s
 import { AddressSearchMode } from './address.component';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { TitleService } from 'src/app/services/title.service';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 @Component({
   selector: 'find-address',
   templateUrl: './find-address.component.html'
@@ -11,7 +12,7 @@ import { TitleService } from 'src/app/services/title.service';
 export class FindAddressComponent {
 
   @Input() searchMode: AddressSearchMode = AddressSearchMode.Building;
-  @Input() searchModel!: { postcode?: string };
+  @Input() searchModel!: { postcode?: string, buildingNumberName?: string };
   @Input() addressName!: string;
   @Input() selfAddress = false;
   @Output() public onSearchPerformed = new EventEmitter<AddressResponseModel>();
@@ -29,6 +30,10 @@ export class FindAddressComponent {
     if (this.isPostcodeValid()) {
       this.loading = true;
       let addressResponse = await this.searchAddress();
+
+      if (this.pap() && FieldValidations.IsNotNullOrWhitespace(this.searchModel.buildingNumberName)) {
+        addressResponse.Results = addressResponse.Results.filter(x => x.Address!.toLocaleLowerCase().indexOf(this.searchModel.buildingNumberName!.toLowerCase()) > -1)
+      }
 
       this.onSearchPerformed.emit(addressResponse);
     } else {

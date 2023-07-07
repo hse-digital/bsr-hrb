@@ -9,6 +9,12 @@
   <govuk-body *ngIf="pap()">This is the address we will send official communications to, including serving notices.</govuk-body>
   <govuk-body>{{addressTypeDescription()}}</govuk-body>
   
+  <govuk-input *ngIf="pap()" id="building-number-name" label="Building number or name (optional)"
+                hint="For example, 15 or Prospect Cottage."
+                [(model)]="searchModel.buildingNumberName"
+                class="govuk-!-margin-bottom-5"
+                (onKeyupEnter)="findAddress()" />
+
   <govuk-input id="postcode" label="Postcode"
                 hint="For example, AA3 1AB."
                 [(model)]="searchModel.postcode"
