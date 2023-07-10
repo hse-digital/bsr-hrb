@@ -91,7 +91,8 @@ public class DynamicsService
         {
             var dynamicsStructure = BuildDynamicsStructure(structures, section, structureDefinition);
             dynamicsStructure = await SetYearOfCompletion(section, dynamicsStructure);
-            dynamicsStructure = await CreateStructure(structureDefinition, dynamicsStructure);
+            dynamicsStructure = await CreateStructure(structureDefinition, dynamicsStructure, structures.DynamicsBuildingApplication.bsr_buildingapplicationid);
+            
             await CreateStructureCompletionCertificate(section, dynamicsStructure);
             await CreateStructureOptionalAddresses(section, dynamicsStructure);
         }
@@ -614,7 +615,11 @@ public class DynamicsService
         };
         
         if (section.Addresses != null && section.Addresses.Length > 0) {
-            return AddPrimaryAddressTo(dynamicsStructure, section);
+            dynamicsStructure = AddPrimaryAddressTo(dynamicsStructure, section);
+        }
+
+        if (section.Statecode != null && int.Parse(section.Statecode) == 1) {
+            dynamicsStructure = AddDeactivateStructure(dynamicsStructure);
         }
 
         return dynamicsStructure;
@@ -636,9 +641,16 @@ public class DynamicsService
         };
     }
 
-    private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure)
+    private static DynamicsStructure AddDeactivateStructure(DynamicsStructure dynamicsStructure) {
+        return dynamicsStructure with {
+            statecode = 1,
+            statuscode = 2
+        };
+    }
+
+    private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure, string buildingApplicationId)
     {
-        var existingStructure = await FindExistingStructureAsync(dynamicsStructure.bsr_name.EscapeSingleQuote(), dynamicsStructure.bsr_postcode);
+        var existingStructure = await FindExistingStructureAsync(dynamicsStructure.bsr_name.EscapeSingleQuote(), dynamicsStructure.bsr_postcode, buildingApplicationId);
         if (existingStructure != null)
         {
             dynamicsStructure = dynamicsStructure with { bsr_blockid = existingStructure.bsr_blockid };

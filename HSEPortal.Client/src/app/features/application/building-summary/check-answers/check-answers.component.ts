@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
@@ -25,7 +25,7 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   static route: string = 'check-answers';
   static title: string = "Check your answers - Register a high-rise building - GOV.UK";
 
-  sections: SectionModel[] = [];
+  activeSections: SectionModel[] = [];
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
@@ -34,13 +34,22 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   async ngOnInit() {
-    this.sections = this.applicationService.model.Sections;
+    this.initStatecode();
+    this.activeSections = this.getActiveSections();
+  }
+
+  private initStatecode() {
+    this.applicationService.model.Sections.filter(x => x.Statecode != "1").map(x => x.Statecode = "0");
+  }
+
+  private getActiveSections() {
+    return this.applicationService.model.Sections.filter(x => x.Statecode != "1");
   }
 
   hasIncompleteData = false;
   canContinue(): boolean {
     var canContinue = true;
-    for (var section of this.sections) {
+    for (var section of this.activeSections) {
       if (this.applicationService.model.NumberOfSections == "two_or_more") {
         canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.Name);
       }
@@ -102,8 +111,9 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   override async onSave(): Promise<void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.BlocksInBuildingComplete;
-
     await this.applicationService.syncBuildingStructures();
+
+    this.applicationService.model.Sections =  this.getActiveSections();
   }
 
   private getOutOfScopeSections() {
@@ -112,5 +122,18 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   override canAccess(_: ActivatedRouteSnapshot): boolean {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingInProgress) == BuildingApplicationStatus.BlocksInBuildingInProgress;
+  }
+
+  removeStructure(index: number) {
+    this.applicationService.removeStructure(index);
+    if (this.applicationService.model.Sections.filter(x => x.Statecode != "1").length == 1) {
+      this.changeNumberOfSectionsToOne();
+    }
+    this.activeSections = this.getActiveSections();
+  }
+
+  private changeNumberOfSectionsToOne() {
+    this.applicationService.model.NumberOfSections = 'one';
+    this.applicationService.updateApplication();
   }
 }

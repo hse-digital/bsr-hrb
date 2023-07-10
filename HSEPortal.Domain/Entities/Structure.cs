@@ -23,6 +23,8 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     public string bsr_uprn { get; init; }
     public string bsr_usrn { get; init; }
     public string bsr_classificationcode { get; init; }
+    public int? statuscode { get; init; } 
+    public int? statecode { get; init; } 
     public AddressType? bsr_addresstype { get; init; }
     public YesNoOption? bsr_manualaddress { get; init; }
 

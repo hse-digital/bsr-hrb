@@ -121,6 +121,11 @@ export class ApplicationService {
     await this.updateApplication();
   }
 
+  async removeStructure(index: number) {
+    this.model.Sections.at(index)!.Statecode = "1";
+    await this.updateApplication();
+  }
+
   async sendVerificationEmail(emailAddress: string, applicationNumber: string, buildingName?: string): Promise<void> {
     await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": emailAddress, "ApplicationNumber": applicationNumber, "BuildingName": buildingName }));
   }
@@ -244,6 +249,8 @@ export class SectionModel {
   CompletionCertificateIssuer?: any;
   CompletionCertificateReference?: any;
   Addresses: AddressModel[] = [];
+
+  Statecode?: string;
 
   Scope?: Scope;
   Duplicate?: Duplicate;
