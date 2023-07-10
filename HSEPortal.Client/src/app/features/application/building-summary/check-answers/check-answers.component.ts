@@ -12,6 +12,8 @@ import { AccountablePersonModule } from '../../accountable-person/accountable-pe
 import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
 import { NumberOfSectionsComponment } from '../number-of-sections/number-of-sections.component';
 import { MoreInformationComponent } from '../more-information/more-information.component';
+import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
+import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper';
 
 @Component({
   selector: 'hse-check-answers',
@@ -78,10 +80,12 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    var sectionsOutOfScope = this.getOutOfScopeSections();
+    if (ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService)) {
+      return navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, activatedRoute);
+    }
 
+    var sectionsOutOfScope = this.getOutOfScopeSections();
     if (sectionsOutOfScope.length > 0) {
-      // some blocks out of scope
       return navigationService.navigateRelative(MoreInformationComponent.route, activatedRoute);
     }
 

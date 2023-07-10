@@ -14,4 +14,20 @@ export class ScopeAndDuplicateHelper {
         return applicationService.model.Sections.every(x => x.Duplicate?.Removed);
     }
 
+    public static ClearOutOfScopeSection(applicationService: ApplicationService, fromHeight: boolean = false, fromUnits: boolean = false) {
+        if (fromHeight) {
+            applicationService.currentSection.ResidentialUnits = undefined;
+        }
+
+        if (fromHeight || fromUnits) {
+            applicationService.currentSection.PeopleLivingInBuilding = undefined;
+        }
+
+        applicationService.currentSection.YearOfCompletion = undefined;
+        applicationService.currentSection.YearOfCompletionOption = undefined;
+        applicationService.currentSection.CompletionCertificateIssuer = undefined;
+        applicationService.currentSection.CompletionCertificateReference = undefined;
+        applicationService.currentSection.Addresses = [];
+    }
+
 }

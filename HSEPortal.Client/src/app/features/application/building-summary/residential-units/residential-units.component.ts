@@ -11,6 +11,7 @@ import { TitleService } from 'src/app/services/title.service';
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
+import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 
 @Component({
   templateUrl: './residential-units.component.html'
@@ -47,9 +48,16 @@ export class SectionResidentialUnitsComponent extends BaseComponent implements I
   }
 
   private IsOutOfScope(residentialUnits: number) {
+    let wasOutOfScope = this.applicationService.currentSection.Scope?.IsOutOfScope;
+
     if (residentialUnits < 2) {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.NumberResidentialUnits };
+      ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService, false, true);
     } else {
+      if (wasOutOfScope) {
+        this.returnUrl = undefined;
+      }
+
       this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
     }
   }

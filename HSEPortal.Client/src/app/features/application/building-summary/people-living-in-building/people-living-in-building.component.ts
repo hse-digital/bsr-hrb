@@ -10,6 +10,7 @@ import { TitleService } from 'src/app/services/title.service';
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
+import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
@@ -34,9 +35,16 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
   }
 
   private IsOutOfScope(peopleLivingInBuilding: string) {
+    let wasOutOfScope = this.applicationService.currentSection.Scope?.IsOutOfScope;
+
     if (!this.peopleLivingHasErrors && peopleLivingInBuilding == 'no_wont_move') {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.PeopleLivingInBuilding };
+      ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService);
     } else {
+      if (wasOutOfScope) {
+        this.returnUrl = undefined;
+      }
+      
       this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
     }
   }

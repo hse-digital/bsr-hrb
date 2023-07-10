@@ -1,6 +1,6 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { OutOfScopeReason, SectionModel } from "src/app/services/application.service";
+import { ApplicationService, OutOfScopeReason, SectionModel } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
 
@@ -8,13 +8,19 @@ import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections
     selector: 'section-answers',
     templateUrl: './section-answers.component.html'
 })
-export class SectionAnswersComponent {
+export class SectionAnswersComponent implements OnInit {
 
-    constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute) { }
+    constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private applicationService: ApplicationService) { }
 
     @Input() section!: SectionModel;
     @Input() sectionIndex!: number;
     @Input() hasMoreSections = false;
+
+    isInScope: boolean = true;
+
+    ngOnInit(): void {
+        this.isInScope = !this.section.Scope?.IsOutOfScope;
+    }
 
     navigateTo(url: string, query?: string) {
         this.navigationService.navigateRelative(`section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
@@ -29,6 +35,10 @@ export class SectionAnswersComponent {
         });
     }
 
+    showName() {
+        return this.applicationService.model.NumberOfSections == 'two_or_more';
+    }
+
     addMoreSections() {
         this.navigationService.navigateRelative(`${AddMoreSectionsComponent.route}`, this.activatedRoute);
     }
@@ -39,11 +49,11 @@ export class SectionAnswersComponent {
     }
 
     showResidentialUnits() {
-        return !this.section.Scope?.IsOutOfScope || (this.section.Scope?.IsOutOfScope && this.section.Scope?.OutOfScopeReason != OutOfScopeReason.Height) 
+        return this.isInScope || this.section.Scope?.OutOfScopeReason != OutOfScopeReason.Height;
     }
 
     showPeopleLivingBuilding() {
-        return !this.section.Scope?.IsOutOfScope || (this.section.Scope?.IsOutOfScope && this.section.Scope?.OutOfScopeReason == OutOfScopeReason.PeopleLivingInBuilding) 
+        return this.isInScope || this.section.Scope?.OutOfScopeReason == OutOfScopeReason.PeopleLivingInBuilding;
     }
 
 }

@@ -10,6 +10,7 @@ import { TitleService } from 'src/app/services/title.service';
 import { SectionResidentialUnitsComponent } from "../residential-units/residential-units.component";
 import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
+import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 
 @Component({
   templateUrl: './height.component.html',
@@ -47,9 +48,16 @@ export class SectionHeightComponent extends BaseComponent implements IHasNextPag
   }
 
   private IsOutOfScope(height: number) {
+    let wasOutOfScope = this.applicationService.currentSection.Scope?.IsOutOfScope;
+
     if (height < 18 && this.applicationService.currentSection.FloorsAbove! < 7) {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.Height };
+      ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService,);
     } else {
+      if (wasOutOfScope) {
+        this.returnUrl = undefined;
+      }
+
       this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
     }
   }
