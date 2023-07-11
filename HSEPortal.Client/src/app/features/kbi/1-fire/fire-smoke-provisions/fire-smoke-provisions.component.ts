@@ -25,6 +25,8 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   errorMessage?: string;
   fireSmokeProvisionsHasErrors = false;
 
+  private readonly provisionsWithLocation: string[] = ["alarm_heat_smoke", "alarm_call_points", "fire_dampers", "fire_shutters", "heat_detectors", "smoke_aovs", "smoke_manual", "smoke_detectors", "sprinklers_misters"];
+
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
@@ -58,14 +60,14 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
     // init locations
     if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations || Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length == 0) {
       this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = {};
-      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(equipment => {
+      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.filter(x => this.provisionsWithLocation.indexOf(x) > -1).forEach(equipment => {
         this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![equipment] = [];
       });
     }
 
     // Mapping locations
     let aux: Record<string, string[]> = {};
-    this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(x =>
+    this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.filter(x => this.provisionsWithLocation.indexOf(x) > -1).forEach(x =>
       aux[x] = (!!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x] && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0)
         ? this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]
         : []
@@ -73,10 +75,11 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
     this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = aux;
   }
 
+  
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.includes('none')) {
+    if (this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.some(x => this.provisionsWithLocation.indexOf(x) > -1)) {
       return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute, {
-        equipment: this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![0]
+        equipment: this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.find(x => this.provisionsWithLocation.indexOf(x) > -1)
       });
     }
 

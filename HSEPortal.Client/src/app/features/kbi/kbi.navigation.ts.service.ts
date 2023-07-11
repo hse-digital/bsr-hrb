@@ -178,12 +178,16 @@ class FireSmokeProvisionsNavigationNode extends KbiNavigationNode {
     super();
   }
 
+  private readonly provisionsWithLocation: string[] = ["alarm_heat_smoke", "alarm_call_points", "fire_dampers", "fire_shutters", "heat_detectors", "smoke_aovs", "smoke_manual", "smoke_detectors", "sprinklers_misters"];
+
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
+    
     if (!kbi.Fire.FireSmokeProvisions || kbi.Fire.FireSmokeProvisions!.length == 0) {
       return `${KbiFireModule.baseRoute}/${FireSmokeProvisionsComponent.route}`;
     }
 
-    if (kbi.Fire.FireSmokeProvisions!.length == 1 && kbi.Fire.FireSmokeProvisions![0] === 'none') {
+    let filteredProvisions = kbi.Fire.FireSmokeProvisions?.filter(x => this.provisionsWithLocation.indexOf(x) > -1);
+    if ((kbi.Fire.FireSmokeProvisions!.length == 1 && kbi.Fire.FireSmokeProvisions![0] === 'none') || filteredProvisions.length == 0) {
       return this.liftsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
 
