@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { KbiSummaryComponent } from '../kbi-summary.component';
 import { BuildingStructure, ApplicationService } from 'src/app/services/application.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'structural-type-and-materials-summary',
@@ -10,8 +11,8 @@ export class StructuralTypeAndMaterialsSummaryComponent  extends KbiSummaryCompo
 
   @Input() buildingStructure: BuildingStructure = {};
 
-  constructor(applicationService: ApplicationService) {
-    super(applicationService)
+  constructor(applicationService: ApplicationService, navigationService: NavigationService) {
+    super(applicationService, navigationService);
   }
 
   private materialNameMapper: Record<string, string> = {

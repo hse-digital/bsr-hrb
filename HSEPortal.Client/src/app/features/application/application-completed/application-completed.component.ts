@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
@@ -25,10 +26,18 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   }
 
   async ngOnInit(): Promise<void> {
+    this.sendApplicationDataToBroadcastChannel();
+
     this.KbiSubmissionDate = await this.applicationService.getSubmissionDate();    
     
     var payments = await this.applicationService.getApplicationPayments()
     this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
+  }
+
+  private sendApplicationDataToBroadcastChannel() {
+    new BroadcastChannelPrimaryHelper()
+      .OpenChannel("application_data")
+      .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
   }
 
   async newApplication() {

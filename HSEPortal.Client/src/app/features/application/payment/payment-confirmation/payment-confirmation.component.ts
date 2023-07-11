@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate } from '@angular/router';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
+import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { ApplicationService, BuildingApplicationStatus, PaymentModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { PaymentService } from 'src/app/services/payment.service';
@@ -20,6 +21,8 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
 
   async ngOnInit() {
     await this.applicationService.syncPayment();
+
+    this.sendApplicationDataToBroadcastChannel();
 
     this.activatedRoute.queryParams.subscribe(async query => {
       var paymentReference = query['reference'] ?? await this.getApplicationPaymentReference();
@@ -43,6 +46,12 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   private async getApplicationPaymentReference() {
     var payments = await this.applicationService.getApplicationPayments()
     return await payments.find(x => x.bsr_govukpaystatus == "success")?.bsr_transactionid;
+  }
+
+  private sendApplicationDataToBroadcastChannel() {
+    new BroadcastChannelPrimaryHelper()
+      .OpenChannel("application_data")
+      .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
   }
 
   canContinue(): boolean {

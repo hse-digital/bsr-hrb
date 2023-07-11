@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { KbiSummaryComponent } from '../kbi-summary.component';
 import { BuildingUse, ApplicationService } from 'src/app/services/application.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'changes-since-completion-summary',
@@ -10,8 +11,8 @@ export class ChangesSinceCompletionSummaryComponent extends KbiSummaryComponent 
 
   @Input() public buildingUse: BuildingUse = {};
 
-  constructor(applicationService: ApplicationService) {
-    super(applicationService)
+  constructor(applicationService: ApplicationService, navigationService: NavigationService) {
+    super(applicationService, navigationService);
   }
 
   private materialNameMapper: Record<string, string> = {
