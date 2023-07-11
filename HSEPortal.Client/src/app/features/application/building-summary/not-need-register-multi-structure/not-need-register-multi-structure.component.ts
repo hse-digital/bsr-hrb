@@ -50,7 +50,7 @@ export class NotNeedRegisterMultiStructureComponent  extends BaseComponent imple
   private OutOfScopeClarification: Record<OutOfScopeReason, string> = {
     [OutOfScopeReason.Height]: "You only need to tell us about high-rise residential structures that have at least 7 floors or are at least 18 metres in height.",
     [OutOfScopeReason.NumberResidentialUnits]: "You only need to register a high-rise building if it has at least 2 residential units.",
-    [OutOfScopeReason.PeopleLivingInBuilding]: "You can only need to register a high-rise building if you plan to allow residents to occupy it."
+    [OutOfScopeReason.PeopleLivingInBuilding]: "You only need to register a high-rise building if you plan to allow residents to occupy it."
   }
 
   getClarification() {
