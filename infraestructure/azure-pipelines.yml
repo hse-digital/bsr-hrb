@@ -51,6 +51,7 @@ stages:
       parameters:
         subscription: 's118-dev-bsr-acs-services'
         appBuildCommand: 'npm run buildnonprod'
+        servicePrincipalId: '365d7fcd-46be-417e-a55f-fa239bb1c150'
     - job: IntegrationTesting
       dependsOn: Deploy
       steps:
@@ -104,6 +105,7 @@ stages:
       parameters:
         subscription: 's118-test-bsr-acs-services'
         appBuildCommand: 'npm run buildnonprod'
+        servicePrincipalId: '09988031-2a92-4573-9371-8d4ae5546873'
         
 - stage: UAT
   dependsOn: QA
@@ -114,3 +116,4 @@ stages:
       parameters:
         subscription: 's118-test-bsr-acs-services'
         appBuildCommand: 'npm run buildnonprod'
+        servicePrincipalId: '09988031-2a92-4573-9371-8d4ae5546873'
