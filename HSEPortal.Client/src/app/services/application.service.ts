@@ -354,8 +354,8 @@ export class KbiSectionModel {
 export class Fire {
   StrategyEvacuateBuilding?: string;
   ProvisionsEquipment?: string[];
-  FireSmokeProvisions?: string[];
-  FireSmokeProvisionLocations?: Record<string, string[]>;
+
+  FireSmokeProvisions?: Dictionary<string, string[]>;
   Lifts?: string[];
   ResidentialUnitFrontDoors?: {
     NoFireResistance?: number,
@@ -370,6 +370,53 @@ export class Fire {
     FireDoorHundredTwentyMinute?: number,
     FireDoorUnknown?: number,
   } = {};
+}
+
+export class Dictionary<K extends keyof any, V> {
+
+  private KeyValuePairs: KeyValuePair<K, V>[];
+
+  constructor() {
+    this.KeyValuePairs = [];
+  }
+
+  public get keys(): K[]  {
+    return this.KeyValuePairs.map(x => x.key);
+  }
+
+  public set keys(keys: K[]) {
+    let _aux: KeyValuePair<K, V>[] = [];
+    keys.forEach(x => _aux.push({key: x, value: this.KeyValuePairs.find(y => y.key == x)?.value}));
+    this.KeyValuePairs = _aux;
+  }
+
+  public add(key: K, value: V) {
+    this.KeyValuePairs.push({ key: key, value: value })
+  }
+
+  public remove(key: K) {
+    let index = this.KeyValuePairs.findIndex(x => x.key === key);
+    if(index) this.KeyValuePairs.splice(index, 1);
+  }
+
+  public getValueOf(key: K | undefined): V | undefined {
+    return this.KeyValuePairs.find(x => x.key == key)?.value;
+  }
+
+  public get(key: K): KeyValuePair<K, V> | undefined {
+    return this.KeyValuePairs.find(x => x.key == key);
+  }
+
+  public set(key: K, value: V) {
+    let index = this.KeyValuePairs.findIndex(x => x.key == key);
+    this.KeyValuePairs.at(index)!.value = value;
+  }
+
+}
+
+export class KeyValuePair<K, V> {
+  public key!: K;
+  public value?: V;
 }
 
 export class Energy {

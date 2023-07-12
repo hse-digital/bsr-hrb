@@ -76,12 +76,12 @@ export class FireAndSmokeControlsSummaryComponent extends KbiSummaryComponent {
   }
 
   getSmokeAndFireDeviceLocations(device: string) {
-    if (!!this.fireAndSmokeControls.FireSmokeProvisionLocations && Object.keys(this.fireAndSmokeControls.FireSmokeProvisionLocations!).includes(device)) {
-      return this.fireAndSmokeControls!.FireSmokeProvisionLocations![device].map(location => this.getLocationName(location));
-    }
-    else {
-      return ["No smoke detectors"]
-    }
+    // if (!!this.fireAndSmokeControls.FireSmokeProvisionLocations && Object.keys(this.fireAndSmokeControls.FireSmokeProvisionLocations!).includes(device)) {
+    //   return this.fireAndSmokeControls!.FireSmokeProvisionLocations![device].map(location => this.getLocationName(location));
+    // }
+    // else {
+    //   return ["No smoke detectors"]
+    // }
   }
 
   private LiftTypeMapper: Record<string, string> = {

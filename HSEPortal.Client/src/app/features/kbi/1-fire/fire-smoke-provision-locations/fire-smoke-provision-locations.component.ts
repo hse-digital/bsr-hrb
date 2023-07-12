@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukCheckboxComponent, GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, KeyValuePair } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
@@ -33,33 +33,15 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
 
   private filteredProvisions: string[] = [];
 
+  public model: string[] = [];
+
   ngOnInit(): void {
-    this.filteredProvisions = this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.filter(x => this.provisionsWithLocation.indexOf(x) > -1);
-
-    // init locations
-    if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations || Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length == 0) {
-      this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = {};
-      this.filteredProvisions.forEach(equipment => {
-        this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![equipment] = [];
-      });
-    }
-
-    // check missing locations (in case the user modifies fire-smoke-provisions)
-    if (Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length != this.filteredProvisions?.length) {
-      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.filter(x => this.provisionsWithLocation.indexOf(x) > -1 && !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]).forEach(missingEquipment => {
-        this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![missingEquipment] = [];
-      });
-    }
-
     // getting current equipment
     this.activatedRoute.queryParams.subscribe(params => {
-      this.currentEquipment = params['equipment'] ?? this.filteredProvisions[0];
+      this.currentEquipment = params['equipment'] ?? this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.keys[0];
     });
 
-    // if equipment doesn't exist, go to "not found" page
-    if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations[this.currentEquipment!]) {
-      this.navigationService.navigate(NotFoundComponent.route);
-    }
+    this.model = this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.getValueOf(this.currentEquipment) ?? [];
 
     this.errorMessage = `Select where the ${this.getEquipmentName(this.currentEquipment!)} are in ${this.getInfraestructureName()}`;
   }
@@ -96,8 +78,9 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
 
   canContinue(): boolean {
     this.firstCheckboxAnchorId = `basement-${this.checkboxes?.first.innerId}`;
-    this.locationsHasErrors = !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![this.currentEquipment!] || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![this.currentEquipment!].length == 0;
+    this.locationsHasErrors = !this.model || this.model.length == 0;
     if (this.locationsHasErrors) this.errorMessage = `Select where the ${this.getEquipmentName(this.currentEquipment!)} are in ${this.getInfraestructureName()}`;
+    else this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.set(this.currentEquipment!, this.model);
     return !this.locationsHasErrors;
   }
 
@@ -111,6 +94,6 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.length > 0;
+    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions.keys.length > 0;
   }
 }

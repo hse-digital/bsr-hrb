@@ -7,11 +7,11 @@ export class KbiValidator {
         let isValid = true;
 
         isValid &&= FieldValidations.IsNotNullOrWhitespace(Fire.StrategyEvacuateBuilding);
-        isValid &&= FieldValidations.IsNotNullOrEmpty(Fire.FireSmokeProvisions);
+        // isValid &&= FieldValidations.IsNotNullOrEmpty(Fire.FireSmokeProvisions);
         
-        if(isValid && !Fire.FireSmokeProvisions?.includes("none")) {
-            isValid &&= FieldValidations.IsNotNullAndValuesAreNotEmpty(Fire.FireSmokeProvisionLocations);
-        }
+        // if(isValid && !Fire.FireSmokeProvisions?.includes("none")) {
+        //     isValid &&= FieldValidations.IsNotNullAndValuesAreNotEmpty(Fire.FireSmokeProvisionLocations);
+        // }
 
         isValid &&= FieldValidations.IsNotNullOrEmpty(Fire.Lifts);
         
