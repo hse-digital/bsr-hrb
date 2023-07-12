@@ -45,7 +45,7 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
     }
 
     // check missing locations (in case the user modifies fire-smoke-provisions)
-    if (Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length != this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.length) {
+    if (Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length != this.filteredProvisions?.length) {
       this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.filter(x => this.provisionsWithLocation.indexOf(x) > -1 && !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]).forEach(missingEquipment => {
         this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![missingEquipment] = [];
       });

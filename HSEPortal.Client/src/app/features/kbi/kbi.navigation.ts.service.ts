@@ -201,13 +201,17 @@ class FireSmokeProvisionLocationsNavigationNode extends KbiNavigationNode {
     super();
   }
 
+  private readonly provisionsWithLocation: string[] = ["alarm_heat_smoke", "alarm_call_points", "fire_dampers", "fire_shutters", "heat_detectors", "smoke_aovs", "smoke_manual", "smoke_detectors", "sprinklers_misters"];
+
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
     if (!kbi.Fire.FireSmokeProvisionLocations || Object.keys(kbi.Fire.FireSmokeProvisionLocations).length == 0) {
-      return FireSmokeProvisionLocationsComponent.route;
+      return `${KbiFireModule.baseRoute}/${FireSmokeProvisionLocationsComponent.route}`;
     }
 
-    if (kbi.Fire.FireSmokeProvisions!.some(x => !kbi!.Fire.FireSmokeProvisionLocations![x] || kbi!.Fire.FireSmokeProvisionLocations![x].length == 0)) {
-      let nextEquipment = this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions!.find(x => !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x] || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length == 0);
+    let filteredProvisions = kbi.Fire.FireSmokeProvisions?.filter(x => this.provisionsWithLocation.indexOf(x) > -1);
+    
+    if (filteredProvisions?.some(x => !kbi!.Fire.FireSmokeProvisionLocations![x] || kbi!.Fire.FireSmokeProvisionLocations![x].length == 0)) {
+      let nextEquipment = filteredProvisions.find(x => !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x] || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length == 0);
       return `${KbiFireModule.baseRoute}/${FireSmokeProvisionLocationsComponent.route}?equipment=${nextEquipment}`;
     }
 
