@@ -59,6 +59,7 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
         responseAddress.Results[0].Street.Should().Be(postcodeResponse.results[0].DPA.THOROUGHFARE_NAME);
         responseAddress.Results[0].Town.Should().Be(postcodeResponse.results[0].DPA.POST_TOWN);
         responseAddress.Results[0].Postcode.Should().Be(postcodeResponse.results[0].DPA.POSTCODE);
+        responseAddress.Results[0].ClassificationCode.Should().Be(postcodeResponse.results[0].DPA.CLASSIFICATION_CODE);
     }
 
     [Fact]

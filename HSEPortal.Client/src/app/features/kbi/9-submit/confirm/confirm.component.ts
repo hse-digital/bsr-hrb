@@ -5,6 +5,7 @@ import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { DeclarationComponent } from '../declaration/declaration.component';
+import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 
 @Component({
   selector: 'hse-confirm',
@@ -19,8 +20,15 @@ export class ConfirmComponent extends BaseComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.sendApplicationDataToBroadcastChannel();
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitComplete;
     await this.applicationService.updateApplication();
+  }  
+  
+  private sendApplicationDataToBroadcastChannel() {
+    new BroadcastChannelPrimaryHelper()
+      .OpenChannel("application_data")
+      .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
   }
 
   canContinue(): boolean {

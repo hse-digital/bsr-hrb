@@ -16,7 +16,7 @@ export class AddressComponent implements OnInit {
   @Output() onAddressConfirmed = new EventEmitter();
   @Output() onChangeStep = new EventEmitter();
 
-  searchModel: { postcode?: string, addressLine1?: string } = {};
+  searchModel: { postcode?: string } = {};
   addressResponse?: AddressResponseModel;
 
   step = 'find';
@@ -94,6 +94,5 @@ export class AddressComponent implements OnInit {
 
 export enum AddressSearchMode {
   Building,
-  PostalAddress,
-  FreeSearch
+  PostalAddress
 }

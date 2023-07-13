@@ -109,7 +109,7 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
-      : this.applicationService.currentSection.Name;
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 
   getErrorMessage(id: string) {

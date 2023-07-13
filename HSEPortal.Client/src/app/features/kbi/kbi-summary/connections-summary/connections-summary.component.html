@@ -1,11 +1,11 @@
 <govuk-summary-list>
-    <govuk-summary-list-row *ngIf="applicationService.model.Sections.length > 1" key="Connections between the structures" [showAction]=false>
+    <govuk-summary-list-row *ngIf="InScopeStructures && InScopeStructures.length > 1" key="Connections between the structures" [showAction]=false>
         <div *ngFor="let connection of applicationService.currentKbiModel!.Connections!.StructureConnections!">
             {{connection | ConnectionTypesPipe}}
         </div>
     </govuk-summary-list-row>     
     <govuk-summary-list-row key="Connected to other high-rise residential buildings?" [showAction]=false>
-        {{applicationService.currentKbiModel!.Connections!.OtherHighRiseBuildingConnections! === 'yes' ? "Yes" : "No"}}
+        {{applicationService.currentKbiModel?.Connections?.OtherHighRiseBuildingConnections === 'yes' ? "Yes" : "No"}}
     </govuk-summary-list-row>
     <govuk-summary-list-row key="Connections to other high-rise residential buildings" *ngIf="hasOtherHighRiseBuildingConnections()" [showAction]=false>
         <div *ngFor="let connection of applicationService.currentKbiModel!.Connections!.HowOtherHighRiseBuildingAreConnected!">
@@ -13,10 +13,10 @@
         </div>
     </govuk-summary-list-row>
     <govuk-summary-list-row key="Connected to other buildings?" [showAction]=false>
-        {{applicationService.currentKbiModel!.Connections!.OtherBuildingConnections! === 'yes' ? "Yes" : "No"}}        
+        {{applicationService.currentKbiModel?.Connections?.OtherBuildingConnections === 'yes' ? "Yes" : "No"}}        
     </govuk-summary-list-row>
     <govuk-summary-list-row key="Connections to other buildings" *ngIf="hasOtherBuildingConnections()" [showAction]=false>
-        <div *ngFor="let connection of applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!">
+        <div *ngFor="let connection of applicationService.currentKbiModel?.Connections?.HowOtherBuildingAreConnected">
             {{connection | ConnectionTypesPipe}}
         </div>
     </govuk-summary-list-row>     

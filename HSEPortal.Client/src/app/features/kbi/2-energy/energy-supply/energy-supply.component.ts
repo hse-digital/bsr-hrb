@@ -38,7 +38,7 @@ export class EnergySupplyComponent extends BaseComponent implements IHasNextPage
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
-      : this.applicationService.currentSection.Name;
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 
   canContinue(): boolean {

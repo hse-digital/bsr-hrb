@@ -5,7 +5,7 @@
     <div class="govuk-grid-column-two-thirds">
       <application-enterdata *ngIf="step == 'enterdata'" (onContinue)="showVerifyApplication()" [(emailAddress)]="emailAddress" [(applicationNumber)]="applicationNumber" />
       <application-verify *ngIf="step == 'verify'" (onResendClicked)="showResendStep()" [emailAddress]="emailAddress!" [applicationNumber]="applicationNumber!" />
-      <application-resend *ngIf="step == 'resend'" (onVerificationCodeSent)="showVerifyApplication()" [emailAddress]="emailAddress!"/>
+      <application-resend *ngIf="step == 'resend'" (onVerificationCodeSent)="showVerifyApplication()" [emailAddress]="emailAddress!" [applicationNumber]="applicationNumber!"/>
     </div>
   </div>
 </div>

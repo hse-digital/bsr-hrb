@@ -33,6 +33,7 @@ const routes = new HseRoutes([
   HseRoute.forLoadChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
   HseRoute.forLoadChildren(PaymentModule.baseRoute, () => import('./payment/payment.module').then(m => m.PaymentModule)),
   HseRoute.forLoadChildren(KbiModule.baseRoute, () => import('../kbi/kbi.module').then(m => m.KbiModule)),
+  HseRoute.protected(ApplicationCompletedComponent.route, ApplicationCompletedComponent, ApplicationCompletedComponent.title),
 ]);
 
 @NgModule({
@@ -57,7 +58,6 @@ const routes = new HseRoutes([
   ],
   providers: [
     HttpClient,
-    ApplicationService,
     BuildingSummaryNavigation,
     AccountablePersonNavigation,
     KbiNavigation,

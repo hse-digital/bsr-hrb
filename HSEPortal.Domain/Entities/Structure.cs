@@ -2,8 +2,8 @@
 
 namespace HSEPortal.Domain.Entities;
 
-public record Structure(string Name, string FloorsAboveGround, string HeightInMeters, string NumberOfResidentialUnits,
-    string PeopleLivingInStructure, string ConstructionYearOption, string ExactYear = null,
+public record Structure(string Name, string FloorsAboveGround, string HeightInMeters, string NumberOfResidentialUnits = null,
+    string PeopleLivingInStructure = null, string ConstructionYearOption = null, string ExactYear = null,
     string YearRange = null, string Id = null) : Entity(Id);
 
 public record DynamicsStructure : DynamicsEntity<Structure>
@@ -22,6 +22,9 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     public string bsr_postcode { get; init; }
     public string bsr_uprn { get; init; }
     public string bsr_usrn { get; init; }
+    public string bsr_classificationcode { get; init; }
+    public int? statuscode { get; init; } 
+    public int? statecode { get; init; } 
     public AddressType? bsr_addresstype { get; init; }
     public YesNoOption? bsr_manualaddress { get; init; }
 

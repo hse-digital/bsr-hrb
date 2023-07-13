@@ -92,7 +92,7 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
       }
     }
     
-    canContinue &&= this.applicationService.model.Sections.every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section).length == 0);
+    canContinue &&= this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section).length == 0);
 
     this.hasIncompleteData = !canContinue;
     return canContinue;

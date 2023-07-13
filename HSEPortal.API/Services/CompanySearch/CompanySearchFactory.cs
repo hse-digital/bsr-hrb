@@ -27,7 +27,7 @@ public class CompanySearchFactory
             case "other":
                 return new CompaniesHouseSearch(integrationsOptions, mapper);
             case "housing-association":
-                return new SocialHousingSearch();
+                return new SocialHousingSearch(dynamicsService, mapper);
             case "local-authority":
                 return new LocalAuthoritySearch(dynamicsService, mapper);
         }

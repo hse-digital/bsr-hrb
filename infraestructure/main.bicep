@@ -1,6 +1,7 @@
 param environment string
 param location string = resourceGroup().location
 param swaLocation string = 'westeurope'
+param servicePrincipalId string
 
 @allowed([ 'Free', 'Standard' ])
 param sku string = 'Standard'
@@ -36,6 +37,15 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
                 permissions: {
                     secrets: [
                         'all'
+                    ]
+                }
+            }
+            {
+                objectId: servicePrincipalId
+                tenantId: tenant().tenantId
+                permissions: {
+                    secrets: [
+                        'get'
                     ]
                 }
             }
@@ -213,6 +223,14 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                 {
                     name: 'Integrations__PaymentAmount'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--PaymentAmount)'
+                }
+                {
+                    name: 'Integrations__CommonAPIEndpoint'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CommonAPIEndpoint)'
+                }
+                {
+                    name: 'Integrations__CommonAPIKey'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CommonAPIKey)'
                 }
                 {
                     name: 'Swa__Url'

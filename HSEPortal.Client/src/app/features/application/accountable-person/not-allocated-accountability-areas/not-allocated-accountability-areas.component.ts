@@ -22,6 +22,8 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChildren(NotAllocatedAccountabilityComponent) checkboxes?: QueryList<NotAllocatedAccountabilityComponent>;
 
+  InScopeStructures?: SectionModel[];
+
   errors?: { anchorId: string, message: string }[] = [];
   notAllocatedAreas: string[][] = []
 
@@ -36,7 +38,8 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   }
 
   ngOnInit(): void {
-    this.applicationService.model.Sections.forEach(section => {
+    this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.InScopeStructures.forEach(section => {
       this.notAllocatedAreas.push(AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section))
     });
   }
@@ -44,7 +47,7 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   canContinue(): boolean {
     let canContinue = true;
     this.errors = [];
-    this.applicationService.model.Sections.forEach((section, index) => {
+    this.InScopeStructures!.forEach((section, index) => {
       let notAllocatedAreas = AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section);
       if (notAllocatedAreas.length != 0) {
         canContinue = false;
@@ -84,7 +87,7 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
 
   private getInfraestructureName(index: number) {
     return this.applicationService.model.NumberOfSections != 'one'
-      ? this.applicationService.model.Sections[index].Name
+      ? this.InScopeStructures![index].Name
       : this.applicationService.model.BuildingName
   }
 
@@ -113,6 +116,6 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    return this.applicationService.model.Sections.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0)
+    return this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope)!.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0);
   }
 }

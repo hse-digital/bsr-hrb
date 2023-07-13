@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { AccountabilityComponent } from 'src/app/components/accountability/accountability.component';
@@ -24,17 +24,20 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
 
   errors?: { anchorId: string, message: string }[] = [];
 
+  InScopeStructures?: SectionModel[];
+
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {
+    this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
     if (!this.applicationService.model.AccountablePersons[0].SectionsAccountability) {
       this.applicationService.model.AccountablePersons[0].SectionsAccountability = [];
     }
 
-    for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
-      var section = this.applicationService.model.Sections[i];
+    for (let i = 0; i < this.InScopeStructures.length; i++) {
+      var section = this.InScopeStructures[i];
       if (!this.applicationService.model.AccountablePersons[0].SectionsAccountability[i]) {
         this.applicationService.model.AccountablePersons[0].SectionsAccountability[i] = { SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: [] };
       }
@@ -44,7 +47,7 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
   canContinue(): boolean {
     let canContinue = true;
     this.errors = [];
-    for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
+    for (let i = 0; i < this.InScopeStructures!.length; i++) {
       var sectionAccountability = this.applicationService.model.AccountablePersons[0].SectionsAccountability![i];
       if (sectionAccountability.Accountability!.length == 0) {
         this.addError(i);
@@ -80,7 +83,7 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
 
   getInfraestructureName(index: number) {
     return this.applicationService.model.NumberOfSections != 'one'
-      ? this.applicationService.model.Sections[index].Name
+      ? this.InScopeStructures![index].Name
       : this.applicationService.model.BuildingName
   }
 
@@ -93,7 +96,7 @@ export class AreasAccountabilityComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let thereAreNotAllocatedAreas = this.applicationService.model.Sections.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0);
+    let thereAreNotAllocatedAreas = this.InScopeStructures!.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0);
     if (thereAreNotAllocatedAreas) {
       return navigationService.navigateRelative(NotAllocatedAccountabilityAreasComponent.route, activatedRoute);
     } else {

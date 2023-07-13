@@ -37,7 +37,7 @@ export class AddedFloorsTypeComponent extends BaseComponent implements IHasNextP
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
-      : this.applicationService.currentSection.Name;
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 
   canContinue(): boolean {

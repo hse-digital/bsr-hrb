@@ -24,7 +24,9 @@ public class EmailVerificationFunction
     }
 
     [Function(nameof(SendVerificationEmail))]
-    public async Task<CustomHttpResponseData> SendVerificationEmail([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
+    public async Task<CustomHttpResponseData> SendVerificationEmail([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", PartitionKey = "{ApplicationNumber}", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications)
     {
         var emailVerificationModel = await request.ReadAsJsonAsync<EmailVerificationModel>();
         var validation = emailVerificationModel.Validate();
@@ -33,13 +35,11 @@ public class EmailVerificationFunction
             return await request.BuildValidationErrorResponseDataAsync(validation);
         }
 
-        var otpToken = otpService.GenerateToken(emailVerificationModel.EmailAddress);
+        var otpToken = await otpService.GenerateToken(emailVerificationModel.EmailAddress);
 
-        await dynamicsService.SendVerificationEmail(emailVerificationModel, otpToken);
-        return new CustomHttpResponseData
-        {
-            HttpResponse = request.CreateResponse()
-        };
+        var buildingName = buildingApplications.FirstOrDefault()?.BuildingName ?? emailVerificationModel.BuildingName;
+        await dynamicsService.SendVerificationEmail(emailVerificationModel.EmailAddress, buildingName, otpToken);
+        return new CustomHttpResponseData { HttpResponse = request.CreateResponse() };
     }
 
     public ValidationSummary ValidateKey(string key)
@@ -53,47 +53,21 @@ public class EmailVerificationFunction
         return new ValidationSummary(!errors.Any(), errors.ToArray());
     }
 
-    [Function(nameof(GetOTPToken))]
-    public async Task<CustomHttpResponseData> GetOTPToken([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
-    {
-        var keyValidation =ValidateKey(request.GetQueryParameters()["key"]);
-        if(!keyValidation.IsValid)
-        {
-            return await request.BuildValidationErrorResponseDataAsync(keyValidation);
-        }
-
-        var emailVerificationModel = new EmailVerificationModel(request.GetQueryParameters()["email"]);
-        var validation = emailVerificationModel.Validate();
-        if (!validation.IsValid)
-        {
-            return await request.BuildValidationErrorResponseDataAsync(validation);
-        }
-
-        var otpToken = otpService.GenerateToken(emailVerificationModel.EmailAddress);
-
-        var resp = new CustomHttpResponseData
-        {
-            HttpResponse = await request.CreateObjectResponseAsync(new { OTPCode = otpToken })
-        };
-
-        return resp;
-    }
-
     [Function(nameof(ValidateOTPToken))]
     public async Task<CustomHttpResponseData> ValidateOTPToken([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
     {
         var otpValidationModel = await request.ReadAsJsonAsync<OTPValidationModel>();
-        var isTokenValid = otpValidationModel.Validate().IsValid && otpService.ValidateToken(otpValidationModel.OTPToken, otpValidationModel.EmailAddress);
+        var returnStatusCode = HttpStatusCode.BadRequest;
 
-        var returnStatusCode = HttpStatusCode.OK;
-        if (!featureOptions.DisableOtpValidation && !isTokenValid)
+        if (otpValidationModel.Validate().IsValid)
         {
-            returnStatusCode = HttpStatusCode.BadRequest;
+            var tokenIsValid = await otpService.ValidateToken(otpValidationModel.OTPToken, otpValidationModel.EmailAddress);
+            if (tokenIsValid)
+            {
+                returnStatusCode = HttpStatusCode.OK;
+            }
         }
 
-        return new CustomHttpResponseData
-        {
-            HttpResponse = request.CreateResponse(returnStatusCode)
-        };
+        return new CustomHttpResponseData { HttpResponse = request.CreateResponse(returnStatusCode) };
     }
 }

@@ -83,7 +83,7 @@ public class WhenSearchingForACompany : UnitTestBase
     [Fact]
     public async Task AndCompanyTypeIsLocalAuthorityShouldCallEndpointToSearchForCompany()
     {
-        var localAuthoritySearchResponse = BuildLocalAuthorityResponseJson();
+        var localAuthoritySearchResponse = BuildDynamicsOrganisationsResponseJson();
         HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken });
         HttpTest.RespondWithJson(localAuthoritySearchResponse);
 
@@ -105,19 +105,27 @@ public class WhenSearchingForACompany : UnitTestBase
     }
 
     [Fact]
-    public async Task AndCompanyTypeIsHousingAssociationShouldReturnCompanyFromFixedDataset()
+    public async Task AndCompanyTypeIsHousingAssociationShouldCallEndpointToSearchForCompany()
     {
-        var expectedCompanyRecord = SocialHousingDataset.Records[0];
-        
-        var request = BuildRequestData(expectedCompanyRecord.organisation_name, "housing-association");
+        var searchResponse = BuildDynamicsOrganisationsResponseJson();
+        HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken });
+        HttpTest.RespondWithJson(searchResponse);
+
+        var request = BuildRequestData(companyName, "housing-association");
         var response = await companySearchFunctions.SearchCompany(request);
+
+        HttpTest.ShouldHaveCalled($"{DynamicsOptions.EnvironmentUrl}/api/data/v9.2/accounts")
+            .WithQueryParam("$filter", $"_bsr_accounttype_accountid_value eq '{DynamicsOptions.SocialHousingTypeId}' and contains(name, '{companyName}')")
+            .WithQueryParam("$select", "name")
+            .WithOAuthBearerToken(DynamicsAuthToken)
+            .WithVerb(HttpMethod.Get);
         
         var companySearchResponse = await response.ReadAsJsonAsync<CompanySearchResponse>();
+        companySearchResponse.Results.Should().Be(searchResponse.value.Length);
         
-        companySearchResponse.Results.Should().Be(1);
-        companySearchResponse.Companies[0].Name.Should().Be(expectedCompanyRecord.organisation_name);
-        companySearchResponse.Companies[0].Type.Should().Be(expectedCompanyRecord.designation);
-        companySearchResponse.Companies[0].Number.Should().Be(expectedCompanyRecord.registration_number);
+        companySearchResponse.Companies.Count.Should().Be(searchResponse.value.Length);
+        companySearchResponse.Companies[0].Name.Should().Be(searchResponse.value[0].name);
+        companySearchResponse.Companies[0].Number.Should().Be(searchResponse.value[0].accountid);
     }
 
     private CompaniesHouseSearchResponse BuildCompaniesHouseResponseJson()
@@ -145,9 +153,9 @@ public class WhenSearchingForACompany : UnitTestBase
         };
     }
 
-    private LocalAuthoritiesSearchResponse BuildLocalAuthorityResponseJson()
+    private DynamicsOrganisationsSearchResponse BuildDynamicsOrganisationsResponseJson()
     {
-        return new LocalAuthoritiesSearchResponse(new LocalAuthority[]
+        return new DynamicsOrganisationsSearchResponse(new DynamicsOrganisation[]
         {
             new("name1", "id1"),
             new("name2", "id2")

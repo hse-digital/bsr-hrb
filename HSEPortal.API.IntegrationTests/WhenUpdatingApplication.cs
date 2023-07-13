@@ -28,7 +28,7 @@ public class WhenUpdatingApplication : IntegrationTestBase
         
         await swaOptions.Value.Url.AppendPathSegments("api", "UpdateApplication", validApplicationId).PutJsonAsync(application);
         
-        var token = otpService.GenerateToken(validEmailAddress);
+        var token = await otpService.GenerateToken(validEmailAddress);
         var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication", validApplicationId, validEmailAddress, token).GetJsonAsync<BuildingApplicationModel>();
 
         response.ContactFirstName.Should().Be(application.ContactFirstName);

@@ -64,7 +64,8 @@ public class BuildingApplicationFunctions
         if (buildingApplications.Any())
         {
             var application = buildingApplications[0];
-            if (otpService.ValidateToken(otpToken, application.ContactEmailAddress) || featureOptions.DisableOtpValidation)
+            var tokenIsValid = await otpService.ValidateToken(otpToken, application.ContactEmailAddress);
+            if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
                 return await request.CreateObjectResponseAsync(application);
             }

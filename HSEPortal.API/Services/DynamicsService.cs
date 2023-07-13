@@ -36,23 +36,35 @@ public class DynamicsService
         return buildingApplicationModel with { Id = dynamicsBuildingApplication.bsr_applicationid };
     }
 
-    public async Task SendVerificationEmail(EmailVerificationModel emailVerificationModel, string otpToken)
+    public async Task SendVerificationEmail(string emailAddress, string buildingName, string otpToken)
     {
         await dynamicsOptions.EmailVerificationFlowUrl.PostJsonAsync(new
         {
-            emailAddress = emailVerificationModel.EmailAddress.ToLower(),
+            emailAddress = emailAddress.ToLower(),
             otp = otpToken,
+            buildingName = buildingName,
             hrbRegUrl = swaOptions.Url
         });
     }
 
-    public Task<LocalAuthoritiesSearchResponse> SearchLocalAuthorities(string authorityName)
+    public Task<DynamicsOrganisationsSearchResponse> SearchLocalAuthorities(string authorityName)
     {
-        return dynamicsApi.Get<LocalAuthoritiesSearchResponse>("accounts", new[]
-        {
-            ("$filter", $"_bsr_accounttype_accountid_value eq '{dynamicsOptions.LocalAuthorityTypeId}' and contains(name, '{authorityName.EscapeSingleQuote()}')"),
-            ("$select", "name")
-        });
+        return SearchOrganisations(authorityName, dynamicsOptions.LocalAuthorityTypeId);
+    }
+
+    public Task<DynamicsOrganisationsSearchResponse> SearchSocialHousingOrganisations(string authorityName)
+    {
+        return SearchOrganisations(authorityName, DynamicsOptions.SocialHousingTypeId);
+    }
+
+    private Task<DynamicsOrganisationsSearchResponse> SearchOrganisations(string authorityName, string accountTypeId)
+    {
+        return dynamicsApi.Get<DynamicsOrganisationsSearchResponse>("accounts",
+            new[]
+            {
+                ("$filter", $"_bsr_accounttype_accountid_value eq '{accountTypeId}' and contains(name, '{authorityName.EscapeSingleQuote()}')"),
+                ("$select", "name")
+            });
     }
 
     public async Task<DynamicsBuildingApplication> GetBuildingApplicationUsingId(string applicationId)
@@ -74,11 +86,13 @@ public class DynamicsService
     public async Task CreateBuildingStructures(Structures structures)
     {
         var structureDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<Structure, DynamicsStructure>();
-        foreach (var section in structures.BuildingStructures)
+        var InScopeStructures = structures.BuildingStructures.Where(x => x.Addresses != null && x.Addresses.Length > 0);
+        foreach (var section in InScopeStructures)
         {
             var dynamicsStructure = BuildDynamicsStructure(structures, section, structureDefinition);
             dynamicsStructure = await SetYearOfCompletion(section, dynamicsStructure);
-            dynamicsStructure = await CreateStructure(structureDefinition, dynamicsStructure);
+            dynamicsStructure = await CreateStructure(structureDefinition, dynamicsStructure, structures.DynamicsBuildingApplication.bsr_buildingapplicationid);
+            
             await CreateStructureCompletionCertificate(section, dynamicsStructure);
             await CreateStructureOptionalAddresses(section, dynamicsStructure);
         }
@@ -552,7 +566,7 @@ public class DynamicsService
                     bsr_uprn = portalAddress.UPRN,
                     bsr_usrn = portalAddress.USRN,
                     bsr_manualaddress = portalAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
-                    countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null,
+                    countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null
                 });
             }
         }
@@ -594,11 +608,26 @@ public class DynamicsService
         var structure = new Structure(section.Name ?? structures.DynamicsBuildingApplication.bsr_Building?.bsr_name, section.FloorsAbove, section.Height, section.ResidentialUnits, section.PeopleLivingInBuilding, section.YearOfCompletionOption);
         var dynamicsStructure = structureDefinition.BuildDynamicsEntity(structure);
 
-        var primaryAddress = section.Addresses[0];
         dynamicsStructure = dynamicsStructure with
         {
             buildingReferenceId = $"/bsr_buildings({structures.DynamicsBuildingApplication._bsr_building_value})",
             buildingApplicationReferenceId = $"/bsr_buildingapplications({structures.DynamicsBuildingApplication.bsr_buildingapplicationid})",
+        };
+        
+        if (section.Addresses != null && section.Addresses.Length > 0) {
+            dynamicsStructure = AddPrimaryAddressTo(dynamicsStructure, section);
+        }
+
+        if (section.Statecode != null && int.Parse(section.Statecode) == 1) {
+            dynamicsStructure = AddDeactivateStructure(dynamicsStructure);
+        }
+
+        return dynamicsStructure;
+    }
+
+    private static DynamicsStructure AddPrimaryAddressTo(DynamicsStructure dynamicsStructure, SectionModel section) {
+        var primaryAddress = section.Addresses[0];
+        return dynamicsStructure with {
             bsr_addressline1 = string.Join(", ", primaryAddress.Address.Split(',').Take(3)),
             bsr_addressline2 = primaryAddress.AddressLineTwo,
             bsr_addresstype = AddressType.Primary,
@@ -608,14 +637,20 @@ public class DynamicsService
             bsr_uprn = primaryAddress.UPRN,
             bsr_usrn = primaryAddress.USRN,
             bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
+            bsr_classificationcode = primaryAddress.ClassificationCode,
         };
-
-        return dynamicsStructure;
     }
 
-    private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure)
+    private static DynamicsStructure AddDeactivateStructure(DynamicsStructure dynamicsStructure) {
+        return dynamicsStructure with {
+            statecode = 1,
+            statuscode = 2
+        };
+    }
+
+    private async Task<DynamicsStructure> CreateStructure(DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition, DynamicsStructure dynamicsStructure, string buildingApplicationId)
     {
-        var existingStructure = await FindExistingStructureAsync(dynamicsStructure.bsr_name.EscapeSingleQuote(), dynamicsStructure.bsr_postcode);
+        var existingStructure = await FindExistingStructureAsync(dynamicsStructure.bsr_name.EscapeSingleQuote(), dynamicsStructure.bsr_postcode, buildingApplicationId);
         if (existingStructure != null)
         {
             dynamicsStructure = dynamicsStructure with { bsr_blockid = existingStructure.bsr_blockid };

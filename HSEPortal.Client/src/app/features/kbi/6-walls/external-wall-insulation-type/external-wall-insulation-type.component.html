@@ -9,7 +9,7 @@
         </govuk-error-summary>
 
         <h1 class="govuk-heading-l">What type of insulation is used in the outside walls of {{getInfraestructureName()}}?</h1>
-        <govuk-body>This is not a complete list. It includes only the types of energy storage we need to know about.</govuk-body>
+        <govuk-body>This is not a complete list. It includes only the types of insulation we need to know about.</govuk-body>
 
         <govuk-checkbox-none hint="Select all that apply" (onKeyupEnter)="saveAndContinue()" [errorText]="getErrorDescription(externalWallInsulationTypeHasErrors, errorMessage!)"
             [(model)]="applicationService.currentKbiSection!.Walls.ExternalWallInsulation!.CheckBoxSelection!">

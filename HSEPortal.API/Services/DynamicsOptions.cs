@@ -10,4 +10,5 @@ public class DynamicsOptions
     public string ClientSecret { get; set; }
     public string EmailVerificationFlowUrl { get; set; }
     public string LocalAuthorityTypeId { get; set; }
+    public const string SocialHousingTypeId = "64866e32-1dad-ed11-83ff-0022481b5e4f";
 }

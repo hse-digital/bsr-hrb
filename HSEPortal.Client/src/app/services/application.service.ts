@@ -3,6 +3,7 @@ import { Injectable, QueryList } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
+import { FieldValidations } from "../helpers/validators/fieldvalidations";
 
 @Injectable()
 export class ApplicationService {
@@ -85,12 +86,13 @@ export class ApplicationService {
   }
 
   initKbi() {
+    let filteredSections = this.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
     if (!this.model.Kbi) {
       this.model.Kbi = new KbiModel();
-      this.model.Sections.forEach(x => {
+      filteredSections.forEach(x => {
         var kbiSection = new KbiSectionModel();
         kbiSection.StructureName = x.Name;
-        kbiSection.Postcode = x.Addresses[0].Postcode;
+        kbiSection.Postcode = FieldValidations.IsNotNullOrEmpty(x.Addresses) ? x.Addresses[0].Postcode : undefined;
 
         this.model.Kbi!.KbiSections.push(kbiSection);
       });
@@ -101,7 +103,7 @@ export class ApplicationService {
 
     if (!this.model.Kbi.SectionStatus || this.model.Kbi.SectionStatus.length == 0) {
       this.model.Kbi.SectionStatus = [];
-      this.model.Sections.map(x => this.model.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
+      filteredSections.map(x => this.model.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
     }
   }
 
@@ -119,8 +121,13 @@ export class ApplicationService {
     await this.updateApplication();
   }
 
-  async sendVerificationEmail(emailAddress: string): Promise<void> {
-    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": emailAddress }));
+  async removeStructure(index: number) {
+    this.model.Sections.at(index)!.Statecode = "1";
+    await this.updateApplication();
+  }
+
+  async sendVerificationEmail(emailAddress: string, applicationNumber: string, buildingName?: string): Promise<void> {
+    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": emailAddress, "ApplicationNumber": applicationNumber, "BuildingName": buildingName }));
   }
 
   async validateOTPToken(otpToken: string, emailAddress: string): Promise<void> {
@@ -242,6 +249,25 @@ export class SectionModel {
   CompletionCertificateIssuer?: any;
   CompletionCertificateReference?: any;
   Addresses: AddressModel[] = [];
+
+  Statecode?: string;
+
+  Scope?: Scope;
+  Duplicate?: Duplicate;
+}
+
+export class Scope {
+  IsOutOfScope?: boolean;
+  OutOfScopeReason?: OutOfScopeReason;
+}
+
+export enum OutOfScopeReason {
+  Height, NumberResidentialUnits, PeopleLivingInBuilding
+}
+
+export class Duplicate {
+  IsDuplicated?: boolean;
+  Removed?: boolean;
 }
 
 export class AccountablePersonModel {

@@ -16,13 +16,16 @@
         </govuk-summary-list-row>
       </govuk-summary-list>
 
-      <section-answers *ngIf="applicationService.model.NumberOfSections == 'one'" [section]="sections[0]" [sectionIndex]="0" />
+      <section-answers *ngIf="applicationService.model.NumberOfSections == 'one'" [section]="activeSections[0]" [sectionIndex]="0" />
 
       <div *ngIf="applicationService.model.NumberOfSections == 'two_or_more'">
-        <div *ngFor="let section of sections; let i = index" class="section-wrapper">
-          <div class="section-header">{{ getSectionName(i, undefined) }}</div>
+        <div *ngFor="let section of activeSections; let i = index" class="section-wrapper">
+          <div class="section-header">
+            {{ getSectionName(i, undefined) }}
+            <a class="govuk-link remove-link" (click)="removeStructure(i)">Remove</a>
+          </div>
           <div class="section-content">
-            <section-answers [section]="section" [sectionIndex]="i" [hasMoreSections]="i < sections.length" />
+            <section-answers [section]="section" [sectionIndex]="i" [hasMoreSections]="i < activeSections.length" />
           </div>
         </div>
       </div>

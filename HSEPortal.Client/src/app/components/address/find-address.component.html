@@ -9,17 +9,17 @@
   <govuk-body *ngIf="pap()">This is the address we will send official communications to, including serving notices.</govuk-body>
   <govuk-body>{{addressTypeDescription()}}</govuk-body>
   
-  <div class="govuk-hint">Start by searching for the postcode only. If you cannot find the address that way, search again using the first line of the address as well as postcode.</div>
+  <govuk-input *ngIf="pap()" id="building-number-name" label="Building number or name (optional)"
+                hint="For example, 15 or Prospect Cottage."
+                [(model)]="searchModel.buildingNumberName"
+                class="govuk-!-margin-bottom-5"
+                (onKeyupEnter)="findAddress()" />
+
   <govuk-input id="postcode" label="Postcode"
+                hint="For example, AA3 1AB."
                 [(model)]="searchModel.postcode"
                 [errorText]="getErrorDescription(postcodeHasErrors, postcodeErrorText)"
                 class="govuk-!-margin-bottom-5 govuk-input--width-10"
-                (onKeyupEnter)="findAddress()" />
-
-  <govuk-input id="address-line-one" label="First line of address (optional)"
-                hint="For example, '30 St Mary Axe'."
-                [(model)]="searchModel.addressLine1"
-                class="govuk-!-margin-bottom-5"
                 (onKeyupEnter)="findAddress()" />
 
   <govuk-button [isLoading]="loading" loadingText="Searching..." [disabled]="loading" (onClick)="findAddress()">Find address</govuk-button>

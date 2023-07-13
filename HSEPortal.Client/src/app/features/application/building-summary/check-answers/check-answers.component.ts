@@ -1,18 +1,19 @@
 import { Component, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus, OutOfScopeReason, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
 import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
 import { NumberOfSectionsComponment } from '../number-of-sections/number-of-sections.component';
-import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
 import { MoreInformationComponent } from '../more-information/more-information.component';
+import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
+import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper';
 
 @Component({
   selector: 'hse-check-answers',
@@ -24,7 +25,7 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   static route: string = 'check-answers';
   static title: string = "Check your answers - Register a high-rise building - GOV.UK";
 
-  sections: SectionModel[] = [];
+  activeSections: SectionModel[] = [];
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
@@ -33,31 +34,49 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   async ngOnInit() {
-    this.sections = this.applicationService.model.Sections;
+    this.initStatecode();
+    this.activeSections = this.getActiveSections();
+  }
+
+  private initStatecode() {
+    this.applicationService.model.Sections.filter(x => x.Statecode != "1").map(x => x.Statecode = "0");
+  }
+
+  private getActiveSections() {
+    return this.applicationService.model.Sections.filter(x => x.Statecode != "1");
   }
 
   hasIncompleteData = false;
   canContinue(): boolean {
     var canContinue = true;
-    for (var section of this.sections) {
+    for (var section of this.activeSections) {
       if (this.applicationService.model.NumberOfSections == "two_or_more") {
         canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.Name);
       }
 
       canContinue &&= FieldValidations.IsGreaterThanZero(section.FloorsAbove);
       canContinue &&= FieldValidations.IsGreaterThanZero(section.Height);
-      canContinue &&= FieldValidations.IsAPositiveNumber(section.ResidentialUnits);
+      if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.Height)) {
 
-      if (section.YearOfCompletionOption != 'not-completed') {
-        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
-      }
+        canContinue &&= FieldValidations.IsAPositiveNumber(section.ResidentialUnits);
 
-      canContinue &&= (section.YearOfCompletionOption == "not-completed") || (section.YearOfCompletionOption == "year-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletion)) || (section.YearOfCompletionOption == "year-not-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletionRange));
-      canContinue &&= section.Addresses?.length > 0;
+        if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.NumberResidentialUnits)) {
 
-      if ((section.YearOfCompletionOption == 'year-exact' && Number(section.YearOfCompletion) >= 2023) || (section.YearOfCompletionOption == 'year-not-exact' && section.YearOfCompletionRange == '2023-onwards')) {
-        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateIssuer);
-        canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateReference);
+          if (section.YearOfCompletionOption != 'not-completed') {
+            canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
+          }
+
+          if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.PeopleLivingInBuilding)) {
+
+            canContinue &&= (section.YearOfCompletionOption == "not-completed") || (section.YearOfCompletionOption == "year-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletion)) || (section.YearOfCompletionOption == "year-not-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletionRange));
+            canContinue &&= section.Addresses?.length > 0;
+
+            if ((section.YearOfCompletionOption == 'year-exact' && Number(section.YearOfCompletion) >= 2023) || (section.YearOfCompletionOption == 'year-not-exact' && section.YearOfCompletionRange == '2023-onwards')) {
+              canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateIssuer);
+              canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateReference);
+            }
+          }
+        }
       }
     }
 
@@ -65,15 +84,17 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     return canContinue;
   }
 
+  private isSectionOutOfScopeBecause(section: SectionModel, OutOfScopeReason: OutOfScopeReason) {
+    return section.Scope?.OutOfScopeReason == +OutOfScopeReason;
+  }
+
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    var sectionsOutOfScope = this.getOutOfScopeSections();
-    if (sectionsOutOfScope.length == this.applicationService.model.Sections.length) {
-      // all blocks out of scope
+    if (ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService)) {
       return navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, activatedRoute);
     }
 
+    var sectionsOutOfScope = this.getOutOfScopeSections();
     if (sectionsOutOfScope.length > 0) {
-      // some blocks out of scope
       return navigationService.navigateRelative(MoreInformationComponent.route, activatedRoute);
     }
 
@@ -90,8 +111,9 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   override async onSave(): Promise<void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.BlocksInBuildingComplete;
-    
     await this.applicationService.syncBuildingStructures();
+
+    this.applicationService.model.Sections =  this.getActiveSections();
   }
 
   private getOutOfScopeSections() {
@@ -100,5 +122,18 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   override canAccess(_: ActivatedRouteSnapshot): boolean {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingInProgress) == BuildingApplicationStatus.BlocksInBuildingInProgress;
+  }
+
+  removeStructure(index: number) {
+    this.applicationService.removeStructure(index);
+    if (this.applicationService.model.Sections.filter(x => x.Statecode != "1").length == 1) {
+      this.changeNumberOfSectionsToOne();
+    }
+    this.activeSections = this.getActiveSections();
+  }
+
+  private changeNumberOfSectionsToOne() {
+    this.applicationService.model.NumberOfSections = 'one';
+    this.applicationService.updateApplication();
   }
 }

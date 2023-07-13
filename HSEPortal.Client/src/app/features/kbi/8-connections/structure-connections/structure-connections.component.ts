@@ -47,12 +47,13 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
   }
 
   private getAllSectionNames(): string {
-    let sections = this.applicationService.model.Sections;
+    let InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    let sections = InScopeStructures;
     if (sections.length > 2) {
       return sections.slice(0, sections.length - 1)
         .map(x => x.Name)
         .reduce((a, b) => `${a}, ${b}`)
-        ?.concat(' and ', this.applicationService.model.Sections.at(sections.length - 1)!.Name!)!;
+        ?.concat(' and ', InScopeStructures.at(sections.length - 1)!.Name!)!;
     }
     return `${sections[0].Name} and ${sections[1].Name}`;
   }

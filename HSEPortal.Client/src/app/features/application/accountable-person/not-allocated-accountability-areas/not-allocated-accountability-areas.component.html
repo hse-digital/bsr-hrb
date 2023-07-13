@@ -14,7 +14,7 @@
                     {{applicationService.model.BuildingName}}</h1>
                 <govuk-body>At least one accountable person must be accountable for each of these areas.</govuk-body>
 
-                <ng-container *ngFor="let section of applicationService.model.Sections; let i = index">
+                <ng-container *ngFor="let section of InScopeStructures; let i = index">
                     <div *ngFor="let area of notAllocatedAreas[i]" class="govuk-!-margin-bottom-6">
                         <not-allocated-accountability [title]="getCheckboxTitle(i, area)"
                             [id]="createSectionId(i, area)" [errorText]="getSectionError(i, area)" (onKeyupEnter)="saveAndContinue()"

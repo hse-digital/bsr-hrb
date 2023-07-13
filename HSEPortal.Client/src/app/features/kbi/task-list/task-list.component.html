@@ -5,7 +5,7 @@
       <h1 class="govuk-heading-l">Give structure and safety information for {{applicationService.model.BuildingName ?? ""}}</h1>
 
       <h2 class="govuk-heading-m">Application incomplete</h2>
-      <govuk-body class="govuk-!-margin-bottom-4">You have completed {{getNumberOfCompletedSteps()}} of {{ 3 + applicationService.model.Sections.length }} sections.</govuk-body>
+      <govuk-body class="govuk-!-margin-bottom-4">You have completed {{getNumberOfCompletedSteps()}} of {{ 3 + InScopeSections!.length }} sections.</govuk-body>
 
       <h2 class="govuk-heading-m">Returning to this application</h2>
       <govuk-body class="govuk-!-margin-bottom-4">We will save the information you give to us on each page.</govuk-body>
@@ -34,16 +34,19 @@
           </h2>
           <ul class="app-task-list__items">
 
-            <li class="app-task-list__item" [ngClass]="{'firstItem': i == 0}" *ngFor="let section of applicationService.model.Sections; let i = index">
-              <span class="app-task-list__task-name">
-                <span task *ngIf="!isSectionComplete(i - 1)">{{ getSectionName(i) }} information</span>
-                <a task *ngIf="i == 0 || isSectionComplete(i - 1)" class="govuk-link" (keyup.enter)="navigateToSection(i, section.Name!)" (click)="navigateToSection(i, section.Name!)" role="link" tabindex="0">{{ getSectionName(i) }} information</a>
-              </span>
-              <govuk-tag tag class="govuk-tag--grey" *ngIf="!isSectionInProgress(i) && !isSectionComplete(i - 1) && !isSectionComplete(i) && i > 0">CANNOT START YET</govuk-tag>
-              <govuk-tag tag class="govuk-tag--grey" *ngIf="!isSectionInProgress(i) && !isSectionComplete(i) && isSectionComplete(i - 1)">NOT STARTED YET</govuk-tag>
-              <govuk-tag tag class="govuk-tag--blue" *ngIf="isSectionInProgress(i) && !isSectionComplete(i)">IN PROGRESS</govuk-tag>
-              <govuk-tag tag *ngIf="!isSectionInProgress(i) && isSectionComplete(i)">COMPLETE</govuk-tag>
-            </li>
+            <ng-container  *ngFor="let section of InScopeSections; let i = index">
+              <li class="app-task-list__item" *ngIf="!section.Scope?.IsOutOfScope" [ngClass]="{'firstItem': i == 0}">
+                <span class="app-task-list__task-name">
+                  <span task *ngIf="!isSectionComplete(i - 1)">{{ getSectionName(i) }} information</span>
+                  <a task *ngIf="i == 0 || isSectionComplete(i - 1)" class="govuk-link" (keyup.enter)="navigateToSection(i, section.Name!)" (click)="navigateToSection(i, section.Name!)" role="link" tabindex="0">{{ getSectionName(i) }} information</a>
+                </span>
+                <govuk-tag tag class="govuk-tag--grey" *ngIf="!isSectionInProgress(i) && !isSectionComplete(i - 1) && !isSectionComplete(i) && i > 0">CANNOT START YET</govuk-tag>
+                <govuk-tag tag class="govuk-tag--grey" *ngIf="!isSectionInProgress(i) && !isSectionComplete(i) && isSectionComplete(i - 1)">NOT STARTED YET</govuk-tag>
+                <govuk-tag tag class="govuk-tag--blue" *ngIf="isSectionInProgress(i) && !isSectionComplete(i)">IN PROGRESS</govuk-tag>
+                <govuk-tag tag *ngIf="!isSectionInProgress(i) && isSectionComplete(i)">COMPLETE</govuk-tag>
+              </li>
+            </ng-container>
+
 
             <li class="app-task-list__item">
               <span class="app-task-list__task-name">

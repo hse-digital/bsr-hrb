@@ -18,6 +18,7 @@ import { AccountabilityComponent } from './accountability/accountability.compone
 import { NotAllocatedAccountabilityComponent } from './not-allocated-accountability/not-allocated-accountability.component';
 import { GovukCheckboxNoneComponent } from './govuk-checkbox-none/govuk-checkbox-none.component';
 import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.component';
+import { OutOfScopeReasonComponent } from './out-of-scope-reason/out-of-scope-reason.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.c
     AccountabilityComponent,
     NotAllocatedAccountabilityComponent,
     GovukCheckboxNoneComponent,
-    CheckboxOptionComponent
+    CheckboxOptionComponent,
+    OutOfScopeReasonComponent
   ],
   imports: [
     HseAngularModule,
@@ -49,7 +51,8 @@ import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.c
     AccountabilityComponent,
     NotAllocatedAccountabilityComponent,
     GovukCheckboxNoneComponent,
-    CheckboxOptionComponent
+    CheckboxOptionComponent,
+    OutOfScopeReasonComponent
   ],
   providers: [HttpClient, AddressService]
 })

@@ -15,7 +15,7 @@
         <div class="govuk-hint govuk-!-margin-bottom-6">These are the accountabilities we regulate, we do not need to know about any others.</div>
         <div class="govuk-hint govuk-!-margin-bottom-6">Select all that apply</div>
 
-        <div class="govuk-!-margin-bottom-6" *ngFor="let section of applicationService.model.Sections; let i = index">
+        <div class="govuk-!-margin-bottom-6" *ngFor="let section of InScopeStructures; let i = index">
           <govuk-checkbox-group [(model)]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" 
             id="{{'section-' + i + '-AccountabilityCheckbox'}}" #field [govukRequired]="field" [title]="getCheckboxTitle(section)">
             <govuk-checkbox (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentAccountablePerson.SectionsAccountability![i].Accountability!" text="Routes that residents can walk through" value="routes" hint="This includes stairs, lobbies, corridors, and maintaining the internal walls and floors." />

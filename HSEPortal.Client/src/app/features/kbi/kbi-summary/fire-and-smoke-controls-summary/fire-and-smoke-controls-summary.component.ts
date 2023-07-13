@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Fire, ApplicationService } from 'src/app/services/application.service';
 import { KbiSummaryComponent } from '../kbi-summary.component';
+import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
   selector: 'fire-and-smoke-controls-summary',
@@ -10,8 +11,8 @@ export class FireAndSmokeControlsSummaryComponent extends KbiSummaryComponent {
 
   @Input() fireAndSmokeControls: Fire = {};
 
-  constructor(applicationService: ApplicationService) {
-    super(applicationService)
+  constructor(applicationService: ApplicationService, navigationService: NavigationService) {
+    super(applicationService, navigationService);
   }
 
   private provisionEquipment: Record<string, string> = {

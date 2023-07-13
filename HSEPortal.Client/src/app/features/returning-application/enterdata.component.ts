@@ -42,7 +42,7 @@ export class ReturningApplicationEnterDataComponent {
     this.hasErrors = this.errors.emailAddress.hasError || this.errors.applicationNumber.hasError;
 
     if (!this.hasErrors) {
-      await this.applicationService.sendVerificationEmail(this.emailAddress!);
+      await this.applicationService.sendVerificationEmail(this.emailAddress!,  this.applicationNumber!);
       this.onContinue.emit({ emailAddress: this.emailAddress!, applicationNumber: this.applicationNumber! });
     } else {
       this.summaryError?.first?.focus();

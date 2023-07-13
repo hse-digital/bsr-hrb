@@ -26,7 +26,7 @@ export class CertificatesYearChangeComponent extends BaseComponent implements IH
   }
 
   canContinue(): boolean {
-    var currentSection = this.applicationService.model.Sections[this.applicationService._currentKbiSectionIndex];
+    var currentSection = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope)[this.applicationService._currentKbiSectionIndex];
 
     this.certificatesYearChangesHasErrors = true;
     if (!this.applicationService.currentKbiSection?.BuildingUse.YearChangeInUse || this.applicationService.currentKbiSection?.BuildingUse.YearChangeInUse.toString().trim().length == 0) {
@@ -47,7 +47,7 @@ export class CertificatesYearChangeComponent extends BaseComponent implements IH
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
-      : this.applicationService.currentSection.Name;
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
@@ -57,6 +57,4 @@ export class CertificatesYearChangeComponent extends BaseComponent implements IH
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return !!this.applicationService.currentKbiSection?.BuildingUse.PreviousUseBuilding && this.applicationService.currentKbiSection?.BuildingUse.PreviousUseBuilding.length > 0;
   }
-
-
 }

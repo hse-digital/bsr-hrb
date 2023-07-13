@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { KbiNavigation } from 'src/app/features/kbi/kbi.navigation.ts.service';
@@ -20,12 +20,15 @@ export class TaskListComponent implements CanActivate, OnInit {
   applicationStatus = BuildingApplicationStatus;
   checkingStatus = true;
 
+  InScopeSections!: SectionModel[];
+
   constructor(public applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute,
     private kbiService: KbiService, private kbiNavigation: KbiNavigation) {
   }
 
   async ngOnInit() {
     this.applicationService.initKbi();
+    this.InScopeSections = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
     await this.applicationService.updateApplication();
   }
 
@@ -47,9 +50,9 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   getSectionName(index: number) {
-    return this.applicationService.model.Sections.length == 1
+    return this.InScopeSections.length == 1
       ? this.applicationService.model.BuildingName
-      : this.applicationService.model.Sections[index].Name;
+      : this.applicationService.model.Kbi?.KbiSections[index].StructureName;
   }
 
   navigateToCheckBeforeStart() {

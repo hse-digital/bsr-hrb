@@ -2,7 +2,8 @@ parameters:
   - name: subscription
   - name: appBuildCommand
     default: 'npm run prerender'
-
+  - name: servicePrincipalId
+    
 jobs:
   - job: Deploy
     steps:
@@ -17,7 +18,7 @@ jobs:
         scriptLocation: 'inlineScript'
         inlineScript: | 
                     az group create --name $(resourceGroupName) --location uksouth
-                    az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' --parameters environment='$(env)'
+                    az deployment group create --resource-group $(resourceGroupName) --template-file '$(Build.SourcesDirectory)/infraestructure/main.bicep' --parameters environment='$(env)' servicePrincipalId='${{parameters.servicePrincipalId}}'
  
     - task: AzureFunctionApp@1
       displayName: Deploy Function App

@@ -31,13 +31,16 @@ export class SectionAddressComponent implements OnInit, CanActivate {
   private addressIndex?: number;
   private returnUrl?: string;
   address?: AddressModel;
+
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(query => {
       this.addressIndex = query['address'];
       this.returnUrl = query['return'];
-      if (this.addressIndex) {
-        this.address = this.applicationService.currentSection.Addresses[this.addressIndex - 1];
+
+      if (!this.addressIndex) {
+        this.addressIndex = 1;
       }
+      this.address = this.applicationService.currentSection.Addresses[this.addressIndex - 1];
     });
   }
 

@@ -2,7 +2,7 @@
 
   <h1 class="govuk-heading-l">Too many results</h1>
 
-  <govuk-body>Too many results found for <b>{{ searchModel.postcode }}</b><span *ngIf="searchModel.addressLine1"> and <b>{{searchModel.addressLine1}}</b></span></govuk-body>
+  <govuk-body>Too many results found for <b>{{ searchModel.postcode }}</b></govuk-body>
   <govuk-body>
     You can either <a class="govuk-link"  (keyup.enter)="onSearchAgain.emit()" (click)="onSearchAgain.emit()" role="link" tabindex="0">search again</a> or
     <a class="govuk-link"  (keyup.enter)="onEnterManualAddress.emit()" (click)="onEnterManualAddress.emit()" role="link" tabindex="0">enter address manually</a>.

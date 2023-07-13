@@ -54,6 +54,7 @@ public class WhenSearchingAddress : UnitTestBase
         responseAddress.Results[0].Town.Should().Be(postcodeResponse.results[0].LPI.TOWN_NAME);
         responseAddress.Results[0].AdministrativeArea.Should().Be(postcodeResponse.results[0].LPI.ADMINISTRATIVE_AREA);
         responseAddress.Results[0].Postcode.Should().Be(postcodeResponse.results[0].LPI.POSTCODE_LOCATOR);
+        responseAddress.Results[0].ClassificationCode.Should().Be(postcodeResponse.results[0].LPI.CLASSIFICATION_CODE);
     }
 
     [Fact]

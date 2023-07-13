@@ -30,7 +30,7 @@ export class RoofTypeComponent  extends BaseComponent implements IHasNextPage, O
   getInfraestructureName() {
     return this.applicationService.model.NumberOfSections === 'one'
       ? this.applicationService.model.BuildingName
-      : this.applicationService.currentSection.Name;
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 
   getErrorMessage() {

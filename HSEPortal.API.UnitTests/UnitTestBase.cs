@@ -34,7 +34,7 @@ public abstract class UnitTestBase
 
         HttpTest = new HttpTest();
         DynamicsService = new DynamicsService(new DynamicsModelDefinitionFactory(), options.Object, new OptionsWrapper<SwaOptions>(new SwaOptions()), new DynamicsApi(options.Object));
-        OtpService = new OTPService();
+        OtpService = new OTPService(new OptionsWrapper<IntegrationsOptions>(IntegrationOptions));
     }
 
     protected readonly DynamicsOptions DynamicsOptions = new()
@@ -45,6 +45,12 @@ public abstract class UnitTestBase
         ClientSecret = "BA8787F6-C52B-49F8-B1D1-F9E54754EEF7",
         EmailVerificationFlowUrl = "http://flow_url",
         LocalAuthorityTypeId = "db305f3e-1dad-ed11-83ff-0022481b5e4f"
+    };
+
+    protected readonly IntegrationsOptions IntegrationOptions = new()
+    {
+        CommonAPIEndpoint = "http://app.in.azure",
+        CommonAPIKey = "abc123"
     };
 
     protected HttpRequestData BuildHttpRequestData<T>(T data, params string[] parameters)

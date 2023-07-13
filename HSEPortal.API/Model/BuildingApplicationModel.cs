@@ -65,7 +65,11 @@ public record BuildingApplicationModel(
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
     string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange,
-    string CompletionCertificateIssuer, string CompletionCertificateReference, BuildingAddress[] Addresses = null);
+    string CompletionCertificateIssuer, string CompletionCertificateReference, Scope Scope, string Statecode, BuildingAddress[] Addresses = null);
+
+public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
+
+public enum OutOfScopeReason { Height, NumberResidentialUnits, PeopleLivingInBuilding }
 
 public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress Address, BuildingAddress PapAddress,
     string OrganisationName, string OrganisationType, string OrganisationTypeDescription,

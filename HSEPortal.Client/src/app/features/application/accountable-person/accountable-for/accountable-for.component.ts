@@ -4,7 +4,7 @@ import { GovukErrorSummaryComponent } from "hse-angular";
 import { ApHelper } from "src/app/helpers/ap-helper";
 import { BaseComponent } from "src/app/helpers/base.component";
 import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
-import { ApplicationService } from "src/app/services/application.service";
+import { ApplicationService, SectionModel } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from 'src/app/services/title.service';
 import { AddAccountablePersonComponent } from "../add-accountable-person/add-accountable-person.component";
@@ -19,6 +19,8 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
+  InScopeStructures?: SectionModel[];
+
   multi: boolean = false;
   anySelected = false;
   errorMessage?: string;
@@ -27,6 +29,7 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
   }
 
   ngOnInit(): void {
+    this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
     this.multi = this.applicationService.model.NumberOfSections != 'one';
     this.errorMessage = `Select what ${this.getApName()} is accountable for`;
 
@@ -34,8 +37,8 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
       this.applicationService.currentAccountablePerson.SectionsAccountability = [];
     }
 
-    for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
-      var section = this.applicationService.model.Sections[i];
+    for (let i = 0; i < this.InScopeStructures!.length; i++) {
+      var section = this.InScopeStructures![i];
       if (!this.applicationService.currentAccountablePerson.SectionsAccountability[i]) {
         this.applicationService.currentAccountablePerson.SectionsAccountability[i] = { SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: [] };
       }
@@ -43,7 +46,7 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
   }
 
   canContinue(): boolean {
-    for (let i = 0; i < this.applicationService.model.Sections.length; i++) {
+    for (let i = 0; i < this.InScopeStructures!.length; i++) {
       var sectionAccountability = this.applicationService.currentAccountablePerson.SectionsAccountability![i];
       if (sectionAccountability.Accountability!.length > 0)
         return true;

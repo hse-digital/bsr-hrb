@@ -2,7 +2,7 @@
 
   <h1 class="govuk-heading-l">Address not found</h1>
 
-  <govuk-body>No addresses found for  <b>{{ searchModel.postcode }}</b><span *ngIf="searchModel.addressLine1"> and <b>{{searchModel.addressLine1}}</b></span></govuk-body>
+  <govuk-body>No addresses found for <b>{{ searchModel.postcode }}</b></govuk-body>
   
   <govuk-body>
     You can either <a class="govuk-link" (click)="onSearchAgain.emit()" (keyup.enter)="onSearchAgain.emit()" role="link" tabindex="0">search again</a> or
