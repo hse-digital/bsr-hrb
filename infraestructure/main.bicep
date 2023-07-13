@@ -1,7 +1,6 @@
 param environment string
 param location string = resourceGroup().location
 param swaLocation string = 'westeurope'
-param servicePrincipalId string
 
 @allowed([ 'Free', 'Standard' ])
 param sku string = 'Standard'
@@ -37,15 +36,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
                 permissions: {
                     secrets: [
                         'all'
-                    ]
-                }
-            }
-            {
-                objectId: servicePrincipalId
-                tenantId: tenant().tenantId
-                permissions: {
-                    secrets: [
-                        'get'
                     ]
                 }
             }
