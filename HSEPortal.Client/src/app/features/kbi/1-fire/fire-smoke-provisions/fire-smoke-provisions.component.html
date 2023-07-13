@@ -15,7 +15,7 @@
                     hint="Select all that apply"
                     [errorText]="getErrorDescription(fireSmokeProvisionsHasErrors, errorMessage!)"
                     (onKeyupEnter)="saveAndContinue()"
-                    [(model)]="applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.keys">
+                    [(model)]="model">
                     <checkbox-option text="Alarm connected to heat or smoke detectors" value="alarm_heat_smoke" id="alarm_heat_smoke" />
                     <checkbox-option text="Alarm connected to call points" value="alarm_call_points" id="alarm_call_points" />
                     <checkbox-option text="Fire dampers" value="fire_dampers" id="fire_dampers" />

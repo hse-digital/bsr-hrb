@@ -59,10 +59,10 @@ public class KbiService
         }
 
         // common areas
-        foreach (var provision in fireData.FireSmokeProvisions)
+        foreach (var keyValuePair in fireData.FireSmokeProvisions)
         {
-            var locations = fireData.FireSmokeProvisionLocations[provision];
-            await CreateFireOrSmokeProvisions(structure.bsr_blockid, provision, locations);
+            var locations = keyValuePair.value;
+            await CreateFireOrSmokeProvisions(structure.bsr_blockid, keyValuePair.key, locations);
         }
 
         // residential units

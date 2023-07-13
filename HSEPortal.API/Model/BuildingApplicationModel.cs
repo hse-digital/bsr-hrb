@@ -125,11 +125,12 @@ public record ExternalWallInsulation(string[] CheckBoxSelection, string OtherVal
 
 public record Fire(string StrategyEvacuateBuilding,
     string[] ProvisionsEquipment,
-    string[] FireSmokeProvisions,
-    Dictionary<string, string[]> FireSmokeProvisionLocations,
+    KeyValue<string, string[]>[] FireSmokeProvisions,
     string[] Lifts,
     ResidentialUnitFrontDoors ResidentialUnitFrontDoors,
     FireDoorsCommon FireDoorsCommon);
+
+public record KeyValue<K, V>(K key, V value);
 
 public record FireDoorsCommon(string FireDoorThirtyMinute, string FireDoorSixtyMinute, string FireDoorHundredTwentyMinute, string FireDoorUnknown);
 

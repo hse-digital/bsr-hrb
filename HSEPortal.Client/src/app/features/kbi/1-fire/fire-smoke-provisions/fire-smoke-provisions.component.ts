@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, Dictionary } from 'src/app/services/application.service';
+import { ApplicationService, KeyValueHelper, KeyValue } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
@@ -25,6 +25,9 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   errorMessage?: string;
   fireSmokeProvisionsHasErrors = false;
 
+  private keyValueHelper?: KeyValueHelper<string, string[]>;
+  model: string[] = [];
+
   private readonly provisionsWithLocation: string[] = ["alarm_heat_smoke", "alarm_call_points", "fire_dampers", "fire_shutters", "heat_detectors", "smoke_aovs", "smoke_manual", "smoke_detectors", "sprinklers_misters"];
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
@@ -32,12 +35,11 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   }
 
   ngOnInit(): void {
-    // if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions) { this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions = []; }
-    console.log(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions);
     if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions) {
-      this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions = new Dictionary<string, string[]>();
-      this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions.keys = [];
+      this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions = [];
     }
+    this.keyValueHelper = new KeyValueHelper<string, string[]>(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!);
+    this.model = this.keyValueHelper.getKeys();
     this.errorMessage = `Select the fire and smoke control equipment in the residential common parts of ${this.getInfraestructureName()}`;
   }
 
@@ -48,21 +50,22 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   }
 
   canContinue(): boolean {
-     this.fireSmokeProvisionsHasErrors = !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions
-       || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions.keys.length == 0;
+     this.fireSmokeProvisionsHasErrors = !this.model || this.model.length == 0;
 
     if (this.fireSmokeProvisionsHasErrors) {
       this.firstCheckboxAnchorId = `alarm_heat_smoke-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
+    } else {
+      this.keyValueHelper?.setKeys(this.model);
+      this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions = [...this.keyValueHelper!.KeyValue];
     }
-
 
     return !this.fireSmokeProvisionsHasErrors;
   }
   
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.keys.some(x => this.provisionsWithLocation.indexOf(x) > -1)) {
+    if (this.keyValueHelper?.getKeys().some(x => this.provisionsWithLocation.indexOf(x) > -1)) {
       return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute, {
-        equipment: this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.keys.find(x => this.provisionsWithLocation.indexOf(x) > -1)
+        equipment: this.keyValueHelper?.getKeys().find(x => this.provisionsWithLocation.indexOf(x) > -1)
       });
     }
 

@@ -4,7 +4,7 @@ import { GovukErrorSummaryComponent } from 'hse-angular';
 import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, KeyValueHelper } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { ResidentialUnitFrontDoorsFireResistanceComponent } from '../residential-unit-front-doors-fire-resistance/residential-unit-front-doors-fire-resistance.component';
@@ -54,40 +54,40 @@ export class LiftsComponent  extends BaseComponent implements IHasNextPage, OnIn
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    // let thereAreProvisions = this.areThereProvisions();
-    // let fireSmokeProvisionIsNone = this.isFireSmokeProvisionNone();
-    // let thereAreProvisionsWithLocation = this.areThereProvisionsWithLocation();
-    //let thereAreOnlyProvisionsWithoutLocation = this.areThereOnlyProvisionsWithoutLocation();
-    //return thereAreProvisions && (fireSmokeProvisionIsNone || thereAreProvisionsWithLocation || thereAreOnlyProvisionsWithoutLocation);
-    return true;
+    let keyValueHelper = new KeyValueHelper<string, string[]>(this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions);
+    let thereAreProvisions = this.areThereProvisions();
+    let fireSmokeProvisionIsNone = this.isFireSmokeProvisionNone(keyValueHelper);
+    let thereAreProvisionsWithLocation = this.areThereProvisionsWithLocation(keyValueHelper);
+    let thereAreOnlyProvisionsWithoutLocation = this.areThereOnlyProvisionsWithoutLocation(keyValueHelper);
+    return thereAreProvisions && (fireSmokeProvisionIsNone || thereAreProvisionsWithLocation || thereAreOnlyProvisionsWithoutLocation);
   }
 
-  // private areThereProvisions() {
-  //   return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions.length > 0;
-  // }
+  private areThereProvisions() {
+    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions.length > 0;
+  }
 
-  // private isFireSmokeProvisionNone() {
-  //   return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.length == 1 && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![0] == 'none';
-  // }
+  private isFireSmokeProvisionNone(keyValueHelper: KeyValueHelper<string, string[]>) {
+    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.length == 1 && keyValueHelper.getKeys()[0] == 'none';
+  }
 
-  private areThereProvisionsWithLocation() {
-    // let filteredProvisions = this.getFilteredProvisions();
-    // if (FieldValidations.IsNotNullOrEmpty(filteredProvisions)) {
-    //   let locationsExist = !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations && Object.keys(this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations).length > 0;
-    //   let everyProvisionHasALocation = locationsExist && filteredProvisions!.every(x => this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0);
-    //   return everyProvisionHasALocation;
-    // }
+  private areThereProvisionsWithLocation(keyValueHelper: KeyValueHelper<string, string[]>) {
+    let filteredProvisions = this.getFilteredProvisions(keyValueHelper);
+    if (FieldValidations.IsNotNullOrEmpty(filteredProvisions)) {
+      let locationsExist = !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && keyValueHelper.KeyValue.length > 0;
+      let everyProvisionHasALocation = locationsExist && keyValueHelper.KeyValue.filter(x => filteredProvisions.indexOf(x.key) > -1 ).every(x => !!x.value && x.value.length > 0);
+      return everyProvisionHasALocation;
+    }
     return false;
   }
 
-  // private areThereOnlyProvisionsWithoutLocation() {
-  //   let filteredProvisions = this.getFilteredProvisions();
-  //   return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.length > 0 && filteredProvisions?.length == 0
-  // }
+  private areThereOnlyProvisionsWithoutLocation(keyValueHelper: KeyValueHelper<string, string[]>) {
+    let filteredProvisions = this.getFilteredProvisions(keyValueHelper);
+    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.length > 0 && filteredProvisions?.length == 0
+  }
 
-  // private getFilteredProvisions() {
-  //   let provisionsWithLocation: string[] = ["alarm_heat_smoke", "alarm_call_points", "fire_dampers", "fire_shutters", "heat_detectors", "smoke_aovs", "smoke_manual", "smoke_detectors", "sprinklers_misters"];
-  //   return this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.filter(x => provisionsWithLocation.indexOf(x) > -1);
-  // }
+  private getFilteredProvisions(keyValueHelper: KeyValueHelper<string, string[]>) {
+    let provisionsWithLocation: string[] = ["alarm_heat_smoke", "alarm_call_points", "fire_dampers", "fire_shutters", "heat_detectors", "smoke_aovs", "smoke_manual", "smoke_detectors", "sprinklers_misters"];
+    return keyValueHelper.getKeys()?.filter(x => provisionsWithLocation.indexOf(x) > -1);
+  }
 
 }

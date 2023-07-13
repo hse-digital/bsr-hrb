@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukCheckboxComponent, GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, KeyValuePair } from 'src/app/services/application.service';
+import { ApplicationService, KeyValueHelper } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
@@ -33,17 +33,20 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
 
   private filteredProvisions: string[] = [];
 
+  private keyValueHelper?: KeyValueHelper<string, string[]>;
   public model: string[] = [];
 
   ngOnInit(): void {
+    this.keyValueHelper = new KeyValueHelper<string, string[]>(this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions);
+    this.filteredProvisions = this.keyValueHelper.getKeys().filter(x => this.provisionsWithLocation.indexOf(x) > -1) ?? [];
+
     // getting current equipment
     this.activatedRoute.queryParams.subscribe(params => {
-      this.currentEquipment = params['equipment'] ?? this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.keys[0];
+      this.currentEquipment = params['equipment'] ?? this.filteredProvisions[0];
+      this.model = this.keyValueHelper?.getValueOf(this.currentEquipment) ?? [];
+      this.errorMessage = `Select where the ${this.getEquipmentName(this.currentEquipment!)} are in ${this.getInfraestructureName()}`;
     });
 
-    this.model = this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.getValueOf(this.currentEquipment) ?? [];
-
-    this.errorMessage = `Select where the ${this.getEquipmentName(this.currentEquipment!)} are in ${this.getInfraestructureName()}`;
   }
 
   getNextEquipment() {
@@ -80,7 +83,9 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
     this.firstCheckboxAnchorId = `basement-${this.checkboxes?.first.innerId}`;
     this.locationsHasErrors = !this.model || this.model.length == 0;
     if (this.locationsHasErrors) this.errorMessage = `Select where the ${this.getEquipmentName(this.currentEquipment!)} are in ${this.getInfraestructureName()}`;
-    else this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.set(this.currentEquipment!, this.model);
+    else {
+      this.keyValueHelper?.set(this.currentEquipment!, [...this.model]);
+    }
     return !this.locationsHasErrors;
   }
 
@@ -94,6 +99,6 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions.keys.length > 0;
+    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions.length > 0;
   }
 }

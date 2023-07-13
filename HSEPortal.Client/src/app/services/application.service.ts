@@ -355,7 +355,7 @@ export class Fire {
   StrategyEvacuateBuilding?: string;
   ProvisionsEquipment?: string[];
 
-  FireSmokeProvisions?: Dictionary<string, string[]>;
+  FireSmokeProvisions?: KeyValue<string, string[]>[];
   Lifts?: string[];
   ResidentialUnitFrontDoors?: {
     NoFireResistance?: number,
@@ -372,51 +372,42 @@ export class Fire {
   } = {};
 }
 
-export class Dictionary<K extends keyof any, V> {
+export class KeyValue<K, V> {
+  public key!: K;
+  public value?: V;
+}
 
-  private KeyValuePairs: KeyValuePair<K, V>[];
+export class KeyValueHelper<K extends keyof any, V> {
 
-  constructor() {
-    this.KeyValuePairs = [];
+  public KeyValue: KeyValue<K, V>[];
+
+  constructor(KeyValue?: KeyValue<K, V>[]) {
+      this.KeyValue = KeyValue ? [...KeyValue] : [];
   }
 
-  public get keys(): K[]  {
-    return this.KeyValuePairs.map(x => x.key);
+  public getKeys(): K[]  {
+    return this.KeyValue.map(x => x.key);
   }
 
-  public set keys(keys: K[]) {
-    let _aux: KeyValuePair<K, V>[] = [];
-    keys.forEach(x => _aux.push({key: x, value: this.KeyValuePairs.find(y => y.key == x)?.value}));
-    this.KeyValuePairs = _aux;
+  public getValues(): (V | undefined)[]  {
+    return this.KeyValue.map(x => x.value);
   }
 
-  public add(key: K, value: V) {
-    this.KeyValuePairs.push({ key: key, value: value })
-  }
-
-  public remove(key: K) {
-    let index = this.KeyValuePairs.findIndex(x => x.key === key);
-    if(index) this.KeyValuePairs.splice(index, 1);
+  public setKeys(keys: K[]) {
+    let _aux: KeyValue<K, V>[] = [];
+    keys.forEach(x => _aux.push({key: x, value: this.KeyValue.find(y => y.key == x)?.value}));
+    this.KeyValue = [..._aux];
   }
 
   public getValueOf(key: K | undefined): V | undefined {
-    return this.KeyValuePairs.find(x => x.key == key)?.value;
+    return this.KeyValue.find(x => x.key == key)?.value;
   }
 
-  public get(key: K): KeyValuePair<K, V> | undefined {
-    return this.KeyValuePairs.find(x => x.key == key);
+  public set(key?: K, value?: V) {
+    let index = this.KeyValue.findIndex(x => x.key == key);
+    this.KeyValue.at(index)!.value = value;
   }
 
-  public set(key: K, value: V) {
-    let index = this.KeyValuePairs.findIndex(x => x.key == key);
-    this.KeyValuePairs.at(index)!.value = value;
-  }
-
-}
-
-export class KeyValuePair<K, V> {
-  public key!: K;
-  public value?: V;
 }
 
 export class Energy {
@@ -441,9 +432,9 @@ export class Staircases {
 }
 
 export class Walls {
-  ExternalWallMaterials?: string[];
   WallACM?: string;
   WallHPL?: string;
+  ExternalWallMaterials?: string[];
   ExternalWallMaterialsPercentage?: Record<string, string>;
   ExternalWallInsulation?: {
     CheckBoxSelection?: string[],
