@@ -49,13 +49,13 @@ export class WallsAcmComponent extends BaseComponent implements IHasNextPage, On
   }
 
   doesExternalWallMaterialsIncludes(material: string) {
-    return this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes(material);
+    return this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.map(x => x.key).includes(material);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     return !!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials 
       && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.length > 0 
-      && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes('acm');
+      && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.map(x => x.key).includes('acm');
   }
 
 }

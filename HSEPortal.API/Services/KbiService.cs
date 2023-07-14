@@ -221,14 +221,14 @@ public class KbiService
 
         foreach (var material in walls.ExternalWallMaterials)
         {
-            var materialId = Materials.ExternalWallsIds[material];
+            var materialId = Materials.ExternalWallsIds[material.key];
             structureMaterial = structureMaterial with
             {
                 materialId = $"/bsr_materials({materialId})",
-                bsr_percentageofmaterial = int.Parse(walls.ExternalWallMaterialsPercentage[material]),
+                bsr_percentageofmaterial = int.Parse(material.value),
             };
 
-            if (material == "acm")
+            if (material.key == "acm")
             {
                 structureMaterial = structureMaterial with
                 {
@@ -236,7 +236,7 @@ public class KbiService
                 };
             }
 
-            if (material == "hpl")
+            if (material.key == "hpl")
             {
                 structureMaterial = structureMaterial with
                 {
@@ -247,21 +247,21 @@ public class KbiService
             await dynamicsApi.Create("bsr_structurematerials", structureMaterial);
         }
 
-        foreach (var insulation in walls.ExternalWallInsulation.CheckBoxSelection)
+        foreach (var insulation in walls.ExternalWallInsulation)
         {
-            var materialId = Materials.InsulationIds[insulation];
-            var insulationPercentage = walls.ExternalWallInsulationPercentages.TryGetValue(insulation, out var percentage) ? int.Parse(percentage) : 0;
+            var materialId = Materials.InsulationIds[insulation.key];
+            var insulationPercentage = insulation.value != null && insulation.value.Length > 0 ? int.Parse(insulation.value) : 0;
             structureMaterial = structureMaterial with
             {
                 materialId = $"/bsr_materials({materialId})",
                 bsr_percentageofmaterial = insulationPercentage,
             };
 
-            if (insulation == "other")
+            if (insulation.key == "other")
             {
                 structureMaterial = structureMaterial with
                 {
-                    bsr_otherspecifiedmaterial = walls.ExternalWallInsulation.OtherValue
+                    bsr_otherspecifiedmaterial = walls.ExternalWallInsulationOtherValue
                 };
             }
 
@@ -276,18 +276,18 @@ public class KbiService
 
         foreach (var feature in walls.ExternalFeatures)
         {
-            var featureId = Materials.FeatureIds[feature];
+            var featureId = Materials.FeatureIds[feature.key];
             var structureFeature = new DynamicsExternalFeature
             {
                 structureId = $"/bsr_blocks({kbiSyncData.DynamicsStructure.bsr_blockid})",
                 featureId = $"/bsr_externalfeaturetypes({featureId})"
             };
 
-            if (walls.FeatureMaterialsOutside != null && walls.FeatureMaterialsOutside.TryGetValue(feature, out var materials) && materials.Length > 0)
+            if (feature.value != null && feature.value.Length > 0)
             {
-                foreach (var material in materials)
+                foreach (var material in feature.value)
                 {
-                    var materialId = Materials.ExternalFeatureIds[material];
+                    var materialId = Materials.ExternalFeatureIds[material.ToString()];
                     structureFeature = structureFeature with
                     {
                         materialId = $"/bsr_materials({materialId})",

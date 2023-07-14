@@ -4,7 +4,7 @@ import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, KeyValueHelper } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { ExternalWallMaterialsPipe } from 'src/app/pipes/external-wall-materials.pipe';
@@ -27,6 +27,8 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
   estimatedPercentageHasErrors = false;
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
+  keyValueHelper?: KeyValueHelper<string, number>;
+
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
@@ -35,33 +37,12 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
     this.errors = [];
     if (!this.externalWallMaterials) this.externalWallMaterials = [];
 
-    if (!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage || Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage).length == 0) {
-      this.initExternalWallMaterialsPercentage();
-    } else {
-      this.mapExternalWallMaterials();
-    }
+    
 
     this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x => {
       this.externalWallMaterials.push({ value: x, id: x } as Material);
       this.errors.push({ hasError: false, message: '', id: x } as Error);
     });
-  }
-
-  initExternalWallMaterialsPercentage() {
-    this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = {};
-    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(material => {
-      this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![material] = '';
-    });
-  }
-
-  mapExternalWallMaterials() {
-    let aux: Record<string, string> = {};
-    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x =>
-      aux[x] = !!this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![x]
-        ? this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![x]
-        : ''
-    );
-    this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = aux;
   }
 
   initErrors() {

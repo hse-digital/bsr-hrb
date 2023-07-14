@@ -4,7 +4,7 @@ import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, KeyValue, KeyValueHelper } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { ExternalFeaturesComponent } from '../external-features/external-features.component';
@@ -28,6 +28,9 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   errors: Error[] = [];
 
   firstErrorAnchorId?: string;
+
+  keyValueHelper?: KeyValueHelper<string, number>;
+  model: (number | undefined)[] = []
 
 
   getErrorForOption(optionId: string): string {
@@ -65,30 +68,8 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   }
 
   ngOnInit(): void {
-    //Initilise the percentage values
-    if (!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulationPercentages || Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages).length == 0) {
-      this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages = {};
-      this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation!.CheckBoxSelection!.forEach(insulationType => {
-        this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![insulationType]
-      });
-    }
-
-    // check missing locations (in case the user modifies fire-smoke-provisions)
-    if (Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages).length != this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.length) {
-      this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.filter(x => !this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![x]).forEach(missingInsulation => {
-        this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![missingInsulation];
-      });
-    }
-
-    //If value doesnt exist in this this.applicationService.currentKbiSection?.externalWallInsulation?.checkBoxSelection remove from locations (in case the user modifies external-wall-insulation-type)
-    if (Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages).length != this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.length) {
-      Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages).forEach(insulationType => {
-        if (!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection?.includes(insulationType)) {
-          delete this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![insulationType];
-        }
-      });
-    }
-
+    this.keyValueHelper = new KeyValueHelper<string, number>(this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials)
+    this.model = this.keyValueHelper.getValues();
   }
 
 
@@ -96,15 +77,23 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
 
     this.errors = []
 
-    for (var insulationType in this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages) {
+    for (let insulationType of this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation!) {
       //Check is not null or whitespace
-      this.validateInputs(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages[insulationType], insulationType)
+      this.validateInputs(insulationType.value, insulationType.key)
     }
 
     this.validateTotalPercentage();
 
-    return !!(this.errors.length === 0)
-
+    if( !!this.errors && this.errors.length === 0){
+      this.model.forEach((x, index) => {
+        let key = this.keyValueHelper?.getKeys()[index];
+        this.keyValueHelper?.set(key, x);
+      });
+      this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials = this.keyValueHelper?.KeyValue;
+      return true;
+    }
+    
+    return false;
   }
 
   getInfraestructureName() {
@@ -118,9 +107,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection && this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection![0] != 'none';
-
-
+    return !!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation && this.keyValueHelper?.getKeys()![0] != 'none';
   }
 
   validateInputs(input: number | undefined, insulationType: string): void {
@@ -146,7 +133,7 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
     }
 
     if (this.errors.length > 0) {
-      this.firstErrorAnchorId = this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection![0];
+      this.firstErrorAnchorId = this.keyValueHelper?.getKeys()[0];
 
     }
   }
@@ -154,8 +141,8 @@ export class ExternalWallInsulationPercentageComponent extends BaseComponent imp
   validateTotalPercentage(): void {
 
     //add up all the percentages from the inputs using reduce function
-    let totalPercentage = Object.values(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages!).reduce((totalPercentage, percentage) => totalPercentage + +percentage, 0);
-    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqualHundred"], errorAnchorId: Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages!)[0] });
+    let totalPercentage = this.keyValueHelper?.getValues().map(x => Number(x!)).reduce((totalPercentage, percentage) => totalPercentage + +percentage, 0);
+    totalPercentage === 100 ? true : this.errors.push({ errorMessage: this.errorMessages["totalNotEqualHundred"], errorAnchorId: this.keyValueHelper?.getKeys()[0]! });
 
   }
 

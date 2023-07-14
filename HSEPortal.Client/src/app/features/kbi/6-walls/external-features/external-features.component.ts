@@ -4,7 +4,7 @@ import { GovukErrorSummaryComponent } from 'hse-angular';
 import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, KeyValueHelper } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { FeatureMaterialsOutsideComponent } from '../feature-materials-outside/feature-materials-outside.component';
@@ -27,6 +27,9 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
   errorMessage?: string;
   externalFeaturesHasErrors = false;
 
+  keyValueHelper?: KeyValueHelper<string, string[]>;
+  model: string[] = [];
+
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
@@ -34,6 +37,8 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
   ngOnInit(): void {
     if (this.applicationService.currentKbiSection!.Walls.ExternalFeatures === void 0) {
       this.applicationService.currentKbiSection!.Walls.ExternalFeatures = [];
+      this.keyValueHelper = new KeyValueHelper<string, string[]>(this.applicationService.currentKbiSection!.Walls.ExternalFeatures);
+      this.model = this.keyValueHelper.getKeys() ?? []; 
     }
 
     this.errorMessage = `Select the features on ${this.getInfraestructureName()}`;
@@ -44,43 +49,20 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
   }
 
   canContinue(): boolean {
-    this.externalFeaturesHasErrors = !this.applicationService.currentKbiSection!.Walls.ExternalFeatures || this.applicationService.currentKbiSection!.Walls.ExternalFeatures.length == 0;
+    this.externalFeaturesHasErrors = !this.model || this.model.length == 0;
     if (this.externalFeaturesHasErrors) {
       this.firstCheckboxAnchorId = `advertising-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
-    }
-
-    // Mapping between ExternalFeatures and FeatureMaterialsOutside. (check answers)
-    if (!this.externalFeaturesHasErrors && this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.some(x => ExternalFeaturesComponent.features.includes(x))) { 
-      if (!this.applicationService.currentKbiSection?.Walls.FeatureMaterialsOutside || Object.keys(this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside).length == 0) {
-        this.initFeatureMaterialsOutside();
-      } else {
-        this.mapExternalFeatures();
-      }
+    } else {
+      this.keyValueHelper?.setKeys(this.model!);
+      this.applicationService.currentKbiSection!.Walls.ExternalFeatures = this.keyValueHelper?.KeyValue;
     }
 
     return !this.externalFeaturesHasErrors;
   }
 
-  private initFeatureMaterialsOutside() {
-    this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside = {};
-    this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.forEach(feature => {
-      this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![feature] = [];
-    });
-  }
-
-  private mapExternalFeatures() {
-    let aux: Record<string, string[]> = {};
-    this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => ExternalFeaturesComponent.features.includes(x)).forEach(x =>
-      aux[x] = (!!this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x] && this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x].length > 0)
-        ? this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside![x]
-        : []
-    );
-    this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside = aux;
-  }
-
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.some(x => ExternalFeaturesComponent.features.includes(x))) {
-      let feature = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.find(x => ExternalFeaturesComponent.features.includes(x));
+    if (this.keyValueHelper?.getKeys()?.some(x => ExternalFeaturesComponent.features.includes(x))) {
+      let feature = this.keyValueHelper.getKeys()?.find(x => ExternalFeaturesComponent.features.includes(x));
       return navigationService.navigateRelative(FeatureMaterialsOutsideComponent.route, activatedRoute, { feature: feature });
     }
 
@@ -88,7 +70,7 @@ export class ExternalFeaturesComponent extends BaseComponent implements IHasNext
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation?.CheckBoxSelection && (this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation?.CheckBoxSelection![0] == 'none' || !!(this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages));
+    return !!this.applicationService.currentKbiSection?.Walls.ExternalWallInsulation && (this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation?.map(x => x.key)![0] == 'none');
   }
 
 }

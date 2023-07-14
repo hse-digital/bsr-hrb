@@ -47,8 +47,8 @@ export class WallsHplComponent extends BaseComponent implements IHasNextPage, On
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
     let canAccess: boolean = !!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials 
                             && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.length > 0
-                            && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes('hpl');
-    if(this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes('acm')) {
+                            && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.map(x => x.key).includes('hpl');
+    if(this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.map(x => x.key).includes('acm')) {
       canAccess &&= !!this.applicationService.currentKbiSection?.Walls.WallACM;
     } 
     return canAccess;

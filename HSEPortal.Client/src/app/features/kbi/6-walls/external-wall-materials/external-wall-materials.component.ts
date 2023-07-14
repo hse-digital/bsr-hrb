@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent, GovukCheckboxComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, KeyValue, KeyValueHelper } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { WallsAcmComponent } from '../walls-acm/walls-acm.component';
@@ -25,13 +25,20 @@ export class ExternalWallMaterialsComponent extends BaseComponent implements IHa
   firstCheckboxAnchorId?: string;
   externalWallMaterialsHasErrors = false;
 
+  keyValueHelper?: KeyValueHelper<string, number>;
+  model: string[] = []
+
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
 
   ngOnInit(): void {
     if(!this.applicationService.currentKbiSection?.Walls) this.applicationService.currentKbiSection!.Walls = {}
-    if (!this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials) { this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials = []; }
+    if (!this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials) { 
+      this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials = [];
+    }
+    this.keyValueHelper = new KeyValueHelper<string, number>(this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials);
+    this.model = this.keyValueHelper.getKeys() ?? [];
     this.errorMessage = `Select what materials are visible on the outside of the walls of ${this.getInfraestructureName()}`;
   }
 
@@ -45,36 +52,15 @@ export class ExternalWallMaterialsComponent extends BaseComponent implements IHa
     this.externalWallMaterialsHasErrors = !this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials || this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials.length == 0;
 
     if (this.externalWallMaterialsHasErrors) this.firstCheckboxAnchorId = `acm-${this.checkboxes?.first.innerId}`;
-    else if (this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.indexOf('glass') == -1)
-      this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.push('glass');
+    else {
+      if (this.keyValueHelper!.getKeys().findIndex(x => x == 'glass') == -1) {
+        this.keyValueHelper?.KeyValue.push({key: 'glass', value: undefined});
+      }   
+      this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials = this.keyValueHelper?.KeyValue;
+    } 
 
-    
-    if (!this.externalWallMaterialsHasErrors) {
-      if (!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage || Object.keys(this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage).length == 0) {
-        this.initExternalWallMaterialsPercentage();
-      } else {
-        this.mapExternalWallMaterials();
-      }
-    }
 
     return !this.externalWallMaterialsHasErrors;
-  }
-
-  private initExternalWallMaterialsPercentage() {
-    this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = {};
-    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(material => {
-      this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![material] = '';
-    });
-  }
-
-  private mapExternalWallMaterials() {
-    let aux: Record<string, string> = {};
-    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x =>
-      aux[x] = !!this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![x]
-        ? this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage![x]
-        : ''
-    );
-    this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = aux;
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
@@ -87,7 +73,7 @@ export class ExternalWallMaterialsComponent extends BaseComponent implements IHa
   }
 
   doesExternalWallMaterialsIncludes(material: string) {
-    return this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes(material);
+    return this.keyValueHelper?.getKeys()!.includes(material);
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

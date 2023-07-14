@@ -1,5 +1,5 @@
 import { FieldValidations } from './validators/fieldvalidations';
-import { Fire, Energy, BuildingStructure, Roof, KbiSectionModel, Staircases, Walls, BuildingUse } from '../services/application.service';
+import { Fire, Energy, BuildingStructure, Roof, KbiSectionModel, Staircases, Walls, BuildingUse, KeyValue, KeyValueHelper } from '../services/application.service';
 
 export class KbiValidator {
 
@@ -66,36 +66,36 @@ export class KbiValidator {
 
     private static features: string[] = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
     static validateWalls(Walls: Walls) {
+        let keyValueHelper = new KeyValueHelper<string, number>(Walls.ExternalWallMaterials);
+
         let isValid = true;
 
-        isValid &&= FieldValidations.IsNotNullOrEmpty(Walls.ExternalWallMaterials);
+        isValid &&= FieldValidations.IsNotNullAndValueIsAPositiveNumber(Walls.ExternalWallMaterials);
 
-        if(isValid && Walls.ExternalWallMaterials?.includes("acm")) {
+        if(isValid && keyValueHelper.getKeys().includes("acm")) {
             isValid &&= FieldValidations.IsNotNullOrWhitespace(Walls.WallACM);
         }
 
-        if(isValid && Walls.ExternalWallMaterials?.includes("hpl")) {
+        if(isValid && keyValueHelper.getKeys().includes("hpl")) {
             isValid &&= FieldValidations.IsNotNullOrWhitespace(Walls.WallHPL);
         }
 
-        isValid &&= FieldValidations.IsNotNullAndValueIsNotNullOrWhitespace(Walls.ExternalWallMaterialsPercentage);
-        isValid &&= Object.keys(Walls.ExternalWallMaterialsPercentage!).map(x => Number(Walls.ExternalWallMaterialsPercentage![x])).reduce((previous, current) => previous + current) == 100;
+        isValid &&= Walls.ExternalWallMaterials?.map(x => Number(x.value!)).reduce((previous, current) => previous + current) == 100;
 
-        isValid &&= FieldValidations.IsNotNullOrEmpty(Walls.ExternalWallInsulation?.CheckBoxSelection);
-        if(isValid && Walls.ExternalWallInsulation?.CheckBoxSelection?.includes('other')) {
-            isValid &&= FieldValidations.IsNotNullOrWhitespace(Walls.ExternalWallInsulation?.OtherValue);
+        isValid &&= FieldValidations.IsNotNullAndValueIsAPositiveNumber(Walls.ExternalWallInsulation);
+        keyValueHelper = new KeyValueHelper<string, number>(Walls.ExternalWallInsulation);
+        if(isValid && keyValueHelper.getKeys()?.includes('other')) {
+            isValid &&= FieldValidations.IsNotNullOrWhitespace(Walls.ExternalWallInsulationOtherValue);
         }
         
-        if(isValid && !Walls.ExternalWallInsulation?.CheckBoxSelection?.includes('none')) {
-            isValid &&= FieldValidations.IsNotNullAndValueIsAPositiveNumber(Walls.ExternalWallInsulationPercentages);
-            isValid &&= Object.keys(Walls.ExternalWallInsulationPercentages!).map(x => Number(Walls.ExternalWallInsulationPercentages![x])).reduce((previous, current) => previous + current) == 100;
+        if(isValid && !keyValueHelper.getKeys()?.includes('none')) {
+            isValid &&= Walls.ExternalWallInsulation?.map(x => Number(x.value!)).reduce((previous, current) => previous + current) == 100;
         }
         
         isValid &&= FieldValidations.IsNotNullOrEmpty(Walls.ExternalFeatures);
-        if(isValid && this.features.some(x => Walls.ExternalFeatures?.includes(x))) {
-            let filteredExternalFeatures = Walls.ExternalFeatures!.filter(x => this.features.includes(x));
-            isValid &&= this.areEqual(filteredExternalFeatures, Object.keys(Walls.FeatureMaterialsOutside!));
-            isValid &&= FieldValidations.IsNotNullAndValuesAreNotEmpty(Walls.FeatureMaterialsOutside);
+        let filteredExternalFeatures = Walls.ExternalFeatures!.filter(x => this.features.indexOf(x.key) > -1);
+        if(isValid && filteredExternalFeatures.length > 0) {
+            isValid &&= FieldValidations.IsNotNullAndValuesAreNotEmpty(filteredExternalFeatures);
         }
 
         return isValid;

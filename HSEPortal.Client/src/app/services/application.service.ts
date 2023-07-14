@@ -434,15 +434,10 @@ export class Staircases {
 export class Walls {
   WallACM?: string;
   WallHPL?: string;
-  ExternalWallMaterials?: string[];
-  ExternalWallMaterialsPercentage?: Record<string, string>;
-  ExternalWallInsulation?: {
-    CheckBoxSelection?: string[],
-    OtherValue?: string,
-  } = {};
-  ExternalWallInsulationPercentages?: Record<string, number>;
-  ExternalFeatures?: string[];
-  FeatureMaterialsOutside?: Record<string, string[]>;
+  ExternalWallMaterials?: KeyValue<string, number>[];
+  ExternalWallInsulation?: KeyValue<string, number>[];
+  ExternalWallInsulationOtherValue?: string;
+  ExternalFeatures?: KeyValue<string, string[]>[];
 }
 
 export class BuildingUse {

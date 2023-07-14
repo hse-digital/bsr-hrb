@@ -121,8 +121,6 @@ public record KbiSectionModel(Fire Fire,
         string StrategyEvacuateBuilding,
         string ApplicationId);
 
-public record ExternalWallInsulation(string[] CheckBoxSelection, string OtherValue);
-
 public record Fire(string StrategyEvacuateBuilding,
     string[] ProvisionsEquipment,
     KeyValue<string, string[]>[] FireSmokeProvisions,
@@ -150,14 +148,13 @@ public record Roof(string RoofType,
 public record Staircases(string InternalStaircasesAllFloors,
     string TotalNumberStaircases);
 
-public record Walls(string[] ExternalWallMaterials,
+public record Walls(
     string WallACM,
     string WallHPL,
-    Dictionary<string, string> ExternalWallMaterialsPercentage,
-    ExternalWallInsulation ExternalWallInsulation,
-    Dictionary<string, string> ExternalWallInsulationPercentages,
-    string[] ExternalFeatures,
-    Dictionary<string, string[]> FeatureMaterialsOutside);
+    KeyValue<string, string>[] ExternalWallMaterials,
+    KeyValue<string, string>[] ExternalWallInsulation,
+    string ExternalWallInsulationOtherValue,
+    KeyValue<string, string>[] ExternalFeatures);
 
 public record BuildingUse(string PrimaryUseOfBuilding,
     string[] SecondaryUseBuilding,
