@@ -25,6 +25,7 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   static title: string = "Check your building information answers - Register a high-rise building - GOV.UK";
 
   kbiSection: KbiSectionModel = new KbiSectionModel;
+  
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private kbiNavigation: KbiNavigation,
     private kbiService: KbiService) {

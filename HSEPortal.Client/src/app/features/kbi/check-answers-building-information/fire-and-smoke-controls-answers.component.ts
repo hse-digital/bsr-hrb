@@ -1,6 +1,6 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ApplicationService, Fire } from "src/app/services/application.service";
+import { ApplicationService, Fire, KeyValue, KeyValueHelper } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { KbiFireModule } from "../1-fire/kbi.fire.module";
 import { BuildingInformationCheckAnswersComponent } from "./check-answers-building-information.component";
@@ -20,8 +20,8 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
     super(router, applicationService, navigationService, activatedRoute, titleService, kbiNavigation, kbiService);
   }
 
-  navigate(url: string, equipment?: string) {
-    let query = equipment ? { equipment: equipment }: undefined;
+  navigate(url: string, equipment?: KeyValue<string, string[]>) {
+    let query = equipment ? { equipment: equipment.key }: undefined;
     this.navigateTo(url, KbiFireModule.baseRoute, query);
   }
 
@@ -32,6 +32,7 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
     "none": "None"
   }
   getProvisionEquipment(name: string) {
+    let condition = this.fireAndSmokeControls!.FireSmokeProvisions!.findIndex(x => x.key == 'none') > -1;
     return this.provisionEquipment[name];
   }
 
@@ -50,8 +51,8 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
     "sprinklers_misters": "Sprinklers and misters",
     "none": "None"
   }
-  getEquipmentName(equipment: string) {
-    return this.equipmentNameMapper[equipment];
+  getEquipmentName(equipment: KeyValue<string, string[]>) {
+    return this.equipmentNameMapper[equipment.key];
   }
 
   private evacuationTypeMapper: Record<string, string> = {
@@ -85,13 +86,14 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
     return this.locationNameMapper[location];
   }
 
-  getSmokeAndFireDeviceLocations(device: string) {
-    // if (!!this.fireAndSmokeControls.FireSmokeProvisionLocations && Object.keys(this.fireAndSmokeControls.FireSmokeProvisionLocations!).includes(device)) {
-    //   return this.fireAndSmokeControls!.FireSmokeProvisionLocations![device].map(location => this.getLocationName(location));
-    // }
-    // else {
-    //   return ["No smoke detectors"]
-    // }
+  getSmokeAndFireDeviceLocations(device: KeyValue<string, string[]>) {
+    let keyValueHelper = new KeyValueHelper<string, string[]>(this.fireAndSmokeControls.FireSmokeProvisions);
+    if (!!this.fireAndSmokeControls.FireSmokeProvisions && keyValueHelper.getKeys().indexOf(device.key) > -1) {
+      return keyValueHelper.getValueOf(device.key)?.map(location => this.getLocationName(location));
+    }
+    else {
+      return ["No smoke detectors"]
+    }
   }
 
   private LiftTypeMapper: Record<string, string> = {
@@ -141,6 +143,10 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
       return 0;
     }
 
+  }
+
+  isNone() {
+    return this.fireAndSmokeControls!.FireSmokeProvisions!.findIndex(x => x.key == 'none') > -1;
   }
 
 }

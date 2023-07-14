@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Fire, ApplicationService } from 'src/app/services/application.service';
+import { Fire, ApplicationService, KeyValue, KeyValueHelper } from 'src/app/services/application.service';
 import { KbiSummaryComponent } from '../kbi-summary.component';
 import { NavigationService } from 'src/app/services/navigation.service';
 
@@ -76,12 +76,12 @@ export class FireAndSmokeControlsSummaryComponent extends KbiSummaryComponent {
   }
 
   getSmokeAndFireDeviceLocations(device: string) {
-    // if (!!this.fireAndSmokeControls.FireSmokeProvisionLocations && Object.keys(this.fireAndSmokeControls.FireSmokeProvisionLocations!).includes(device)) {
-    //   return this.fireAndSmokeControls!.FireSmokeProvisionLocations![device].map(location => this.getLocationName(location));
-    // }
-    // else {
-    //   return ["No smoke detectors"]
-    // }
+    if (!!this.fireAndSmokeControls.FireSmokeProvisions && this.fireAndSmokeControls.FireSmokeProvisions.findIndex(x => x.key == device) > -1) {
+      return new KeyValueHelper<string, string[]>(this.fireAndSmokeControls!.FireSmokeProvisions).getValueOf(device)!.map(location => this.getLocationName(location));
+    }
+    else {
+      return ["No smoke detectors"]
+    }
   }
 
   private LiftTypeMapper: Record<string, string> = {

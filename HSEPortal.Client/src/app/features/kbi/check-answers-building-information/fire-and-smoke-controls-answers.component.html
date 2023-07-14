@@ -1,4 +1,4 @@
-<!-- <govuk-summary-list>
+<govuk-summary-list>
 
     <govuk-summary-list-row key="Evacuation strategy" (onKeyupEnter)="navigate('evacuation-strategy')" (onClick)="navigate('evacuation-strategy')" [showAction]=true>
       <div>{{getEvacuationType(fireAndSmokeControls!.StrategyEvacuateBuilding!)}}</div>
@@ -16,7 +16,7 @@
       </ng-container>
     </govuk-summary-list-row>
 
-    <ng-container *ngIf="!fireAndSmokeControls!.FireSmokeProvisions!.includes('none')">
+    <ng-container *ngIf="isNone()">
       <govuk-summary-list-row *ngFor="let equipment of fireAndSmokeControls!.FireSmokeProvisions" key="{{getEquipmentName(equipment)}}" (onKeyupEnter)="navigate('smoke-provision-locations', equipment)" (onClick)="navigate('smoke-provision-locations', equipment)" [showAction]=true>
         <ng-container *ngFor="let location of getSmokeAndFireDeviceLocations(equipment)">
           <div>{{location}}</div>
@@ -70,4 +70,4 @@
       </ng-container>
     </govuk-summary-list-row>
 
-</govuk-summary-list> -->
+</govuk-summary-list>
