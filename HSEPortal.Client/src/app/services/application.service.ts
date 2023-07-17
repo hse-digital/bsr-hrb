@@ -139,7 +139,9 @@ export class ApplicationService {
 
   async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
     try {
-      await firstValueFrom(this.httpClient.get(`api/ValidateApplicationNumber/${emailAddress.toLowerCase()}/${applicationNumber}`));
+
+      let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress };
+      await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', request));
       return true;
     } catch {
       return false;
@@ -147,7 +149,9 @@ export class ApplicationService {
   }
 
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
-    let application: BuildingRegistrationModel = await firstValueFrom(this.httpClient.get<BuildingRegistrationModel>(`api/GetApplication/${applicationNumber}/${emailAddress.toLowerCase()}/${otpToken}`));
+
+    let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress, OtpToken: otpToken };
+    let application: BuildingRegistrationModel = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/GetApplication', request));
     this.model = application;
     this.updateLocalStorage();
   }

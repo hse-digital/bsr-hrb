@@ -23,8 +23,12 @@ public class WhenValidatingApplicationNumber : IntegrationTestBase
     [InlineData("DOESNT-EXIST", "DOESNT-EXIST", HttpStatusCode.BadRequest)]
     public async Task ShouldReturnApplicationExistsBasedOnNumberAndEmailAddress(string emailAddress, string applicationNumber, HttpStatusCode expectedResponse)
     {
-        var response = await swaOptions.Value.Url.AppendPathSegments("api", "ValidateApplicationNumber", emailAddress, applicationNumber)
-            .AllowAnyHttpStatus().GetAsync();
+        var response = await swaOptions.Value.Url.AppendPathSegments("api", "ValidateApplicationNumber")
+            .AllowAnyHttpStatus().PostJsonAsync(new
+            {
+                ApplicationNumber = applicationNumber,
+                EmailAddress = emailAddress 
+            });
 
         response.StatusCode.Should().Be((int)expectedResponse);
     }

@@ -42,8 +42,8 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(ValidateApplicationNumber))]
-    public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ValidateApplicationNumber/{emailAddress}/{applicationNumber}")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber} and StringEquals(c.ContactEmailAddress, {emailAddress}, true)", Connection = "CosmosConnection")]
+    public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
         return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
@@ -57,14 +57,15 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(GetApplication))]
-    public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetApplication/{applicationNumber}/{emailAddress}/{otpToken}")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {applicationNumber} and c.ContactEmailAddress = {emailAddress}", PartitionKey = "{applicationNumber}", Connection = "CosmosConnection")]
-        List<BuildingApplicationModel> buildingApplications, string otpToken)
+    public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", PartitionKey = "{ApplicationNumber}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications)
     {
+        var requestContent = await request.ReadAsJsonAsync<GetApplicationRequest>();
         if (buildingApplications.Any())
         {
             var application = buildingApplications[0];
-            var tokenIsValid = await otpService.ValidateToken(otpToken, application.ContactEmailAddress);
+            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress);
             if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
                 return await request.CreateObjectResponseAsync(application);
@@ -116,4 +117,11 @@ public class CustomHttpResponseData
     public object Application { get; set; }
 
     public HttpResponseData HttpResponse { get; set; }
+}
+
+public class GetApplicationRequest
+{
+    public string ApplicationNumber { get; set; }
+    public string EmailAddress { get; set; }
+    public string OtpToken { get; set; }
 }

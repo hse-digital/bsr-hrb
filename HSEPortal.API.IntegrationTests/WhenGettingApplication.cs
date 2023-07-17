@@ -2,6 +2,7 @@ using System.Net;
 using FluentAssertions;
 using Flurl;
 using Flurl.Http;
+using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using Microsoft.Extensions.Options;
@@ -26,7 +27,9 @@ public class WhenGettingApplication : IntegrationTestBase
     public async Task ShouldReturnApplicationFromCosmos()
     {
         var token = await otpService.GenerateToken(validEmailAddress);
-        var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication", validApplicationId, validEmailAddress, token).GetJsonAsync<BuildingApplicationModel>();
+        var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication")
+            .PostJsonAsync(new GetApplicationRequest { ApplicationNumber = validApplicationId, EmailAddress = validEmailAddress, OtpToken = token })
+            .ReceiveJson<BuildingApplicationModel>();
 
         response.Id.Should().Be(validApplicationId);
     }
@@ -37,8 +40,9 @@ public class WhenGettingApplication : IntegrationTestBase
     public async Task ShouldReturnBadRequestIfApplicationIdIsInvalid(string applicationId, string emailAddress)
     {
         var token = await otpService.GenerateToken(emailAddress);
-        var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication", applicationId, emailAddress, token)
-            .AllowAnyHttpStatus().GetAsync();
+        var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication")
+            .AllowAnyHttpStatus()
+            .PostJsonAsync(new GetApplicationRequest { ApplicationNumber = applicationId, EmailAddress = emailAddress, OtpToken = token });
 
         response.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
     }
@@ -46,9 +50,22 @@ public class WhenGettingApplication : IntegrationTestBase
     [Fact]
     public async Task ShouldReturnBadRequestIfTokenIsInvalid()
     {
-        var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication", validApplicationId, validEmailAddress, "INVALID_TOKEN")
-            .AllowAnyHttpStatus().GetAsync();
+        var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication")
+            .AllowAnyHttpStatus()
+            .PostJsonAsync(new GetApplicationRequest { ApplicationNumber = validApplicationId, EmailAddress = validEmailAddress, OtpToken = "INVALID_TOKEN" });
 
         response.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task ShouldReturnApplicationWhenSendingDifferentCasingOnEmail()
+    {
+        var token = await otpService.GenerateToken(validEmailAddress);
+        var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication")
+            .AllowAnyHttpStatus()
+            .PostJsonAsync(new GetApplicationRequest { ApplicationNumber = validApplicationId, EmailAddress = validEmailAddress.ToUpper(), OtpToken = token })
+            .ReceiveJson<BuildingApplicationModel>();
+
+        response.Id.Should().Be(validApplicationId);
     }
 }

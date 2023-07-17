@@ -27,7 +27,9 @@ public class WhenGettingApplication : UnitTestBase
     {
         var token = "123123";
         var cosmosApplication = new BuildingApplicationModelBuilder().WithApplicationId(applicationId).WithContactEmailAddress(emailAddress).Build();
-        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: new object(), applicationId, emailAddress, token), new List<BuildingApplicationModel> { cosmosApplication }, token);
+
+        var request = new GetApplicationRequest { ApplicationNumber = applicationId, EmailAddress = emailAddress, OtpToken = token };
+        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(request), new List<BuildingApplicationModel> { cosmosApplication });
 
         applicationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var responseApplication = await applicationResponse.ReadAsJsonAsync<BuildingApplicationModel>();
@@ -42,7 +44,9 @@ public class WhenGettingApplication : UnitTestBase
         var token = await OtpService.GenerateToken(emailAddress);
         
         HttpTest.RespondWithJson(string.Empty, 400);
-        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: new object(), applicationId), new List<BuildingApplicationModel>(), token);
+        
+        var request = new GetApplicationRequest { ApplicationNumber = applicationId, OtpToken = token };
+        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: request), new List<BuildingApplicationModel>());
         applicationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -53,7 +57,9 @@ public class WhenGettingApplication : UnitTestBase
         var cosmosApplication = new BuildingApplicationModelBuilder().WithApplicationId(applicationId).WithContactEmailAddress(emailAddress).Build();
         
         HttpTest.RespondWithJson(string.Empty, 400);
-        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: new object(), applicationId, emailAddress, invalidToken), new List<BuildingApplicationModel> { cosmosApplication }, invalidToken);
+        
+        var request = new GetApplicationRequest { ApplicationNumber = applicationId, EmailAddress = emailAddress, OtpToken = invalidToken };
+        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: request), new List<BuildingApplicationModel> { cosmosApplication });
 
         applicationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -65,7 +71,9 @@ public class WhenGettingApplication : UnitTestBase
 
         var invalidToken = "123456";
         var cosmosApplication = new BuildingApplicationModelBuilder().WithApplicationId(applicationId).WithContactEmailAddress(emailAddress).Build();
-        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: new object(), applicationId, emailAddress, invalidToken), new List<BuildingApplicationModel> { cosmosApplication }, invalidToken);
+        
+        var request = new GetApplicationRequest { ApplicationNumber = applicationId, EmailAddress = emailAddress, OtpToken = invalidToken };
+        var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: request), new List<BuildingApplicationModel> { cosmosApplication });
 
         applicationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
     }
