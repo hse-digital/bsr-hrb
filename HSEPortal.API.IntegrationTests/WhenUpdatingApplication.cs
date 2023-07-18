@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Flurl;
 using Flurl.Http;
+using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using Microsoft.Extensions.Options;
@@ -29,7 +30,14 @@ public class WhenUpdatingApplication : IntegrationTestBase
         await swaOptions.Value.Url.AppendPathSegments("api", "UpdateApplication", validApplicationId).PutJsonAsync(application);
         
         var token = await otpService.GenerateToken(validEmailAddress);
-        var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication", validApplicationId, validEmailAddress, token).GetJsonAsync<BuildingApplicationModel>();
+        var response = await swaOptions.Value.Url.AppendPathSegments("api", "GetApplication")
+            .PostJsonAsync(new GetApplicationRequest
+            {
+                ApplicationNumber = validApplicationId,
+                EmailAddress = validEmailAddress,
+                OtpToken = token
+            })
+            .ReceiveJson<BuildingApplicationModel>();
 
         response.ContactFirstName.Should().Be(application.ContactFirstName);
         response.ContactLastName.Should().Be(application.ContactLastName);
