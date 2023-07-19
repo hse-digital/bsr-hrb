@@ -30,6 +30,7 @@ export class ContactEmailComponent extends BaseComponent implements IHasNextPage
   }
 
   override async onSave(): Promise<void> {
+    this.applicationService.model.ContactEmailAddress = this.applicationService.model.ContactEmailAddress?.toLowerCase();
     await this.applicationService.sendVerificationEmail(this.applicationService.model.ContactEmailAddress!, "HRB000000000", this.applicationService.model.BuildingName);
   }
 
