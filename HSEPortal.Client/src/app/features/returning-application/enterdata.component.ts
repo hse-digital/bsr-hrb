@@ -35,6 +35,7 @@ export class ReturningApplicationEnterDataComponent {
 
   async validateAndContinue(): Promise<void> {
     this.sendingRequest = true;
+    this.emailAddress = this.emailAddress?.toLowerCase();
 
     this.isEmailAddressValid();
     await this.isApplicationNumberValid();
