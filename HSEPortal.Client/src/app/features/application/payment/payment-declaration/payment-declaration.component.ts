@@ -1,52 +1,45 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { BaseComponent } from 'src/app/helpers/base.component';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
 import { PaymentService } from 'src/app/services/payment.service';
-import { TitleService } from 'src/app/services/title.service';
+import { PaymentSelectionComponent } from '../payment-selection/payment-selection.component';
 
 @Component({
   selector: 'hse-payment-declaration',
   templateUrl: './payment-declaration.component.html'
 })
-export class PaymentDeclarationComponent extends BaseComponent implements OnInit {
+export class PaymentDeclarationComponent extends PageComponent<void> {
   static route: string = 'declaration';
   static title: string = "Registration declaration - Register a high-rise building - GOV.UK";
 
-  loading = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, public paymentService: PaymentService, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute, private paymentService: PaymentService) {
+    super(activatedRoute);
   }
 
-  async ngOnInit() {
-    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentInProgress;
+  override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.model.ApplicationStatus = applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentInProgress;
     await this.applicationService.updateApplication();
   }
 
-  override async saveAndContinue() {
-    this.loading = true;
-    this.screenReaderNotification();
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    await applicationService.syncDeclaration();
+  }
 
-    await this.applicationService.syncDeclaration();
-    var paymentResponse = await this.paymentService.InitialisePayment(this.applicationService.model);
-    this.applicationService.updateApplication();
+  override canAccess(_: ApplicationService, __: ActivatedRouteSnapshot): boolean {
+    return ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsComplete) == BuildingApplicationStatus.AccountablePersonsComplete)
+      && ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingComplete) == BuildingApplicationStatus.BlocksInBuildingComplete);
+  }
 
-    if (typeof window !== 'undefined') {
-      window.location.href = paymentResponse.PaymentLink;
-    }
+  override isValid(): boolean {
+    return true;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(PaymentSelectionComponent.route, this.activatedRoute);
   }
 
   isPapRegisteringFor() {
     return this.applicationService.model.AccountablePersons[0].Role == "registering_for";
-  }
-
-  canContinue(): boolean {
-    return true;
-  }
-
-  override canAccess(_: ActivatedRouteSnapshot) {
-    return ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsComplete) == BuildingApplicationStatus.AccountablePersonsComplete)
-        && ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingComplete) == BuildingApplicationStatus.BlocksInBuildingComplete);
   }
 }
