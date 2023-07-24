@@ -14,12 +14,15 @@ public class BuildingApplicationFunctions
     private readonly DynamicsService dynamicsService;
     private readonly OTPService otpService;
     private readonly FeatureOptions featureOptions;
+    private readonly IntegrationsOptions integrationOptions;
 
-    public BuildingApplicationFunctions(DynamicsService dynamicsService, OTPService otpService, IOptions<FeatureOptions> featureOptions)
+    public BuildingApplicationFunctions(DynamicsService dynamicsService, OTPService otpService, IOptions<FeatureOptions> featureOptions,
+        IOptions<IntegrationsOptions> integrationOptions)
     {
         this.dynamicsService = dynamicsService;
         this.otpService = otpService;
         this.featureOptions = featureOptions.Value;
+        this.integrationOptions = integrationOptions.Value;
     }
 
     [Function(nameof(NewBuildingApplication))]
@@ -34,23 +37,22 @@ public class BuildingApplicationFunctions
 
         buildingApplicationModel = await dynamicsService.RegisterNewBuildingApplicationAsync(buildingApplicationModel);
         var response = await request.CreateObjectResponseAsync(buildingApplicationModel);
-        return new CustomHttpResponseData
-        {
-            Application = buildingApplicationModel,
-            HttpResponse = response
-        };
+        return new CustomHttpResponseData { Application = buildingApplicationModel, HttpResponse = response };
     }
 
     [Function(nameof(ValidateApplicationNumber))]
     public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", Connection = "CosmosConnection")]
+        [CosmosDBInput("hseportal", "building-registrations",
+            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
         return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 
     [Function(nameof(GetSubmissionDate))]
-    public async Task<HttpResponseData> GetSubmissionDate([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetSubmissionDate/{applicationNumber}")] HttpRequestData request, string applicationNumber)
+    public async Task<HttpResponseData> GetSubmissionDate(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetSubmissionDate/{applicationNumber}")]
+        HttpRequestData request, string applicationNumber)
     {
         string submissionDate = await dynamicsService.GetSubmissionDate(applicationNumber);
         return await request.CreateObjectResponseAsync(submissionDate);
@@ -58,7 +60,9 @@ public class BuildingApplicationFunctions
 
     [Function(nameof(GetApplication))]
     public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", PartitionKey = "{ApplicationNumber}", Connection = "CosmosConnection")]
+        [CosmosDBInput("hseportal", "building-registrations",
+            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", PartitionKey = "{ApplicationNumber}",
+            Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
         var requestContent = await request.ReadAsJsonAsync<GetApplicationRequest>();
@@ -76,7 +80,9 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(UpdateApplication))]
-    public async Task<CustomHttpResponseData> UpdateApplication([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "UpdateApplication/{applicationNumber}")] HttpRequestData request)
+    public async Task<CustomHttpResponseData> UpdateApplication(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "UpdateApplication/{applicationNumber}")]
+        HttpRequestData request)
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var validation = buildingApplicationModel.Validate();
@@ -85,15 +91,13 @@ public class BuildingApplicationFunctions
             return await request.BuildValidationErrorResponseDataAsync(validation);
         }
 
-        return new CustomHttpResponseData
-        {
-            Application = buildingApplicationModel,
-            HttpResponse = request.CreateResponse(HttpStatusCode.OK)
-        };
+        return new CustomHttpResponseData { Application = buildingApplicationModel, HttpResponse = request.CreateResponse(HttpStatusCode.OK) };
     }
 
     [Function(nameof(GetApplicationPaymentStatus))]
-    public async Task<HttpResponseData> GetApplicationPaymentStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetApplicationPaymentStatus)}/{{applicationNumber}}")] HttpRequestData request,
+    public async Task<HttpResponseData> GetApplicationPaymentStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get",
+            Route = $"{nameof(GetApplicationPaymentStatus)}/{{applicationNumber}}")]
+        HttpRequestData request,
         string applicationNumber)
     {
         var dynamicsPayments = await dynamicsService.GetPayments(applicationNumber);
@@ -106,8 +110,15 @@ public class BuildingApplicationFunctions
             payment.bsr_transactionid,
             payment.bsr_timeanddateoftransaction
         });
-        
+
         return await request.CreateObjectResponseAsync(payments);
+    }
+
+    [Function(nameof(GetApplicationCost))]
+    public async Task<HttpResponseData> GetApplicationCost([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
+    {
+        var applicationCost = new { applicationCost = integrationOptions.PaymentAmount / 100 };
+        return await request.CreateObjectResponseAsync(applicationCost);
     }
 }
 
