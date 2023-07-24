@@ -9,12 +9,14 @@ import { PaymentConfirmationComponent } from './payment-confirmation/payment-con
 import { PaymentDeclarationComponent } from './payment-declaration/payment-declaration.component';
 import { PaymentSelectionComponent } from "./payment-selection/payment-selection.component";
 import { PaymentInvoiceComponent } from "./payment-invoice/payment-invoice.component";
+import { PaymentOrderNumberDetailsComponent } from "./payment-order-number-details/payment-order-number-details.component";
 
 const routes = new HseRoutes([
   HseRoute.protected(PaymentDeclarationComponent.route, PaymentDeclarationComponent, PaymentDeclarationComponent.title),
   HseRoute.protected(PaymentConfirmationComponent.route, PaymentConfirmationComponent, PaymentConfirmationComponent.title),
   HseRoute.protected(PaymentSelectionComponent.route, PaymentSelectionComponent, PaymentSelectionComponent.title),
   HseRoute.protected(PaymentInvoiceComponent.route, PaymentInvoiceComponent, PaymentInvoiceComponent.title),
+  HseRoute.protected(PaymentOrderNumberDetailsComponent.route, PaymentOrderNumberDetailsComponent, PaymentOrderNumberDetailsComponent.title),
 ]);
 
 @NgModule({
@@ -22,7 +24,8 @@ const routes = new HseRoutes([
     PaymentConfirmationComponent,
     PaymentDeclarationComponent,
     PaymentSelectionComponent,
-    PaymentInvoiceComponent
+    PaymentInvoiceComponent,
+    PaymentOrderNumberDetailsComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

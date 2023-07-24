@@ -5,6 +5,7 @@ import { EmailValidator } from 'src/app/helpers/validators/email-validator';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStatus, PaymentInvoiceDetails } from 'src/app/services/application.service';
 import { PaymentService } from 'src/app/services/payment.service';
+import { PaymentOrderNumberDetailsComponent } from '../payment-order-number-details/payment-order-number-details.component';
 
 @Component({
   templateUrl: './payment-invoice.component.html',
@@ -61,10 +62,20 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
   }
 
   override async navigateNext(): Promise<boolean | void> {
+    if (this.model?.OrderNumberOption == 'need') {
+      return this.navigationService.navigateRelative(PaymentOrderNumberDetailsComponent.route, this.activatedRoute);
+    }
 
+    return Promise.resolve(false);
   }
 
   hasError(fieldName: string): boolean {
     return this.errorFields.indexOf(fieldName) > -1;
+  }
+
+  updateOrderNumber() {
+    if (this.model?.OrderNumberOption != 'have') {
+      this.model!.OrderNumber = undefined;
+    }
   }
 }
