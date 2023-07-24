@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, QueryList } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
@@ -197,6 +197,11 @@ export class ApplicationService {
   async getSubmissionDate(): Promise<string> {
     return await firstValueFrom(this.httpClient.get<string>(`api/GetSubmissionDate/${this.model.id}`));
   }
+
+  async getApplicationCost(): Promise<number> {
+    var response = await firstValueFrom(this.httpClient.get<any>('api/GetApplicationCost'));
+    return response.applicationCost;
+  }
 }
 
 export class BuildingRegistrationModel {
@@ -219,6 +224,8 @@ export class BuildingRegistrationModel {
   AccountablePersons: AccountablePersonModel[] = [];
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
   Kbi?: KbiModel;
+  PaymentType?: string | undefined;
+  PaymentInvoiceDetails?: any;
 }
 
 export enum BuildingApplicationStatus {
@@ -435,4 +442,15 @@ export class Connections {
 
 export class Submit {
 
+}
+
+export class PaymentInvoiceDetails {
+  Name?: string;
+  Email?: string;
+  AddressLine1?: string;
+  AddressLine2?: string;
+  Town?: string;
+  Postcode?: string;
+  OrderNumberOption?: string;
+  OrderNumber?: string;
 }
