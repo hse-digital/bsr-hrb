@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { BroadcastChannelSecondaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { LocalStorage } from 'src/app/helpers/local-storage';
@@ -19,21 +20,23 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
   InScopeStructures?: SectionModel[];
   shouldRender: boolean = false;
 
-  constructor(public applicationService: ApplicationService, private navigationService: NavigationService) {}
+  constructor(public applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) { }
 
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
     return true;
   }
 
   async ngOnInit() {
-    if(!FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName)) {
+    if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName)) {
       await this.getApplicationDataFromBroadcastChannel();
-    } else if (!this.paymentComplete() || !this.kbiComplete()) {
-        this.navigationService.navigate(NotFoundComponent.route);
+    }
+
+    if (!this.paymentComplete() || !this.kbiComplete()) {
+      this.navigationService.navigate(NotFoundComponent.route);
     } else {
       this.shouldRender = true;
     }
-    
+
     this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
     if (this.InScopeStructures.length == 1) {
       this.applicationService.model.Kbi!.KbiSections[0].StructureName = this.applicationService.model.BuildingName;
@@ -45,28 +48,25 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
   }
 
   private async getApplicationDataFromBroadcastChannel() {
-    await new BroadcastChannelSecondaryHelper()
-      .OpenChannel("application_data")
-      .JoinChannel()
-      .WaitForData<BuildingRegistrationModel>()
+    await firstValueFrom(this.activatedRoute.params)
+      .then(async param => param['id'])
+      .then(async id =>
+        await new BroadcastChannelSecondaryHelper()
+          .OpenChannel(id)
+          .JoinChannel()
+          .WaitForData<BuildingRegistrationModel>())
       .then((data: BuildingRegistrationModel) => {
         LocalStorage.setJSON("application_data", data);
         this.applicationService.model = data;
-
-        if (!this.paymentComplete() || !this.kbiComplete()) {
-          this.navigationService.navigate(NotFoundComponent.route);
-        } else {
-          this.shouldRender = true;
-        }
       })
       .catch(() => this.navigationService.navigate(NotFoundComponent.route));
   }
 
   private paymentComplete(): boolean {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete
-  } 
+  }
 
   private kbiComplete(): boolean {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiSubmitComplete) == BuildingApplicationStatus.KbiSubmitComplete
-  } 
+  }
 }
