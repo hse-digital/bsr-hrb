@@ -6,6 +6,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStatus, PaymentInvoiceDetails } from 'src/app/services/application.service';
 import { PaymentService } from 'src/app/services/payment.service';
 import { PaymentOrderNumberDetailsComponent } from '../payment-order-number-details/payment-order-number-details.component';
+import { PaymentInvoiceConfirmationComponent } from '../payment-invoice-confirmation/payment-invoice-confirmation.component';
 
 @Component({
   templateUrl: './payment-invoice.component.html',
@@ -21,8 +22,11 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.model.ApplicationStatus = applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentInProgress;
     this.model = applicationService.model.PaymentInvoiceDetails ?? new PaymentInvoiceDetails();
     this.applicationCost = await applicationService.getApplicationCost();
+
+    await this.applicationService.updateApplication();
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
@@ -66,7 +70,7 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
       return this.navigationService.navigateRelative(PaymentOrderNumberDetailsComponent.route, this.activatedRoute);
     }
 
-    return Promise.resolve(false);
+    return this.navigationService.navigateRelative(PaymentInvoiceConfirmationComponent.route, this.activatedRoute);
   }
 
   hasError(fieldName: string): boolean {

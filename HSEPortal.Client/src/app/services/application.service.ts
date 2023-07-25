@@ -225,7 +225,7 @@ export class BuildingRegistrationModel {
   ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
   Kbi?: KbiModel;
   PaymentType?: string | undefined;
-  PaymentInvoiceDetails?: any;
+  PaymentInvoiceDetails?: PaymentInvoiceDetails;
 }
 
 export enum BuildingApplicationStatus {
@@ -453,4 +453,5 @@ export class PaymentInvoiceDetails {
   Postcode?: string;
   OrderNumberOption?: string;
   OrderNumber?: string;
+  Status?: string;
 }
