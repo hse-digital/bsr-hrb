@@ -97,7 +97,7 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    let canActivate = this.applicationService.model.PaymentInvoiceDetails!.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails!.Status == 'completed' || (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete;
+    let canActivate = this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed' || (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete;
     if (!canActivate) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
