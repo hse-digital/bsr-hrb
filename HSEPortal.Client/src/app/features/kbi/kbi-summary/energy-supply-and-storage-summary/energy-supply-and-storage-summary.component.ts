@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Energy, ApplicationService } from 'src/app/services/application.service';
 import { KbiSummaryComponent } from '../kbi-summary.component';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'energy-supply-and-storage-summary',
@@ -11,8 +12,8 @@ export class EnergySupplyAndStorageSummaryComponent extends KbiSummaryComponent 
 
   @Input() energySupplyAndStorage: Energy = {};
 
-  constructor(applicationService: ApplicationService, navigationService: NavigationService) {
-    super(applicationService, navigationService);
+  constructor(applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(applicationService, navigationService, activatedRoute);
   }
 
   private energyStorageMapper: Record<string, string> = {

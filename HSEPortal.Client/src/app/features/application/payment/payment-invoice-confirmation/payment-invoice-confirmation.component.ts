@@ -59,7 +59,7 @@ export class PaymentInvoiceConfirmationComponent extends PageComponent<string> {
 
   private sendApplicationDataToBroadcastChannel() {
     new BroadcastChannelPrimaryHelper()
-      .OpenChannel("application_data")
+      .OpenChannel(this.applicationService.model.id!)
       .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
   }
 }

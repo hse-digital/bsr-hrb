@@ -27,7 +27,7 @@ export class ConfirmComponent extends BaseComponent implements OnInit {
   
   private sendApplicationDataToBroadcastChannel() {
     new BroadcastChannelPrimaryHelper()
-      .OpenChannel("application_data")
+      .OpenChannel(this.applicationService.model.id!)
       .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
   }
 
