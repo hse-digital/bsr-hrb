@@ -3,7 +3,9 @@ using FluentAssertions;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
+using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace HSEPortal.API.UnitTests.BuildingApplication;
@@ -18,7 +20,7 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
 
     public WhenReceivingANewBuildingApplication()
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, FeatureOptions);
+        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, FeatureOptions, new OptionsWrapper<IntegrationsOptions>(IntegrationOptions));
         HttpTest.RespondWithJson(new DynamicsAuthenticationModel { AccessToken = DynamicsAuthToken });
         HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(BuildingReturnId));
         HttpTest.RespondWith(status: 204, headers: BuildODataEntityHeader(ContactReturnId));

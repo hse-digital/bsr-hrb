@@ -31,7 +31,7 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
   async ngOnInit() {
     if(!FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName)) {
       await this.getApplicationDataFromBroadcastChannel();
-    } else if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
+    } else if (this.applicationService.model.PaymentType == 'card' && (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
         this.navigationService.navigate(NotFoundComponent.route);
     } else {
       this.shouldRender = true;
@@ -66,8 +66,9 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
       .then((data: BuildingRegistrationModel) => {
         LocalStorage.setJSON("application_data", data);
         this.applicationService.model = data;
+        console.log(this.applicationService.model.PaymentType);
 
-        if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
+        if (this.applicationService.model.PaymentType == 'card' && (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
           this.navigationService.navigate(NotFoundComponent.route);
         } else {
           this.shouldRender = true;

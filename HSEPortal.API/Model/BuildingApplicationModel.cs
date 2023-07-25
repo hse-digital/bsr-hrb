@@ -17,6 +17,8 @@ public record BuildingApplicationModel(
     KbiModel Kbi = null,
     string OutOfScopeContinueReason = null,
     string PrincipalAccountableType = null,
+    string PaymentType = null,
+    PaymentInvoiceDetails PaymentInvoiceDetails = null,
     BuildingApplicationStatus ApplicationStatus = BuildingApplicationStatus.None) : IValidatableModel
 {
     public ValidationSummary Validate()
@@ -69,7 +71,12 @@ public record SectionModel(string Name,
 
 public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
 
-public enum OutOfScopeReason { Height, NumberResidentialUnits, PeopleLivingInBuilding }
+public enum OutOfScopeReason
+{
+    Height,
+    NumberResidentialUnits,
+    PeopleLivingInBuilding
+}
 
 public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress Address, BuildingAddress PapAddress,
     string OrganisationName, string OrganisationType, string OrganisationTypeDescription,
@@ -101,25 +108,24 @@ public enum BuildingApplicationStatus
 }
 
 public record KbiModel(KbiSectionModel[] KbiSections,
-        SectionStatus[] SectionStatus,
-        Connections Connections,
-        Submit Submit,
-        string ApplicationId);
+    SectionStatus[] SectionStatus,
+    Connections Connections,
+    Submit Submit,
+    string ApplicationId);
 
 public record SectionStatus(bool InProgress, bool Complete);
 
-public record KbiSectionModel(Fire Fire, 
-        Energy Energy,
-        BuildingStructure BuildingStructure,
-        Roof Roof,
-        Staircases Staircases,
-        Walls Walls,
-        BuildingUse BuildingUse,
-        
-        string StructureName,
-        string Postcode,
-        string StrategyEvacuateBuilding,
-        string ApplicationId);
+public record KbiSectionModel(Fire Fire,
+    Energy Energy,
+    BuildingStructure BuildingStructure,
+    Roof Roof,
+    Staircases Staircases,
+    Walls Walls,
+    BuildingUse BuildingUse,
+    string StructureName,
+    string Postcode,
+    string StrategyEvacuateBuilding,
+    string ApplicationId);
 
 public record ExternalWallInsulation(string[] CheckBoxSelection, string OtherValue);
 
@@ -170,10 +176,23 @@ public record BuildingUse(string PrimaryUseOfBuilding,
     string MostRecentMaterialChange,
     string YearMostRecentMaterialChange);
 
-public record Connections (string[] StructureConnections,
-        string OtherHighRiseBuildingConnections,
-        string[] HowOtherHighRiseBuildingAreConnected,
-        string OtherBuildingConnections,
-        string[] HowOtherBuildingAreConnected);
+public record Connections(string[] StructureConnections,
+    string OtherHighRiseBuildingConnections,
+    string[] HowOtherHighRiseBuildingAreConnected,
+    string OtherBuildingConnections,
+    string[] HowOtherBuildingAreConnected);
 
-public record Submit ();
+public record Submit();
+
+public record PaymentInvoiceDetails
+{
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public string AddressLine1 { get; set; }
+    public string AddressLine2 { get; set; }
+    public string Town { get; set; }
+    public string Postcode { get; set; }
+    public string OrderNumberOption { get; set; }
+    public string OrderNumber { get; set; }
+    public string Status { get; set; }
+}

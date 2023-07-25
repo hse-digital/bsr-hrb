@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
@@ -21,6 +21,7 @@ import { TimeoutModalComponent } from './features/timeout/timeout.modal';
 import { HelpPagesModule } from './components/footer/help-pages.module';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { KbiService } from './services/kbi.service';
+import { GetInjector } from './helpers/injector.helper';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
@@ -58,4 +59,7 @@ const routes = new HseRoutes([
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  constructor(injector: Injector) {
+    GetInjector(injector);
+  }
 }

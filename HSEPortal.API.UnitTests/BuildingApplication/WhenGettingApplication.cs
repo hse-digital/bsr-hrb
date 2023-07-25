@@ -19,7 +19,7 @@ public class WhenGettingApplication : UnitTestBase
 
     public WhenGettingApplication()
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, FeatureOptions);
+        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, FeatureOptions, new OptionsWrapper<IntegrationsOptions>(IntegrationOptions));
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class WhenGettingApplication : UnitTestBase
     [Fact]
     public async Task ShouldNotValidateTokenIfFeatureIsDisabled()
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, new OptionsWrapper<FeatureOptions>(new FeatureOptions { DisableOtpValidation = true }));
+        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, new OptionsWrapper<FeatureOptions>(new FeatureOptions { DisableOtpValidation = true }), new OptionsWrapper<IntegrationsOptions>(IntegrationOptions));
 
         var invalidToken = "123456";
         var cosmosApplication = new BuildingApplicationModelBuilder().WithApplicationId(applicationId).WithContactEmailAddress(emailAddress).Build();
