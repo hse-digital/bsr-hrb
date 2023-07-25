@@ -794,6 +794,7 @@ public static class BuildingConnections
         ["bridge-walkway"] = "554316de-cdfb-ed11-8f6d-002248c725da",
         ["car-park"] = "70c776fd-cdfb-ed11-8f6d-002248c725da",
         ["ground-floor"] = "c856e00a-cefb-ed11-8f6d-002248c725da",
+        ["ground-floor-limited"] = "3f9738b1-0627-ee11-9965-002248c727e7",
         ["levels-below-ground-residential-unit"] = "8ce79549-cefb-ed11-8f6d-002248c725da",
         ["levels-below-ground-no-residential-unit"] = "f537f163-cefb-ed11-8f6d-002248c725da",
         ["shared-wall-emergency-door"] = "b8292476-cefb-ed11-8f6d-002248c725da",
