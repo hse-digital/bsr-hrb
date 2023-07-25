@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseNavigation, KbiNavigationNode } from '../../services/navigation';
-import { ApplicationService, KbiSectionModel, BuildingApplicationStatus, KbiModel, KeyValueHelper } from '../../services/application.service';
+import { ApplicationService, KbiSectionModel, BuildingApplicationStatus, KbiModel, KeyValueHelper, KeyValue } from '../../services/application.service';
 import { CheckBeforeStartComponent } from 'src/app/features/kbi/check-before-start/check-before-start.component';
 import { EvacuationStrategyComponent } from 'src/app/features/kbi/1-fire/evacuation-strategy/evacuation-strategy.component';
 import { ProvisionsEquipmentComponent } from 'src/app/features/kbi/1-fire/provisions-equipment/provisions-equipment.component';
@@ -56,6 +56,7 @@ import { KbiSubmitModule } from './9-submit/kbi.submit.module';
 import { KbiCheckAnswersModule } from './check-answers-building-information/kbi.check-answers-building-information.module';
 import { BuildingInformationCheckAnswersComponent } from './check-answers-building-information/check-answers-building-information.component';
 import { ExternalFeaturesComponent } from './6-walls/external-features/external-features.component';
+import { zip } from 'rxjs';
 
 @Injectable()
 export class KbiNavigation extends BaseNavigation {
@@ -181,7 +182,7 @@ class FireSmokeProvisionsNavigationNode extends KbiNavigationNode {
   private readonly provisionsWithLocation: string[] = ["alarm_heat_smoke", "alarm_call_points", "fire_dampers", "fire_shutters", "heat_detectors", "smoke_aovs", "smoke_manual", "smoke_detectors", "sprinklers_misters"];
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    
+
     if (!kbi.Fire.FireSmokeProvisions || kbi.Fire.FireSmokeProvisions!.length == 0) {
       return `${KbiFireModule.baseRoute}/${FireSmokeProvisionsComponent.route}`;
     }
@@ -206,12 +207,12 @@ class FireSmokeProvisionLocationsNavigationNode extends KbiNavigationNode {
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
     let keyValueHelper = new KeyValueHelper<string, string[]>(kbi.Fire.FireSmokeProvisions?.filter(x => this.provisionsWithLocation.indexOf(x.key) > -1));
-    
-    if (keyValueHelper.getValues().some(x => !x || x.length == 0) ) {
+
+    if (keyValueHelper.getValues().some(x => !x || x.length == 0)) {
       let nextEquipment = keyValueHelper.KeyValue.find(x => !x.value || x.value.length == 0);
       return `${KbiFireModule.baseRoute}/${FireSmokeProvisionLocationsComponent.route}?equipment=${nextEquipment}`;
     }
-    
+
     return this.liftsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 }
@@ -376,9 +377,9 @@ class ExternalWallMaterialsNavigationNode extends KbiNavigationNode {
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
     if (!kbi.Walls.ExternalWallMaterials || kbi.Walls.ExternalWallMaterials.length == 0) {
       return `${KbiWallsModule.baseRoute}/${ExternalWallMaterialsComponent.route}`;
-    } else if (kbi.Walls.ExternalWallMaterials!.indexOf('acm') > -1) {
+    } else if (kbi.Walls.ExternalWallMaterials!.findIndex(x => x.key == 'acm') > -1) {
       return this.wallAcmNavigationNode.getNextRoute(kbi, kbiSectionIndex);
-    } else if (kbi.Walls.ExternalWallMaterials!.indexOf('hpl') > -1) {
+    } else if (kbi.Walls.ExternalWallMaterials!.findIndex(x => x.key == 'hpl') > -1) {
       return this.wallHplNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
     return this.estimatedPercentageNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -394,7 +395,7 @@ class WallsAcmNavigationNode extends KbiNavigationNode {
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
     if (!kbi.Walls.WallACM) {
       return `${KbiWallsModule.baseRoute}/${WallsAcmComponent.route}`;
-    } else if (kbi.Walls.ExternalWallMaterials!.indexOf('hpl') > -1) {
+    } else if (kbi.Walls.ExternalWallMaterials!.findIndex(x => x.key == 'hpl') > -1) {
       return this.wallHplNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
     return this.estimatedPercentageNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -420,8 +421,7 @@ class EstimatedPercentageNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.Walls.ExternalWallMaterialsPercentage || Object.keys(kbi.Walls.ExternalWallMaterialsPercentage).length == 0
-      || kbi.Walls.ExternalWallMaterials!.some(x => !kbi!.Walls.ExternalWallMaterialsPercentage![x] || kbi!.Walls.ExternalWallMaterialsPercentage![x].length == 0)) {
+    if (!kbi.Walls.ExternalWallMaterials?.some(x => !x.value || x.value == 0)) {
       return `${KbiWallsModule.baseRoute}/${EstimatedPercentageComponent.route}`;
     }
     return this.externalWallInsulationTypeNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -435,18 +435,18 @@ class ExternalWallInsulationTypeNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.Walls.ExternalWallInsulation || !kbi.Walls.ExternalWallInsulation.CheckBoxSelection || kbi.Walls.ExternalWallInsulation.CheckBoxSelection?.length == 0 || this.isOtherOptionSelectedButNotCompleted(kbi)) {
+    if (!kbi.Walls.ExternalWallInsulation || kbi.Walls.ExternalWallInsulation?.length == 0 || this.isOtherOptionSelectedButNotCompleted(kbi)) {
       return `${KbiWallsModule.baseRoute}/${ExternalWallInsulationTypeComponent.route}`;
-    } else if (kbi.Walls.ExternalWallInsulation.CheckBoxSelection.length == 1 && kbi.Walls.ExternalWallInsulation.CheckBoxSelection.includes('none')) {
+    } else if (kbi.Walls.ExternalWallInsulation.length == 1 && kbi.Walls.ExternalWallInsulation.map(x => x.key).includes('none')) {
       return this.externalFeaturesNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
     return this.externalWallInsulationPercentageNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 
   private isOtherOptionSelectedButNotCompleted(kbi: KbiSectionModel) {
-    return kbi.Walls.ExternalWallInsulation!.CheckBoxSelection!.length > 0
-      && kbi.Walls.ExternalWallInsulation!.CheckBoxSelection!.includes("other")
-      && (!kbi.Walls.ExternalWallInsulation!.OtherValue || kbi.Walls.ExternalWallInsulation!.OtherValue.length == 0);
+    return kbi.Walls.ExternalWallInsulation!.length > 0
+      && kbi.Walls.ExternalWallInsulation!.map(x => x.key).includes("other")
+      && (!kbi.Walls.ExternalWallInsulationOtherValue || kbi.Walls.ExternalWallInsulationOtherValue.length == 0);
   }
 }
 
@@ -456,9 +456,7 @@ class ExternalWallInsulationPercentageNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    if (!kbi.Walls.ExternalWallInsulationPercentages || Object.keys(kbi.Walls.ExternalWallInsulationPercentages).length == 0
-      || kbi.Walls.ExternalWallInsulation?.CheckBoxSelection?.length != Object.keys(kbi.Walls.ExternalWallInsulationPercentages).length
-      || kbi.Walls.ExternalWallInsulation?.CheckBoxSelection?.some(x => !kbi.Walls.ExternalWallInsulationPercentages![x])) {
+    if (!kbi.Walls.ExternalWallInsulation?.some(x => !x.value || x.value == 0)) {
       return `${KbiWallsModule.baseRoute}/${ExternalWallInsulationPercentageComponent.route}`;
     }
     return this.externalFeaturesNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -470,13 +468,13 @@ class ExternalFeaturesNavigationNode extends KbiNavigationNode {
     private primaryUseBuildingNavigationNode: PrimaryUseBuildingNavigationNode) {
     super();
   }
-  
+
   private features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
-  
+
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
     if (!kbi.Walls.ExternalFeatures || Object.keys(kbi.Walls.ExternalFeatures).length == 0) {
       return `${KbiWallsModule.baseRoute}/${ExternalFeaturesComponent.route}`;
-    } else if (this.features.some(x => kbi.Walls.ExternalFeatures?.includes(x))) {
+    } else if (this.features.some(x => kbi.Walls.ExternalFeatures?.map(x => x.key).includes(x))) {
       return this.featuresMaterialsOutsideNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
     return this.primaryUseBuildingNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -491,9 +489,9 @@ class FeaturesMaterialsOutsideNavigationNode extends KbiNavigationNode {
   private features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
 
   override getNextRoute(kbi: KbiSectionModel, kbiSectionIndex: number): string {
-    let filteredExternalFeatures = kbi.Walls.ExternalFeatures?.filter( x => this.features.includes(x));
-    if (!!filteredExternalFeatures && filteredExternalFeatures.length > 0 && (!kbi.Walls.FeatureMaterialsOutside || Object.keys(kbi.Walls.FeatureMaterialsOutside).length == 0 || !this.areEqual(filteredExternalFeatures!, Object.keys(kbi.Walls.FeatureMaterialsOutside)) || this.hasEmptyValues(kbi.Walls.FeatureMaterialsOutside)) ) {
-      let nextFeature = this.getNextEmptyValue(filteredExternalFeatures, kbi.Walls.FeatureMaterialsOutside);
+    let filteredExternalFeatures = kbi.Walls.ExternalFeatures?.filter(x => this.features.includes(x.key));
+    if (!!filteredExternalFeatures && filteredExternalFeatures.length > 0 && (!kbi.Walls.ExternalFeatures || kbi.Walls.ExternalFeatures.length == 0 || !this.areEqual(filteredExternalFeatures.map(x => x.key)!, Object.keys(kbi.Walls.ExternalFeatures.map(x => x.key))) || this.hasEmptyValues(kbi.Walls.ExternalFeatures))) {
+      let nextFeature = this.getNextEmptyValue(filteredExternalFeatures.map(x => x.key), kbi.Walls.ExternalFeatures);
       return `${KbiWallsModule.baseRoute}/${FeatureMaterialsOutsideComponent.route}?feature=${nextFeature}`;
     }
     return this.primaryUseBuildingNavigationNode.getNextRoute(kbi, kbiSectionIndex);
@@ -503,15 +501,15 @@ class FeaturesMaterialsOutsideNavigationNode extends KbiNavigationNode {
     return a.length === b.length && a.every(x => b.indexOf(x) > -1);
   }
 
-  private hasEmptyValues(dictionary: Record<string, string[]>) {
-    return Object.keys(dictionary).some(x => !dictionary[x] || dictionary[x].length == 0 );
+  private hasEmptyValues(keyValue: KeyValue<string, string[]>[]) {
+    return keyValue.some(x => !x.value || x.value.length == 0);
   }
 
-  private getNextEmptyValue(array: string[], dictionary: Record<string, string[]> | undefined) {
-    if(!dictionary || Object.keys(dictionary).length == 0 || !this.areEqual(array!, Object.keys(dictionary))) {
+  private getNextEmptyValue(array: string[], dictionary: KeyValue<string, string[]>[] | undefined) {
+    if (!dictionary || dictionary.length == 0 || !this.areEqual(array!, dictionary.map(x => x.key))) {
       return array[0];
     }
-    return array.find(x => !dictionary[x] || dictionary[x].length == 0);    
+    return array.find(x => dictionary.find(x => !x.value || x.value.length == 0));
   }
 }
 
@@ -552,8 +550,8 @@ class FloorsBelowGroundLevelNavigationNode extends KbiNavigationNode {
       return `${KbiBuildingUseModule.baseRoute}/${FloorsBelowGroundLevelComponent.route}`;
     } else if (kbi.BuildingUse.FloorsBelowGroundLevel >= 1) {
       return this.primaryUseBuildingBelowGroundLevelNavigationNode.getNextRoute(kbi, kbiSectionIndex);
-    } 
-    return kbi.BuildingUse.PrimaryUseOfBuilding === "residential_dwellings" 
+    }
+    return kbi.BuildingUse.PrimaryUseOfBuilding === "residential_dwellings"
       ? this.changePrimaryUseNavigationNode.getNextRoute(kbi, kbiSectionIndex)
       : this.undergoneBuildingMaterialChangesNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
@@ -830,7 +828,7 @@ class KbiDeclarationNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
-    if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress) 
+    if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress)
       || (this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress) && !this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete))) {
       return `${KbiSubmitModule.baseRoute}/${DeclarationComponent.route}`;
     }
