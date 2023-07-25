@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { KbiSummaryComponent } from '../kbi-summary.component';
 import { BuildingUse, ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'uses-ground-level-and-above-summary',
@@ -11,8 +12,8 @@ export class UsesGroundLevelAndAboveSummaryComponent extends KbiSummaryComponent
 
   @Input() buildingUse: BuildingUse = {};
 
-  constructor(applicationService: ApplicationService, navigationService: NavigationService) {
-    super(applicationService, navigationService);
+  constructor(applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(applicationService, navigationService, activatedRoute);
   }
 
   private buildingUseMapper: Record<string, string> = {
