@@ -6,7 +6,7 @@
     <govuk-error-link anchorId="input-invoice-addressline1" [message]="getErrorDescription(hasError('AddressLine1'), 'Enter the first line of the billing address in address line 1')" />
     <govuk-error-link anchorId="input-invoice-town" [message]="getErrorDescription(hasError('Town'), 'Enter the town or city for the billing address')" />
     <govuk-error-link anchorId="input-invoice-postcode" [message]="getErrorDescription(hasError('Postcode'), 'Enter the postcode for the billing address')" />
-    <govuk-error-link anchorId="payment-order-number" [message]="getErrorDescription(hasError('OrderNumberOption'), 'Select if you need a purchase order number to be shown on the invoice, if you need to get a purchase order number, or if you do not need a purchase order number to be shown on the invoice')" />
+    <govuk-error-link anchorId="group-order-have" [message]="getErrorDescription(hasError('OrderNumberOption'), 'Select if you need a purchase order number to be shown on the invoice, if you need to get a purchase order number, or if you do not need a purchase order number to be shown on the invoice')" />
     <govuk-error-link anchorId="input-invoice-ordernumber" [message]="getErrorDescription(hasError('OrderNumber'), 'Enter your purchase order number')" />
   </govuk-error-summary>
 
@@ -20,16 +20,16 @@
   </div>
 
   <h2 class="govuk-heading-m">Contact details</h2>
-  <govuk-input id="invoice-name" label="Name on the invoice" class="govuk-!-margin-bottom-5" [(model)]="model!.Name" [errorText]="getErrorDescription(hasError('Name'), 'Enter the name that needs to be shown on the invoice')" />
-  <govuk-input id="invoice-email" label="Email address" hint="We'll only use this to send you an invoice" [(model)]="model!.Email" [errorText]="getErrorDescription(hasError('Email'), 'You must enter an email address in the correct format, like name@example.com')" />
+  <govuk-input id="invoice-name" label="Name on the invoice" class="govuk-!-margin-bottom-5" [(model)]="model!.Name" [errorText]="getErrorDescription(hasError('Name'), 'Enter the name that needs to be shown on the invoice')" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-email" label="Email address" hint="We'll only use this to send you an invoice" [(model)]="model!.Email" [errorText]="getErrorDescription(hasError('Email'), 'You must enter an email address in the correct format, like name@example.com')" (onKeyupEnter)="saveAndContinue()" />
   <div  class="govuk-!-margin-bottom-8"></div>
 
   <h2 class="govuk-heading-m">Billing address</h2>
   <govuk-body>This is the address associated with the account.</govuk-body>
-  <govuk-input id="invoice-addressline1" label="Address line 1" class="govuk-!-margin-bottom-5" [(model)]="model!.AddressLine1" [errorText]="getErrorDescription(hasError('AddressLine1'), 'Enter the first line of the billing address in address line 1')" />
-  <govuk-input id="invoice-addressline2" label="Address line 2 (optional)" class="govuk-!-margin-bottom-5" [(model)]="model!.AddressLine2" />
-  <govuk-input id="invoice-town" label="Town or city" class="govuk-input--width-20 govuk-!-margin-bottom-5" [(model)]="model!.Town" [errorText]="getErrorDescription(hasError('Town'), 'Enter the town or city for the billing address')" />
-  <govuk-input id="invoice-postcode" label="Postcode" class="govuk-input--width-10" [(model)]="model!.Postcode" [errorText]="getErrorDescription(hasError('Postcode'), 'Enter the postcode for the billing address')" />
+  <govuk-input id="invoice-addressline1" label="Address line 1" class="govuk-!-margin-bottom-5" [(model)]="model!.AddressLine1" [errorText]="getErrorDescription(hasError('AddressLine1'), 'Enter the first line of the billing address in address line 1')" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-addressline2" label="Address line 2 (optional)" class="govuk-!-margin-bottom-5" [(model)]="model!.AddressLine2" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-town" label="Town or city" class="govuk-input--width-20 govuk-!-margin-bottom-5" [(model)]="model!.Town" [errorText]="getErrorDescription(hasError('Town'), 'Enter the town or city for the billing address')" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-postcode" label="Postcode" class="govuk-input--width-10" [(model)]="model!.Postcode" [errorText]="getErrorDescription(hasError('Postcode'), 'Enter the postcode for the billing address')" (onKeyupEnter)="saveAndContinue()" />
   <div  class="govuk-!-margin-bottom-8"></div>
 
   <h2 class="govuk-heading-m">Purchase order number</h2>
