@@ -78,15 +78,15 @@ export class ExternalWallsAnswersComponent extends BuildingInformationCheckAnswe
   }
 
   hasHpl(){
-    return this.externalWalls!.ExternalWallMaterials!.indexOf('hpl') > -1;
+    return this.externalWalls!.ExternalWallMaterials!.findIndex(x => x.key == 'hpl') > -1;
   }
 
   hasAcm(){
-    return this.externalWalls!.ExternalWallMaterials!.indexOf('acm') > -1;
+    return this.externalWalls!.ExternalWallMaterials!.findIndex(x => x.key == 'acm') > -1;
   }
 
   isNone() {
-    return this.externalWalls!.ExternalWallInsulation!.CheckBoxSelection!.includes("none");
+    return this.externalWalls!.ExternalWallInsulation!.map(x => x.key)!.includes("none");
   }
 
 }

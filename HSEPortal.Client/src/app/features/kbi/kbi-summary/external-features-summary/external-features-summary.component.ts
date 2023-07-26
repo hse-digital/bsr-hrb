@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Walls, ApplicationService } from 'src/app/services/application.service';
+import { Walls, ApplicationService, KeyValue } from 'src/app/services/application.service';
 import { ExternalFeaturesComponent } from '../../6-walls/external-features/external-features.component';
 import { KbiSummaryComponent } from '../kbi-summary.component';
 import { NavigationService } from 'src/app/services/navigation.service';
@@ -16,8 +16,8 @@ export class ExternalFeaturesSummaryComponent  extends KbiSummaryComponent {
     super(applicationService, navigationService);
   }
 
-  getAvailableFeatures() {
-    return this.externalFeatures.ExternalFeatures!.filter(x => ExternalFeaturesComponent.features.includes(x));
+  getAvailableFeatures(): KeyValue<string, string[]>[] {
+    return this.externalFeatures.ExternalFeatures!.filter(x => ExternalFeaturesComponent.features.includes(x.key));
   }
 
   private externalFeaturesMapper: Record<string, string> = {
@@ -57,12 +57,12 @@ export class ExternalFeaturesSummaryComponent  extends KbiSummaryComponent {
   }
 
   hasFeature(name: string) {
-    if(!this.applicationService.currentKbiSection?.Walls.FeatureMaterialsOutside) return false;
-    return Object.keys(this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside!).includes(name);
+    if(!this.applicationService.currentKbiSection?.Walls.ExternalFeatures) return false;
+    return this.applicationService.currentKbiSection!.Walls.ExternalFeatures!.map(x => x.key).includes(name);
   }
 
-  getMaterials(feature: string){
-    return this.hasFeature(feature) ? this.externalFeatures?.FeatureMaterialsOutside![feature] : [];
+  getMaterials(feature: string): string[] {
+    return this.hasFeature(feature) ? this.externalFeatures?.ExternalFeatures?.find(x => x.key == feature)?.value ?? [] : [];
   }
 
   private materialsMapper: Record<string, string> = {

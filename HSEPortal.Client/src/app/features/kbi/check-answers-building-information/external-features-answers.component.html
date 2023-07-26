@@ -3,15 +3,15 @@
   <govuk-summary-list-row key="Attached features" (onKeyupEnter)="navigateToExternalFeatures()" (onClick)="navigateToExternalFeatures()" [showAction]=true>
 
     <ng-container *ngFor="let type of externalFeatures!.ExternalFeatures!">
-      <div>{{getExternalFeature(type)}}</div>
+      <div>{{getExternalFeature(type.key)}}</div>
     </ng-container>
 
   </govuk-summary-list-row>
 
   
   <ng-container *ngFor="let type of getAvailableFeatures()">
-    <govuk-summary-list-row key="{{getExternalFeature(type)}}" (onKeyupEnter)="nagivateToExternalFeaturesMaterials(type)" (onClick)="nagivateToExternalFeaturesMaterials(type)" [showAction]=true>
-        <div *ngFor="let material of getMaterials(type)">{{getMaterialName(material)}}</div>
+    <govuk-summary-list-row key="{{getExternalFeature(type.key)}}" (onKeyupEnter)="nagivateToExternalFeaturesMaterials(type.key)" (onClick)="nagivateToExternalFeaturesMaterials(type.key)" [showAction]=true>
+        <div *ngFor="let material of getMaterials(type.key)">{{getMaterialName(material)}}</div>
     </govuk-summary-list-row>
   </ng-container>
 

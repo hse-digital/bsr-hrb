@@ -2,7 +2,7 @@
 
     <govuk-summary-list-row key="External wall materials" (onKeyupEnter)="navigate('external-materials')" (onClick)="navigate('external-materials')" [showAction]=true>
       <ng-container *ngFor="let type of externalWalls!.ExternalWallMaterials!">
-        <div>{{getExternalWallMaterialName(type)}}</div>
+        <div>{{getExternalWallMaterialName(type.key)}}</div>
       </ng-container>
     </govuk-summary-list-row>
 
@@ -17,28 +17,25 @@
     <govuk-summary-list-row key="Percentage coverage" (onKeyupEnter)="navigate('estimated-percentage')" (onClick)="navigate('estimated-percentage')" [showAction]=true>
       <ng-container *ngFor="let type of externalWalls!.ExternalWallMaterials!">
         <div>
-          {{getExternalWallMaterialName(type)}}: {{externalWalls!.ExternalWallMaterialsPercentage![type]}}%
+          {{getExternalWallMaterialName(type.key)}}: {{type.value}}%
         </div>
       </ng-container>
     </govuk-summary-list-row>
 
     <govuk-summary-list-row key="Outside walls insulation type" (onKeyupEnter)="navigate('external-insulation-type')" (onClick)="navigate('external-insulation-type')" [showAction]=true>
-      <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!.CheckBoxSelection!">
-
-        <ng-container *ngIf="type !== 'other'">
-          <div #showType>{{getInsulationName(type)}} </div>
-        </ng-container>
-
-        <ng-container *ngIf="type === 'other'">
-          <div #showTypeAndOther>{{getInsulationName(type)}} - {{externalWalls!.ExternalWallInsulation!.OtherValue!}}</div>
-        </ng-container>
-
+      <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!">
+        <div #showType>{{getInsulationName(type.key)}} </div>
       </ng-container>
+
+      <ng-container *ngIf="externalWalls!.ExternalWallInsulationOtherValue">
+        <div #showTypeAndOther>Other - {{externalWalls!.ExternalWallInsulationOtherValue!}}</div>
+      </ng-container>
+
     </govuk-summary-list-row>
 
     <govuk-summary-list-row *ngIf="!isNone()" key="Percentage coverage" (onKeyupEnter)="navigate('external-insulation-percentage')" (onClick)="navigate('external-insulation-percentage')" [showAction]=true>
-      <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!.CheckBoxSelection!">
-        <div>{{getInsulationName(type)}}: {{externalWalls!.ExternalWallInsulationPercentages![type]}}%</div>
+      <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!">
+        <div>{{getInsulationName(type.key)}}: {{type.value}}%</div>
       </ng-container>
     </govuk-summary-list-row>
 

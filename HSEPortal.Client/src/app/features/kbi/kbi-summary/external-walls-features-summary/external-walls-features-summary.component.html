@@ -2,7 +2,7 @@
 
     <govuk-summary-list-row key="External wall materials" [showAction]=false>
       <ng-container *ngFor="let type of externalWalls!.ExternalWallMaterials!">
-        <div>{{getExternalWallMaterialName(type)}}</div>
+        <div>{{getExternalWallMaterialName(type.key)}}</div>
       </ng-container>
     </govuk-summary-list-row>
 
@@ -16,27 +16,23 @@
 
     <govuk-summary-list-row key="Percentage coverage" [showAction]=false>
       <ng-container *ngFor="let type of externalWalls!.ExternalWallMaterials!">
-        <div>{{getExternalWallMaterialName(type)}}: {{externalWalls!.ExternalWallMaterialsPercentage![type]}}%</div>
+        <div>{{getExternalWallMaterialName(type.key)}}: {{type.value}}%</div>
       </ng-container>
     </govuk-summary-list-row>
 
     <govuk-summary-list-row key="Outside walls insulation type" [showAction]=false>
-      <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!.CheckBoxSelection!">
+      <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!">
+        <div #showType>{{getInsulationName(type.key)}} </div>
+      </ng-container>
 
-        <ng-container *ngIf="type !== 'other'">
-          <div #showType>{{getInsulationName(type)}} </div>
-        </ng-container>
-
-        <ng-container *ngIf="type === 'other'">
-          <div #showTypeAndOther>{{getInsulationName(type)}} - {{externalWalls!.ExternalWallInsulation!.OtherValue!}}</div>
-        </ng-container>
-
+      <ng-container *ngIf="externalWalls!.ExternalWallInsulationOtherValue">
+        <div #showTypeAndOther>Other - {{externalWalls!.ExternalWallInsulationOtherValue!}}</div>
       </ng-container>
     </govuk-summary-list-row>
 
     <govuk-summary-list-row *ngIf="!isNone()" key="Percentage coverage" [showAction]=false>
-      <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!.CheckBoxSelection!">
-        <div>{{getInsulationName(type)}}: {{externalWalls!.ExternalWallInsulationPercentages![type]}}%</div>
+      <ng-container *ngFor="let type of externalWalls!.ExternalWallInsulation!">
+        <div>{{getInsulationName(type.key)}}: {{type.value}}%</div>
       </ng-container>
     </govuk-summary-list-row>
 
