@@ -92,6 +92,10 @@ export class TaskListComponent implements CanActivate, OnInit {
     await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
+  isKbiCheckBeforeComplete() {
+    return this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete);
+  }
+  
   containsFlag(flag: BuildingApplicationStatus) {
     return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
