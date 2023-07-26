@@ -25,11 +25,13 @@ import { SectionYearOfCompletionComponent } from "./year-of-completion/year-of-c
 import { SectionYearRangeComponent } from "./year-range/year-range.component";
 import { NotNeedRegisterSingleStructureComponent } from './not-need-register-single-structure/not-need-register-single-structure.component';
 import { NotNeedRegisterMultiStructureComponent } from './not-need-register-multi-structure/not-need-register-multi-structure.component';
+import { KeepStructureDeclarationComponent } from './duplicates/keep-structure-declaration/keep-structure-declaration.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
   HseRoute.protected(MoreInformationComponent.route, MoreInformationComponent, MoreInformationComponent.title),
   HseRoute.protected(SectionCheckAnswersComponent.route, SectionCheckAnswersComponent, SectionCheckAnswersComponent.title),
+  HseRoute.protected(KeepStructureDeclarationComponent.route, KeepStructureDeclarationComponent, KeepStructureDeclarationComponent.title),
   HseRoute.forChildren(':id', BuildingSummaryComponent, new HseRoutes([
     HseRoute.protected(SectionsIntroComponent.route, SectionsIntroComponent, SectionsIntroComponent.title),
     HseRoute.protected(SectionFloorsAboveComponent.route, SectionFloorsAboveComponent, SectionFloorsAboveComponent.title),
@@ -68,7 +70,8 @@ const routes = new HseRoutes([
     CertificateIssuerComponent,
     CertificateNumberComponent,
     NotNeedRegisterSingleStructureComponent,
-    NotNeedRegisterMultiStructureComponent
+    NotNeedRegisterMultiStructureComponent,
+    KeepStructureDeclarationComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
