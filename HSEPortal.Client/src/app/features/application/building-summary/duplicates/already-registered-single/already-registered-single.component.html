@@ -1,0 +1,25 @@
+<govuk-formpage [hideSaveAndComeBack]="true" saveAndContinueText="Declare and continue anyway" (saveAndContinue)="saveAndContinue()" [processing]="processing">
+
+    <h1 class="govuk-heading-l">{{applicationService.model.BuildingName}} has already been registered as part of {{registeredStructure?.name}}</h1>
+    <h2 class="govuk-heading-m">You do not need to register {{applicationService.model.BuildingName}}</h2>
+    <govuk-list classes='govuk-list--bullet'>
+        <govuk-list-item text="" />
+    </govuk-list>
+
+    <govuk-body>If you still want to, you'll need to:</govuk-body>
+    <govuk-body>We will not make a decision on your application until we hear from {{registeredStructure?.papName}}</govuk-body>
+    <govuk-body></govuk-body>
+
+    <govuk-summary-list classes="">
+        <govuk-summary-list-row key="" [showAction]=false></govuk-summary-list-row>
+    </govuk-summary-list>
+
+    <dl class="govuk-summary-list govuk-summary-list--no-border answers-heading-border no-margin-bottom">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"></dt>
+            <dd class="govuk-summary-list__value"></dd>
+            <dd class="govuk-summary-list__value"></dd>
+        </div>
+    </dl>
+
+</govuk-formpage>

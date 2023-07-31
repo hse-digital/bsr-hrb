@@ -23,18 +23,19 @@ export abstract class PageComponent<T> implements OnInit {
   protected titleService: TitleService = this.injector.get(TitleService);
   protected navigationService: NavigationService = this.injector.get(NavigationService);
   protected router: Router = this.injector.get(Router);
+  protected activatedRoute: ActivatedRoute = this.injector.get(ActivatedRoute);
 
   @ViewChildren(GovukRequiredDirective) private requiredFields?: QueryList<GovukRequiredDirective>;
   @ViewChildren("summaryError") private summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  abstract onInit(applicationService: ApplicationService): Promise<void>;
+  abstract onInit(applicationService: ApplicationService): Promise<void> | void;
   abstract onSave(applicationService: ApplicationService): Promise<void> | void;
   abstract canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean;
   abstract isValid(): boolean;
   abstract navigateNext(): Promise<boolean | void>;
 
 
-  constructor(protected activatedRoute: ActivatedRoute) {
+  constructor() {
     this.triggerScreenReaderNotification("");
   }
 

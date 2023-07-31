@@ -79,6 +79,15 @@ public class BuildingApplicationFunctions
         return request.CreateResponse(HttpStatusCode.BadRequest);
     }
 
+    [Function(nameof(GetRegisteredStructure))]
+    public async Task<HttpRequestData> GetRegisteredStructure([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request,
+    [CosmosDBInput("hseportal", "building-registrations",
+            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", PartitionKey = "{ApplicationNumber}",
+            Connection = "CosmosConnection")] 
+            List<BuildingApplicationModel> buildingApplications) {
+        return null;
+    }
+
     [Function(nameof(UpdateApplication))]
     public async Task<CustomHttpResponseData> UpdateApplication(
         [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "UpdateApplication/{applicationNumber}")]
