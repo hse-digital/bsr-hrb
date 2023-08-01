@@ -29,7 +29,7 @@ export class PaymentSelectionComponent extends PageComponent<string> {
   }
 
   override isValid(): boolean {
-    return this.model !== void 0;
+    return this.model == 'card' || this.model == 'invoice';
   }
 
   override async navigateNext(): Promise<boolean | void> {
