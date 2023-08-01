@@ -35,7 +35,7 @@
   <h2 class="govuk-heading-m">Purchase order number</h2>
   <govuk-body>Do you need a purchase order number on the invoice?</govuk-body>
 
-  <govuk-radio-group id="invoice-ordernumberoption" (modelChange)="updateOrderNumber()" class="govuk-!-margin-bottom-4" [(model)]="model!.OrderNumberOption" #field [govukRequired]="field" [errorText]="getErrorDescription(hasError('OrderNumberOption'), 'Select if you need a purchase order number to be shown on the invoice, if you need to get a purchase order number, or if you do not need a purchase order number to be shown on the invoice')" id="payment-order-number">
+  <govuk-radio-group id="invoice-ordernumberoption" (modelChange)="updateOrderNumber()" class="govuk-!-margin-bottom-4" [(model)]="model!.OrderNumberOption" [errorText]="getErrorDescription(hasError('OrderNumberOption'), 'Select if you need a purchase order number to be shown on the invoice, if you need to get a purchase order number, or if you do not need a purchase order number to be shown on the invoice')" id="payment-order-number">
     <govuk-radio name="payment-order-number" id="order-have" value="have" label="Yes, I already have a purchase order number" (onKeyupEnter)="saveAndContinue()" [model]="model!.OrderNumberOption">
       <govuk-input id="invoice-ordernumber" label="Purchase order number" class="govuk-input--width-20" [(model)]="model!.OrderNumber" [errorText]="getErrorDescription(hasError('OrderNumber'), 'Enter your purchase order number')" (onKeyupEnter)="saveAndContinue()" />
     </govuk-radio>
