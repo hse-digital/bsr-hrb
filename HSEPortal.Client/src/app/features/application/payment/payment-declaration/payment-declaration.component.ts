@@ -23,7 +23,9 @@ export class PaymentDeclarationComponent extends PageComponent<void> {
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-    await applicationService.syncDeclaration();
+    // await applicationService.syncDeclaration();
+
+    await this.applicationService.syncDeclaration();
   }
 
   override canAccess(_: ApplicationService, __: ActivatedRouteSnapshot): boolean {
@@ -35,8 +37,17 @@ export class PaymentDeclarationComponent extends PageComponent<void> {
     return true;
   }
 
-  override navigateNext(): Promise<boolean | void> {
-    return this.navigationService.navigateRelative(PaymentSelectionComponent.route, this.activatedRoute);
+  override async navigateNext(): Promise<boolean | void> {
+    // return this.navigationService.navigateRelative(PaymentSelectionComponent.route, this.activatedRoute);
+
+    var paymentResponse = await this.paymentService.InitialisePayment(this.applicationService.model);
+    this.applicationService.updateApplication();
+
+    if (typeof window !== 'undefined') {
+      window.location.href = paymentResponse.PaymentLink;
+    }
+
+    return true;
   }
 
   isPapRegisteringFor() {
