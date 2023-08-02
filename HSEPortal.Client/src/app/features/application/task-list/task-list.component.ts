@@ -64,18 +64,23 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
   }
 
   navigateToPayment() {
+    // let appendRoute = PaymentModule.baseRoute;
+    // if (this.applicationService.model.PaymentType == undefined) {
+    //   appendRoute = `${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`;
+    // } else if (this.applicationService.model.PaymentType == 'invoice') {
+    //   if (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed') {
+    //     appendRoute = `${PaymentModule.baseRoute}/${PaymentInvoiceConfirmationComponent.route}`;
+    //   } else {
+    //     appendRoute = `${PaymentModule.baseRoute}/${PaymentInvoiceComponent.route}`;
+    //   }
+    // } else {
+    //   appendRoute = `${PaymentModule.baseRoute}/${PaymentSelectionComponent.route}`;
+    // }
+
+    // this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
+    
     let appendRoute = PaymentModule.baseRoute;
-    if (this.applicationService.model.PaymentType == undefined) {
-      appendRoute = `${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`;
-    } else if (this.applicationService.model.PaymentType == 'invoice') {
-      if (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed') {
-        appendRoute = `${PaymentModule.baseRoute}/${PaymentInvoiceConfirmationComponent.route}`;
-      } else {
-        appendRoute = `${PaymentModule.baseRoute}/${PaymentInvoiceComponent.route}`;
-      }
-    } else {
-      appendRoute = `${PaymentModule.baseRoute}/${PaymentSelectionComponent.route}`;
-    }
+    appendRoute = `${appendRoute}/${PaymentDeclarationComponent.route}`;
 
     this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
   }
