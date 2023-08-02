@@ -13,7 +13,7 @@
 }
 
 // GOVUK-RADIO
-.govuk-radio-no-margin-bottom>.govuk-radios__item {
+.govuk-radio-no-margin-bottom > .govuk-radios__item {
   margin-bottom: 0px !important;
 }
 
@@ -73,7 +73,6 @@ a.govuk-back-link {
 .govuk-fieldset__legend--m {
   padding: 0;
 }
-
 
 // task list
 .app-task-list__item {
@@ -216,13 +215,30 @@ a.govuk-back-link {
   font-size: 19px;
   font-size: 1.1875rem;
   margin-bottom: 5px;
- 
 }
 
 .smallTitle.margin-bottom-15 legend {
-  margin-bottom: 15px!important;
+  margin-bottom: 15px !important;
 }
 
+.govuk-info-banner {
+  background: rgb(243, 242, 241);
+  padding: 20px;
 
+  border-top: 2px solid rgb(53, 110, 181);
 
+  .govuk-body {
+    margin-bottom: 0;
+  }
 
+  .govuk-payment-amount {
+    font-size: 36px;
+    font-weight: bold;
+  }
+}
+
+.billing-address {
+  p {
+    margin: 0 !important;
+  }
+}

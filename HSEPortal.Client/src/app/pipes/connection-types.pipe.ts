@@ -8,7 +8,8 @@ export class ConnectionTypesPipe implements PipeTransform {
   static readonly connectionTypes: Record<string, string> = {
     "bridge-walkway": "Bridge or walkway between sections",
     "car-park": "Car park below ground",
-    "ground-floor": "Ground floor", 
+    "ground-floor": "Ground floor with everyday use", 
+    "ground-floor-limited": "Ground floor with limited access", 
     "levels-below-ground-residential-unit": "Levels below ground with a residential unit", 
     "levels-below-ground-no-residential-unit": "Levels below ground without a residential unit", 
     "shared-wall-emergency-door": "Shared wall with emergency door", 

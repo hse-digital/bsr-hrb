@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { KbiSummaryComponent } from '../kbi-summary.component';
 import { Roof, ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'roof-summary',
@@ -11,8 +12,8 @@ export class RoofSummaryComponent extends KbiSummaryComponent {
 
   @Input() roof: Roof = {};
 
-  constructor(applicationService: ApplicationService, navigationService: NavigationService) {
-    super(applicationService, navigationService);
+  constructor(applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(applicationService, navigationService, activatedRoute);
   }
 
   private roofTypeMapper: Record<string, string> = {

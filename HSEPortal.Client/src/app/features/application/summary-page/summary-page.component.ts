@@ -10,6 +10,7 @@ import { LocalStorage } from 'src/app/helpers/local-storage';
 import { BroadcastChannelSecondaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'hse-summary-page',
@@ -29,15 +30,18 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
   }
 
   async ngOnInit() {
-    if(!FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName)) {
+    if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName)) {
       await this.getApplicationDataFromBroadcastChannel();
-    } else if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
-        this.navigationService.navigate(NotFoundComponent.route);
+    } 
+
+    if (this.applicationService.model.PaymentType == 'card' && (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
+      this.navigationService.navigate(NotFoundComponent.route);
     } else {
       this.shouldRender = true;
     }
-    this.sections = this.applicationService.model.Sections;
     
+    this.sections = this.applicationService.model.Sections;
+
     var payments = await this.applicationService.getApplicationPayments()
     this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
   }
@@ -59,21 +63,17 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
   }
 
   private async getApplicationDataFromBroadcastChannel() {
-    await new BroadcastChannelSecondaryHelper()
-      .OpenChannel("application_data")
-      .JoinChannel()
-      .WaitForData<BuildingRegistrationModel>()
+    await firstValueFrom(this.activatedRoute.params)
+      .then(async param => param['id'])
+      .then(async id =>
+        await new BroadcastChannelSecondaryHelper()
+          .OpenChannel(id)
+          .JoinChannel()
+          .WaitForData<BuildingRegistrationModel>())
       .then((data: BuildingRegistrationModel) => {
         LocalStorage.setJSON("application_data", data);
         this.applicationService.model = data;
-
-        if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
-          this.navigationService.navigate(NotFoundComponent.route);
-        } else {
-          this.shouldRender = true;
-        }
       })
-      .catch(() => this.navigationService.navigate(NotFoundComponent.route)); 
-
+      .catch(() => this.navigationService.navigate(NotFoundComponent.route));
   }
 }

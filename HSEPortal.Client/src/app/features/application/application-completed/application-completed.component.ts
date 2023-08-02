@@ -36,7 +36,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   private sendApplicationDataToBroadcastChannel() {
     new BroadcastChannelPrimaryHelper()
-      .OpenChannel("application_data")
+      .OpenChannel(this.applicationService.model.id!)
       .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
   }
 

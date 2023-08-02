@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Fire, ApplicationService } from 'src/app/services/application.service';
 import { KbiSummaryComponent } from '../kbi-summary.component';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'fire-and-smoke-controls-summary',
@@ -11,10 +12,10 @@ export class FireAndSmokeControlsSummaryComponent extends KbiSummaryComponent {
 
   @Input() fireAndSmokeControls: Fire = {};
 
-  constructor(applicationService: ApplicationService, navigationService: NavigationService) {
-    super(applicationService, navigationService);
+  constructor(applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute) {
+    super(applicationService, navigationService, activatedRoute);
   }
-
+  
   private provisionEquipment: Record<string, string> = {
     "heat_detectors": "Heat detectors",
     "smoke_detectors": "Smoke detectors",

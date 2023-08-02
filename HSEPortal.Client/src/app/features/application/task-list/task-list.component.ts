@@ -9,6 +9,9 @@ import { PaymentDeclarationComponent } from "../payment/payment-declaration/paym
 import { PaymentModule } from "../payment/payment.module";
 import { BuildingSummaryNavigation } from "src/app/features/application/building-summary/building-summary.navigation";
 import { AccountablePersonNavigation } from "src/app/features/application/accountable-person/accountable-person.navigation";
+import { PaymentInvoiceComponent } from "../payment/payment-invoice/payment-invoice.component";
+import { PaymentSelectionComponent } from "../payment/payment-selection/payment-selection.component";
+import { PaymentInvoiceConfirmationComponent } from "../payment/payment-invoice-confirmation/payment-invoice-confirmation.component";
 
 @Component({
   templateUrl: './task-list.component.html'
@@ -61,6 +64,21 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
   }
 
   navigateToPayment() {
+    // let appendRoute = PaymentModule.baseRoute;
+    // if (this.applicationService.model.PaymentType == undefined) {
+    //   appendRoute = `${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`;
+    // } else if (this.applicationService.model.PaymentType == 'invoice') {
+    //   if (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed') {
+    //     appendRoute = `${PaymentModule.baseRoute}/${PaymentInvoiceConfirmationComponent.route}`;
+    //   } else {
+    //     appendRoute = `${PaymentModule.baseRoute}/${PaymentInvoiceComponent.route}`;
+    //   }
+    // } else {
+    //   appendRoute = `${PaymentModule.baseRoute}/${PaymentSelectionComponent.route}`;
+    // }
+
+    // this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
+    
     let appendRoute = PaymentModule.baseRoute;
     appendRoute = `${appendRoute}/${PaymentDeclarationComponent.route}`;
 

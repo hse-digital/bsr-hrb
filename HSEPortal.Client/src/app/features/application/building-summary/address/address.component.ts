@@ -39,7 +39,10 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
       if (!this.addressIndex) {
         this.addressIndex = 1;
+      } else if ((this.applicationService.currentSection.Addresses.length + 1) < this.addressIndex) {
+        this.addressIndex = this.applicationService.currentSection.Addresses.length + 1;
       }
+
       this.address = this.applicationService.currentSection.Addresses[this.addressIndex - 1];
     });
   }

@@ -1,0 +1,20 @@
+<govuk-formpage [hideSaveAndComeBack]=true saveAndContinueText="Save and come back later" (saveAndContinue)="saveAndComeBack()" [processing]="processing">
+
+  <h1 class="govuk-heading-l">Purchase order number details for {{applicationService.model.BuildingName}}</h1>
+
+  <govuk-body>To get a purchase order number, you may need this information:</govuk-body>
+
+  <govuk-summary-list classes="billing-address">
+    <govuk-summary-list-row key="Amount" [showAction]=false>{{applicationCost | currency:'GBP'}}</govuk-summary-list-row>
+    <govuk-summary-list-row key="Billing name" [showAction]=false>Health and Safety Executive</govuk-summary-list-row>
+    <govuk-summary-list-row key="Billing address" [showAction]=false>
+      <p>Redgrave Courte</p>
+      <p>Merton Road</p>
+      <p>Bootle</p>
+      <p>Merseyside</p>
+      <p>L20 7HS</p>
+    </govuk-summary-list-row>
+    <govuk-summary-list-row key="Reason for payment" [showAction]=false>Register a high-rise residential building</govuk-summary-list-row>
+  </govuk-summary-list>
+
+</govuk-formpage>

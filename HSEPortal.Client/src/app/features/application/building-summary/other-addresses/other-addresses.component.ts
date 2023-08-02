@@ -78,7 +78,9 @@ export class SectionOtherAddressesComponent extends BaseComponent implements IHa
     }
 
     // section has more than a single address, navigate to address page
-    return navigationService.navigateRelative(`${SectionAddressComponent.route}`, activatedRoute);
+    return navigationService.navigateRelative(`${SectionAddressComponent.route}`, activatedRoute, {
+      address: this.applicationService.currentSection.Addresses.length + 1
+    });
   }
 
   sectionBuildingName() {
@@ -87,6 +89,6 @@ export class SectionOtherAddressesComponent extends BaseComponent implements IHa
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && this.applicationService.currentSection.Addresses?.length < 5;
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && this.applicationService.currentSection.Addresses?.length <= 5;
   }
 }

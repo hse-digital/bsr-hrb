@@ -37,8 +37,8 @@
             <ng-container  *ngFor="let section of InScopeSections; let i = index">
               <li class="app-task-list__item" *ngIf="!section.Scope?.IsOutOfScope" [ngClass]="{'firstItem': i == 0}">
                 <span class="app-task-list__task-name">
-                  <span task *ngIf="!isSectionComplete(i - 1)">{{ getSectionName(i) }} information</span>
-                  <a task *ngIf="i == 0 || isSectionComplete(i - 1)" class="govuk-link" (keyup.enter)="navigateToSection(i, section.Name!)" (click)="navigateToSection(i, section.Name!)" role="link" tabindex="0">{{ getSectionName(i) }} information</a>
+                  <span task *ngIf="!isKbiCheckBeforeComplete() || !isSectionComplete(i - 1)">{{ getSectionName(i) }} information</span>
+                  <a task *ngIf="isKbiCheckBeforeComplete() && (i == 0 || isSectionComplete(i - 1))" class="govuk-link" (keyup.enter)="navigateToSection(i, section.Name!)" (click)="navigateToSection(i, section.Name!)" role="link" tabindex="0">{{ getSectionName(i) }} information</a>
                 </span>
                 <govuk-tag tag class="govuk-tag--grey" *ngIf="!isSectionInProgress(i) && !isSectionComplete(i - 1) && !isSectionComplete(i) && i > 0">CANNOT START YET</govuk-tag>
                 <govuk-tag tag class="govuk-tag--grey" *ngIf="!isSectionInProgress(i) && !isSectionComplete(i) && isSectionComplete(i - 1)">NOT STARTED YET</govuk-tag>
