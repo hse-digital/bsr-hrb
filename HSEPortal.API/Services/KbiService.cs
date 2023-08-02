@@ -421,12 +421,10 @@ public class KbiService
             await dynamicsApi.Delete($"/bsr_connectedblocks({item.bsr_connectedblockid})");
         }
 
+        var manualValidationRequired = false;
         if (kbiSyncData.KbiModel.KbiSections.Length > 1)
         {
-            building = building with
-            {
-                bsr_manualvalidationrequired = connections.StructureConnections.Any(x => x is "shared-wall-emergency-door" or "shared-wall-everyday-door")
-            };
+            manualValidationRequired = connections.StructureConnections.Any(x => x is "ground-floor" or "levels-below-ground-residential-unit" or "shared-wall-everyday-door");
             foreach (var connection in connections.StructureConnections)
             {
                 await AddConnection(buildingId, connection, BuildingConnection.Structural);
@@ -435,6 +433,7 @@ public class KbiService
 
         if (connections.OtherHighRiseBuildingConnections == "yes")
         {
+            manualValidationRequired = manualValidationRequired || connections.HowOtherHighRiseBuildingAreConnected.Any(x => x is "ground-floor" or "levels-below-ground-residential-unit" or "shared-wall-everyday-door");
             foreach (var connection in connections.HowOtherHighRiseBuildingAreConnected)
             {
                 await AddConnection(buildingId, connection, BuildingConnection.HighRiseResidentialBuilding);
@@ -443,12 +442,17 @@ public class KbiService
 
         if (connections.OtherBuildingConnections == "yes")
         {
+            manualValidationRequired = manualValidationRequired || connections.HowOtherBuildingAreConnected.Any(x => x is "shared-wall-emergency-door" or "shared-wall-no-door");
             foreach (var connection in connections.HowOtherBuildingAreConnected)
             {
                 await AddConnection(buildingId, connection, BuildingConnection.AnotherBuilding);
             }
         }
 
+        building = building with
+        {
+            bsr_manualvalidationrequired = manualValidationRequired
+        };
         await dynamicsApi.Update($"bsr_buildings({building.bsr_buildingid})", building);
     }
 
