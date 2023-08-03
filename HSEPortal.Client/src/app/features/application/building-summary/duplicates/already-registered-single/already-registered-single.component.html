@@ -1,58 +1,107 @@
-<govuk-formpage [hideSaveAndComeBack]="true" saveAndContinueText="Declare and continue anyway" (saveAndContinue)="saveAndContinue()" [processing]="processing">
+<govuk-formpage [hideSaveAndComeBack]="true" saveAndContinueText="Declare and continue anyway"
+    (saveAndContinue)="saveAndContinue()" [processing]="processing">
 
-    <h1 class="govuk-heading-l">{{applicationService.model.BuildingName}} has already been registered as part of {{registeredStructure?.name}}</h1>
+    <h1 class="govuk-heading-l">{{applicationService.model.BuildingName}} has already been registered as part of
+        {{registeredStructure?.name}}</h1>
+
+    <govuk-table>
+        <govuk-table-col width="30%">Application we already received</govuk-table-col>
+        <govuk-table-col width="30%">Your answers</govuk-table-col>
+        <govuk-table-row header="Name">
+            <govuk-table-cell>{{registeredStructure?.name}}</govuk-table-cell>
+            <govuk-table-cell>{{applicationService.model.BuildingName}}</govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Number of floors">
+            <govuk-table-cell>{{registeredStructure?.numFloors}}</govuk-table-cell>
+            <govuk-table-cell>{{applicationService.currentSection.FloorsAbove}}</govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Height">
+            <govuk-table-cell>{{registeredStructure?.height}}</govuk-table-cell>
+            <govuk-table-cell>{{applicationService.currentSection.Height}}</govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Number of residential units">
+            <govuk-table-cell>{{registeredStructure?.residentialUnits}}</govuk-table-cell>
+            <govuk-table-cell>{{applicationService.currentSection.ResidentialUnits}}</govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Address">
+            <govuk-table-cell>{{registeredStructure?.structureAddress}}</govuk-table-cell>
+            <govuk-table-cell>{{applicationService.currentSection.Addresses[0]}}</govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Principal accountable person">
+            <govuk-table-cell>{{registeredStructure?.papIsOrganisation 
+                ? registeredStructure?.papName 
+                : "An individual - we cannot share data about individuals"}}
+            </govuk-table-cell>
+            <govuk-table-cell>Current PAP name</govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Principal accountable person address">
+            <govuk-table-cell>{{registeredStructure?.papIsOrganisation 
+                ? registeredStructure?.papAddress 
+                : "An personal or home address - we cannot share data about an individual's personal or home address"}}
+            </govuk-table-cell>
+            <govuk-table-cell>Current PAP address</govuk-table-cell>
+        </govuk-table-row>
+    </govuk-table>
+
+    <ng-container *ngIf="registeredStructure?.papIsOrganisation; then organisationText else individualText" />
+
+</govuk-formpage>
+
+<ng-template #organisationRows>
+
     
-<govuk-table>
-    <govuk-table-col width="30%">Application we already received</govuk-table-col>
-    <govuk-table-col width="30%">Your answers</govuk-table-col>
-    <govuk-table-row header="Name">
-        <govuk-table-cell>{{registeredStructure?.name}}</govuk-table-cell>
-        <govuk-table-cell>{{applicationService.model.BuildingName}}</govuk-table-cell>
-    </govuk-table-row>
-    <govuk-table-row header="Number of floors">
-        <govuk-table-cell>{{registeredStructure?.numFloors}}</govuk-table-cell>
-        <govuk-table-cell>{{applicationService.currentSection.FloorsAbove}}</govuk-table-cell>
-    </govuk-table-row>
-    <govuk-table-row header="Height">
-        <govuk-table-cell>{{registeredStructure?.height}}</govuk-table-cell>
-        <govuk-table-cell>{{applicationService.currentSection.Height}}</govuk-table-cell>
-    </govuk-table-row>
-    <govuk-table-row header="Number of residential units">
-        <govuk-table-cell>{{registeredStructure?.residentialUnits}}</govuk-table-cell>
-        <govuk-table-cell>{{applicationService.currentSection.ResidentialUnits}}</govuk-table-cell>
-    </govuk-table-row>
-    <govuk-table-row header="Address">
-        <govuk-table-cell>{{registeredStructure?.structureAddress}}</govuk-table-cell>
-        <govuk-table-cell>{{applicationService.currentSection.Addresses[0]}}</govuk-table-cell>
-    </govuk-table-row>
+</ng-template>
+
+<ng-template #individualRows>
     <govuk-table-row header="Principal accountable person">
-        <govuk-table-cell>{{registeredStructure?.papName}}</govuk-table-cell>
         <govuk-table-cell></govuk-table-cell>
+        <govuk-table-cell>Current PAP name</govuk-table-cell>
     </govuk-table-row>
     <govuk-table-row header="Principal accountable person address">
-        <govuk-table-cell>{{registeredStructure?.papAddress}}</govuk-table-cell>
+        <govuk-table-cell></govuk-table-cell>
         <govuk-table-cell>Current PAP address</govuk-table-cell>
     </govuk-table-row>
-</govuk-table>
+</ng-template>
 
-<h2 class="govuk-heading-s">You do not need to register {{applicationService.model.BuildingName}}</h2>
+<ng-template #organisationText>
+    <h2 class="govuk-heading-s">You do not need to register {{applicationService.model.BuildingName}}</h2>
     <govuk-body>If you still want to, you'll need to:</govuk-body>
-    
+
     <govuk-list classes='govuk-list--bullet'>
         <govuk-list-item text="fill in the rest of the application" />
         <govuk-list-item text="pay the fee - you might not get a refund" />
     </govuk-list>
-    
-    <govuk-body>We will not make a decision on your application until we hear from {{registeredStructure?.papName}}.</govuk-body>
+
+    <govuk-body>We will not make a decision on your application until we hear from
+        {{registeredStructure?.papName}}.</govuk-body>
     <govuk-body>You can continue if:</govuk-body>
 
     <govuk-list classes='govuk-list--bullet'>
-        <govuk-list-item>you're not applying to register the building in the application we already received ({{registeredStructure?.name}})</govuk-list-item>
+        <govuk-list-item>you're not applying to register the building in the application we already received
+            ({{registeredStructure?.name}})</govuk-list-item>
         <govuk-list-item>we told you to reregister {{applicationService.model.BuildingName}}</govuk-list-item>
-        <govuk-list-item>you need to reregister {{applicationService.model.BuildingName}} and will withdraw your original application later</govuk-list-item>
+        <govuk-list-item>you need to reregister {{applicationService.model.BuildingName}} and will withdraw your
+            original application later</govuk-list-item>
+        <govuk-list-item>it is the same {{applicationService.model.BuildingName}} but the listed principal accountable
+            person is incorrect</govuk-list-item>
+    </govuk-list>
+
+    <govuk-body>By continuing, you agree that we can share your name, email address and phone number with
+        {{registeredStructure?.papName}}</govuk-body>
+</ng-template>
+
+<ng-template #individualText>
+    <govuk-body>You can continue if:</govuk-body>
+    <govuk-list classes='govuk-list--bullet'>
+        <govuk-list-item>you're applying to register a different building to the application we have already received</govuk-list-item>
+        <govuk-list-item>we told you to reregister {{applicationService.model.BuildingName}}</govuk-list-item>
         <govuk-list-item>it is the same {{applicationService.model.BuildingName}} but the listed principal accountable person is incorrect</govuk-list-item>
     </govuk-list>
 
-    <govuk-body>By continuing, you agree that we can share your name, email address and phone number with {{registeredStructure?.papName}}</govuk-body>
-
-</govuk-formpage>
+    <govuk-body>If you want to continue, you'll need to:</govuk-body>
+    
+    <govuk-list classes='govuk-list--bullet'>
+        <govuk-list-item>fill in the rest of the application</govuk-list-item>
+        <govuk-list-item>pay the fee - you might not get a refund</govuk-list-item>
+    </govuk-list>
+</ng-template>
