@@ -12,6 +12,7 @@ export class DuplicatesService {
 
   async GetRegisteredStructureBy(postcode: string): Promise<RegisteredStructureModel> {
     return await firstValueFrom(this.httpClient.get<RegisteredStructureModel>(`api/GetRegisteredStructureByPostcode/${postcode}`));
+    //return {name: "name", height: "height", numFloors: "numFloors", papAddress: new AddressModel(), papName: "papName", residentialUnits: "residentialUnits", structureAddress: new AddressModel(), papIsOrganisation: true}
   }
 }
 
@@ -22,5 +23,6 @@ export type RegisteredStructureModel = {
   residentialUnits?: string,
   structureAddress?: AddressModel,
   papName?: string,
-  papAddress?: AddressModel
+  papAddress?: AddressModel,
+  papIsOrganisation?: boolean;
 }
