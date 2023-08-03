@@ -46,6 +46,7 @@ const routes = new HseRoutes([
     HseRoute.protected(SectionPeopleLivingInBuildingComponent.route, SectionPeopleLivingInBuildingComponent, SectionPeopleLivingInBuildingComponent.title),
     HseRoute.protected(NotNeedRegisterSingleStructureComponent.route, NotNeedRegisterSingleStructureComponent, NotNeedRegisterSingleStructureComponent.title),
     HseRoute.protected(NotNeedRegisterMultiStructureComponent.route, NotNeedRegisterMultiStructureComponent, NotNeedRegisterMultiStructureComponent.title),
+    HseRoute.protected(AlreadyRegisteredSingleComponent.route, AlreadyRegisteredSingleComponent, AlreadyRegisteredSingleComponent.title),
   ])),
 ]);
 

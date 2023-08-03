@@ -35,7 +35,8 @@ export abstract class PageComponent<T> implements OnInit {
   abstract navigateNext(): Promise<boolean | void>;
 
 
-  constructor() {
+  constructor(activatedRoute?: ActivatedRoute) {
+    if(activatedRoute) this.activatedRoute = activatedRoute;
     this.triggerScreenReaderNotification("");
   }
 

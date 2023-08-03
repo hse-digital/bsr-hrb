@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { AddressModel } from 'src/app/services/address.service';
-import { ApplicationService } from 'src/app/services/application.service';
+import { AccountablePersonModel, ApplicationService } from 'src/app/services/application.service';
 import { DuplicatesService, RegisteredStructureModel } from 'src/app/services/duplicates.service';
 
 @Component({
@@ -12,6 +11,8 @@ import { DuplicatesService, RegisteredStructureModel } from 'src/app/services/du
   styleUrls: ['./already-registered-single.component.scss']
 })
 export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
+  public static route: string = "already-registered-single";
+  public static title: string = "This building has already been registered - Register a high-rise building - GOV.UK";
 
   registeredStructure?: RegisteredStructureModel;
 
@@ -42,6 +43,11 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
 
   override navigateNext(): Promise<boolean | void> {
     throw new Error('Method not implemented.');
+  }
+
+  getAccountablePersonName(ap: AccountablePersonModel) {
+    if(!ap) return "";
+    return ap.Type == "individual" ? `${ap.FirstName} ${ap.LastName}`: ap.OrganisationName;
   }
 
 }
