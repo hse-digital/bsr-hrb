@@ -80,13 +80,36 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(GetRegisteredStructure))]
-    public async Task<HttpRequestData> GetRegisteredStructure([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request,
-    [CosmosDBInput("hseportal", "building-registrations",
-            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", PartitionKey = "{ApplicationNumber}",
-            Connection = "CosmosConnection")] 
-            List<BuildingApplicationModel> buildingApplications) {
-        return null;
+    public async Task<HttpResponseData> GetRegisteredStructure([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetRegisteredStructure")] HttpRequestData request) {
+        var requestData = await request.ReadAsJsonAsync<RegisteredStructureRequestModel>();
+        var dynamicsStructure = dynamicsService.FindExistingStructureAsync(null, requestData.Postcode);
+        if(dynamicsStructure.Result != null && dynamicsStructure.Result.bsr_name != null) {
+            var response = new RegisteredStructureModel {
+                Name = dynamicsStructure.Result.bsr_name,
+                Height = dynamicsStructure.Result.bsr_sectionheightinmetres.ToString(),
+                NumFloors = dynamicsStructure.Result.bsr_nooffloorsabovegroundlevel.ToString(),
+                ResidentialUnits = dynamicsStructure.Result.bsr_numberofresidentialunits.ToString(),
+                StructureAddress = new BuildingAddress {
+                    Postcode = dynamicsStructure.Result.bsr_postcode,
+                    Address = dynamicsStructure.Result.bsr_addressline1,
+                    AddressLineTwo = dynamicsStructure.Result.bsr_addressline2,
+                    Town = dynamicsStructure.Result.bsr_city
+                },
+                PapAddress = new BuildingAddress {
+                    Postcode = "postcode test",
+                    Address = "address line one",
+                    AddressLineTwo = "address line two",
+                    Town = "city"
+                },
+                PapName = "PAP name",
+                PapIsOrganisation = true
+            };
+            return await request.CreateObjectResponseAsync(response);
+        }
+        return request.CreateResponse(HttpStatusCode.BadRequest);
     }
+
+
 
     [Function(nameof(UpdateApplication))]
     public async Task<CustomHttpResponseData> UpdateApplication(
@@ -144,4 +167,21 @@ public class GetApplicationRequest
     public string ApplicationNumber { get; set; }
     public string EmailAddress { get; set; }
     public string OtpToken { get; set; }
+}
+
+public class RegisteredStructureModel
+{
+  public string Name { get; set; }
+  public string NumFloors { get; set; }
+  public string Height { get; set; }
+  public string ResidentialUnits { get; set; }
+  public BuildingAddress StructureAddress { get; set; }
+  public string PapName { get; set; }
+  public BuildingAddress PapAddress { get; set; }
+  public bool PapIsOrganisation { get; set; }
+}
+
+public class RegisteredStructureRequestModel {
+    public string Postcode {get; set;}
+    public string AddressLineOne {get; set;}
 }
