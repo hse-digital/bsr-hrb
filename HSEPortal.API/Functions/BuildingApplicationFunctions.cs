@@ -3,6 +3,7 @@ using System.Net;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
+using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Options;
@@ -82,26 +83,28 @@ public class BuildingApplicationFunctions
     [Function(nameof(GetRegisteredStructure))]
     public async Task<HttpResponseData> GetRegisteredStructure([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetRegisteredStructure")] HttpRequestData request) {
         var requestData = await request.ReadAsJsonAsync<RegisteredStructureRequestModel>();
-        var dynamicsStructure = dynamicsService.FindExistingStructureAsync(null, requestData.Postcode);
-        if(dynamicsStructure.Result != null && dynamicsStructure.Result.bsr_name != null) {
+        var structureAndAccountable = await dynamicsService.FindExistingStructureWithAccountablePersonAsync(requestData.Postcode);
+        DynamicsStructureWithAccount result = structureAndAccountable.value.Find(x => x.bsr_account_bsr_accountableperson_914.Length > 0 && x.bsr_account_bsr_accountableperson_914.Any(y => y.bsr_Independentsection != null));
+        IndependentSection resultStructure = result.bsr_account_bsr_accountableperson_914.First(x => x.bsr_Independentsection != null).bsr_Independentsection;
+        if(result != null && resultStructure != null) {
             var response = new RegisteredStructureModel {
-                Name = dynamicsStructure.Result.bsr_name,
-                Height = dynamicsStructure.Result.bsr_sectionheightinmetres.ToString(),
-                NumFloors = dynamicsStructure.Result.bsr_nooffloorsabovegroundlevel.ToString(),
-                ResidentialUnits = dynamicsStructure.Result.bsr_numberofresidentialunits.ToString(),
+                Name = resultStructure.bsr_name,
+                Height = resultStructure.bsr_sectionheightinmetres.ToString(),
+                NumFloors = resultStructure.bsr_nooffloorsabovegroundlevel.ToString(),
+                ResidentialUnits = resultStructure.bsr_numberofresidentialunits.ToString(),
                 StructureAddress = new BuildingAddress {
-                    Postcode = dynamicsStructure.Result.bsr_postcode,
-                    Address = dynamicsStructure.Result.bsr_addressline1,
-                    AddressLineTwo = dynamicsStructure.Result.bsr_addressline2,
-                    Town = dynamicsStructure.Result.bsr_city
+                    Postcode = resultStructure.bsr_postcode,
+                    Address = resultStructure.bsr_addressline1,
+                    AddressLineTwo = resultStructure.bsr_addressline2,
+                    Town = resultStructure.bsr_city
                 },
                 PapAddress = new BuildingAddress {
-                    Postcode = "postcode test",
-                    Address = "address line one",
-                    AddressLineTwo = "address line two",
-                    Town = "city"
+                    Postcode = result.address1_postalcode,
+                    Address = result.address1_line1,
+                    AddressLineTwo = result.address1_line2,
+                    Town = result.address1_city
                 },
-                PapName = "PAP name",
+                PapName = result.name,
                 PapIsOrganisation = true
             };
             return await request.CreateObjectResponseAsync(response);
