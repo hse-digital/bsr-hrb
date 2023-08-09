@@ -19,12 +19,13 @@ export class DuplicatesService {
 }
 
 export type RegisteredStructureModel = {
-  Name?: string,
-  NumFloors?: string,
-  Height?: string,
-  ResidentialUnits?: string,
-  StructureAddress?: AddressModel,
-  PapName?: string,
-  PapAddress?: AddressModel,
+  Name?: string;
+  NumFloors?: string;
+  Height?: string;
+  ResidentialUnits?: string;
+  StructureAddress?: AddressModel;
+  PapName?: string;
+  PapAddress?: AddressModel;
   PapIsOrganisation?: boolean;
+  BuildingName?: string;
 }

@@ -8,8 +8,7 @@ import { DuplicatesService, RegisteredStructureModel } from 'src/app/services/du
 
 @Component({
   selector: 'hse-already-registered-single',
-  templateUrl: './already-registered-single.component.html',
-  styleUrls: ['./already-registered-single.component.scss']
+  templateUrl: './already-registered-single.component.html'
 })
 export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
   public static route: string = "already-registered-single";
