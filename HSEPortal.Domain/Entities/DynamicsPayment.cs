@@ -12,7 +12,14 @@ public record DynamicsPayment(string bsr_paymentid = null, double? bsr_amountpai
     DynamicsPaymentCardType? bsr_cardtypecreditdebit = null,
     string bsr_govukpaystatus = null,
     string bsr_govukpaymentid = null,
-    DynamicsPaymentReconciliationStatus? bsr_paymentreconciliationstatus = null);
+    DynamicsPaymentReconciliationStatus? bsr_paymentreconciliationstatus = null,
+    string bsr_invoicenumber = null,
+    int? bsr_paymenttypecode = null,
+    string bsr_invoicecreationdate = null,
+    [property: JsonPropertyName("bsr_invoicedcontactid@odata.bind")]
+    string bsr_invoicedcontactid = null,
+    string bsr_purchaseordernumberifsupplied = null,
+    string bsr_emailaddress = null);
 
 public enum DynamicsPaymentCardType
 {

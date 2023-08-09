@@ -230,7 +230,7 @@ public class DynamicsSynchronisationFunctions
     [Function(nameof(CreateOrUpdatePayment))]
     public async Task CreateOrUpdatePayment([ActivityTrigger] BuildingApplicationPayment buildingApplicationPayment)
     {
-        await dynamicsService.CreatePayment(buildingApplicationPayment);
+        await dynamicsService.CreateCardPayment(buildingApplicationPayment);
     }
 
     [Function(nameof(GetPaymentStatus))]

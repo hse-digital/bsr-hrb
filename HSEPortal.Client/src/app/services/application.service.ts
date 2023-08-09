@@ -190,6 +190,10 @@ export class ApplicationService {
     await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
   }
 
+  async createInvoicePayment(paymentDetails: PaymentInvoiceDetails): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/InitialiseInvoicePayment/${this.model.id}`, paymentDetails));
+  }
+
   async getApplicationPayments(): Promise<any[]> {
     return await firstValueFrom(this.httpClient.get<any[]>(`api/GetApplicationPaymentStatus/${this.model.id}`));
   }
