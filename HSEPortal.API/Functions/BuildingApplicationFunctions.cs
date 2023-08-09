@@ -83,36 +83,82 @@ public class BuildingApplicationFunctions
     [Function(nameof(GetRegisteredStructure))]
     public async Task<HttpResponseData> GetRegisteredStructure([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetRegisteredStructure")] HttpRequestData request) {
         var requestData = await request.ReadAsJsonAsync<RegisteredStructureRequestModel>();
-        var structureAndAccountable = await dynamicsService.FindExistingStructureWithAccountablePersonAsync(requestData.Postcode);
-        DynamicsStructureWithAccount result = structureAndAccountable.value.Find(x => x.bsr_account_bsr_accountableperson_914.Length > 0 && x.bsr_account_bsr_accountableperson_914.Any(y => y.bsr_Independentsection != null));
-        IndependentSection resultStructure = result.bsr_account_bsr_accountableperson_914.First(x => x.bsr_Independentsection != null).bsr_Independentsection;
-        if(result != null && resultStructure != null) {
-            var response = new RegisteredStructureModel {
-                Name = resultStructure.bsr_name,
-                Height = resultStructure.bsr_sectionheightinmetres.ToString(),
-                NumFloors = resultStructure.bsr_nooffloorsabovegroundlevel.ToString(),
-                ResidentialUnits = resultStructure.bsr_numberofresidentialunits.ToString(),
-                StructureAddress = new BuildingAddress {
-                    Postcode = resultStructure.bsr_postcode,
-                    Address = resultStructure.bsr_addressline1,
-                    AddressLineTwo = resultStructure.bsr_addressline2,
-                    Town = resultStructure.bsr_city
-                },
-                PapAddress = new BuildingAddress {
-                    Postcode = result.address1_postalcode,
-                    Address = result.address1_line1,
-                    AddressLineTwo = result.address1_line2,
-                    Town = result.address1_city
-                },
-                PapName = result.name,
-                PapIsOrganisation = true
-            };
-            return await request.CreateObjectResponseAsync(response);
-        }
-        return request.CreateResponse(HttpStatusCode.BadRequest);
+        
+        if (!IsRequestDataValid(requestData)) return request.CreateResponse(HttpStatusCode.BadRequest);
+        
+        var dynamicsResponse = await dynamicsService.FindExistingStructureWithAccountablePersonAsync(requestData.Postcode);
+
+        RegisteredStructureModel responseModel = BuildAlreadyRegisteredStructureResponseModel(dynamicsResponse, requestData.AddressLineOne);
+        
+        return responseModel != null 
+            ? await request.CreateObjectResponseAsync(responseModel)
+            : request.CreateResponse(HttpStatusCode.ExpectationFailed);
     }
 
+    private bool IsRequestDataValid(RegisteredStructureRequestModel requestData) {
+        return requestData != null 
+            && requestData.Postcode != null 
+            && !requestData.Postcode.Equals(string.Empty) 
+            && requestData.AddressLineOne != null 
+            && !requestData.AddressLineOne.Equals(string.Empty);
+    }
 
+    private RegisteredStructureModel BuildAlreadyRegisteredStructureResponseModel(DynamicsResponse<DynamicsStructureWithAccount> dynamicsResponse, string addressLineOne) {
+        DynamicsStructureWithAccount structureAndAccountPerson = GetStructureWithAccountInformation(dynamicsResponse, addressLineOne);
+        Account_AccountablePerson accountablePerson = GetAccountablePersonInformation(structureAndAccountPerson);
+        IndependentSection structure = GetSectionInformation(accountablePerson);
+        if(structureAndAccountPerson != null && accountablePerson != null && structure != null) {
+            var response = new RegisteredStructureModel {
+                BuildingName = structure.bsr_BuildingId.bsr_name,
+                Name = structure.bsr_name,
+                Height = structure.bsr_sectionheightinmetres.ToString(),
+                NumFloors = structure.bsr_nooffloorsabovegroundlevel.ToString(),
+                ResidentialUnits = structure.bsr_numberofresidentialunits.ToString(),
+                StructureAddress = new BuildingAddress {
+                    Postcode = structure.bsr_postcode,
+                    Address = structure.bsr_addressline1,
+                    AddressLineTwo = structure.bsr_addressline2,
+                    Town = structure.bsr_city
+                }
+            };
+
+            bool PapIsOrganisation = accountablePerson.bsr_accountablepersontype == 760810001;
+            if (PapIsOrganisation) {
+                response = response with {
+                    PapAddress = new BuildingAddress {
+                        Postcode = structureAndAccountPerson.address1_postalcode,
+                        Address = structureAndAccountPerson.address1_line1,
+                        AddressLineTwo = structureAndAccountPerson.address1_line2,
+                        Town = structureAndAccountPerson.address1_city
+                    },
+                    PapName = structureAndAccountPerson.name,
+                    PapIsOrganisation = PapIsOrganisation
+                };
+            }
+            return response;
+        }
+        return null;
+    }
+
+    private DynamicsStructureWithAccount GetStructureWithAccountInformation(DynamicsResponse<DynamicsStructureWithAccount> data, string addressLineOne) {
+        if(data == null || addressLineOne == null) return null;
+        return data.value.Find(x => x.bsr_account_bsr_accountableperson_914.Length > 0 && x.bsr_account_bsr_accountableperson_914.Any(y => y.bsr_Independentsection != null && NormaliseAddress(addressLineOne).Contains(NormaliseAddress(y.bsr_Independentsection.bsr_addressline1))));
+    }
+
+    private string NormaliseAddress(string address) {
+        string result = address.ToLower().Replace("  ", " ");
+        return result; 
+    }
+
+    private Account_AccountablePerson GetAccountablePersonInformation(DynamicsStructureWithAccount data) {
+        if (data == null) return null;
+        return data.bsr_account_bsr_accountableperson_914.First(x => x.bsr_Independentsection != null);
+    }
+
+    private IndependentSection GetSectionInformation(Account_AccountablePerson data) {
+        if (data == null) return null;
+        return data.bsr_Independentsection;
+    }
 
     [Function(nameof(UpdateApplication))]
     public async Task<CustomHttpResponseData> UpdateApplication(
@@ -172,8 +218,9 @@ public class GetApplicationRequest
     public string OtpToken { get; set; }
 }
 
-public class RegisteredStructureModel
+public record RegisteredStructureModel
 {
+  public string BuildingName { get; set; }
   public string Name { get; set; }
   public string NumFloors { get; set; }
   public string Height { get; set; }

@@ -10,10 +10,10 @@ export class DuplicatesService {
 
   constructor(private httpClient: HttpClient) { }
 
-  async GetRegisteredStructureBy(postcode: string): Promise<RegisteredStructureModel> {
+  async GetRegisteredStructureBy(postcode: string, addressLineOne: string): Promise<RegisteredStructureModel> {
     return await firstValueFrom(this.httpClient.post<RegisteredStructureModel>("api/GetRegisteredStructure", {
       Postcode: postcode,
-      AddressLineOne: "address"
+      AddressLineOne: addressLineOne
     }));
   }
 }

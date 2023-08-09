@@ -181,6 +181,7 @@ public record Account_AccountablePerson
 {
     public string? _bsr_independentsection_value { get; set; }
     public string? bsr_accountablepersonid { get; set; }
+    public int? bsr_accountablepersontype {get; set; }
     public IndependentSection? bsr_Independentsection { get; set; }
 
 }

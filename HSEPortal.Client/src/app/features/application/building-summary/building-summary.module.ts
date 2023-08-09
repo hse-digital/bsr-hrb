@@ -48,6 +48,7 @@ const routes = new HseRoutes([
     HseRoute.protected(NotNeedRegisterSingleStructureComponent.route, NotNeedRegisterSingleStructureComponent, NotNeedRegisterSingleStructureComponent.title),
     HseRoute.protected(NotNeedRegisterMultiStructureComponent.route, NotNeedRegisterMultiStructureComponent, NotNeedRegisterMultiStructureComponent.title),
     HseRoute.protected(AlreadyRegisteredSingleComponent.route, AlreadyRegisteredSingleComponent, AlreadyRegisteredSingleComponent.title),
+    HseRoute.protected(AlreadyRegisteredMultiComponent.route, AlreadyRegisteredMultiComponent, AlreadyRegisteredMultiComponent.title),
   ])),
 ]);
 

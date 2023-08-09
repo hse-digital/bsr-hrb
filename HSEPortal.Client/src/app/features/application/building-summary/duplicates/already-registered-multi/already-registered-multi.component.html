@@ -8,7 +8,7 @@
         <govuk-table-col width="30%">Your answers</govuk-table-col>
         <govuk-table-row header="Name">
             <govuk-table-cell>{{registeredStructure?.Name}}</govuk-table-cell>
-            <govuk-table-cell>{{applicationService.model.BuildingName}}</govuk-table-cell>
+            <govuk-table-cell>{{applicationService.currentSection.Name}}</govuk-table-cell>
         </govuk-table-row>
         <govuk-table-row header="Number of floors">
             <govuk-table-cell>{{registeredStructure?.NumFloors}}</govuk-table-cell>
@@ -43,11 +43,12 @@
                 An personal or home address - we cannot share data about an individual's personal or home address
             </govuk-table-cell>
 
-            <govuk-table-cell><address-description [address]="applicationService.model.AccountablePersons[0].PapAddress"/></govuk-table-cell>
+            <!-- <govuk-table-cell><address-description [address]="applicationService.model.AccountablePersons[0].PapAddress"/></govuk-table-cell> -->
+            <govuk-table-cell></govuk-table-cell>
         </govuk-table-row>
     </govuk-table>
 
-    <h2 class="govuk-heading-s">It looks like you do not need to register {{applicationService.currentSection.Name}}</h2>
+    <h2 class="govuk-heading-m">It looks like you do not need to register {{applicationService.currentSection.Name}}</h2>
     <govuk-body>You can keep {{applicationService.currentSection.Name}} in this application, if:</govuk-body>
 
     <govuk-list classes='govuk-list--bullet'>
@@ -57,7 +58,8 @@
         <govuk-list-item text="it is the same {{applicationService.currentSection.Name}} but the listed principal accountable person is incorrect" />
     </govuk-list>
     
-    <govuk-radio-group title="Do you want to keep {{applicationService.currentSection.Name}} in this application?" [isPageHeading]=false [(model)]="model" [errorText]="hasErrors ? 'Select if you want to keep this structure': undefined">
+    <govuk-radio-group class="govuk-heading-s" title="Do you want to keep {{applicationService.currentSection.Name}} in this application?" [isPageHeading]=false [(model)]="model"
+        [errorText]="hasErrors ? 'Select yes if you would like to include {{applicationService.currentSection.Name}} in your application': undefined">
         <govuk-radio name="keep-structure" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
         <govuk-radio name="keep-structure" id="no" value="no" label="No" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
     </govuk-radio-group>

@@ -27,7 +27,8 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
       .then(async param => param['address'])
       .then(async addressIndex => {
         let postcode = this.applicationService.currentSection.Addresses[addressIndex ?? 0].Postcode;
-        return FieldValidations.IsNotNullOrWhitespace(postcode) ? await this.duplicatesService.GetRegisteredStructureBy(postcode!) : {};
+        let addressLineOne = this.applicationService.currentSection.Addresses[addressIndex ?? 0].Address;
+        return FieldValidations.IsNotNullOrWhitespace(postcode) ? await this.duplicatesService.GetRegisteredStructureBy(postcode!, addressLineOne!) : {};
       })
       .then(async structure => this.registeredStructure = structure);
   }
