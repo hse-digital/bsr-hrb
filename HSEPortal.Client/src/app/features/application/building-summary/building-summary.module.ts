@@ -26,6 +26,7 @@ import { SectionYearRangeComponent } from "./year-range/year-range.component";
 import { NotNeedRegisterSingleStructureComponent } from './not-need-register-single-structure/not-need-register-single-structure.component';
 import { NotNeedRegisterMultiStructureComponent } from './not-need-register-multi-structure/not-need-register-multi-structure.component';
 import { AlreadyRegisteredSingleComponent } from './duplicates/already-registered-single/already-registered-single.component';
+import { AlreadyRegisteredMultiComponent } from './duplicates/already-registered-multi/already-registered-multi.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
@@ -71,7 +72,8 @@ const routes = new HseRoutes([
     CertificateNumberComponent,
     NotNeedRegisterSingleStructureComponent,
     NotNeedRegisterMultiStructureComponent,
-    AlreadyRegisteredSingleComponent
+    AlreadyRegisteredSingleComponent,
+    AlreadyRegisteredMultiComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
