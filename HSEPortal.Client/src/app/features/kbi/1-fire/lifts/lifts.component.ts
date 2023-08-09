@@ -53,9 +53,15 @@ export class LiftsComponent  extends BaseComponent implements IHasNextPage, OnIn
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
+    let provisionsWithLocations = this.getProvisionsWithLocation();
     let fireSmokeProvisionIsNone = !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.length == 1 && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![0] == 'none';
     return fireSmokeProvisionIsNone || (!!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations 
               && Object.keys(this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations).length > 0
-              && this.applicationService.currentKbiSection.Fire.FireSmokeProvisions!.every(x => this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0));
+              && (provisionsWithLocations?.every(x => this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0) ?? false));
+  }
+
+  private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
+  getProvisionsWithLocation() {
+    return this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
   }
 }

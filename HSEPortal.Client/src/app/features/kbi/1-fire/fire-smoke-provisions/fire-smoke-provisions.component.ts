@@ -74,13 +74,19 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.includes('none')) {
+    let provisionsWithLocation = this.getProvisionsWithLocation();
+    if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.includes('none') && !!provisionsWithLocation && provisionsWithLocation.length > 0) {
       return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute, {
-        equipment: this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![0]
+        equipment: provisionsWithLocation![0]
       });
     }
 
     return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
+  }
+
+  private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
+  getProvisionsWithLocation() {
+    return this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
