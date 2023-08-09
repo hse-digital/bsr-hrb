@@ -55,17 +55,18 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   }
 
   mapLocations() {
+    let provisionsWithLocations = this.getProvisionsWithLocation();
     // init locations
     if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations || Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length == 0) {
       this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = {};
-      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(equipment => {
+      provisionsWithLocations?.forEach(equipment => {
         this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![equipment] = [];
       });
     }
 
     // Mapping locations
     let aux: Record<string, string[]> = {};
-    this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(x =>
+    provisionsWithLocations?.forEach(x =>
       aux[x] = (!!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x] && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0)
         ? this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]
         : []
