@@ -135,4 +135,9 @@ export class FireAndSmokeControlsSummaryComponent extends KbiSummaryComponent {
 
   }
 
+  private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
+  get ProvisionsWithLocation() {
+    return this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
+  }
+
 }
