@@ -28,7 +28,7 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, 
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService,
     private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
@@ -93,6 +93,8 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
       if (successfulPayments?.length > 0) {
         var sucesssfulpayment = successfulPayments.find(x => x.bsr_paymentreconciliationstatus !== 760_810_002 && x.bsr_paymentreconciliationstatus !== 760_810_003 && x.bsr_paymentreconciliationstatus !== 760_810_004);
         this.paymentStatus = sucesssfulpayment ? PaymentStatus.Success : PaymentStatus.Failed;
+      } else if (payments[0].bsr_govukpaystatus == 'open') {
+        this.paymentStatus = PaymentStatus.Pending;
       } else {
         this.paymentStatus = PaymentStatus.Failed;
       }
