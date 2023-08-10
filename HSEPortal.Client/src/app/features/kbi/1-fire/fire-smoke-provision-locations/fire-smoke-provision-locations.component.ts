@@ -28,26 +28,29 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
   }
 
   currentEquipment?: string;
+  provisionsWithLocations?: string[];
 
   ngOnInit(): void {
+    this.provisionsWithLocations = this.getProvisionsWithLocation();
+
     // init locations
     if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations || Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length == 0) {
       this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = {};
-      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(equipment => {
+      this.provisionsWithLocations?.forEach(equipment => {
         this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![equipment] = [];
       });
     }
 
     // check missing locations (in case the user modifies fire-smoke-provisions)
-    if (Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length != this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.length) {
-      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.filter(x => !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]).forEach(missingEquipment => {
+    if (Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length != this.provisionsWithLocations?.length) {
+      this.provisionsWithLocations?.filter(x => !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]).forEach(missingEquipment => {
         this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![missingEquipment] = [];
       });
     }
 
     // getting current equipment
     this.activatedRoute.queryParams.subscribe(params => {
-      this.currentEquipment = params['equipment'] ?? this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions![0];
+      this.currentEquipment = params['equipment'] ?? this.provisionsWithLocations![0];
     });
 
     // if equipment doesn't exist, go to "not found" page
@@ -58,10 +61,15 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
     this.errorMessage = `Select where the ${this.getEquipmentName(this.currentEquipment!)} are in ${this.getInfraestructureName()}`;
   }
 
+  private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
+  getProvisionsWithLocation() {
+    return this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
+  }
+
   getNextEquipment() {
-    let currentIndex = this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.indexOf(this.currentEquipment!) ?? -1;
-    let nextIndex = currentIndex + 1 < this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.length ? currentIndex + 1 : currentIndex;
-    return this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![nextIndex];
+    let currentIndex = this.provisionsWithLocations?.indexOf(this.currentEquipment!) ?? -1;
+    let nextIndex = currentIndex + 1 < this.provisionsWithLocations!.length ? currentIndex + 1 : currentIndex;
+    return this.provisionsWithLocations![nextIndex];
   }
 
   getInfraestructureName() {
@@ -105,6 +113,7 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
   }
 
   override canAccess(_: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.length > 0;
+    let provisionsWithLocations = this.getProvisionsWithLocation();
+    return !!provisionsWithLocations && provisionsWithLocations!.length > 0;
   }
 }

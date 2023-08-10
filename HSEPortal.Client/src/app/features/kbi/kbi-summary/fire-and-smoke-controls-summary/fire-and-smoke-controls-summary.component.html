@@ -17,7 +17,7 @@
     </govuk-summary-list-row>
 
   <ng-container *ngIf="!fireAndSmokeControls!.FireSmokeProvisions!.includes('none')">
-      <govuk-summary-list-row *ngFor="let equipment of fireAndSmokeControls!.FireSmokeProvisions" key="{{getEquipmentName(equipment)}}" [showAction]=false>
+      <govuk-summary-list-row *ngFor="let equipment of ProvisionsWithLocation" key="{{getEquipmentName(equipment)}}" [showAction]=false>
         <ng-container *ngFor="let location of getSmokeAndFireDeviceLocations(equipment)">
           <div>{{location}}</div>
         </ng-container>

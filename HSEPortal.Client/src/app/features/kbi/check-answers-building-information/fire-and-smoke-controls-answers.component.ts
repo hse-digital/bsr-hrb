@@ -143,4 +143,9 @@ export class FireAndSmokeControlsAnswersComponent extends BuildingInformationChe
 
   }
 
+  private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"];
+  get provisionsWithLocations() {
+    return this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
+  }
+
 }

@@ -55,17 +55,18 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   }
 
   mapLocations() {
+    let provisionsWithLocations = this.getProvisionsWithLocation();
     // init locations
     if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations || Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length == 0) {
       this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = {};
-      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(equipment => {
+      provisionsWithLocations?.forEach(equipment => {
         this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![equipment] = [];
       });
     }
 
     // Mapping locations
     let aux: Record<string, string[]> = {};
-    this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(x =>
+    provisionsWithLocations?.forEach(x =>
       aux[x] = (!!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x] && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0)
         ? this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]
         : []
@@ -74,13 +75,19 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.includes('none')) {
+    let provisionsWithLocation = this.getProvisionsWithLocation();
+    if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.includes('none') && !!provisionsWithLocation && provisionsWithLocation.length > 0) {
       return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute, {
-        equipment: this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![0]
+        equipment: provisionsWithLocation![0]
       });
     }
 
     return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
+  }
+
+  private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
+  getProvisionsWithLocation() {
+    return this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {

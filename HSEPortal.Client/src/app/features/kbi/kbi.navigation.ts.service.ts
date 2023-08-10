@@ -183,11 +183,18 @@ class FireSmokeProvisionsNavigationNode extends KbiNavigationNode {
       return `${KbiFireModule.baseRoute}/${FireSmokeProvisionsComponent.route}`;
     }
 
-    if (kbi.Fire.FireSmokeProvisions!.length == 1 && kbi.Fire.FireSmokeProvisions![0] === 'none') {
+    let provisionsWithLocation = this.getProvisionsWithLocation(kbi.Fire.FireSmokeProvisions);
+
+    if ((kbi.Fire.FireSmokeProvisions!.length == 1 && kbi.Fire.FireSmokeProvisions![0] === 'none') || provisionsWithLocation?.length == 0) {
       return this.liftsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
     }
 
     return this.fireSmokeProvisionLocationsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+  private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
+  getProvisionsWithLocation(FireSmokeProvisions: string[]) {
+    return FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
   }
 }
 
@@ -202,12 +209,19 @@ class FireSmokeProvisionLocationsNavigationNode extends KbiNavigationNode {
       return FireSmokeProvisionLocationsComponent.route;
     }
 
-    if (kbi.Fire.FireSmokeProvisions!.some(x => !kbi!.Fire.FireSmokeProvisionLocations![x] || kbi!.Fire.FireSmokeProvisionLocations![x].length == 0)) {
-      let nextEquipment = this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions!.find(x => !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x] || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length == 0);
+    let provisionsWithLocation = this.getProvisionsWithLocation(kbi.Fire.FireSmokeProvisions ?? []);
+
+    if (provisionsWithLocation?.some(x => !kbi!.Fire.FireSmokeProvisionLocations![x] || kbi!.Fire.FireSmokeProvisionLocations![x].length == 0)) {
+      let nextEquipment = provisionsWithLocation!.find(x => !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x] || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length == 0);
       return `${KbiFireModule.baseRoute}/${FireSmokeProvisionLocationsComponent.route}?equipment=${nextEquipment}`;
     }
 
     return this.liftsNavigationNode.getNextRoute(kbi, kbiSectionIndex);
+  }
+
+  private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
+  getProvisionsWithLocation(FireSmokeProvisions: string[]) {
+    return FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
   }
 }
 

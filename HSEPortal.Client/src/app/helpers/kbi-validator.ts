@@ -8,8 +8,9 @@ export class KbiValidator {
 
         isValid &&= FieldValidations.IsNotNullOrWhitespace(Fire.StrategyEvacuateBuilding);
         isValid &&= FieldValidations.IsNotNullOrEmpty(Fire.FireSmokeProvisions);
-        
-        if(isValid && !Fire.FireSmokeProvisions?.includes("none")) {
+
+        let provisionsWithLocation = this.getProvisionsWithLocation(Fire.FireSmokeProvisions);
+        if(isValid && !Fire.FireSmokeProvisions?.includes("none") && !!provisionsWithLocation && provisionsWithLocation?.length > 0) {
             isValid &&= FieldValidations.IsNotNullAndValuesAreNotEmpty(Fire.FireSmokeProvisionLocations);
         }
 
@@ -147,6 +148,11 @@ export class KbiValidator {
         isValid &&= this.validateBuildingUse(KbiSectionModel.BuildingUse);
 
         return isValid;
+    }
+
+    private static provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
+    static getProvisionsWithLocation(FireSmokeProvisions?: string[]) {
+      return FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
     }
 
 }
