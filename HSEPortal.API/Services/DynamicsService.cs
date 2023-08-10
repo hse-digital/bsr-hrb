@@ -498,13 +498,16 @@ public class DynamicsService
 
     private async Task<DynamicsContact> GetOrCreateInvoiceContactAsync(NewInvoicePaymentRequestModel invoicePaymentRequest)
     {
-        var invoiceContact = await FindContactAsync(invoicePaymentRequest.Name, invoicePaymentRequest.Email);
+        var splitName = invoicePaymentRequest.Name.Split(' ');
+        var lastName = string.Join(' ', splitName.Skip(1));
+        var invoiceContact = await FindContactAsync(splitName[0], lastName, invoicePaymentRequest.Email);
         if (invoiceContact == null)
         {
             var response = await dynamicsApi.Create("contacts",
                 new DynamicsContact
                 {
-                    fullname = invoicePaymentRequest.Name,
+                    firstname = splitName[0],
+                    lastname = lastName,
                     emailaddress1 = invoicePaymentRequest.Email,
                     address1_line1 = invoicePaymentRequest.AddressLine1,
                     address1_line2 = invoicePaymentRequest.AddressLine2,
@@ -529,7 +532,7 @@ public class DynamicsService
             bsr_billingaddress = string.Join(", ", new[] { invoiceData.AddressLine1, invoiceData.AddressLine2, invoiceData.Postcode, invoiceData.Town }.Where(x => !string.IsNullOrWhiteSpace(x))),
             bsr_amountpaid = Math.Round(integrationsOptions.PaymentAmount / 100, 2),
             bsr_purchaseordernumberifsupplied = invoiceData.OrderNumber,
-            bsr_govukpaystatus = "Created",
+            bsr_govukpaystatus = "open",
             bsr_emailaddress = invoiceData.Email
         }, true);
 
@@ -552,13 +555,19 @@ public class DynamicsService
     {
         var dynamicsPaymentId = invoicePaidEventData.Data.InvoiceData.InvoiceMetadata.PaymentId;
         var invoiceData = invoicePaidEventData.Data.InvoiceData;
+
+        var dynamicsPayment = new DynamicsPayment
+        {
+            bsr_govukpaystatus = invoiceData.Status == "paid" ? "success" : invoiceData.Status,
+            bsr_timeanddateoftransaction = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
+        };
+
+        if (invoiceData.Status == "paid")
+        {
+            dynamicsPayment = dynamicsPayment with { bsr_paymentreconciliationstatus = DynamicsPaymentReconciliationStatus.Successful };
+        }
         
-        await dynamicsApi.Update($"bsr_payments({dynamicsPaymentId})",
-            new DynamicsPayment
-            {
-                bsr_govukpaystatus = invoiceData.Status,
-                bsr_timeanddateoftransaction = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
-            });
+        await dynamicsApi.Update($"bsr_payments({dynamicsPaymentId})", dynamicsPayment);
     }
 
     public async Task<DynamicsPayment> GetPaymentByReference(string reference)
@@ -846,10 +855,10 @@ public class DynamicsService
         return response.value.FirstOrDefault();
     }
 
-    private async Task<DynamicsContact> FindContactAsync(string fullname, string email)
+    private async Task<DynamicsContact> FindContactAsync(string firstName, string lastName, string email)
     {
         var response = await dynamicsApi.Get<DynamicsResponse<DynamicsContact>>("contacts",
-            ("$filter", $"fullname eq '{fullname.EscapeSingleQuote()}' and emailaddress1 eq '{email.EscapeSingleQuote()}'"));
+            ("$filter", $"firstname eq '{firstName.EscapeSingleQuote()}' and lastname eq '{lastName.EscapeSingleQuote()}' and emailaddress1 eq '{email.EscapeSingleQuote()}'"));
 
         return response.value.FirstOrDefault();
     }
