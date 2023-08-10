@@ -6,6 +6,7 @@ using Flurl.Http;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Model.DynamicsSynchronisation;
+using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Model.Payment.Request;
 using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
@@ -75,7 +76,13 @@ public class PaymentFunctions
         
         return request.CreateResponse();
     }
-    
+
+    [Function(nameof(InvoicePaid))]
+    public async Task InvoicePaid([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
+    {
+        var invoiceRequest = await request.ReadAsJsonAsync<InvoicePaidEventData>();
+        await dynamicsService.UpdateInvoicePayment(invoiceRequest);
+    }
 
     [Function(nameof(GetPayment))]
     public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentReference}}")] HttpRequestData request,
@@ -96,13 +103,6 @@ public class PaymentFunctions
 
         var paymentFunctionResponse = mapper.Map<PaymentResponseModel>(response);
         return await request.CreateObjectResponseAsync(paymentFunctionResponse);
-    }
-
-    [Function(nameof(InvoicePaid))]
-    public async Task<HttpResponseData> InvoicePaid([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
-    {
-        var requestContent = await request.ReadAsStringAsync();
-        return request.CreateResponse();
     }
 
     private static PaymentRequestModel BuildPaymentRequestModel(BuildingApplicationModel applicationModel)

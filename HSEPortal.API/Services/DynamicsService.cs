@@ -548,6 +548,19 @@ public class DynamicsService
             });
     }
 
+    public async Task UpdateInvoicePayment(InvoicePaidEventData invoicePaidEventData)
+    {
+        var dynamicsPaymentId = invoicePaidEventData.Data.InvoiceData.InvoiceMetadata.PaymentId;
+        var invoiceData = invoicePaidEventData.Data.InvoiceData;
+        
+        await dynamicsApi.Update($"bsr_payments({dynamicsPaymentId})",
+            new DynamicsPayment
+            {
+                bsr_govukpaystatus = invoiceData.Status,
+                bsr_timeanddateoftransaction = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
+            });
+    }
+
     public async Task<DynamicsPayment> GetPaymentByReference(string reference)
     {
         var payments = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_transactionid eq '{reference}'"));
