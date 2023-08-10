@@ -10,7 +10,8 @@ public record DynamicsContact(string firstname = null, string lastname = null, s
     string jobRoleReferenceId = null,
     DynamicsContactType[] bsr_contacttype_contact = null,
     [property: JsonPropertyName("bsr_Address1CountryCode@odata.bind")]
-    string countryReferenceId = null) : DynamicsEntity<Contact>;
+    string countryReferenceId = null,
+    string fullname = null) : DynamicsEntity<Contact>;
 
 public record DynamicsContactType(string bsr_name = null, string bsr_contacttypeid = null,
     [property: JsonPropertyName("@odata.id")]

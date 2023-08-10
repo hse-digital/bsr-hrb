@@ -23,8 +23,6 @@ export class PaymentDeclarationComponent extends PageComponent<void> {
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-    // await applicationService.syncDeclaration();
-
     await this.applicationService.syncDeclaration();
   }
 
@@ -38,16 +36,7 @@ export class PaymentDeclarationComponent extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    // return this.navigationService.navigateRelative(PaymentSelectionComponent.route, this.activatedRoute);
-
-    var paymentResponse = await this.paymentService.InitialisePayment(this.applicationService.model);
-    this.applicationService.updateApplication();
-
-    if (typeof window !== 'undefined') {
-      window.location.href = paymentResponse.PaymentLink;
-    }
-
-    return true;
+    return this.navigationService.navigateRelative(PaymentSelectionComponent.route, this.activatedRoute);
   }
 
   isPapRegisteringFor() {

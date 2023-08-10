@@ -6,6 +6,7 @@ using Flurl.Http;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Model.DynamicsSynchronisation;
+using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Model.Payment.Request;
 using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
@@ -31,7 +32,8 @@ public class PaymentFunctions
     }
 
     [Function(nameof(InitialisePayment))]
-    public async Task<HttpResponseData> InitialisePayment([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(InitialisePayment)}/{{applicationId}}")] HttpRequestData request,
+    public async Task<HttpResponseData> InitialisePayment(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(InitialisePayment)}/{{applicationId}}")] HttpRequestData request,
         [CosmosDBInput("hseportal", "building-registrations", Id = "{applicationId}", PartitionKey = "{applicationId}", Connection = "CosmosConnection")]
         BuildingApplicationModel applicationModel)
     {
@@ -58,35 +60,33 @@ public class PaymentFunctions
         var paymentApiResponse = await response.GetJsonAsync<PaymentApiResponseModel>();
         var paymentResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
         await dynamicsService.NewPayment(applicationModel.Id, paymentResponse);
-        
+
         return await request.CreateObjectResponseAsync(paymentResponse);
     }
 
-    private static PaymentRequestModel BuildPaymentRequestModel(BuildingApplicationModel applicationModel)
+    [Function(nameof(InitialiseInvoicePayment))]
+    public async Task<HttpResponseData> InitialiseInvoicePayment(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(InitialiseInvoicePayment)}/{{applicationId}}")]
+        HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", Id = "{applicationId}", PartitionKey = "{applicationId}", Connection = "CosmosConnection")]
+        BuildingApplicationModel applicationModel)
     {
-        var address = applicationModel.AccountablePersons[0].PapAddress ?? applicationModel.AccountablePersons[0].Address;
-        var paymentModel = new PaymentRequestModel
-        {
-            Reference = Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray())[..22], @"\W", "0"),
-            Email = applicationModel.ContactEmailAddress,
-            CardHolderDetails = new CardHolderDetails
-            {
-                Name = $"{applicationModel.ContactFirstName} {applicationModel.ContactLastName}",
-                Address = new CardHolderAddress
-                {
-                    Line1 = address?.Address,
-                    Line2 = address?.AddressLineTwo,
-                    Postcode = address?.Postcode,
-                    City = address?.Town
-                }
-            }
-        };
-        return paymentModel;
+        var invoiceRequest = await request.ReadAsJsonAsync<NewInvoicePaymentRequestModel>();
+        await dynamicsService.NewInvoicePayment(applicationModel, invoiceRequest);
+        
+        return request.CreateResponse();
     }
 
+    [Function(nameof(InvoicePaid))]
+    public async Task InvoicePaid([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
+    {
+        var invoiceRequest = await request.ReadAsJsonAsync<InvoicePaidEventData>();
+        await dynamicsService.UpdateInvoicePayment(invoiceRequest);
+    }
 
     [Function(nameof(GetPayment))]
-    public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentReference}}")] HttpRequestData request, string paymentReference)
+    public async Task<HttpResponseData> GetPayment([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetPayment)}/{{paymentReference}}")] HttpRequestData request,
+        string paymentReference)
     {
         if (paymentReference == null || paymentReference.Equals(string.Empty))
             return request.CreateResponse(HttpStatusCode.BadRequest);
@@ -103,5 +103,21 @@ public class PaymentFunctions
 
         var paymentFunctionResponse = mapper.Map<PaymentResponseModel>(response);
         return await request.CreateObjectResponseAsync(paymentFunctionResponse);
+    }
+
+    private static PaymentRequestModel BuildPaymentRequestModel(BuildingApplicationModel applicationModel)
+    {
+        var address = applicationModel.AccountablePersons[0].PapAddress ?? applicationModel.AccountablePersons[0].Address;
+        var paymentModel = new PaymentRequestModel
+        {
+            Reference = Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray())[..22], @"\W", "0"),
+            Email = applicationModel.ContactEmailAddress,
+            CardHolderDetails = new CardHolderDetails
+            {
+                Name = $"{applicationModel.ContactFirstName} {applicationModel.ContactLastName}",
+                Address = new CardHolderAddress { Line1 = address?.Address, Line2 = address?.AddressLineTwo, Postcode = address?.Postcode, City = address?.Town }
+            }
+        };
+        return paymentModel;
     }
 }

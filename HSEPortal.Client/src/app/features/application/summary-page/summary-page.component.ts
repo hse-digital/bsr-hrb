@@ -43,7 +43,7 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
     this.sections = this.applicationService.model.Sections;
 
     var payments = await this.applicationService.getApplicationPayments()
-    this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
+    this.payment = payments.find(x => x.bsr_govukpaystatus == "success" || x.bsr_govukpaystatus == "paid");
   }
 
   canContinue() {

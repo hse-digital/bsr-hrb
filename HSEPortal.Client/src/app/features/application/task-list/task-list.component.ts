@@ -28,7 +28,7 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
 
   @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, 
+  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService,
     private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
   }
@@ -64,23 +64,18 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
   }
 
   navigateToPayment() {
-    // let appendRoute = PaymentModule.baseRoute;
-    // if (this.applicationService.model.PaymentType == undefined) {
-    //   appendRoute = `${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`;
-    // } else if (this.applicationService.model.PaymentType == 'invoice') {
-    //   if (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed') {
-    //     appendRoute = `${PaymentModule.baseRoute}/${PaymentInvoiceConfirmationComponent.route}`;
-    //   } else {
-    //     appendRoute = `${PaymentModule.baseRoute}/${PaymentInvoiceComponent.route}`;
-    //   }
-    // } else {
-    //   appendRoute = `${PaymentModule.baseRoute}/${PaymentSelectionComponent.route}`;
-    // }
-
-    // this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
-    
     let appendRoute = PaymentModule.baseRoute;
-    appendRoute = `${appendRoute}/${PaymentDeclarationComponent.route}`;
+    if (this.applicationService.model.PaymentType == undefined) {
+      appendRoute = `${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`;
+    } else if (this.applicationService.model.PaymentType == 'invoice') {
+      if (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed') {
+        appendRoute = `${PaymentModule.baseRoute}/${PaymentInvoiceConfirmationComponent.route}`;
+      } else {
+        appendRoute = `${PaymentModule.baseRoute}/${PaymentInvoiceComponent.route}`;
+      }
+    } else {
+      appendRoute = `${PaymentModule.baseRoute}/${PaymentSelectionComponent.route}`;
+    }
 
     this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
   }
@@ -93,11 +88,18 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
     var payments = await this.applicationService.getApplicationPayments();
 
     if (payments?.length > 0) {
-      var successfulPayments = payments.filter(x => x.bsr_govukpaystatus == 'success');
+      var successfulPayments = payments.filter(x => x.bsr_govukpaystatus == 'success' || x.bsr_govukpaystatus == 'paid');
 
       if (successfulPayments?.length > 0) {
         var sucesssfulpayment = successfulPayments.find(x => x.bsr_paymentreconciliationstatus !== 760_810_002 && x.bsr_paymentreconciliationstatus !== 760_810_003 && x.bsr_paymentreconciliationstatus !== 760_810_004);
         this.paymentStatus = sucesssfulpayment ? PaymentStatus.Success : PaymentStatus.Failed;
+
+        if (this.paymentStatus == PaymentStatus.Success) {
+          this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
+          await this.applicationService.updateApplication();
+        }
+      } else if (payments[0].bsr_govukpaystatus == 'open') {
+        this.paymentStatus = PaymentStatus.Pending;
       } else {
         this.paymentStatus = PaymentStatus.Failed;
       }

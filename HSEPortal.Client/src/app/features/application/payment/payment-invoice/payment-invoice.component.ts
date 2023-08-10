@@ -31,6 +31,10 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     applicationService.model.PaymentInvoiceDetails = this.model;
+    applicationService.model.PaymentInvoiceDetails!.Status = 'awaiting';
+    await this.applicationService.updateApplication();
+    
+    await applicationService.createInvoicePayment(this.model!);
   }
 
   override canAccess(applicationService: ApplicationService, __: ActivatedRouteSnapshot): boolean {

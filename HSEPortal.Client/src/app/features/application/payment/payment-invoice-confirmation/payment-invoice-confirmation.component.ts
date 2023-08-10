@@ -44,7 +44,7 @@ export class PaymentInvoiceConfirmationComponent extends PageComponent<string> {
       this.applicationService.updateApplication();
 
       if (typeof window !== 'undefined') {
-        window.location.href = paymentResponse.PaymentLink;
+        window.location.href = paymentResponse.PaymentLink!;
       }
     } else {
       await this.navigationService.navigateRelative(PaymentInvoiceComponent.route, this.activatedRoute);
