@@ -22,7 +22,7 @@ export class PaymentDeclarationComponent extends PageComponent<void> {
     await this.applicationService.updateApplication();
   }
 
-  override async onSave(applicationService: ApplicationService): Promise<void> {
+  override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
     await this.applicationService.syncDeclaration();
   }
 

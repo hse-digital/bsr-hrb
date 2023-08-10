@@ -29,14 +29,18 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
     await this.applicationService.updateApplication();
   }
 
-  override async onSave(applicationService: ApplicationService): Promise<void> {
+  override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
     applicationService.model.PaymentInvoiceDetails = this.model;
 
-    if (this.model?.OrderNumberOption != 'need') {
-      applicationService.model.PaymentInvoiceDetails!.Status = 'awaiting';
-    
+    if (isSaveAndContinue) {
+      if (this.model?.OrderNumberOption != 'need') {
+        applicationService.model.PaymentInvoiceDetails!.Status = 'awaiting';
+      
+        await this.applicationService.updateApplication();
+        await applicationService.createInvoicePayment(this.model!);
+      }
+    } else {
       await this.applicationService.updateApplication();
-      await applicationService.createInvoicePayment(this.model!);
     }
   }
 

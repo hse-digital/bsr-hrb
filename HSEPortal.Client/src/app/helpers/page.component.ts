@@ -28,7 +28,7 @@ export abstract class PageComponent<T> implements OnInit {
   @ViewChildren("summaryError") private summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   abstract onInit(applicationService: ApplicationService): Promise<void>;
-  abstract onSave(applicationService: ApplicationService): Promise<void> | void;
+  abstract onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> | void;
   abstract canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean;
   abstract isValid(): boolean;
   abstract navigateNext(): Promise<boolean | void>;
@@ -50,7 +50,7 @@ export abstract class PageComponent<T> implements OnInit {
       this.triggerScreenReaderNotification();
       this.applicationService.updateLocalStorage();
       if (this.updateOnSave) {
-        await this.saveAndUpdate();
+        await this.saveAndUpdate(true);
       }
 
       if (this.returnUrl) {
@@ -78,7 +78,7 @@ export abstract class PageComponent<T> implements OnInit {
       this.triggerScreenReaderNotification();
       this.applicationService.updateLocalStorage();
       if (this.updateOnSave) {
-        await this.saveAndUpdate();
+        await this.saveAndUpdate(false);
       }
       this.navigateBack();
     } else {
@@ -145,8 +145,8 @@ export abstract class PageComponent<T> implements OnInit {
     this.navigationService.navigate(route);
   }
 
-  protected async saveAndUpdate(): Promise<void> {
-    await this.onSave(this.applicationService);
+  protected async saveAndUpdate(isSaveAndContinue: boolean): Promise<void> {
+    await this.onSave(this.applicationService, isSaveAndContinue);
     await this.applicationService.updateApplication();
   }
 

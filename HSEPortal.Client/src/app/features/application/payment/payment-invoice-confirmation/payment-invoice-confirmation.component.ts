@@ -26,7 +26,7 @@ export class PaymentInvoiceConfirmationComponent extends PageComponent<string> {
     this.sendApplicationDataToBroadcastChannel();
   }
 
-  override async onSave(applicationService: ApplicationService): Promise<void> {
+  override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
     applicationService.model.PaymentType = this.model;
   }
 
