@@ -20,7 +20,7 @@ export class PaymentSelectionComponent extends PageComponent<string> {
     this.model = applicationService.model.PaymentType;
   }
 
-  override async onSave(applicationService: ApplicationService): Promise<void> {
+  override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
     applicationService.model.PaymentType = this.model;
   }
 
