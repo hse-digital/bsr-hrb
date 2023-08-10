@@ -326,7 +326,7 @@ export class PaymentModel {
   CreatedDate?: string;
   Status?: string;
   Finished?: boolean;
-  PaymentLink!: string;
+  PaymentLink?: string;
   Amount?: number;
   Email?: string;
   Reference?: string;
