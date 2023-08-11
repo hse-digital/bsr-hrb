@@ -467,6 +467,7 @@ public class DynamicsService
         var dynamicsApplication = await GetBuildingApplicationUsingId(buildingApplicationModel.Id);
 
         var dynamicsPayment = await CreateInvoicePayment(dynamicsApplication.bsr_buildingapplicationid, invoiceContact, invoicePaymentRequest);
+        await UpdateBuildingApplication(dynamicsApplication, new DynamicsBuildingApplication { bsr_applicationstage = BuildingApplicationStage.InvoiceRaised });
         var invoicePaymentResponse = await SendCreateInvoiceRequest(buildingApplicationModel, invoicePaymentRequest, dynamicsPayment, invoiceContact);
 
         await UpdateInvoicePayment(dynamicsPayment.bsr_paymentid, invoicePaymentResponse);

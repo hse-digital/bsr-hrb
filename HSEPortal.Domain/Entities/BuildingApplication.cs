@@ -31,7 +31,8 @@ public enum BuildingApplicationStage
     BuildingSummary = 760_810_000,
     AccountablePersons = 760_810_001,
     PayAndApply = 760_810_002,
-    ApplicationSubmitted = 760_810_003
+    ApplicationSubmitted = 760_810_003,
+    InvoiceRaised = 760_810_004
 }
 
 public enum ContinuedAnywaysOptions
