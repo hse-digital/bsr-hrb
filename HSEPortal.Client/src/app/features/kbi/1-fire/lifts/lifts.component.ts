@@ -53,11 +53,19 @@ export class LiftsComponent  extends BaseComponent implements IHasNextPage, OnIn
   }
 
   override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
+    let provisions = this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions;
     let provisionsWithLocations = this.getProvisionsWithLocation();
-    let fireSmokeProvisionIsNone = !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.length == 1 && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![0] == 'none';
-    return fireSmokeProvisionIsNone || (!!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations 
-              && Object.keys(this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations).length > 0
-              && (provisionsWithLocations?.every(x => this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0) ?? false));
+    let locations = this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations 
+
+    if(this.isNone(provisions)) return true;
+    
+    if(!provisions || provisions.length == 0) return false;
+
+    return !provisionsWithLocations || provisionsWithLocations.length == 0 || (!!locations && Object.keys(locations).length > 0 && Object.values(locations).every(x => x.length > 0));  
+  }
+
+  private isNone(provisions?: string[]) {
+    return !!provisions && provisions?.length == 1 && provisions![0] == 'none';
   }
 
   private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
