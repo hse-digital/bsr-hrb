@@ -58,8 +58,10 @@ public class KbiService
             await dynamicsApi.Delete($"/bsr_blockfiresmokeprovisions({item.bsr_blockfiresmokeprovisionid})");
         }
 
+        var provisionsWithoutLocation = new string[] {"risers_dry", "risers_wet", "fire_extinguishers"};
+        var provisionsWithLocation = fireData.FireSmokeProvisions.Where(x => !provisionsWithoutLocation.Contains(x));
         // common areas
-        foreach (var provision in fireData.FireSmokeProvisions)
+        foreach (var provision in provisionsWithLocation)
         {
             var locations = fireData.FireSmokeProvisionLocations[provision];
             await CreateFireOrSmokeProvisions(structure.bsr_blockid, provision, locations);
