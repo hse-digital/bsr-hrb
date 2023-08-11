@@ -35,7 +35,7 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
     if (isSaveAndContinue) {
       if (this.model?.OrderNumberOption != 'need') {
         applicationService.model.PaymentInvoiceDetails!.Status = 'awaiting';
-      
+
         await this.applicationService.updateApplication();
         await applicationService.createInvoicePayment(this.model!);
       }
@@ -49,14 +49,20 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
       applicationService.model.PaymentType == 'invoice';
   }
 
+  emailErrorMessage: string = '';
   override isValid(): boolean {
     this.errorFields = [];
 
     if (!FieldValidations.IsNotNullOrWhitespace(this.model!.Name))
       this.errorFields.push('Name');
 
-    if (!EmailValidator.isValid(this.model?.Email ?? ''))
+    if (!FieldValidations.IsNotNullOrWhitespace(this.model?.Email)) {
+      this.emailErrorMessage = 'Enter the email address that we need to send the invoice to';
       this.errorFields.push('Email');
+    } else if (!EmailValidator.isValid(this.model?.Email ?? '')) {
+      this.emailErrorMessage = 'You must enter an email address in the correct format, like name@example.com';
+      this.errorFields.push('Email');
+    }
 
     if (!FieldValidations.IsNotNullOrWhitespace(this.model?.AddressLine1))
       this.errorFields.push('AddressLine1');
