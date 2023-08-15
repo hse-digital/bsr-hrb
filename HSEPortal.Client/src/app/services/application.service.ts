@@ -281,6 +281,7 @@ export enum OutOfScopeReason {
 }
 
 export class Duplicate {
+  WhyContinue?: string;
   IsDuplicated?: boolean;
   Removed?: boolean;
 }

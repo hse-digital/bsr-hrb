@@ -25,6 +25,7 @@ import { SectionYearOfCompletionComponent } from "./year-of-completion/year-of-c
 import { SectionYearRangeComponent } from "./year-range/year-range.component";
 import { NotNeedRegisterSingleStructureComponent } from './not-need-register-single-structure/not-need-register-single-structure.component';
 import { NotNeedRegisterMultiStructureComponent } from './not-need-register-multi-structure/not-need-register-multi-structure.component';
+import { WhyContinueRegisterComponent } from './duplicates/why-continue-register/why-continue-register.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
@@ -45,6 +46,7 @@ const routes = new HseRoutes([
     HseRoute.protected(SectionPeopleLivingInBuildingComponent.route, SectionPeopleLivingInBuildingComponent, SectionPeopleLivingInBuildingComponent.title),
     HseRoute.protected(NotNeedRegisterSingleStructureComponent.route, NotNeedRegisterSingleStructureComponent, NotNeedRegisterSingleStructureComponent.title),
     HseRoute.protected(NotNeedRegisterMultiStructureComponent.route, NotNeedRegisterMultiStructureComponent, NotNeedRegisterMultiStructureComponent.title),
+    HseRoute.protected(WhyContinueRegisterComponent.route, WhyContinueRegisterComponent, WhyContinueRegisterComponent.title),
   ])),
 ]);
 
@@ -68,7 +70,8 @@ const routes = new HseRoutes([
     CertificateIssuerComponent,
     CertificateNumberComponent,
     NotNeedRegisterSingleStructureComponent,
-    NotNeedRegisterMultiStructureComponent
+    NotNeedRegisterMultiStructureComponent,
+    WhyContinueRegisterComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

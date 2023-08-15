@@ -1,0 +1,15 @@
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()" [processing]="processing">
+
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="not-applying-input" message="Select why you want to continue applying to register {{applicationService.model.BuildingName}}" />
+    </govuk-error-summary>
+
+    <govuk-radio-group title="Why do you want to continue applying to register {{applicationService.model.BuildingName}}?" 
+            [(model)]="model" #field [govukRequired]="field" id="" [errorText]="getErrorDescription(hasErrors, 'Select why you want to continue applying to register {{applicationService.model.BuildingName}}')">
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="why-continue" id="not-applying" value="not-applying" label="I'm not applying to register the building in the application BSR has already received ()"/>
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="why-continue" id="bsr-told-me" value="bsr-told-me" label="BSR told me to reregister {{applicationService.model.BuildingName}}"/>
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="why-continue" id="need-to-reregister" value="need-to-reregister" label="I need to reregister {{applicationService.model.BuildingName}} and will withdraw my original application"/>
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="why-continue" id="pap-incorrect" value="pap-incorrect" label="It is the same {{applicationService.model.BuildingName}} but the listed principal accountable person is incorrect"/>
+    </govuk-radio-group>
+
+</govuk-formpage>
