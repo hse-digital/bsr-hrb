@@ -98,6 +98,7 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
       return navigationService.navigateRelative(MoreInformationComponent.route, activatedRoute);
     }
 
+    this.applicationService._currentSectionIndex = this.getInScopeSections().length -1;
     return navigationService.navigateRelative(`../${AccountablePersonModule.baseRoute}/${AccountablePersonComponent.route}`, activatedRoute);
   }
 
@@ -118,6 +119,10 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   private getOutOfScopeSections() {
     return this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
+  }
+
+  private getInScopeSections() {
+    return this.applicationService.model.Sections.filter(section => !SectionHelper.isOutOfScope(section));
   }
 
   override canAccess(_: ActivatedRouteSnapshot): boolean {

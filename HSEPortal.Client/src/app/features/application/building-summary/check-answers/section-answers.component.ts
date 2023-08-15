@@ -23,12 +23,14 @@ export class SectionAnswersComponent implements OnInit {
     }
 
     navigateTo(url: string, query?: string) {
+        this.applicationService._currentSectionIndex = this.sectionIndex;
         this.navigationService.navigateRelative(`section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
             return: 'check-answers'
         });
     }
 
     navigateToAddress(url: string, addressIndex: number) {
+        this.applicationService._currentSectionIndex = this.sectionIndex;
         this.navigationService.navigateRelative(`section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
             return: 'check-answers',
             address: addressIndex + 1
