@@ -9,6 +9,7 @@ public class PaymentApiRequestModel
     public bool delayed_capture = false;
     public string email { get; set; }
     public ApiCardHolderDetails prefilled_cardholder_details { get; set; }
+    public Dictionary<string, object> metadata { get; set; }
 }
 
 public class ApiCardHolderDetails

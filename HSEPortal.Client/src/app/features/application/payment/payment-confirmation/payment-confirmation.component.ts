@@ -23,7 +23,6 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
     this.sendApplicationDataToBroadcastChannel();
 
     if (this.applicationService.model.PaymentType == 'card') {
-      await this.applicationService.syncPayment();
       this.activatedRoute.queryParams.subscribe(async query => {
         var paymentReference = query['reference'] ?? await this.getApplicationPaymentReference();
 
@@ -34,8 +33,6 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
 
         this.payment = await this.paymentService.GetPayment(paymentReference);
         if (this.payment.Status == 'success') {
-          this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
-          await this.applicationService.updateApplication();
           this.shouldRender = true;
         } else {
           this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
