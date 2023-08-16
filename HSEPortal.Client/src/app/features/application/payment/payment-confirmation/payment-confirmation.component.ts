@@ -33,6 +33,8 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
 
         this.payment = await this.paymentService.GetPayment(paymentReference);
         if (this.payment.Status == 'success') {
+          this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.PaymentComplete;
+          await this.applicationService.updateApplication();
           this.shouldRender = true;
         } else {
           this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
