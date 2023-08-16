@@ -1,45 +1,56 @@
-import { Component, QueryList, ViewChildren, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
 import { PapNamedRoleComponent } from '../pap-named-role/pap-named-role.component';
 import { ActingForSameAddressComponent } from '../acting-for-same-address/acting-for-same-address.component';
-import { GovukErrorSummaryComponent } from 'hse-angular';
 import { LeadNameComponent } from '../lead-name/lead-name.component';
-import { TitleService } from 'src/app/services/title.service';
 import { ApHelper } from 'src/app/helpers/ap-helper';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   templateUrl: './pap-who-are-you.component.html'
 })
-export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class PapWhoAreYouComponent extends PageComponent<string> {
   static route: string = 'who-are-you';
   static title: string = "What is your role at PAP organisation? - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+
 
   roleHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  previousAnswer?: string;
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
+    this.model = this.applicationService.currentAccountablePerson.Role;
     this.previousAnswer = this.applicationService.currentAccountablePerson.Role;
   }
 
-  getErrorMessage() {
-    return `Select if you are the named contact at ${this.applicationService.currentAccountablePerson.OrganisationName} or registering for them`;
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
   }
 
-  canContinue(): boolean {
-    this.roleHasErrors = !this.applicationService.currentAccountablePerson.Role;
+  override isValid(): boolean {
+    this.roleHasErrors = !this.model;
     return !this.roleHasErrors;
   }
 
+  override navigateNext(): Promise<boolean | void> {
+    if (this.applicationService.currentAccountablePerson.Role == 'named_contact') {
+      return this.navigationService.navigateRelative(PapNamedRoleComponent.route, this.activatedRoute);
+    }
+
+    if (this.applicationService.currentAccountablePerson.Role == 'employee') {
+      return this.navigationService.navigateRelative(LeadNameComponent.route, this.activatedRoute);
+    }
+
+    return this.navigationService.navigateRelative(ActingForSameAddressComponent.route, this.activatedRoute);
+  }
+
+  previousAnswer?: string;
   override async onSave(): Promise<void> {
+    this.applicationService.currentAccountablePerson.Role = this.model;
     let newAnswer = this.applicationService.currentAccountablePerson.Role;
     if (this.previousAnswer && this.previousAnswer != newAnswer) {
       this.returnUrl = undefined;
@@ -55,28 +66,14 @@ export class PapWhoAreYouComponent extends BaseComponent implements IHasNextPage
 
       await this.applicationService.updateApplication();
     }
-
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentAccountablePerson.Role == 'named_contact') {
-      return navigationService.navigateRelative(PapNamedRoleComponent.route, activatedRoute);
-    }
-
-    if (this.applicationService.currentAccountablePerson.Role == 'employee') {
-      return navigationService.navigateRelative(LeadNameComponent.route, activatedRoute);
-    }
-
-    return navigationService.navigateRelative(ActingForSameAddressComponent.route, activatedRoute);
+  getErrorMessage() {
+    return `Select if you are the named contact at ${this.applicationService.currentAccountablePerson.OrganisationName} or registering for them`;
   }
 
   sectionBuildingName() {
     return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
       this.applicationService.currentSection.Name;
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
-      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
   }
 }

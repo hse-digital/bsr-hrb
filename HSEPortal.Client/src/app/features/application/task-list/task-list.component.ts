@@ -1,14 +1,11 @@
-import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
-import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
-import { GovukErrorSummaryComponent } from "hse-angular";
-import { BaseComponent } from "src/app/helpers/base.component";
+import { Component } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApplicationService, BuildingApplicationStatus, PaymentStatus } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
 import { PaymentDeclarationComponent } from "../payment/payment-declaration/payment-declaration.component";
 import { PaymentModule } from "../payment/payment.module";
 import { BuildingSummaryNavigation } from "src/app/features/application/building-summary/building-summary.navigation";
 import { AccountablePersonNavigation } from "src/app/features/application/accountable-person/accountable-person.navigation";
+import { PageComponent } from "src/app/helpers/page.component";
 import { PaymentInvoiceComponent } from "../payment/payment-invoice/payment-invoice.component";
 import { PaymentSelectionComponent } from "../payment/payment-selection/payment-selection.component";
 import { PaymentInvoiceConfirmationComponent } from "../payment/payment-invoice-confirmation/payment-invoice-confirmation.component";
@@ -16,8 +13,7 @@ import { PaymentInvoiceConfirmationComponent } from "../payment/payment-invoice-
 @Component({
   templateUrl: './task-list.component.html'
 })
-export class ApplicationTaskListComponent extends BaseComponent implements OnInit {
-
+export class ApplicationTaskListComponent extends PageComponent<void> {
   static route: string = '';
   static title: string = "Registration task list - Register a high-rise building - GOV.UK";
 
@@ -26,15 +22,13 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
   paymentEnum = PaymentStatus;
   paymentStatus?: PaymentStatus;
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService,
-    private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute, private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation) {
+    super(activatedRoute);
   }
 
   checkingStatus = true;
-  async ngOnInit(): Promise<void> {
+
+  override async onInit(applicationService: ApplicationService): Promise<void> {
     if (this.containsFlag(BuildingApplicationStatus.BlocksInBuildingComplete)) this.completedSections++;
     if (this.containsFlag(BuildingApplicationStatus.AccountablePersonsComplete)) {
       await this.getPaymentStatus();
@@ -45,12 +39,18 @@ export class ApplicationTaskListComponent extends BaseComponent implements OnIni
     this.checkingStatus = false;
   }
 
-  canContinue(): boolean {
+  override async onSave(applicationService: ApplicationService): Promise<void> { }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return this.applicationService.model?.id !== undefined && this.applicationService.model?.id == routeSnapshot.params['id'];
+  }
+
+  override isValid(): boolean {
     return true;
   }
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return this.applicationService.model?.id !== undefined && this.applicationService.model?.id == routeSnapshot.params['id'];
+  override async navigateNext(): Promise<boolean> {
+    return Promise.resolve(true);
   }
 
   async navigateToSections() {

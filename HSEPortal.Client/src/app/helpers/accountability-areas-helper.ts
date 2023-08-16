@@ -1,16 +1,16 @@
-import { ApplicationService, SectionAccountability, SectionModel } from "../services/application.service";
+import { AccountablePersonModel, ApplicationService, SectionAccountability, SectionModel } from "../services/application.service";
 
 export class AccountabilityAreasHelper {
 
-    static updateAccountabilityAreas(applicationService: ApplicationService, accountablePersonIndex: number, section: SectionModel, area: string) {
-        let accountability = AccountabilityAreasHelper.getAccountabilityFor(applicationService, accountablePersonIndex, section);
+    static updateAccountabilityAreas(AccountablePersons: AccountablePersonModel[], BuildingName: string, accountablePersonIndex: number, section: SectionModel, area: string) {
+        let accountability = AccountabilityAreasHelper.getAccountabilityFor(AccountablePersons, BuildingName, accountablePersonIndex, section);
 
         if (accountablePersonIndex == 0 && area !== 'none' && accountability.includes('none')) {
             let noneIndex = accountability.indexOf('none');
             if (noneIndex > -1) accountability.splice(noneIndex, 1);
         }
 
-        if (!AccountabilityAreasHelper.isApAccountableFor(applicationService, accountablePersonIndex, section, area)) {
+        if (!AccountabilityAreasHelper.isApAccountableFor(AccountablePersons, BuildingName, accountablePersonIndex, section, area)) {
             accountability.push(area);
         } else {
             let areaIndex = accountability.indexOf(area);
@@ -20,22 +20,22 @@ export class AccountabilityAreasHelper {
         return accountability;
     }
 
-    static isApAccountableFor(applicationService: ApplicationService, apIndex: number, section: SectionModel, area: string): boolean {
-        return applicationService.model.AccountablePersons[apIndex]?.SectionsAccountability
-            ?.find(x => x.SectionName == (section.Name ?? applicationService.model.BuildingName))
+    static isApAccountableFor(AccountablePersons: AccountablePersonModel[], BuildingName: string, apIndex: number, section: SectionModel, area: string): boolean {
+        return AccountablePersons[apIndex]?.SectionsAccountability
+            ?.find(x => x.SectionName == (section.Name ?? BuildingName))
             ?.Accountability?.includes(area) ?? false;
     }
 
-    static getAccountabilityFor(applicationService: ApplicationService, accountablePersonIndex: number, section: SectionModel) {
-        return applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability
-            ?.find(x => x.SectionName == (section.Name ?? applicationService.model.BuildingName))?.Accountability ?? [];
+    static getAccountabilityFor(AccountablePersons: AccountablePersonModel[], BuildingName: string, accountablePersonIndex: number, section: SectionModel) {
+        return AccountablePersons[accountablePersonIndex].SectionsAccountability
+            ?.find(x => x.SectionName == (section.Name ?? BuildingName))?.Accountability ?? [];
     }
 
     private static areasOfAccountability: string[] = ["routes", "maintenance", "facilities"];
-    static getNotAllocatedAreasOf(applicationService: ApplicationService, section: SectionModel) {
-        let accountabilityAreasOfSection = applicationService.model.AccountablePersons
+    static getNotAllocatedAreasOf(AccountablePersons: AccountablePersonModel[], BuildingName: string, section: SectionModel) {
+        let accountabilityAreasOfSection = AccountablePersons
             .flatMap(x => x.SectionsAccountability)
-            .filter(x => x?.SectionName == (section.Name ?? applicationService.model.BuildingName!))
+            .filter(x => x?.SectionName == (section.Name ?? BuildingName!))
             .flatMap(x => x?.Accountability);
 
         return this.areasOfAccountability.filter(x => !accountabilityAreasOfSection.includes(x));

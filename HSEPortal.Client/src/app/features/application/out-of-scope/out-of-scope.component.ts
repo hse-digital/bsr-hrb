@@ -1,37 +1,37 @@
-import { Component, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import { GovukErrorSummaryComponent } from "hse-angular";
-import { BaseComponent } from "src/app/helpers/base.component";
+import { Component } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
+import { PageComponent } from "src/app/helpers/page.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
-import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService, OutOfScopeReason, Scope, SectionModel } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   templateUrl: 'out-of-scope.component.html'
 })
-export class BuildingOutOfScopeComponent extends BaseComponent {
+export class BuildingOutOfScopeComponent extends PageComponent<void> {
   static route: string = 'out-of-scope';
   static title: string = "You do not need to register this building - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  canContinue(): boolean {
+  override onInit(applicationService: ApplicationService): void { }
+  
+  override async onSave(applicationService: ApplicationService): Promise<void> { }
+  
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService);
+  }
+  
+  override isValid(): boolean {
     return true;
   }
+  
+  override async navigateNext(): Promise<void> { }
 
   async registerAnother() {
     this.applicationService.clearApplication();
     await this.navigationService.navigate('select');
-  }
-
-  override canAccess(_: ActivatedRouteSnapshot) {
-    return ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService);
   }
 
   getOutOfScopeReason(section: SectionModel) {

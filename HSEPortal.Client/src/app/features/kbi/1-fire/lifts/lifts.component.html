@@ -11,7 +11,7 @@
                 <h1 class="govuk-heading-l">Types of lift in {{getInfraestructureName()}}</h1>
 
                 <govuk-checkbox-none title="This is not a complete list. It includes only the equipment we need to know about." [isPageHeading]=false fieldsetClass="plainText"
-                    hint="Select all that apply" [errorText]="getErrorDescription(liftsHasErrors, errorMessage!)" (onKeyupEnter)="saveAndContinue()" [(model)]="applicationService.currentKbiSection!.Fire.Lifts!">
+                    hint="Select all that apply" [errorText]="getErrorDescription(liftsHasErrors, errorMessage!)" (onKeyupEnter)="saveAndContinue()" [(model)]="model!">
                     <checkbox-option text="Evacuation lift" value="evacuation" id="evacuation" hint="Has structural, electrical and fire protection. Used to evacuate people with a disability or extra needs." />
                     <checkbox-option text="Firefighters lift" value="firefighters" id="firefighters" hint="Has protection, controls and signals for firefighters to control it. Installed after the 2003 British Standard for these lifts was first published." />
                     <checkbox-option text="Fire-fighting lift" value="fire-fighting" id="fire-fighting" hint="Similar to firefighters lifts but less stringent. Installed after the 1986 British Standard for these lifts was first published." />

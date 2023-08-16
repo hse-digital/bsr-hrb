@@ -1,35 +1,30 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApHelper } from 'src/app/helpers/ap-helper';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { AccountablePersonModel, ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { ApNameComponent } from '../ap-name/ap-name.component';
 import { OrganisationTypeComponent } from '../organisation/organisation-type/organisation-type.component';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   templateUrl: './accountable-person-type.component.html'
 })
-export class AccountablePersonTypeComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class AccountablePersonTypeComponent extends PageComponent<string> {
   static route: string = 'accountable-person-type';
   static title: string = "AP Type - Register a high-rise building - GOV.UK";
+  
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
+  
   otherAccountablePersonHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
+  
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  } 
 
   previousAnswer?: string;
-  ngOnInit(): void {
-    this.previousAnswer = this.applicationService.currentAccountablePerson.Type;
-  }
 
   override async onSave(): Promise<void> {
+    this.applicationService.currentAccountablePerson.Type = this.model;
     let newAnswer = this.applicationService.currentAccountablePerson.Type;
     if (this.previousAnswer && this.previousAnswer != newAnswer) {
       this.returnUrl = undefined;
@@ -38,17 +33,22 @@ export class AccountablePersonTypeComponent extends BaseComponent implements IHa
     }
   }
 
-  canContinue(): boolean {
-    this.otherAccountablePersonHasErrors = !this.applicationService.currentAccountablePerson.Type;
+  override onInit(applicationService: ApplicationService): void {
+    this.previousAnswer = this.applicationService.currentAccountablePerson.Type;
+    this.model = this.applicationService.currentAccountablePerson.Type;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService) && this.applicationService._currentAccountablePersonIndex > 0;
+  }
+
+  override isValid(): boolean {
+    this.otherAccountablePersonHasErrors = !this.model;
     return !this.otherAccountablePersonHasErrors;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+  override navigateNext(): Promise<boolean | void> {
     let route = this.applicationService.currentAccountablePerson.Type == 'organisation' ? OrganisationTypeComponent.route : ApNameComponent.route;
-    return navigationService.navigateRelative(route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return ApHelper.isApAvailable(routeSnapshot, this.applicationService) && this.applicationService._currentAccountablePersonIndex > 0;
+    return this.navigationService.navigateRelative(route, this.activatedRoute);
   }
 }

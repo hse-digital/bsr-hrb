@@ -1,33 +1,50 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { WallsHplComponent } from '../walls-hpl/walls-hpl.component';
 import { EstimatedPercentageComponent } from '../estimated-percentage/estimated-percentage.component';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   selector: 'hse-walls-acm',
   templateUrl: './walls-acm.component.html'
 })
-export class WallsAcmComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class WallsAcmComponent extends PageComponent<string> {
   static route: string = 'acm';
   static title: string = "ACM on outside walls - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-  
   errorMessage?: string;
   wallsAcmHasErrors = false;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
+    this.model = this.applicationService.currentKbiSection!.Walls.WallACM;
     this.errorMessage = `Select whether the aluminium composite material (ACM) meets the fire classification A2-s1, d0 or better, has passed a large-scale fire test to BS8414, or neither of these`;
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.Walls.WallACM = this.model;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return !!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials 
+      && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.length > 0 
+      && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes('acm');
+  }
+
+  override isValid(): boolean {
+    this.wallsAcmHasErrors = !this.model;
+    return !this.wallsAcmHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    if (this.doesExternalWallMaterialsIncludes('hpl')) {
+      return this.navigationService.navigateRelative(WallsHplComponent.route, this.activatedRoute);
+    }
+    return this.navigationService.navigateRelative(EstimatedPercentageComponent.route, this.activatedRoute);
   }
 
   getInfraestructureName(){
@@ -36,26 +53,7 @@ export class WallsAcmComponent extends BaseComponent implements IHasNextPage, On
       : this.applicationService.currentKbiSection!.StructureName;
   }
 
-  canContinue(): boolean {
-    this.wallsAcmHasErrors = !this.applicationService.currentKbiSection!.Walls.WallACM;
-    return !this.wallsAcmHasErrors;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.doesExternalWallMaterialsIncludes('hpl')) {
-      return navigationService.navigateRelative(WallsHplComponent.route, activatedRoute);
-    }
-    return navigationService.navigateRelative(EstimatedPercentageComponent.route, activatedRoute);
-  }
-
   doesExternalWallMaterialsIncludes(material: string) {
     return this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes(material);
   }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials 
-      && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.length > 0 
-      && this.applicationService.currentKbiSection!.Walls.ExternalWallMaterials!.includes('acm');
-  }
-
 }

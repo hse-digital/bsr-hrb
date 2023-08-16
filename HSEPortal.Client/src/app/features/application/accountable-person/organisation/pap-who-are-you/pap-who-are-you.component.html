@@ -10,13 +10,13 @@
         </govuk-error-summary>
 
         <govuk-radio-group title="Are you the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}?" 
-          [isPageHeading]=true [(model)]="applicationService.currentAccountablePerson.Role" #field [govukRequired]="field"
+          [isPageHeading]=true [(model)]="model" #field [govukRequired]="field"
           [errorText]="getErrorDescription(roleHasErrors, getErrorMessage())">
           <govuk-body>This is the person at {{applicationService.currentAccountablePerson.OrganisationName}} that you want us to talk to about building safety issues. We will not serve notices on this person.</govuk-body>
 
-          <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-named_contact" value="named_contact" label="Yes, I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-employee" value="employee" label="No, but I am an employee of {{applicationService.currentAccountablePerson.OrganisationName}}" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currentAccountablePerson.Role" name="application-group" id="who_are_you-registering_for" value="registering_for" label="No, I am not part of {{applicationService.currentAccountablePerson.OrganisationName}} but I have been appointed to register {{sectionBuildingName()}} for them" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model" name="application-group" id="who_are_you-named_contact" value="named_contact" label="Yes, I am the named contact at {{applicationService.currentAccountablePerson.OrganisationName}}" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model" name="application-group" id="who_are_you-employee" value="employee" label="No, but I am an employee of {{applicationService.currentAccountablePerson.OrganisationName}}" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model" name="application-group" id="who_are_you-registering_for" value="registering_for" label="No, I am not part of {{applicationService.currentAccountablePerson.OrganisationName}} but I have been appointed to register {{sectionBuildingName()}} for them" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
         </govuk-radio-group>
 
       </div>

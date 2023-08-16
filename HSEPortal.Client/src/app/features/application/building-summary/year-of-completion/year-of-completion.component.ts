@@ -1,20 +1,18 @@
-import { Component, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
-import { GovukErrorSummaryComponent } from "hse-angular";
-import { BaseComponent } from "src/app/helpers/base.component";
-import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
+import { Component } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { TitleService } from 'src/app/services/title.service';
 import { SectionAddressComponent } from "../address/address.component";
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 import { SectionYearRangeComponent } from "../year-range/year-range.component";
+import { PageComponent } from "src/app/helpers/page.component";
+
+export type YearOfCompletion = {YearOfCompletionOption?: string, YearOfCompletion?: string}
 
 @Component({
   templateUrl: './year-of-completion.component.html'
 })
-export class SectionYearOfCompletionComponent extends BaseComponent implements IHasNextPage {
+export class SectionYearOfCompletionComponent extends PageComponent<YearOfCompletion> {
   static route: string = 'year-of-completion';
   static title: string = "When was the section originally built? - Register a high-rise building - GOV.UK";
 
@@ -22,15 +20,30 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
   exactYearHasErrors = false;
   errorMessage = `Select when ${this.sectionBuildingName()} was originally built`;
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  canContinue(): boolean {
-    let yearOfCompletionOption = this.applicationService.currentSection.YearOfCompletionOption;
-    let yearOfCompletion = this.applicationService.currentSection.YearOfCompletion;
+
+
+  override onInit(applicationService: ApplicationService): void {
+    this.model = {};
+    this.model.YearOfCompletionOption = this.applicationService.currentSection.YearOfCompletionOption;
+    this.model.YearOfCompletion = this.applicationService.currentSection.YearOfCompletion;
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentSection.YearOfCompletionOption = this.model?.YearOfCompletionOption;
+    this.applicationService.currentSection.YearOfCompletion = this.model?.YearOfCompletion;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
+  }
+
+  override isValid(): boolean {
+    let yearOfCompletionOption = this.model?.YearOfCompletionOption;
+    let yearOfCompletion = this.model?.YearOfCompletion;
 
     this.exactYearHasErrors = false;
     this.yearOfCompletionHasErrors = false;
@@ -60,35 +73,31 @@ export class SectionYearOfCompletionComponent extends BaseComponent implements I
     return !this.yearOfCompletionHasErrors && !this.exactYearHasErrors;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+  override navigateNext(): Promise<boolean> {
     let route = CertificateIssuerComponent.route;
 
-    if (this.applicationService.currentSection.YearOfCompletionOption == 'not-completed') {
+    if (this.model?.YearOfCompletionOption == 'not-completed') {
       route = SectionAddressComponent.route;
-    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-exact') {
-      var yearOfCompletion = Number(this.applicationService.currentSection.YearOfCompletion);
+    } else if (this.model?.YearOfCompletionOption == 'year-exact') {
+      var yearOfCompletion = Number(this.model?.YearOfCompletion);
       if (yearOfCompletion && yearOfCompletion < 1985) {
         route = SectionAddressComponent.route;
       }
-    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
+    } else if (this.model?.YearOfCompletionOption == 'year-not-exact') {
       route = SectionYearRangeComponent.route;
     }
 
-    return navigationService.navigateRelative(route, activatedRoute);
+    return this.navigationService.navigateRelative(route, this.activatedRoute);
   }
 
   radioChange() {
-    if (this.applicationService.currentSection.YearOfCompletionOption != 'year-exact') {
-      this.applicationService.currentSection.YearOfCompletion = undefined;
+    if (this.model?.YearOfCompletionOption != 'year-exact') {
+      this.model!.YearOfCompletion = undefined;
     }
   }
 
   sectionBuildingName() {
     return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
       this.applicationService.currentSection.Name;
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 }

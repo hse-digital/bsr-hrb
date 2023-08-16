@@ -27,8 +27,8 @@ export abstract class PageComponent<T> implements OnInit {
   @ViewChildren(GovukRequiredDirective) private requiredFields?: QueryList<GovukRequiredDirective>;
   @ViewChildren("summaryError") private summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  abstract onInit(applicationService: ApplicationService): Promise<void>;
-  abstract onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> | void;
+  abstract onInit(applicationService: ApplicationService): Promise<void> | void;
+  abstract onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean): Promise<void> | void;
   abstract canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean;
   abstract isValid(): boolean;
   abstract navigateNext(): Promise<boolean | void>;

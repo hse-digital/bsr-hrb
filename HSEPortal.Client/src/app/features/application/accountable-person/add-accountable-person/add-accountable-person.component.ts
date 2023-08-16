@@ -1,47 +1,52 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
 import { AccountablePersonTypeComponent } from './accountable-person-type.component';
 import { AreasAccountabilityComponent } from '../areas-accountability/areas-accountability.component';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   selector: 'hse-add-accountable-person',
   templateUrl: './add-accountable-person.component.html',
 })
-export class AddAccountablePersonComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class AddAccountablePersonComponent extends PageComponent<string> {
   static route: string = 'add-more';
   static title: string = "Add another accountable person - Register a high-rise building - GOV.UK";
+  
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
+  
   addAccountablePersonHasError = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  } 
 
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
+    this.model = this.applicationService.currentAccountablePerson.AddAnother;    
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsInProgress;
     
     this.applicationService.updateApplication();
   }
 
-  canContinue(): boolean {
-    this.addAccountablePersonHasError = !this.applicationService.currentAccountablePerson.AddAnother;
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentAccountablePerson.AddAnother = this.model;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return this.applicationService.model.AccountablePersons?.length >= 1;
+  }
+
+  override isValid(): boolean {
+    this.addAccountablePersonHasError = !this.model;
     return !this.addAccountablePersonHasError;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+  override navigateNext(): Promise<boolean | void> {
     if (this.applicationService.currentAccountablePerson.AddAnother == 'yes') {
       let newAp = this.applicationService.startNewAccountablePerson();
-      return navigationService.navigateRelative(`${newAp}/${AccountablePersonTypeComponent.route}`, activatedRoute);
+      return this.navigationService.navigateRelative(`${newAp}/${AccountablePersonTypeComponent.route}`, this.activatedRoute);
     }
 
-    return navigationService.navigateRelative(AreasAccountabilityComponent.route, activatedRoute);
+    return this.navigationService.navigateRelative(AreasAccountabilityComponent.route, this.activatedRoute);
   }
 
   principalName() {
@@ -66,9 +71,5 @@ export class AddAccountablePersonComponent extends BaseComponent implements IHas
       return ap.OrganisationName;
 
     return `${ap.FirstName} ${ap.LastName}`;
-  }
-
-  override canAccess(_: ActivatedRouteSnapshot) {
-    return this.applicationService.model.AccountablePersons?.length >= 1;
   }
 }

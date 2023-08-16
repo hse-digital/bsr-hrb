@@ -38,7 +38,7 @@ export class PaymentDeclarationComponent extends PageComponent<void> {
   override async navigateNext(): Promise<boolean | void> {
     return this.navigationService.navigateRelative(PaymentSelectionComponent.route, this.activatedRoute);
   }
-
+  
   isPapRegisteringFor() {
     return this.applicationService.model.AccountablePersons[0].Role == "registering_for";
   }

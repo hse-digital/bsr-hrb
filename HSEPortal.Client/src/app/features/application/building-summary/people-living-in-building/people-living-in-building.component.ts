@@ -1,37 +1,54 @@
-import { Component, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
-import { BaseComponent } from "src/app/helpers/base.component";
+import { Component } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApplicationService, OutOfScopeReason } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
-import { GovukErrorSummaryComponent } from "hse-angular";
-import { TitleService } from 'src/app/services/title.service';
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
+import { PageComponent } from "src/app/helpers/page.component";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
 })
-export class SectionPeopleLivingInBuildingComponent extends BaseComponent implements IHasNextPage {
+export class SectionPeopleLivingInBuildingComponent extends PageComponent<string> {
   static route: string = 'people-living';
   static title: string = "Are people living in the building? - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
+
 
   peopleLivingHasErrors = false;
 
-  canContinue(): boolean {
-    let peopleLivingInBuilding = this.applicationService.currentSection.PeopleLivingInBuilding;
-    this.peopleLivingHasErrors = !peopleLivingInBuilding;
-    this.IsOutOfScope(peopleLivingInBuilding);
+  override onInit(applicationService: ApplicationService): void {
+    this.model = this.applicationService.currentSection.PeopleLivingInBuilding;
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentSection.PeopleLivingInBuilding = this.model;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
+  }
+
+  override isValid(): boolean {
+    this.peopleLivingHasErrors = !this.model;
+    if(!this.peopleLivingHasErrors) {
+      this.IsOutOfScope(this.model!);
+    }
     return !this.peopleLivingHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean> {
+    if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
+      return this.applicationService.model.NumberOfSections == 'one' 
+        ? this.navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, this.activatedRoute)
+        : this.navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, this.activatedRoute);
+    }
+    return this.navigationService.navigateRelative(SectionYearOfCompletionComponent.route, this.activatedRoute);
   }
 
   private IsOutOfScope(peopleLivingInBuilding: string) {
@@ -47,19 +64,6 @@ export class SectionPeopleLivingInBuildingComponent extends BaseComponent implem
       
       this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
     }
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
-      return this.applicationService.model.NumberOfSections == 'one' 
-        ? navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, activatedRoute)
-        : navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, activatedRoute);
-    }
-    return navigationService.navigateRelative(SectionYearOfCompletionComponent.route, activatedRoute);
   }
 
   sectionBuildingName() {

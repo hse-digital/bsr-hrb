@@ -1,46 +1,49 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   templateUrl: './number-of-sections.component.html'
 })
-export class NumberOfSectionsComponment extends BaseComponent implements IHasNextPage, OnInit {
+export class NumberOfSectionsComponment extends PageComponent<string> {
+
   static route: string = 'number-of-sections';
   static title: string = "Count the number of sections in your building - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
   private previousAnswer?: string;
-  async ngOnInit(): Promise<void> {
+  numberOfSectionsHasErrors = false;
+
+
+  override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.model = this.applicationService.model.NumberOfSections ?? "";
     this.previousAnswer = this.applicationService.model.NumberOfSections;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.BlocksInBuildingInProgress;
     await this.applicationService.updateDynamicsBuildingSummaryStage();
   }
 
-  numberOfSectionsHasErrors = false;
-  canContinue(): boolean {
-    this.numberOfSectionsHasErrors = !this.applicationService.model.NumberOfSections;
-    return !this.numberOfSectionsHasErrors;
-  }
-
-  override async onSave(): Promise<void> {
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.model.NumberOfSections = this.model;
     if (!this.applicationService.model.Sections || this.applicationService.model.Sections.length == 0) {
       this.applicationService.startSectionsEdit();
     }
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return this.applicationService.isCurrentApplication(routeSnapshot.params['id']);
+  }
+
+  override isValid(): boolean {
+    this.numberOfSectionsHasErrors = !this.model;
+    return !this.numberOfSectionsHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean> {
     // user is changing the answer
     if (this.previousAnswer && this.previousAnswer != this.applicationService.model.NumberOfSections) {
       this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStatus.BlocksInBuildingComplete;
@@ -52,23 +55,23 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
         this.applicationService.model.Sections = [firstSection];
       } else {
         if (!FieldValidations.IsNotNullOrWhitespace(firstSection.Name)) {
-          return navigationService.navigateRelative(`/sections/section-1`, activatedRoute);
+          return this.navigationService.navigateRelative(`/sections/section-1`, this.activatedRoute);
         } else {
           var sectionRoute = this.applicationService.startNewSection();
-          return navigationService.navigateRelative(`/sections/${sectionRoute}`, activatedRoute);
+          return this.navigationService.navigateRelative(`/sections/${sectionRoute}`, this.activatedRoute);
         }
       }
     }
 
     if (this.returnToCheckAnswers)
-      return navigationService.navigateRelative(`/sections/check-answers`, activatedRoute);
+      return this.navigationService.navigateRelative(`/sections/check-answers`, this.activatedRoute);
 
     let route = '';
     if (this.applicationService.model.NumberOfSections == "one") {
       route = `floors`;
     }
 
-    return navigationService.navigateRelative(`/sections/section-1/${route}`, activatedRoute);
+    return this.navigationService.navigateRelative(`/sections/section-1/${route}`, this.activatedRoute);
   }
 
   private returnToCheckAnswers: boolean = false;
@@ -79,8 +82,5 @@ export class NumberOfSectionsComponment extends BaseComponent implements IHasNex
     }
   }
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return this.applicationService.isCurrentApplication(routeSnapshot.params['id']);
-  }
 
 }

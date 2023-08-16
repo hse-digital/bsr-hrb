@@ -16,13 +16,13 @@
         <govuk-input label="Total number of staircases" labelClass="govuk-label--s" class="govuk-input--width-3 govuk-!-margin-bottom-5"
                      hint="Count all the staircases on the inside and outside, including those that serve the basement" #field [govukRequired]="field"
                      [errorText]="getErrorDescription(errors.totalNumberStaircases.hasError, errors.totalNumberStaircases.message)"
-                     id="total-number-staircases" [(model)]="applicationService.currentKbiSection!.Staircases.TotalNumberStaircases"
+                     id="total-number-staircases" [(model)]="model!.TotalNumberStaircases"
                      (onKeyupEnter)="saveAndContinue()" type="number"/>
 
         <govuk-input label="Number of internal staircases serving all floors from ground level" labelClass="govuk-label--s" class="govuk-input--width-3"
                      hint="Count the number of staircases inside, that serve all floors from ground level to the top floor" #field2 [govukRequired]="field2"
                      [errorText]="getErrorDescription(errors.internalStaircasesAllFloors.hasError, errors.internalStaircasesAllFloors.message)"
-                     id="internal-staircases-all-floors" [(model)]="applicationService.currentKbiSection!.Staircases.InternalStaircasesAllFloors"
+                     id="internal-staircases-all-floors" [(model)]="model!.InternalStaircasesAllFloors"
                      (onKeyupEnter)="saveAndContinue()" type="number" />
       </div>
 

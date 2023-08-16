@@ -9,16 +9,16 @@
         </govuk-error-summary>
 
         <govuk-radio-group [errorText]="getErrorDescription(previousUseBuildingHasErrors, getErrorMessage())"
-                            [(model)]="applicationService.currentKbiSection!.BuildingUse.PreviousUseBuilding" [isPageHeading]="true"
+                            [(model)]="model" [isPageHeading]="true"
                             title="What was the previous primary use of {{getInfraestructureName()}}?" 
                             hintText="If it had multiple uses, select the option that took up the most floor space"
                             fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'>
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.BuildingUse.PreviousUseBuilding" name="materials-group" value="assembly_recreation" id="assembly_recreation" label="Assembly and recreation" hint="Any place of assembly, entertainment or recreation, like a bingo hall, theatre, dance school, gym or public library."/>
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.BuildingUse.PreviousUseBuilding" name="materials-group" value="office" id="office" label="Office" hint="Any office, bank or building society, police or fire station."/>
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.BuildingUse.PreviousUseBuilding" name="materials-group" value="residential_institution" id="residential_institution" label="Residential institution" hint="Like a care, residential or nursing home, prison, hospital or boarding school."/>
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.BuildingUse.PreviousUseBuilding" name="materials-group" value="other_residential_use" id="other_residential_use" label="Other residential use" hint="Like a hotel, boarding house, halls of residence or hostel."/>
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.BuildingUse.PreviousUseBuilding" name="materials-group" value="shop_commercial" id="shop_commercial" label="Shop and commercial" hint="Any retail business, like a shop, restaurant or hairdresser."/>
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.BuildingUse.PreviousUseBuilding" name="materials-group" value="other_non_residential" id="other_non_residential" label="Other non-residential" hint="Any other non-residential use, like a car park, storage or a factory."/>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="materials-group" value="assembly_recreation" id="assembly_recreation" label="Assembly and recreation" hint="Any place of assembly, entertainment or recreation, like a bingo hall, theatre, dance school, gym or public library."/>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="materials-group" value="office" id="office" label="Office" hint="Any office, bank or building society, police or fire station."/>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="materials-group" value="residential_institution" id="residential_institution" label="Residential institution" hint="Like a care, residential or nursing home, prison, hospital or boarding school."/>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="materials-group" value="other_residential_use" id="other_residential_use" label="Other residential use" hint="Like a hotel, boarding house, halls of residence or hostel."/>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="materials-group" value="shop_commercial" id="shop_commercial" label="Shop and commercial" hint="Any retail business, like a shop, restaurant or hairdresser."/>
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="materials-group" value="other_non_residential" id="other_non_residential" label="Other non-residential" hint="Any other non-residential use, like a car park, storage or a factory."/>
         </govuk-radio-group>
 
       </div>

@@ -1,24 +1,21 @@
-import { AfterViewInit, Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent, GovukCheckboxComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { AfterViewInit, Component, QueryList, ViewChildren } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { GovukCheckboxComponent } from 'hse-angular';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { PrimaryUseOfBuildingComponent } from '../../7-building-use/primary-use-of-building/primary-use-of-building.component';
 import { KbiBuildingUseModule } from '../../7-building-use/kbi.building-use.module';
 import { ExternalFeaturesComponent } from '../external-features/external-features.component';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { CloneHelper } from 'src/app/helpers/array-helper';
 
 @Component({
   selector: 'hse-feature-materials-outside',
   templateUrl: './feature-materials-outside.component.html'
 })
-export class FeatureMaterialsOutsideComponent extends BaseComponent implements IHasNextPage, OnInit, AfterViewInit {
+export class FeatureMaterialsOutsideComponent extends PageComponent<Record<string, string[]>> implements AfterViewInit {
   static route: string = 'external-feature-materials';
   static title: string = "Feature materials on outside wall - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChildren(GovukCheckboxComponent) checkboxes?: QueryList<GovukCheckboxComponent>;
 
   errorMessage?: string;
@@ -27,11 +24,11 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
 
   currentFeature?: string;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
     this.getNextPendingFeature();
 
     if (!this.applicationService.currentKbiSection?.Walls.FeatureMaterialsOutside || Object.keys(this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside).length == 0) {
@@ -39,11 +36,46 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
     } else {
       this.mapExternalFeatures();
     }
+
+    this.model = CloneHelper.DeepCopy(this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside);
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside = CloneHelper.DeepCopy(this.model);
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    let selectedFeatures = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => ExternalFeaturesComponent.features.includes(x)) ?? [];
+    return selectedFeatures.length > 0;
+  }
+
+  override isValid(): boolean {
+    this.featureMaterialsOutsideHasErrors = true;
+    if (!this.model || this.model[this.currentFeature!].length == 0) {
+      this.errorMessage = `Select which materials are used most in the ${this.getFeatureName()} of ${this.getInfraestructureName()}`;
+    } else if (this.model[this.currentFeature!].length > 2) {
+      this.errorMessage = "Select no more than 2 materials";
+    } else {
+      this.featureMaterialsOutsideHasErrors = false;
+    }
+
+    return !this.featureMaterialsOutsideHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    let selectedFeatures = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => ExternalFeaturesComponent.features.includes(x)) ?? [];
+    let nextFeatureIndex = selectedFeatures.indexOf(this.currentFeature!) + 1;
+    if (nextFeatureIndex >= selectedFeatures.length) {
+      return this.navigationService.navigateRelative(`../${KbiBuildingUseModule.baseRoute}/${PrimaryUseOfBuildingComponent.route}`, this.activatedRoute);
+    }
+
+    return this.navigationService.navigateRelative(FeatureMaterialsOutsideComponent.route, this.activatedRoute, { feature: selectedFeatures.at(nextFeatureIndex) });
   }
 
   getNextPendingFeature() {
     this.activatedRoute.queryParams.subscribe(params => {
       this.currentFeature = params['feature'];
+      this.model = CloneHelper.DeepCopy(this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside);
     });
   }
 
@@ -88,33 +120,4 @@ export class FeatureMaterialsOutsideComponent extends BaseComponent implements I
   getFeatureName() {
     return this.featuresNames[this.currentFeature ?? ""];
   }
-
-  canContinue(): boolean {
-    this.featureMaterialsOutsideHasErrors = true;
-    if (!this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside || this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside[this.currentFeature!].length == 0) {
-      this.errorMessage = `Select which materials are used most in the ${this.getFeatureName()} of ${this.getInfraestructureName()}`;
-    } else if (this.applicationService.currentKbiSection!.Walls.FeatureMaterialsOutside[this.currentFeature!].length > 2) {
-      this.errorMessage = "Select no more than 2 materials";
-    } else {
-      this.featureMaterialsOutsideHasErrors = false;
-    }
-
-    return !this.featureMaterialsOutsideHasErrors;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let selectedFeatures = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => ExternalFeaturesComponent.features.includes(x)) ?? [];
-    let nextFeatureIndex = selectedFeatures.indexOf(this.currentFeature!) + 1;
-    if (nextFeatureIndex >= selectedFeatures.length) {
-      return navigationService.navigateRelative(`../${KbiBuildingUseModule.baseRoute}/${PrimaryUseOfBuildingComponent.route}`, activatedRoute);
-    }
-
-    return navigationService.navigateRelative(FeatureMaterialsOutsideComponent.route, activatedRoute, { feature: selectedFeatures.at(nextFeatureIndex) });
-  }
-
-  override canAccess(_: ActivatedRouteSnapshot) {
-    let selectedFeatures = this.applicationService.currentKbiSection?.Walls.ExternalFeatures?.filter(x => ExternalFeaturesComponent.features.includes(x)) ?? [];
-    return selectedFeatures.length > 0;
-  }
-
 }

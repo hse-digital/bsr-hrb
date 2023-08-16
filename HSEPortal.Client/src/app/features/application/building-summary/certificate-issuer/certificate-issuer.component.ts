@@ -1,30 +1,37 @@
-import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
-import { GovukErrorSummaryComponent } from "hse-angular";
-import { BaseComponent } from "src/app/helpers/base.component";
-import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
+import { Component } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { TitleService } from "src/app/services/title.service";
 import { CertificateNumberComponent } from "../certificate-number/certificate-number.component";
+import { PageComponent } from "src/app/helpers/page.component";
 
 @Component({
   templateUrl: './certificate-issuer.component.html'
 })
-export class CertificateIssuerComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class CertificateIssuerComponent extends PageComponent<string> {
   static route: string = 'certificate-issuer';
   static title: string = "Who is the section completion certificate issuer? - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+
 
   isOptional: boolean = true;
   certificateHasErrors: boolean = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  ngOnInit(): void {
+  sectionBuildingName() {
+    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
+      this.applicationService.currentSection.Name;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
+  }
+
+  override onInit(applicationService: ApplicationService): void {
+    this.model = this.applicationService.currentSection.CompletionCertificateIssuer;
     if (this.applicationService.currentSection.YearOfCompletionOption == 'year-exact') {
       var yearOfCompletion = Number(this.applicationService.currentSection.YearOfCompletion);
       if (yearOfCompletion && yearOfCompletion >= 2023) {
@@ -37,22 +44,17 @@ export class CertificateIssuerComponent extends BaseComponent implements IHasNex
     }
   }
 
-  canContinue(): boolean {
-    this.certificateHasErrors = !this.isOptional && !this.applicationService.currentSection.CompletionCertificateIssuer;
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentSection.CompletionCertificateIssuer = this.model;
+  }
+
+  override isValid(): boolean {
+    this.certificateHasErrors = !this.isOptional && !this.model;
     return !this.certificateHasErrors;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(CertificateNumberComponent.route, activatedRoute);
-  }
-
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
+  override navigateNext(): Promise<boolean> {
+    return this.navigationService.navigateRelative(CertificateNumberComponent.route, this.activatedRoute);
   }
 
 }

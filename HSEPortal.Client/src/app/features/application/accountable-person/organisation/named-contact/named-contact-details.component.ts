@@ -1,45 +1,61 @@
-import { Component, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import { GovukErrorSummaryComponent } from "hse-angular";
+import { Component } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApHelper } from "src/app/helpers/ap-helper";
-import { BaseComponent } from "src/app/helpers/base.component";
-import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { EmailValidator } from "src/app/helpers/validators/email-validator";
 import { PhoneNumberValidator } from "src/app/helpers/validators/phone-number-validator";
 import { ApplicationService } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { TitleService } from 'src/app/services/title.service';
 import { AddAccountablePersonComponent } from "../../add-accountable-person/add-accountable-person.component";
+import { PageComponent } from "src/app/helpers/page.component";
+
+export type AccountableNamedPersonDetails = { NamedContactEmail?: string, NamedContactPhoneNumber?: string }
 
 @Component({
   templateUrl: './named-contact-details.component.html'
 })
-export class OrganisationNamedContactDetailsComponent extends BaseComponent implements IHasNextPage {
+export class OrganisationNamedContactDetailsComponent extends PageComponent<AccountableNamedPersonDetails> {
   static route: string = 'named-contact-details';
   static title: string = "AP organisation named contact details - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
+
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  } 
 
   errors = {
     email: { hasErrors: false, errorText: '' },
     phoneNumber: { hasErrors: false, errorText: '' }
   };
 
-  canContinue(): boolean {
-    let email = this.applicationService.currentAccountablePerson.NamedContactEmail ?? '';
-    let phone = this.applicationService.currentAccountablePerson.NamedContactPhoneNumber ?? '';
+  override onInit(applicationService: ApplicationService): void {
+    this.model = {
+      NamedContactEmail: this.applicationService.currentAccountablePerson.NamedContactEmail,
+      NamedContactPhoneNumber: this.applicationService.currentAccountablePerson.NamedContactPhoneNumber
+    };
+  }
 
-    let emailValid = this.isEmailValid(email);
-    let phoneValid = this.isPhoneNumberValid(phone);
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentAccountablePerson.NamedContactEmail = this.model?.NamedContactEmail;
+    this.applicationService.currentAccountablePerson.NamedContactPhoneNumber = this.model?.NamedContactPhoneNumber;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
+  }
+
+  override isValid(): boolean {
+    let emailValid = this.isEmailValid(this.model?.NamedContactEmail);
+    let phoneValid = this.isPhoneNumberValid(this.model?.NamedContactPhoneNumber);
 
     return emailValid && phoneValid;
   }
 
-  isEmailValid(email: string): boolean {
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, this.activatedRoute);
+  }
+
+  isEmailValid(email?: string): boolean {
     this.errors.email.hasErrors = true;
     if (!email) {
       this.errors.email.errorText = `Enter ${this.getNamedContactName()}'s email address`;
@@ -52,7 +68,7 @@ export class OrganisationNamedContactDetailsComponent extends BaseComponent impl
     return !this.errors.email.hasErrors;
   }
 
-  isPhoneNumberValid(phone: string) {
+  isPhoneNumberValid(phone?: string) {
     this.errors.phoneNumber.hasErrors = true;
     if (!phone) {
       this.errors.phoneNumber.errorText = `Enter ${this.getNamedContactName()}'s telephone number`;
@@ -66,14 +82,5 @@ export class OrganisationNamedContactDetailsComponent extends BaseComponent impl
 
   getNamedContactName() {
     return `${this.applicationService.currentAccountablePerson.NamedContactFirstName} ${this.applicationService.currentAccountablePerson.NamedContactLastName}`;
-  }
-
-  async navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
-      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
   }
 }

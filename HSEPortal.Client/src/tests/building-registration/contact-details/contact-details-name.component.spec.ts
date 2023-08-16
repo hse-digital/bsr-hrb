@@ -3,7 +3,7 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HseAngularModule } from 'hse-angular';
-import { ContactNameComponent } from '../../../app/features/new-application/contact-name/contact-name.component';
+import ContactNameComponent from '../../../app/features/new-application/contact-name/contact-name.component';
 import { ApplicationService } from '../../../app/services/application.service';
 
 

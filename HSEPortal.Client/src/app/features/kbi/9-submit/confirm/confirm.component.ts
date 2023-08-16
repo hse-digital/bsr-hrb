@@ -1,46 +1,48 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { BaseComponent } from 'src/app/helpers/base.component';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { DeclarationComponent } from '../declaration/declaration.component';
 import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   selector: 'hse-confirm',
   templateUrl: './confirm.component.html'
 })
-export class ConfirmComponent extends BaseComponent implements OnInit {
+export class ConfirmComponent extends PageComponent<void> {
   static route: string = 'information-submitted';
   static title: string = "Structure and safety information submitted - Register a high-rise building - GOV.UK";
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
-
-  async ngOnInit() {
+  
+  override async onInit(applicationService: ApplicationService): Promise<void> {
     this.sendApplicationDataToBroadcastChannel();
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitComplete;
     await this.applicationService.updateApplication();
-  }  
-  
+  }
+
+  override onSave(applicationService: ApplicationService): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress);
+  }
+
+  override isValid(): boolean {
+    return true;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(DeclarationComponent.route, this.activatedRoute);
+  }
+
   private sendApplicationDataToBroadcastChannel() {
     new BroadcastChannelPrimaryHelper()
       .OpenChannel(this.applicationService.model.id!)
       .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
-  }
-
-  canContinue(): boolean {
-    return true;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(DeclarationComponent.route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress);
   }
 
   containsFlag(flag: BuildingApplicationStatus) {

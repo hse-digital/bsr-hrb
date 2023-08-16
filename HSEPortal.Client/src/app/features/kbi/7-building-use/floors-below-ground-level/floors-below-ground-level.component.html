@@ -12,7 +12,7 @@
                 <h1 class="govuk-heading-l">Number of floors below ground level in {{getInfraestructureName()}}</h1>
 
                 <govuk-input id="floors" #field [govukRequired]="field" label="Count any floor whose ceiling is below ground level, like a basement." labelClass="govuk-!-margin-bottom-3"
-                    [(model)]="applicationService.currentKbiSection!.BuildingUse.FloorsBelowGroundLevel"
+                    [(model)]="model"
                     [errorText]="getErrorDescription(floorsBelowGroundLevelHasErrors , errorMessage!)"
                     class="govuk-!-margin-bottom-5 govuk-input--width-3" (onKeyupEnter)="saveAndContinue()" type="number" />
 

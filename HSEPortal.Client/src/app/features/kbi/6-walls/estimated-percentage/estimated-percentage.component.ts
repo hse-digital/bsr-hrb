@@ -1,14 +1,11 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { ExternalWallMaterialsPipe } from 'src/app/pipes/external-wall-materials.pipe';
 import { ExternalWallInsulationTypeComponent } from '../external-wall-insulation-type/external-wall-insulation-type.component';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { CloneHelper } from 'src/app/helpers/array-helper';
 
 type Error = { hasError: boolean, message: string, id: string }
 type Material = { value: string, id: string }
@@ -17,7 +14,7 @@ type Material = { value: string, id: string }
   selector: 'hse-estimated-percentage',
   templateUrl: './estimated-percentage.component.html'
 })
-export class EstimatedPercentageComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class EstimatedPercentageComponent extends PageComponent<Record<string, string>> {
   static route: string = 'estimated-percentage';
   static title: string = "Percentage materials on outside walls - Register a high-rise building - GOV.UK";
 
@@ -25,13 +22,12 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
   externalWallMaterials: Material[] = [];
 
   estimatedPercentageHasErrors = false;
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
     this.errors = [];
     if (!this.externalWallMaterials) this.externalWallMaterials = [];
 
@@ -41,10 +37,37 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
       this.mapExternalWallMaterials();
     }
 
+    this.model = CloneHelper.DeepCopy(applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage);
+
     this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x => {
       this.externalWallMaterials.push({ value: x, id: x } as Material);
       this.errors.push({ hasError: false, message: '', id: x } as Error);
     });
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.Walls.ExternalWallMaterialsPercentage = CloneHelper.DeepCopy(this.model);
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    let externalWallMaterials = this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials;
+    
+    let canAccess = !!externalWallMaterials && externalWallMaterials.length > 0;
+    if (canAccess && externalWallMaterials!.indexOf('acm') > -1) canAccess &&= !!this.applicationService.currentKbiSection?.Walls.WallACM;
+    if (canAccess && externalWallMaterials!.indexOf('hpl') > -1) canAccess &&= !!this.applicationService.currentKbiSection?.Walls.WallHPL;
+    return canAccess;
+  }
+
+  override isValid(): boolean {
+    this.initErrors();
+    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x => this.validateInput(x));
+    this.validateSumAllPercentageMustBe100();
+    this.estimatedPercentageHasErrors = this.errors.map(x => x.hasError).reduce((previous, current) => previous || current);
+    return !this.estimatedPercentageHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(ExternalWallInsulationTypeComponent.route, this.activatedRoute);
   }
 
   initExternalWallMaterialsPercentage() {
@@ -71,17 +94,9 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
     });
   }
 
-  canContinue(): boolean {
-    this.initErrors();
-    this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials?.forEach(x => this.validateInput(x));
-    this.validateSumAllPercentageMustBe100();
-    this.estimatedPercentageHasErrors = this.errors.map(x => x.hasError).reduce((previous, current) => previous || current);
-    return !this.estimatedPercentageHasErrors;
-  }
-
   validateInput(input: string) {
     let error = this.errors.find(x => x.id == input)!;
-    let percentage = this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage![input];
+    let percentage = this.model![input];
     let label = ExternalWallMaterialsPipe.externalWallMaterials[input];
 
     error.hasError = true;
@@ -101,7 +116,7 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
   }
 
   validateSumAllPercentageMustBe100() {
-    let percentages = Object.values(this.applicationService.currentKbiSection?.Walls.ExternalWallMaterialsPercentage!);
+    let percentages = Object.values(this.model!);
     let totalPercentage = percentages.map(x => Number(x)).reduce((previous, current) => previous + current);
     if (totalPercentage != 100) this.errors.push({ hasError: true, id: this.errors[0].id, message: "Percentage of all materials must total 100" } as Error);
   }
@@ -115,18 +130,4 @@ export class EstimatedPercentageComponent extends BaseComponent implements IHasN
   getErrorMessage(id: string) {
     return this.errors.find(x => x.id == id)?.message ?? "";
   }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ExternalWallInsulationTypeComponent.route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    let externalWallMaterials = this.applicationService.currentKbiSection?.Walls.ExternalWallMaterials;
-    
-    let canAccess = !!externalWallMaterials && externalWallMaterials.length > 0;
-    if (canAccess && externalWallMaterials!.indexOf('acm') > -1) canAccess &&= !!this.applicationService.currentKbiSection?.Walls.WallACM;
-    if (canAccess && externalWallMaterials!.indexOf('hpl') > -1) canAccess &&= !!this.applicationService.currentKbiSection?.Walls.WallHPL;
-    return canAccess;
-  }
-
 }

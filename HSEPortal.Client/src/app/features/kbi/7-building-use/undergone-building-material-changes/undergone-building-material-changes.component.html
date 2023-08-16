@@ -15,7 +15,7 @@
                                  hint="Select all that apply (even if there has only been a partial change)"
                                  [errorText]="getErrorDescription(undergoneBuildingMaterialChangesHasErrors, errorMessage!)"
                                  (onKeyupEnter)="saveAndContinue()"
-                                 [(model)]="applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!"
+                                 [(model)]="model!"
                                  unknownOptionText="Not known">
               <checkbox-option text="Asbestos removal and remediation on multiple floors" value="asbestos_removal" id="asbestos_removal" />
               <checkbox-option text="Balconies added" value="balconies_added" id="balconies_added" />

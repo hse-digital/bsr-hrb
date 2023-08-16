@@ -31,7 +31,7 @@
         <govuk-body>If {{sectionBuildingName()}} is around 18 metres, you should measure the height.</govuk-body>
 
         <govuk-input label="Height in metres" hint="For example, '18.75'."labelClass="govuk-label--s" id="height"
-                     [(model)]="applicationService.currentSection.Height" #field [govukRequired]="field"
+                     [(model)]="model" #field [govukRequired]="field"
                      [errorText]="getErrorDescription(heightHasErrors, errorMessage)" suffix="m"
                      class="govuk-input--width-4" 
                      (onKeyupEnter)="saveAndContinue()" />

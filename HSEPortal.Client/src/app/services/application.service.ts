@@ -372,20 +372,24 @@ export class Fire {
   FireSmokeProvisions?: string[];
   FireSmokeProvisionLocations?: Record<string, string[]>;
   Lifts?: string[];
-  ResidentialUnitFrontDoors?: {
-    NoFireResistance?: number,
-    ThirtyMinsFireResistance?: number,
-    SixtyMinsFireResistance?: number,
-    HundredTwentyMinsFireResistance?: number,
-    NotKnownFireResistance?: number,
-  } = {};
-  FireDoorsCommon?: {
-    FireDoorThirtyMinute?: number,
-    FireDoorSixtyMinute?: number,
-    FireDoorHundredTwentyMinute?: number,
-    FireDoorUnknown?: number,
-  } = {};
+  ResidentialUnitFrontDoors?: ResidentialUnitFrontDoors = {};
+  FireDoorsCommon?: FireDoorsCommon  = {};
 }
+
+export type ResidentialUnitFrontDoors = {
+  NoFireResistance?: number,
+  ThirtyMinsFireResistance?: number,
+  SixtyMinsFireResistance?: number,
+  HundredTwentyMinsFireResistance?: number,
+  NotKnownFireResistance?: number,
+};
+
+export type FireDoorsCommon = {
+  FireDoorThirtyMinute?: number,
+  FireDoorSixtyMinute?: number,
+  FireDoorHundredTwentyMinute?: number,
+  FireDoorUnknown?: number,
+};
 
 export class Energy {
   EnergySupply?: string[];

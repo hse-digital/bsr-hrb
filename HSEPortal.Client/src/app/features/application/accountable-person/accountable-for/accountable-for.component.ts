@@ -1,34 +1,30 @@
-import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import { GovukErrorSummaryComponent } from "hse-angular";
+import { Component } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApHelper } from "src/app/helpers/ap-helper";
-import { BaseComponent } from "src/app/helpers/base.component";
-import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
-import { ApplicationService, SectionModel } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { TitleService } from 'src/app/services/title.service';
+import { ApplicationService, SectionAccountability, SectionModel } from "src/app/services/application.service";
 import { AddAccountablePersonComponent } from "../add-accountable-person/add-accountable-person.component";
 import { OrganisationNamedContactComponent } from "../organisation/named-contact/named-contact.component";
+import { PageComponent } from "src/app/helpers/page.component";
+import { CloneHelper } from "src/app/helpers/array-helper";
 
 @Component({
   templateUrl: './accountable-for.component.html'
 })
-export class ApAccountableForComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class ApAccountableForComponent extends PageComponent<SectionAccountability[]> {
   static route: string = 'accountable-for';
   static title: string = "What areas is the AP accountable for? - Register a high-rise building - GOV.UK";
-
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   InScopeStructures?: SectionModel[];
 
   multi: boolean = false;
   anySelected = false;
   errorMessage?: string;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
 
-  ngOnInit(): void {
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  }  
+
+  override onInit(applicationService: ApplicationService): void {
     this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
     this.multi = this.applicationService.model.NumberOfSections != 'one';
     this.errorMessage = `Select what ${this.getApName()} is accountable for`;
@@ -37,22 +33,40 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
       this.applicationService.currentAccountablePerson.SectionsAccountability = [];
     }
 
+    this.model = CloneHelper.DeepCopy(this.applicationService.currentAccountablePerson.SectionsAccountability) as SectionAccountability[];
+
     for (let i = 0; i < this.InScopeStructures!.length; i++) {
       var section = this.InScopeStructures![i];
-      if (!this.applicationService.currentAccountablePerson.SectionsAccountability[i]) {
-        this.applicationService.currentAccountablePerson.SectionsAccountability[i] = { SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: [] };
+      if (!this.model[i]) {
+        this.model[i] = { SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: [] };
       }
     }
   }
 
-  canContinue(): boolean {
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentAccountablePerson.SectionsAccountability = CloneHelper.DeepCopy(this.model);
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
+  }
+
+  override isValid(): boolean {
     for (let i = 0; i < this.InScopeStructures!.length; i++) {
-      var sectionAccountability = this.applicationService.currentAccountablePerson.SectionsAccountability![i];
+      var sectionAccountability = this.model![i];
       if (sectionAccountability.Accountability!.length > 0)
         return true;
     }
 
     return false;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    if (this.applicationService.currentAccountablePerson.Type == 'individual') {
+      return this.navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, this.activatedRoute);
+    }
+
+    return this.navigationService.navigateRelative(OrganisationNamedContactComponent.route, this.activatedRoute);
   }
 
   getTitle() {
@@ -78,17 +92,5 @@ export class ApAccountableForComponent extends BaseComponent implements IHasNext
 
   getCheckboxTitle(section: any) {
     return this.applicationService.model.NumberOfSections == 'two_or_more' ? section?.Name ?? "First section" : this.applicationService.model.BuildingName;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentAccountablePerson.Type == 'individual') {
-      return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
-    }
-
-    return navigationService.navigateRelative(OrganisationNamedContactComponent.route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
   }
 }

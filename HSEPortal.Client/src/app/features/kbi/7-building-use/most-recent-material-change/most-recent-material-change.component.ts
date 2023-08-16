@@ -1,18 +1,14 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { YearMostRecentChangeComponent } from '../year-most-recent-change/year-most-recent-change.component';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   selector: 'hse-most-recent-material-change',
   templateUrl: './most-recent-material-change.component.html'
 })
-export class MostRecentChangeComponent extends BaseComponent implements IHasNextPage {
+export class MostRecentChangeComponent extends PageComponent<string> {
   static route: string = 'most-recent-material-change';
   static title: string = "Most recent work done - Register a high-rise building - GOV.UK";
 
@@ -20,20 +16,11 @@ export class MostRecentChangeComponent extends BaseComponent implements IHasNext
   mostRecentChangeHasErrors = false;
   firstRadioAnchorId?: string;
 
-
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  getInfraestructureName() {
-    return this.applicationService.model.NumberOfSections === 'one'
-      ? this.applicationService.model.BuildingName
-      : this.applicationService.currentKbiSection!.StructureName;
-  }
-
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
     if (!this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange) {
       this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = "";
     }
@@ -44,29 +31,41 @@ export class MostRecentChangeComponent extends BaseComponent implements IHasNext
       this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = "";
     }
 
+    this.model = applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange;
+
     this.errorMessage = `Select the most recent change made to ${this.getInfraestructureName()}.`;
   }
 
-  canContinue(): boolean {
-    this.mostRecentChangeHasErrors = !this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange;
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = this.model;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return !!this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges
+      && (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges.length > 1);
+  }
+
+  override isValid(): boolean {
+    this.mostRecentChangeHasErrors = !this.model;
 
     if (this.mostRecentChangeHasErrors) this.firstRadioAnchorId = `${this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0]}-input`;
 
     return !this.mostRecentChangeHasErrors;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+  override navigateNext(): Promise<boolean | void> {
     if (this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange === "unknown") {
-      return navigationService.navigateRelative(`../check-answers/check-answers-building-information`, activatedRoute);
+      return this.navigationService.navigateRelative(`../check-answers/check-answers-building-information`, this.activatedRoute);
     }
     else {
-      return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
+      return this.navigationService.navigateRelative(YearMostRecentChangeComponent.route, this.activatedRoute);
     }
   }
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges
-      && (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges.length > 1);
+  getInfraestructureName() {
+    return this.applicationService.model.NumberOfSections === 'one'
+      ? this.applicationService.model.BuildingName
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 
   private materialNameMapper: Record<string, string> = {

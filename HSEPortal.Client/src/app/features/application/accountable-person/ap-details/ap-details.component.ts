@@ -1,38 +1,33 @@
-import { Component, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import { GovukErrorSummaryComponent } from "hse-angular";
+import { Component, Input } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApHelper } from "src/app/helpers/ap-helper";
-import { BaseComponent } from "src/app/helpers/base.component";
-import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { EmailValidator } from "src/app/helpers/validators/email-validator";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { PhoneNumberValidator } from "src/app/helpers/validators/phone-number-validator";
 import { ApplicationService } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { TitleService } from 'src/app/services/title.service';
 import { ApAddressComponent } from "../ap-address/ap-address.component";
+import { PageComponent } from "src/app/helpers/page.component";
+
+type AccountablePersonDetails = { Email?: string, PhoneNumber?: string}
 
 @Component({
   selector: 'ap-details',
   templateUrl: './ap-details.component.html'
 })
-export class ApDetailsComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class ApDetailsComponent extends PageComponent<AccountablePersonDetails> {
   static route: string = 'details';
   static title: string = "AP individual contact details - Register a high-rise building - GOV.UK";
 
   @Input() nextRoute?: string;
   @Input() pap: boolean = false;
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
+
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  } 
 
   papName?: string;
-  ngOnInit(): void {
-    this.papName = `${this.applicationService.currentAccountablePerson.FirstName} ${this.applicationService.currentAccountablePerson.LastName}`;
-  }
 
   emailHasErrors: boolean = false;
   emailErrorText: string = `Enter ${this.papName}'s email address`;
@@ -40,14 +35,35 @@ export class ApDetailsComponent extends BaseComponent implements IHasNextPage, O
   phoneHasErrors: boolean = false;
   phoneErrorText: string = `Enter ${this.papName}'s telephone number`;
 
-  canContinue(): boolean {
-    let email = this.applicationService.currentAccountablePerson.Email;
-    let phone = this.applicationService.currentAccountablePerson.PhoneNumber;
+  override onInit(applicationService: ApplicationService): void {
+    this.model = {};
+    this.model.Email = this.applicationService.currentAccountablePerson.Email;
+    this.model.PhoneNumber = this.applicationService.currentAccountablePerson.PhoneNumber;
+    
+    this.papName = `${this.applicationService.currentAccountablePerson.FirstName} ${this.applicationService.currentAccountablePerson.LastName}`;
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentAccountablePerson.Email = this.model?.Email;
+    this.applicationService.currentAccountablePerson.PhoneNumber = this.model?.PhoneNumber;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
+  }
+
+  override isValid(): boolean {
+    let email = this.model?.Email;
+    let phone = this.model?.PhoneNumber;
 
     this.emailHasErrors = !this.isEmailValid(email);
     this.phoneHasErrors = !this.isPhoneNumberValid(phone);
 
     return !this.emailHasErrors && !this.phoneHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(this.nextRoute ?? ApAddressComponent.route, this.activatedRoute);
   }
 
   isEmailValid(email: string | undefined): boolean {
@@ -76,11 +92,4 @@ export class ApDetailsComponent extends BaseComponent implements IHasNextPage, O
     return !inError;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(this.nextRoute ?? ApAddressComponent.route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return ApHelper.isApAvailable(routeSnapshot, this.applicationService);
-  }
 }

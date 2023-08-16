@@ -1,18 +1,14 @@
-import { AfterViewInit, Component, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
+import { AfterViewInit, Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApHelper } from 'src/app/helpers/ap-helper';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { OrganisationNameComponent } from '../organisation-name/organisation-name.component';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   templateUrl: './organisation-type.component.html'
 })
-export class OrganisationTypeComponent extends BaseComponent implements IHasNextPage, AfterViewInit {
+export class OrganisationTypeComponent extends PageComponent<string> implements AfterViewInit {
   static route: string = 'organisation-type';
 
   static title: string = "What is the PAP Organisation Type? - Register a high-rise building - GOV.UK";
@@ -20,25 +16,16 @@ export class OrganisationTypeComponent extends BaseComponent implements IHasNext
 
   organisationTypeHasErrors = false;
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
+
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  } 
 
   ngAfterViewInit() {
     if (this.applicationService._currentAccountablePersonIndex > 0) {
       this.titleService.setTitle(OrganisationTypeComponent.apTitle);
     }
-  }
-
-  canContinue(): boolean {
-    this.organisationTypeHasErrors = !this.applicationService.currentAccountablePerson.OrganisationType;
-    return !this.organisationTypeHasErrors;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(OrganisationNameComponent.route, activatedRoute);
   }
 
   getPrincipalOrOther() {
@@ -53,8 +40,25 @@ export class OrganisationTypeComponent extends BaseComponent implements IHasNext
     return this.applicationService._currentAccountablePersonIndex == 0;
   }
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
+  override onInit(applicationService: ApplicationService): void {
+    this.model = this.applicationService.currentAccountablePerson.OrganisationType;
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentAccountablePerson.OrganisationType = this.model;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
       && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
+  }
+
+  override isValid(): boolean {
+    this.organisationTypeHasErrors = !this.model;
+    return !this.organisationTypeHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(OrganisationNameComponent.route, this.activatedRoute);
   }
 }

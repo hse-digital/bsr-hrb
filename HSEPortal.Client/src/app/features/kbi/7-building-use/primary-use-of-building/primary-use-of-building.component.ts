@@ -1,39 +1,52 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { SecondaryUseBuildingComponent } from '../secondary-use-building/secondary-use-building.component';
 import { KbiService } from 'src/app/services/kbi.service';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   selector: 'hse-primary-use-of-building',
   templateUrl: './primary-use-of-building.component.html'
 })
-export class PrimaryUseOfBuildingComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class PrimaryUseOfBuildingComponent extends PageComponent<string> {
   static route: string = 'primary-use-of-building';
   static title: string = "Primary Use - Register a high-rise building - GOV.UK";
-
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   errorMessage?: string;
 
   primaryUseOfBuildingHasErrors = false;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private kbiService: KbiService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute, private kbiService: KbiService) {
+    super(activatedRoute);
   }
 
-  async ngOnInit() {
+  override async onInit(applicationService: ApplicationService): Promise<void> {
     if(!this.applicationService.currentKbiSection?.BuildingUse) this.applicationService.currentKbiSection!.BuildingUse = {}
     if (!this.applicationService.currentKbiSection!.BuildingUse.PrimaryUseOfBuilding) { this.applicationService.currentKbiSection!.BuildingUse.PrimaryUseOfBuilding = ""; }
+
+    this.model = this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding;
 
     this.errorMessage = `Select the primary use for ${this.getInfraestructureName()}`;
 
     await this.kbiService.syncStructureRoofStaircasesAndWalls(this.applicationService.currentKbiSection!);
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.BuildingUse.PrimaryUseOfBuilding = this.model;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return !!this.applicationService.currentKbiSection!.Walls.ExternalFeatures && this.applicationService.currentKbiSection!.Walls.ExternalFeatures!.length > 0
+  }
+
+  override isValid(): boolean {
+    this.primaryUseOfBuildingHasErrors = !this.model || this.model === "";
+    return !this.primaryUseOfBuildingHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(SecondaryUseBuildingComponent.route, this.activatedRoute);
   }
 
   getInfraestructureName(){
@@ -42,17 +55,4 @@ export class PrimaryUseOfBuildingComponent extends BaseComponent implements IHas
       : this.applicationService.currentKbiSection!.StructureName;
   }
 
-  canContinue(): boolean {
-    this.primaryUseOfBuildingHasErrors = !this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding || this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding === "";
-    return !this.primaryUseOfBuildingHasErrors;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(SecondaryUseBuildingComponent.route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-
-    return !!this.applicationService.currentKbiSection!.Walls.ExternalFeatures && this.applicationService.currentKbiSection!.Walls.ExternalFeatures!.length > 0
-  }
 }

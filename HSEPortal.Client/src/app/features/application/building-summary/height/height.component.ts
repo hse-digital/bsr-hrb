@@ -1,37 +1,44 @@
-import { Component, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
-import { GovukErrorSummaryComponent } from "hse-angular";
-import { BaseComponent } from "src/app/helpers/base.component";
-import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
+import { Component } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService, OutOfScopeReason } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { TitleService } from 'src/app/services/title.service';
 import { SectionResidentialUnitsComponent } from "../residential-units/residential-units.component";
 import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
+import { PageComponent } from "src/app/helpers/page.component";
 
 @Component({
   templateUrl: './height.component.html',
 })
-export class SectionHeightComponent extends BaseComponent implements IHasNextPage {
-
+export class SectionHeightComponent extends PageComponent<number> {
   static route: string = 'height';
   static title: string = "What is the section height - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
+
+
 
   heightHasErrors = false;
   errorMessage: string = 'Enter the height in metres';
 
-  canContinue(): boolean {
+  override onInit(applicationService: ApplicationService): void {
+    this.model = this.applicationService.currentSection.Height;
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentSection.Height = this.model;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
+  }
+
+  override isValid(): boolean {
     this.heightHasErrors = true;
-    let height = this.applicationService.currentSection.Height;
+    let height = this.model;
 
     if (!height || !Number(height)) {
       this.errorMessage = 'Enter the height in metres';
@@ -47,6 +54,15 @@ export class SectionHeightComponent extends BaseComponent implements IHasNextPag
     return !this.heightHasErrors;
   }
 
+  override navigateNext(): Promise<boolean> {
+    if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
+      return this.applicationService.model.NumberOfSections == 'one'
+        ? this.navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, this.activatedRoute)
+        : this.navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, this.activatedRoute);
+    }
+    return this.navigationService.navigateRelative(SectionResidentialUnitsComponent.route, this.activatedRoute);
+  }
+
   private IsOutOfScope(height: number) {
     let wasOutOfScope = this.applicationService.currentSection.Scope?.IsOutOfScope;
 
@@ -60,19 +76,6 @@ export class SectionHeightComponent extends BaseComponent implements IHasNextPag
 
       this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
     }
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
-      return this.applicationService.model.NumberOfSections == 'one'
-        ? navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, activatedRoute)
-        : navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, activatedRoute);
-    }
-    return navigationService.navigateRelative(SectionResidentialUnitsComponent.route, activatedRoute);
   }
 
   sectionBuildingName() {

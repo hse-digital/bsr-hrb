@@ -1,19 +1,15 @@
-import { Component, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStatus, OutOfScopeReason, SectionModel } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
 import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
 import { NumberOfSectionsComponment } from '../number-of-sections/number-of-sections.component';
 import { MoreInformationComponent } from '../more-information/more-information.component';
 import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
 import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   selector: 'hse-check-answers',
@@ -21,21 +17,14 @@ import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper'
   styleUrls: ['./check-answers.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class SectionCheckAnswersComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class SectionCheckAnswersComponent extends PageComponent<void> {
   static route: string = 'check-answers';
   static title: string = "Check your answers - Register a high-rise building - GOV.UK";
 
   activeSections: SectionModel[] = [];
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
-
-  async ngOnInit() {
-    this.initStatecode();
-    this.activeSections = this.getActiveSections();
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
   private initStatecode() {
@@ -47,7 +36,29 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
   }
 
   hasIncompleteData = false;
-  canContinue(): boolean {
+
+  private isSectionOutOfScopeBecause(section: SectionModel, OutOfScopeReason: OutOfScopeReason) {
+    return section.Scope?.OutOfScopeReason == +OutOfScopeReason;
+  }
+
+  navigateToMultipleSections() {
+    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { return: 'sections/check-answers' });
+  }
+
+  getSectionName(sectionIndex: number, section?: SectionModel) {
+    return section?.Name ?? `${SectionHelper.getSectionCardinalName(sectionIndex)} high-rise residential structure`;
+  }
+
+  override onInit(applicationService: ApplicationService): void {
+    this.initStatecode();
+    this.activeSections = this.getActiveSections();
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingInProgress) == BuildingApplicationStatus.BlocksInBuildingInProgress;
+  }
+
+  override isValid(): boolean {
     var canContinue = true;
     for (var section of this.activeSections) {
       if (this.applicationService.model.NumberOfSections == "two_or_more") {
@@ -84,29 +95,17 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
     return canContinue;
   }
 
-  private isSectionOutOfScopeBecause(section: SectionModel, OutOfScopeReason: OutOfScopeReason) {
-    return section.Scope?.OutOfScopeReason == +OutOfScopeReason;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+  override navigateNext(): Promise<boolean> {
     if (ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService)) {
-      return navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, activatedRoute);
+      return this.navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, this.activatedRoute);
     }
 
     var sectionsOutOfScope = this.getOutOfScopeSections();
     if (sectionsOutOfScope.length > 0) {
-      return navigationService.navigateRelative(MoreInformationComponent.route, activatedRoute);
+      return this.navigationService.navigateRelative(MoreInformationComponent.route, this.activatedRoute);
     }
 
-    return navigationService.navigateRelative(`../${AccountablePersonModule.baseRoute}/${AccountablePersonComponent.route}`, activatedRoute);
-  }
-
-  navigateToMultipleSections() {
-    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { return: 'sections/check-answers' });
-  }
-
-  getSectionName(sectionIndex: number, section?: SectionModel) {
-    return section?.Name ?? `${SectionHelper.getSectionCardinalName(sectionIndex)} high-rise residential structure`;
+    return this.navigationService.navigateRelative(`../${AccountablePersonModule.baseRoute}/${AccountablePersonComponent.route}`, this.activatedRoute);
   }
 
   override async onSave(): Promise<void> {
@@ -118,10 +117,6 @@ export class SectionCheckAnswersComponent extends BaseComponent implements IHasN
 
   private getOutOfScopeSections() {
     return this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
-  }
-
-  override canAccess(_: ActivatedRouteSnapshot): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingInProgress) == BuildingApplicationStatus.BlocksInBuildingInProgress;
   }
 
   removeStructure(index: number) {
