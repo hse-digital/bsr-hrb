@@ -2,7 +2,7 @@
 
   <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
     <govuk-error-link anchorId="input-invoice-name" [message]="getErrorDescription(hasError('Name'), 'Enter the name that needs to be shown on the invoice')" />
-    <govuk-error-link anchorId="input-invoice-email" [message]="getErrorDescription(hasError('Email'), 'You must enter an email address in the correct format, like name@example.com')" />
+    <govuk-error-link anchorId="input-invoice-email" [message]="getErrorDescription(hasError('Email'), emailErrorMessage)" />
     <govuk-error-link anchorId="input-invoice-addressline1" [message]="getErrorDescription(hasError('AddressLine1'), 'Enter the first line of the billing address in address line 1')" />
     <govuk-error-link anchorId="input-invoice-town" [message]="getErrorDescription(hasError('Town'), 'Enter the town or city for the billing address')" />
     <govuk-error-link anchorId="input-invoice-postcode" [message]="getErrorDescription(hasError('Postcode'), 'Enter the postcode for the billing address')" />
@@ -21,7 +21,7 @@
 
   <h2 class="govuk-heading-m">Contact details</h2>
   <govuk-input id="invoice-name" label="Name on the invoice" class="govuk-!-margin-bottom-5" [(model)]="model!.Name" [errorText]="getErrorDescription(hasError('Name'), 'Enter the name that needs to be shown on the invoice')" (onKeyupEnter)="saveAndContinue()" />
-  <govuk-input id="invoice-email" label="Email address" hint="We'll only use this to send you an invoice" [(model)]="model!.Email" [errorText]="getErrorDescription(hasError('Email'), 'You must enter an email address in the correct format, like name@example.com')" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-email" label="Email address" hint="We'll only use this to send you an invoice" [(model)]="model!.Email" [errorText]="getErrorDescription(hasError('Email'), emailErrorMessage)" (onKeyupEnter)="saveAndContinue()" />
   <div  class="govuk-!-margin-bottom-8"></div>
 
   <h2 class="govuk-heading-m">Billing address</h2>

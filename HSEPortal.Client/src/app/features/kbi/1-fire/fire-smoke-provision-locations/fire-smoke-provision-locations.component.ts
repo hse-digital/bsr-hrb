@@ -1,67 +1,37 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukCheckboxComponent, GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component, QueryList, ViewChildren } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { GovukCheckboxComponent } from 'hse-angular';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { LiftsComponent } from '../lifts/lifts.component';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { CloneHelper } from 'src/app/helpers/array-helper';
 
 @Component({
   selector: 'hse-fire-smoke-provision-locations',
   templateUrl: './fire-smoke-provision-locations.component.html'
 })
-export class FireSmokeProvisionLocationsComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class FireSmokeProvisionLocationsComponent extends PageComponent<Record<string, string[]>> {
   static route: string = 'smoke-provision-locations';
   static title: string = "Location of fire and smoke controls - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChildren(GovukCheckboxComponent) checkboxes?: QueryList<GovukCheckboxComponent>;
   errorMessage?: string;
 
   firstCheckboxAnchorId?: string;
   locationsHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
   currentEquipment?: string;
-
-  ngOnInit(): void {
-    // init locations
-    if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations || Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length == 0) {
-      this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = {};
-      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(equipment => {
-        this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![equipment] = [];
-      });
-    }
-
-    // check missing locations (in case the user modifies fire-smoke-provisions)
-    if (Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length != this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.length) {
-      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.filter(x => !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]).forEach(missingEquipment => {
-        this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![missingEquipment] = [];
-      });
-    }
-
-    // getting current equipment
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.currentEquipment = params['equipment'] ?? this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions![0];
-    });
-
-    // if equipment doesn't exist, go to "not found" page
-    if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations[this.currentEquipment!]) {
-      this.navigationService.navigate(NotFoundComponent.route);
-    }
-
-    this.errorMessage = `Select where the ${this.getEquipmentName(this.currentEquipment!)} are in ${this.getInfraestructureName()}`;
-  }
+  provisionsWithLocations?: string[];
 
   getNextEquipment() {
-    let currentIndex = this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.indexOf(this.currentEquipment!) ?? -1;
-    let nextIndex = currentIndex + 1 < this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.length ? currentIndex + 1 : currentIndex;
-    return this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![nextIndex];
+    let currentIndex = this.provisionsWithLocations?.indexOf(this.currentEquipment!) ?? -1;
+    let nextIndex = currentIndex + 1 < this.provisionsWithLocations!.length ? currentIndex + 1 : currentIndex;
+    return this.provisionsWithLocations![nextIndex];
   }
 
   getInfraestructureName() {
@@ -88,23 +58,68 @@ export class FireSmokeProvisionLocationsComponent extends BaseComponent implemen
     return this.equipmentNameMapper[equipment];
   }
 
-  canContinue(): boolean {
+  override onInit(applicationService: ApplicationService): void {
+    this.provisionsWithLocations = this.getProvisionsWithLocation();
+
+    // init locations
+    if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations || Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length == 0) {
+      this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = {};
+      this.provisionsWithLocations?.forEach(equipment => {
+        this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![equipment] = [];
+      });
+    }
+    
+    // check missing locations (in case the user modifies fire-smoke-provisions)
+    if (Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length != this.provisionsWithLocations?.length) {
+      this.provisionsWithLocations?.filter(x => !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]).forEach(missingEquipment => {
+        this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![missingEquipment] = [];
+      });
+    }
+
+    this.model = CloneHelper.DeepCopy(this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations);
+    
+    // getting current equipment
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.currentEquipment = params['equipment'] ?? this.provisionsWithLocations![0];
+      this.model = CloneHelper.DeepCopy(this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations);
+    });
+
+    // if equipment doesn't exist, go to "not found" page
+    if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations[this.currentEquipment!]) {
+      this.navigationService.navigate(NotFoundComponent.route);
+    }
+
+    this.errorMessage = `Select where the ${this.getEquipmentName(this.currentEquipment!)} are in ${this.getInfraestructureName()}`;
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = CloneHelper.DeepCopy(this.model);
+  }
+
+  override isValid(): boolean {
     this.firstCheckboxAnchorId = `basement-${this.checkboxes?.first.innerId}`;
-    this.locationsHasErrors = !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![this.currentEquipment!] || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![this.currentEquipment!].length == 0;
+    this.locationsHasErrors = !this.model![this.currentEquipment!] || this.model![this.currentEquipment!].length == 0;
     if (this.locationsHasErrors) this.errorMessage = `Select where the ${this.getEquipmentName(this.currentEquipment!)} are in ${this.getInfraestructureName()}`;
     return !this.locationsHasErrors;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+  override navigateNext(): Promise<boolean | void> {
     let nextEquipment = this.getNextEquipment();
     if (this.currentEquipment == nextEquipment) {
-      return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
+      return this.navigationService.navigateRelative(LiftsComponent.route, this.activatedRoute);
     }
 
-    return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute, { equipment: nextEquipment });
+    return this.navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, this.activatedRoute, { equipment: nextEquipment });
   }
 
-  override canAccess(_: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions!.length > 0;
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    let provisionsWithLocations = this.getProvisionsWithLocation();
+    return !!provisionsWithLocations && provisionsWithLocations!.length > 0;
   }
+
+  private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
+  getProvisionsWithLocation() {
+    return this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
+  }
+
 }

@@ -1,38 +1,40 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { Component, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PaymentDeclarationComponent } from 'src/app/features/application/payment/payment-declaration/payment-declaration.component';
 import { PaymentModule } from 'src/app/features/application/payment/payment.module';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { AccountabilityArea } from 'src/app/components/pap-accountability/pap-accountability.component';
 import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   templateUrl: './check-answers.component.html',
   styleUrls: ['./check-answers.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AccountablePersonCheckAnswersComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class AccountablePersonCheckAnswersComponent extends PageComponent<void> {
   static route: string = 'check-answers';
   static title: string = "Check your answers for PAP and AP - Register a high-rise building - GOV.UK";
 
   checkAnswersArea = AccountabilityArea.CheckAnswers;
 
   aps: AccountablePersonModel[] = [];
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  } 
 
-  ngOnInit(): void {
+  hasIncompleteData = false;
+
+  override onInit(applicationService: ApplicationService): void {
     this.aps = this.applicationService.model.AccountablePersons;
   }
 
-  hasIncompleteData = false;
-  canContinue(): boolean {
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsInProgress) == BuildingApplicationStatus.AccountablePersonsInProgress;
+  }
+
+  override isValid(): boolean {
     var canContinue = true;
     for (let index = 0; index < this.aps.length; index++) {
       var ap = this.aps[index];
@@ -92,30 +94,26 @@ export class AccountablePersonCheckAnswersComponent extends BaseComponent implem
       }
     }
     
-    canContinue &&= this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section).length == 0);
+    canContinue &&= this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.model.AccountablePersons, this.applicationService.model.BuildingName!, section).length == 0);
 
     this.hasIncompleteData = !canContinue;
     return canContinue;
   }
 
-  override async onSave(): Promise<void> {
-    await this.applicationService.syncAccountablePersons();
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
+  override navigateNext(): Promise<boolean | void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsComplete;
     
     this.applicationService.updateApplication();
 
     if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
-      return navigationService.navigateRelative(`..`, activatedRoute);
+      return this.navigationService.navigateRelative(`..`, this.activatedRoute);
     }
 
-    return navigationService.navigateRelative(`../${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`, activatedRoute);
+    return this.navigationService.navigateRelative(`../${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`, this.activatedRoute);
   }
 
-  override canAccess(_: ActivatedRouteSnapshot): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsInProgress) == BuildingApplicationStatus.AccountablePersonsInProgress;
+  override async onSave(): Promise<void> {
+    await this.applicationService.syncAccountablePersons();
   }
 
   navigateTo(url: string, apIndex: number) {

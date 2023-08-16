@@ -14,17 +14,17 @@
         <h1 class="govuk-heading-l">{{applicationService.currentAccountablePerson.LeadFirstName}} {{applicationService.currentAccountablePerson.LeadLastName}}'s details</h1>
 
         <govuk-radio-group title="Job role" 
-          [(model)]="applicationService.currentAccountablePerson.LeadJobRole" #field [govukRequired]="field"
+          [(model)]="model!.LeadJobRole" #field [govukRequired]="field"
           id="job_role" class="govuk-!-margin-bottom-6" hintText="We want to understand the seniority of {{applicationService.currentAccountablePerson.LeadFirstName}} {{applicationService.currentAccountablePerson.LeadLastName}}. Select the closest match." [errorText]="getErrorDescription(jobRoleHasErrors, jobRoleErrorText)">
-          <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-director" value="director" label="Director" hint="This includes chief executive officer." (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-administrative_worker" value="administrative_worker" label="Administrative or office worker" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_manager" value="building_manager" label="Building or facilities manager" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-building_director" value="building_director" label="Building safety director" (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currentAccountablePerson.LeadJobRole" name="application-group" id="job_role-other" value="other" label="Other" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model!.LeadJobRole" name="application-group" id="job_role-director" value="director" label="Director" hint="This includes chief executive officer." (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model!.LeadJobRole" name="application-group" id="job_role-administrative_worker" value="administrative_worker" label="Administrative or office worker" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model!.LeadJobRole" name="application-group" id="job_role-building_manager" value="building_manager" label="Building or facilities manager" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model!.LeadJobRole" name="application-group" id="job_role-building_director" value="building_director" label="Building safety director" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model!.LeadJobRole" name="application-group" id="job_role-other" value="other" label="Other" (onKeyupEnter)="saveAndContinue()" />
         </govuk-radio-group>
 
-        <govuk-input id="email" label="Email address" type="email" [maxlength]=100 [(model)]="applicationService.currentAccountablePerson.LeadEmail" [errorText]="getErrorDescription(emailHasErrors, emailErrorText)" class="govuk-!-margin-bottom-5" (onKeyupEnter)="saveAndContinue()" />
-        <govuk-input id="phone-number" label="Telephone number" type="tel" hint="Enter a UK phone number with or without spaces. For example, '012 3456 7890' or '+447654321098'" [(model)]="applicationService.currentAccountablePerson.LeadPhoneNumber" [errorText]="getErrorDescription(phoneHasErrors, phoneErrorText)" (onKeyupEnter)="saveAndContinue()" />
+        <govuk-input id="email" label="Email address" type="email" [maxlength]=100 [(model)]="model!.LeadEmail" [errorText]="getErrorDescription(emailHasErrors, emailErrorText)" class="govuk-!-margin-bottom-5" (onKeyupEnter)="saveAndContinue()" />
+        <govuk-input id="phone-number" label="Telephone number" type="tel" hint="Enter a UK phone number with or without spaces. For example, '012 3456 7890' or '+447654321098'" [(model)]="model!.LeadPhoneNumber" [errorText]="getErrorDescription(phoneHasErrors, phoneErrorText)" (onKeyupEnter)="saveAndContinue()" />
 
       </div>
 

@@ -16,7 +16,7 @@
         <govuk-input *ngFor="let insulation of this.applicationService.currentKbiSection!.Walls.ExternalWallInsulation!.CheckBoxSelection!; let i = index" [attr.data-index]="i"
                      id="{{insulation}}"
                      label="{{getInsulationName(insulation) | titlecase}}" #field [govukRequired]="field"
-                     [(model)]="this.applicationService.currentKbiSection!.Walls.ExternalWallInsulationPercentages![insulation]"
+                     [(model)]="this.model![insulation]"
                      [errorText]="getErrorDescription(errors.length>0, getErrorForOption(insulation)!)"
                      class="govuk-!-margin-bottom-5 govuk-input--width-5"
                      (onKeyupEnter)="saveAndContinue()"

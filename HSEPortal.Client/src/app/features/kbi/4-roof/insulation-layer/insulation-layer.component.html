@@ -8,11 +8,11 @@
           <govuk-error-link anchorId="yes-top-input" message="{{getErrorMessage()}}" />
         </govuk-error-summary>
 
-        <govuk-radio-group [errorText]="getErrorDescription(roofInsulationHasErrors, getErrorMessage())" [(model)]="applicationService.currentKbiSection!.Roof.RoofInsulation" [isPageHeading]="true"
+        <govuk-radio-group [errorText]="getErrorDescription(roofInsulationHasErrors, getErrorMessage())" [(model)]="model" [isPageHeading]="true"
                            title="Does the roof structure of {{getInfraestructureName()}} have a layer of insulation?" fieldsetClass='govuk-fieldset__legend--l' fieldsetMarginBottom='govuk-!-margin-bottom-4'>
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Roof.RoofInsulation" name="materials-group" id="yes-top" value="yes-top" label="Yes, on top of the roof structure" />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Roof.RoofInsulation" name="materials-group" id="yes-below" value="yes-below" label="Yes, below the roof structure" />
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="applicationService.currentKbiSection!.Roof.RoofInsulation" name="materials-group" id="no" value="no" label="No" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="materials-group" id="yes-top" value="yes-top" label="Yes, on top of the roof structure" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="materials-group" id="yes-below" value="yes-below" label="Yes, below the roof structure" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="materials-group" id="no" value="no" label="No" />
           </govuk-radio-group>
 
       </div>

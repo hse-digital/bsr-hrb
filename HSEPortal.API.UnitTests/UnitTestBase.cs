@@ -33,7 +33,7 @@ public abstract class UnitTestBase
         options.SetupGet(x => x.Value).Returns(DynamicsOptions);
 
         HttpTest = new HttpTest();
-        DynamicsService = new DynamicsService(new DynamicsModelDefinitionFactory(), options.Object, new OptionsWrapper<SwaOptions>(new SwaOptions()), new DynamicsApi(options.Object));
+        DynamicsService = new DynamicsService(new DynamicsModelDefinitionFactory(), options.Object, new OptionsWrapper<SwaOptions>(new SwaOptions()), new OptionsWrapper<IntegrationsOptions>(IntegrationOptions), new DynamicsApi(options.Object));
         OtpService = new OTPService(new OptionsWrapper<IntegrationsOptions>(IntegrationOptions));
     }
 
@@ -47,11 +47,7 @@ public abstract class UnitTestBase
         LocalAuthorityTypeId = "db305f3e-1dad-ed11-83ff-0022481b5e4f"
     };
 
-    protected readonly IntegrationsOptions IntegrationOptions = new()
-    {
-        CommonAPIEndpoint = "http://app.in.azure",
-        CommonAPIKey = "abc123"
-    };
+    protected readonly IntegrationsOptions IntegrationOptions = new() { CommonAPIEndpoint = "http://app.in.azure", CommonAPIKey = "abc123" };
 
     protected HttpRequestData BuildHttpRequestData<T>(T data, params string[] parameters)
     {

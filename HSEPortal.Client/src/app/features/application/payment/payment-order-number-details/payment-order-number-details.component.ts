@@ -21,7 +21,7 @@ export class PaymentOrderNumberDetailsComponent extends PageComponent<string> {
     this.applicationCost = await applicationService.getApplicationCost();
   }
 
-  override async onSave(applicationService: ApplicationService): Promise<void> {
+  override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

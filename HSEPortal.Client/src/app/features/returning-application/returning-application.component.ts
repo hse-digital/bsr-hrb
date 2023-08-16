@@ -18,7 +18,6 @@ export class ReturningApplicationComponent extends BaseComponent{
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
-    this.updateOnSave = false;
   }
 
   canContinue(): boolean {

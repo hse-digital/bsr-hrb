@@ -1,33 +1,30 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent, GovukCheckboxComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component, QueryList, ViewChildren } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { GovukCheckboxComponent } from 'hse-angular';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { OtherHighRiseBuildingConnectionsComponent } from '../other-high-rise-building-connections/other-high-rise-building-connections.component';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { CloneHelper } from 'src/app/helpers/array-helper';
 
 @Component({
   selector: 'hse-structure-connections',
   templateUrl: './structure-connections.component.html'
 })
-export class StructureConnectionsComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class StructureConnectionsComponent extends PageComponent<string[]> {
   static route: string = 'structure-connections';
   static title: string = "How the structures of the building are connected - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChildren(GovukCheckboxComponent) checkboxes?: QueryList<GovukCheckboxComponent>;
 
   errorMessage?: string;
   firstCheckboxAnchorId?: string;
   structureConnectionsHasErrors = false;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  async ngOnInit() {
+  override async onInit(applicationService: ApplicationService): Promise<void> {
     if (!this.applicationService.currentKbiModel?.Connections) {
       this.applicationService.currentKbiModel!.Connections = {};
     }
@@ -39,7 +36,29 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
     await this.applicationService.updateApplication();
     
+    this.model = CloneHelper.DeepCopy(this.applicationService.currentKbiModel!.Connections.StructureConnections);
+
     this.errorMessage = `Select how the structures in ${this.getBuildingName()} are connected`;
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiModel!.Connections.StructureConnections = CloneHelper.DeepCopy(this.model);
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return true;
+  }
+
+  override isValid(): boolean {
+    this.structureConnectionsHasErrors = !this.model || this.model?.length == 0;
+
+    if (this.structureConnectionsHasErrors) this.firstCheckboxAnchorId = `bridge-walkway-${this.checkboxes?.first.innerId}`;
+
+    return !this.structureConnectionsHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(OtherHighRiseBuildingConnectionsComponent.route, this.activatedRoute);
   }
 
   getSubTitle() {
@@ -60,22 +79,6 @@ export class StructureConnectionsComponent extends BaseComponent implements IHas
 
   getBuildingName() {
     return this.applicationService.model.BuildingName;
-  }
-
-  canContinue(): boolean {
-    this.structureConnectionsHasErrors = !this.applicationService.currentKbiModel!.Connections.StructureConnections || this.applicationService.currentKbiModel!.Connections.StructureConnections.length == 0;
-
-    if (this.structureConnectionsHasErrors) this.firstCheckboxAnchorId = `bridge-walkway-${this.checkboxes?.first.innerId}`;
-
-    return !this.structureConnectionsHasErrors;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(OtherHighRiseBuildingConnectionsComponent.route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return true;
   }
 
   containsFlag(flag: BuildingApplicationStatus) {

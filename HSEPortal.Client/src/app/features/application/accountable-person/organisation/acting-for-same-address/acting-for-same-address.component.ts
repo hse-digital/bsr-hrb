@@ -1,28 +1,51 @@
-import { Component, QueryList, ViewChildren } from "@angular/core";
-import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
-import { GovukErrorSummaryComponent } from "hse-angular";
-import { BaseComponent } from "src/app/helpers/base.component";
-import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
+import { Component } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { AddressModel } from "src/app/services/address.service";
 import { ApplicationService } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
 import { ActingForAddressComponent } from "../acting-for-address/acting-for-address.component";
 import { LeadNameComponent } from "../lead-name/lead-name.component";
 import { ApHelper } from "src/app/helpers/ap-helper";
+import { PageComponent } from "src/app/helpers/page.component";
 
 @Component({
   templateUrl: './acting-for-same-address.component.html'
 })
-export class ActingForSameAddressComponent extends BaseComponent implements IHasNextPage {
+export class ActingForSameAddressComponent extends PageComponent<string> {
   static route: string = 'same-address';
   static title: string = "Do you have same address as PAP organisation? - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
+
 
   sameAddressHasErrors = false;
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  } 
+
+  override onInit(applicationService: ApplicationService): void {
+    this.model = this.applicationService.currentAccountablePerson.ActingForSameAddress;
+  }
+  
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentAccountablePerson.ActingForSameAddress = this.model;
+  }
+  
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+      && ApHelper.isOrganisation(routeSnapshot, this.applicationService)
+      && this.applicationService.currentAccountablePerson.Role == "registering_for";
+  }
+  
+  override isValid(): boolean {
+    this.sameAddressHasErrors = !this.model;
+    return !this.sameAddressHasErrors;
+  }
+  
+  override navigateNext(): Promise<boolean | void> {
+    if (this.applicationService.currentAccountablePerson.ActingForSameAddress == 'no') {
+      return this.navigationService.navigateRelative(ActingForAddressComponent.route, this.activatedRoute);
+    }
+
+    return this.navigationService.navigateRelative(LeadNameComponent.route, this.activatedRoute);
   }
 
   getErrorMessage() {
@@ -50,25 +73,6 @@ export class ActingForSameAddressComponent extends BaseComponent implements IHas
     address2 = address2.replace(address?.Postcode!, '');
 
     return address2.split(',').filter(x => x.trim().length > 0).join(', ');
-  }
-
-  canContinue(): boolean {
-    this.sameAddressHasErrors = !this.applicationService.currentAccountablePerson.ActingForSameAddress;
-    return !this.sameAddressHasErrors;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentAccountablePerson.ActingForSameAddress == 'no') {
-      return navigationService.navigateRelative(ActingForAddressComponent.route, activatedRoute);
-    }
-
-    return navigationService.navigateRelative(LeadNameComponent.route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
-      && ApHelper.isOrganisation(routeSnapshot, this.applicationService)
-      && this.applicationService.currentAccountablePerson.Role == "registering_for";
   }
 
 }

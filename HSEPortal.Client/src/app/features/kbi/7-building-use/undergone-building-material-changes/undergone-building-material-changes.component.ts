@@ -1,26 +1,22 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
+import { Component, ViewChild } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { AddedFloorsTypeComponent } from '../added-floors-type/added-floors-type.component';
 import { MostRecentChangeComponent } from '../most-recent-material-change/most-recent-material-change.component';
 import { YearMostRecentChangeComponent } from '../year-most-recent-change/year-most-recent-change.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { CloneHelper } from 'src/app/helpers/array-helper';
 
 @Component({
   selector: 'hse-undergone-building-material-changes',
   templateUrl: './undergone-building-material-changes.component.html'
 })
-export class UndergoneBuildingMaterialChangesComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class UndergoneBuildingMaterialChangesComponent extends PageComponent<string[]> {
   static route: string = 'undergone-building-material-changes';
   static title: string = "Building works since original build - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChild(GovukCheckboxNoneComponent) equipmentCheckboxGroup?: GovukCheckboxNoneComponent;
 
   firstCheckboxAnchorId?: string;
@@ -28,12 +24,11 @@ export class UndergoneBuildingMaterialChangesComponent extends BaseComponent imp
   undergoneBuildingMaterialChangesHasErrors = false;
   concreteLargePanelSystemSelected: boolean = false;
 
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
     if (!this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges) { this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges = []; }
     this.errorMessage = `Select building works since ${this.getInfraestructureName()} was originally built`;
 
@@ -48,49 +43,14 @@ export class UndergoneBuildingMaterialChangesComponent extends BaseComponent imp
         }
       }
     }
+    this.model = CloneHelper.DeepCopy(this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges);
   }
 
-  getInfraestructureName() {
-    return this.applicationService.model.NumberOfSections === 'one'
-      ? this.applicationService.model.BuildingName
-      : this.applicationService.currentKbiSection!.StructureName;
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges = CloneHelper.DeepCopy(this.model);
   }
 
-  canContinue(): boolean {
-    this.undergoneBuildingMaterialChangesHasErrors = !this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges || this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges.length == 0;
-
-    if (this.undergoneBuildingMaterialChangesHasErrors) {this.firstCheckboxAnchorId = `asbestos_removal-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;}
-    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange) 
-      && this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange != "unknown"
-      && !this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.includes(this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange!)) {
-      
-      this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = "";
-    
-    }
-
-    return this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 0;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-
-    if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'none' || x == 'unknown')) {
-      return navigationService.navigateRelative(`../check-answers/check-answers-building-information`, activatedRoute);
-    }
-    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
-      return navigationService.navigateRelative(MostRecentChangeComponent.route, activatedRoute);
-    }
-    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1 && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
-      return navigationService.navigateRelative(YearMostRecentChangeComponent.route, activatedRoute);
-    }
-    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')) {
-      this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0];
-      return navigationService.navigateRelative(AddedFloorsTypeComponent.route, activatedRoute);
-    }
-    return navigationService.navigateRelative(UndergoneBuildingMaterialChangesComponent.route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     let notResidentialDwellings = this.applicationService.currentKbiSection?.BuildingUse.PrimaryUseOfBuilding !== "residential_dwellings";
     let noDifferentPrimaryUse = this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse === 'no';
     let differentPrimaryUsePast = this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse === 'yes' && FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiSection?.BuildingUse.PreviousUseBuilding);
@@ -98,4 +58,42 @@ export class UndergoneBuildingMaterialChangesComponent extends BaseComponent imp
     return notResidentialDwellings || noDifferentPrimaryUse || differentPrimaryUsePast;
   }
 
+  override isValid(): boolean {
+    this.undergoneBuildingMaterialChangesHasErrors = !this.model || this.model?.length == 0;
+
+    if (this.undergoneBuildingMaterialChangesHasErrors) {this.firstCheckboxAnchorId = `asbestos_removal-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;}
+    else if (this.model!.length > 1 
+      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange) 
+      && this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange != "unknown"
+      && !this.model!.includes(this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange!)) {
+      
+      this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = "";
+    
+    }
+
+    return this.model!.length > 0;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'none' || x == 'unknown')) {
+      return this.navigationService.navigateRelative(`../check-answers/check-answers-building-information`, this.activatedRoute);
+    }
+    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
+      return this.navigationService.navigateRelative(MostRecentChangeComponent.route, this.activatedRoute);
+    }
+    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1 && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added' || x == 'none' || x == 'unknown')) {
+      return this.navigationService.navigateRelative(YearMostRecentChangeComponent.route, this.activatedRoute);
+    }
+    else if (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')) {
+      this.applicationService.currentKbiSection!.BuildingUse.MostRecentMaterialChange = this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges![0];
+      return this.navigationService.navigateRelative(AddedFloorsTypeComponent.route, this.activatedRoute);
+    }
+    return this.navigationService.navigateRelative(UndergoneBuildingMaterialChangesComponent.route, this.activatedRoute);
+  }
+
+  getInfraestructureName() {
+    return this.applicationService.model.NumberOfSections === 'one'
+      ? this.applicationService.model.BuildingName
+      : this.applicationService.currentKbiSection!.StructureName;
+  }
 }

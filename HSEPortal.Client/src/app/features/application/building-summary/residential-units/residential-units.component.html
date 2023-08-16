@@ -16,7 +16,7 @@
         <div class="govuk-hint govuk-!-margin-bottom-4">Count all residential units, whether someone is living in them or not.</div>
 
         <govuk-input label="Number of residential units" labelClass="govuk-label--s" id="residential-units"
-                     [(model)]="applicationService.currentSection.ResidentialUnits" #field [govukRequired]="field"
+                     [(model)]="model" #field [govukRequired]="field"
                      [errorText]="getErrorDescription(residentialUnitsHasErrors, errorMessage)"
                      class="govuk-input--width-4" (onKeyupEnter)="saveAndContinue()" />
 

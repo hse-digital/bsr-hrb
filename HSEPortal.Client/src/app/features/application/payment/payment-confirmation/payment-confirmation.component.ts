@@ -20,27 +20,30 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   }
 
   async ngOnInit() {
-    await this.applicationService.syncPayment();
-
     this.sendApplicationDataToBroadcastChannel();
 
-    this.activatedRoute.queryParams.subscribe(async query => {
-      var paymentReference = query['reference'] ?? await this.getApplicationPaymentReference();
+    if (this.applicationService.model.PaymentType == 'card') {
+      this.activatedRoute.queryParams.subscribe(async query => {
+        var paymentReference = query['reference'] ?? await this.getApplicationPaymentReference();
 
-      if (!paymentReference) {
-        this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
-        return;
-      }
+        if (!paymentReference) {
+          this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
+          return;
+        }
 
-      this.payment = await this.paymentService.GetPayment(paymentReference);
-      if (this.payment.Status == 'success') {
-        this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
-        await this.applicationService.updateApplication();
-        this.shouldRender = true;
-      } else {
-        this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
+        this.payment = await this.paymentService.GetPayment(paymentReference);
+        if (this.payment.Status == 'success') {
+          this.shouldRender = true;
+        } else {
+          this.navigationService.navigate(`/application/${this.applicationService.model.id}`);
+        }
+      });
+    } else {
+      this.shouldRender = true;
+      this.payment = {
+        Email: this.applicationService.model.PaymentInvoiceDetails?.Email
       }
-    });
+    }
   }
 
   private async getApplicationPaymentReference() {

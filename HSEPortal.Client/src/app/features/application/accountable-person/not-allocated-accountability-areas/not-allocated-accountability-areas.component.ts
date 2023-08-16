@@ -1,25 +1,21 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, SectionModel } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
+import { Component, QueryList, ViewChildren } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { AccountablePersonModel, ApplicationService, SectionModel } from 'src/app/services/application.service';
 import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper'
 import { NotAllocatedAccountabilityComponent } from 'src/app/components/not-allocated-accountability/not-allocated-accountability.component';
 import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { AddAccountablePersonComponent } from '../add-accountable-person/add-accountable-person.component';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { CloneHelper } from 'src/app/helpers/array-helper';
 
 @Component({
   selector: 'hse-not-allocated-accountability-areas',
   templateUrl: './not-allocated-accountability-areas.component.html'
 })
-export class NotAllocatedAccountabilityAreasComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class NotAllocatedAccountabilityAreasComponent extends PageComponent<AccountablePersonModel[]> {
   static route: string = 'not-allocated-accountability';
   static title: string = "Allocate all areas of accountability - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChildren(NotAllocatedAccountabilityComponent) checkboxes?: QueryList<NotAllocatedAccountabilityComponent>;
 
   InScopeStructures?: SectionModel[];
@@ -33,28 +29,43 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
     "facilities": "facilities that residents share",
   }
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
 
-  ngOnInit(): void {
+
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  } 
+
+  override onInit(applicationService: ApplicationService): void {
+    this.model = CloneHelper.DeepCopy(this.applicationService.model.AccountablePersons);
     this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
     this.InScopeStructures.forEach(section => {
-      this.notAllocatedAreas.push(AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section))
+      this.notAllocatedAreas.push(AccountabilityAreasHelper.getNotAllocatedAreasOf(this.model!, this.applicationService.model.BuildingName!, section))
     });
   }
 
-  canContinue(): boolean {
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.model.AccountablePersons = CloneHelper.DeepCopy(this.model!);
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope)!.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.model.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
+  }
+
+  override isValid(): boolean {
     let canContinue = true;
     this.errors = [];
     this.InScopeStructures!.forEach((section, index) => {
-      let notAllocatedAreas = AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, section);
+      let notAllocatedAreas = AccountabilityAreasHelper.getNotAllocatedAreasOf(this.model!, this.applicationService.model.BuildingName!, section);
       if (notAllocatedAreas.length != 0) {
         canContinue = false;
         this.addError(section, index, notAllocatedAreas);
       }
     });
     return canContinue;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, this.activatedRoute);
   }
 
   private addError(section: SectionModel, sectionIndex: number, notAllocatedAreas: string[]) {
@@ -92,30 +103,22 @@ export class NotAllocatedAccountabilityAreasComponent extends BaseComponent impl
   }
 
   updateAccountabilityAreas(accountablePersonIndex: number, section: SectionModel, area: string) {
-    let accountability = AccountabilityAreasHelper.updateAccountabilityAreas(this.applicationService, accountablePersonIndex, section, area);
+    let accountability = AccountabilityAreasHelper.updateAccountabilityAreas(this.model!, this.applicationService.model.BuildingName!, accountablePersonIndex, section, area);
     this.setAccountabilityFor(accountablePersonIndex, section, accountability);
   }
 
   private setAccountabilityFor(accountablePersonIndex: number, section: SectionModel, newAccountability: string[]) {
-    let sectionAccountability = this.applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability!
+    let sectionAccountability = this.model![accountablePersonIndex].SectionsAccountability!
       .find(x => x.SectionName == (section.Name ?? this.applicationService.model.BuildingName));
 
     if (!sectionAccountability) {
-      this.applicationService.model.AccountablePersons[accountablePersonIndex].SectionsAccountability!.push({ SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: newAccountability });
+      this.model![accountablePersonIndex].SectionsAccountability!.push({ SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: newAccountability });
     } else {
       sectionAccountability.Accountability = newAccountability;
     }
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(AccountablePersonCheckAnswersComponent.route, activatedRoute);
-  }
-
   navigateToAddMoreAccountablePersons() {
     this.navigationService.navigateRelative(AddAccountablePersonComponent.route, this.activatedRoute);
-  }
-
-  override canAccess(_: ActivatedRouteSnapshot) {
-    return this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope)!.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService, x).length > 0);
   }
 }

@@ -17,7 +17,7 @@
 
         <govuk-input id="block-name" (onKeyupEnter)="saveAndContinue()"
                      label="{{getCurrentStructureName()}} structure's name" labelClass="govuk-label--s" 
-                     [(model)]="applicationService.currentSection.Name" #field [govukRequired]="field" 
+                     [(model)]="model" #field [govukRequired]="field" 
                      [errorText]="getErrorDescription(blockNameHasErrors, 'Enter this block\'s name')" />
 
       </div>

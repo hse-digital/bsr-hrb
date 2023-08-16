@@ -1,37 +1,65 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component, ViewChild } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { GovukCheckboxNoneComponent } from 'src/app/components/govuk-checkbox-none/govuk-checkbox-none.component';
 import { FireSmokeProvisionLocationsComponent } from '../fire-smoke-provision-locations/fire-smoke-provision-locations.component';
 import { LiftsComponent } from '../lifts/lifts.component';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { CloneHelper } from 'src/app/helpers/array-helper';
 
 @Component({
   selector: 'hse-fire-smoke-provisions',
   templateUrl: './fire-smoke-provisions.component.html'
 })
-export class FireSmokeProvisionsComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class FireSmokeProvisionsComponent extends PageComponent<string[]> {
   static route: string = 'smoke-provisions';
   static title: string = "Common parts fire and smoke controls - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   @ViewChild(GovukCheckboxNoneComponent) equipmentCheckboxGroup?: GovukCheckboxNoneComponent;
 
   firstCheckboxAnchorId?: string;
   errorMessage?: string;
   fireSmokeProvisionsHasErrors = false;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
     if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions) { this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions = []; }
+    this.model = CloneHelper.DeepCopy(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions);
     this.errorMessage = `Select the fire and smoke control equipment in the residential common parts of ${this.getInfraestructureName()}`;
+  }
+
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions = CloneHelper.DeepCopy(this.model);
+    this.mapLocations();
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return !!this.applicationService.currentKbiSection?.Fire.ProvisionsEquipment
+      && this.applicationService.currentKbiSection!.Fire.ProvisionsEquipment.length > 0;
+  }
+
+  override isValid(): boolean {
+    this.fireSmokeProvisionsHasErrors = !this.model || this.model?.length == 0;
+
+    if (this.fireSmokeProvisionsHasErrors) {
+      this.firstCheckboxAnchorId = `alarm_heat_smoke-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
+    }
+
+    return !this.fireSmokeProvisionsHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    let provisionsWithLocation = this.getProvisionsWithLocation();
+    if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.includes('none') && !!provisionsWithLocation && provisionsWithLocation.length > 0) {
+      return this.navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, this.activatedRoute, {
+        equipment: provisionsWithLocation![0]
+      });
+    }
+
+    return this.navigationService.navigateRelative(LiftsComponent.route, this.activatedRoute);
   }
 
   getInfraestructureName() {
@@ -40,51 +68,28 @@ export class FireSmokeProvisionsComponent extends BaseComponent implements IHasN
       : this.applicationService.currentKbiSection!.StructureName;
   }
 
-  canContinue(): boolean {
-    this.fireSmokeProvisionsHasErrors = !this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions
-      || this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions.length == 0;
-
-    if (this.fireSmokeProvisionsHasErrors) {
-      this.firstCheckboxAnchorId = `alarm_heat_smoke-${this.equipmentCheckboxGroup?.checkboxElements?.first.innerId}`;
-    } else {
-      this.mapLocations();
-    }
-
-
-    return !this.fireSmokeProvisionsHasErrors;
-  }
-
   mapLocations() {
+    let provisionsWithLocations = this.getProvisionsWithLocation();
     // init locations
     if (!this.applicationService.currentKbiSection?.Fire.FireSmokeProvisionLocations || Object.keys(this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations).length == 0) {
       this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = {};
-      this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(equipment => {
+      provisionsWithLocations?.forEach(equipment => {
         this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![equipment] = [];
       });
     }
 
     // Mapping locations
     let aux: Record<string, string[]> = {};
-    this.applicationService.currentKbiSection?.Fire.FireSmokeProvisions?.forEach(x =>
+    provisionsWithLocations?.forEach(x =>
       aux[x] = (!!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x] && this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x].length > 0)
         ? this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations![x]
         : []
     );
     this.applicationService.currentKbiSection!.Fire.FireSmokeProvisionLocations = aux;
   }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (!this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.includes('none')) {
-      return navigationService.navigateRelative(FireSmokeProvisionLocationsComponent.route, activatedRoute, {
-        equipment: this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions![0]
-      });
-    }
-
-    return navigationService.navigateRelative(LiftsComponent.route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.Fire.ProvisionsEquipment
-      && this.applicationService.currentKbiSection!.Fire.ProvisionsEquipment.length > 0;
+  
+  private provisionsWithoutLocation = ["risers_dry", "risers_wet", "fire_extinguishers"]
+  getProvisionsWithLocation() {
+    return this.applicationService.currentKbiSection!.Fire.FireSmokeProvisions?.filter(x => !this.provisionsWithoutLocation.includes(x));
   }
 }

@@ -15,13 +15,13 @@
         <govuk-body>This is who we will talk to about building safety issues for the parts of <b>{{applicationService.model.BuildingName}}</b> that <b>{{applicationService.currentAccountablePerson.OrganisationName}}</b> is accountable for.</govuk-body>
 
         <govuk-input id="first-name" label="First name"
-                      [(model)]="applicationService.currentAccountablePerson.NamedContactFirstName" #field [govukRequired]="field"
+                      [(model)]="model!.NamedContactFirstName" #field [govukRequired]="field"
                       [errorText]="getErrorDescription(firstNameInError, 'Enter their first name')"
                       class="govuk-!-margin-bottom-5"
                       (onKeyupEnter)="saveAndContinue()" />
 
         <govuk-input id="last-name" label="Last name"
-                      [(model)]="applicationService.currentAccountablePerson.NamedContactLastName" #field2 [govukRequired]="field2"
+                      [(model)]="model!.NamedContactLastName" #field2 [govukRequired]="field2"
                       [errorText]="getErrorDescription(lastNameInError, 'Enter their last name')"
                       (onKeyupEnter)="saveAndContinue()" />
 

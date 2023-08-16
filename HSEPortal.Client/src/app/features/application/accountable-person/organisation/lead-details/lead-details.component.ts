@@ -1,37 +1,29 @@
-import { Component, OnInit, QueryList, ViewChildren } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
-import { GovukErrorSummaryComponent } from "hse-angular";
+import { Component } from "@angular/core";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApHelper } from "src/app/helpers/ap-helper";
-import { BaseComponent } from "src/app/helpers/base.component";
-import { IHasNextPage } from "src/app/helpers/has-next-page.interface";
 import { EmailValidator } from "src/app/helpers/validators/email-validator";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { PhoneNumberValidator } from "src/app/helpers/validators/phone-number-validator";
 import { ApplicationService } from "src/app/services/application.service";
-import { NavigationService } from "src/app/services/navigation.service";
-import { TitleService } from 'src/app/services/title.service';
 import { AddAccountablePersonComponent } from "../../add-accountable-person/add-accountable-person.component";
+import { PageComponent } from "src/app/helpers/page.component";
+
+export type AccountableLeadPersonJob = { LeadEmail?: string, LeadPhoneNumber?: string, LeadJobRole?: string }
 
 @Component({
   templateUrl: './lead-details.component.html'
 })
-export class LeadDetailsComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class LeadDetailsComponent extends PageComponent<AccountableLeadPersonJob> {
   static route: string = 'lead-details';
   static title: string = "PAP organisation lead contact details - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
+
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  } 
 
   papName?: string;
-  ngOnInit(): void {
-    this.papName = `${this.applicationService.currentAccountablePerson.LeadFirstName} ${this.applicationService.currentAccountablePerson.LeadLastName}`;
-    this.emailErrorText = `Enter ${this.papName}'s email address`;
-    this.phoneErrorText = `Enter ${this.papName}'s telephone number`;
-    this.jobRoleErrorText = `Select ${this.papName}'s job role`;
-  }
 
   emailHasErrors: boolean = false;
   phoneHasErrors: boolean = false;
@@ -41,17 +33,39 @@ export class LeadDetailsComponent extends BaseComponent implements IHasNextPage,
   phoneErrorText!: string;
   jobRoleErrorText!: string;
 
-  canContinue(): boolean {
-    let email = this.applicationService.currentAccountablePerson.LeadEmail;
-    let phone = this.applicationService.currentAccountablePerson.LeadPhoneNumber;
-    let jobRole = this.applicationService.currentAccountablePerson.LeadJobRole;
+  override onInit(applicationService: ApplicationService): void {
+    this.model = {
+      LeadEmail: this.applicationService.currentAccountablePerson.LeadEmail,
+      LeadPhoneNumber: this.applicationService.currentAccountablePerson.LeadPhoneNumber,
+      LeadJobRole: this.applicationService.currentAccountablePerson.LeadJobRole
+    };
+    this.papName = `${this.applicationService.currentAccountablePerson.LeadFirstName} ${this.applicationService.currentAccountablePerson.LeadLastName}`;
+    this.emailErrorText = `Enter ${this.papName}'s email address`;
+    this.phoneErrorText = `Enter ${this.papName}'s telephone number`;
+    this.jobRoleErrorText = `Select ${this.papName}'s job role`;
+  }
 
-    this.emailHasErrors = !this.isEmailValid(email);
-    this.phoneHasErrors = !this.isPhoneNumberValid(phone);
-    this.jobRoleHasErrors = !FieldValidations.IsNotNullOrWhitespace(jobRole);
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentAccountablePerson.LeadEmail = this.model?.LeadEmail;
+    this.applicationService.currentAccountablePerson.LeadPhoneNumber = this.model?.LeadPhoneNumber;
+    this.applicationService.currentAccountablePerson.LeadJobRole = this.model?.LeadJobRole;
+  }
 
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return ApHelper.isApAvailable(routeSnapshot, this.applicationService)
+      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
+  }
+
+  override isValid(): boolean {
+    this.emailHasErrors = !this.isEmailValid(this.model?.LeadEmail);
+    this.phoneHasErrors = !this.isPhoneNumberValid(this.model?.LeadPhoneNumber);
+    this.jobRoleHasErrors = !FieldValidations.IsNotNullOrWhitespace(this.model?.LeadJobRole);
 
     return !this.emailHasErrors && !this.phoneHasErrors && !this.jobRoleHasErrors;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, this.activatedRoute);
   }
 
   isEmailValid(email: string | undefined): boolean {
@@ -79,14 +93,4 @@ export class LeadDetailsComponent extends BaseComponent implements IHasNextPage,
 
     return !inError;
   }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return ApHelper.isApAvailable(routeSnapshot, this.applicationService) 
-      && ApHelper.isOrganisation(routeSnapshot, this.applicationService);
-  }
-
 } 

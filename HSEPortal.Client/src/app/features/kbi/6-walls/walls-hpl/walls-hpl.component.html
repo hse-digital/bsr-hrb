@@ -9,12 +9,12 @@
         </govuk-error-summary>
 
         <govuk-radio-group title="High pressure laminate (HPL) on {{getInfraestructureName()}}?" 
-          [isPageHeading]=true [(model)]="applicationService.currentKbiSection!.Walls.WallHPL" #field [govukRequired]="field"
+          [isPageHeading]=true [(model)]="model" #field [govukRequired]="field"
           id="hpl" [errorText]="getErrorDescription(wallsHplHasErrors, errorMessage!)">
 
-          <govuk-radio [model]="applicationService.currentKbiSection!.Walls.WallHPL" name="application-group" id="fire-classification" value="fire-classification" label="Meets the fire classification A2-s1, d0 or better" hint="Set out in the British Standard BS EN 13501-1, this classifies building materials based on their reaction to fire." (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currentKbiSection!.Walls.WallHPL" name="application-group" id="large-scale-fire-test" value="large-scale-fire-test" label="Has passed a large-scale fire test to BS8414" hint="This is the British Standard for tests that assess the fire safety of cladding applied to the outside of buildings." (onKeyupEnter)="saveAndContinue()" />
-          <govuk-radio [model]="applicationService.currentKbiSection!.Walls.WallHPL" name="application-group" id="neither-these" value="none" label="Neither of these" (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model" name="application-group" id="fire-classification" value="fire-classification" label="Meets the fire classification A2-s1, d0 or better" hint="Set out in the British Standard BS EN 13501-1, this classifies building materials based on their reaction to fire." (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model" name="application-group" id="large-scale-fire-test" value="large-scale-fire-test" label="Has passed a large-scale fire test to BS8414" hint="This is the British Standard for tests that assess the fire safety of cladding applied to the outside of buildings." (onKeyupEnter)="saveAndContinue()" />
+          <govuk-radio [model]="model" name="application-group" id="neither-these" value="neither-these" label="Neither of these" (onKeyupEnter)="saveAndContinue()" />
           
         </govuk-radio-group>
       </div>

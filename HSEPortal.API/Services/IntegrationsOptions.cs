@@ -13,4 +13,5 @@ public class IntegrationsOptions
     public double PaymentAmount { get; set; }
     public string CommonAPIEndpoint { get; set; }
     public string CommonAPIKey { get; set; }
+    public string Environment { get; set; }
 }

@@ -17,7 +17,7 @@
 
         <govuk-input label="Issuer name{{ isOptional ? ' (optional)' : ''}}" labelClass="govuk-label--s"
                      hint="Enter the full name of the building control body or authority that issued the completion certificate. If you do not have access to the completion certificate, leave this blank."
-                     id="certificate-issuer" [(model)]="applicationService.currentSection.CompletionCertificateIssuer"
+                     id="certificate-issuer" [(model)]="model"
                      (onKeyupEnter)="saveAndContinue()" #field [govukRequired]="field"
                      [errorText]="getErrorDescription(certificateHasErrors, 'Enter the completion certificate issuer')"  />
       </div>

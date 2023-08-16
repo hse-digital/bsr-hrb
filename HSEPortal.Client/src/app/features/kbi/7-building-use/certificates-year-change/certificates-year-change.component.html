@@ -14,7 +14,7 @@
         <govuk-input class="govuk-input--width-4"
                      hint="This is the year on the completion certificate that was issued when this change of use happened. If you do not know, leave this blank." #field [govukRequired]="field"
                      [errorText]="getErrorDescription(certificatesYearChangesHasErrors, errorMessage!)"
-                     id="certificate-year" [(model)]="applicationService.currentKbiSection!.BuildingUse.YearChangeInUse"
+                     id="certificate-year" [(model)]="model"
                      (onKeyupEnter)="saveAndContinue()" />
 
       </div>

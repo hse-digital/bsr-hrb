@@ -16,7 +16,7 @@
         <govuk-body>If you do not have an email address, <a href="https://www.hse.gov.uk/contact/tell-us-about-a-health-and-safety-issue.htm" class="govuk-link" target="_blank">contact us</a> to apply to register a high-rise building.</govuk-body>
 
         <govuk-input id="email" type="email" [maxlength]=100
-                     [(model)]="applicationService.model.ContactEmailAddress"
+                     [(model)]="model"
                      label="Enter your email address" labelClass="govuk-label--s"
                      [errorText]="getErrorDescription(emailHasErrors, 'Enter an email address in the correct format')"
                      hint="We will use this to contact you about this application. You will need to use this email address to access the whole application - including the detailed information about the structure and safety of the building."

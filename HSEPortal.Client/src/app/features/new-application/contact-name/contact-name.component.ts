@@ -1,42 +1,52 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
-import { TitleService } from 'src/app/services/title.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { ContactPhoneComponent } from '../contact-phone/contact-phone.component';
+
+export type ContactName = { FirstName: string, LastName: string };
 
 @Component({
   templateUrl: './contact-name.component.html'
 })
-export class ContactNameComponent extends BaseComponent implements IHasNextPage {
+export class ContactNameComponent extends PageComponent<ContactName> {
   static route: string = "contact-name";
   static title: string = "Your name - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
     this.updateOnSave = false;
   }
 
+  override model: ContactName = { FirstName: "", LastName: "" };
   firstNameInError: boolean = false;
   lastNameInError: boolean = false;
 
-  canContinue() {
-    this.firstNameInError = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactFirstName);
-    this.lastNameInError = !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ContactLastName);
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName);
+  }
+
+  override onInit(applicationService: ApplicationService): void {
+    this.model.FirstName = applicationService.model.ContactFirstName ?? "";
+    this.model.LastName = applicationService.model.ContactLastName ?? "";
+  }
+
+  override onSave(applicationService: ApplicationService): void {
+    this.applicationService.model.ContactFirstName = this.model?.FirstName;
+    this.applicationService.model.ContactLastName = this.model?.LastName;
+  }
+
+  override isValid(): boolean {
+    this.firstNameInError = !FieldValidations.IsNotNullOrWhitespace(this.model?.FirstName);
+    this.lastNameInError = !FieldValidations.IsNotNullOrWhitespace(this.model?.LastName);
+
+    if (!this.firstNameInError && !this.lastNameInError) this.onSave(this.applicationService);
 
     return !this.firstNameInError && !this.lastNameInError;
   }
 
-  override canAccess(_: ActivatedRouteSnapshot){
-    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName);
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative('contact-phone', activatedRoute);
+  override navigateNext(): Promise<boolean> {
+    return this.navigationService.navigateRelative(ContactPhoneComponent.route, this.activatedRoute);
   }
 }

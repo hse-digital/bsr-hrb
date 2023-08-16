@@ -13,13 +13,13 @@
         <h1 class="govuk-heading-l">{{papName}}'s contact details</h1>
 
         <govuk-input id="email" label="Email address" type="email" [maxlength]=100
-                      [(model)]="applicationService.currentAccountablePerson.Email" #field [govukRequired]="field"
+                      [(model)]="model!.Email" #field [govukRequired]="field"
                       [errorText]="getErrorDescription(emailHasErrors, emailErrorText)"
                       class="govuk-!-margin-bottom-5" 
                       (onKeyupEnter)="saveAndContinue()" />
 
         <govuk-input id="phone-number" label="Telephone number" type="tel"
-                      [(model)]="applicationService.currentAccountablePerson.PhoneNumber" #field2 [govukRequired]="field2"
+                      [(model)]="model!.PhoneNumber" #field2 [govukRequired]="field2"
                       [errorText]="getErrorDescription(phoneHasErrors, phoneErrorText)" 
                       (onKeyupEnter)="saveAndContinue()"/>
       </div>

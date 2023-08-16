@@ -1,43 +1,41 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { BaseComponent } from 'src/app/helpers/base.component';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
 import { ConfirmComponent } from '../confirm/confirm.component';
 import { KbiService } from 'src/app/services/kbi.service';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   selector: 'hse-declaration',
   templateUrl: './declaration.component.html'
 })
-export class DeclarationComponent extends BaseComponent implements OnInit {
+export class DeclarationComponent extends PageComponent<void> {
   static route: string = 'declaration';
   static title: string = "Declaration - Register a high-rise building - GOV.UK";
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService, private kbiService: KbiService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
-  }
-
-  async ngOnInit() {
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitInProgress;
-    await this.applicationService.updateApplication();
-  }
-
-  canContinue(): boolean {
-    return true;
+  constructor(activatedRoute: ActivatedRoute, private kbiService: KbiService) {
+    super(activatedRoute);
   }
 
   override async onSave(): Promise<void> {
     await this.kbiService.syncConnectionsAndDeclaration(this.applicationService.model.Kbi!);
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(ConfirmComponent.route, activatedRoute);
+  override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitInProgress;
+    await this.applicationService.updateApplication();
   }
 
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return this.containsFlag(BuildingApplicationStatus.KbiConnectionsComplete);
+  }
+
+  override isValid(): boolean {
+    return true;
+  }
+
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(ConfirmComponent.route, this.activatedRoute);
   }
 
   containsFlag(flag: BuildingApplicationStatus) {

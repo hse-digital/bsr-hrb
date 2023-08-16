@@ -1,15 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, BuildingApplicationStatus, BuildingRegistrationModel, PaymentModel, SectionModel } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ApplicationService, BuildingApplicationStatus, BuildingRegistrationModel, SectionModel } from 'src/app/services/application.service';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { LocalStorage } from 'src/app/helpers/local-storage';
 import { BroadcastChannelSecondaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { PageComponent } from 'src/app/helpers/page.component';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -17,7 +14,7 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './summary-page.component.html',
   styleUrls: ['./summary-page.component.scss']
 })
-export class SummaryPageComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class SummaryPageComponent extends PageComponent<void> {
   public static route: string = "summary";
   static title: string = "Summary - Register a high-rise building - GOV.UK";
 
@@ -25,12 +22,12 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
   payment?: any;
   shouldRender: boolean = false;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  async ngOnInit() {
-    if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName)) {
+  override async onInit(applicationService: ApplicationService): Promise<void> {
+    if(!FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName)) {
       await this.getApplicationDataFromBroadcastChannel();
     } 
 
@@ -43,19 +40,21 @@ export class SummaryPageComponent extends BaseComponent implements IHasNextPage,
     this.sections = this.applicationService.model.Sections;
 
     var payments = await this.applicationService.getApplicationPayments()
-    this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
+    this.payment = payments.find(x => x.bsr_govukpaystatus == "success" || x.bsr_govukpaystatus == "paid");
   }
-
-  canContinue() {
+  
+  override async onSave(applicationService: ApplicationService): Promise<void> { }
+  
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return true;
   }
-
-  override canAccess(_: ActivatedRouteSnapshot) {
+  
+  override isValid(): boolean {
     return true;
   }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative('', activatedRoute);
+  
+  override navigateNext(): Promise<boolean> {
+    return this.navigationService.navigateRelative('', this.activatedRoute);
   }
 
   getSectionName(sectionIndex: number, section?: SectionModel) {

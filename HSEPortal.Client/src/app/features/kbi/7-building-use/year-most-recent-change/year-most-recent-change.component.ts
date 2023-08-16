@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 import { GovukErrorSummaryComponent } from 'hse-angular';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
@@ -11,45 +12,48 @@ import { TitleService } from 'src/app/services/title.service';
   selector: 'hse-year-most-recent-change',
   templateUrl: './year-most-recent-change.component.html'
 })
-export class YearMostRecentChangeComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class YearMostRecentChangeComponent extends PageComponent<string> {
   static route: string = 'year-most-recent-change';
   static title: string = "Year of most recent work done - Register a high-rise building - GOV.UK";
-
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
 
   yearMostRecentChangeHasError: boolean = false;
   errorMessage?: string;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  getInfraestructureName() {
-    return this.applicationService.model.NumberOfSections === 'one'
-      ? this.applicationService.model.BuildingName
-      : this.applicationService.currentKbiSection!.StructureName;
-  }
-
-
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
     if (!this.applicationService.currentKbiSection?.BuildingUse.YearMostRecentMaterialChange) {
       this.applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange;
     }
+    this.model = this.applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange;
   }
 
-  canContinue() {
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange = this.model;
+  }
+
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    let onlyOneMaterialChange = (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1);
+    let mostRecentChangeIsKnown = !this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange?.includes("unknown");
+    let isNoneOrUnknown = this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'none' || x == 'unknown')
+    
+    return !isNoneOrUnknown && (onlyOneMaterialChange || mostRecentChangeIsKnown);
+  }
+
+  override isValid(): boolean {
     this.errorMessage = "";
 
     //If this.applicationService.currentKbiSection!.YearMostRecentMaterialChange is not null, then we need to validate it
-    if (this.applicationService.currentKbiSection!.BuildingUse.YearMostRecentMaterialChange) {
+    if (this.model) {
       let currentSection = this.applicationService.currentSection!;
-      let currentKbiSection = this.applicationService.currentKbiSection!;
-
+  
       let materialName = this.getSelectedMaterialName().toLowerCase();
       
-      let mostRecentChange = Number(currentKbiSection.BuildingUse.YearMostRecentMaterialChange);
+      let mostRecentChange = Number(this.model);
 
-      if (!mostRecentChange || currentKbiSection.BuildingUse.YearMostRecentMaterialChange?.length != 4) {
+      if (!mostRecentChange || this.model?.length != 4) {
         this.errorMessage = `Year of ${materialName} must be a real year. For example, '1994'`;
       } else {
         let yearOfCompletion = currentSection.YearOfCompletionOption == 'year-exact' ? Number(currentSection.YearOfCompletion) : this.getYearFromRange(currentSection.YearOfCompletionRange!);
@@ -62,17 +66,14 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
     return !this.errorMessage;
   }
 
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(`../check-answers/check-answers-building-information`, activatedRoute);
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(`../check-answers/check-answers-building-information`, this.activatedRoute);
   }
 
-  override canAccess(_: ActivatedRouteSnapshot) {
-    let onlyOneMaterialChange = (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1);
-    let mostRecentChangeIsKnown = !this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange?.includes("unknown");
-    let isNoneOrUnknown = this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'none' || x == 'unknown')
-    
-    return !isNoneOrUnknown && (onlyOneMaterialChange || mostRecentChangeIsKnown);
+  getInfraestructureName() {
+    return this.applicationService.model.NumberOfSections === 'one'
+      ? this.applicationService.model.BuildingName
+      : this.applicationService.currentKbiSection!.StructureName;
   }
 
   getSelectedMaterialName() {
@@ -117,6 +118,4 @@ export class YearMostRecentChangeComponent extends BaseComponent implements IHas
   getYearFromRange(range: string) {
     return this.yearRangeMapper[range];
   }
-
-
 }

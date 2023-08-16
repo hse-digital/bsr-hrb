@@ -1,30 +1,26 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { GovukErrorSummaryComponent } from 'hse-angular';
-import { BaseComponent } from 'src/app/helpers/base.component';
-import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
+import { Component } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService } from 'src/app/services/application.service';
-import { NavigationService } from 'src/app/services/navigation.service';
-import { TitleService } from 'src/app/services/title.service';
+import { ApplicationService, FireDoorsCommon } from 'src/app/services/application.service';
 import { EnergyTypeComponent } from '../../2-energy/energy-type/energy-type.component';
 import { KbiEnergyModule } from '../../2-energy/kbi.energy.module';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { CloneHelper } from 'src/app/helpers/array-helper';
 
 type Error = { hasError: boolean, errorMessage: string }
+
 @Component({
   selector: 'hse-fire-doors-common',
   templateUrl: './fire-doors-common.component.html'
 })
-export class FireDoorsCommonComponent extends BaseComponent implements IHasNextPage, OnInit {
+export class FireDoorsCommonComponent extends PageComponent<FireDoorsCommon> {
   static route: string = 'doors-common';
   static title: string = "Common parts fire doors - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
-
   hasError: boolean = false;
-
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
   errorMessages: Record<string, string> = {
@@ -42,22 +38,40 @@ export class FireDoorsCommonComponent extends BaseComponent implements IHasNextP
     fireDoorUnknown: { hasError: false, errorMessage: "" } as Error
   };
 
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
     if (!this.applicationService.currentKbiSection!.Fire.FireDoorsCommon) {
       this.applicationService.currentKbiSection!.Fire.FireDoorsCommon = {};
     }
-  }
 
-  canContinue() {
-    this.errors.fireDoorThirtyMinute = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorThirtyMinute, this.errors.fireDoorThirtyMinute, "fireDoorThirtyMinute");
-    this.errors.fireDoorSixtyMinute = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorSixtyMinute, this.errors.fireDoorSixtyMinute, "fireDoorSixtyMinute");
-    this.errors.fireDoorHundredTwentyMinute = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorHundredTwentyMinute, this.errors.fireDoorHundredTwentyMinute, "fireDoorHundredTwentyMinute");
-    this.errors.fireDoorUnknown = this.validateNumericInput(this.applicationService.currentKbiSection?.Fire.FireDoorsCommon?.FireDoorUnknown, this.errors.fireDoorUnknown, "fireDoorUnknown");
+    this.model = CloneHelper.DeepCopy(this.applicationService.currentKbiSection?.Fire.FireDoorsCommon);
+  }
+  
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.Fire.FireDoorsCommon = CloneHelper.DeepCopy(this.model);
+  }
+  
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.NoFireResistance
+      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.ThirtyMinsFireResistance
+      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.SixtyMinsFireResistance
+      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.HundredTwentyMinsFireResistance
+      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.NoFireResistance
+  }
+  
+  override isValid(): boolean {
+    this.errors.fireDoorThirtyMinute = this.validateNumericInput(this.model?.FireDoorThirtyMinute, this.errors.fireDoorThirtyMinute, "fireDoorThirtyMinute");
+    this.errors.fireDoorSixtyMinute = this.validateNumericInput(this.model?.FireDoorSixtyMinute, this.errors.fireDoorSixtyMinute, "fireDoorSixtyMinute");
+    this.errors.fireDoorHundredTwentyMinute = this.validateNumericInput(this.model?.FireDoorHundredTwentyMinute, this.errors.fireDoorHundredTwentyMinute, "fireDoorHundredTwentyMinute");
+    this.errors.fireDoorUnknown = this.validateNumericInput(this.model?.FireDoorUnknown, this.errors.fireDoorUnknown, "fireDoorUnknown");
 
     return !this.errors.fireDoorThirtyMinute.hasError
       && !this.errors.fireDoorSixtyMinute.hasError
       && !this.errors.fireDoorHundredTwentyMinute.hasError
       && !this.errors.fireDoorUnknown.hasError;
+  }
+  
+  override navigateNext(): Promise<boolean | void> {
+    return this.navigationService.navigateRelative(`../${KbiEnergyModule.baseRoute}/${EnergyTypeComponent.route}`, this.activatedRoute);
   }
 
   getInfraestructureName() {
@@ -66,24 +80,9 @@ export class FireDoorsCommonComponent extends BaseComponent implements IHasNextP
       : this.applicationService.currentKbiSection!.StructureName;
   }
 
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    return navigationService.navigateRelative(`../${KbiEnergyModule.baseRoute}/${EnergyTypeComponent.route}`, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-
-    return !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.NoFireResistance
-      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.ThirtyMinsFireResistance
-      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.SixtyMinsFireResistance
-      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.HundredTwentyMinsFireResistance
-      && !!this.applicationService.currentKbiSection?.Fire.ResidentialUnitFrontDoors?.NoFireResistance
-  }
-
   validateNumericInput(input: number | undefined, error: Error, key: string): Error {
     error.hasError = !input || !FieldValidations.IsWholeNumber(input) || !FieldValidations.IsAPositiveNumber(input);
     if (error.hasError) error.errorMessage = !input ? this.errorMessages[key] : this.defaultErrorMessage;
     return error;
   }
-
-
 }

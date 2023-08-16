@@ -8,48 +8,53 @@ import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { PreviousUseBuildingComponent } from '../previous-use-building/previous-use-building.component';
 import { UndergoneBuildingMaterialChangesComponent } from '../undergone-building-material-changes/undergone-building-material-changes.component';
+import { PageComponent } from 'src/app/helpers/page.component';
 
 @Component({
   selector: 'hse-change-primary-use',
   templateUrl: './change-primary-use.component.html'
 })
-export class ChangePrimaryUseComponent  extends BaseComponent implements IHasNextPage, OnInit {
+export class ChangePrimaryUseComponent  extends PageComponent<string> {
   static route: string = 'change-primary-use';
   static title: string = "Change in primary use - Register a high-rise building - GOV.UK";
 
-  @ViewChildren("summaryError") override summaryError?: QueryList<GovukErrorSummaryComponent>;
   errorMessage?: string;
   changePrimaryUseHasErrors = false;
 
-  constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
-    super(router, applicationService, navigationService, activatedRoute, titleService);
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
-  ngOnInit(): void {
+  override onInit(applicationService: ApplicationService): void {
     this.errorMessage = `Select whether ${this.getInfraestructureName()} has had a different primary use in the past`;
+    this.model = this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse;
+  }
+  
+  override async onSave(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentKbiSection!.BuildingUse.ChangePrimaryUse = this.model;
+  }
+  
+  override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
+    return !!this.applicationService.currentKbiSection?.BuildingUse.FloorsBelowGroundLevel;
+  }
+  
+  override isValid(): boolean {
+    this.changePrimaryUseHasErrors = !this.model || this.model?.length == 0;
+    return !this.changePrimaryUseHasErrors;
+  }
+  
+  override navigateNext(): Promise<boolean | void> {
+    if (this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse === "yes") {
+      return this.navigationService.navigateRelative(PreviousUseBuildingComponent.route, this.activatedRoute);  
+    }
+
+    return this.navigationService.navigateRelative(UndergoneBuildingMaterialChangesComponent.route, this.activatedRoute);
   }
 
   getInfraestructureName(){
     return this.applicationService.model.NumberOfSections === 'one' 
       ? this.applicationService.model.BuildingName 
       : this.applicationService.currentKbiSection!.StructureName;
-  }
-
-  canContinue(): boolean {
-    this.changePrimaryUseHasErrors = !this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse || this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse.length == 0;
-    return !this.changePrimaryUseHasErrors;
-  }
-
-  navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    if (this.applicationService.currentKbiSection?.BuildingUse.ChangePrimaryUse === "yes") {
-      return navigationService.navigateRelative(PreviousUseBuildingComponent.route, activatedRoute);  
-    }
-
-    return navigationService.navigateRelative(UndergoneBuildingMaterialChangesComponent.route, activatedRoute);
-  }
-
-  override canAccess(routeSnapshot: ActivatedRouteSnapshot) {
-    return !!this.applicationService.currentKbiSection?.BuildingUse.FloorsBelowGroundLevel;
   }
 
 }
