@@ -29,6 +29,7 @@ public class DynamicsApi
 
             var request = dynamicsOptions.EnvironmentUrl
                 .AppendPathSegments("api", "data", "v9.2", endpoint)
+                .AllowAnyHttpStatus()
                 .WithOAuthBearerToken(token);
 
             if (returnObjectResponse)

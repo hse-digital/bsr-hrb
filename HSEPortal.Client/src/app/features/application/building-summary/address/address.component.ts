@@ -4,7 +4,7 @@ import { AddressSearchMode } from "src/app/components/address/address.component"
 import { NotFoundComponent } from "src/app/components/not-found/not-found.component";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { AddressModel } from "src/app/services/address.service";
-import { ApplicationService } from "src/app/services/application.service";
+import { ApplicationService, RegisteredStructureModel } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from 'src/app/services/title.service';
 import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
@@ -12,6 +12,9 @@ import { SectionCheckAnswersComponent } from "../check-answers/check-answers.com
 import { SectionNameComponent } from "../name/name.component";
 import { SectionOtherAddressesComponent } from "../other-addresses/other-addresses.component";
 import { ApplicationSubmittedHelper } from "src/app/helpers/app-submitted-helper";
+import { DuplicatesService } from "src/app/services/duplicates.service";
+import { AlreadyRegisteredSingleComponent } from "../duplicates/already-registered-single/already-registered-single.component";
+import { AlreadyRegisteredMultiComponent } from "../duplicates/already-registered-multi/already-registered-multi.component";
 
 @Component({
   templateUrl: './address.component.html'
@@ -25,7 +28,7 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
   searchMode = AddressSearchMode.Building;
 
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private titleService: TitleService) {
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private titleService: TitleService, private duplicatesService: DuplicatesService) {
   }
 
   private addressIndex?: number;
@@ -43,11 +46,15 @@ export class SectionAddressComponent implements OnInit, CanActivate {
         this.addressIndex = this.applicationService.currentSection.Addresses.length + 1;
       }
 
+      this.applicationService._currentSectionAddressIndex = this.addressIndex - 1;
       this.address = this.applicationService.currentSection.Addresses[this.addressIndex - 1];
     });
   }
 
   async updateSectionAddress(address: AddressModel) {
+
+    await this.isDuplicate(address);
+
     if (this.addressIndex) {
       this.applicationService.currentSection.Addresses[this.addressIndex - 1] = address;
     } else {
@@ -73,6 +80,34 @@ export class SectionAddressComponent implements OnInit, CanActivate {
         this.navigationService.navigateRelative(`../${nextSection}/${SectionNameComponent.route}`, this.activatedRoute);
       }
     }
+  }
+
+  private async isDuplicate(address: AddressModel) {
+    let duplicatedStructure = await this.duplicatesService.GetRegisteredStructureBy(address.Postcode!, address.Address!);
+
+    if (!!duplicatedStructure) {
+      this.SetDuplicationDetected(duplicatedStructure as RegisteredStructureModel);      
+      let route = this.getDuplicationCheckScreenRoute();
+      this.navigationService.navigateRelative(route, this.activatedRoute);
+    }
+  }
+
+  private SetDuplicationDetected(duplicatedStructure: RegisteredStructureModel) {
+    if (!this.applicationService.currentSection.Duplicate) {
+      this.applicationService.currentSection.Duplicate = { DuplicationDetected: [], RegisteredStructureModel: {}};
+    }
+
+    this.applicationService.currentSection.Duplicate.RegisteredStructureModel = duplicatedStructure;
+
+    if(this.applicationService.currentSection.Duplicate!.DuplicationDetected!.indexOf((this.addressIndex ?? 0).toString()) == -1) {
+      this.applicationService.currentSection.Duplicate!.DuplicationDetected?.push((this.addressIndex ?? 0).toString());
+    };
+  }
+
+  private getDuplicationCheckScreenRoute(): string {
+    return this.applicationService.model.NumberOfSections == "one"
+      ? AlreadyRegisteredSingleComponent.route
+      : AlreadyRegisteredMultiComponent.route;
   }
 
   getAddressSectionName() {

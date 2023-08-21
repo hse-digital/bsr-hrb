@@ -1,0 +1,65 @@
+<govuk-formpage (saveAndContinue)="saveAndContinue()" [processing]="processing">
+
+    <h1 class="govuk-heading-l">{{applicationService.model.BuildingName}} has already been registered as part of
+        {{registeredStructure?.Name}}</h1>
+
+    <govuk-table>
+        <govuk-table-col width="30%">Application we already received</govuk-table-col>
+        <govuk-table-col width="30%">Your answers</govuk-table-col>
+        <govuk-table-row header="Name">
+            <govuk-table-cell>{{registeredStructure?.Name}}</govuk-table-cell>
+            <govuk-table-cell>{{applicationService.currentSection.Name}}</govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Number of floors">
+            <govuk-table-cell>{{registeredStructure?.NumFloors}}</govuk-table-cell>
+            <govuk-table-cell>{{applicationService.currentSection.FloorsAbove}}</govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Height">
+            <govuk-table-cell>{{registeredStructure?.Height}}</govuk-table-cell>
+            <govuk-table-cell>{{applicationService.currentSection.Height}}</govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Number of residential units">
+            <govuk-table-cell>{{registeredStructure?.ResidentialUnits}}</govuk-table-cell>
+            <govuk-table-cell>{{applicationService.currentSection.ResidentialUnits}}</govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Address">
+            <govuk-table-cell><address-description [address]="registeredStructure?.StructureAddress"/></govuk-table-cell>
+            <govuk-table-cell><address-description [address]="applicationService.currentSectionAddress"/></govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Principal accountable person">
+            <govuk-table-cell>{{registeredStructure?.PapIsOrganisation 
+                ? registeredStructure?.PapName 
+                : "An individual - we cannot share data about individuals"}}
+            </govuk-table-cell>
+            <govuk-table-cell></govuk-table-cell>
+        </govuk-table-row>
+        <govuk-table-row header="Principal accountable person address">
+            
+            <govuk-table-cell *ngIf="registeredStructure?.PapIsOrganisation">
+                <address-description [address]="registeredStructure?.PapAddress"/>
+            </govuk-table-cell>
+            
+            <govuk-table-cell *ngIf="!registeredStructure?.PapIsOrganisation">
+                A personal or home address - we cannot share data about an individual's personal or home address
+            </govuk-table-cell>
+
+            <govuk-table-cell></govuk-table-cell>
+        </govuk-table-row>
+    </govuk-table>
+
+    <h2 class="govuk-heading-m">It looks like you do not need to register {{applicationService.currentSection.Name}}</h2>
+    <govuk-body>You can keep {{applicationService.currentSection.Name}} in this application, if:</govuk-body>
+
+    <govuk-list classes='govuk-list--bullet'>
+        <govuk-list-item text="you're not applying to register the structure in the application we already received ({{registeredStructure?.BuildingName}})" />
+        <govuk-list-item text="we told you to reregister ({{registeredStructure?.BuildingName}})" />
+        <govuk-list-item text="you need to reregister ({{applicationService.model.BuildingName}}) and might need to withdraw your original application later" />
+        <govuk-list-item text="it is the same {{applicationService.currentSection.Name}} but the listed principal accountable person is incorrect" />
+    </govuk-list>
+    
+    <govuk-radio-group class="govuk-heading-s" title="Do you want to keep {{applicationService.currentSection.Name}} in this application?" [isPageHeading]=false [(model)]="model"
+        [errorText]="hasErrors ? 'Select yes if you would like to include {{applicationService.currentSection.Name}} in your application': undefined">
+        <govuk-radio [model]="model" name="keep-structure" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
+        <govuk-radio [model]="model" name="keep-structure" id="no" value="no" label="No" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
+    </govuk-radio-group>
+</govuk-formpage>

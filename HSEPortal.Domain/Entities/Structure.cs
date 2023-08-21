@@ -4,7 +4,7 @@ namespace HSEPortal.Domain.Entities;
 
 public record Structure(string Name, string FloorsAboveGround, string HeightInMeters, string NumberOfResidentialUnits = null,
     string PeopleLivingInStructure = null, string ConstructionYearOption = null, string ExactYear = null,
-    string YearRange = null, string Id = null) : Entity(Id);
+    string YearRange = null, string Id = null, string WhyContinue = null, bool IsDuplicated = false) : Entity(Id);
 
 public record DynamicsStructure : DynamicsEntity<Structure>
 {
@@ -23,8 +23,8 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     public string bsr_uprn { get; init; }
     public string bsr_usrn { get; init; }
     public string bsr_classificationcode { get; init; }
-    public int? statuscode { get; init; } 
-    public int? statecode { get; init; } 
+    public int? statuscode { get; init; }
+    public int? statecode { get; init; }
     public AddressType? bsr_addresstype { get; init; }
     public YesNoOption? bsr_manualaddress { get; init; }
 
@@ -79,15 +79,21 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     public string previousUseId { get; set; }
 
     public int? bsr_numberoffloorsbelowgroundlevel { get; set; }
-    
+
     public bool? bsr_differentprimaryuseinthepast { get; set; }
     public string bsr_changeofuseyearnew { get; set; }
     public string bsr_yearofmostrecentchangenew { get; set; }
     public string bsr_kbicompletiondate { get; set; }
     public bool? bsr_kbicomplete { get; set; }
-    
+
     [JsonPropertyName("bsr_mostrecentworkcompleted@odata.bind")]
     public string recentWorkId { get; set; }
+
+    public bool? bsr_duplicatedetected { get; set; }
+    public bool? bsr_duplicatefound { get; set; }
+    public bool? bsr_keepstructureinapplication { get; set; }
+    public ReasonForContinuingAfterDuplicateDetected? bsr_reasonforcontinuingafterduplicatedetected { get; set; }
+
 }
 
 public static class DynamicsSectionArea
@@ -157,4 +163,55 @@ public enum YesNoOption
 {
     Yes = 760_810_000,
     No = 760_810_001
+}
+
+public enum ReasonForContinuingAfterDuplicateDetected 
+{
+    NotApplyingRegisterBuilding = 760_810_000,
+    BsrToldToRegister = 760_810_001,
+    NeedToRegister = 760_810_002,
+    PapIncorrect = 760_810_003
+}
+
+
+
+
+public record DynamicsStructureWithAccount
+{
+    public string name { get; init; }
+    public string address1_line1 { get; set; }
+    public string address1_postalcode { get; set; }
+    public string address1_city { get; set; }
+    public string address1_line2 { get; set; }
+    public string accountid { get; set; }
+    public Account_AccountablePerson[]? bsr_account_bsr_accountableperson_914 { get; set; }
+}
+
+public record Account_AccountablePerson
+{
+    public string? _bsr_independentsection_value { get; set; }
+    public string? bsr_accountablepersonid { get; set; }
+    public int? bsr_accountablepersontype { get; set; }
+    public IndependentSection? bsr_Independentsection { get; set; }
+
+}
+
+public record IndependentSection
+{
+    public string? bsr_name { get; set; }
+    public double? bsr_sectionheightinmetres { get; set; }
+    public int? bsr_nooffloorsabovegroundlevel { get; set; }
+    public int? bsr_numberofresidentialunits { get; set; }
+    public string? bsr_postcode { get; set; }
+    public string? bsr_addressline1 { get; set; }
+    public string? bsr_addressline2 { get; set; }
+    public string? bsr_city { get; set; }
+    public string? bsr_blockid { get; set; }
+    public BuildingApp? bsr_BuildingId { get; set; }
+}
+
+public record BuildingApp
+{
+    public string? bsr_name { get; set; }
+    public string? bsr_buildingid { get; set; }
 }

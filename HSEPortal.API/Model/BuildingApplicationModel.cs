@@ -67,9 +67,13 @@ public record BuildingApplicationModel(
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
     string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange,
-    string CompletionCertificateIssuer, string CompletionCertificateReference, Scope Scope, string Statecode, BuildingAddress[] Addresses = null);
+    string CompletionCertificateIssuer, string CompletionCertificateReference, Scope Scope, string Statecode, BuildingAddress[] Addresses = null,
+    Duplicate Duplicate = null);
 
 public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
+
+public record Duplicate(string WhyContinue = null, bool IsDuplicated = false, 
+    string IncludeStructure = null, string[] DuplicationDetected = null);
 
 public enum OutOfScopeReason
 {
