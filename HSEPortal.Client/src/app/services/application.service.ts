@@ -28,7 +28,7 @@ export class ApplicationService {
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('application_data') ?? {};
     this._currentSectionIndex = this.model?.Sections?.length - 1 ?? 0;
-    this._currentSectionAddressIndex = !!this.model.Sections && this.model.Sections.length > 0 
+    this._currentSectionAddressIndex = !!this.model.Sections && this.model.Sections.length > 0
       ? this.currentSection?.Addresses?.length - 1 : 0;
     this._currentAccountablePersonIndex = this.model?.AccountablePersons?.length - 1 ?? 0;
   }
@@ -293,6 +293,7 @@ export class Duplicate {
   IncludeStructure?: string;
   DuplicationDetected?: string[];
   RegisteredStructureModel?: RegisteredStructureModel;
+  BlockIds?: string[];
 }
 
 export type RegisteredStructureModel = {
@@ -305,6 +306,7 @@ export type RegisteredStructureModel = {
   PapAddress?: AddressModel;
   PapIsOrganisation?: boolean;
   BuildingName?: string;
+  BlockId?: string;
 }
 
 export class AccountablePersonModel {

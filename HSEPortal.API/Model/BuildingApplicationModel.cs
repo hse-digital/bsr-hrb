@@ -73,7 +73,7 @@ public record SectionModel(string Name,
 public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
 
 public record Duplicate(string WhyContinue = null, bool IsDuplicated = false, 
-    string IncludeStructure = null, string[] DuplicationDetected = null);
+    string IncludeStructure = null, string[] DuplicationDetected = null, string[] BlockIds = null);
 
 public enum OutOfScopeReason
 {
