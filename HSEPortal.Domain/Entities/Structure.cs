@@ -177,30 +177,10 @@ public enum ReasonForContinuingAfterDuplicateDetected
 
 
 
-
-public record DynamicsStructureWithAccount
-{
-    public string name { get; init; }
-    public string address1_line1 { get; set; }
-    public string address1_postalcode { get; set; }
-    public string address1_city { get; set; }
-    public string address1_line2 { get; set; }
-    public string accountid { get; set; }
-    public Account_AccountablePerson[]? bsr_account_bsr_accountableperson_914 { get; set; }
-}
-
-public record Account_AccountablePerson
-{
-    public string? _bsr_independentsection_value { get; set; }
-    public string? bsr_accountablepersonid { get; set; }
-    public int? bsr_accountablepersontype { get; set; }
-    public IndependentSection? bsr_Independentsection { get; set; }
-
-}
-
 public record IndependentSection
 {
     public string? bsr_name { get; set; }
+    public string? bsr_blockid { get; set; }
     public double? bsr_sectionheightinmetres { get; set; }
     public int? bsr_nooffloorsabovegroundlevel { get; set; }
     public int? bsr_numberofresidentialunits { get; set; }
@@ -208,12 +188,31 @@ public record IndependentSection
     public string? bsr_addressline1 { get; set; }
     public string? bsr_addressline2 { get; set; }
     public string? bsr_city { get; set; }
-    public string? bsr_blockid { get; set; }
-    public BuildingApp? bsr_BuildingId { get; set; }
+    public BuildingInformation? bsr_BuildingId { get; set; }
+    public BuildingApplicationInformation? bsr_BuildingApplicationID { get; set; }
+
 }
 
-public record BuildingApp
+public record BuildingInformation
 {
     public string? bsr_name { get; set; }
     public string? bsr_buildingid { get; set; }
+}
+
+public record BuildingApplicationInformation
+{
+    public int? bsr_paptype { get; set; }
+    public string? bsr_buildingapplicationid { get; set; }
+    public PapAccount? bsr_papid_account { get; set; }
+
+}
+
+public record PapAccount
+{
+    public string name { get; init; }
+    public string address1_line1 { get; set; }
+    public string address1_postalcode { get; set; }
+    public string address1_city { get; set; }
+    public string address1_line2 { get; set; }
+    public string accountid { get; set; }
 }

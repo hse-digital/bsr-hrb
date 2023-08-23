@@ -821,11 +821,12 @@ public class DynamicsService
         return existingStructure.value.FirstOrDefault();
     }
 
-    public async Task<DynamicsResponse<DynamicsStructureWithAccount>> FindExistingStructureWithAccountablePersonAsync(string postcode)
+    public async Task<DynamicsResponse<IndependentSection>> FindExistingStructureWithAccountablePersonAsync(string postcode)
     {
-        return await dynamicsApi.Get<DynamicsResponse<DynamicsStructureWithAccount>>("accounts", new (string, string)[]{
-            ("$select", "name,address1_line1,address1_postalcode,address1_city,address1_line2"),
-            ("$expand", $"bsr_account_bsr_accountableperson_914($select=_bsr_independentsection_value,bsr_accountablepersontype;$expand=bsr_Independentsection($select=bsr_name,bsr_blockid,bsr_sectionheightinmetres,bsr_nooffloorsabovegroundlevel,bsr_numberofresidentialunits,bsr_postcode,bsr_addressline1,bsr_addressline2,bsr_city;$filter=bsr_postcode eq '{postcode}';$expand=bsr_BuildingId($select=bsr_name)))")
+        return await dynamicsApi.Get<DynamicsResponse<IndependentSection>>("bsr_blocks", new (string, string)[]{
+            ("$select", "bsr_name,bsr_blockid,bsr_sectionheightinmetres,bsr_nooffloorsabovegroundlevel,bsr_numberofresidentialunits,bsr_postcode,bsr_addressline1,bsr_addressline2,bsr_city"),
+            ("$filter", $"bsr_postcode eq '{postcode}'"),
+            ("$expand", $"bsr_BuildingId($select=bsr_name),bsr_BuildingApplicationID($select=bsr_paptype;$expand=bsr_papid_account($select=name,address1_line1,address1_postalcode,address1_city,address1_line2))")
         });
     }
 

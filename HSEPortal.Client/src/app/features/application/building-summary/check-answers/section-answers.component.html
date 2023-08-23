@@ -20,7 +20,7 @@
             <govuk-summary-list-row (onClick)="navigateToAddress('address', i)" (onKeyupEnter)="navigateToAddress('address', i)" key="Address" [showAction]=true>
                 <address-description [address]="address" />
             </govuk-summary-list-row>
-            <govuk-summary-list-row *ngIf="isNotNullOrWhitespace(address.SearchPostcode) && address.SearchPostcode != address.Postcode" (onClick)="navigateToAddress('address', i)" (onKeyupEnter)="navigateToAddress('address', i)" key="Other postcodes" [showAction]=true>
+            <govuk-summary-list-row *ngIf="isNotNullOrWhitespace(address.SearchPostcode) && address.SearchPostcode?.replaceAll(' ', '') != address.Postcode?.replaceAll(' ', '')" (onClick)="navigateToAddress('address', i)" (onKeyupEnter)="navigateToAddress('address', i)" key="Other postcodes" [showAction]=true>
                 {{address.SearchPostcode}}
             </govuk-summary-list-row>            
             <govuk-summary-list-row *ngIf="section.Addresses.length < 5 || i < section.Addresses.length-1" (onKeyupEnter)="navigateToAddress('other-addresses', i)" (onClick)="navigateToAddress('other-addresses', i)" key="Add another address?" [showAction]=true>{{i < section.Addresses.length-1 ? 'Yes' : 'No' }}</govuk-summary-list-row>
