@@ -26,15 +26,12 @@ public class AddressFunctions
     [Function(nameof(SearchBuildingByPostcode))]
     public async Task<HttpResponseData> SearchBuildingByPostcode([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(SearchBuildingByPostcode)}/{{postcode}}")] HttpRequestData request, string postcode)
     {
-        var response = await GetDataFromOrdnanceSurvey("postcode", new
-        {
-            postcode = postcode,
-            dataset = "LPI",
-            fq = new[] { "CLASSIFICATION_CODE:PP CLASSIFICATION_CODE:P", "COUNTRY_CODE:E" },
-            key = integrationOptions.OrdnanceSurveyApiKey
-        });
+        var response = await integrationOptions.CommonAPIEndpoint
+            .AppendPathSegments("api", "SearchBuildingByPostcode", postcode)
+            .WithHeader("x-functions-key", integrationOptions.CommonAPIKey)
+            .GetJsonAsync<BuildingAddressSearchResponse>();
 
-        return await BuildResponseObjectAsync(request, response);
+        return await request.CreateObjectResponseAsync(response);
     }
 
     [Function(nameof(SearchPostalAddressByPostcode))]

@@ -30,6 +30,7 @@ export class AddressComponent implements OnInit {
   }
 
   addressConfirmed() {
+    this.address!.SearchPostcode = this.searchModel.postcode;
     this.onAddressConfirmed.emit(this.address);
   }
 

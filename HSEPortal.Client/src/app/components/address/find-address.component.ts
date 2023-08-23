@@ -34,7 +34,6 @@ export class FindAddressComponent {
       if (this.pap() && FieldValidations.IsNotNullOrWhitespace(this.searchModel.buildingNumberName)) {
         addressResponse.Results = addressResponse.Results.filter(x => x.Address!.toLocaleLowerCase().indexOf(this.searchModel.buildingNumberName!.toLowerCase()) > -1)
       }
-
       this.onSearchPerformed.emit(addressResponse);
     } else {
       this.summaryError?.first?.focus();

@@ -1,8 +1,15 @@
 <h1 class="govuk-heading-l">{{getTitle()}}</h1>
 
+<govuk-body *ngIf="isResidentialPostcode"><strong>{{searchModel.postcode?.toUpperCase()}}</strong> is a residential postcode in a whole building:</govuk-body>
+
 <govuk-inset-text>
   <address-description [address]="address"/>
 </govuk-inset-text>
+
+<ng-container *ngIf="isResidentialPostcode">
+  <govuk-body>We'll include this address and both postcodes on the public register.</govuk-body>
+  <govuk-body>You can add other addresses for this {{getSectionName()}} later.</govuk-body>
+</ng-container>
 
 <govuk-button (onClick)="onAddressConfirmed.emit()">Confirm</govuk-button>
 <govuk-body><a class="govuk-link" (keyup.enter)="onSearchAgain.emit()" (click)="onSearchAgain.emit()" role="link" tabindex="0">Search again</a></govuk-body>
