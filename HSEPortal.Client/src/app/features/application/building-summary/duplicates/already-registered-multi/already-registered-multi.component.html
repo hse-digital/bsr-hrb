@@ -57,8 +57,9 @@
         <govuk-list-item text="it is the same {{applicationService.currentSection.Name}} but the listed principal accountable person is incorrect" />
     </govuk-list>
     
-    <govuk-radio-group class="govuk-heading-s" title="Do you want to keep {{applicationService.currentSection.Name}} in this application?" [isPageHeading]=false [(model)]="model"
-        [errorText]="hasErrors ? 'Select yes if you would like to include {{applicationService.currentSection.Name}} in your application': undefined">
+    <govuk-radio-group class="govuk-heading-s" title="Do you want to keep {{applicationService.currentSection.Name}} in this application?" 
+            #field [govukRequired]="field" id="keep-structure" [isPageHeading]=false [(model)]="model"
+            [errorText]="getErrorDescription(hasErrors, errorMessage)">
         <govuk-radio [model]="model" name="keep-structure" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />
         <govuk-radio [model]="model" name="keep-structure" id="no" value="no" label="No" class="govuk-radio-no-margin-bottom" (onKeyupEnter)="saveAndContinue()" />
     </govuk-radio-group>
