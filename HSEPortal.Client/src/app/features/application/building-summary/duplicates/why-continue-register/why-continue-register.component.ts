@@ -40,7 +40,6 @@ export class WhyContinueRegisterComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
     this.applicationService.currentSection.Duplicate!.WhyContinue = this.model;
-    this.applicationService.model.ShareDetailsDeclared = true;
   }
 
   override canAccess(applicationService: ApplicationService, __: ActivatedRouteSnapshot): boolean {

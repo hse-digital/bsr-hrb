@@ -90,7 +90,7 @@ public class DynamicsService
             await CreateStructureCompletionCertificate(section, dynamicsStructure);
             await CreateStructureOptionalAddresses(section, dynamicsStructure);
 
-            if (section.Duplicate?.IsDuplicated ?? false) {
+            if (section.Duplicate.IsDuplicated) {
                 await CreateAssociatedDuplicatedStructures(section, dynamicsStructure);  
             }
         }
@@ -98,26 +98,11 @@ public class DynamicsService
 
     private async Task CreateAssociatedDuplicatedStructures(SectionModel section, DynamicsStructure dynamicsStructure)
     {
-        if(section.Duplicate != null && section.Duplicate.BlockIds != null && section.Duplicate.BlockIds.Length > 0)
-        {
-            foreach(var blockId in section.Duplicate.BlockIds) {
-                await dynamicsApi.Put($"bsr_blocks({dynamicsStructure.bsr_blockid})/bsr_duplicatestructures/$ref", new DynamicsDuplicatedStructure
-                {
-                    relationshipId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_blocks({blockId})"
-                });
-            }
-        }
-    }
-
-    public async Task CreateAssociatedDuplicatedBuildingApplications(BuildingApplicationModel buildingApplicationModel, DynamicsBuildingApplication dynamicsBuildingApplication)
-    {
-        if(buildingApplicationModel.DuplicateDetected != null && (bool)buildingApplicationModel.DuplicateDetected && buildingApplicationModel.DuplicateBuildingApplicationIds != null && buildingApplicationModel.DuplicateBuildingApplicationIds.Length > 0) {
-            foreach(var buildingApplicationId in buildingApplicationModel.DuplicateBuildingApplicationIds) {
-                await dynamicsApi.Put($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})/bsr_duplicatebuildingapplications/$ref", new DynamicsDuplicatedStructure
-                {
-                    relationshipId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_buildingapplications({buildingApplicationId})"
-                });
-            }
+        foreach(var blockId in section.Duplicate.BlockIds) {
+            await dynamicsApi.Put($"bsr_blocks({dynamicsStructure.bsr_blockid})/bsr_duplicatestructures/$ref", new DynamicsDuplicatedStructure
+            {
+                relationshipId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_blocks({blockId})"
+            });
         }
     }
 
@@ -758,7 +743,7 @@ public class DynamicsService
     private static DynamicsStructure BuildDynamicsStructure(Structures structures, SectionModel section, DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition)
     {
         var structure = new Structure(section.Name ?? structures.DynamicsBuildingApplication.bsr_Building?.bsr_name, section.FloorsAbove, section.Height, section.ResidentialUnits,
-            section.PeopleLivingInBuilding, section.YearOfCompletionOption, null, null, null, section.Duplicate?.WhyContinue, section.Duplicate?.IsDuplicated ?? false);
+            section.PeopleLivingInBuilding, section.YearOfCompletionOption, null, null, null, section.Duplicate.WhyContinue, section.Duplicate.IsDuplicated);
         var dynamicsStructure = structureDefinition.BuildDynamicsEntity(structure);
 
         dynamicsStructure = dynamicsStructure with

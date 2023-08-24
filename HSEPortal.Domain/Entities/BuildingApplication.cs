@@ -24,9 +24,7 @@ public record DynamicsBuildingApplication(string bsr_buildingapplicationid = nul
     string bsr_applicationid = null,
     BuildingApplicationStatus? statuscode = null,
     string bsr_submittedon = null,
-    string bsr_numberofmanuallyenteredaddresses = null,
-    bool? bsr_sharedetailsdeclared = null,
-    bool? bsr_duplicatedetected = null) : DynamicsEntity<BuildingApplication>;
+    string bsr_numberofmanuallyenteredaddresses = null) : DynamicsEntity<BuildingApplication>;
 
 public enum BuildingApplicationStage
 {

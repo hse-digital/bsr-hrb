@@ -48,7 +48,7 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
     }
 
     private void AddDuplicateInformation(Structure entity) {
-        if (entity != null && entity.WhyContinue != null && !entity.WhyContinue.Equals(string.Empty)) {
+        if (entity.WhyContinue != null && !entity.WhyContinue.Equals(string.Empty)) {
             var whyContinueReason = GetReasonForContinuingAfterDuplicateDetected(entity.WhyContinue);
             this.dynamicsStructure = dynamicsStructure with {
                 bsr_duplicatedetected = entity.IsDuplicated,

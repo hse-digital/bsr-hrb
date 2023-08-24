@@ -122,7 +122,6 @@ public class DynamicsSynchronisationFunctions
         if (dynamicsBuildingApplication != null)
         {
             await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.PayAndApply));
-            await orchestrationContext.CallActivityAsync(nameof(UpdateDuplicateBuildingApplicationAssociations), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.PayAndApply));
         }
     }
 
@@ -186,16 +185,8 @@ public class DynamicsSynchronisationFunctions
         {
             bsr_applicationstage = stage,
             bsr_declarationconfirmed = buildingApplicationWrapper.Stage is BuildingApplicationStage.ApplicationSubmitted or BuildingApplicationStage.PayAndApply,
-            bsr_numberofmanuallyenteredaddresses = manualAddresses.ToString(),
-            bsr_duplicatedetected = buildingApplicationWrapper.Model.DuplicateDetected,
-            bsr_sharedetailsdeclared = buildingApplicationWrapper.Model.ShareDetailsDeclared,
+            bsr_numberofmanuallyenteredaddresses = manualAddresses.ToString()
         });
-    }
-
-    [Function(nameof(UpdateDuplicateBuildingApplicationAssociations))]
-    public Task UpdateDuplicateBuildingApplicationAssociations([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
-    {
-        return dynamicsService.CreateAssociatedDuplicatedBuildingApplications(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);        
     }
 
     [Function(nameof(UpdateBuildingToSubmitted))]

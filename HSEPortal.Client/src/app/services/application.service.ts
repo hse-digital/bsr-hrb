@@ -237,9 +237,6 @@ export class BuildingRegistrationModel {
   Kbi?: KbiModel;
   PaymentType?: string | undefined;
   PaymentInvoiceDetails?: PaymentInvoiceDetails;
-  DuplicateDetected?: boolean;
-  ShareDetailsDeclared?: boolean;
-  DuplicateBuildingApplicationIds?: string[];
 }
 
 export enum BuildingApplicationStatus {
@@ -310,7 +307,6 @@ export type RegisteredStructureModel = {
   PapIsOrganisation?: boolean;
   BuildingName?: string;
   BlockId?: string;
-  BuildingApplicationId?: string
 }
 
 export class AccountablePersonModel {
