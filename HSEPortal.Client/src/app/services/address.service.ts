@@ -31,7 +31,6 @@ export class AddressResponseModel {
 
 export class AddressModel {
   IsManual: boolean = false;
-  SearchPostcode?: string;
   UPRN?: string;
   USRN?: string;
   Address?: string;
@@ -43,4 +42,5 @@ export class AddressModel {
   AdministrativeArea?: string;
   Postcode?: string;
   ClassificationCode?: string;
+  PostcodeEntered?: string;
 }

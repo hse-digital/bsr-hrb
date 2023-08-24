@@ -670,7 +670,8 @@ public class DynamicsService
                         bsr_usrn = portalAddress.USRN,
                         bsr_manualaddress = portalAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
                         countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null,
-                        structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
+                        structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})",
+                        bsr_postcodeentered = portalAddress.PostcodeEntered
                     });
 
                 continue;
@@ -690,7 +691,8 @@ public class DynamicsService
                         bsr_uprn = portalAddress.UPRN,
                         bsr_usrn = portalAddress.USRN,
                         bsr_manualaddress = portalAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
-                        countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null
+                        countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null,
+                        bsr_postcodeentered = portalAddress.PostcodeEntered
                     });
             }
         }
@@ -762,6 +764,7 @@ public class DynamicsService
             bsr_usrn = primaryAddress.USRN,
             bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
             bsr_classificationcode = primaryAddress.ClassificationCode,
+            bsr_postcodeentered = primaryAddress.PostcodeEntered
         };
     }
 

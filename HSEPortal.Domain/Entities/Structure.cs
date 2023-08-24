@@ -20,6 +20,7 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     public string bsr_addressline2 { get; init; }
     public string bsr_city { get; init; }
     public string bsr_postcode { get; init; }
+    public string? bsr_postcodeentered {get; set; } 
     public string bsr_uprn { get; init; }
     public string bsr_usrn { get; init; }
     public string bsr_classificationcode { get; init; }
