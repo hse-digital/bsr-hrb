@@ -19,10 +19,6 @@ import { NotAllocatedAccountabilityComponent } from './not-allocated-accountabil
 import { GovukCheckboxNoneComponent } from './govuk-checkbox-none/govuk-checkbox-none.component';
 import { CheckboxOptionComponent } from './govuk-checkbox-none/checkbox-option.component';
 import { OutOfScopeReasonComponent } from './out-of-scope-reason/out-of-scope-reason.component';
-import { GovukTableComponent } from './govuk-table/govuk-table.component';
-import { GovukTableRowComponent } from './govuk-table/govuk-table-row.component';
-import { GovukTableCellComponent } from './govuk-table/govuk-table-cell.component';
-import { GovukTableColComponent } from './govuk-table/govuk-table-col.component';
 
 @NgModule({
   declarations: [
@@ -40,11 +36,7 @@ import { GovukTableColComponent } from './govuk-table/govuk-table-col.component'
     NotAllocatedAccountabilityComponent,
     GovukCheckboxNoneComponent,
     CheckboxOptionComponent,
-    OutOfScopeReasonComponent,
-    GovukTableComponent,
-    GovukTableRowComponent,
-    GovukTableCellComponent,
-    GovukTableColComponent
+    OutOfScopeReasonComponent
   ],
   imports: [
     HseAngularModule,
@@ -60,11 +52,7 @@ import { GovukTableColComponent } from './govuk-table/govuk-table-col.component'
     NotAllocatedAccountabilityComponent,
     GovukCheckboxNoneComponent,
     CheckboxOptionComponent,
-    OutOfScopeReasonComponent,
-    GovukTableComponent,
-    GovukTableRowComponent,
-    GovukTableCellComponent,
-    GovukTableColComponent
+    OutOfScopeReasonComponent
   ],
   providers: [HttpClient, AddressService]
 })

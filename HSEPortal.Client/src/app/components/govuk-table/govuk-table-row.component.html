@@ -1,9 +1,0 @@
-<ng-template>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">{{header}}</th>
-        <ng-container *ngFor="let item of items">
-            <ng-container *ngTemplateOutlet="item.template" />
-        </ng-container>
-    </tr>
-    <ng-content />
-</ng-template>

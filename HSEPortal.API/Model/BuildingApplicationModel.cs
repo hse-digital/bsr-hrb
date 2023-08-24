@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using HSEPortal.API.Model.Payment.Response;
 
 namespace HSEPortal.API.Model;
 
@@ -18,10 +19,7 @@ public record BuildingApplicationModel(
     string PrincipalAccountableType = null,
     string PaymentType = null,
     PaymentInvoiceDetails PaymentInvoiceDetails = null,
-    BuildingApplicationStatus ApplicationStatus = BuildingApplicationStatus.None,
-    bool? DuplicateDetected = null,
-    bool? ShareDetailsDeclared = null,
-    string[] DuplicateBuildingApplicationIds = null) : IValidatableModel
+    BuildingApplicationStatus ApplicationStatus = BuildingApplicationStatus.None) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
@@ -69,13 +67,9 @@ public record BuildingApplicationModel(
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
     string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange,
-    string CompletionCertificateIssuer, string CompletionCertificateReference, Scope Scope, string Statecode, BuildingAddress[] Addresses = null,
-    Duplicate Duplicate = null);
+    string CompletionCertificateIssuer, string CompletionCertificateReference, Scope Scope, string Statecode, BuildingAddress[] Addresses = null);
 
 public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
-
-public record Duplicate(string WhyContinue = null, bool? IsDuplicated = null, 
-    string IncludeStructure = null, string[] DuplicationDetected = null, string[] BlockIds = null);
 
 public enum OutOfScopeReason
 {

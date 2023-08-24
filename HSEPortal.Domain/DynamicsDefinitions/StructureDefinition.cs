@@ -21,7 +21,6 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
         AddPeopleLivingInBuilding(entity);
         AddResidentialUnits(entity);
         AddExactConstructionYear(entity);
-        AddDuplicateInformation(entity);
 
         return dynamicsStructure;
     }
@@ -44,18 +43,6 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
         if (entity.ConstructionYearOption != null) {
             var constructionYearOption = GetConstructionYearOption(entity.ConstructionYearOption);
             this.dynamicsStructure = dynamicsStructure with {bsr_doyouknowtheblocksexactconstructionyear = constructionYearOption};
-        }
-    }
-
-    private void AddDuplicateInformation(Structure entity) {
-        if (entity != null && entity.WhyContinue != null && !entity.WhyContinue.Equals(string.Empty)) {
-            var whyContinueReason = GetReasonForContinuingAfterDuplicateDetected(entity.WhyContinue);
-            this.dynamicsStructure = dynamicsStructure with {
-                bsr_duplicatedetected = entity.IsDuplicated,
-                bsr_duplicatefound = entity.IsDuplicated,
-                bsr_keepstructureinapplication = entity.IncludeStructure,
-                bsr_reasonforcontinuingafterduplicatedetected = whyContinueReason
-            };
         }
     }
 
@@ -84,17 +71,6 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
             case "year-exact": return ConstructionYearOption.Exact;
             case "year-not-exact": return ConstructionYearOption.YearRange;
             case "not-completed": return ConstructionYearOption.NotBuilt;
-        }
-
-        throw new ArgumentException();
-    }
-
-    private ReasonForContinuingAfterDuplicateDetected GetReasonForContinuingAfterDuplicateDetected(string WhyContinue) {
-        switch (WhyContinue) {
-            case "not-applying": return ReasonForContinuingAfterDuplicateDetected.NotApplyingRegisterBuilding;
-            case "bsr-told-me": return ReasonForContinuingAfterDuplicateDetected.BsrToldToRegister;
-            case "need-to-reregister": return ReasonForContinuingAfterDuplicateDetected.NeedToRegister;
-            case "pap-incorrect": return ReasonForContinuingAfterDuplicateDetected.PapIncorrect;
         }
 
         throw new ArgumentException();

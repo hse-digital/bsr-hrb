@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRoute, Params, QueryParamsHandling, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 
 @Injectable({ providedIn: 'root' })
 export class NavigationService {

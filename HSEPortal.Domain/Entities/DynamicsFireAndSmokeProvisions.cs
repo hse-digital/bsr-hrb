@@ -100,19 +100,3 @@ public record DynamicsConnectedStructure
     
     public string bsr_connectedblockid { get; set; }
 }
-
-public record DynamicsDuplicatedStructure
-{
-    [property: JsonPropertyName("@odata.id")]
-    public string relationshipId { get; set; }
-    
-    public string bsr_blockid { get; set; }
-}
-
-public record DynamicsDuplicatedBuildingApplication
-{
-    [property: JsonPropertyName("@odata.id")]
-    public string relationshipId { get; set; }
-    
-    public string bsr_blockid { get; set; }
-}
