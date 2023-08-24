@@ -726,7 +726,7 @@ public class DynamicsService
     private static DynamicsStructure BuildDynamicsStructure(Structures structures, SectionModel section, DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition)
     {
         var structure = new Structure(section.Name ?? structures.DynamicsBuildingApplication.bsr_Building?.bsr_name, section.FloorsAbove, section.Height, section.ResidentialUnits,
-            section.PeopleLivingInBuilding, section.YearOfCompletionOption, null, null, null, section.Duplicate.WhyContinue, section.Duplicate.IsDuplicated);
+            section.PeopleLivingInBuilding, section.YearOfCompletionOption);
         var dynamicsStructure = structureDefinition.BuildDynamicsEntity(structure);
 
         dynamicsStructure = dynamicsStructure with
@@ -782,8 +782,6 @@ public class DynamicsService
         }
 
         var response = await dynamicsApi.Create(structureDefinition.Endpoint, dynamicsStructure);
-        var response_message = response.ResponseMessage;
-        var response_status = response.StatusCode;
         var structureId = ExtractEntityIdFromHeader(response.Headers);
         return dynamicsStructure with { bsr_blockid = structureId };
     }
@@ -803,13 +801,6 @@ public class DynamicsService
 
         var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", filter));
         return existingStructure.value.FirstOrDefault();
-    }
-
-    public async Task<DynamicsResponse<DynamicsStructureWithAccount>> FindExistingStructureWithAccountablePersonAsync(string postcode) {
-        return await dynamicsApi.Get<DynamicsResponse<DynamicsStructureWithAccount>>("accounts", new (string, string)[]{
-            ("$select", "name,address1_line1,address1_postalcode,address1_city,address1_line2"),
-            ("$expand", $"bsr_account_bsr_accountableperson_914($select=_bsr_independentsection_value,bsr_accountablepersontype;$expand=bsr_Independentsection($select=bsr_name,bsr_sectionheightinmetres,bsr_nooffloorsabovegroundlevel,bsr_numberofresidentialunits,bsr_postcode,bsr_addressline1,bsr_addressline2,bsr_city;$filter=bsr_postcode eq '{postcode}';$expand=bsr_BuildingId($select=bsr_name)))")
-        });
     }
 
     private async Task<DynamicsBuildingApplication> CreateBuildingApplicationAsync(Contact contact, Building building)

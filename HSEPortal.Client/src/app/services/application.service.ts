@@ -10,15 +10,10 @@ export class ApplicationService {
   model: BuildingRegistrationModel;
 
   _currentSectionIndex;
-  _currentSectionAddressIndex;
   _currentAccountablePersonIndex;
 
   get currentSection(): SectionModel {
     return this.model.Sections[this._currentSectionIndex];
-  }
-
-  get currentSectionAddress(): AddressModel {
-    return this.currentSection.Addresses[this._currentSectionAddressIndex];
   }
 
   get currentAccountablePerson(): AccountablePersonModel {
@@ -28,8 +23,6 @@ export class ApplicationService {
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('application_data') ?? {};
     this._currentSectionIndex = this.model?.Sections?.length - 1 ?? 0;
-    this._currentSectionAddressIndex = !!this.model.Sections && this.model.Sections.length > 0 
-      ? this.currentSection?.Addresses?.length - 1 : 0;
     this._currentAccountablePersonIndex = this.model?.AccountablePersons?.length - 1 ?? 0;
   }
 
@@ -288,23 +281,8 @@ export enum OutOfScopeReason {
 }
 
 export class Duplicate {
-  WhyContinue?: string;
   IsDuplicated?: boolean;
-  IncludeStructure?: string;
-  DuplicationDetected?: string[];
-  RegisteredStructureModel?: RegisteredStructureModel;
-}
-
-export type RegisteredStructureModel = {
-  Name?: string;
-  NumFloors?: string;
-  Height?: string;
-  ResidentialUnits?: string;
-  StructureAddress?: AddressModel;
-  PapName?: string;
-  PapAddress?: AddressModel;
-  PapIsOrganisation?: boolean;
-  BuildingName?: string;
+  Removed?: boolean;
 }
 
 export class AccountablePersonModel {
