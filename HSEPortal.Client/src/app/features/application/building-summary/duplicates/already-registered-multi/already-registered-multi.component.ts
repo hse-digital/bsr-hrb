@@ -62,8 +62,4 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
     }
   }
 
-  get errorMessage() {
-    return `Select yes if you would like to include ${this.applicationService.currentSection.Name} in your application`;
-  }
-
 }

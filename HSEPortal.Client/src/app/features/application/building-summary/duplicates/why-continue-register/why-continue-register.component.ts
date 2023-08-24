@@ -58,8 +58,4 @@ export class WhyContinueRegisterComponent extends PageComponent<string> {
     }
   }
 
-  get errorMessage() {
-    return `Select why you want to continue applying to register ${this.applicationService.model.BuildingName}`
-  }
-
 }
