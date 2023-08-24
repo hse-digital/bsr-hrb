@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, RegisteredStructureModel } from 'src/app/services/application.service';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { AccountablePersonModel, ApplicationService, RegisteredStructureModel } from 'src/app/services/application.service';
 import { DuplicatesService } from 'src/app/services/duplicates.service';
 import { SectionCheckAnswersComponent } from '../../check-answers/check-answers.component';
+import { SectionOtherAddressesComponent } from '../../other-addresses/other-addresses.component';
 import { SectionHelper } from 'src/app/helpers/section-helper';
-import { WhyContinueRegisterComponent } from '../why-continue-register/why-continue-register.component';
 
 @Component({
   selector: 'hse-already-registered-single',
@@ -56,7 +58,7 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
 
   override async navigateNext(): Promise<boolean | void> {
     if (this.applicationService.currentSection.Addresses.length < 5) {
-      return this.navigationService.navigateRelative(WhyContinueRegisterComponent.route, this.activatedRoute);
+      return this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
     } else {
       return this.navigationService.navigateRelative(`../${SectionCheckAnswersComponent.route}`, this.activatedRoute);
     }

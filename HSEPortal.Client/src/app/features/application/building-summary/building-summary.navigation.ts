@@ -21,7 +21,6 @@ import { AlreadyRegisteredSingleComponent } from "./duplicates/already-registere
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { AlreadyRegisteredMultiComponent } from "./duplicates/already-registered-multi/already-registered-multi.component";
 import { WhyContinueRegisterComponent } from "./duplicates/why-continue-register/why-continue-register.component";
-import { KeepStructureDeclarationComponent } from "./duplicates/keep-structure-declaration/keep-structure-declaration.component";
 
 @Injectable()
 export class BuildingSummaryNavigation extends BaseNavigation {
@@ -345,7 +344,7 @@ class AlreadyRegisteredMultiNavigationNode extends BuildingNavigationNode {
 
 class AlreadyRegisteredSingleNavigationNode extends BuildingNavigationNode {
   constructor(private applicationService: ApplicationService,
-    private whyContinueRegisterNavigationNode: WhyContinueRegisterNavigationNode) {
+      private addAnotherSectionNavigationNode: AddAnotherSectionNavigationNode) {
     super();
   }
 
@@ -354,7 +353,7 @@ class AlreadyRegisteredSingleNavigationNode extends BuildingNavigationNode {
       return AlreadyRegisteredSingleComponent.route;
     }
 
-    return this.whyContinueRegisterNavigationNode.getNextRoute(section, sectionIndex);
+    return this.addAnotherSectionNavigationNode.getNextRoute(section, sectionIndex);
   }
 }
 
@@ -366,7 +365,7 @@ class KeepStructureDeclarationNavigationNode extends BuildingNavigationNode {
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
     if(section.Duplicate?.IsDuplicated == undefined) {
-      return KeepStructureDeclarationComponent.route;
+      return AlreadyRegisteredSingleComponent.route;
     }
 
     return this.whyContinueRegisterNavigationNode.getNextRoute(section, sectionIndex);
@@ -429,7 +428,7 @@ class AddAnotherSectionNavigationTree extends BuildingNavigationNode {
   private notNeedRegisterMultiDuplicatedStructuresNavigationNode = new NotNeedRegisterMultiDuplicatedStructuresNavigationNode(this.applicationService);
   private whyContinueRegisterNavigationNode = new WhyContinueRegisterNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode);
   private keepStructureDeclarationNavigationNode = new KeepStructureDeclarationNavigationNode(this.applicationService, this.whyContinueRegisterNavigationNode);
-  private alreadyRegisteredSingleNavigationNode = new AlreadyRegisteredSingleNavigationNode(this.applicationService, this.whyContinueRegisterNavigationNode);
+  private alreadyRegisteredSingleNavigationNode = new AlreadyRegisteredSingleNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode);
   private alreadyRegisteredMultiNavigationNode = new AlreadyRegisteredMultiNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode, this.keepStructureDeclarationNavigationNode);
   
   private sectionAddressNavigationNode = new SectionAddressNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode, this.alreadyRegisteredMultiNavigationNode, this.alreadyRegisteredSingleNavigationNode);
