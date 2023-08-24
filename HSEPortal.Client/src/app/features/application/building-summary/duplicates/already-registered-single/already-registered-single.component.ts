@@ -31,6 +31,10 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
       this.applicationService.currentSection.Duplicate.BlockIds = [];
     }
 
+    if (!this.applicationService.model.DuplicateBuildingApplicationIds) {
+      this.applicationService.model.DuplicateBuildingApplicationIds = [];
+    }
+
     this.registeredStructure = this.applicationService.currentSection.Duplicate?.RegisteredStructureModel;
     if (!this.registeredStructure || this.registeredStructure.StructureAddress?.Postcode != this.applicationService.currentSectionAddress?.Postcode) {
       this.GetRegisteredStructure();
@@ -43,7 +47,9 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
 
   override onSave(applicationService: ApplicationService): void | Promise<void> {
     this.applicationService.currentSection.Duplicate!.IsDuplicated = true;
+    this.applicationService.model.DuplicateDetected = true;
     this.applicationService.currentSection.Duplicate?.BlockIds?.push(this.applicationService.currentSection.Duplicate.RegisteredStructureModel!.BlockId!);
+    this.applicationService.model.DuplicateBuildingApplicationIds?.push(this.applicationService.currentSection.Duplicate!.RegisteredStructureModel!.BuildingApplicationId!);
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

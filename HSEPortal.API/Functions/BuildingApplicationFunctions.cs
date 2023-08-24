@@ -111,6 +111,7 @@ public class BuildingApplicationFunctions
                 BuildingName = section.bsr_BuildingId.bsr_name,
                 Name = section.bsr_name,
                 BlockId = section.bsr_blockid,
+                BuildingApplicationId = section.bsr_BuildingApplicationID.bsr_buildingapplicationid,
                 Height = section.bsr_sectionheightinmetres.ToString(),
                 NumFloors = section.bsr_nooffloorsabovegroundlevel.ToString(),
                 ResidentialUnits = section.bsr_numberofresidentialunits.ToString(),
@@ -223,6 +224,7 @@ public record RegisteredStructureModel
   public string BuildingName { get; set; }
   public string Name { get; set; }
   public string BlockId { get; set; }
+  public string BuildingApplicationId { get; set; }
   public string NumFloors { get; set; }
   public string Height { get; set; }
   public string ResidentialUnits { get; set; }
