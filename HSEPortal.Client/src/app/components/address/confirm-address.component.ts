@@ -47,7 +47,7 @@ export class ConfirmAddressComponent {
   get isResidentialPostcode() {
     let postcodesExist = FieldValidations.IsNotNullOrWhitespace(this.searchModel.postcode) && 
       FieldValidations.IsNotNullOrWhitespace(this.address.Postcode);
-    return postcodesExist && this.searchModel.postcode?.replaceAll(' ', '') != this.address.Postcode?.replaceAll(' ', '');
+    return postcodesExist && this.searchModel.postcode != this.address.Postcode;
   }
 
 }

@@ -103,35 +103,36 @@ public class BuildingApplicationFunctions
             && !requestData.AddressLineOne.Equals(string.Empty);
     }
 
-    private RegisteredStructureModel BuildAlreadyRegisteredStructureResponseModel(DynamicsResponse<IndependentSection> dynamicsResponse, string addressLineOne) {
-        IndependentSection section = dynamicsResponse.value.Find(section => IsSectionComplete(section, addressLineOne));
-        
-        if(section != null) {
+    private RegisteredStructureModel BuildAlreadyRegisteredStructureResponseModel(DynamicsResponse<DynamicsStructureWithAccount> dynamicsResponse, string addressLineOne) {
+        DynamicsStructureWithAccount structureAndAccountPerson = GetStructureWithAccountInformation(dynamicsResponse, addressLineOne);
+        Account_AccountablePerson accountablePerson = GetAccountablePersonInformation(structureAndAccountPerson);
+        IndependentSection structure = GetSectionInformation(accountablePerson);
+        if(structureAndAccountPerson != null && accountablePerson != null && structure != null) {
             var response = new RegisteredStructureModel {
-                BuildingName = section.bsr_BuildingId.bsr_name,
-                Name = section.bsr_name,
-                BlockId = section.bsr_blockid,
-                Height = section.bsr_sectionheightinmetres.ToString(),
-                NumFloors = section.bsr_nooffloorsabovegroundlevel.ToString(),
-                ResidentialUnits = section.bsr_numberofresidentialunits.ToString(),
+                BuildingName = structure.bsr_BuildingId.bsr_name,
+                Name = structure.bsr_name,
+                BlockId = structure.bsr_blockid,
+                Height = structure.bsr_sectionheightinmetres.ToString(),
+                NumFloors = structure.bsr_nooffloorsabovegroundlevel.ToString(),
+                ResidentialUnits = structure.bsr_numberofresidentialunits.ToString(),
                 StructureAddress = new BuildingAddress {
-                    Postcode = section.bsr_postcode,
-                    Address = section.bsr_addressline1,
-                    AddressLineTwo = section.bsr_addressline2,
-                    Town = section.bsr_city
+                    Postcode = structure.bsr_postcode,
+                    Address = structure.bsr_addressline1,
+                    AddressLineTwo = structure.bsr_addressline2,
+                    Town = structure.bsr_city
                 }
             };
 
-            bool PapIsOrganisation = section.bsr_BuildingApplicationID.bsr_paptype == 760810001;
+            bool PapIsOrganisation = accountablePerson.bsr_accountablepersontype == 760810001;
             if (PapIsOrganisation) {
                 response = response with {
                     PapAddress = new BuildingAddress {
-                        Postcode = section.bsr_BuildingApplicationID.bsr_papid_account.address1_postalcode,
-                        Address = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line1,
-                        AddressLineTwo = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line2,
-                        Town = section.bsr_BuildingApplicationID.bsr_papid_account.address1_city
+                        Postcode = structureAndAccountPerson.address1_postalcode,
+                        Address = structureAndAccountPerson.address1_line1,
+                        AddressLineTwo = structureAndAccountPerson.address1_line2,
+                        Town = structureAndAccountPerson.address1_city
                     },
-                    PapName = section.bsr_BuildingApplicationID.bsr_papid_account.name,
+                    PapName = structureAndAccountPerson.name,
                     PapIsOrganisation = PapIsOrganisation
                 };
             }
@@ -140,24 +141,24 @@ public class BuildingApplicationFunctions
         return null;
     }
 
-    private bool IsSectionComplete(IndependentSection section, string addressLineOne) {
-        bool isComplete = section != null
-            && section.bsr_BuildingId != null
-            && IsNotNullOrWhitespace(section.bsr_BuildingId.bsr_name)
-            && section.bsr_BuildingApplicationID != null
-            && section.bsr_BuildingApplicationID.bsr_paptype != null
-            && section.bsr_BuildingApplicationID.bsr_papid_account != null
-            && NormaliseAddress(addressLineOne).Contains(NormaliseAddress(section.bsr_addressline1));
-        return isComplete;
-    }
-
-    private bool IsNotNullOrWhitespace(string value) {
-        return value != null && !value.Equals(string.Empty);
+    private DynamicsStructureWithAccount GetStructureWithAccountInformation(DynamicsResponse<DynamicsStructureWithAccount> data, string addressLineOne) {
+        if(data == null || addressLineOne == null) return null;
+        return data.value.Find(x => x.bsr_account_bsr_accountableperson_914.Length > 0 && x.bsr_account_bsr_accountableperson_914.Any(y => y.bsr_Independentsection != null && NormaliseAddress(addressLineOne).Contains(NormaliseAddress(y.bsr_Independentsection.bsr_addressline1))));
     }
 
     private string NormaliseAddress(string address) {
         string result = address.ToLower().Replace("  ", " ");
         return result; 
+    }
+
+    private Account_AccountablePerson GetAccountablePersonInformation(DynamicsStructureWithAccount data) {
+        if (data == null) return null;
+        return data.bsr_account_bsr_accountableperson_914.First(x => x.bsr_Independentsection != null);
+    }
+
+    private IndependentSection GetSectionInformation(Account_AccountablePerson data) {
+        if (data == null) return null;
+        return data.bsr_Independentsection;
     }
 
     [Function(nameof(UpdateApplication))]
