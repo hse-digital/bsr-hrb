@@ -7,7 +7,6 @@ import { SectionAddressComponent } from "../address/address.component";
 import { SectionCheckAnswersComponent } from "../check-answers/check-answers.component";
 import { SectionNameComponent } from "../name/name.component";
 import { PageComponent } from "src/app/helpers/page.component";
-import { NotNeedRegisterMultiDuplicatedStructuresComponent } from "../duplicates/not-reg-multi-dupli-struct/not-register-multi-dupli-structures.component";
 
 @Component({
   templateUrl: './other-addresses.component.html',
@@ -69,10 +68,6 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
 
       // user said there is only a single section in the building - go for check answers
       if (this.applicationService.model.NumberOfSections == 'one') {
-        let areAllStructuresIncluded = this.applicationService.model.Sections.every(x => !!x.Duplicate?.IncludeStructure && x.Duplicate?.IncludeStructure == 'no');
-        if (areAllStructuresIncluded) {
-          this.navigationService.navigateRelative(`../${NotNeedRegisterMultiDuplicatedStructuresComponent.route}`, this.activatedRoute);
-        }
         return this.navigationService.navigateRelative(`../${SectionCheckAnswersComponent.route}`, this.activatedRoute);
       }
 

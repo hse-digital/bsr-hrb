@@ -54,19 +54,6 @@ public class DynamicsApi
         });
     }
 
-    public async Task<IFlurlResponse> Put(string endpoint, object entity)
-    {
-        return await retryPolicy.ExecuteAsync(async () =>
-        {
-            var token = await GetAuthenticationTokenAsync();
-
-            return await dynamicsOptions.EnvironmentUrl
-                .AppendPathSegments("api", "data", "v9.2", endpoint)
-                .WithOAuthBearerToken(token)
-                .PutJsonAsync(entity);
-        });
-    }
-
     public async Task<T> Get<T>(string endpoint, params (string, string)[] filters)
     {
         return await retryPolicy.ExecuteAsync(async () =>

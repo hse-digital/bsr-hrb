@@ -89,20 +89,6 @@ public class DynamicsService
 
             await CreateStructureCompletionCertificate(section, dynamicsStructure);
             await CreateStructureOptionalAddresses(section, dynamicsStructure);
-
-            if (section.Duplicate.IsDuplicated) {
-                await CreateAssociatedDuplicatedStructures(section, dynamicsStructure);  
-            }
-        }
-    }
-
-    private async Task CreateAssociatedDuplicatedStructures(SectionModel section, DynamicsStructure dynamicsStructure)
-    {
-        foreach(var blockId in section.Duplicate.BlockIds) {
-            await dynamicsApi.Put($"bsr_blocks({dynamicsStructure.bsr_blockid})/bsr_duplicatestructures/$ref", new DynamicsDuplicatedStructure
-            {
-                relationshipId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_blocks({blockId})"
-            });
         }
     }
 
@@ -236,10 +222,7 @@ public class DynamicsService
                 {
                     var namedContactResponse = await dynamicsApi.Create("contacts", new DynamicsContact
                     {
-                        firstname = accountablePerson.NamedContactFirstName,
-                        lastname = accountablePerson.NamedContactLastName,
-                        telephone1 = accountablePerson.NamedContactPhoneNumber,
-                        emailaddress1 = accountablePerson.NamedContactEmail,
+                        firstname = accountablePerson.NamedContactFirstName, lastname = accountablePerson.NamedContactLastName, telephone1 = accountablePerson.NamedContactPhoneNumber, emailaddress1 = accountablePerson.NamedContactEmail,
                     });
 
                     namedContactId = ExtractEntityIdFromHeader(namedContactResponse.Headers);
@@ -584,7 +567,7 @@ public class DynamicsService
         {
             dynamicsPayment = dynamicsPayment with { bsr_paymentreconciliationstatus = DynamicsPaymentReconciliationStatus.Successful };
         }
-
+        
         await dynamicsApi.Update($"bsr_payments({dynamicsPaymentId})", dynamicsPayment);
     }
 
@@ -748,8 +731,7 @@ public class DynamicsService
 
         dynamicsStructure = dynamicsStructure with
         {
-            buildingReferenceId = $"/bsr_buildings({structures.DynamicsBuildingApplication._bsr_building_value})",
-            buildingApplicationReferenceId = $"/bsr_buildingapplications({structures.DynamicsBuildingApplication.bsr_buildingapplicationid})",
+            buildingReferenceId = $"/bsr_buildings({structures.DynamicsBuildingApplication._bsr_building_value})", buildingApplicationReferenceId = $"/bsr_buildingapplications({structures.DynamicsBuildingApplication.bsr_buildingapplicationid})",
         };
 
         if (section.Addresses != null && section.Addresses.Length > 0)
@@ -800,6 +782,8 @@ public class DynamicsService
         }
 
         var response = await dynamicsApi.Create(structureDefinition.Endpoint, dynamicsStructure);
+        var response_message = response.ResponseMessage;
+        var response_status = response.StatusCode;
         var structureId = ExtractEntityIdFromHeader(response.Headers);
         return dynamicsStructure with { bsr_blockid = structureId };
     }
@@ -821,11 +805,10 @@ public class DynamicsService
         return existingStructure.value.FirstOrDefault();
     }
 
-    public async Task<DynamicsResponse<DynamicsStructureWithAccount>> FindExistingStructureWithAccountablePersonAsync(string postcode)
-    {
+    public async Task<DynamicsResponse<DynamicsStructureWithAccount>> FindExistingStructureWithAccountablePersonAsync(string postcode) {
         return await dynamicsApi.Get<DynamicsResponse<DynamicsStructureWithAccount>>("accounts", new (string, string)[]{
             ("$select", "name,address1_line1,address1_postalcode,address1_city,address1_line2"),
-            ("$expand", $"bsr_account_bsr_accountableperson_914($select=_bsr_independentsection_value,bsr_accountablepersontype;$expand=bsr_Independentsection($select=bsr_name,bsr_blockid,bsr_sectionheightinmetres,bsr_nooffloorsabovegroundlevel,bsr_numberofresidentialunits,bsr_postcode,bsr_addressline1,bsr_addressline2,bsr_city;$filter=bsr_postcode eq '{postcode}';$expand=bsr_BuildingId($select=bsr_name)))")
+            ("$expand", $"bsr_account_bsr_accountableperson_914($select=_bsr_independentsection_value,bsr_accountablepersontype;$expand=bsr_Independentsection($select=bsr_name,bsr_sectionheightinmetres,bsr_nooffloorsabovegroundlevel,bsr_numberofresidentialunits,bsr_postcode,bsr_addressline1,bsr_addressline2,bsr_city;$filter=bsr_postcode eq '{postcode}';$expand=bsr_BuildingId($select=bsr_name)))")
         });
     }
 

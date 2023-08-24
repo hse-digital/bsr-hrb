@@ -4,7 +4,7 @@ namespace HSEPortal.Domain.Entities;
 
 public record Structure(string Name, string FloorsAboveGround, string HeightInMeters, string NumberOfResidentialUnits = null,
     string PeopleLivingInStructure = null, string ConstructionYearOption = null, string ExactYear = null,
-    string YearRange = null, string Id = null, string WhyContinue = null, bool IsDuplicated = false, bool IncludeStructure = true) : Entity(Id);
+    string YearRange = null, string Id = null, string WhyContinue = null, bool IsDuplicated = false) : Entity(Id);
 
 public record DynamicsStructure : DynamicsEntity<Structure>
 {
@@ -88,13 +88,11 @@ public record DynamicsStructure : DynamicsEntity<Structure>
 
     [JsonPropertyName("bsr_mostrecentworkcompleted@odata.bind")]
     public string recentWorkId { get; set; }
+
     public bool? bsr_duplicatedetected { get; set; }
     public bool? bsr_duplicatefound { get; set; }
     public bool? bsr_keepstructureinapplication { get; set; }
     public ReasonForContinuingAfterDuplicateDetected? bsr_reasonforcontinuingafterduplicatedetected { get; set; }
-
-    [property: JsonPropertyName("bsr_blockid@odata.bind")]
-    public string bsr_duplicatestructures { get; set; }
 
 }
 
@@ -167,7 +165,7 @@ public enum YesNoOption
     No = 760_810_001
 }
 
-public enum ReasonForContinuingAfterDuplicateDetected
+public enum ReasonForContinuingAfterDuplicateDetected 
 {
     NotApplyingRegisterBuilding = 760_810_000,
     BsrToldToRegister = 760_810_001,

@@ -27,13 +27,9 @@ export class KeepStructureDeclarationComponent extends PageComponent<void> {
       this.applicationService.currentSection.Duplicate = { IncludeStructure: "yes" };
     }
 
-    if (!this.applicationService.currentSection.Duplicate.BlockIds) {
-      this.applicationService.currentSection.Duplicate.BlockIds = [];
-    }
-
     this.registeredStructure = this.applicationService.currentSection.Duplicate?.RegisteredStructureModel;
     if (!this.registeredStructure || this.registeredStructure.StructureAddress?.Postcode != this.applicationService.currentSectionAddress?.Postcode) {
-      this.GetRegisteredStructure();
+      this.GetRegisteredStructure();      
     }
 
     this.getPapName();
@@ -45,7 +41,6 @@ export class KeepStructureDeclarationComponent extends PageComponent<void> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentSection.Duplicate!.IsDuplicated = true;
-    this.applicationService.currentSection.Duplicate?.BlockIds?.push(this.applicationService.currentSection.Duplicate.RegisteredStructureModel!.BlockId!);
   }
 
   override canAccess(applicationService: ApplicationService, __: ActivatedRouteSnapshot): boolean {

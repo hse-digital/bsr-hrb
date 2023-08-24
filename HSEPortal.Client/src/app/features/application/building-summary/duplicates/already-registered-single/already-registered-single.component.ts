@@ -28,14 +28,10 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
     if(!this.applicationService.currentSection.Duplicate) {
       this.applicationService.currentSection.Duplicate = {};
     }
-
-    if (!this.applicationService.currentSection.Duplicate.BlockIds) {
-      this.applicationService.currentSection.Duplicate.BlockIds = [];
-    }
-
+    
     this.registeredStructure = this.applicationService.currentSection.Duplicate?.RegisteredStructureModel;
     if (!this.registeredStructure || this.registeredStructure.StructureAddress?.Postcode != this.applicationService.currentSectionAddress?.Postcode) {
-      this.GetRegisteredStructure();
+      this.GetRegisteredStructure();      
     }
   }
 
@@ -43,11 +39,10 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
     this.registeredStructure = await this.duplicatesService.GetRegisteredStructure();
   }
 
-  override onSave(applicationService: ApplicationService): void | Promise<void> {
+  override onSave(applicationService: ApplicationService): void | Promise<void> { 
     this.applicationService.currentSection.Duplicate!.IsDuplicated = true;
-    this.applicationService.currentSection.Duplicate?.BlockIds?.push(this.applicationService.currentSection.Duplicate.RegisteredStructureModel!.BlockId!);
   }
-
+  
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
@@ -55,7 +50,7 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
   override isValid(): boolean {
     return true;
   }
-
+  
   override async navigateNext(): Promise<boolean | void> {
     if (this.applicationService.currentSection.Addresses.length < 5) {
       return this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);

@@ -7,7 +7,6 @@ import { SectionNameComponent } from '../name/name.component';
 import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper';
 import { BuildingOutOfScopeComponent } from '../../out-of-scope/out-of-scope.component';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { NotNeedRegisterMultiDuplicatedStructuresComponent } from '../duplicates/not-reg-multi-dupli-struct/not-register-multi-dupli-structures.component';
 
 @Component({
   templateUrl: './add-more-sections.component.html'
@@ -60,8 +59,9 @@ export class AddMoreSectionsComponent extends PageComponent<void> {
         console.log("6802");
         // User navigates to 6802 'you do not need to register - all structure info entered'
         return this.navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, this.activatedRoute);
-      } else if (!this.areAllSectionsOutOfScope() && this.areAllSectionsRemoved()) {
-        return this.navigationService.navigateRelative(NotNeedRegisterMultiDuplicatedStructuresComponent.route, this.activatedRoute);
+      } else if (!this.areAllSectionsOutOfScope() && this.areAllSectionsDuplicated() && this.areAllSectionsRemoved()) {
+        console.log("6498");
+        // User navigates to 6498 'you do not need to register (building name) (4)'
       } else if (!this.areAllSectionsOutOfScope() && (!this.areAllSectionsDuplicated() || !this.areAllSectionsRemoved())) {
         console.log("no - check answers");
         return this.navigationService.navigateRelative(SectionCheckAnswersComponent.route, this.activatedRoute);

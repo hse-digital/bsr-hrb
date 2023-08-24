@@ -21,7 +21,7 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
         AddPeopleLivingInBuilding(entity);
         AddResidentialUnits(entity);
         AddExactConstructionYear(entity);
-        AddDuplicateInformation(entity);
+        //AddDuplicateInformation(entity);
 
         return dynamicsStructure;
     }
@@ -53,7 +53,7 @@ public class StructureDefinition : DynamicsModelDefinition<Structure, DynamicsSt
             this.dynamicsStructure = dynamicsStructure with {
                 bsr_duplicatedetected = entity.IsDuplicated,
                 bsr_duplicatefound = entity.IsDuplicated,
-                bsr_keepstructureinapplication = entity.IncludeStructure,
+                bsr_keepstructureinapplication = true,
                 bsr_reasonforcontinuingafterduplicatedetected = whyContinueReason
             };
         }
