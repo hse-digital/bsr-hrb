@@ -20,6 +20,9 @@
     <govuk-summary-list-row key="Address">
       <address-description [address]="address" />
     </govuk-summary-list-row>
+    <govuk-summary-list-row key="Other postcodes" *ngIf="address.SearchPostcode?.replaceAll(' ', '') != address.Postcode?.replaceAll(' ', '')">
+      {{address.SearchPostcode}}
+    </govuk-summary-list-row>   
     <govuk-summary-list-row *ngIf="section.Addresses.length < 5 || i < section.Addresses.length-1" key="Add another address?">{{i < section.Addresses.length-1 ? 'Yes' : 'No' }}</govuk-summary-list-row>
   </ng-container>
 </govuk-summary-list>

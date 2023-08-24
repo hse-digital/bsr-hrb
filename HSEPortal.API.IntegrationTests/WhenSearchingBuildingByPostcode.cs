@@ -19,7 +19,7 @@ public class SearchBuildingByPostcode : IntegrationTestBase
     }
 
     public static IEnumerable<object[]> getPostcode() {
-        object[] postcodes = new object[] { "SW1A1A", "DE1 1AW", "DE1 1HW", "HP10 0BG", "BA1 1EL" };
+        object[] postcodes = new object[] { "SW1A1A", "DE1 1AW", "DE1 1HW", "HP10 0BG", "BA1 1EL", "SR1 1UL", "SR1 1TP", "SR1 1TR" };
         foreach(object element in postcodes) {
             yield return new object[] {element};
         }

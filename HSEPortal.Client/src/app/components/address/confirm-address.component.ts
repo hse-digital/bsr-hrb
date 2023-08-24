@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SectionHelper } from 'src/app/helpers/section-helper';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { AddressModel } from 'src/app/services/address.service';
 import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
@@ -16,6 +17,8 @@ export class ConfirmAddressComponent {
   @Output() onAddressConfirmed = new EventEmitter<boolean | undefined>();
   @Output() onSearchAgain = new EventEmitter();
   @Output() onEnterManualAddress = new EventEmitter();
+
+  @Input() searchModel: { postcode?: string, addressLine1?: string } = {};
 
   constructor(public applicationService: ApplicationService, public navigationService: NavigationService) {
   }
@@ -40,4 +43,11 @@ export class ConfirmAddressComponent {
   getTitle() {
     return this.selfAddress ? 'Confirm your address' : `Confirm the address of ${this.addressName}`;
   }
+
+  get isResidentialPostcode() {
+    let postcodesExist = FieldValidations.IsNotNullOrWhitespace(this.searchModel.postcode) && 
+      FieldValidations.IsNotNullOrWhitespace(this.address.Postcode);
+    return postcodesExist && this.searchModel.postcode?.replaceAll(' ', '') != this.address.Postcode?.replaceAll(' ', '');
+  }
+
 }

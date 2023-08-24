@@ -84,7 +84,7 @@ public class WhenSearchingPostalAddressByPostcode : UnitTestBase
         var postcodeResponse = BuildPostcodeResponseJson();
         HttpTest.RespondWithJson(postcodeResponse);
 
-        var response = await addressFunctions.SearchBuildingByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
+        var response = await addressFunctions.SearchPostalAddressByPostcode(BuildHttpRequestData<object>(default, buckinghamPalacePostcode), buckinghamPalacePostcode);
         var responseAddress = await response.ReadAsJsonAsync<BuildingAddressSearchResponse>();
 
         responseAddress.MaxResults.Should().Be(postcodeResponse.header.maxresults);

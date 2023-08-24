@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { ApplicationService, OutOfScopeReason, SectionModel } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { AddMoreSectionsComponent } from "../add-more-sections/add-more-sections.component";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 
 @Component({
     selector: 'section-answers',
@@ -54,6 +55,10 @@ export class SectionAnswersComponent implements OnInit {
 
     showPeopleLivingBuilding() {
         return this.isInScope || this.section.Scope?.OutOfScopeReason == OutOfScopeReason.PeopleLivingInBuilding;
+    }
+
+    isNotNullOrWhitespace(value?: string) {
+        return FieldValidations.IsNotNullOrWhitespace(value);
     }
 
 }
