@@ -123,5 +123,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
 
   removeAp(ap: AccountablePersonModel, index: number) {
     this.applicationService.removeAp(index);
+    this.applicationService.model.AccountablePersons.slice(0, this.applicationService.model.AccountablePersons.length - 2).map(x => x.AddAnother = 'yes');
+    this.applicationService.model.AccountablePersons.at(-1)!.AddAnother = 'no';
   }
 }
