@@ -677,7 +677,9 @@ public class DynamicsService
                 continue;
             }
 
-            var isMatch = string.Join(", ", portalAddress.Address.Split(',').Take(3)) == dynamicsAddress.bsr_line1 && portalAddress.Postcode == dynamicsAddress.bsr_postcode;
+            var isMatch = string.Join(", ", portalAddress.Address.Split(',').Take(3)) == dynamicsAddress.bsr_line1 
+                && portalAddress.Postcode == dynamicsAddress.bsr_postcode 
+                && NormalisePostcode(portalAddress.PostcodeEntered) == NormalisePostcode(dynamicsAddress.bsr_postcodeentered);
             if (!isMatch) // exists, update
             {
                 await dynamicsApi.Update($"bsr_addresses({dynamicsAddress.bsr_addressId})",
@@ -705,6 +707,10 @@ public class DynamicsService
                 await dynamicsApi.Update($"bsr_addresses({address.bsr_addressId})", new DynamicsAddress { statuscode = 2, statecode = 1 });
             }
         }
+    }
+
+    private string NormalisePostcode(string postcode) {
+        return postcode.ToLower().Replace(" ", "");
     }
 
     private async Task<DynamicsStructure> SetYearOfCompletion(SectionModel section, DynamicsStructure dynamicsStructure)
