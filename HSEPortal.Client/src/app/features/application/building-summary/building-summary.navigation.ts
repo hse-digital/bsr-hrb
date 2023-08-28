@@ -312,13 +312,13 @@ class SectionAddressNavigationNode extends BuildingNavigationNode {
     if ((section.Addresses?.length ?? 0) == 0 || section.Addresses.filter(x => !x.Postcode).length > 0) {
       return SectionAddressComponent.route;
     }
-
-    if (!!section.Duplicate?.RegisteredStructureModel) {
+    
+    if (!!section.Duplicate?.RegisteredStructureModel || (!!section.Duplicate?.DuplicationDetected && section.Duplicate?.DuplicationDetected?.length > 0) ) {
       return this.applicationService.model.NumberOfSections == 'one' 
         ? this.alreadyRegisteredSingleNavigationNode.getNextRoute(section, sectionIndex)
         : this.alreadyRegisteredMultiNavigationNode.getNextRoute(section, sectionIndex); 
     }
-    
+
     return this.addAnotherSectionNavigationNode.getNextRoute(section, sectionIndex);
   }
 }
@@ -411,6 +411,7 @@ class AddAnotherSectionNavigationNode extends BuildingNavigationNode {
       // goes to 6802 all structures are out of scope.
     }
     // check if the all the structures are in scope or not.
+  
     return this.CheckAnswersNavigationNode.getNextRoute(section, sectionIndex);
   }
 
