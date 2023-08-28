@@ -147,7 +147,7 @@ public class BuildingApplicationFunctions
             && IsNotNullOrWhitespace(section.bsr_BuildingId.bsr_name)
             && section.bsr_BuildingApplicationID != null
             && section.bsr_BuildingApplicationID.bsr_paptype != null
-            && section.bsr_BuildingApplicationID.bsr_papid_account != null
+            && ((section.bsr_BuildingApplicationID.bsr_paptype == 760810001 && section.bsr_BuildingApplicationID.bsr_papid_account != null) || section.bsr_BuildingApplicationID.bsr_paptype == 760810000)
             && NormaliseAddress(addressLineOne).Contains(NormaliseAddress(section.bsr_addressline1));
         return isComplete;
     }
