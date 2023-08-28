@@ -11,7 +11,7 @@ export class ScopeAndDuplicateHelper {
     }
 
     public static AreAllSectionsRemoved(applicationService: ApplicationService): boolean {
-        return applicationService.model.Sections.every(x => x.Duplicate?.Removed);
+        return applicationService.model.Sections.every(x => !!x.Duplicate?.IncludeStructure && x.Duplicate?.IncludeStructure == 'no');
     }
 
     public static ClearOutOfScopeSection(applicationService: ApplicationService, fromHeight: boolean = false, fromUnits: boolean = false) {

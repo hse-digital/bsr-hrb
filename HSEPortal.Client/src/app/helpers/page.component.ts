@@ -23,6 +23,7 @@ export abstract class PageComponent<T> implements OnInit {
   protected titleService: TitleService = this.injector.get(TitleService);
   protected navigationService: NavigationService = this.injector.get(NavigationService);
   protected router: Router = this.injector.get(Router);
+  protected activatedRoute: ActivatedRoute = this.injector.get(ActivatedRoute);
 
   @ViewChildren(GovukRequiredDirective) private requiredFields?: QueryList<GovukRequiredDirective>;
   @ViewChildren("summaryError") private summaryError?: QueryList<GovukErrorSummaryComponent>;
@@ -34,7 +35,8 @@ export abstract class PageComponent<T> implements OnInit {
   abstract navigateNext(): Promise<boolean | void>;
 
 
-  constructor(protected activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute?: ActivatedRoute) {
+    if(activatedRoute) this.activatedRoute = activatedRoute;
     this.triggerScreenReaderNotification("");
   }
 

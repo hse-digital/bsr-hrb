@@ -17,6 +17,11 @@ import { Injectable } from "@angular/core";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
 import { NotNeedRegisterSingleStructureComponent } from "./not-need-register-single-structure/not-need-register-single-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
+import { AlreadyRegisteredSingleComponent } from "./duplicates/already-registered-single/already-registered-single.component";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
+import { AlreadyRegisteredMultiComponent } from "./duplicates/already-registered-multi/already-registered-multi.component";
+import { WhyContinueRegisterComponent } from "./duplicates/why-continue-register/why-continue-register.component";
+import { KeepStructureDeclarationComponent } from "./duplicates/keep-structure-declaration/keep-structure-declaration.component";
 
 @Injectable()
 export class BuildingSummaryNavigation extends BaseNavigation {
@@ -296,7 +301,10 @@ class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNod
 }
 
 class SectionAddressNavigationNode extends BuildingNavigationNode {
-  constructor(private addAnotherSectionNavigationNode: AddAnotherSectionNavigationNode) {
+  constructor(private applicationService: ApplicationService,
+      private addAnotherSectionNavigationNode: AddAnotherSectionNavigationNode,
+      private alreadyRegisteredMultiNavigationNode: AlreadyRegisteredMultiNavigationNode,
+      private alreadyRegisteredSingleNavigationNode: AlreadyRegisteredSingleNavigationNode) {
     super();
   }
 
@@ -304,8 +312,89 @@ class SectionAddressNavigationNode extends BuildingNavigationNode {
     if ((section.Addresses?.length ?? 0) == 0 || section.Addresses.filter(x => !x.Postcode).length > 0) {
       return SectionAddressComponent.route;
     }
+    
+    if (!!section.Duplicate?.RegisteredStructureModel || (!!section.Duplicate?.DuplicationDetected && section.Duplicate?.DuplicationDetected?.length > 0) ) {
+      return this.applicationService.model.NumberOfSections == 'one' 
+        ? this.alreadyRegisteredSingleNavigationNode.getNextRoute(section, sectionIndex)
+        : this.alreadyRegisteredMultiNavigationNode.getNextRoute(section, sectionIndex); 
+    }
 
     return this.addAnotherSectionNavigationNode.getNextRoute(section, sectionIndex);
+  }
+}
+
+class AlreadyRegisteredMultiNavigationNode extends BuildingNavigationNode {
+  constructor(private applicationService: ApplicationService,
+      private addAnotherSectionNavigationNode: AddAnotherSectionNavigationNode,
+      private keepStructureDeclarationNavigationNode: KeepStructureDeclarationNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(section: SectionModel, sectionIndex: number): string {
+    if (!FieldValidations.IsNotNullOrWhitespace(section.Duplicate?.IncludeStructure)) {
+      return AlreadyRegisteredMultiComponent.route;
+    }
+
+    if (section.Duplicate?.IncludeStructure == 'yes') {
+      return this.keepStructureDeclarationNavigationNode.getNextRoute(section, sectionIndex);
+    }
+
+    return this.addAnotherSectionNavigationNode.getNextRoute(section, sectionIndex);
+  }
+}
+
+class AlreadyRegisteredSingleNavigationNode extends BuildingNavigationNode {
+  constructor(private applicationService: ApplicationService,
+    private whyContinueRegisterNavigationNode: WhyContinueRegisterNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(section: SectionModel, sectionIndex: number): string {
+    if(section.Duplicate?.IsDuplicated == undefined) {
+      return AlreadyRegisteredSingleComponent.route;
+    }
+
+    return this.whyContinueRegisterNavigationNode.getNextRoute(section, sectionIndex);
+  }
+}
+
+class KeepStructureDeclarationNavigationNode extends BuildingNavigationNode {
+  constructor(private applicationService: ApplicationService,
+      private whyContinueRegisterNavigationNode: WhyContinueRegisterNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(section: SectionModel, sectionIndex: number): string {
+    if(section.Duplicate?.IsDuplicated == undefined) {
+      return KeepStructureDeclarationComponent.route;
+    }
+
+    return this.whyContinueRegisterNavigationNode.getNextRoute(section, sectionIndex);
+  }
+}
+
+class WhyContinueRegisterNavigationNode extends BuildingNavigationNode {
+  constructor(private applicationService: ApplicationService,
+      private addAnotherSectionNavigationNode: AddAnotherSectionNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(section: SectionModel, sectionIndex: number): string {
+    if (!FieldValidations.IsNotNullOrWhitespace(section.Duplicate?.WhyContinue)) {
+      return WhyContinueRegisterComponent.route;
+    }
+
+    return this.addAnotherSectionNavigationNode.getNextRoute(section, sectionIndex);
+  }
+}
+
+class NotNeedRegisterMultiDuplicatedStructuresNavigationNode extends BuildingNavigationNode {
+  constructor(private applicationService: ApplicationService) {
+    super();
+  }
+
+  override getNextRoute(section: SectionModel, sectionIndex: number): string {
+    return "";
   }
 }
 
@@ -322,6 +411,7 @@ class AddAnotherSectionNavigationNode extends BuildingNavigationNode {
       // goes to 6802 all structures are out of scope.
     }
     // check if the all the structures are in scope or not.
+  
     return this.CheckAnswersNavigationNode.getNextRoute(section, sectionIndex);
   }
 
@@ -336,7 +426,14 @@ class AddAnotherSectionNavigationTree extends BuildingNavigationNode {
   private addAnotherSectionNavigationNode = new AddAnotherSectionNavigationNode(this.applicationService, this.checkAnswersNavigationNode);
   private notNeedRegisterMultiStructureNavigationNode = new NotNeedRegisterMultiStructureNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode);
   private notNeedRegisterSingleStructureNavigationNode = new NotNeedRegisterSingleStructureNavigationNode();
-  private sectionAddressNavigationNode = new SectionAddressNavigationNode(this.addAnotherSectionNavigationNode);
+  
+  private notNeedRegisterMultiDuplicatedStructuresNavigationNode = new NotNeedRegisterMultiDuplicatedStructuresNavigationNode(this.applicationService);
+  private whyContinueRegisterNavigationNode = new WhyContinueRegisterNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode);
+  private keepStructureDeclarationNavigationNode = new KeepStructureDeclarationNavigationNode(this.applicationService, this.whyContinueRegisterNavigationNode);
+  private alreadyRegisteredSingleNavigationNode = new AlreadyRegisteredSingleNavigationNode(this.applicationService, this.whyContinueRegisterNavigationNode);
+  private alreadyRegisteredMultiNavigationNode = new AlreadyRegisteredMultiNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode, this.keepStructureDeclarationNavigationNode);
+  
+  private sectionAddressNavigationNode = new SectionAddressNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode, this.alreadyRegisteredMultiNavigationNode, this.alreadyRegisteredSingleNavigationNode);
   private completionCertificateReferenceNavigationNode = new CompletionCertificateReferenceNavigationNode(this.sectionAddressNavigationNode);
   private completionCertificateIssuerNavigationNode = new CompletionCertificateIssuerNavigationNode(this.completionCertificateReferenceNavigationNode, this.sectionAddressNavigationNode);
   private yearRangeNavigationNode = new YearRangeNavigationNode(this.completionCertificateIssuerNavigationNode);
