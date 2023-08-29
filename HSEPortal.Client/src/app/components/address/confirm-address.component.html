@@ -1,6 +1,6 @@
 <h1 class="govuk-heading-l">{{getTitle()}}</h1>
 
-<govuk-body *ngIf="isResidentialPostcode"><strong>{{searchModel.postcode?.toUpperCase()}}</strong> is a residential postcode in a whole building:</govuk-body>
+<govuk-body *ngIf="isResidentialPostcode"><strong>{{this.postcodeEntered?.toUpperCase()}}</strong> is a residential postcode in a whole building:</govuk-body>
 
 <govuk-inset-text>
   <address-description [address]="address"/>

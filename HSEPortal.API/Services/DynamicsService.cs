@@ -89,6 +89,35 @@ public class DynamicsService
 
             await CreateStructureCompletionCertificate(section, dynamicsStructure);
             await CreateStructureOptionalAddresses(section, dynamicsStructure);
+
+            if (section.Duplicate?.IsDuplicated ?? false) {
+                await CreateAssociatedDuplicatedStructures(section, dynamicsStructure);  
+            }
+        }
+    }
+
+    private async Task CreateAssociatedDuplicatedStructures(SectionModel section, DynamicsStructure dynamicsStructure)
+    {
+        if(section.Duplicate != null && section.Duplicate.BlockIds != null && section.Duplicate.BlockIds.Length > 0)
+        {
+            foreach(var blockId in section.Duplicate.BlockIds) {
+                await dynamicsApi.Put($"bsr_blocks({dynamicsStructure.bsr_blockid})/bsr_duplicatestructures/$ref", new DynamicsDuplicatedStructure
+                {
+                    relationshipId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_blocks({blockId})"
+                });
+            }
+        }
+    }
+
+    public async Task CreateAssociatedDuplicatedBuildingApplications(BuildingApplicationModel buildingApplicationModel, DynamicsBuildingApplication dynamicsBuildingApplication)
+    {
+        if(buildingApplicationModel.DuplicateDetected != null && (bool)buildingApplicationModel.DuplicateDetected && buildingApplicationModel.DuplicateBuildingApplicationIds != null && buildingApplicationModel.DuplicateBuildingApplicationIds.Length > 0) {
+            foreach(var buildingApplicationId in buildingApplicationModel.DuplicateBuildingApplicationIds) {
+                await dynamicsApi.Put($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})/bsr_duplicatebuildingapplications/$ref", new DynamicsDuplicatedStructure
+                {
+                    relationshipId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_buildingapplications({buildingApplicationId})"
+                });
+            }
         }
     }
 
@@ -222,7 +251,10 @@ public class DynamicsService
                 {
                     var namedContactResponse = await dynamicsApi.Create("contacts", new DynamicsContact
                     {
-                        firstname = accountablePerson.NamedContactFirstName, lastname = accountablePerson.NamedContactLastName, telephone1 = accountablePerson.NamedContactPhoneNumber, emailaddress1 = accountablePerson.NamedContactEmail,
+                        firstname = accountablePerson.NamedContactFirstName,
+                        lastname = accountablePerson.NamedContactLastName,
+                        telephone1 = accountablePerson.NamedContactPhoneNumber,
+                        emailaddress1 = accountablePerson.NamedContactEmail,
                     });
 
                     namedContactId = ExtractEntityIdFromHeader(namedContactResponse.Headers);
@@ -567,7 +599,7 @@ public class DynamicsService
         {
             dynamicsPayment = dynamicsPayment with { bsr_paymentreconciliationstatus = DynamicsPaymentReconciliationStatus.Successful };
         }
-        
+
         await dynamicsApi.Update($"bsr_payments({dynamicsPaymentId})", dynamicsPayment);
     }
 
@@ -670,13 +702,16 @@ public class DynamicsService
                         bsr_usrn = portalAddress.USRN,
                         bsr_manualaddress = portalAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
                         countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null,
-                        structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
+                        structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})",
+                        bsr_postcodeentered = portalAddress.PostcodeEntered
                     });
 
                 continue;
             }
 
-            var isMatch = string.Join(", ", portalAddress.Address.Split(',').Take(3)) == dynamicsAddress.bsr_line1 && portalAddress.Postcode == dynamicsAddress.bsr_postcode;
+            var isMatch = string.Join(", ", portalAddress.Address.Split(',').Take(3)) == dynamicsAddress.bsr_line1 
+                && portalAddress.Postcode == dynamicsAddress.bsr_postcode 
+                && NormalisePostcode(portalAddress.PostcodeEntered) == NormalisePostcode(dynamicsAddress.bsr_postcodeentered);
             if (!isMatch) // exists, update
             {
                 await dynamicsApi.Update($"bsr_addresses({dynamicsAddress.bsr_addressId})",
@@ -690,7 +725,8 @@ public class DynamicsService
                         bsr_uprn = portalAddress.UPRN,
                         bsr_usrn = portalAddress.USRN,
                         bsr_manualaddress = portalAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
-                        countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null
+                        countryReferenceId = portalAddress.Country is "E" or "W" ? $"/bsr_countries({DynamicsCountryCodes.Ids[portalAddress.Country]})" : null,
+                        bsr_postcodeentered = portalAddress.PostcodeEntered
                     });
             }
         }
@@ -703,6 +739,10 @@ public class DynamicsService
                 await dynamicsApi.Update($"bsr_addresses({address.bsr_addressId})", new DynamicsAddress { statuscode = 2, statecode = 1 });
             }
         }
+    }
+
+    private string NormalisePostcode(string postcode) {
+        return postcode.ToLower().Replace(" ", "");
     }
 
     private async Task<DynamicsStructure> SetYearOfCompletion(SectionModel section, DynamicsStructure dynamicsStructure)
@@ -726,12 +766,13 @@ public class DynamicsService
     private static DynamicsStructure BuildDynamicsStructure(Structures structures, SectionModel section, DynamicsModelDefinition<Structure, DynamicsStructure> structureDefinition)
     {
         var structure = new Structure(section.Name ?? structures.DynamicsBuildingApplication.bsr_Building?.bsr_name, section.FloorsAbove, section.Height, section.ResidentialUnits,
-            section.PeopleLivingInBuilding, section.YearOfCompletionOption);
+            section.PeopleLivingInBuilding, section.YearOfCompletionOption, null, null, null, section.Duplicate?.WhyContinue, section.Duplicate?.IsDuplicated ?? false);
         var dynamicsStructure = structureDefinition.BuildDynamicsEntity(structure);
 
         dynamicsStructure = dynamicsStructure with
         {
-            buildingReferenceId = $"/bsr_buildings({structures.DynamicsBuildingApplication._bsr_building_value})", buildingApplicationReferenceId = $"/bsr_buildingapplications({structures.DynamicsBuildingApplication.bsr_buildingapplicationid})",
+            buildingReferenceId = $"/bsr_buildings({structures.DynamicsBuildingApplication._bsr_building_value})",
+            buildingApplicationReferenceId = $"/bsr_buildingapplications({structures.DynamicsBuildingApplication.bsr_buildingapplicationid})",
         };
 
         if (section.Addresses != null && section.Addresses.Length > 0)
@@ -762,6 +803,7 @@ public class DynamicsService
             bsr_usrn = primaryAddress.USRN,
             bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
             bsr_classificationcode = primaryAddress.ClassificationCode,
+            bsr_postcodeentered = primaryAddress.PostcodeEntered
         };
     }
 
@@ -801,6 +843,15 @@ public class DynamicsService
 
         var existingStructure = await dynamicsApi.Get<DynamicsResponse<DynamicsStructure>>("bsr_blocks", ("$filter", filter));
         return existingStructure.value.FirstOrDefault();
+    }
+
+    public async Task<DynamicsResponse<IndependentSection>> FindExistingStructureWithAccountablePersonAsync(string postcode)
+    {
+        return await dynamicsApi.Get<DynamicsResponse<IndependentSection>>("bsr_blocks", new (string, string)[]{
+            ("$select", "bsr_name,bsr_blockid,bsr_sectionheightinmetres,bsr_nooffloorsabovegroundlevel,bsr_numberofresidentialunits,bsr_postcode,bsr_addressline1,bsr_addressline2,bsr_city"),
+            ("$filter", $"bsr_postcode eq '{postcode}'"),
+            ("$expand", $"bsr_BuildingId($select=bsr_name),bsr_BuildingApplicationID($select=bsr_paptype;$expand=bsr_papid_account($select=name,address1_line1,address1_postalcode,address1_city,address1_line2))")
+        });
     }
 
     private async Task<DynamicsBuildingApplication> CreateBuildingApplicationAsync(Contact contact, Building building)

@@ -8,4 +8,5 @@ public record DynamicsAddress(string bsr_addressId = null, string bsr_line1 = nu
     AddressType? bsr_addresstypecode = null, YesNoOption? bsr_manualaddress = null,
     [property: JsonPropertyName("bsr_independentsectionid@odata.bind")]
     string structureReferenceId = null,
-    int? statuscode = null, int? statecode = null);
+    int? statuscode = null, int? statecode = null,
+    string? bsr_postcodeentered = null);

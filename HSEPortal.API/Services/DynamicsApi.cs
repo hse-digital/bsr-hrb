@@ -29,6 +29,7 @@ public class DynamicsApi
 
             var request = dynamicsOptions.EnvironmentUrl
                 .AppendPathSegments("api", "data", "v9.2", endpoint)
+                .AllowAnyHttpStatus()
                 .WithOAuthBearerToken(token);
 
             if (returnObjectResponse)
@@ -50,6 +51,19 @@ public class DynamicsApi
                 .AppendPathSegments("api", "data", "v9.2", endpoint)
                 .WithOAuthBearerToken(token)
                 .PatchJsonAsync(entity);
+        });
+    }
+
+    public async Task<IFlurlResponse> Put(string endpoint, object entity)
+    {
+        return await retryPolicy.ExecuteAsync(async () =>
+        {
+            var token = await GetAuthenticationTokenAsync();
+
+            return await dynamicsOptions.EnvironmentUrl
+                .AppendPathSegments("api", "data", "v9.2", endpoint)
+                .WithOAuthBearerToken(token)
+                .PutJsonAsync(entity);
         });
     }
 
