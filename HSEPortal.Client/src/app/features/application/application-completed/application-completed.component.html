@@ -16,24 +16,42 @@
       <table class="govuk-table">
         <tbody class="govuk-table__body">
           <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Request to remove</a></td>
+            <td class="govuk-table__cell">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Request to withdraw</a></td>
+            <td class="govuk-table__cell">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Changes submitted</a></td>
+            <td class="govuk-table__cell">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
+          </tr>
+          <tr class="govuk-table__row">
             <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Registration application</a></td>
             <td class="govuk-table__cell">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
           </tr>
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../kbi/summary']" href="" target="_blank" role="link" tabindex="0">Structure and safety information</a></td>
+            <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../kbi/summary']" href="" target="_blank" role="link" tabindex="0">Structure and fire safety information</a></td>
             <td class="govuk-table__cell">{{KbiSubmissionDate | date: 'dd MMMM yyyy'}}</td>
           </tr>
         </tbody>
       </table>
 
       <h2 class="govuk-heading-m">Making changes</h2>
+      <govuk-body>If you need to, you can <a href="https://www.hse.gov.uk/contact/tell-us-about-a-health-and-safety-issue.htm" class="govuk-link" tabindex="0" role="link">tell the Building Safety Regulator about changes to this building</a>.</govuk-body>
+
+      <h2 class="govuk-heading-m">Withdraw this application</h2>
+      <govuk-body>If you need to, you can <a href="#" class="govuk-link" tabindex="0" role="link">ask to withdraw this application</a>.</govuk-body>
+      <govuk-body>We have started looking at your application. You can <a href="#" class="govuk-link" tabindex="0" role="link">ask to withdraw this application</a> but you will not get a refund.</govuk-body>
       
-      <govuk-body><a href="https://www.hse.gov.uk/contact/tell-us-about-a-health-and-safety-issue.htm" class="govuk-link" tabindex="0" role="link">Contact us</a> if you need to tell us about changes.</govuk-body>
-      <govuk-body>For registration information, you must tell us about changes within 14 days of becoming aware of them.</govuk-body>
-      <govuk-body>For structure and fire safety information, you must tell us about changes within 28 days of becoming aware of them.</govuk-body>
+      <h2 class="govuk-heading-m">Remove this building from the register</h2>
+      <govuk-body>If it is no longer a residential high-rise building, you can <a href="#" class="govuk-link" tabindex="0" role="link">ask to withdraw this application</a>.</govuk-body>
+
+      <h2 class="govuk-heading-m">What's next</h2>
+      <govuk-body>You must <a href="#" class="govuk-link" tabindex="0" role="link">give structure and fire information</a> by [30 september 2023].</govuk-body>
 
       <h2 class="govuk-heading-m">What else you can do</h2>
-
       <govuk-body>You can either <a class="govuk-link" (click)="newApplication()" role="link" tabindex="0" (keyup.enter)="newApplication()">return to another application</a> or <a class="govuk-link" (click)="newApplication()" role="link" tabindex="0" (keyup.enter)="newApplication()">register another building</a>.</govuk-body>
 
     </div>
