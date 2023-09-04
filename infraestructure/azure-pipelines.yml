@@ -66,35 +66,6 @@ stages:
         inputs:
           command: 'test'
           projects: '**/HSEPortal.API.IntegrationTests.csproj'
-    #- job: SeleniumTests
-    #  dependsOn: IntegrationTesting
-    #  steps:
-    #  - checkout: "HSE Testing"
-    #  - task: UsePythonVersion@0
-    #    displayName: 'Use Python $(python.version)'
-    #    inputs:
-    #      versionSpec: '$(python.version)'
-    #  - script: |
-    #        python -m pip install --upgrade pip
-    #        pip install robotframework robotframework-seleniumlibrary robotframework-imaplibrary2 && npm install chromedriver
-    #    displayName: 'Install dependencies'
-
-    #  - powershell: robot --pythonpath . -x outputxunit.xml -v link:$(Swa.Url) tests
-    #    displayName: 'Run tests'
-
-    #  - task: PublishTestResults@2
-    #    condition: succeededOrFailed()
-    #    displayName: 'Publish Test Results'
-    #    inputs:
-    #      testResultsFiles: outputxunit.xml
-
-    #  - task: PublishBuildArtifacts@1
-    #    condition: succeededOrFailed()
-    #    displayName: 'Publish test report'
-    #    inputs:
-    #      PathtoPublish: 'report.html'
-    #      ArtifactName: 'report'
-    #      publishLocation: 'Container'
 
 - stage: QA
   dependsOn: DEV
@@ -112,8 +83,16 @@ stages:
   variables: 
   - group: HSEPortal-UAT
   jobs:
-    - template: deploy.yml
-      parameters:
-        subscription: 's118-test-bsr-acs-services'
-        appBuildCommand: 'npm run buildnonprod'
-        servicePrincipalId: '09988031-2a92-4573-9371-8d4ae5546873'
+  - deployment: DeployUAT
+    displayName: DeployUAT
+    environment: 
+      name: 'uat'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: deploy.yml
+            parameters:
+              subscription: 's118-test-bsr-acs-services'
+              appBuildCommand: 'npm run buildnonprod'
+              servicePrincipalId: '09988031-2a92-4573-9371-8d4ae5546873'
