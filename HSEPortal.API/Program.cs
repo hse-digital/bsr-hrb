@@ -10,6 +10,8 @@ using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Services;
 using HSEPortal.API.Services.CompanySearch;
 using HSEPortal.Domain.DynamicsDefinitions;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -22,9 +24,11 @@ FlurlHttp.Configure(settings => { settings.JsonSerializer = new SystemTextJsonSe
 
 host.Run();
 
-
 static void ConfigureServices(HostBuilderContext builderContext, IServiceCollection serviceCollection)
 {
+    serviceCollection.AddAzureClients(builder => builder.AddClient<CosmosClient, CosmosClientOptions>(options => new CosmosClient(builderContext.Configuration["CosmosConnection"], options)));
+    serviceCollection.AddSingleton<Container>(provider => provider.GetService<CosmosClient>()!.GetContainer("hseportal", "building-registrations"));
+    
     serviceCollection.Configure<DynamicsOptions>(builderContext.Configuration.GetSection(DynamicsOptions.Dynamics));
     serviceCollection.Configure<IntegrationsOptions>(builderContext.Configuration.GetSection(IntegrationsOptions.Integrations));
     serviceCollection.Configure<FeatureOptions>(builderContext.Configuration.GetSection(FeatureOptions.Feature));

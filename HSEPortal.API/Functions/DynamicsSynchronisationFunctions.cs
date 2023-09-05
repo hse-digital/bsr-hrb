@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Net;
 using AutoMapper;
 using Flurl;
 using Flurl.Http;
@@ -8,6 +9,7 @@ using HSEPortal.API.Model.DynamicsSynchronisation;
 using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.DurableTask;
@@ -21,12 +23,14 @@ public class DynamicsSynchronisationFunctions
 {
     private readonly DynamicsService dynamicsService;
     private readonly IMapper mapper;
+    private readonly Container container;
     private readonly IntegrationsOptions integrationOptions;
 
-    public DynamicsSynchronisationFunctions(DynamicsService dynamicsService, IOptions<IntegrationsOptions> integrationOptions, IMapper mapper)
+    public DynamicsSynchronisationFunctions(DynamicsService dynamicsService, IOptions<IntegrationsOptions> integrationOptions, IMapper mapper, Container container)
     {
         this.dynamicsService = dynamicsService;
         this.mapper = mapper;
+        this.container = container;
         this.integrationOptions = integrationOptions.Value;
     }
 
@@ -64,6 +68,57 @@ public class DynamicsSynchronisationFunctions
         await durableTaskClient.ScheduleNewOrchestrationInstanceAsync(nameof(SynchronisePayment), buildingApplicationModel);
 
         return request.CreateResponse();
+    }
+
+    [Function(nameof(SyncApplications))]
+    public async Task<HttpResponseData> SyncApplications([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(SyncApplications)}/{{token}}")] HttpRequestData request,
+        string token, [DurableClient] DurableTaskClient durableTaskClient, CancellationToken cancellationToken)
+    {
+        var applicationSyncRequest = await request.ReadAsJsonAsync<ApplicationSyncRequest>();
+        var buildingApplications = container.GetItemQueryIterator<BuildingApplicationModel>(applicationSyncRequest.query);
+
+        string instanceId = string.Empty;
+        while (buildingApplications.HasMoreResults)
+        {
+            var items = await buildingApplications.ReadNextAsync(cancellationToken);
+            instanceId = await durableTaskClient.ScheduleNewOrchestrationInstanceAsync(nameof(SynchroniseApplications), items.Resource, cancellation: cancellationToken);
+        }
+
+        return durableTaskClient.CreateCheckStatusResponse(request, instanceId, cancellationToken);
+    }
+
+    [Function(nameof(SynchroniseApplications))]
+    public async Task SynchroniseApplications([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
+    {
+        var applications = orchestrationContext.GetInput<IEnumerable<BuildingApplicationModel>>();
+        var applicationSyncTasks = applications.Select(async app =>
+        {
+            var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), app.Id);
+            if (dynamicsBuildingApplication != null)
+            {
+                if (app.ApplicationStatus.HasFlag(HSEPortal.API.Model.BuildingApplicationStatus.BlocksInBuildingComplete))
+                {
+                    await SynchroniseBuildingStructuresImpl(orchestrationContext, app);
+                }
+
+                if (app.ApplicationStatus.HasFlag(HSEPortal.API.Model.BuildingApplicationStatus.AccountablePersonsComplete))
+                {
+                    await SynchroniseAccountablePersonsImpl(orchestrationContext, app);
+                }
+
+                if (app.ApplicationStatus.HasFlag(HSEPortal.API.Model.BuildingApplicationStatus.PaymentInProgress))
+                {
+                    await SynchroniseDeclarationImpl(orchestrationContext, app);
+                }
+
+                if (app.ApplicationStatus.HasFlag(HSEPortal.API.Model.BuildingApplicationStatus.PaymentComplete))
+                {
+                    await SynchronisePaymentImpl(orchestrationContext, app);
+                }
+            }
+        });
+
+        await Task.WhenAll(applicationSyncTasks);
     }
 
     [Function(nameof(UpdateDynamicsBuildingSummaryStage))]
@@ -105,70 +160,28 @@ public class DynamicsSynchronisationFunctions
     public async Task SynchroniseBuildingStructures([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
     {
         var buildingApplicationModel = orchestrationContext.GetInput<BuildingApplicationModel>();
-
-        var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
-        if (dynamicsBuildingApplication != null)
-        {
-            await orchestrationContext.CallActivityAsync(nameof(CreateBuildingStructures), new Structures(buildingApplicationModel.Sections, dynamicsBuildingApplication));
-        }
+        await SynchroniseBuildingStructuresImpl(orchestrationContext, buildingApplicationModel);
     }
 
     [Function(nameof(SynchroniseDeclaration))]
     public async Task SynchroniseDeclaration([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
     {
         var buildingApplicationModel = orchestrationContext.GetInput<BuildingApplicationModel>();
-
-        var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
-        if (dynamicsBuildingApplication != null)
-        {
-            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.PayAndApply));
-            await orchestrationContext.CallActivityAsync(nameof(UpdateDuplicateBuildingApplicationAssociations), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.PayAndApply));
-        }
+        await SynchroniseDeclarationImpl(orchestrationContext, buildingApplicationModel);
     }
 
     [Function(nameof(SynchronisePayment))]
     public async Task SynchronisePayment([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
     {
         var buildingApplicationModel = orchestrationContext.GetInput<BuildingApplicationModel>();
-
-        var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
-        if (dynamicsBuildingApplication != null)
-        {
-            var buildingApplicationWrapper = new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.PayAndApply);
-            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), buildingApplicationWrapper);
-
-            var payments = await orchestrationContext.CallActivityAsync<List<DynamicsPayment>>(nameof(GetDynamicsPayments), buildingApplicationModel.Id);
-            var paymentSyncTasks = payments.Select(async payment =>
-            {
-                var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), payment.bsr_govukpaymentid);
-                if (paymentResponse != null)
-                {
-                    await orchestrationContext.CallActivityAsync(nameof(CreateOrUpdatePayment), new BuildingApplicationPayment(dynamicsBuildingApplication.bsr_buildingapplicationid, paymentResponse));
-                    if (paymentResponse.Status == "success" && dynamicsBuildingApplication.bsr_applicationstage != BuildingApplicationStage.ApplicationSubmitted)
-                    {
-                        await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingToSubmitted), dynamicsBuildingApplication);
-                    }
-                }
-
-                return paymentResponse;
-            }).ToArray();
-
-            await Task.WhenAll(paymentSyncTasks);
-        }
+        await SynchronisePaymentImpl(orchestrationContext, buildingApplicationModel);
     }
 
     [Function(nameof(SynchroniseAccountablePersons))]
     public async Task SynchroniseAccountablePersons([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
     {
         var buildingApplicationModel = orchestrationContext.GetInput<BuildingApplicationModel>();
-
-        var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
-        if (dynamicsBuildingApplication != null)
-        {
-            var buildingApplicationWrapper = new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.AccountablePersons);
-            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), buildingApplicationWrapper);
-            await orchestrationContext.CallActivityAsync(nameof(CreateAccountablePersons), buildingApplicationWrapper);
-        }
+        await SynchroniseAccountablePersonsImpl(orchestrationContext, buildingApplicationModel);
     }
 
     [Function(nameof(GetBuildingApplicationUsingId))]
@@ -195,7 +208,7 @@ public class DynamicsSynchronisationFunctions
     [Function(nameof(UpdateDuplicateBuildingApplicationAssociations))]
     public Task UpdateDuplicateBuildingApplicationAssociations([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
     {
-        return dynamicsService.CreateAssociatedDuplicatedBuildingApplications(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);        
+        return dynamicsService.CreateAssociatedDuplicatedBuildingApplications(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);
     }
 
     [Function(nameof(UpdateBuildingToSubmitted))]
@@ -272,6 +285,64 @@ public class DynamicsSynchronisationFunctions
         return buildingApplicationModel;
     }
 
+    private async Task SynchroniseBuildingStructuresImpl(TaskOrchestrationContext orchestrationContext, BuildingApplicationModel buildingApplicationModel)
+    {
+        var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
+        if (dynamicsBuildingApplication != null)
+        {
+            await orchestrationContext.CallActivityAsync(nameof(CreateBuildingStructures), new Structures(buildingApplicationModel.Sections, dynamicsBuildingApplication));
+        }
+    }
+
+    private async Task SynchroniseAccountablePersonsImpl(TaskOrchestrationContext orchestrationContext, BuildingApplicationModel buildingApplicationModel)
+    {
+        var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
+        if (dynamicsBuildingApplication != null)
+        {
+            var buildingApplicationWrapper = new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.AccountablePersons);
+            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), buildingApplicationWrapper);
+            await orchestrationContext.CallActivityAsync(nameof(CreateAccountablePersons), buildingApplicationWrapper);
+        }
+    }
+
+    private async Task SynchroniseDeclarationImpl(TaskOrchestrationContext orchestrationContext, BuildingApplicationModel buildingApplicationModel)
+    {
+        var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
+        if (dynamicsBuildingApplication != null)
+        {
+            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.PayAndApply));
+            await orchestrationContext.CallActivityAsync(nameof(UpdateDuplicateBuildingApplicationAssociations), new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.PayAndApply));
+        }
+    }
+
+    private async Task SynchronisePaymentImpl(TaskOrchestrationContext orchestrationContext, BuildingApplicationModel buildingApplicationModel)
+    {
+        var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
+        if (dynamicsBuildingApplication != null)
+        {
+            var buildingApplicationWrapper = new BuildingApplicationWrapper(buildingApplicationModel, dynamicsBuildingApplication, BuildingApplicationStage.PayAndApply);
+            await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingApplication), buildingApplicationWrapper);
+
+            var payments = await orchestrationContext.CallActivityAsync<List<DynamicsPayment>>(nameof(GetDynamicsPayments), buildingApplicationModel.Id);
+            var paymentSyncTasks = payments.Select(async payment =>
+            {
+                var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), payment.bsr_govukpaymentid);
+                if (paymentResponse != null)
+                {
+                    await orchestrationContext.CallActivityAsync(nameof(CreateOrUpdatePayment), new BuildingApplicationPayment(dynamicsBuildingApplication.bsr_buildingapplicationid, paymentResponse));
+                    if (paymentResponse.Status == "success" && dynamicsBuildingApplication.bsr_applicationstage != BuildingApplicationStage.ApplicationSubmitted)
+                    {
+                        await orchestrationContext.CallActivityAsync(nameof(UpdateBuildingToSubmitted), dynamicsBuildingApplication);
+                    }
+                }
+
+                return paymentResponse;
+            }).ToArray();
+
+            await Task.WhenAll(paymentSyncTasks);
+        }
+    }
+
     private bool ShouldRetry(string status, int retryCount)
     {
         if (status != "success" && status != "failed" && status != "cancelled" && status != "error")
@@ -281,4 +352,9 @@ public class DynamicsSynchronisationFunctions
 
         return false;
     }
+}
+
+public class ApplicationSyncRequest
+{
+    public string query { get; set; }
 }
