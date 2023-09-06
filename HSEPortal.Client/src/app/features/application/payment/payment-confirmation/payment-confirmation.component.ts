@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate } from '@angular/router';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
-import { ApplicationService, BuildingApplicationStatus, PaymentModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, PaymentModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { PaymentService } from 'src/app/services/payment.service';
 
@@ -33,7 +33,7 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
 
         this.payment = await this.paymentService.GetPayment(paymentReference);
         if (this.payment.Status == 'success') {
-          this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.PaymentComplete;
+          this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.PaymentComplete;
           await this.applicationService.updateApplication();
           this.shouldRender = true;
         } else {
@@ -78,7 +78,7 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   }
 
   canActivate(_: ActivatedRouteSnapshot) {
-    var isInProgress = (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentInProgress) == BuildingApplicationStatus.PaymentInProgress;
+    var isInProgress = (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentInProgress) == BuildingApplicationStage.PaymentInProgress;
     if (!isInProgress) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStatus, BuildingRegistrationModel, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, BuildingRegistrationModel, SectionModel } from 'src/app/services/application.service';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { LocalStorage } from 'src/app/helpers/local-storage';
 import { BroadcastChannelSecondaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
@@ -31,7 +31,7 @@ export class SummaryPageComponent extends PageComponent<void> {
       await this.getApplicationDataFromBroadcastChannel();
     } 
 
-    if (this.applicationService.model.PaymentType == 'card' && (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) != BuildingApplicationStatus.PaymentComplete) {
+    if (this.applicationService.model.PaymentType == 'card' && (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) != BuildingApplicationStage.PaymentComplete) {
       this.navigationService.navigate(NotFoundComponent.route);
     } else {
       this.shouldRender = true;

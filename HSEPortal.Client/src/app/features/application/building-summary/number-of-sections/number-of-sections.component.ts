@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { PageComponent } from 'src/app/helpers/page.component';
 
@@ -23,7 +23,7 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
   override async onInit(applicationService: ApplicationService): Promise<void> {
     this.model = this.applicationService.model.NumberOfSections ?? "";
     this.previousAnswer = this.applicationService.model.NumberOfSections;
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.BlocksInBuildingInProgress;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.BlocksInBuildingInProgress;
     await this.applicationService.updateDynamicsBuildingSummaryStage();
   }
 
@@ -46,7 +46,7 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
   override navigateNext(): Promise<boolean> {
     // user is changing the answer
     if (this.previousAnswer && this.previousAnswer != this.applicationService.model.NumberOfSections) {
-      this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStatus.BlocksInBuildingComplete;
+      this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStage.BlocksInBuildingComplete;
       this.applicationService.updateApplication();
 
       var firstSection = this.applicationService.model.Sections[0];

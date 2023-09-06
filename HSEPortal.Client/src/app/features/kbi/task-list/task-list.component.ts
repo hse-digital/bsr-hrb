@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, SectionModel } from 'src/app/services/application.service';
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { KbiNavigation } from 'src/app/features/kbi/kbi.navigation.ts.service';
@@ -17,7 +17,7 @@ export class TaskListComponent implements CanActivate, OnInit {
   public static route: string = "";
   static title: string = "Task list - KBI - Register a high-rise building - GOV.UK";
 
-  applicationStatus = BuildingApplicationStatus;
+  applicationStatus = BuildingApplicationStage;
   checkingStatus = true;
 
   InScopeSections!: SectionModel[];
@@ -42,9 +42,9 @@ export class TaskListComponent implements CanActivate, OnInit {
 
   getNumberOfCompletedSteps() {
     let numberCompletedSteps = 0;
-    if (this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete)) numberCompletedSteps++;
-    if (this.containsFlag(BuildingApplicationStatus.KbiConnectionsComplete)) numberCompletedSteps++;
-    if (this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete)) numberCompletedSteps++;
+    if (this.containsFlag(BuildingApplicationStage.KbiCheckBeforeComplete)) numberCompletedSteps++;
+    if (this.containsFlag(BuildingApplicationStage.KbiConnectionsComplete)) numberCompletedSteps++;
+    if (this.containsFlag(BuildingApplicationStage.KbiSubmitComplete)) numberCompletedSteps++;
     numberCompletedSteps += this.applicationService.model.Kbi?.SectionStatus?.filter(x => x.Complete).length ?? 0;
     return numberCompletedSteps;
   }
@@ -93,15 +93,15 @@ export class TaskListComponent implements CanActivate, OnInit {
   }
 
   isKbiCheckBeforeComplete() {
-    return this.containsFlag(BuildingApplicationStatus.KbiCheckBeforeComplete);
+    return this.containsFlag(BuildingApplicationStage.KbiCheckBeforeComplete);
   }
   
-  containsFlag(flag: BuildingApplicationStatus) {
+  containsFlag(flag: BuildingApplicationStage) {
     return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    let canActivate = this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed' || (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete;
+    let canActivate = this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed' || (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete;
     if (!canActivate) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;

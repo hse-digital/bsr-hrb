@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { PaymentService } from 'src/app/services/payment.service';
 import { PaymentInvoiceComponent } from '../payment-invoice/payment-invoice.component';
 import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
@@ -31,7 +31,7 @@ export class PaymentInvoiceConfirmationComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return (applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentInProgress) == BuildingApplicationStatus.PaymentInProgress;
+    return (applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentInProgress) == BuildingApplicationStage.PaymentInProgress;
   }
 
   override isValid(): boolean {
