@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
@@ -15,14 +15,16 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   KbiSubmissionDate?: string;
   payment?: any;
+  applicationStatuscode?: BuildingApplicationStatuscode;
 
   constructor(public applicationService: ApplicationService, private navigationService: NavigationService) {
   
   }
 
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete
-      && (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiSubmitComplete) == BuildingApplicationStatus.KbiSubmitComplete;
+    return true;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete
+      && (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.KbiSubmitComplete) == BuildingApplicationStage.KbiSubmitComplete;
   }
 
   async ngOnInit(): Promise<void> {
@@ -30,6 +32,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
     this.KbiSubmissionDate = await this.applicationService.getSubmissionDate();    
     
+    this.applicationStatuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
+
     var payments = await this.applicationService.getApplicationPayments()
     this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
   }
@@ -48,4 +52,37 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
       this.applicationService.currentSection.Name;
   }
+
+  isViewOne(): boolean {
+    let result = this.isKbiSubmitted() &&
+      this.isAppStatusInProgressOrSubmitted() &&
+      this.isApplicationSubmittedOrRaisedAnInvoice();
+    return true;
+  }
+
+  isKbiSubmitted() {
+    return this.containsFlag(BuildingApplicationStage.KbiSubmitComplete);
+  }
+
+  isAppStatusInProgressOrSubmitted() {
+    return this.applicationStatuscode == BuildingApplicationStatuscode.SubmittedAwaitingAllocation || 
+          this.applicationStatuscode == BuildingApplicationStatuscode.InProgress;
+  }
+
+  isApplicationSubmittedOrRaisedAnInvoice() {
+    return this.containsFlag(BuildingApplicationStage.AccountablePersonsComplete) && 
+      this.containsFlag(BuildingApplicationStage.PaymentInProgress) &&
+      !this.containsFlag(BuildingApplicationStage.PaymentComplete);
+  }
+
+  isApplicationSubmittedAndPaid() {
+    return this.containsFlag(BuildingApplicationStage.AccountablePersonsComplete) && 
+      this.containsFlag(BuildingApplicationStage.PaymentComplete);
+  }
+
+  containsFlag(flag: BuildingApplicationStage) {
+    return (this.applicationService.model.ApplicationStatus & flag) == flag;
+  }
+
 }
+

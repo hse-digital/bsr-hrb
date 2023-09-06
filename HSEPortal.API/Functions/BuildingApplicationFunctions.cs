@@ -202,6 +202,19 @@ public class BuildingApplicationFunctions
         var applicationCost = new { applicationCost = integrationOptions.PaymentAmount / 100 };
         return await request.CreateObjectResponseAsync(applicationCost);
     }
+
+    [Function(nameof(GetBuildingApplicationStatuscode))]
+    public async Task<HttpResponseData> GetBuildingApplicationStatuscode([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
+    {
+        var parameters = request.GetQueryParameters();
+        var applicationid = parameters["applicationid"];
+
+        if (string.IsNullOrWhiteSpace(applicationid))
+            return request.CreateResponse(HttpStatusCode.BadRequest);
+
+        var statuscodeModel = await dynamicsService.GetBuildingApplicationStatuscodeBy(applicationid);
+        return await request.CreateObjectResponseAsync(statuscodeModel.statuscode);
+    }
 }
 
 public class CustomHttpResponseData
