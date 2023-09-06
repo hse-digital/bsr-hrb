@@ -4,6 +4,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
 import { AccountablePersonNavigation } from '../../application/accountable-person/accountable-person.navigation';
 import { BuildingSummaryNavigation } from '../../application/building-summary/building-summary.navigation';
+import { TagDirector } from './TagDirector';
 
 @Component({
   selector: 'hse-change-task-list',
@@ -16,9 +17,11 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   applicationStatus = BuildingApplicationStatus;
   taskListSteps = TaskListSteps;
   InScopeSections!: SectionModel[];
+  tagDirector: TagDirector;
 
   constructor(private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation) {
     super();
+    this.tagDirector  = new TagDirector(this.registrationAmendmentsService);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
@@ -26,7 +29,7 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    throw new Error('Method not implemented.');
+    
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -34,16 +37,12 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }
 
   override isValid(): boolean {
-    throw new Error('Method not implemented.');
+    return true;
   }
 
-  override navigateNext(): Promise<boolean | void> {
-    throw new Error('Method not implemented.');
+  override async navigateNext(): Promise<boolean | void> {
+    return true;
   }  
-
-  containsFlag(flag: BuildingApplicationStatus) {
-    return (this.applicationService.model.ApplicationStatus & flag) == flag;
-  }
 
   async navigateToSections() {
     const route = this.buildingNavigation.getNextRoute();
@@ -56,45 +55,8 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }
 
   getTagFor(step: TaskListSteps, index?: number): string {
-    switch(step) {
-      case TaskListSteps.BuildingSummary:
-        return this.TagToText[this.getBuildingSummaryStatus()];
-      case TaskListSteps.AccountablePerson:
-        return this.TagToText[this.getAccountablePersonStatus()];
-      case TaskListSteps.Kbi:
-        return this.TagToText[this.getKbiSectionStatus(index ?? 0)];
-      case TaskListSteps.Connections:
-        return this.TagToText[this.getConnectionStatus()];
-      case TaskListSteps.Changes:
-        return this.TagToText[this.getChangesStatus()];
-      case TaskListSteps.Submit:
-        return this.TagToText[this.getSubmitStatus()];
-    }
-  }
-
-  getBuildingSummaryStatus(): TagStatus {
-    
-    return TagStatus.CannotStartYet;
-  }
-
-  getAccountablePersonStatus(): TagStatus {
-    return TagStatus.CannotStartYet;
-  }
-
-  getKbiSectionStatus(index: number) {
-    return TagStatus.NotYetAvailable;
-  }
-
-  getConnectionStatus() {
-    return TagStatus.NotYetAvailable;
-  }
-
-  getChangesStatus() {
-    return TagStatus.NotYetAvailable;
-  }
-
-  getSubmitStatus() {
-    return TagStatus.NotYetAvailable;
+    this.tagDirector.setStep(step, index);
+    return this.TagToText[this.tagDirector?.getTag()];
   }
 
   private TagToText: Record<TagStatus, string> = {
