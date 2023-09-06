@@ -19,7 +19,7 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   InScopeSections!: SectionModel[];
   tagDirector: TagDirector;
 
-  constructor(private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation) {
+  constructor() { //private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation
     super();
     this.tagDirector  = new TagDirector(this.registrationAmendmentsService);
   }
@@ -45,13 +45,13 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }  
 
   async navigateToSections() {
-    const route = this.buildingNavigation.getNextRoute();
-    await this.navigationService.navigateAppend(route, this.activatedRoute);
+    // const route = this.buildingNavigation.getNextRoute();
+    // await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
   async navigateToPap() {
-    const route = this.apNavigation.getNextRoute();
-    await this.navigationService.navigateAppend(route, this.activatedRoute);
+    // const route = this.apNavigation.getNextRoute();
+    // await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
   getTagFor(step: TaskListSteps, index?: number): string {

@@ -35,7 +35,7 @@
             <ul class="app-task-list__items">
               <li class="app-task-list__item firstItem" *ngFor="let section of InScopeSections; let i = index">
                 <span class="app-task-list__task-name">
-                    {{section.Name}}
+                    {{section.Name}} information
                 </span>
                 <govuk-tag tag class="govuk-tag--grey">{{getTagFor(taskListSteps.Kbi, i)}}</govuk-tag>
               </li>
@@ -55,7 +55,7 @@
             <ul class="app-task-list__items">
               <li class="app-task-list__item firstItem">
                 <span class="app-task-list__task-name">
-                    <a class="govuk-link" href="#" tabindex="0" role="link">Managa who can access this application</a>
+                    <a class="govuk-link" href="#" tabindex="0" role="link">Manage who can access this application</a>
                 </span>    
                 <govuk-tag tag class="govuk-tag--grey">{{getTagFor(taskListSteps.Changes)}}</govuk-tag>            
               </li>

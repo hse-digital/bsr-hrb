@@ -7,15 +7,12 @@ import { HseAngularModule } from 'hse-angular';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { HseRoutes } from 'src/app/services/hse.route';
-import { ChangeTaskListComponent } from './change-task-list/change-task-list.component';
 
 const routes = new HseRoutes([
 ]);
 
 @NgModule({
   declarations: [
-  
-    ChangeTaskListComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
