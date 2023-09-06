@@ -2,7 +2,7 @@ import { RegistrationAmendmentsService, Status } from "src/app/services/registra
 import { TaskListSteps, TagStatus } from "./change-task-list.component";
 
 export class TagDirector {
-    Tag?: ChangeTaskListTag;
+    private Tag?: ChangeTaskListTag;
 
     constructor(protected registrationAmendmentsService: RegistrationAmendmentsService) { }
 
