@@ -12,13 +12,14 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   static route: string = 'application-completed';
   static title: string = "Application completed - Register a high-rise building - GOV.UK";
-
+  
+  shouldRender: boolean = false;
   KbiSubmissionDate?: string;
   payment?: any;
-  applicationStatuscode?: BuildingApplicationStatuscode;
+  applicationStatuscode: BuildingApplicationStatuscode = BuildingApplicationStatuscode.New;
 
   constructor(public applicationService: ApplicationService, private navigationService: NavigationService) {
-  
+
   }
 
   canActivate(_: ActivatedRouteSnapshot, __: RouterStateSnapshot): boolean {
@@ -28,14 +29,18 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   }
 
   async ngOnInit(): Promise<void> {
+    this.shouldRender = false;
+
     this.sendApplicationDataToBroadcastChannel();
 
-    this.KbiSubmissionDate = await this.applicationService.getSubmissionDate();    
-    
+    this.KbiSubmissionDate = await this.applicationService.getSubmissionDate();
+
     this.applicationStatuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
 
     var payments = await this.applicationService.getApplicationPayments()
     this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
+
+    this.shouldRender = true;
   }
 
   private sendApplicationDataToBroadcastChannel() {
@@ -47,121 +52,115 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   async newApplication() {
     await this.navigationService.navigate('/select');
   }
-  
+
   private sectionBuildingName() {
     return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
       this.applicationService.currentSection.Name;
   }
 
   isViewOne(): boolean {
-    let result = this.isKbiSubmitted() &&
-      this.isAppStatusInProgressOrSubmitted() &&
-      this.isApplicationSubmittedOrRaisedAnInvoice();
-    return true;
+    return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
+      StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
+      ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status);
   }
 
   isViewTwo() {
-    return this.isKbiSubmitted() &&
-      this.isNotNewInProgressSubmittedRegisteredWithdrawnRejected() &&
-      this.isApplicationSubmittedAndPaid();
+    return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
+      StatuscodeHelper.isNotNewInProgressSubmittedRegisteredWithdrawnRejected(this.applicationStatuscode) &&
+      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus);
   }
 
   isViewThree() {
-    return this.isKbiSubmitted() &&
-      this.isRegistered() &&
-      this.isApplicationSubmittedAndPaid();
+    return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
+      StatuscodeHelper.isRegistered(this.applicationStatuscode) &&
+      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus);
   }
 
   isViewFour() {
-    return !this.isKbiSubmitted() &&
-    this.isAppStatusInProgressOrSubmitted() &&
-    this.isApplicationSubmittedOrRaisedAnInvoice();
+    return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
+      StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
+      ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status);
   }
 
   isViewFive() {
-    return !this.isKbiSubmitted() &&
-      this.isNotNewInProgressSubmittedRegisteredWithdrawnRejected() &&
-      this.isApplicationSubmittedAndPaid();
+    return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
+      StatuscodeHelper.isNotNewInProgressSubmittedRegisteredWithdrawnRejected(this.applicationStatuscode) &&
+      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus);
   }
 
   isViewSix() {
-    return !this.isKbiSubmitted() &&
-      this.isRegistered() &&
-      this.isApplicationSubmittedAndPaid();
+    return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
+      StatuscodeHelper.isRegistered(this.applicationStatuscode) &&
+      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus);
   }
 
   isViewSeven() {
-    return this.isApplicationSubmittedOrRaisedAnInvoice() &&
-      this.isChangeRequestSubmitted();
+    return ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
+    ApplicationStageHelper.isChangeRequestSubmitted();
   }
 
   isViewThirteen() {
-    return this.isRejected();
+    return StatuscodeHelper.isRejected(this.applicationStatuscode);
   }
 
-  // Kbi
+}
 
-  isKbiSubmitted() {
-    return this.containsFlag(BuildingApplicationStage.KbiSubmitComplete);
+class StatuscodeHelper {
+  static isAppStatusInProgressOrSubmitted(statuscode: BuildingApplicationStatuscode) {
+    return statuscode == BuildingApplicationStatuscode.SubmittedAwaitingAllocation ||
+      statuscode == BuildingApplicationStatuscode.InProgress;
   }
 
-  // Statuscode
-
-  isAppStatusInProgressOrSubmitted() {
-    return this.applicationStatuscode == BuildingApplicationStatuscode.SubmittedAwaitingAllocation || 
-          this.applicationStatuscode == BuildingApplicationStatuscode.InProgress;
+  static isNotNewInProgressSubmittedRegisteredWithdrawnRejected(statuscode: BuildingApplicationStatuscode) {
+    return statuscode != BuildingApplicationStatuscode.New &&
+      statuscode != BuildingApplicationStatuscode.InProgress &&
+      statuscode != BuildingApplicationStatuscode.SubmittedAwaitingAllocation &&
+      statuscode != BuildingApplicationStatuscode.Registered &&
+      statuscode != BuildingApplicationStatuscode.Withdrawn &&
+      statuscode != BuildingApplicationStatuscode.Rejected;
   }
 
-  isNotNewInProgressSubmittedRegisteredWithdrawnRejected() {
-    return this.applicationStatuscode != BuildingApplicationStatuscode.New && 
-          this.applicationStatuscode != BuildingApplicationStatuscode.InProgress &&
-          this.applicationStatuscode != BuildingApplicationStatuscode.SubmittedAwaitingAllocation &&
-          this.applicationStatuscode != BuildingApplicationStatuscode.Registered &&
-          this.applicationStatuscode != BuildingApplicationStatuscode.Withdrawn &&
-          this.applicationStatuscode != BuildingApplicationStatuscode.Rejected;
+  static isRegistered(statuscode: BuildingApplicationStatuscode) {
+    return statuscode == BuildingApplicationStatuscode.Registered;
   }
 
-  isRegistered() {
-    return this.applicationStatuscode == BuildingApplicationStatuscode.Registered;
+  static isRejected(statuscode: BuildingApplicationStatuscode) {
+    return statuscode == BuildingApplicationStatuscode.Rejected;
+  }
+}
+
+class ApplicationStageHelper {
+  static isApplicationSubmittedOrRaisedAnInvoice(currentApplicationStage: BuildingApplicationStage, paymentType?: string, paymentInvoiceStatus?: string) {
+    let isAppSubmitted = ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.AccountablePersonsComplete) &&
+      ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentInProgress) &&
+      !ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentComplete);
+
+    let raisedAnInvoice = paymentType == 'invoice' && paymentInvoiceStatus == 'awaiting';
+
+    return isAppSubmitted || raisedAnInvoice;
   }
 
-  isRejected() {
-    return this.applicationStatuscode == BuildingApplicationStatuscode.Rejected;
+  static isApplicationSubmittedAndPaid(currentApplicationStage: BuildingApplicationStage) {
+    return ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.AccountablePersonsComplete) &&
+      ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentComplete);
   }
 
-  // submitted 
-
-  isApplicationSubmittedOrRaisedAnInvoice() {
-    let isAppSubmitted = this.containsFlag(BuildingApplicationStage.AccountablePersonsComplete) && 
-          this.containsFlag(BuildingApplicationStage.PaymentInProgress) &&
-          !this.containsFlag(BuildingApplicationStage.PaymentComplete);
-          
-    let raisedAnInvoice = this.applicationService.model.PaymentType == 'invoice' &&
-          this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting';
-
-    return isAppSubmitted || raisedAnInvoice; 
+  static isOnlySubmitted(currentApplicationStage: BuildingApplicationStage) {
+    return ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.AccountablePersonsComplete) &&
+      ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentInProgress) &&
+      !ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentComplete);
   }
 
-  isApplicationSubmittedAndPaid() {
-    return this.containsFlag(BuildingApplicationStage.AccountablePersonsComplete) && 
-      this.containsFlag(BuildingApplicationStage.PaymentComplete);
+  static isKbiSubmitted(currentApplicationStage: BuildingApplicationStage) {
+    return ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.KbiSubmitComplete);
   }
 
-  isOnlySubmitted() {
-    return this.containsFlag(BuildingApplicationStage.AccountablePersonsComplete) && 
-    this.containsFlag(BuildingApplicationStage.PaymentInProgress) &&
-    !this.containsFlag(BuildingApplicationStage.PaymentComplete);
-  }
-
-  // submitted change request
-
-  isChangeRequestSubmitted() {
+  static isChangeRequestSubmitted() {
     return false;
   }
 
-  containsFlag(flag: BuildingApplicationStage) {
-    return (this.applicationService.model.ApplicationStatus & flag) == flag;
+  static containsFlag(currentApplicationStage: BuildingApplicationStage, flag: BuildingApplicationStage) {
+    return (currentApplicationStage & flag) == flag;
   }
-
 }
 

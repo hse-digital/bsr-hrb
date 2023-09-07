@@ -11,88 +11,91 @@
         </div>
       </div>
 
-      <h2 class="govuk-heading-m">Application history</h2>
+      <i class="fa fa-spinner fa-spin loading" *ngIf="!shouldRender"></i>
 
-      <table class="govuk-table">
-        <tbody class="govuk-table__body">
-          <ng-container *ngIf="isViewOne()">
-            <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
-            <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
-          </ng-container>
+      <ng-container *ngIf="shouldRender">
+        <h2 class="govuk-heading-m">Application history</h2>
 
-          <ng-container *ngIf="isViewTwo()">
-            <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
-            <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
-          </ng-container>
-    
-          <ng-container *ngIf="isViewThree()">
-            <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
-            <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
-          </ng-container>
+        <table class="govuk-table">
+          <tbody class="govuk-table__body">
+            <ng-container *ngIf="isViewOne()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
 
-          <ng-container *ngIf="isViewFour()">
-            <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
-          </ng-container>
-    
-          <ng-container *ngIf="isViewFive()">
-            <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
-          </ng-container>
-    
-          <ng-container *ngIf="isViewSix()">
-            <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
-          </ng-container>
-    
-          <ng-container *ngIf="isViewSeven()">
-            <ng-container *ngTemplateOutlet="ApplicationHistoryChangesSubmitted" />    
-            <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
-            <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
-          </ng-container>
+            <ng-container *ngIf="isViewTwo()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
+      
+            <ng-container *ngIf="isViewThree()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
 
-          <ng-container *ngIf="isViewThirteen()">
-            <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
-            <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
-          </ng-container>
-        </tbody>
-      </table>
+            <ng-container *ngIf="isViewFour()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
+            </ng-container>
+      
+            <ng-container *ngIf="isViewFive()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
+            </ng-container>
+      
+            <ng-container *ngIf="isViewSix()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
+            </ng-container>
+      
+            <ng-container *ngIf="isViewSeven()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryChangesSubmitted" />    
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
 
-      <ng-container *ngIf="isViewOne()">
-        <ng-container *ngTemplateOutlet="MakingChanges" />
-        <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
+            <ng-container *ngIf="isViewThirteen()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
+          </tbody>
+        </table>
+
+        <ng-container *ngIf="isViewOne()">
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewTwo()">
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="WithdrawOptionTwo" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewThree()">
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="Remove" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewFour()">
+          <ng-container *ngTemplateOutlet="WhatsNext" />
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewFive()">
+          <ng-container *ngTemplateOutlet="WhatsNext" />
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="WithdrawOptionTwo" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewSix()">
+          <ng-container *ngTemplateOutlet="WhatsNext" />
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="Remove" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewSeven()">
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="Remove" />
+        </ng-container>
       </ng-container>
-
-      <ng-container *ngIf="isViewTwo()">
-        <ng-container *ngTemplateOutlet="MakingChanges" />
-        <ng-container *ngTemplateOutlet="WithdrawOptionTwo" />
-      </ng-container>
-
-      <ng-container *ngIf="isViewThree()">
-        <ng-container *ngTemplateOutlet="MakingChanges" />
-        <ng-container *ngTemplateOutlet="Remove" />
-      </ng-container>
-
-      <ng-container *ngIf="isViewFour()">
-        <ng-container *ngTemplateOutlet="MakingChanges" />
-        <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
-        <ng-container *ngTemplateOutlet="WhatsNext" />
-      </ng-container>
-
-      <ng-container *ngIf="isViewFive()">
-        <ng-container *ngTemplateOutlet="MakingChanges" />
-        <ng-container *ngTemplateOutlet="WithdrawOptionTwo" />
-        <ng-container *ngTemplateOutlet="WhatsNext" />
-      </ng-container>
-
-      <ng-container *ngIf="isViewSix()">
-        <ng-container *ngTemplateOutlet="MakingChanges" />
-        <ng-container *ngTemplateOutlet="Remove" />
-        <ng-container *ngTemplateOutlet="WhatsNext" />
-      </ng-container>
-
-      <ng-container *ngIf="isViewSeven()">
-        <ng-container *ngTemplateOutlet="MakingChanges" />
-        <ng-container *ngTemplateOutlet="Remove" />
-      </ng-container>
-
     </div>
   </div>
 </div>
