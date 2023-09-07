@@ -60,24 +60,103 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     return true;
   }
 
+  isViewTwo() {
+    return this.isKbiSubmitted() &&
+      this.isNotNewInProgressSubmittedRegisteredWithdrawnRejected() &&
+      this.isApplicationSubmittedAndPaid();
+  }
+
+  isViewThree() {
+    return this.isKbiSubmitted() &&
+      this.isRegistered() &&
+      this.isApplicationSubmittedAndPaid();
+  }
+
+  isViewFour() {
+    return !this.isKbiSubmitted() &&
+    this.isAppStatusInProgressOrSubmitted() &&
+    this.isApplicationSubmittedOrRaisedAnInvoice();
+  }
+
+  isViewFive() {
+    return !this.isKbiSubmitted() &&
+      this.isNotNewInProgressSubmittedRegisteredWithdrawnRejected() &&
+      this.isApplicationSubmittedAndPaid();
+  }
+
+  isViewSix() {
+    return !this.isKbiSubmitted() &&
+      this.isRegistered() &&
+      this.isApplicationSubmittedAndPaid();
+  }
+
+  isViewSeven() {
+    return this.isApplicationSubmittedOrRaisedAnInvoice() &&
+      this.isChangeRequestSubmitted();
+  }
+
+  isViewThirteen() {
+    return this.isRejected();
+  }
+
+  // Kbi
+
   isKbiSubmitted() {
     return this.containsFlag(BuildingApplicationStage.KbiSubmitComplete);
   }
+
+  // Statuscode
 
   isAppStatusInProgressOrSubmitted() {
     return this.applicationStatuscode == BuildingApplicationStatuscode.SubmittedAwaitingAllocation || 
           this.applicationStatuscode == BuildingApplicationStatuscode.InProgress;
   }
 
+  isNotNewInProgressSubmittedRegisteredWithdrawnRejected() {
+    return this.applicationStatuscode != BuildingApplicationStatuscode.New && 
+          this.applicationStatuscode != BuildingApplicationStatuscode.InProgress &&
+          this.applicationStatuscode != BuildingApplicationStatuscode.SubmittedAwaitingAllocation &&
+          this.applicationStatuscode != BuildingApplicationStatuscode.Registered &&
+          this.applicationStatuscode != BuildingApplicationStatuscode.Withdrawn &&
+          this.applicationStatuscode != BuildingApplicationStatuscode.Rejected;
+  }
+
+  isRegistered() {
+    return this.applicationStatuscode == BuildingApplicationStatuscode.Registered;
+  }
+
+  isRejected() {
+    return this.applicationStatuscode == BuildingApplicationStatuscode.Rejected;
+  }
+
+  // submitted 
+
   isApplicationSubmittedOrRaisedAnInvoice() {
-    return this.containsFlag(BuildingApplicationStage.AccountablePersonsComplete) && 
-      this.containsFlag(BuildingApplicationStage.PaymentInProgress) &&
-      !this.containsFlag(BuildingApplicationStage.PaymentComplete);
+    let isAppSubmitted = this.containsFlag(BuildingApplicationStage.AccountablePersonsComplete) && 
+          this.containsFlag(BuildingApplicationStage.PaymentInProgress) &&
+          !this.containsFlag(BuildingApplicationStage.PaymentComplete);
+          
+    let raisedAnInvoice = this.applicationService.model.PaymentType == 'invoice' &&
+          this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting';
+
+    return isAppSubmitted || raisedAnInvoice; 
   }
 
   isApplicationSubmittedAndPaid() {
     return this.containsFlag(BuildingApplicationStage.AccountablePersonsComplete) && 
       this.containsFlag(BuildingApplicationStage.PaymentComplete);
+  }
+
+  isOnlySubmitted() {
+    return this.containsFlag(BuildingApplicationStage.AccountablePersonsComplete) && 
+    this.containsFlag(BuildingApplicationStage.PaymentInProgress) &&
+    !this.containsFlag(BuildingApplicationStage.PaymentComplete);
+  }
+
+  // submitted change request
+
+  isChangeRequestSubmitted() {
+    return false;
   }
 
   containsFlag(flag: BuildingApplicationStage) {
