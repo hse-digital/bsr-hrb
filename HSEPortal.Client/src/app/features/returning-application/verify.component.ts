@@ -67,18 +67,25 @@ export class ReturningApplicationVerifyComponent implements OnInit {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
 
-      var applicationStatus = this.applicationService.model.ApplicationStatus;
-      if ((applicationStatus & BuildingApplicationStage.KbiSubmitComplete) == BuildingApplicationStage.KbiSubmitComplete) {
-        this.navigationService.navigate(`application/${this.applicationNumber}/application-completed`);
-      } else if ((applicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete) {
-        this.navigationService.navigate(`application/${this.applicationNumber}/kbi`);
-      } else {
+      if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);
+      } else {
+        this.navigationService.navigate(`application/${this.applicationNumber}/application-completed`);
       }
 
       return true;
     } catch {
       return false;
     }
+  }
+
+  private isAccountablePersonsComplete() {
+    var applicationStatus = this.applicationService.model.ApplicationStatus;
+    return (applicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete
+  }
+
+  private isBlocksInBuildingComplete() {
+    var applicationStatus = this.applicationService.model.ApplicationStatus;
+    return (applicationStatus & BuildingApplicationStage.BlocksInBuildingComplete) == BuildingApplicationStage.BlocksInBuildingComplete;
   }
 }
