@@ -209,6 +209,10 @@ export class ApplicationService {
     return await firstValueFrom(this.httpClient.get<string>(`api/GetSubmissionDate/${this.model.id}`));
   }
 
+  async getKbiSubmissionDate(): Promise<string> {
+    return await firstValueFrom(this.httpClient.get<string>(`api/GetKbiSubmissionDate/${this.model.id}`));
+  }
+
   async getApplicationCost(): Promise<number> {
     var response = await firstValueFrom(this.httpClient.get<any>('api/GetApplicationCost'));
     return response.applicationCost;

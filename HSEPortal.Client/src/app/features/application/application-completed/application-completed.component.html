@@ -103,21 +103,21 @@
 <ng-template #ApplicationHistoryChangesSubmitted>
   <tr class="govuk-table__row">
     <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Changes submitted</a></td>
-    <td class="govuk-table__cell">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
+    <td class="govuk-table__cell">[dd/MMMM/yyyy]{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
   </tr>
 </ng-template>
 
 <ng-template #ApplicationHistoryRegistrationApplication>
   <tr class="govuk-table__row">
     <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Registration application</a></td>
-    <td class="govuk-table__cell">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
+    <td class="govuk-table__cell">{{submittionDate | date: 'dd MMMM yyyy'}}</td>
   </tr>
 </ng-template>
 
 <ng-template #ApplicationHistoryStructureFireSafetyInformation>
   <tr class="govuk-table__row">
     <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../kbi/summary']" href="" target="_blank" role="link" tabindex="0">Structure and fire safety information</a></td>
-    <td class="govuk-table__cell">{{KbiSubmissionDate | date: 'dd MMMM yyyy'}}</td>
+    <td class="govuk-table__cell">{{kbiSubmittionDate | date: 'dd MMMM yyyy'}}</td>
   </tr>
 </ng-template>
 
@@ -128,7 +128,7 @@
 
 <ng-template #WhatsNext>
   <h2 class="govuk-heading-m">What's next</h2>
-  <govuk-body>You must <a href="#" class="govuk-link" tabindex="0" role="link">give structure and fire information</a> by [30 september 2023].</govuk-body>
+  <govuk-body>You must <a href="#" class="govuk-link" tabindex="0" role="link">give structure and fire information</a> by {{isSubmittionBefore3Sep2023() ? '30 september 2023' : get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.</govuk-body>
 </ng-template>
 
 <ng-template #WithdrawOptionOne>

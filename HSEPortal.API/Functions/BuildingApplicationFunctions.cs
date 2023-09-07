@@ -59,6 +59,15 @@ public class BuildingApplicationFunctions
         return await request.CreateObjectResponseAsync(submissionDate);
     }
 
+    [Function(nameof(GetKbiSubmissionDate))]
+    public async Task<HttpResponseData> GetKbiSubmissionDate(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetKbiSubmissionDate/{applicationNumber}")]
+        HttpRequestData request, string applicationNumber)
+    {
+        string submissionDate = await dynamicsService.GetSubmissionDate(applicationNumber);
+        return await request.CreateObjectResponseAsync(submissionDate);
+    }
+
     [Function(nameof(GetApplication))]
     public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request,
         [CosmosDBInput("hseportal", "building-registrations",

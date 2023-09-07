@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
@@ -14,7 +15,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   static title: string = "Application completed - Register a high-rise building - GOV.UK";
   
   shouldRender: boolean = false;
-  KbiSubmissionDate?: string;
+  submittionDate?: string;
+  kbiSubmittionDate?: string;
   payment?: any;
   applicationStatuscode: BuildingApplicationStatuscode = BuildingApplicationStatuscode.New;
 
@@ -33,7 +35,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
     this.sendApplicationDataToBroadcastChannel();
 
-    this.KbiSubmissionDate = await this.applicationService.getSubmissionDate();
+    this.submittionDate = await this.applicationService.getSubmissionDate();
+    this.kbiSubmittionDate = await this.applicationService.getKbiSubmissionDate();
 
     this.applicationStatuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
 
@@ -103,6 +106,23 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     return StatuscodeHelper.isRejected(this.applicationStatuscode);
   }
 
+  isSubmittionBefore3Sep2023() {
+    let threeSep2023 = new Date("09/03/2023");
+    if (FieldValidations.IsNotNullOrWhitespace(this.submittionDate)) {
+      let submittionDate = new Date(this.submittionDate!);
+      return submittionDate < threeSep2023;
+    }
+    return false;
+  }
+
+  get28DaysAfterSubmittionDate() {
+    if (FieldValidations.IsNotNullOrWhitespace(this.submittionDate)) {
+      let submittionDate = new Date(this.submittionDate!);
+      return submittionDate.setDate(submittionDate.getDate() + 28);
+    }
+    return undefined;
+  }
+
 }
 
 class StatuscodeHelper {
@@ -132,8 +152,7 @@ class StatuscodeHelper {
 class ApplicationStageHelper {
   static isApplicationSubmittedOrRaisedAnInvoice(currentApplicationStage: BuildingApplicationStage, paymentType?: string, paymentInvoiceStatus?: string) {
     let isAppSubmitted = ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.AccountablePersonsComplete) &&
-      ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentInProgress) &&
-      !ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentComplete);
+      ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentInProgress);
 
     let raisedAnInvoice = paymentType == 'invoice' && paymentInvoiceStatus == 'awaiting';
 
