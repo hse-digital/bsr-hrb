@@ -128,7 +128,7 @@
 
 <ng-template #WhatsNext>
   <h2 class="govuk-heading-m">What's next</h2>
-  <govuk-body>You must <a href="#" class="govuk-link" tabindex="0" role="link">give structure and fire information</a> by {{isSubmittionBefore3Sep2023() ? '30 september 2023' : get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.</govuk-body>
+  <govuk-body>You must <a href="" [routerLink]="['../kbi']" class="govuk-link" tabindex="0" role="link">give structure and fire safety information</a> by {{isSubmittionBefore3Sep2023() ? '30 september 2023' : get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.</govuk-body>
 </ng-template>
 
 <ng-template #WithdrawOptionOne>
