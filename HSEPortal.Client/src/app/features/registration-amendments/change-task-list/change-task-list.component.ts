@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, BuildingApplicationStatus, SectionModel } from 'src/app/services/application.service';
-import { AccountablePersonNavigation } from '../../application/accountable-person/accountable-person.navigation';
-import { BuildingSummaryNavigation } from '../../application/building-summary/building-summary.navigation';
+import { ApplicationService, SectionModel } from 'src/app/services/application.service';
 import { TagDirector } from './TagDirector';
 
 @Component({
@@ -14,12 +12,11 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   static route: string = 'change-task-list';
   static title: string = "Tell the Building Safety Regulator about changes to this building - Register a high-rise building - GOV.UK";
 
-  applicationStatus = BuildingApplicationStatus;
   taskListSteps = TaskListSteps;
   InScopeSections!: SectionModel[];
   tagDirector: TagDirector;
 
-  constructor() { //private buildingNavigation: BuildingSummaryNavigation, private apNavigation: AccountablePersonNavigation
+  constructor() {
     super();
     this.tagDirector  = new TagDirector(this.registrationAmendmentsService);
   }
@@ -45,13 +42,9 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }  
 
   async navigateToSections() {
-    // const route = this.buildingNavigation.getNextRoute();
-    // await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
   async navigateToPap() {
-    // const route = this.apNavigation.getNextRoute();
-    // await this.navigationService.navigateAppend(route, this.activatedRoute);
   }
 
   getTagFor(step: TaskListSteps, index?: number): string {
