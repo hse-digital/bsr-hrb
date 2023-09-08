@@ -35,7 +35,7 @@
             <ul class="app-task-list__items">
               <li class="app-task-list__item firstItem" *ngFor="let section of InScopeSections; let i = index">
                 <span class="app-task-list__task-name">
-                    {{section.Name}} information
+                    {{section.Name ?? applicationService.model.BuildingName}} information
                 </span>
                 <govuk-tag tag class="govuk-tag--grey">{{getTagFor(taskListSteps.Kbi, i)}}</govuk-tag>
               </li>
