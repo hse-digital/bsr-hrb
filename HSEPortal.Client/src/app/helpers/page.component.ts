@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { Observable } from "rxjs";
-import { ApplicationService, BuildingApplicationStatus } from "../services/application.service";
+import { ApplicationService, BuildingApplicationStage } from "../services/application.service";
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { TitleService } from "../services/title.service";
 import { GovukRequiredDirective } from "../components/required.directive";
@@ -141,7 +141,7 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   private navigateBack(): void {
-    let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete
+    let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete
       ? `application/${this.applicationService.model.id}/kbi`
       : `application/${this.applicationService.model.id}`;
     this.navigationService.navigate(route);

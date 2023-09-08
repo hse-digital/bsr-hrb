@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { PaymentService } from 'src/app/services/payment.service';
 import { PaymentSelectionComponent } from '../payment-selection/payment-selection.component';
 
@@ -18,7 +18,7 @@ export class PaymentDeclarationComponent extends PageComponent<void> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.model.ApplicationStatus = applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentInProgress;
+    this.applicationService.model.ApplicationStatus = applicationService.model.ApplicationStatus | BuildingApplicationStage.PaymentInProgress;
     await this.applicationService.updateApplication();
   }
 
@@ -27,8 +27,8 @@ export class PaymentDeclarationComponent extends PageComponent<void> {
   }
 
   override canAccess(_: ApplicationService, __: ActivatedRouteSnapshot): boolean {
-    return ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsComplete) == BuildingApplicationStatus.AccountablePersonsComplete)
-      && ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingComplete) == BuildingApplicationStatus.BlocksInBuildingComplete);
+    return ((this.applicationService.model.ApplicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete)
+      && ((this.applicationService.model.ApplicationStatus & BuildingApplicationStage.BlocksInBuildingComplete) == BuildingApplicationStage.BlocksInBuildingComplete);
   }
 
   override isValid(): boolean {

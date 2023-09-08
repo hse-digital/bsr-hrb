@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { PaymentService } from 'src/app/services/payment.service';
 import { PaymentInvoiceComponent } from '../payment-invoice/payment-invoice.component';
 

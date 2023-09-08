@@ -59,6 +59,15 @@ public class BuildingApplicationFunctions
         return await request.CreateObjectResponseAsync(submissionDate);
     }
 
+    [Function(nameof(GetKbiSubmissionDate))]
+    public async Task<HttpResponseData> GetKbiSubmissionDate(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetKbiSubmissionDate/{applicationNumber}")]
+        HttpRequestData request, string applicationNumber)
+    {
+        string submissionDate = await dynamicsService.GetSubmissionDate(applicationNumber);
+        return await request.CreateObjectResponseAsync(submissionDate);
+    }
+
     [Function(nameof(GetApplication))]
     public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request,
         [CosmosDBInput("hseportal", "building-registrations",
@@ -201,6 +210,19 @@ public class BuildingApplicationFunctions
     {
         var applicationCost = new { applicationCost = integrationOptions.PaymentAmount / 100 };
         return await request.CreateObjectResponseAsync(applicationCost);
+    }
+
+    [Function(nameof(GetBuildingApplicationStatuscode))]
+    public async Task<HttpResponseData> GetBuildingApplicationStatuscode([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
+    {
+        var parameters = request.GetQueryParameters();
+        var applicationid = parameters["applicationid"];
+
+        if (string.IsNullOrWhiteSpace(applicationid))
+            return request.CreateResponse(HttpStatusCode.BadRequest);
+
+        var statuscodeModel = await dynamicsService.GetBuildingApplicationStatuscodeBy(applicationid);
+        return await request.CreateObjectResponseAsync(statuscodeModel.statuscode);
     }
 }
 

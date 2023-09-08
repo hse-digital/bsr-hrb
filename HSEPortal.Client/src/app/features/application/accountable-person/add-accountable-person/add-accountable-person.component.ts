@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { AccountablePersonModel, ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { AccountablePersonTypeComponent } from './accountable-person-type.component';
 import { AreasAccountabilityComponent } from '../areas-accountability/areas-accountability.component';
 import { PageComponent } from 'src/app/helpers/page.component';
@@ -22,7 +22,7 @@ export class AddAccountablePersonComponent extends PageComponent<string> {
 
   override onInit(applicationService: ApplicationService): void {
     this.model = this.applicationService.currentAccountablePerson.AddAnother;    
-    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsInProgress;
+    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStage.AccountablePersonsInProgress;
     
     this.applicationService.updateApplication();
   }
