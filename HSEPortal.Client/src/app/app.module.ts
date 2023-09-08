@@ -26,7 +26,6 @@ import { WhatWantToDoComponent } from './features/registration-amendments/what-w
 import { ComponentsModule } from './components/components.module';
 import { CommonModule } from '@angular/common';
 import { RegistrationAmendmentsService } from './services/registration-amendments.service';
-import { ChangeTaskListComponent } from './features/registration-amendments/change-task-list/change-task-list.component';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
@@ -34,7 +33,6 @@ const routes = new HseRoutes([
   HseRoute.unsafe(TimeoutComponent.route, TimeoutComponent, undefined, TimeoutComponent.title),
   HseRoute.unsafe(NotFoundComponent.route, NotFoundComponent, undefined, NotFoundComponent.title),
   HseRoute.unsafe(WhatWantToDoComponent.route, WhatWantToDoComponent, undefined, WhatWantToDoComponent.title),
-  HseRoute.unsafe(ChangeTaskListComponent.route, ChangeTaskListComponent, undefined, ChangeTaskListComponent.title),
   HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent, undefined, ReturningApplicationComponent.title),
   HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forLoadChildren(HelpPagesModule.baseRoute, () => import('./components/footer/help-pages.module').then(m => m.HelpPagesModule)),
@@ -54,8 +52,7 @@ const routes = new HseRoutes([
     ReturningApplicationVerifyComponent,
     TimeoutModalComponent,
     NotFoundComponent,
-    WhatWantToDoComponent,
-    ChangeTaskListComponent
+    WhatWantToDoComponent
   ],
   imports: [
     RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking', scrollPositionRestoration: 'enabled' }),
