@@ -25,6 +25,7 @@ import { GetInjector } from './helpers/injector.helper';
 import { WhatWantToDoComponent } from './features/registration-amendments/what-want-to-do/what-want-to-do.component';
 import { ComponentsModule } from './components/components.module';
 import { CommonModule } from '@angular/common';
+import { RegistrationAmendmentsService } from './services/registration-amendments.service';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
@@ -51,7 +52,7 @@ const routes = new HseRoutes([
     ReturningApplicationVerifyComponent,
     TimeoutModalComponent,
     NotFoundComponent,
-    WhatWantToDoComponent,
+    WhatWantToDoComponent
   ],
   imports: [
     RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking', scrollPositionRestoration: 'enabled' }),
@@ -62,7 +63,7 @@ const routes = new HseRoutes([
     ComponentsModule,
     FormsModule
   ],
-  providers: [HttpClient, ApplicationService, KbiService],
+  providers: [HttpClient, ApplicationService, KbiService, RegistrationAmendmentsService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
