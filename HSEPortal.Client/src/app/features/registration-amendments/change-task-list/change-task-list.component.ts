@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, SectionModel } from 'src/app/services/application.service';
 import { TagDirector } from './TagDirector';
 
 @Component({
@@ -45,6 +45,10 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }
 
   async navigateToPap() {
+  }
+
+  isKbiSubmitted() {
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.KbiSubmitComplete) == BuildingApplicationStage.KbiSubmitComplete;
   }
 
   getTagFor(step: TaskListSteps, index?: number): string {
