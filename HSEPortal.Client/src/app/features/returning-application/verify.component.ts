@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
 import { GovukErrorSummaryComponent } from "hse-angular";
-import { ApplicationService, BuildingApplicationStatus } from "src/app/services/application.service";
+import { ApplicationService, BuildingApplicationStage } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from 'src/app/services/title.service';
 
@@ -67,18 +67,25 @@ export class ReturningApplicationVerifyComponent implements OnInit {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
 
-      var applicationStatus = this.applicationService.model.ApplicationStatus;
-      if ((applicationStatus & BuildingApplicationStatus.KbiSubmitComplete) == BuildingApplicationStatus.KbiSubmitComplete) {
-        this.navigationService.navigate(`application/${this.applicationNumber}/application-completed`);
-      } else if ((applicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
-        this.navigationService.navigate(`application/${this.applicationNumber}/kbi`);
-      } else {
+      if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);
+      } else {
+        this.navigationService.navigate(`application/${this.applicationNumber}/application-completed`);
       }
 
       return true;
     } catch {
       return false;
     }
+  }
+
+  private isAccountablePersonsComplete() {
+    var applicationStatus = this.applicationService.model.ApplicationStatus;
+    return (applicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete
+  }
+
+  private isBlocksInBuildingComplete() {
+    var applicationStatus = this.applicationService.model.ApplicationStatus;
+    return (applicationStatus & BuildingApplicationStage.BlocksInBuildingComplete) == BuildingApplicationStage.BlocksInBuildingComplete;
   }
 }

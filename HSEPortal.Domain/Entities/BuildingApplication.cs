@@ -22,7 +22,7 @@ public record DynamicsBuildingApplication(string bsr_buildingapplicationid = nul
     [property: JsonPropertyName("bsr_paporgleadcontactid@odata.bind")]
     string papLeadContactReferenceId = null,
     string bsr_applicationid = null,
-    BuildingApplicationStatus? statuscode = null,
+    BuildingApplicationStatuscode? statuscode = null,
     string bsr_submittedon = null,
     string bsr_numberofmanuallyenteredaddresses = null,
     bool? bsr_sharedetailsdeclared = null,
@@ -50,8 +50,22 @@ public enum BuildingApplicationWhoAreYou
     Employee = 760_810_002
 }
 
-public enum BuildingApplicationStatus
+public enum BuildingApplicationStatuscode
 {
     New = 760_810_001,
     InProgress = 760_810_002,
+    SubmittedAwaitingAllocation = 760_810_003,
+    AllocatedReview = 760_810_004,
+    UnderReview = 760_810_005,
+    RegisteredPendingQA = 760_810_006,
+    RejectedPendingQA = 760_810_007,
+    AllocatedRework = 760_810_012,
+    ReadyForQA = 760_810_008,
+    Registered = 760_810_015,
+    QAInProgress = 760_810_009,
+    RegisteredPendingChange = 760_810_016,
+    RegisteredKbiValidated = 760_810_017,
+    Rejected = 760_810_011,
+    Withdrawn = 760_810_013,
+    OnHold = 760_810_014,
 }

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { KbiService } from 'src/app/services/kbi.service';
+import { ReturningApplicationComponent } from '../../returning-application/returning-application.component';
 
 @Component({
   selector: 'hse-what-want-to-do',
@@ -37,7 +38,7 @@ export class WhatWantToDoComponent extends PageComponent<string> {
     if(this.model == 'register-building') {
       return this.navigationService.navigateRelative('/select', this.activatedRoute);
     }
-    return true;
+    return this.navigationService.navigateRelative(ReturningApplicationComponent.route, this.activatedRoute);;
   }
 
 }

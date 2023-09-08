@@ -72,6 +72,15 @@ public class DynamicsService
         return response.value.FirstOrDefault();
     }
 
+    
+    public async Task<DynamicsBuildingApplicationStatuscodeModel> GetBuildingApplicationStatuscodeBy(string applicationId)
+    {
+        var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplicationStatuscodeModel>>("bsr_buildingapplications",
+            new[] { ("$filter", $"bsr_applicationid eq '{applicationId}'"), ("$select", "statuscode") });
+
+        return response.value.FirstOrDefault();
+    }
+
     public async Task UpdateBuildingApplication(DynamicsBuildingApplication dynamicsBuildingApplication, DynamicsBuildingApplication buildingApplication)
     {
         await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", buildingApplication);
@@ -944,6 +953,12 @@ public class DynamicsService
     {
         var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
         return buildingApplication.bsr_submittedon;
+    }
+
+    public async Task<string> GetKbiSubmissionDate(string applicationNumber)
+    {
+        var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
+        return buildingApplication.bsr_Building.bsr_kbicompletiondate;
     }
 
     public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
