@@ -28,6 +28,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
 
   override onInit(applicationService: ApplicationService): void {
     this.aps = this.applicationService.model.AccountablePersons;
+    this.updateAddAnotherVariable(this.applicationService.model.AccountablePersons);
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -123,5 +124,13 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
 
   removeAp(ap: AccountablePersonModel, index: number) {
     this.applicationService.removeAp(index);
+    this.updateAddAnotherVariable(this.applicationService.model.AccountablePersons);
+  }
+
+  private updateAddAnotherVariable(aps: AccountablePersonModel[]) {
+    if(!!aps && aps.length > 1) {
+      aps.slice(0, aps.length - 2).map(x => x.AddAnother = 'yes');
+      if(!!aps.at(-1)) aps.at(-1)!.AddAnother = 'no';
+    }
   }
 }

@@ -64,7 +64,7 @@ export class AccountablePersonNavigation extends BaseNavigation {
         continue;
       }
 
-      if (apRoute == AddAccountablePersonComponent.route || apRoute == AreasAccountabilityComponent.route || apRoute == NotAllocatedAccountabilityAreasComponent.route) {
+      if (apRoute == AccountablePersonComponent.route || apRoute == AddAccountablePersonComponent.route || apRoute == AreasAccountabilityComponent.route || apRoute == NotAllocatedAccountabilityAreasComponent.route) {
         return `accountable-person/${apRoute}`
       }
 

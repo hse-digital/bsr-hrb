@@ -5,6 +5,7 @@ import { PrincipleAccountableSelection } from '../principal/principal.component'
 import { OrganisationTypeComponent } from '../organisation/organisation-type/organisation-type.component';
 import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { PageComponent } from 'src/app/helpers/page.component';
+import { AccountablePersonNavigation } from '../accountable-person.navigation';
 
 @Component({
   templateUrl: './accountable-person.component.html'
@@ -16,17 +17,19 @@ export class AccountablePersonComponent extends PageComponent<string> {
   accountablePersonHasErrors = false;
   previousAnswer?: string;
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private apNavigation: AccountablePersonNavigation) {
     super(activatedRoute);
   } 
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
     this.previousAnswer = this.applicationService.model.PrincipalAccountableType;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.AccountablePersonsInProgress;
+    
+    this.model = applicationService.model.PrincipalAccountableType;
+
     await this.applicationService.updateApplication();
     await this.applicationService.updateDynamicsAccountablePersonsStage();
 
-    this.model = applicationService.model.PrincipalAccountableType;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -39,7 +42,8 @@ export class AccountablePersonComponent extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean | void> {
-    if (this.previousAnswer && this.previousAnswer == this.applicationService.model.PrincipalAccountableType) {
+    let nextRoute = this.apNavigation.getNextRoute();
+    if (this.previousAnswer && this.previousAnswer == this.applicationService.model.PrincipalAccountableType && nextRoute.endsWith(AccountablePersonCheckAnswersComponent.route)) {
       return this.navigationService.navigateAppend(AccountablePersonCheckAnswersComponent.route, this.activatedRoute);
     }
 
