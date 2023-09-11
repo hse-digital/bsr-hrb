@@ -503,7 +503,7 @@ export class PaymentInvoiceDetails {
 
 export class RegistrationAmendmentsModel {
   BuildingSummaryStatus: Status = Status.NoChanges;
-  AccountablePersonStatus: Status = Status.NoChanges;
+  AccountablePersonStatus?: ChangeAccountablePerson;
   ConnectionStatus: Status = Status.NoChanges;
   SubmitStatus: Status = Status.NoChanges;
 
@@ -511,10 +511,21 @@ export class RegistrationAmendmentsModel {
 
 }
 
+export class ChangeAccountablePerson {
+  Status: Status = Status.NoChanges;
+  
+  NewNamedContact?: boolean;
+  NewNamedContactFirstName?: string;
+  NewNamedContactLastName?: string;
+  NewNamedContactEmail?: string;
+  NewNamedContactPhonenumber?: string;
+}
+
 export class ChangeUser {
   PrimaryUser?: User;
   CurrentSecondaryUser?: User;
   NewSecondaryUser?: User;
+  WhoBecomePrimary?: string;
 }
 
 export class User {

@@ -26,7 +26,6 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     if(!this.applicationService.model.RegistrationAmendmentsModel) {
       this.applicationService.model.RegistrationAmendmentsModel = {
         BuildingSummaryStatus: Status.NoChanges,
-        AccountablePersonStatus: Status.NoChanges,
         ConnectionStatus: Status.NoChanges,
         SubmitStatus: Status.NoChanges,
       };
