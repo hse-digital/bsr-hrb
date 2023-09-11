@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { HowOtherHighRiseBuildingsConnectedComponent } from '../how-other-high-rise-buildings-connected/how-other-high-rise-buildings-connected.component';
 import { OtherBuildingConnectionsComponent } from '../other-building-connections/other-building-connections.component';
@@ -29,7 +29,7 @@ export class OtherHighRiseBuildingConnectionsComponent extends PageComponent<str
   override async onInit(applicationService: ApplicationService): Promise<void> {
     if (!this.applicationService.currentKbiModel?.Connections) this.applicationService.currentKbiModel!.Connections = {}
     this.errorMessage = `Select whether ${this.getBuildingName()} connects to other high-rise residential buildings`;
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.KbiConnectionsInProgress;
     
     this.model = applicationService.currentKbiModel!.Connections!.OtherHighRiseBuildingConnections;
     

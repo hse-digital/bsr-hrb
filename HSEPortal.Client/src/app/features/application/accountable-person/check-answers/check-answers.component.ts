@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PaymentDeclarationComponent } from 'src/app/features/application/payment/payment-declaration/payment-declaration.component';
 import { PaymentModule } from 'src/app/features/application/payment/payment.module';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { AccountablePersonModel, ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { AccountabilityArea } from 'src/app/components/pap-accountability/pap-accountability.component';
 import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper';
 import { PageComponent } from 'src/app/helpers/page.component';
@@ -31,7 +31,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.AccountablePersonsInProgress) == BuildingApplicationStatus.AccountablePersonsInProgress;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.AccountablePersonsInProgress) == BuildingApplicationStage.AccountablePersonsInProgress;
   }
 
   override isValid(): boolean {
@@ -100,11 +100,11 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   }
 
   override navigateNext(): Promise<boolean | void> {
-    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.AccountablePersonsComplete;
+    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStage.AccountablePersonsComplete;
     
     this.applicationService.updateApplication();
 
-    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
+    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete) {
       return this.navigationService.navigateRelative(`..`, this.activatedRoute);
     }
 

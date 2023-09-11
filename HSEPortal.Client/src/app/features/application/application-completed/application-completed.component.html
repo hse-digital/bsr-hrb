@@ -11,31 +11,142 @@
         </div>
       </div>
 
-      <h2 class="govuk-heading-m">Application history</h2>
+      <i class="fa fa-spinner fa-spin loading" *ngIf="!shouldRender"></i>
 
-      <table class="govuk-table">
-        <tbody class="govuk-table__body">
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Registration application</a></td>
-            <td class="govuk-table__cell">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
-          </tr>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../kbi/summary']" href="" target="_blank" role="link" tabindex="0">Structure and safety information</a></td>
-            <td class="govuk-table__cell">{{KbiSubmissionDate | date: 'dd MMMM yyyy'}}</td>
-          </tr>
-        </tbody>
-      </table>
+      <ng-container *ngIf="shouldRender">
+        <h2 class="govuk-heading-m">Application history</h2>
 
-      <h2 class="govuk-heading-m">Making changes</h2>
+        <table class="govuk-table">
+          <tbody class="govuk-table__body">
+            <ng-container *ngIf="isViewOne()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
+
+            <ng-container *ngIf="isViewTwo()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
       
-      <govuk-body><a href="https://www.hse.gov.uk/contact/tell-us-about-a-health-and-safety-issue.htm" class="govuk-link" tabindex="0" role="link">Contact us</a> if you need to tell us about changes.</govuk-body>
-      <govuk-body>For registration information, you must tell us about changes within 14 days of becoming aware of them.</govuk-body>
-      <govuk-body>For structure and fire safety information, you must tell us about changes within 28 days of becoming aware of them.</govuk-body>
+            <ng-container *ngIf="isViewThree()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
 
-      <h2 class="govuk-heading-m">What else you can do</h2>
+            <ng-container *ngIf="isViewFour()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
+            </ng-container>
+      
+            <ng-container *ngIf="isViewFive()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
+            </ng-container>
+      
+            <ng-container *ngIf="isViewSix()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
+            </ng-container>
+      
+            <ng-container *ngIf="isViewSeven()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryChangesSubmitted" />    
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
 
-      <govuk-body>You can either <a class="govuk-link" (click)="newApplication()" role="link" tabindex="0" (keyup.enter)="newApplication()">return to another application</a> or <a class="govuk-link" (click)="newApplication()" role="link" tabindex="0" (keyup.enter)="newApplication()">register another building</a>.</govuk-body>
+            <ng-container *ngIf="isViewThirteen()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
+          </tbody>
+        </table>
 
+        <ng-container *ngIf="isViewOne()">
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewTwo()">
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="WithdrawOptionTwo" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewThree()">
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="Remove" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewFour()">
+          <ng-container *ngTemplateOutlet="WhatsNext" />
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewFive()">
+          <ng-container *ngTemplateOutlet="WhatsNext" />
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="WithdrawOptionTwo" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewSix()">
+          <ng-container *ngTemplateOutlet="WhatsNext" />
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="Remove" />
+        </ng-container>
+
+        <ng-container *ngIf="isViewSeven()">
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngTemplateOutlet="Remove" />
+        </ng-container>
+      </ng-container>
     </div>
   </div>
 </div>
+
+<ng-template #ApplicationHistoryChangesSubmitted>
+  <tr class="govuk-table__row">
+    <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Changes submitted</a></td>
+    <td class="govuk-table__cell">[dd/MMMM/yyyy]{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
+  </tr>
+</ng-template>
+
+<ng-template #ApplicationHistoryRegistrationApplication>
+  <tr class="govuk-table__row">
+    <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Registration application</a></td>
+    <td class="govuk-table__cell">{{submittionDate | date: 'dd MMMM yyyy'}}</td>
+  </tr>
+</ng-template>
+
+<ng-template #ApplicationHistoryStructureFireSafetyInformation>
+  <tr class="govuk-table__row">
+    <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../kbi/summary']" href="" target="_blank" role="link" tabindex="0">Structure and fire safety information</a></td>
+    <td class="govuk-table__cell">{{kbiSubmittionDate | date: 'dd MMMM yyyy'}}</td>
+  </tr>
+</ng-template>
+
+<ng-template #MakingChanges>
+  <h2 class="govuk-heading-m">Making changes</h2>
+  <govuk-body>If you need to, you can <a href="" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link" tabindex="0" role="link">tell the Building Safety Regulator about changes to this building</a>.</govuk-body>
+</ng-template>
+
+<ng-template #WhatsNext>
+  <h2 class="govuk-heading-m">What's next</h2>
+  <govuk-body>You must <a href="" [routerLink]="['../kbi']" class="govuk-link" tabindex="0" role="link">give structure and fire safety information</a> by {{isSubmittionBefore3Sep2023() ? '30 september 2023' : get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.</govuk-body>
+</ng-template>
+
+<ng-template #WithdrawOptionOne>
+  <h2 class="govuk-heading-m">Withdraw this application</h2>
+  <govuk-body>If you need to, you can <a class="govuk-link" tabindex="0" role="link">ask to withdraw this application</a>.</govuk-body>
+</ng-template>
+
+<ng-template #WithdrawOptionTwo>
+  <h2 class="govuk-heading-m">Withdraw this application</h2>
+  <govuk-body>We have started looking at your application. You can <a class="govuk-link" tabindex="0" role="link">ask to withdraw this application</a> but you will not get a refund.</govuk-body>
+</ng-template>
+
+<ng-template #Remove>
+  <h2 class="govuk-heading-m">Remove this building from the register</h2>
+  <govuk-body>If it is no longer a residential high-rise building, you can <a class="govuk-link" tabindex="0" role="link">ask to withdraw this application</a>.</govuk-body>
+</ng-template>
+
+<ng-template #WhatElseCanDo>
+  <h2 class="govuk-heading-m">What else you can do</h2>
+  <govuk-body>You can either <a class="govuk-link" (click)="newApplication()" role="link" tabindex="0" (keyup.enter)="newApplication()">return to another application</a> or <a class="govuk-link" (click)="newApplication()" role="link" tabindex="0" (keyup.enter)="newApplication()">register another building</a>.</govuk-body>
+</ng-template>

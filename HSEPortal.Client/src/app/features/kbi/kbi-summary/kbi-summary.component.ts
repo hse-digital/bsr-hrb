@@ -5,7 +5,7 @@ import { NotFoundComponent } from 'src/app/components/not-found/not-found.compon
 import { BroadcastChannelSecondaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { LocalStorage } from 'src/app/helpers/local-storage';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStatus, BuildingRegistrationModel, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, BuildingRegistrationModel, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
@@ -63,10 +63,10 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
   }
 
   private paymentComplete(): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete
   }
 
   private kbiComplete(): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiSubmitComplete) == BuildingApplicationStatus.KbiSubmitComplete
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.KbiSubmitComplete) == BuildingApplicationStage.KbiSubmitComplete
   }
 }
