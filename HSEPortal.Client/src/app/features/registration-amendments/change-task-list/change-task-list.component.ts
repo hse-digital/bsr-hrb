@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, BuildingApplicationStage, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, SectionModel, Status } from 'src/app/services/application.service';
 import { TagDirector } from './TagDirector';
 
 @Component({
@@ -23,6 +23,14 @@ export class ChangeTaskListComponent extends PageComponent<void> {
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
     this.InScopeSections = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    if(!this.applicationService.model.RegistrationAmendmentsModel) {
+      this.applicationService.model.RegistrationAmendmentsModel = {
+        BuildingSummaryStatus: Status.NoChanges,
+        AccountablePersonStatus: Status.NoChanges,
+        ConnectionStatus: Status.NoChanges,
+        SubmitStatus: Status.NoChanges,
+      };
+    }
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {

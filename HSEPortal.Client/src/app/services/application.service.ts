@@ -248,6 +248,7 @@ export class BuildingRegistrationModel {
   DuplicateDetected?: boolean;
   ShareDetailsDeclared?: boolean;
   DuplicateBuildingApplicationIds?: string[];
+  RegistrationAmendmentsModel?: RegistrationAmendmentsModel;
 }
 
 export enum BuildingApplicationStage {
@@ -498,6 +499,35 @@ export class PaymentInvoiceDetails {
   OrderNumberOption?: string;
   OrderNumber?: string;
   Status?: string;
+}
+
+export class RegistrationAmendmentsModel {
+  BuildingSummaryStatus: Status = Status.NoChanges;
+  AccountablePersonStatus: Status = Status.NoChanges;
+  ConnectionStatus: Status = Status.NoChanges;
+  SubmitStatus: Status = Status.NoChanges;
+
+  ChangeUser?: ChangeUser;
+
+}
+
+export class ChangeUser {
+  PrimaryUser?: User;
+  CurrentSecondaryUser?: User;
+  NewSecondaryUser?: User;
+}
+
+export class User {
+  Status: Status = Status.NoChanges;
+  Firstname?: string;
+  Lastname?: string;
+  Email?: string;
+}
+
+export enum Status {
+  NoChanges = 0,
+  ChangesInProgress = 1,
+  ChangesComplete = 2
 }
 
 export enum BuildingApplicationStatuscode
