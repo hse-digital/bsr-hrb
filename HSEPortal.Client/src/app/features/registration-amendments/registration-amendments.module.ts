@@ -9,6 +9,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
 import { UserListComponent } from './user-list/user-list.component';
 import { HseRoute, HseRoutes } from 'src/app/services/hse.route';
 import { ChangeTaskListComponent } from './change-task-list/change-task-list.component';
+import { PrimaryUserDetailsComponent } from './primary-user-details/primary-user-details.component';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ChangeTaskListComponent.route, ChangeTaskListComponent, undefined, ChangeTaskListComponent.title),
@@ -18,7 +19,8 @@ const routes = new HseRoutes([
 @NgModule({
   declarations: [  
     UserListComponent,
-    ChangeTaskListComponent
+    ChangeTaskListComponent,
+    PrimaryUserDetailsComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

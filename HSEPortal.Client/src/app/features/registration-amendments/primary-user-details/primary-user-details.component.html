@@ -1,0 +1,34 @@
+<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link *ngIf="hasErrors" anchorId="input-first-name" message="Enter their first name" />
+        <govuk-error-link *ngIf="hasErrors" anchorId="input-last-name" message="Enter their last name" />
+    </govuk-error-summary>
+
+    <h1 class="govuk-heading-l"></h1>
+
+    <govuk-body></govuk-body>
+
+    <govuk-input id="first-name" label="First name"
+                [(model)]="model" #field [govukRequired]="field"
+                [errorText]="getErrorDescription(false, '')"
+                class="govuk-!-margin-bottom-5"
+                (onKeyupEnter)="saveAndContinue()" />
+
+    <govuk-input id="last-name" label="Last name"
+                [(model)]="model" #field2 [govukRequired]="field2"
+                [errorText]="getErrorDescription(false, '')"
+                (onKeyupEnter)="saveAndContinue()" />
+
+    <govuk-input id="first-name" label="First name"
+                [(model)]="model" #field [govukRequired]="field"
+                [errorText]="getErrorDescription(false, '')"
+                class="govuk-!-margin-bottom-5"
+                (onKeyupEnter)="saveAndContinue()" />
+
+    <govuk-input id="last-name" label="Last name"
+                [(model)]="model" #field2 [govukRequired]="field2"
+                [errorText]="getErrorDescription(false, '')"
+                (onKeyupEnter)="saveAndContinue()" />
+
+</govuk-formpage>
