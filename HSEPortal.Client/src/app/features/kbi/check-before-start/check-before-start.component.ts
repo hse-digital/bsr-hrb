@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { KbiFireModule } from "../1-fire/kbi.fire.module";
 import { EvacuationStrategyComponent } from "../1-fire/evacuation-strategy/evacuation-strategy.component";
@@ -18,16 +18,16 @@ export class CheckBeforeStartComponent implements CanActivate, OnInit {
 
   async ngOnInit() {
     this.applicationService.initKbi();
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiCheckBeforeInProgress;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.KbiCheckBeforeInProgress;
     await this.applicationService.updateApplication();
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed' || (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete;
+    return this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed' || (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete;
   }
 
   async continue() {
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiCheckBeforeComplete;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.KbiCheckBeforeComplete;
     await this.applicationService.updateApplication();
 
     let section = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope)[0];

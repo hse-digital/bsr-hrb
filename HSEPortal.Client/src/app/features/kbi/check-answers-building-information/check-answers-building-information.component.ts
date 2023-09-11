@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/helpers/base.component';
 import { IHasNextPage } from 'src/app/helpers/has-next-page.interface';
-import { ApplicationService, BuildingApplicationStatus, KbiSectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, KbiSectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { TitleService } from 'src/app/services/title.service';
 import { KbiCheckAnswersModule } from './kbi.check-answers-building-information.module';
@@ -46,9 +46,9 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   override async onSave(): Promise<void> {
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationInProgress;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.KbiStructureInformationInProgress;
     if (this.applicationService._currentKbiSectionIndex == (this.applicationService.model.Kbi?.KbiSections.length! - 1)) {
-      this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiStructureInformationComplete;
+      this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.KbiStructureInformationComplete;
     }
 
     await this.kbiService.syncBuilding(this.applicationService.currentKbiSection!);

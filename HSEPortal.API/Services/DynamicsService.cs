@@ -72,6 +72,15 @@ public class DynamicsService
         return response.value.FirstOrDefault();
     }
 
+    
+    public async Task<DynamicsBuildingApplicationStatuscodeModel> GetBuildingApplicationStatuscodeBy(string applicationId)
+    {
+        var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplicationStatuscodeModel>>("bsr_buildingapplications",
+            new[] { ("$filter", $"bsr_applicationid eq '{applicationId}'"), ("$select", "statuscode") });
+
+        return response.value.FirstOrDefault();
+    }
+
     public async Task UpdateBuildingApplication(DynamicsBuildingApplication dynamicsBuildingApplication, DynamicsBuildingApplication buildingApplication)
     {
         await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", buildingApplication);
@@ -850,7 +859,7 @@ public class DynamicsService
         return await dynamicsApi.Get<DynamicsResponse<IndependentSection>>("bsr_blocks", new (string, string)[]{
             ("$select", "bsr_name,bsr_blockid,bsr_sectionheightinmetres,bsr_nooffloorsabovegroundlevel,bsr_numberofresidentialunits,bsr_postcode,bsr_addressline1,bsr_addressline2,bsr_city"),
             ("$filter", $"bsr_postcode eq '{postcode}'"),
-            ("$expand", $"bsr_BuildingId($select=bsr_name),bsr_BuildingApplicationID($select=bsr_paptype;$expand=bsr_papid_account($select=name,address1_line1,address1_postalcode,address1_city,address1_line2))")
+            ("$expand", $"bsr_BuildingId($select=bsr_name),bsr_BuildingApplicationID($select=bsr_paptype,bsr_applicationstage;$filter=bsr_applicationstage eq 760810003;$expand=bsr_papid_account($select=name,address1_line1,address1_postalcode,address1_city,address1_line2))")
         });
     }
 
@@ -944,6 +953,12 @@ public class DynamicsService
     {
         var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
         return buildingApplication.bsr_submittedon;
+    }
+
+    public async Task<string> GetKbiSubmissionDate(string applicationNumber)
+    {
+        var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
+        return buildingApplication.bsr_Building.bsr_kbicompletiondate;
     }
 
     public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)

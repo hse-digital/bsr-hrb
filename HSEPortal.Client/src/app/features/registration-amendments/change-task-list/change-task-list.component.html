@@ -1,0 +1,84 @@
+<div class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+  
+        <h1 class="govuk-heading-xl">Tell the Building Safety Regulator about changes to {{applicationService.model.BuildingName}}</h1>
+
+        <ol class="app-task-list">
+          <li>
+            <h2 class="app-task-list__section">
+              <span class="app-task-list__section-number">1.</span>
+              Registration information
+            </h2>
+            <ul class="app-task-list__items">
+              <li class="app-task-list__item firstItem">
+                <span class="app-task-list__task-name">
+                    <span task *ngIf="true">Building summary</span>
+                    <a task *ngIf="false" class="govuk-link" (keyup.enter)="navigateToSections()" (click)="navigateToSections()" tabindex="0" role="link">Building summary</a>
+                </span>
+                <govuk-tag tag class="govuk-tag--grey">{{getTagFor(taskListSteps.BuildingSummary)}}</govuk-tag>
+              </li>
+              <li class="app-task-list__item">
+                <span class="app-task-list__task-name">
+                  <span task *ngIf="true">Accountable persons</span>
+                  <a task *ngIf="false" class="govuk-link" (keyup.enter)="navigateToPap()" (click)="navigateToPap()" role="link" tabindex="0">Accountable persons</a>
+                </span>
+                <govuk-tag tag class="govuk-tag--grey">{{getTagFor(taskListSteps.AccountablePerson)}}</govuk-tag>
+              </li>
+            </ul>
+          </li>
+          <li *ngIf="isKbiSubmitted()">
+            <h2 class="app-task-list__section">
+              <span class="app-task-list__section-number">2.</span>
+              Structure and fire safety information
+            </h2>
+            <ul class="app-task-list__items">
+              <li class="app-task-list__item firstItem" *ngFor="let section of InScopeSections; let i = index">
+                <span class="app-task-list__task-name">
+                    {{section.Name ?? applicationService.model.BuildingName}} information
+                </span>
+                <govuk-tag tag class="govuk-tag--grey">{{getTagFor(taskListSteps.Kbi, i)}}</govuk-tag>
+              </li>
+              <li class="app-task-list__item firstItem">
+                <span class="app-task-list__task-name">
+                    Connections
+                </span>
+                <govuk-tag tag class="govuk-tag--grey">{{getTagFor(taskListSteps.Connections)}}</govuk-tag>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <h2 class="app-task-list__section">
+              <span class="app-task-list__section-number">{{isKbiSubmitted() ? "3" : "2"}}.</span>
+              Who can tell us about changes
+            </h2>
+            <ul class="app-task-list__items">
+              <li class="app-task-list__item firstItem">
+                <span class="app-task-list__task-name">
+                    <a class="govuk-link" tabindex="0" role="link" [routerLink]="['../user-list']">Manage who can access this application</a>
+                </span>    
+                <govuk-tag tag class="govuk-tag--grey">{{getTagFor(taskListSteps.Changes)}}</govuk-tag>            
+              </li>
+            </ul>
+          </li>
+
+          <li>
+            <h2 class="app-task-list__section">
+              <span class="app-task-list__section-number">{{isKbiSubmitted() ? "4" : "3"}}.</span>
+              Submit
+            </h2>
+            <ul class="app-task-list__items">
+              <li class="app-task-list__item firstItem">
+                <span class="app-task-list__task-name">
+                    <a class="govuk-link" tabindex="0" role="link">Submit changes</a>
+                </span>    
+                <govuk-tag tag class="govuk-tag--grey">{{getTagFor(taskListSteps.Submit)}}</govuk-tag>                
+              </li>
+            </ul>
+          </li>
+          
+        </ol>
+  
+      </div>
+    </div>
+  </div>

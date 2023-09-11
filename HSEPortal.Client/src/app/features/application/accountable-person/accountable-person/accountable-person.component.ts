@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { AccountablePersonModel, ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { AccountablePersonModel, ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { PrincipleAccountableSelection } from '../principal/principal.component';
 import { OrganisationTypeComponent } from '../organisation/organisation-type/organisation-type.component';
 import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
@@ -23,7 +23,7 @@ export class AccountablePersonComponent extends PageComponent<string> {
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
     this.previousAnswer = this.applicationService.model.PrincipalAccountableType;
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.AccountablePersonsInProgress;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.AccountablePersonsInProgress;
     
     this.model = applicationService.model.PrincipalAccountableType;
 
@@ -33,7 +33,7 @@ export class AccountablePersonComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingComplete) == BuildingApplicationStatus.BlocksInBuildingComplete;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.BlocksInBuildingComplete) == BuildingApplicationStage.BlocksInBuildingComplete;
   }
 
   override isValid(): boolean {
@@ -62,7 +62,7 @@ export class AccountablePersonComponent extends PageComponent<string> {
 
       this.applicationService.model.AccountablePersons[0] = replaceAp;
       this.applicationService._currentAccountablePersonIndex = 0;
-      this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStatus.AccountablePersonsComplete;
+      this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStage.AccountablePersonsComplete;
     } else if (!this.previousAnswer) {
       await this.applicationService.startAccountablePersonEdit();
     }

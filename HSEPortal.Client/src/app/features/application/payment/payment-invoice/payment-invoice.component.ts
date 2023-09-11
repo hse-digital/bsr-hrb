@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { EmailValidator } from 'src/app/helpers/validators/email-validator';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStatus, PaymentInvoiceDetails } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, PaymentInvoiceDetails } from 'src/app/services/application.service';
 import { PaymentService } from 'src/app/services/payment.service';
 import { PaymentOrderNumberDetailsComponent } from '../payment-order-number-details/payment-order-number-details.component';
 import { PaymentInvoiceConfirmationComponent } from '../payment-invoice-confirmation/payment-invoice-confirmation.component';
@@ -22,7 +22,7 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.model.ApplicationStatus = applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentInProgress;
+    this.applicationService.model.ApplicationStatus = applicationService.model.ApplicationStatus | BuildingApplicationStage.PaymentInProgress;
     this.model = applicationService.model.PaymentInvoiceDetails ?? new PaymentInvoiceDetails();
     this.applicationCost = await applicationService.getApplicationCost();
 
@@ -45,7 +45,7 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
   }
 
   override canAccess(applicationService: ApplicationService, __: ActivatedRouteSnapshot): boolean {
-    return (applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentInProgress) == BuildingApplicationStatus.PaymentInProgress &&
+    return (applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentInProgress) == BuildingApplicationStage.PaymentInProgress &&
       applicationService.model.PaymentType == 'invoice';
   }
 

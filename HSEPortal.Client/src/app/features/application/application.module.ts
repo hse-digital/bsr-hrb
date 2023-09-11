@@ -5,7 +5,6 @@ import { RouterModule } from "@angular/router";
 import { HseAngularModule } from "hse-angular";
 import { ComponentsModule } from "src/app/components/components.module";
 import { SummaryPageComponent } from "src/app/features/application/summary-page/summary-page.component";
-import { ApplicationService } from "src/app/services/application.service";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { PipesModule } from "src/app/pipes/pipes.module";
 import { AccountablePersonModule } from "./accountable-person/accountable-person.module";
@@ -23,6 +22,7 @@ import { BuildingSummaryNavigation } from "src/app/features/application/building
 import { AccountablePersonNavigation } from "src/app/features/application/accountable-person/accountable-person.navigation";
 import { KbiModule } from "../kbi/kbi.module";
 import { KbiNavigation } from "src/app/features/kbi/kbi.navigation.ts.service";
+import { RegistrationAmendmentsModule } from "../registration-amendments/registration-amendments.module";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent, ApplicationTaskListComponent.title),
@@ -33,6 +33,7 @@ const routes = new HseRoutes([
   HseRoute.forLoadChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
   HseRoute.forLoadChildren(PaymentModule.baseRoute, () => import('./payment/payment.module').then(m => m.PaymentModule)),
   HseRoute.forLoadChildren(KbiModule.baseRoute, () => import('../kbi/kbi.module').then(m => m.KbiModule)),
+  HseRoute.forLoadChildren(RegistrationAmendmentsModule.baseRoute, () => import('../registration-amendments/registration-amendments.module').then(m => m.RegistrationAmendmentsModule)),
   HseRoute.protected(ApplicationCompletedComponent.route, ApplicationCompletedComponent, ApplicationCompletedComponent.title),
 ]);
 
