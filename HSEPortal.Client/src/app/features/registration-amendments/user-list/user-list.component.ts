@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStage, Status, User } from 'src/app/services/application.service';
+import { SelectPrimaryUserComponent } from '../select-primary-user/select-primary-user.component';
 
 @Component({
   selector: 'hse-user-list',
@@ -17,8 +18,8 @@ export class UserListComponent  extends PageComponent<string> {
   currentSecondaryUser?: User;
   newSecondaryUser?: User;
 
-  constructor() {
-    super();
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
@@ -53,7 +54,7 @@ export class UserListComponent  extends PageComponent<string> {
   }
 
   changePrimaryUser() {
-    
+    this.navigationService.navigateRelative(SelectPrimaryUserComponent.route, this.activatedRoute);
   }
 
   changeSecondaryUser() {
