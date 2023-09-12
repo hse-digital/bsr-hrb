@@ -26,15 +26,23 @@ export class UserListComponent  extends PageComponent<string> {
     if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser = {
         PrimaryUser: {
-          Status: Status.NoChanges,
-          Firstname: this.applicationService.model.ContactFirstName,
-          Lastname: this.applicationService.model.ContactLastName,
-          Email: this.applicationService.model.ContactEmailAddress
+          Status: Status.NoChanges
         }
       };
     }
+
+    if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Email) 
+      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Firstname)) {
+      this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser.PrimaryUser;
+    } else {
+      this.primaryUser = {
+        Status: Status.NoChanges,
+        Firstname: this.applicationService.model.ContactFirstName,
+        Lastname: this.applicationService.model.ContactLastName,
+        Email: this.applicationService.model.ContactEmailAddress
+      }
+    }
     
-    this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser.PrimaryUser;
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {

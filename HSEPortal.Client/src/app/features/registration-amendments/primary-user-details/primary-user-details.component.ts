@@ -32,7 +32,7 @@ export class PrimaryUserDetailsComponent  extends PageComponent<User> {
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser = {
-      Status: this.model?.Status ?? Status.ChangesInProgress,
+      Status: Status.ChangesInProgress,
       Email: this.model?.Email,
       Firstname: this.model?.Firstname,
       Lastname: this.model?.Lastname,
