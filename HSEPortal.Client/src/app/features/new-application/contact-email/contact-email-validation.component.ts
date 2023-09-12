@@ -55,6 +55,7 @@ export class ContactEmailValidationComponent extends PageComponent<string> {
   }
   
   override isValid(): boolean {
+    this.otpToken = this.otpToken.trim();
     return this.otpToken !== undefined && this.otpToken.length == 6;
   }
   
