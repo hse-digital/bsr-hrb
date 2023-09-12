@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { Status } from 'src/app/services/application.service';
+import { PrimaryUserDetailsComponent } from '../primary-user-details/primary-user-details.component';
 
 @Component({
   selector: 'hse-select-primary-user',
@@ -13,8 +14,8 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   static route: string = 'select-primary-user';
   static title: string = "Select the new primary user - Register a high-rise building - GOV.UK";
 
-  constructor() {
-    super();
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
@@ -34,6 +35,9 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
+    if(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "new-user") {
+      return this.navigationService.navigateRelative(PrimaryUserDetailsComponent.route, this.activatedRoute);
+    }
     return true;
   }
 

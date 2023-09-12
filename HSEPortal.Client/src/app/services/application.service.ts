@@ -533,6 +533,7 @@ export class User {
   Firstname?: string;
   Lastname?: string;
   Email?: string;
+  PhoneNumber?: string;
 }
 
 export enum Status {
