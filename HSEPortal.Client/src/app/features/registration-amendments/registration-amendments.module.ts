@@ -10,6 +10,7 @@ import { UserListComponent } from './user-list/user-list.component';
 import { HseRoute, HseRoutes } from 'src/app/services/hse.route';
 import { ChangeTaskListComponent } from './change-task-list/change-task-list.component';
 import { SelectPrimaryUserComponent } from './select-primary-user/select-primary-user.component';
+import { SelectSecondaryUserComponent } from './select-secondary-user/select-secondary-user.component';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ChangeTaskListComponent.route, ChangeTaskListComponent, undefined, ChangeTaskListComponent.title),
@@ -21,7 +22,8 @@ const routes = new HseRoutes([
   declarations: [  
     UserListComponent,
     ChangeTaskListComponent,
-    SelectPrimaryUserComponent
+    SelectPrimaryUserComponent,
+    SelectSecondaryUserComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

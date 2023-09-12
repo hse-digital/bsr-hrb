@@ -1,0 +1,18 @@
+
+<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+   
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="no-secondary-user-input" message="Select who will become the secondary user" />
+      </govuk-error-summary>
+    
+    <govuk-radio-group title="Who will become the secondary user" [isPageHeading]=true [errorText]="getErrorDescription(hasErrors, 'Select who will become the secondary user')" 
+        [(model)]="model" #field [govukRequired]="field">
+
+        <govuk-radio *ngIf="!isNamedContactAnExistingUser()" (onKeyupEnter)="saveAndContinue()" [model]="model" name="primary-user-group" 
+            id="named-contact" value="named-contact" label="{{NamedContact}}" hint="{{NamedContactEmail}}" />
+
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="primary-user-group" id="new-user" value="new-user" label="A new user" />
+        <div class="govuk-radios__divider">or</div>
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="primary-user-group" id="no-secondary-user" value="no-secondary-user" label="No secondary user" />
+    </govuk-radio-group>
+</govuk-formpage>
