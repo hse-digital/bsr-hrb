@@ -19,11 +19,20 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
-    this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser;
+    this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesComplete;
+    let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
+    
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser = {
+      Status: Status.ChangesComplete,
+      Email: newPrimaryUser?.Email,
+      Firstname: newPrimaryUser?.Firstname,
+      Lastname: newPrimaryUser?.Lastname,
+      PhoneNumber: newPrimaryUser?.PhoneNumber
+    }
+    
     if(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "secondary-user") {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser = {
         Status: Status.NoChanges
@@ -32,7 +41,7 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    let primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser;
+    let primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
     let canAccess = FieldValidations.IsNotNullOrWhitespace(primaryUser?.Firstname) 
       && FieldValidations.IsNotNullOrWhitespace(primaryUser?.Lastname) 
       && FieldValidations.IsNotNullOrWhitespace(primaryUser?.Email) 

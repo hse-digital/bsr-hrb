@@ -5,6 +5,7 @@ import { EmailValidator } from 'src/app/helpers/validators/email-validator';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { PhoneNumberValidator } from 'src/app/helpers/validators/phone-number-validator';
 import { ApplicationService, Status, User } from 'src/app/services/application.service';
+import { ConfirmPrimaryUserComponent } from '../confirm-primary-user/confirm-primary-user.component';
 
 @Component({
   selector: 'hse-primary-user-details',
@@ -20,7 +21,7 @@ export class PrimaryUserDetailsComponent  extends PageComponent<User> {
   phoneNumberHasErrors: boolean = false;
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
-    let primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser;
+    let primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
     this.model = {
       Status: primaryUser?.Status ?? Status.NoChanges,
       Email: primaryUser?.Email,
@@ -31,7 +32,7 @@ export class PrimaryUserDetailsComponent  extends PageComponent<User> {
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser = {
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
       Status: Status.ChangesInProgress,
       Email: this.model?.Email,
       Firstname: this.model?.Firstname,
@@ -53,6 +54,6 @@ export class PrimaryUserDetailsComponent  extends PageComponent<User> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return true;
+    return this.navigationService.navigateRelative(ConfirmPrimaryUserComponent.route, this.activatedRoute);
   }
 }

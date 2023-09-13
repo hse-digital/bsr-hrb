@@ -5,6 +5,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { Status } from 'src/app/services/application.service';
 import { PrimaryUserDetailsComponent } from '../primary-user-details/primary-user-details.component';
+import { ConfirmPrimaryUserComponent } from '../confirm-primary-user/confirm-primary-user.component';
 
 @Component({
   selector: 'hse-select-primary-user',
@@ -24,6 +25,16 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary = this.model;
+    
+    switch(this.model) {
+      case "named-contact": 
+        this.setNamedContactAsPrimary(); break;
+      case "secondary-user":
+        this.setSecondaryUserAsPrimary(); break;
+      case "new-named-contact":
+        this.setNewNamedContactAsPrimary(); break;
+    }
+
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -38,7 +49,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
     if(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "new-user") {
       return this.navigationService.navigateRelative(PrimaryUserDetailsComponent.route, this.activatedRoute);
     }
-    return true;
+    return this.navigationService.navigateRelative(ConfirmPrimaryUserComponent.route, this.activatedRoute);
   }
 
   isNamedContactAnExistingUser() {
@@ -91,6 +102,39 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
 
   get SecondaryUserEmail() {
     return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser?.Email;
+  }
+
+  setNamedContactAsPrimary() {
+    let pap = this.applicationService.model.AccountablePersons[0];
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
+      Status: Status.ChangesInProgress,
+      Email: pap.LeadEmail,
+      Firstname: pap.LeadFirstName,
+      Lastname: pap.LeadLastName,
+      PhoneNumber: pap.LeadPhoneNumber
+    }
+  }
+
+  setNewNamedContactAsPrimary() {
+    let apChanges = this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus;
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
+      Status: Status.ChangesInProgress,
+      Email: apChanges?.NewNamedContactEmail,
+      Firstname: apChanges?.NewNamedContactFirstName,
+      Lastname: apChanges?.NewNamedContactLastName,
+      PhoneNumber: apChanges?.NewNamedContactPhonenumber
+    }
+  }
+
+  setSecondaryUserAsPrimary() {
+    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
+      Status: Status.ChangesInProgress,
+      Email: secondaryUser?.Email,
+      Firstname: secondaryUser?.Firstname,
+      Lastname: secondaryUser?.Lastname,
+      PhoneNumber: secondaryUser?.PhoneNumber
+    }
   }
 
 }
