@@ -31,6 +31,9 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
       case "new-user":
         if(previousSelectionIsNotNewUser) { this.clearNewSecondaryUser(); }
         break;
+      case "no-secondary-user":
+        this.removeNewSecondaryUser();
+        
     }
   }
 
@@ -58,14 +61,22 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
 
   areNamedContactAndPrimaryUserTheSame() {
     let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
-    let primaryUserEmail = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Email;
-    return namedContactEmail == primaryUserEmail;
+    let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
+
+    let primaryUserEmail = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Email?.trim().toLowerCase();
+    let primaryUserFirstName = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Firstname;
+
+    return namedContactEmail == primaryUserEmail && namedContactFirstName == primaryUserFirstName;
   }
 
   areNamedContactAndSecondaryUserTheSame() {
     let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
-    let currentSecondaryUserEmail = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser?.Email;
-    return namedContactEmail == currentSecondaryUserEmail;
+    let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
+
+    let currentSecondaryUserEmail = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser?.Email?.trim().toLowerCase();
+    let currentSecondaryUserFirstName = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser?.Firstname;
+    
+    return namedContactEmail == currentSecondaryUserEmail && namedContactFirstName == currentSecondaryUserFirstName;
   }
 
   get NamedContact() {
@@ -91,5 +102,9 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = {
       Status: Status.ChangesInProgress,
     }
+  }
+
+  removeNewSecondaryUser() {
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = undefined;
   }
 }

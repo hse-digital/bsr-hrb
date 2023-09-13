@@ -32,6 +32,7 @@ export class UserListComponent  extends PageComponent<string> {
     this.initPrimaryUser();
     
     this.newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+    this.newSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
 
     this.primaryUserDetails = FieldValidations.IsNotNullOrWhitespace(this.newPrimaryUser?.Email) && FieldValidations.IsNotNullOrWhitespace(this.newPrimaryUser?.Firstname)
       ? this.newPrimaryUser 
