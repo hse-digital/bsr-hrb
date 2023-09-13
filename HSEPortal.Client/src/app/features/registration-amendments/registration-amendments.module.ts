@@ -13,6 +13,7 @@ import { PrimaryUserDetailsComponent } from './primary-user-details/primary-user
 import { SelectPrimaryUserComponent } from './select-primary-user/select-primary-user.component';
 import { SelectSecondaryUserComponent } from './select-secondary-user/select-secondary-user.component';
 import { ConfirmPrimaryUserComponent } from './confirm-primary-user/confirm-primary-user.component';
+import { RemoveSecondaryUserComponent } from './remove-secondary-user/remove-secondary-user.component';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ChangeTaskListComponent.route, ChangeTaskListComponent, undefined, ChangeTaskListComponent.title),
@@ -21,6 +22,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(PrimaryUserDetailsComponent.route, PrimaryUserDetailsComponent, undefined, PrimaryUserDetailsComponent.title),
   HseRoute.unsafe(ConfirmPrimaryUserComponent.route, ConfirmPrimaryUserComponent, undefined, ConfirmPrimaryUserComponent.title),
   HseRoute.unsafe(SelectSecondaryUserComponent.route, SelectSecondaryUserComponent, undefined, SelectSecondaryUserComponent.title),
+  HseRoute.unsafe(RemoveSecondaryUserComponent.route, RemoveSecondaryUserComponent, undefined, RemoveSecondaryUserComponent.title),
 ]);
 
 @NgModule({
@@ -31,6 +33,7 @@ const routes = new HseRoutes([
     PrimaryUserDetailsComponent,
     ConfirmPrimaryUserComponent,
     SelectSecondaryUserComponent,
+    RemoveSecondaryUserComponent,
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
