@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, Status } from 'src/app/services/application.service';
+import { UserListComponent } from '../user-list/user-list.component';
 
 @Component({
   selector: 'hse-select-secondary-user',
@@ -21,7 +22,16 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
+    let previousSelectionIsNotNewUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary != "new-user";
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary = this.model;
+        
+    switch(this.model) {
+      case "named-contact": 
+        this.setNamedContactAsPrimary(); break;
+      case "new-user":
+        if(previousSelectionIsNotNewUser) { this.clearNewSecondaryUser(); }
+        break;
+    }
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -33,7 +43,13 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return true;
+    if(this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary == "no-secondary-user") {
+      return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
+    } else if (this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary == "new-user") {
+      return true; // navigate to details screen
+    } else {
+      return true; // navigate to confirm screen
+    }
   }
 
   isNamedContactAnExistingUser() {
@@ -59,5 +75,21 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
   get NamedContactEmail() {
     return this.applicationService.model.AccountablePersons[0].LeadEmail;
   }
+  
+  setNamedContactAsPrimary() {
+    let pap = this.applicationService.model.AccountablePersons[0];
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = {
+      Status: Status.ChangesInProgress,
+      Email: pap.LeadEmail,
+      Firstname: pap.LeadFirstName,
+      Lastname: pap.LeadLastName,
+      PhoneNumber: pap.LeadPhoneNumber
+    }
+  }
 
+  clearNewSecondaryUser() {
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = {
+      Status: Status.ChangesInProgress,
+    }
+  }
 }
