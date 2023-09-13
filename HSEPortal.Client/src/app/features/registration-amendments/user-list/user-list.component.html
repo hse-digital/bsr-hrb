@@ -3,10 +3,10 @@
     <h1 class="govuk-heading-l">Manage who can tell us about {{applicationService.model.BuildingName}}</h1>
     <h1 class="govuk-heading-m">Primary user</h1>
     
-    <user-details [user]="primaryUser" [showRemoveAction]="false" (changeClicked)="changePrimaryUser()" />
+    <user-details [user]="primaryUserDetails" [showRemoveAction]="false" (changeClicked)="changePrimaryUser()" />
 
-    <govuk-body *ngIf="isPrimary(ChangeUserStatuses.ChangesInProgress)">
-        Once you submit your changes, we'll invite {{ primaryUser!.Firstname }} {{ primaryUser!.Lastname }} to become the primary user. You'll still be the primary user until they accept that invitation
+    <govuk-body *ngIf="isNewPrimary(ChangeUserStatuses.ChangesInProgress)">
+        Once you submit your changes, we'll invite {{ newPrimaryUser!.Firstname }} {{ newPrimaryUser!.Lastname }} to become the primary user. You'll still be the primary user until they accept that invitation.
     </govuk-body>
 
     <h1 class="govuk-heading-m">Secondary user</h1>

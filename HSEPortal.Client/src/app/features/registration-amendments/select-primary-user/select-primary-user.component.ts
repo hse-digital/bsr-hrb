@@ -24,6 +24,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
+    let previousSelectionIsNotNewUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary != "new-user";
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary = this.model;
     
     switch(this.model) {
@@ -34,9 +35,10 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
       case "new-named-contact":
         this.setNewNamedContactAsPrimary(); break;
       case "keep-me":
-        this.setApplicationAsPrimary(); break;
+        this.setApplicantAsPrimary(); break;
       case "new-user":
-        this.clearNewPrimaryUser(); break;
+        if(previousSelectionIsNotNewUser) { this.clearNewPrimaryUser(); }
+        break;
     }
 
   }
@@ -62,14 +64,30 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
 
   areNamedContactAndPrimaryUserTheSame() {
     let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
-    let primaryUserEmail = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Email;
-    return namedContactEmail == primaryUserEmail;
+    let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
+
+    let primaryUser = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser?.Email)
+      ? this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser
+      : this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser;
+
+    let primaryUserEmail = primaryUser?.Email?.trim().toLowerCase();
+    let primaryUserFirstName = primaryUser?.Firstname;
+
+    return namedContactEmail == primaryUserEmail && namedContactFirstName == primaryUserFirstName;
   }
 
   areNamedContactAndSecondaryUserTheSame() {
     let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
-    let currentSecondaryUserEmail = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser?.Email;
-    return namedContactEmail == currentSecondaryUserEmail;
+    let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
+
+    let secondaryUser = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Email)
+      ? this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser
+      : this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
+
+    let currentSecondaryUserEmail = secondaryUser?.Email?.trim().toLowerCase();
+    let currentSecondaryUserFirstName = secondaryUser?.Firstname;
+    
+    return namedContactEmail == currentSecondaryUserEmail && namedContactFirstName == currentSecondaryUserFirstName;
   }
 
   secondaryUserExist() {
@@ -141,7 +159,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
     }
   }
 
-  setApplicationAsPrimary() {
+  setApplicantAsPrimary() {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
       Status: Status.ChangesInProgress,
       Firstname: this.applicationService.model.ContactFirstName,

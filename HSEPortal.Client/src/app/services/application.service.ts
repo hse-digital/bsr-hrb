@@ -527,6 +527,7 @@ export class ChangeUser {
   CurrentSecondaryUser?: User;
   NewSecondaryUser?: User;
   WhoBecomePrimary?: string;
+  WhoBecomeSecondary?: string;
 }
 
 export class User {
