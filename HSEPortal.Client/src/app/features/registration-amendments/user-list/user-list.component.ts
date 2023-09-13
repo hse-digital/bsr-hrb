@@ -75,7 +75,7 @@ export class UserListComponent  extends PageComponent<string> {
 
   isPrimary(flag: Status) {
     if (!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.NoChanges;
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser = { Status: Status.NoChanges }
     }
     return (this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status & flag) == flag;
   }
