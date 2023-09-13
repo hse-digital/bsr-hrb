@@ -4,6 +4,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, Status } from 'src/app/services/application.service';
 import { UserListComponent } from '../user-list/user-list.component';
+import { SecondaryUserDetailsComponent } from '../secondary-user-details/secondary-user-details.component';
 
 @Component({
   selector: 'hse-select-secondary-user',
@@ -27,7 +28,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
         
     switch(this.model) {
       case "named-contact": 
-        this.setNamedContactAsPrimary(); break;
+        this.setNamedContactAsSecondary(); break;
       case "new-user":
         if(previousSelectionIsNotNewUser) { this.clearNewSecondaryUser(); }
         break;
@@ -49,7 +50,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     if(this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary == "no-secondary-user") {
       return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
     } else if (this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary == "new-user") {
-      return true; // navigate to details screen
+      return this.navigationService.navigateRelative(SecondaryUserDetailsComponent.route, this.activatedRoute);
     } else {
       return true; // navigate to confirm screen
     }
@@ -77,9 +78,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
     let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
 
-    let secondaryUser = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Email)
-      ? this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser
-      : this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
+    let secondaryUser =this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
 
     let currentSecondaryUserEmail = secondaryUser?.Email?.trim().toLowerCase();
     let currentSecondaryUserFirstName = secondaryUser?.Firstname;
@@ -94,7 +93,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     return this.applicationService.model.AccountablePersons[0].LeadEmail;
   }
   
-  setNamedContactAsPrimary() {
+  setNamedContactAsSecondary() {
     let pap = this.applicationService.model.AccountablePersons[0];
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = {
       Status: Status.ChangesInProgress,
