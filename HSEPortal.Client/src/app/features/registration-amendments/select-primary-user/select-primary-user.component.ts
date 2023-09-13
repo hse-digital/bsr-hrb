@@ -24,6 +24,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
+    let previousSelectionIsNotNewUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary != "new-user";
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary = this.model;
     
     switch(this.model) {
@@ -34,9 +35,10 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
       case "new-named-contact":
         this.setNewNamedContactAsPrimary(); break;
       case "keep-me":
-        this.setApplicationAsPrimary(); break;
+        this.setApplicantAsPrimary(); break;
       case "new-user":
-        this.clearNewPrimaryUser(); break;
+        if(previousSelectionIsNotNewUser) { this.clearNewPrimaryUser(); }
+        break;
     }
 
   }
@@ -141,7 +143,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
     }
   }
 
-  setApplicationAsPrimary() {
+  setApplicantAsPrimary() {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
       Status: Status.ChangesInProgress,
       Firstname: this.applicationService.model.ContactFirstName,
