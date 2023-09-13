@@ -523,6 +523,7 @@ export class ChangeAccountablePerson {
 
 export class ChangeUser {
   PrimaryUser?: User;
+  NewPrimaryUser?: User;
   CurrentSecondaryUser?: User;
   NewSecondaryUser?: User;
   WhoBecomePrimary?: string;
