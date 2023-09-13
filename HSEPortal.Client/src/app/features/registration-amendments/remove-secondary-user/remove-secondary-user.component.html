@@ -1,0 +1,7 @@
+<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+
+    <h1 class="govuk-heading-l">Remove {{secondaryUser?.Firstname}} {{secondaryUser?.Lastname}} as a secondary user</h1>
+
+    <govuk-body>Confirm that you would like to stop {{secondaryUser?.Email}} from accessing this application for {{applicationService.model.BuildingName}}.</govuk-body>
+    
+</govuk-formpage>
