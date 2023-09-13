@@ -4,6 +4,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, Status } from 'src/app/services/application.service';
 import { UserListComponent } from '../user-list/user-list.component';
+import { ConfirmSecondaryUserComponent } from '../confirm-secondary-user/confirm-secondary-user.component';
 
 @Component({
   selector: 'hse-select-secondary-user',
@@ -51,7 +52,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     } else if (this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary == "new-user") {
       return true; // navigate to details screen
     } else {
-      return true; // navigate to confirm screen
+      return this.navigationService.navigateRelative(ConfirmSecondaryUserComponent.route, this.activatedRoute);
     }
   }
 

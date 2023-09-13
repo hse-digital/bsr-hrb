@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { User, ApplicationService, Status } from 'src/app/services/application.service';
+import { UserListComponent } from '../user-list/user-list.component';
 
 @Component({
   selector: 'hse-confirm-secondary-user',
@@ -33,10 +34,6 @@ export class ConfirmSecondaryUserComponent extends PageComponent<void> {
       PhoneNumber: newsecondaryUser?.PhoneNumber
     }
 
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = {
-      Status: Status.NoChanges
-    }
-
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -54,7 +51,7 @@ export class ConfirmSecondaryUserComponent extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return true;
+    return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
   }
 
   hasSecondaryUserChanged() {
