@@ -32,6 +32,10 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
       Lastname: newPrimaryUser?.Lastname,
       PhoneNumber: newPrimaryUser?.PhoneNumber
     }
+
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
+      Status: Status.NoChanges
+    }
     
     if(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "secondary-user") {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser = {

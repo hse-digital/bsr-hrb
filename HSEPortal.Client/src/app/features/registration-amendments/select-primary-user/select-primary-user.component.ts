@@ -33,6 +33,10 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
         this.setSecondaryUserAsPrimary(); break;
       case "new-named-contact":
         this.setNewNamedContactAsPrimary(); break;
+      case "keep-me":
+        this.setApplicationAsPrimary(); break;
+      case "new-user":
+        this.clearNewPrimaryUser(); break;
     }
 
   }
@@ -134,6 +138,22 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
       Firstname: secondaryUser?.Firstname,
       Lastname: secondaryUser?.Lastname,
       PhoneNumber: secondaryUser?.PhoneNumber
+    }
+  }
+
+  setApplicationAsPrimary() {
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
+      Status: Status.ChangesInProgress,
+      Firstname: this.applicationService.model.ContactFirstName,
+      Lastname: this.applicationService.model.ContactLastName,
+      Email: this.applicationService.model.ContactEmailAddress,
+      PhoneNumber: this.applicationService.model.ContactPhoneNumber
+    }
+  }
+
+  clearNewPrimaryUser() {
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
+      Status: Status.ChangesInProgress,
     }
   }
 
