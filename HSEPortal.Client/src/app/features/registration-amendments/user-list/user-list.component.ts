@@ -4,6 +4,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStage, Status, User } from 'src/app/services/application.service';
 import { SelectPrimaryUserComponent } from '../select-primary-user/select-primary-user.component';
+import { SelectSecondaryUserComponent } from '../select-secondary-user/select-secondary-user.component';
 
 @Component({
   selector: 'hse-user-list',
@@ -14,7 +15,11 @@ export class UserListComponent  extends PageComponent<string> {
   static title: string = "Manage who can tell us about this building - Register a high-rise building - GOV.UK";
 
   ChangeUserStatuses = Status;
+  
   primaryUser?: User;
+  newPrimaryUser?: User;
+  primaryUserDetails?: User;
+
   currentSecondaryUser?: User;
   newSecondaryUser?: User;
 
@@ -23,6 +28,19 @@ export class UserListComponent  extends PageComponent<string> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.initChangeUser();
+    this.initPrimaryUser();
+    
+    this.newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+    this.newSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
+
+    this.primaryUserDetails = FieldValidations.IsNotNullOrWhitespace(this.newPrimaryUser?.Email) && FieldValidations.IsNotNullOrWhitespace(this.newPrimaryUser?.Firstname)
+      ? this.newPrimaryUser 
+      : this.primaryUser;
+
+  }
+
+  private initChangeUser() {
     if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser = {
         PrimaryUser: {
@@ -30,10 +48,12 @@ export class UserListComponent  extends PageComponent<string> {
         }
       };
     }
+  }
 
+  private initPrimaryUser() {
     if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Email) 
       && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Firstname)) {
-      this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser.PrimaryUser;
+      this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser;
     } else {
       this.primaryUser = {
         Status: Status.NoChanges,
@@ -42,7 +62,6 @@ export class UserListComponent  extends PageComponent<string> {
         Email: this.applicationService.model.ContactEmailAddress
       }
     }
-    
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
@@ -66,18 +85,18 @@ export class UserListComponent  extends PageComponent<string> {
   }
 
   changeSecondaryUser() {
-    
+    this.navigationService.navigateRelative(SelectSecondaryUserComponent.route, this.activatedRoute);
   }
 
   removeSecondaryUser() {
     
   }
 
-  isPrimary(flag: Status) {
-    if (!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser = { Status: Status.NoChanges }
+  isNewPrimary(flag: Status) {
+    if (!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = { Status: Status.NoChanges }
     }
-    return (this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status & flag) == flag;
+    return (this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser!.Status & flag) == flag;
   }
 
   isKbiSummitted() {
@@ -85,7 +104,7 @@ export class UserListComponent  extends PageComponent<string> {
   }
 
   addSecondaryUser() {
-
+    this.navigationService.navigateRelative(SelectSecondaryUserComponent.route, this.activatedRoute);
   }
 
   currentSecondaryUserExists() {
