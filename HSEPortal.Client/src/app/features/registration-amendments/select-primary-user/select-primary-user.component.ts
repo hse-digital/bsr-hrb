@@ -66,9 +66,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
     let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
     let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
 
-    let primaryUser = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser?.Email)
-      ? this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser
-      : this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser;
+    let primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser;
 
     let primaryUserEmail = primaryUser?.Email?.trim().toLowerCase();
     let primaryUserFirstName = primaryUser?.Firstname;
