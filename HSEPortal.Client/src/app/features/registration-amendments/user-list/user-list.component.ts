@@ -5,6 +5,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStage, Status, User } from 'src/app/services/application.service';
 import { SelectPrimaryUserComponent } from '../select-primary-user/select-primary-user.component';
 import { SelectSecondaryUserComponent } from '../select-secondary-user/select-secondary-user.component';
+import { RemoveSecondaryUserComponent } from '../remove-secondary-user/remove-secondary-user.component';
 
 @Component({
   selector: 'hse-user-list',
@@ -90,7 +91,7 @@ export class UserListComponent  extends PageComponent<string> {
   }
 
   removeSecondaryUser() {
-    
+    this.navigationService.navigateRelative(RemoveSecondaryUserComponent.route, this.activatedRoute);
   }
 
   isNewPrimary(flag: Status) {
