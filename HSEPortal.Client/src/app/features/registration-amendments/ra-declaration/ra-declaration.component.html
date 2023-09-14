@@ -1,0 +1,23 @@
+<govuk-formpage saveAndContinueText="Declare and submit" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+
+    <h1 class="govuk-heading-l">Declaration</h1>
+
+    <govuk-body>By submitting these changes about {{this.applicationService.model.BuildingName}}, you're confirming that the details you're providing are correct.</govuk-body>
+    
+    <ng-container *ngIf="userActingForPap()">
+
+        <govuk-body>By submitting these changes, you're also confirming that:</govuk-body>
+        
+        <govuk-list classes='govuk-list--bullet'>
+            <govuk-list-item text="the principal accountable person has instructed you in writing to make these changes on their behalf" />
+            <govuk-list-item text="the changes are the result of your own investigations or the principal accountable person gave you the details" />
+            <govuk-list-item text="you have explained to the principal accountable person that it is a criminal offence to give a false or misleading information to the Building Safety Regulator" />
+        </govuk-list>
+        
+        <govuk-body >We may ask you for written evidence that the principal accountable person has authorised you to act for them.</govuk-body>
+        
+    </ng-container>
+
+    <govuk-body>You must not give false or misleading information to the Building Safety Regulator.</govuk-body>
+        
+</govuk-formpage>

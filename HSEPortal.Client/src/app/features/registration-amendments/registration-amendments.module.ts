@@ -16,6 +16,7 @@ import { SelectSecondaryUserComponent } from './select-secondary-user/select-sec
 import { SecondaryUserDetailsComponent } from './secondary-user-details/secondary-user-details.component';
 import { ConfirmSecondaryUserComponent } from './confirm-secondary-user/confirm-secondary-user.component';
 import { RemoveSecondaryUserComponent } from './remove-secondary-user/remove-secondary-user.component';
+import { RaDeclarationComponent } from './ra-declaration/ra-declaration.component';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ChangeTaskListComponent.route, ChangeTaskListComponent, undefined, ChangeTaskListComponent.title),
@@ -40,6 +41,7 @@ const routes = new HseRoutes([
     ConfirmSecondaryUserComponent,
     SecondaryUserDetailsComponent,
     RemoveSecondaryUserComponent,
+    RaDeclarationComponent,
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
