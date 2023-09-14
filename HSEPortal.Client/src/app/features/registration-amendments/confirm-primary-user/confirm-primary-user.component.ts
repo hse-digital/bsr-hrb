@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, Status, User } from 'src/app/services/application.service';
+import { UserListComponent } from '../user-list/user-list.component';
 
 @Component({
   selector: 'hse-confirm-primary-user',
@@ -46,7 +47,7 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return true;
+    return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
   }
 
 }
