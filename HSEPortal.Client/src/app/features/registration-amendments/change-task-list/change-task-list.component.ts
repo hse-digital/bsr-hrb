@@ -18,7 +18,7 @@ export class ChangeTaskListComponent extends PageComponent<void> {
 
   constructor() {
     super();
-    this.tagDirector  = new TagDirector(this.registrationAmendmentsService);
+    this.tagDirector  = new TagDirector(this.applicationService);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
