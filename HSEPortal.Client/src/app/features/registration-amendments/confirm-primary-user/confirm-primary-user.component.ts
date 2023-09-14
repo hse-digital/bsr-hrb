@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, Status, User } from 'src/app/services/application.service';
+import { UserListComponent } from '../user-list/user-list.component';
 
 @Component({
   selector: 'hse-confirm-primary-user',
@@ -23,20 +24,7 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
-    
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser = {
-      Status: Status.ChangesComplete,
-      Email: newPrimaryUser?.Email,
-      Firstname: newPrimaryUser?.Firstname,
-      Lastname: newPrimaryUser?.Lastname,
-      PhoneNumber: newPrimaryUser?.PhoneNumber
-    }
 
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
-      Status: Status.NoChanges
-    }
-    
     if(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "secondary-user") {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser = {
         Status: Status.NoChanges
@@ -59,7 +47,7 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return true;
+    return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
   }
 
 }

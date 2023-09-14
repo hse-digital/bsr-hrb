@@ -4,6 +4,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, Status } from 'src/app/services/application.service';
 import { UserListComponent } from '../user-list/user-list.component';
+import { ConfirmSecondaryUserComponent } from '../confirm-secondary-user/confirm-secondary-user.component';
 import { SecondaryUserDetailsComponent } from '../secondary-user-details/secondary-user-details.component';
 
 @Component({
@@ -52,7 +53,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     } else if (this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary == "new-user") {
       return this.navigationService.navigateRelative(SecondaryUserDetailsComponent.route, this.activatedRoute);
     } else {
-      return true; // navigate to confirm screen
+      return this.navigationService.navigateRelative(ConfirmSecondaryUserComponent.route, this.activatedRoute);
     }
   }
 
@@ -85,6 +86,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     
     return namedContactEmail == currentSecondaryUserEmail && namedContactFirstName == currentSecondaryUserFirstName;
   }
+  
   get NamedContact() {
     return `${this.applicationService.model.AccountablePersons[0].LeadFirstName} ${this.applicationService.model.AccountablePersons[0].LeadLastName}`;
   }
