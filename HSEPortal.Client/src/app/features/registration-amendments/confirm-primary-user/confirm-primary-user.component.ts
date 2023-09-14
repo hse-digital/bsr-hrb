@@ -4,6 +4,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, Status, User } from 'src/app/services/application.service';
 import { UserListComponent } from '../user-list/user-list.component';
+import { KeepSecondaryUserComponent } from '../keep-secondary-user/keep-secondary-user.component';
 
 @Component({
   selector: 'hse-confirm-primary-user',
@@ -47,6 +48,10 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
+    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
+    if(!!secondaryUser && FieldValidations.IsNotNullOrWhitespace(secondaryUser.Email) && FieldValidations.IsNotNullOrWhitespace(secondaryUser.Firstname)) {
+      return this.navigationService.navigateRelative(KeepSecondaryUserComponent.route, this.activatedRoute);  
+    }
     return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
   }
 
