@@ -23,20 +23,7 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
-    
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser = {
-      Status: Status.ChangesComplete,
-      Email: newPrimaryUser?.Email,
-      Firstname: newPrimaryUser?.Firstname,
-      Lastname: newPrimaryUser?.Lastname,
-      PhoneNumber: newPrimaryUser?.PhoneNumber
-    }
 
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
-      Status: Status.NoChanges
-    }
-    
     if(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "secondary-user") {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser = {
         Status: Status.NoChanges

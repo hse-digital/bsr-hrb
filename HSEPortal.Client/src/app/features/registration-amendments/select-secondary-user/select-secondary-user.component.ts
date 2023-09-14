@@ -86,6 +86,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     
     return namedContactEmail == currentSecondaryUserEmail && namedContactFirstName == currentSecondaryUserFirstName;
   }
+  
   get NamedContact() {
     return `${this.applicationService.model.AccountablePersons[0].LeadFirstName} ${this.applicationService.model.AccountablePersons[0].LeadLastName}`;
   }

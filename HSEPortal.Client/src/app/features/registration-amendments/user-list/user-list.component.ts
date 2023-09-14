@@ -19,7 +19,6 @@ export class UserListComponent  extends PageComponent<string> {
   
   primaryUser?: User;
   newPrimaryUser?: User;
-  primaryUserDetails?: User;
 
   currentSecondaryUser?: User;
   newSecondaryUser?: User;
@@ -35,10 +34,6 @@ export class UserListComponent  extends PageComponent<string> {
     this.newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
     this.newSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
     this.currentSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
-
-    this.primaryUserDetails = FieldValidations.IsNotNullOrWhitespace(this.newPrimaryUser?.Email) && FieldValidations.IsNotNullOrWhitespace(this.newPrimaryUser?.Firstname)
-      ? this.newPrimaryUser 
-      : this.primaryUser;
 
   }
 
@@ -117,6 +112,11 @@ export class UserListComponent  extends PageComponent<string> {
   newSecondaryUserExists() {
     return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser &&
       FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser.Firstname)
+  }
+
+  newPrimaryUserExists() {
+    return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser &&
+      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser.Firstname)
   }
 
 }

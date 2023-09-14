@@ -541,7 +541,8 @@ export class User {
 export enum Status {
   NoChanges = 0,
   ChangesInProgress = 1,
-  ChangesComplete = 2
+  ChangesComplete = 2,
+  ChangesSubmitted = 4, 
 }
 
 export enum BuildingApplicationStatuscode
