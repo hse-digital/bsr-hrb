@@ -34,6 +34,11 @@ export class ConfirmSecondaryUserComponent extends PageComponent<void> {
       PhoneNumber: newsecondaryUser?.PhoneNumber
     }
 
+    
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = {
+      Status: Status.NoChanges
+    }
+
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
