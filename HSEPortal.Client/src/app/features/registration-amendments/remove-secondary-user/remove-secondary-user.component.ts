@@ -20,8 +20,8 @@ export class RemoveSecondaryUserComponent extends PageComponent<void> {
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
-    this.secondaryUser =FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Email)
-      ? this.secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser
+    this.secondaryUser = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Email)
+      ? this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser
       : this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
 
   }
