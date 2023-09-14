@@ -5,6 +5,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { PhoneNumberValidator } from 'src/app/helpers/validators/phone-number-validator';
 import { User, ApplicationService, Status } from 'src/app/services/application.service';
 import { EmailValidator } from 'src/app/helpers/validators/email-validator';
+import { ConfirmSecondaryUserComponent } from '../confirm-secondary-user/confirm-secondary-user.component';
 
 @Component({
   selector: 'hse-secondary-user-details',
@@ -53,7 +54,7 @@ export class SecondaryUserDetailsComponent extends PageComponent<User> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return true;
+    return this.navigationService.navigateRelative(ConfirmSecondaryUserComponent.route, this.activatedRoute);
   }
 
 }
