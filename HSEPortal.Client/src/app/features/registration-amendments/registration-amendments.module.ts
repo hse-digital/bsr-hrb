@@ -30,6 +30,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(ConfirmSecondaryUserComponent.route, ConfirmSecondaryUserComponent, undefined, ConfirmSecondaryUserComponent.title),
   HseRoute.unsafe(RemoveSecondaryUserComponent.route, RemoveSecondaryUserComponent, undefined, RemoveSecondaryUserComponent.title),
   HseRoute.unsafe(KeepSecondaryUserComponent.route, KeepSecondaryUserComponent, undefined, KeepSecondaryUserComponent.title),
+  HseRoute.unsafe(RaDeclarationComponent.route, RaDeclarationComponent, undefined, RaDeclarationComponent.title),
 ]);
 
 @NgModule({

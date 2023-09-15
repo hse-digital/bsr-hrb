@@ -70,7 +70,7 @@
             <ul class="app-task-list__items">
               <li class="app-task-list__item firstItem">
                 <span class="app-task-list__task-name">
-                    <a class="govuk-link" tabindex="0" role="link">Submit changes</a>
+                    <a class="govuk-link" tabindex="0" role="link" [routerLink]="['../declaration']">Submit changes</a>
                 </span>    
                 <govuk-tag tag class="govuk-tag--grey">{{getTagFor(taskListSteps.Submit)}}</govuk-tag>                
               </li>

@@ -63,4 +63,16 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = undefined;
   }
 
+  get onlyRegistrationInformation() {
+    return false;
+  }
+
+  get areasAccountability() {
+    return false;
+  }
+
+  get deregistering() {
+    return false;
+  }
+
 }
