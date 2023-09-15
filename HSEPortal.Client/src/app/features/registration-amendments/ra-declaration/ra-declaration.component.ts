@@ -43,7 +43,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
   submitUserChanges() {
     let NewPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser = {
-      Status: Status.ChangesComplete,
+      Status: Status.ChangesSubmitted,
       Email: NewPrimaryUser?.Email,
       Firstname: NewPrimaryUser?.Firstname,
       Lastname: NewPrimaryUser?.Lastname,
@@ -52,7 +52,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
 
     let NewSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser = {
-      Status: Status.ChangesComplete,
+      Status: Status.ChangesSubmitted,
       Email: NewSecondaryUser?.Email,
       Firstname: NewSecondaryUser?.Firstname,
       Lastname: NewSecondaryUser?.Lastname,

@@ -58,9 +58,20 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.KbiSubmitComplete) == BuildingApplicationStage.KbiSubmitComplete;
   }
 
+  isLinkEnable(step: TaskListSteps, index?: number): boolean {
+    this.tagDirector.setStep(step, index);
+    let tag = this.tagDirector?.getTag()
+    return tag != TagStatus.CannotStartYet && tag != TagStatus.NotYetAvailable;
+  }
+
   getTagFor(step: TaskListSteps, index?: number): string {
     this.tagDirector.setStep(step, index);
     return this.TagToText[this.tagDirector?.getTag()];
+  }
+
+  getCssClassFor(step: TaskListSteps, index?: number): string {
+    this.tagDirector.setStep(step, index);
+    return this.TagToCssClass[this.tagDirector?.getTag()];
   }
 
   private TagToText: Record<TagStatus, string> = {
@@ -69,6 +80,16 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     [TagStatus.ChangesNotYetSubmitted]: "CHANGES NOT YET SUBMITTED",
     [TagStatus.MoreInformationNeeded]: "MORE INFORMATION NEEDED",
     [TagStatus.NoChangesMade]: "NO CHANGES MADE",
+    [TagStatus.NotStarted]: "NOT STARTED",
+  }
+
+  private TagToCssClass: Record<TagStatus, string> = {
+    [TagStatus.NotYetAvailable]: "govuk-tag--grey",
+    [TagStatus.CannotStartYet]: "govuk-tag--grey",
+    [TagStatus.ChangesNotYetSubmitted]: "govuk-tag--blue",
+    [TagStatus.MoreInformationNeeded]: "govuk-tag--red",
+    [TagStatus.NoChangesMade]: "govuk-tag--grey",
+    [TagStatus.NotStarted]: "govuk-tag--grey",
   }
 
 }
@@ -87,5 +108,6 @@ export enum TagStatus {
   NoChangesMade,
   CannotStartYet,
   ChangesNotYetSubmitted,
-  MoreInformationNeeded
+  MoreInformationNeeded,
+  NotStarted
 }

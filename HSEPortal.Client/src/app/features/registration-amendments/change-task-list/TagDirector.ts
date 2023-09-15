@@ -80,13 +80,13 @@ export class ChangesTag extends ChangeTaskListTag {
         let primaryUserStatus = manageAccess?.PrimaryUser?.Status ?? Status.NoChanges;
         let secondaryUserStatus = manageAccess?.CurrentSecondaryUser?.Status ?? Status.NoChanges;
 
-        if (this.ContainsFlag(primaryUserStatus, Status.NoChanges) && this.ContainsFlag(secondaryUserStatus, Status.NoChanges) ) {
+        if (this.ContainsFlag(primaryUserStatus, Status.ChangesSubmitted) && this.ContainsFlag(secondaryUserStatus, Status.ChangesSubmitted)) {
             return TagStatus.NoChangesMade;
         } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesInProgress) || this.ContainsFlag(secondaryUserStatus, Status.ChangesInProgress)) {
             return TagStatus.MoreInformationNeeded;
-        } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesComplete) && this.ContainsFlag(secondaryUserStatus, Status.ChangesComplete)) {
+        } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesComplete) || this.ContainsFlag(secondaryUserStatus, Status.ChangesComplete)) {
             return TagStatus.ChangesNotYetSubmitted;
-        } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesSubmitted)) {
+        } else if (this.ContainsFlag(primaryUserStatus, Status.NoChanges) && this.ContainsFlag(secondaryUserStatus, Status.NoChanges) ) {
             return TagStatus.NoChangesMade;
         }
 
@@ -96,7 +96,11 @@ export class ChangesTag extends ChangeTaskListTag {
 
 export class SubmitTag extends ChangeTaskListTag {
     getTag(): TagStatus {
-        return TagStatus.NotYetAvailable;
+        let changeUserTagStatus = new ChangesTag(this.applicationService).getTag();
+        if(changeUserTagStatus == TagStatus.ChangesNotYetSubmitted) {
+            return TagStatus.NotStarted
+        }
+        return TagStatus.CannotStartYet;
     }
 
 }

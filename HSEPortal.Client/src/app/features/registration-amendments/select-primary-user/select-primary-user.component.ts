@@ -26,6 +26,8 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   override async onSave(applicationService: ApplicationService): Promise<void> {
     let previousSelectionIsNotNewUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary != "new-user";
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary = this.model;
+
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesInProgress; 
     
     switch(this.model) {
       case "named-contact": 
