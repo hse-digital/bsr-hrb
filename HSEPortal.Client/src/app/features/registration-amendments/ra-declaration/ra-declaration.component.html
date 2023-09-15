@@ -1,0 +1,29 @@
+<govuk-formpage saveAndContinueText="Declare and submit" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+
+    <h1 class="govuk-heading-l">Declaration</h1>
+
+    <govuk-body>By submitting these changes about {{this.applicationService.model.BuildingName}}, you're confirming that the details you're providing are correct.</govuk-body>
+    
+    <govuk-body *ngIf="deregistering">You're also confirming that you've told all accountable persons that you're removing {{this.applicationService.model.BuildingName}} from the register.</govuk-body>
+
+    <govuk-body *ngIf="areasAccountability">You're also confirming that you've given any relevant information to the new accountable persons.</govuk-body>
+
+    <ng-container *ngIf="userActingForPap()">
+
+        <govuk-body>By submitting these changes, you're also confirming that:</govuk-body>
+        
+        <govuk-list classes='govuk-list--bullet'>
+            <govuk-list-item text="the principal accountable person has instructed you in writing to make these changes on their behalf" />
+            <govuk-list-item text="the changes are the result of your own investigations or the principal accountable person gave you the details" />
+            <govuk-list-item text="you have explained to the principal accountable person that it is a criminal offence to give a false or misleading information to the Building Safety Regulator" />
+        </govuk-list>
+        
+        <govuk-body >We may ask you for written evidence that the principal accountable person has authorised you to act for them.</govuk-body>
+        
+    </ng-container>
+
+    <govuk-body>You must not give false or misleading information to the Building Safety Regulator.
+        <ng-container *ngIf="onlyRegistrationInformation"> Knowingly or recklessly giving false or misleading information is a criminal offence punishable by up to 2 years in prision.</ng-container>
+    </govuk-body>
+        
+</govuk-formpage>
