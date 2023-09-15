@@ -51,13 +51,14 @@ export class UserListComponent  extends PageComponent<string> {
   private initPrimaryUser() {
     if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Email) 
       && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Firstname)) {
-      this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser;
+        this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser;
     } else {
       this.primaryUser = {
         Status: Status.NoChanges,
         Firstname: this.applicationService.model.ContactFirstName,
         Lastname: this.applicationService.model.ContactLastName,
-        Email: this.applicationService.model.ContactEmailAddress
+        Email: this.applicationService.model.ContactEmailAddress,
+        PhoneNumber: this.applicationService.model.ContactPhoneNumber
       }
     }
   }
