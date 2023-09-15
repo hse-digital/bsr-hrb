@@ -6,6 +6,7 @@ import { ApplicationService, BuildingApplicationStage, Status, User } from 'src/
 import { SelectPrimaryUserComponent } from '../select-primary-user/select-primary-user.component';
 import { SelectSecondaryUserComponent } from '../select-secondary-user/select-secondary-user.component';
 import { RemoveSecondaryUserComponent } from '../remove-secondary-user/remove-secondary-user.component';
+import { ChangeTaskListComponent } from '../change-task-list/change-task-list.component';
 
 @Component({
   selector: 'hse-user-list',
@@ -74,7 +75,7 @@ export class UserListComponent  extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return true;
+    return this.navigationService.navigateRelative(ChangeTaskListComponent.route, this.activatedRoute);
   }
 
   changePrimaryUser() {

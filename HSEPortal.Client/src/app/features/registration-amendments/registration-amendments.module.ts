@@ -17,6 +17,7 @@ import { SecondaryUserDetailsComponent } from './secondary-user-details/secondar
 import { ConfirmSecondaryUserComponent } from './confirm-secondary-user/confirm-secondary-user.component';
 import { RemoveSecondaryUserComponent } from './remove-secondary-user/remove-secondary-user.component';
 import { RaDeclarationComponent } from './ra-declaration/ra-declaration.component';
+import { KeepSecondaryUserComponent } from './keep-secondary-user/keep-secondary-user.component';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ChangeTaskListComponent.route, ChangeTaskListComponent, undefined, ChangeTaskListComponent.title),
@@ -28,6 +29,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(SecondaryUserDetailsComponent.route, SecondaryUserDetailsComponent, undefined, SecondaryUserDetailsComponent.title),
   HseRoute.unsafe(ConfirmSecondaryUserComponent.route, ConfirmSecondaryUserComponent, undefined, ConfirmSecondaryUserComponent.title),
   HseRoute.unsafe(RemoveSecondaryUserComponent.route, RemoveSecondaryUserComponent, undefined, RemoveSecondaryUserComponent.title),
+  HseRoute.unsafe(KeepSecondaryUserComponent.route, KeepSecondaryUserComponent, undefined, KeepSecondaryUserComponent.title),
 ]);
 
 @NgModule({
@@ -42,6 +44,7 @@ const routes = new HseRoutes([
     SecondaryUserDetailsComponent,
     RemoveSecondaryUserComponent,
     RaDeclarationComponent,
+    KeepSecondaryUserComponent,
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
