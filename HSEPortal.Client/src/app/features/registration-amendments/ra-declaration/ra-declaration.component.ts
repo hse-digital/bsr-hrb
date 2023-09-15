@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService, Status } from 'src/app/services/application.service';
+import { RaConfirmationComponent } from '../ra-confirmation/ra-confirmation.component';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -32,7 +33,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return true;
+    return this.navigationService.navigateRelative(RaConfirmationComponent.route, this.activatedRoute);
   }
 
   userActingForPap() {
@@ -41,14 +42,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   submitUserChanges() {
-    let NewPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser = {
-      Status: Status.ChangesSubmitted,
-      Email: NewPrimaryUser?.Email,
-      Firstname: NewPrimaryUser?.Firstname,
-      Lastname: NewPrimaryUser?.Lastname,
-      PhoneNumber: NewPrimaryUser?.PhoneNumber
-    }
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesSubmitted;
 
     let NewSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser = {
@@ -59,7 +53,6 @@ export class RaDeclarationComponent extends PageComponent<void> {
       PhoneNumber: NewSecondaryUser?.PhoneNumber
     }
 
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = undefined;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = undefined;
   }
 
