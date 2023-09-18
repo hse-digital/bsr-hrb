@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService, Status } from 'src/app/services/application.service';
 import { RaConfirmationComponent } from '../ra-confirmation/ra-confirmation.component';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -45,15 +46,17 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesSubmitted;
 
     let NewSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser = {
-      Status: Status.ChangesSubmitted,
-      Email: NewSecondaryUser?.Email,
-      Firstname: NewSecondaryUser?.Firstname,
-      Lastname: NewSecondaryUser?.Lastname,
-      PhoneNumber: NewSecondaryUser?.PhoneNumber
+    if (!!NewSecondaryUser && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Email) && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Firstname)) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser = {
+        Status: Status.ChangesSubmitted,
+        Email: NewSecondaryUser?.Email,
+        Firstname: NewSecondaryUser?.Firstname,
+        Lastname: NewSecondaryUser?.Lastname,
+        PhoneNumber: NewSecondaryUser?.PhoneNumber
+      }
+  
+      delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser;
     }
-
-    delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser;
   }
 
   get onlyRegistrationInformation() {

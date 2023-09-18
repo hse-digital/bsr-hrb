@@ -28,15 +28,11 @@ export class RemoveSecondaryUserComponent extends PageComponent<void> {
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser = {
-      Status: Status.NoChanges
-    }
+    delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser;
     
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = {
-      Status: Status.NoChanges
-    }
+    delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser;
 
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary = undefined;
+    delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary;
     
   }
 
