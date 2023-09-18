@@ -21,7 +21,8 @@ public record BuildingApplicationModel(
     BuildingApplicationStatus ApplicationStatus = BuildingApplicationStatus.None,
     bool? DuplicateDetected = null,
     bool? ShareDetailsDeclared = null,
-    string[] DuplicateBuildingApplicationIds = null) : IValidatableModel
+    string[] DuplicateBuildingApplicationIds = null,
+    RegistrationAmendmentsModel RegistrationAmendmentsModel = null) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
@@ -201,4 +202,32 @@ public record PaymentInvoiceDetails
     public string OrderNumberOption { get; set; }
     public string OrderNumber { get; set; }
     public string Status { get; set; }
+}
+
+public record RegistrationAmendmentsModel {
+    public ChangeUser ChangeUser {get; set;}
+}
+
+public record ChangeUser {
+    public User PrimaryUser { get; set; }
+    public User NewPrimaryUser { get; set; }
+    public User SecondaryUser { get; set; }
+    public User NewSecondaryUser { get; set; }
+    public string WhoBecomePrimary { get; set; }
+    public string WhoBecomeSecondary { get; set; }
+}
+
+public record User {
+    public Status Status { get; set; }
+    public string Firstname { get; set; }
+    public string Lastname { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
+}
+
+public enum Status {
+    NoChanges = 0,
+    ChangesInProgress = 1,
+    ChangesComplete = 2,
+    ChangesSubmitted = 4,
 }
