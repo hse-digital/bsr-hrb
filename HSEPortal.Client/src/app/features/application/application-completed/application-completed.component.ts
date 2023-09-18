@@ -101,7 +101,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   isViewSeven() {
     return ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
-    ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
+    ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel) &&
+    !StatuscodeHelper.isRejected(this.applicationStatuscode);
   }
 
   isViewThirteen() {
