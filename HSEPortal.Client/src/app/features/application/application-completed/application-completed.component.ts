@@ -125,6 +125,28 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     return undefined;
   }
 
+  get title(): string {
+    let buildingName = this.applicationService.model.BuildingName;
+    if(this.isViewOne()) {
+      return `Registration application for ${buildingName} has been submitted`;
+    } else if (this.isViewTwo()) {
+      return `Registration application for ${buildingName} is being processed`;
+    } else if (this.isViewThree()) {
+      return `Registration application for ${buildingName} has been accepted`;
+    } else if (this.isViewFour()) {
+      return `Registration application for ${buildingName} has been submitted`;
+    } else if (this.isViewFive()) {
+      return `Registration application for ${buildingName} is being processed`;
+    } else if (this.isViewSix()) {
+      return `Registration application for ${buildingName} has been accepted`;
+    } else if (this.isViewSeven()) {
+      return `Changes to ${buildingName} submitted`;
+    } else if (this.isViewThirteen()) {
+      return `Registration application for ${buildingName} has been rejected`;
+    }
+    return "";
+  }
+
 }
 
 class StatuscodeHelper {
