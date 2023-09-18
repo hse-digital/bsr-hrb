@@ -16,13 +16,13 @@ export class KeepSecondaryUserComponent extends PageComponent<string> {
   secondaryUser?: User;
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
-    this.secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
+    this.secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     if(this.model == 'no') {
       
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser = {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser = {
         Status: Status.NoChanges
       }
 

@@ -78,7 +78,7 @@ export class ChangesTag extends ChangeTaskListTag {
         if (!manageAccess) return TagStatus.NotYetAvailable;
 
         let primaryUserStatus = manageAccess?.PrimaryUser?.Status ?? Status.NoChanges;
-        let secondaryUserStatus = manageAccess?.CurrentSecondaryUser?.Status ?? Status.NoChanges;
+        let secondaryUserStatus = manageAccess?.SecondaryUser?.Status ?? Status.NoChanges;
 
         if (this.ContainsFlag(primaryUserStatus, Status.ChangesSubmitted) && this.ContainsFlag(secondaryUserStatus, Status.ChangesSubmitted)) {
             return TagStatus.NoChangesMade;

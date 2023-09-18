@@ -176,7 +176,7 @@ class ApplicationStageHelper {
   static isChangeRequestSubmitted(model?: RegistrationAmendmentsModel) {
     if (!model) return false;
     let primaryUserStatus = model.ChangeUser?.PrimaryUser?.Status ?? Status.NoChanges;
-    let secondaryUserStatus = model.ChangeUser?.CurrentSecondaryUser?.Status ?? Status.NoChanges;
+    let secondaryUserStatus = model.ChangeUser?.SecondaryUser?.Status ?? Status.NoChanges;
     return (primaryUserStatus == Status.ChangesSubmitted && secondaryUserStatus == Status.ChangesSubmitted)
       || (primaryUserStatus == Status.ChangesSubmitted && secondaryUserStatus == Status.NoChanges)
       || (primaryUserStatus == Status.NoChanges && secondaryUserStatus == Status.ChangesSubmitted);

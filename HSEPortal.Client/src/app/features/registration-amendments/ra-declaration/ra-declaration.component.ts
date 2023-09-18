@@ -45,7 +45,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesSubmitted;
 
     let NewSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser = {
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser = {
       Status: Status.ChangesSubmitted,
       Email: NewSecondaryUser?.Email,
       Firstname: NewSecondaryUser?.Firstname,

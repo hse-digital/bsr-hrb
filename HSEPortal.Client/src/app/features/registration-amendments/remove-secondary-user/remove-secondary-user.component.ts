@@ -22,13 +22,13 @@ export class RemoveSecondaryUserComponent extends PageComponent<void> {
   override onInit(applicationService: ApplicationService): void | Promise<void> {
     this.secondaryUser = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Email)
       ? this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser
-      : this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
+      : this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
 
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser = {
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser = {
       Status: Status.NoChanges
     }
     

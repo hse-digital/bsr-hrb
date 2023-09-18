@@ -27,7 +27,7 @@ export class RaConfirmationComponent  extends PageComponent<void> {
     this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
 
     this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser
-    this.secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser
+    this.secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser
 
   }
 
@@ -52,7 +52,7 @@ export class RaConfirmationComponent  extends PageComponent<void> {
   }
 
   newSecondaryUser() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser?.Status == Status.ChangesSubmitted
+    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.ChangesSubmitted
   }
 
 }
