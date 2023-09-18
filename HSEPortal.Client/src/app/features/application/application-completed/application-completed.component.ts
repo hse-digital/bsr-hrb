@@ -101,7 +101,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   isViewSeven() {
     return ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
-    ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
+    ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel) &&
+    !StatuscodeHelper.isRejected(this.applicationStatuscode);
   }
 
   isViewThirteen() {
@@ -123,6 +124,32 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
       return submittionDate.setDate(submittionDate.getDate() + 28);
     }
     return undefined;
+  }
+
+  get title(): string {
+    let buildingName = this.applicationService.model.BuildingName;
+    if(this.isViewOne()) {
+      return `Registration application for ${buildingName} has been submitted`;
+    } else if (this.isViewTwo()) {
+      return `Registration application for ${buildingName} is being processed`;
+    } else if (this.isViewThree()) {
+      return `Registration application for ${buildingName} has been accepted`;
+    } else if (this.isViewFour()) {
+      return `Registration application for ${buildingName} has been submitted`;
+    } else if (this.isViewFive()) {
+      return `Registration application for ${buildingName} is being processed`;
+    } else if (this.isViewSix()) {
+      return `Registration application for ${buildingName} has been accepted`;
+    } else if (this.isViewSeven()) {
+      return `Changes to ${buildingName} submitted`;
+    } else if (this.isViewThirteen()) {
+      return `Registration application for ${buildingName} has been rejected`;
+    }
+    return "";
+  }
+
+  get isKbiSubmitted() {
+    return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus)
   }
 
 }
