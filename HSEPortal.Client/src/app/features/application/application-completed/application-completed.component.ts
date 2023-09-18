@@ -64,7 +64,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   isViewOne(): boolean {
     return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
-      ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status);
+      ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
   isViewTwo() {
@@ -82,7 +83,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   isViewFour() {
     return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
-      ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status);
+      ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
   isViewFive() {
