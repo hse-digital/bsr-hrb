@@ -60,40 +60,40 @@
 
         <ng-container *ngIf="isViewOne()">
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
+          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionOne" /> -->
         </ng-container>
 
         <ng-container *ngIf="isViewTwo()">
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <ng-container *ngTemplateOutlet="WithdrawOptionTwo" />
+          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionTwo" /> -->
         </ng-container>
 
         <ng-container *ngIf="isViewThree()">
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <ng-container *ngTemplateOutlet="Remove" />
+          <!-- <ng-container *ngTemplateOutlet="Remove" /> -->
         </ng-container>
 
         <ng-container *ngIf="isViewFour()">
           <ng-container *ngTemplateOutlet="WhatsNext" />
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
+          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionOne" /> -->
         </ng-container>
 
         <ng-container *ngIf="isViewFive()">
           <ng-container *ngTemplateOutlet="WhatsNext" />
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <ng-container *ngTemplateOutlet="WithdrawOptionTwo" />
+          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionTwo" /> -->
         </ng-container>
 
         <ng-container *ngIf="isViewSix()">
           <ng-container *ngTemplateOutlet="WhatsNext" />
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <ng-container *ngTemplateOutlet="Remove" />
+          <!-- <ng-container *ngTemplateOutlet="Remove" /> -->
         </ng-container>
 
         <ng-container *ngIf="isViewSeven()">
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <ng-container *ngTemplateOutlet="Remove" />
+          <!-- <ng-container *ngTemplateOutlet="Remove" /> -->
         </ng-container>
       </ng-container>
     </div>
@@ -102,8 +102,8 @@
 
 <ng-template #ApplicationHistoryChangesSubmitted>
   <tr class="govuk-table__row">
-    <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Changes submitted</a></td>
-    <td class="govuk-table__cell">[dd/MMMM/yyyy]{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
+    <td class="govuk-table__cell"><a class="govuk-link" target="_blank" role="link" tabindex="0">Changes submitted</a></td>
+    <td class="govuk-table__cell">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
   </tr>
 </ng-template>
 

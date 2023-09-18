@@ -29,7 +29,7 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesComplete; 
     
     if(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "secondary-user") {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser = {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser = {
         Status: Status.NoChanges
       }
     }
@@ -50,7 +50,7 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
+    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
     if(!!secondaryUser && FieldValidations.IsNotNullOrWhitespace(secondaryUser.Email) && FieldValidations.IsNotNullOrWhitespace(secondaryUser.Firstname)) {
       return this.navigationService.navigateRelative(KeepSecondaryUserComponent.route, this.activatedRoute);  
     }

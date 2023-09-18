@@ -34,7 +34,7 @@ export class UserListComponent  extends PageComponent<string> {
     
     this.newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
     this.newSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
-    this.currentSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
+    this.currentSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
 
   }
 
@@ -51,13 +51,14 @@ export class UserListComponent  extends PageComponent<string> {
   private initPrimaryUser() {
     if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Email) 
       && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Firstname)) {
-      this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser;
+        this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser;
     } else {
       this.primaryUser = {
         Status: Status.NoChanges,
         Firstname: this.applicationService.model.ContactFirstName,
         Lastname: this.applicationService.model.ContactLastName,
-        Email: this.applicationService.model.ContactEmailAddress
+        Email: this.applicationService.model.ContactEmailAddress,
+        PhoneNumber: this.applicationService.model.ContactPhoneNumber
       }
     }
   }
@@ -106,8 +107,8 @@ export class UserListComponent  extends PageComponent<string> {
   }
 
   currentSecondaryUserExists() {
-    return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser &&
-      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser.Firstname)
+    return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser &&
+      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Firstname)
   }
 
   newSecondaryUserExists() {

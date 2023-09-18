@@ -27,8 +27,8 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     let previousSelectionIsNotNewUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary != "new-user";
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary = this.model;
     
-    if(!!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser!.Status = Status.ChangesInProgress; 
+    if(!!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser!.Status = Status.ChangesInProgress; 
     }
     
 
@@ -84,7 +84,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
     let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
 
-    let secondaryUser =this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
+    let secondaryUser =this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
 
     let currentSecondaryUserEmail = secondaryUser?.Email?.trim().toLowerCase();
     let currentSecondaryUserFirstName = secondaryUser?.Firstname;

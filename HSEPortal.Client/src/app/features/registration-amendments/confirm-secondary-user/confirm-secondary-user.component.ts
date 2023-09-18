@@ -24,8 +24,10 @@ export class ConfirmSecondaryUserComponent extends PageComponent<void> {
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    if(!!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser!.Status = Status.ChangesComplete; 
+    if(!!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser!.Status = Status.ChangesComplete; 
+    } else {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser! = {Status: Status.ChangesComplete};
     }
   }
 
@@ -48,7 +50,7 @@ export class ConfirmSecondaryUserComponent extends PageComponent<void> {
   }
 
   hasSecondaryUserChanged() {
-    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.CurrentSecondaryUser;
+    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
     return FieldValidations.IsNotNullOrWhitespace(secondaryUser?.Email) 
       && FieldValidations.IsNotNullOrWhitespace(secondaryUser?.Firstname);
   }

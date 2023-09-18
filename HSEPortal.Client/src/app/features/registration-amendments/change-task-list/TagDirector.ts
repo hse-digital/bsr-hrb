@@ -75,10 +75,10 @@ export class ChangesTag extends ChangeTaskListTag {
     getTag(): TagStatus {
         let manageAccess = this.applicationService.model?.RegistrationAmendmentsModel?.ChangeUser;
         
-        if (!manageAccess) return TagStatus.NotYetAvailable;
+        if (!manageAccess) return TagStatus.NoChangesMade;
 
         let primaryUserStatus = manageAccess?.PrimaryUser?.Status ?? Status.NoChanges;
-        let secondaryUserStatus = manageAccess?.CurrentSecondaryUser?.Status ?? Status.NoChanges;
+        let secondaryUserStatus = manageAccess?.SecondaryUser?.Status ?? Status.NoChanges;
 
         if (this.ContainsFlag(primaryUserStatus, Status.ChangesSubmitted) && this.ContainsFlag(secondaryUserStatus, Status.ChangesSubmitted)) {
             return TagStatus.NoChangesMade;
@@ -90,7 +90,7 @@ export class ChangesTag extends ChangeTaskListTag {
             return TagStatus.NoChangesMade;
         }
 
-        return TagStatus.NotYetAvailable;
+        return TagStatus.NoChangesMade;
     }
 }
 
