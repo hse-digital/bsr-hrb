@@ -90,7 +90,7 @@ export class ChangesTag extends ChangeTaskListTag {
             return TagStatus.NoChangesMade;
         }
 
-        return TagStatus.NotYetAvailable;
+        return TagStatus.NoChangesMade;
     }
 }
 

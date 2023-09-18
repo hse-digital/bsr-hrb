@@ -53,7 +53,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
       PhoneNumber: NewSecondaryUser?.PhoneNumber
     }
 
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = undefined;
+    delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser;
   }
 
   get onlyRegistrationInformation() {

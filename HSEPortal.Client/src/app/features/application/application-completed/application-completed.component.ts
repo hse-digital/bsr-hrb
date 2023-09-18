@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode, RegistrationAmendmentsModel, Status } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
@@ -99,7 +99,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   isViewSeven() {
     return ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
-    ApplicationStageHelper.isChangeRequestSubmitted();
+    ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
   isViewThirteen() {
@@ -155,7 +155,6 @@ class ApplicationStageHelper {
       ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentInProgress);
 
     let raisedAnInvoice = paymentType == 'invoice' && paymentInvoiceStatus == 'awaiting';
-
     return isAppSubmitted || raisedAnInvoice;
   }
 
@@ -174,8 +173,13 @@ class ApplicationStageHelper {
     return ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.KbiSubmitComplete);
   }
 
-  static isChangeRequestSubmitted() {
-    return false;
+  static isChangeRequestSubmitted(model?: RegistrationAmendmentsModel) {
+    if (!model) return false;
+    let primaryUserStatus = model.ChangeUser?.PrimaryUser?.Status ?? Status.NoChanges;
+    let secondaryUserStatus = model.ChangeUser?.CurrentSecondaryUser?.Status ?? Status.NoChanges;
+    return (primaryUserStatus == Status.ChangesSubmitted && secondaryUserStatus == Status.ChangesSubmitted)
+      || (primaryUserStatus == Status.ChangesSubmitted && secondaryUserStatus == Status.NoChanges)
+      || (primaryUserStatus == Status.NoChanges && secondaryUserStatus == Status.ChangesSubmitted);
   }
 
   static containsFlag(currentApplicationStage: BuildingApplicationStage, flag: BuildingApplicationStage) {

@@ -26,6 +26,8 @@ export class ConfirmSecondaryUserComponent extends PageComponent<void> {
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     if(!!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser!.Status = Status.ChangesComplete; 
+    } else {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.CurrentSecondaryUser! = {Status: Status.ChangesComplete};
     }
   }
 
