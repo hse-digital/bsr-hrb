@@ -148,6 +148,10 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     return "";
   }
 
+  get isKbiSubmitted() {
+    return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus)
+  }
+
 }
 
 class StatuscodeHelper {
