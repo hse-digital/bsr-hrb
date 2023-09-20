@@ -6,6 +6,8 @@ using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.DurableTask;
+using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions;
@@ -42,13 +44,49 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(ValidateApplicationNumber))]
-    public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
+    public async Task<HttpResponseData> ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
         [CosmosDBInput("hseportal", "building-registrations",
             SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", Connection = "CosmosConnection")]
-        List<BuildingApplicationModel> buildingApplications)
+        List<BuildingApplicationModel> buildingApplications, [DurableClient] DurableTaskClient durableTaskClient)
     {
-        return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
+        if(buildingApplications.Any()) {
+            return  request.CreateResponse(HttpStatusCode.OK);
+        } else {
+            ApplicationNumberAndEmail orchestrationInput = await request.ReadAsJsonAsync<ApplicationNumberAndEmail>();
+            string statuscode = await durableTaskClient.ScheduleNewOrchestrationInstanceAsync(nameof(ValidateApplicationNumberWithOtherUserEmails), orchestrationInput);
+            bool isValid = statuscode.Equals("200");
+            return request.CreateResponse(isValid ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
+        }
     }
+
+    [Function(nameof(ValidateApplicationNumberWithOtherUserEmails))]
+    public async Task<string> ValidateApplicationNumberWithOtherUserEmails([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
+    {
+        ApplicationNumberAndEmail model = orchestrationContext.GetInput<ApplicationNumberAndEmail>();
+
+        var buildingApplication = await orchestrationContext.CallActivityAsync<BuildingApplicationModel>(nameof(GetCosmosApplicationUsingId), model.ApplicationNumber);
+        if (buildingApplication == null) return HttpStatusCode.BadRequest.ToString();
+        
+        string primaryUserEmail = buildingApplication.RegistrationAmendmentsModel.ChangeUser.NewPrimaryUser.Email;
+        if(primaryUserEmail != null && !primaryUserEmail.Equals(string.Empty) && AreEqual(primaryUserEmail, model.EmailAddress)) return HttpStatusCode.OK.ToString();
+        
+        string secondaryUserEmail = buildingApplication.RegistrationAmendmentsModel.ChangeUser.SecondaryUser.Email;
+        if(secondaryUserEmail != null && !secondaryUserEmail.Equals(string.Empty) && AreEqual(secondaryUserEmail, model.EmailAddress)) return HttpStatusCode.OK.ToString();
+
+        return HttpStatusCode.BadRequest.ToString();
+    }
+
+    private bool AreEqual(string a, string b) {
+        return a.ToLower().Equals(b.ToLower());
+    }
+
+    [Function(nameof(GetCosmosApplicationUsingId))]
+    public BuildingApplicationModel GetCosmosApplicationUsingId([ActivityTrigger] string ApplicationNumber, [CosmosDBInput("hseportal", "building-registrations",
+            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}",  PartitionKey = "{ApplicationNumber}", Connection = "CosmosConnection")] List<BuildingApplicationModel> buildingApplications)
+    {
+        return buildingApplications.FirstOrDefault();
+    }
+
 
     [Function(nameof(GetSubmissionDate))]
     public async Task<HttpResponseData> GetSubmissionDate(
@@ -259,4 +297,9 @@ public record RegisteredStructureModel
 public class RegisteredStructureRequestModel {
     public string Postcode {get; set;}
     public string AddressLineOne {get; set;}
+}
+
+public class ApplicationNumberAndEmail {
+    public string ApplicationNumber {get; set;}
+    public string EmailAddress {get; set;}
 }
