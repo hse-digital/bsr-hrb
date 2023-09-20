@@ -37,7 +37,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
 
   async validateAndContinue() {
     this.sendingRequest = true;
-
+    this.securityCode = this.securityCode?.trim();
     this.errors.securityCode.hasError = true;
     if (!this.securityCode) {
       this.errors.securityCode.errorText = 'Enter the security code';
