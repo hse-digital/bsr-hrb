@@ -138,17 +138,17 @@ export class ApplicationService {
   }
 
   async validateOTPToken(otpToken: string, emailAddress: string): Promise<void> {
-    await firstValueFrom(this.httpClient.post('api/ValidateOTPToken', this.sanitize({
+    await firstValueFrom(this.httpClient.post('api/ValidateOTPToken', {
       "OTPToken": otpToken,
       "EmailAddress": emailAddress
-    })));
+    }));
   }
 
   async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
     try {
 
       let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress };
-      await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', this.sanitize(this.model)));
+      await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', this.sanitize(request)));
       return true;
     } catch {
       return false;
@@ -198,7 +198,7 @@ export class ApplicationService {
   }
 
   async createInvoicePayment(paymentDetails: PaymentInvoiceDetails): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/InitialiseInvoicePayment/${this.model.id}`, this.sanitize(this.model)));
+    await firstValueFrom(this.httpClient.post(`api/InitialiseInvoicePayment/${this.model.id}`, this.sanitize(paymentDetails)));
   }
 
   async getApplicationPayments(): Promise<any[]> {
