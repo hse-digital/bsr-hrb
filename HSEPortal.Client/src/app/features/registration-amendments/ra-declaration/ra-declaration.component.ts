@@ -55,8 +55,18 @@ export class RaDeclarationComponent extends PageComponent<void> {
         PhoneNumber: NewSecondaryUser?.PhoneNumber
       }
   
+      this.updateSecondaryUser();
+
       delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser;
     }
+  }
+
+  private updateSecondaryUser() {
+    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser
+    this.applicationService.model.SecondaryEmailAddress = secondaryUser?.Email;
+    this.applicationService.model.SecondaryFirstName = secondaryUser?.Firstname;
+    this.applicationService.model.SecondaryLastName = secondaryUser?.Lastname;
+    this.applicationService.model.SecondaryPhoneNumber = secondaryUser?.PhoneNumber;
   }
 
   get onlyRegistrationInformation() {

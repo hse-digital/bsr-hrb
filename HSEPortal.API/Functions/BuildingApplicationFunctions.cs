@@ -92,7 +92,7 @@ public class BuildingApplicationFunctions
     [Function(nameof(GetApplication))]
     public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request,
         [CosmosDBInput("hseportal", "building-registrations",
-            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", PartitionKey = "{ApplicationNumber}",
+            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and (StringEquals(c.ContactEmailAddress, {EmailAddress}, true) or StringEquals(c.SecondaryEmailAddress, {EmailAddress}, true))", PartitionKey = "{ApplicationNumber}",
             Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
@@ -100,7 +100,9 @@ public class BuildingApplicationFunctions
         if (buildingApplications.Any())
         {
             var application = buildingApplications[0];
-            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress);
+            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress) 
+                || await otpService.ValidateToken(requestContent.OtpToken, application.SecondaryEmailAddress)
+                || await otpService.ValidateToken(requestContent.OtpToken, application.RegistrationAmendmentsModel.ChangeUser.NewPrimaryUser.Email);
             if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
                 return await request.CreateObjectResponseAsync(application);

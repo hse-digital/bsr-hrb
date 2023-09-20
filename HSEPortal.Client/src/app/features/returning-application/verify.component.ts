@@ -14,6 +14,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
 
   @Input() emailAddress!: string;
   @Input() applicationNumber!: string;
+  @Input() isNewPrimaryUser!: boolean;
   @Output() onResendClicked = new EventEmitter();
 
   sendingRequest = false;
@@ -66,7 +67,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
   private async doesSecurityCodeMatch(): Promise<boolean> {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
-
+      if(this.isNewPrimaryUser) this.updatePrimaryUser()
       if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);
       } else {
@@ -77,6 +78,18 @@ export class ReturningApplicationVerifyComponent implements OnInit {
     } catch {
       return false;
     }
+  }
+
+  
+  private updatePrimaryUser() {
+    let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+    if(!!newPrimaryUser) {
+      this.applicationService.model.ContactEmailAddress = newPrimaryUser.Email;
+      this.applicationService.model.ContactFirstName = newPrimaryUser.Firstname;
+      this.applicationService.model.ContactLastName = newPrimaryUser.Lastname;
+      this.applicationService.model.ContactPhoneNumber = newPrimaryUser.PhoneNumber;
+    }
+    delete this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
   }
 
   private isAccountablePersonsComplete() {

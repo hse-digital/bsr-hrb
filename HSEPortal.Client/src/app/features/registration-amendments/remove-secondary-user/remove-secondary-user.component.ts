@@ -33,6 +33,11 @@ export class RemoveSecondaryUserComponent extends PageComponent<void> {
     delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser;
 
     delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary;
+
+    delete this.applicationService.model.SecondaryEmailAddress;
+    delete this.applicationService.model.SecondaryFirstName;
+    delete this.applicationService.model.SecondaryLastName;
+    delete this.applicationService.model.SecondaryPhoneNumber;
     
   }
 

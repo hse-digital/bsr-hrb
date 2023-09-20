@@ -144,32 +144,21 @@ export class ApplicationService {
     }));
   }
 
-  async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
+  async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<{isValid: boolean, isNewPrimaryUser: boolean}> {
     let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress };
     try {
       await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', request));
-      return true;
+      return {isValid: true, isNewPrimaryUser: false};
     } catch {
       try {
         await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumberNewPrimaryUser', request));
-        this.updatePrimaryUser();
+        return {isValid: true, isNewPrimaryUser: true};
       } catch {
-        return false;
+        return {isValid: false, isNewPrimaryUser: true};
       }
-      return false;
     }
   }
 
-  private updatePrimaryUser() {
-    let newPrimaryUser = this.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
-    if(!!newPrimaryUser) {
-      this.model.ContactEmailAddress = newPrimaryUser.Email;
-      this.model.ContactFirstName = newPrimaryUser.Firstname;
-      this.model.ContactLastName = newPrimaryUser.Lastname;
-      this.model.ContactPhoneNumber = newPrimaryUser.PhoneNumber;
-    }
-    delete this.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
-  }
 
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
 
