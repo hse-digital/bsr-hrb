@@ -11,7 +11,10 @@ public static class HttpRequestDataExtensions
 {
     public static async Task<T> ReadAsJsonAsync<T>(this HttpRequestData httpRequestData)
     {
-        return await JsonSerializer.DeserializeAsync<T>(httpRequestData.Body);
+        var requestContent = await httpRequestData.ReadAsStringAsync();
+        requestContent = requestContent!.Replace("&39", "'");
+
+        return JsonSerializer.Deserialize<T>(requestContent);
     }
 
     public static async Task<T> ReadAsJsonAsync<T>(this HttpResponseData httpRequestData)
@@ -20,7 +23,7 @@ public static class HttpRequestDataExtensions
     }
 
     public static async Task<HttpResponseData> CreateObjectResponseAsync<T>(this HttpRequestData httpRequestData, T @object)
-    { 
+    {
         var stream = new MemoryStream();
         await JsonSerializer.SerializeAsync(stream, @object);
 
@@ -44,10 +47,7 @@ public static class HttpRequestDataExtensions
         var badRequestResponse = httpRequestData.CreateResponse(HttpStatusCode.BadRequest);
         badRequestResponse.Body = stream;
 
-        return new CustomHttpResponseData
-        {
-            HttpResponse = badRequestResponse
-        };
+        return new CustomHttpResponseData { HttpResponse = badRequestResponse };
     }
 
     public static NameValueCollection GetQueryParameters(this HttpRequestData request)
