@@ -145,14 +145,30 @@ export class ApplicationService {
   }
 
   async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
+    let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress };
     try {
-
-      let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress };
       await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', request));
       return true;
     } catch {
+      try {
+        await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumberNewPrimaryUser', request));
+        this.updatePrimaryUser();
+      } catch {
+        return false;
+      }
       return false;
     }
+  }
+
+  private updatePrimaryUser() {
+    let newPrimaryUser = this.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+    if(!!newPrimaryUser) {
+      this.model.ContactEmailAddress = newPrimaryUser.Email;
+      this.model.ContactFirstName = newPrimaryUser.Firstname;
+      this.model.ContactLastName = newPrimaryUser.Lastname;
+      this.model.ContactPhoneNumber = newPrimaryUser.PhoneNumber;
+    }
+    delete this.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
   }
 
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
@@ -236,6 +252,10 @@ export class BuildingRegistrationModel {
   ContactLastName?: string;
   ContactPhoneNumber?: string;
   ContactEmailAddress?: string;
+  SecondaryFirstName?: string;
+  SecondaryLastName?: string;
+  SecondaryPhoneNumber?: string;
+  SecondaryEmailAddress?: string;
   NumberOfSections?: string;
   Sections: SectionModel[] = [];
   OutOfScopeContinueReason?: string;

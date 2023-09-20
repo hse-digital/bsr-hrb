@@ -44,49 +44,32 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(ValidateApplicationNumber))]
-    public async Task<HttpResponseData> ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations",
-            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", Connection = "CosmosConnection")]
-        List<BuildingApplicationModel> buildingApplications, [DurableClient] DurableTaskClient durableTaskClient)
+    public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and (StringEquals(c.ContactEmailAddress, {EmailAddress}, true) or StringEquals(c.SecondaryEmailAddress, {EmailAddress}, true))", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications)
     {
-        if(buildingApplications.Any()) {
-            return  request.CreateResponse(HttpStatusCode.OK);
-        } else {
-            ApplicationNumberAndEmail orchestrationInput = await request.ReadAsJsonAsync<ApplicationNumberAndEmail>();
-            string statuscode = await durableTaskClient.ScheduleNewOrchestrationInstanceAsync(nameof(ValidateApplicationNumberWithOtherUserEmails), orchestrationInput);
-            bool isValid = statuscode.Equals("200");
-            return request.CreateResponse(isValid ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
-        }
+        return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 
-    [Function(nameof(ValidateApplicationNumberWithOtherUserEmails))]
-    public async Task<string> ValidateApplicationNumberWithOtherUserEmails([OrchestrationTrigger] TaskOrchestrationContext orchestrationContext)
+    [Function(nameof(ValidateApplicationNumberNewPrimaryUser))]
+    public async Task<HttpResponseData> ValidateApplicationNumberNewPrimaryUser([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumberNewPrimaryUser")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", Connection = "CosmosConnection", PartitionKey = "{ApplicationNumber}")]
+        List<BuildingApplicationModel> buildingApplications)
     {
-        ApplicationNumberAndEmail model = orchestrationContext.GetInput<ApplicationNumberAndEmail>();
+        if(buildingApplications.Any()) {
+            ApplicationNumberAndEmail input = await request.ReadAsJsonAsync<ApplicationNumberAndEmail>();
+            BuildingApplicationModel model = buildingApplications.FirstOrDefault();
 
-        var buildingApplication = await orchestrationContext.CallActivityAsync<BuildingApplicationModel>(nameof(GetCosmosApplicationUsingId), model.ApplicationNumber);
-        if (buildingApplication == null) return HttpStatusCode.BadRequest.ToString();
-        
-        string primaryUserEmail = buildingApplication.RegistrationAmendmentsModel.ChangeUser.NewPrimaryUser.Email;
-        if(primaryUserEmail != null && !primaryUserEmail.Equals(string.Empty) && AreEqual(primaryUserEmail, model.EmailAddress)) return HttpStatusCode.OK.ToString();
-        
-        string secondaryUserEmail = buildingApplication.RegistrationAmendmentsModel.ChangeUser.SecondaryUser.Email;
-        if(secondaryUserEmail != null && !secondaryUserEmail.Equals(string.Empty) && AreEqual(secondaryUserEmail, model.EmailAddress)) return HttpStatusCode.OK.ToString();
-
-        return HttpStatusCode.BadRequest.ToString();
+            string primaryUserEmail = model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser?.Email ?? "";
+            if(AreEqual(primaryUserEmail, input.EmailAddress)) return request.CreateResponse(HttpStatusCode.OK);
+        }
+        return request.CreateResponse(HttpStatusCode.BadRequest);
     }
 
     private bool AreEqual(string a, string b) {
+        if(a == null || b == null || a.Equals(string.Empty) || b.Equals(string.Empty)) return false;
         return a.ToLower().Equals(b.ToLower());
     }
-
-    [Function(nameof(GetCosmosApplicationUsingId))]
-    public BuildingApplicationModel GetCosmosApplicationUsingId([ActivityTrigger] string ApplicationNumber, [CosmosDBInput("hseportal", "building-registrations",
-            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}",  PartitionKey = "{ApplicationNumber}", Connection = "CosmosConnection")] List<BuildingApplicationModel> buildingApplications)
-    {
-        return buildingApplications.FirstOrDefault();
-    }
-
 
     [Function(nameof(GetSubmissionDate))]
     public async Task<HttpResponseData> GetSubmissionDate(
