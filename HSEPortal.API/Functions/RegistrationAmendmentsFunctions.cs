@@ -49,16 +49,9 @@ public class RegistrationAmendmentsFunctions
         if(buildingApplicationModel.SecondaryEmailAddress != null && buildingApplicationModel.SecondaryFirstName != null && !buildingApplicationModel.SecondaryEmailAddress.Equals(string.Empty)) {
             var contact = await RaService.CreateContactAsync(buildingApplicationModel.SecondaryEmailAddress, buildingApplicationModel.SecondaryFirstName, buildingApplicationModel.SecondaryLastName, buildingApplicationModel.SecondaryPhoneNumber);
             await dynamicsApi.Update($"bsr_buildingapplications({secondaryBuildingApplication.bsr_buildingapplicationid})",
-                new DynamicsBuildingApplication { contactReferenceId = $"/contacts({contact.Id})" });
+                new DynamicsBuildingApplication { secondaryContactReferenceId = $"/contacts({contact.Id})" });
             return request.CreateResponse(HttpStatusCode.OK);
         }
         return request.CreateResponse(HttpStatusCode.BadRequest);
-    }
-
-    [Function(nameof(UpdateSecondaryApplicant))]
-    public HttpResponseData UpdateSecondaryApplicant([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(UpdateSecondaryApplicant)}/{{applicationId}}")] HttpRequestData request,
-        [DurableClient] DurableTaskClient durableTaskClient, string applicationId)
-    {
-        return request.CreateResponse(HttpStatusCode.OK);
     }
 }

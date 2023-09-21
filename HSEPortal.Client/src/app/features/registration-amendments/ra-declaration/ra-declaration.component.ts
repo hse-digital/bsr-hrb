@@ -21,8 +21,8 @@ export class RaDeclarationComponent extends PageComponent<void> {
 
   }
 
-  override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    this.submitUserChanges();
+  override async onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): Promise<void> {
+    await this.submitUserChanges();
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -42,7 +42,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     return pap.Type == 'organisation' && pap.Role == 'registering_for';
   }
 
-  submitUserChanges() {
+  async submitUserChanges() {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesSubmitted;
     
     let NewPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
@@ -62,6 +62,8 @@ export class RaDeclarationComponent extends PageComponent<void> {
   
       this.updateSecondaryUser();
 
+      await this.registrationAmendmentsService.syncSecondaryUser();
+      
       delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser;
     }
   }
