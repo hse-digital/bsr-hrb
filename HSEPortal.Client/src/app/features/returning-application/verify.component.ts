@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren
 import { GovukErrorSummaryComponent } from "hse-angular";
 import { ApplicationService, BuildingApplicationStage } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { RegistrationAmendmentsService } from "src/app/services/registration-amendments.service";
 import { TitleService } from 'src/app/services/title.service';
 
 @Component({
@@ -26,7 +27,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
 
   @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private titleService: TitleService) { }
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private titleService: TitleService, private registrationAmendmentsService: RegistrationAmendmentsService) { }
 
   ngOnInit() {
     this.titleService.setTitle(ReturningApplicationVerifyComponent.title);
@@ -68,6 +69,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
       if(this.isNewPrimaryUser) {
+        await this.registrationAmendmentsService.syncNewPrimaryUser();
         this.updatePrimaryUser();
         this.applicationService.updateApplication();
       }
