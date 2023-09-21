@@ -67,7 +67,10 @@ export class ReturningApplicationVerifyComponent implements OnInit {
   private async doesSecurityCodeMatch(): Promise<boolean> {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
-      if(this.isNewPrimaryUser) this.updatePrimaryUser()
+      if(this.isNewPrimaryUser) {
+        this.updatePrimaryUser();
+        this.applicationService.updateApplication();
+      }
       if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);
       } else {
@@ -90,6 +93,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
       this.applicationService.model.ContactPhoneNumber = newPrimaryUser.PhoneNumber;
     }
     delete this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+    delete this.applicationService.model.NewPrimaryUserEmail;
   }
 
   private isAccountablePersonsComplete() {

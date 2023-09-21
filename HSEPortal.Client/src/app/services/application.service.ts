@@ -241,6 +241,7 @@ export class BuildingRegistrationModel {
   ContactLastName?: string;
   ContactPhoneNumber?: string;
   ContactEmailAddress?: string;
+  NewPrimaryUserEmail?: string;
   SecondaryFirstName?: string;
   SecondaryLastName?: string;
   SecondaryPhoneNumber?: string;

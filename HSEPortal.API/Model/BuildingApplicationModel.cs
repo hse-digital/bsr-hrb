@@ -10,6 +10,7 @@ public record BuildingApplicationModel(
     string ContactLastName = null,
     string ContactPhoneNumber = null,
     string ContactEmailAddress = null,
+    string NewPrimaryUserEmail = null,
     string SecondaryFirstName = null,
     string SecondaryLastName = null,
     string SecondaryPhoneNumber = null,

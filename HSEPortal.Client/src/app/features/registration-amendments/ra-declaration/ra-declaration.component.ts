@@ -44,6 +44,11 @@ export class RaDeclarationComponent extends PageComponent<void> {
 
   submitUserChanges() {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesSubmitted;
+    
+    let NewPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
+    if (!!NewPrimaryUser) {
+      this.applicationService.model.NewPrimaryUserEmail = NewPrimaryUser?.Email;
+    }
 
     let NewSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
     if (!!NewSecondaryUser && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Email) && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Firstname)) {
