@@ -54,4 +54,18 @@ public class RegistrationAmendmentsFunctions
         }
         return request.CreateResponse(HttpStatusCode.BadRequest);
     }
+
+    [Function(nameof(DeleteSecondaryUserLookup))]
+    public async Task<HttpResponseData> DeleteSecondaryUserLookup([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(DeleteSecondaryUserLookup)}/{{applicationId}}")] HttpRequestData request, string applicationId)
+    {
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        var secondaryBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+
+        if(buildingApplicationModel.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.Removed) {
+            await dynamicsApi.Update($"bsr_buildingapplications({secondaryBuildingApplication.bsr_buildingapplicationid})",
+                new DynamicsBuildingApplication { secondaryContactReferenceId = null });
+            return request.CreateResponse(HttpStatusCode.OK);
+        }
+        return request.CreateResponse(HttpStatusCode.BadRequest);
+    }
 }

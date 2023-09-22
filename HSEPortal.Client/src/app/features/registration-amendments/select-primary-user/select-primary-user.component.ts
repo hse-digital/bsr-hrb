@@ -149,6 +149,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   setSecondaryUserAsPrimary() {
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser!.Status = Status.Removed;
     let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
       Status: Status.ChangesInProgress,

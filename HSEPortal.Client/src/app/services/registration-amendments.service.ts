@@ -16,4 +16,8 @@ export class RegistrationAmendmentsService {
   async syncSecondaryUser() {
     await firstValueFrom(this.httpClient.post(`api/CreateSecondaryApplicant/${this.applicationService.model.id}`, this.applicationService.model));
   }
+
+  async deleteSecondaryUserLookup() {
+    await firstValueFrom(this.httpClient.post(`api/DeleteSecondaryUserLookup/${this.applicationService.model.id}`, this.applicationService.model));
+  }
 }

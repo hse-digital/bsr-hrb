@@ -235,4 +235,5 @@ public enum Status {
     ChangesInProgress = 1,
     ChangesComplete = 2,
     ChangesSubmitted = 4,
+    Removed = 8
 }

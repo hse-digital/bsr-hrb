@@ -84,7 +84,7 @@ export class ChangesTag extends ChangeTaskListTag {
             return TagStatus.NoChangesMade;
         } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesInProgress) || this.ContainsFlag(secondaryUserStatus, Status.ChangesInProgress)) {
             return TagStatus.MoreInformationNeeded;
-        } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesComplete) || this.ContainsFlag(secondaryUserStatus, Status.ChangesComplete)) {
+        } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesComplete) || this.ContainsFlag(secondaryUserStatus, Status.ChangesComplete) || this.ContainsFlag(secondaryUserStatus, Status.Removed)) {
             return TagStatus.ChangesNotYetSubmitted;
         } else if (this.ContainsFlag(primaryUserStatus, Status.NoChanges) && this.ContainsFlag(secondaryUserStatus, Status.NoChanges) ) {
             return TagStatus.NoChangesMade;

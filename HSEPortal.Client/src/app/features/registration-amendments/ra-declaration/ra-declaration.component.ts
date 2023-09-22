@@ -50,8 +50,15 @@ export class RaDeclarationComponent extends PageComponent<void> {
       this.applicationService.model.NewPrimaryUserEmail = NewPrimaryUser?.Email;
     }
 
+    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
     let NewSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
-    if (!!NewSecondaryUser && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Email) && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Firstname)) {
+    if (secondaryUser?.Status == Status.Removed) {
+
+      this.registrationAmendmentsService.deleteSecondaryUserLookup();
+      this.deleteSecondaryUser();
+
+    } else if (!!NewSecondaryUser && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Email) && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Firstname)) {
+      
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser = {
         Status: Status.ChangesSubmitted,
         Email: NewSecondaryUser?.Email,
@@ -74,6 +81,16 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.applicationService.model.SecondaryFirstName = secondaryUser?.Firstname;
     this.applicationService.model.SecondaryLastName = secondaryUser?.Lastname;
     this.applicationService.model.SecondaryPhoneNumber = secondaryUser?.PhoneNumber;
+  }
+
+  private deleteSecondaryUser() {
+    delete this.applicationService.model.SecondaryEmailAddress;
+    delete this.applicationService.model.SecondaryFirstName;
+    delete this.applicationService.model.SecondaryLastName;
+    delete this.applicationService.model.SecondaryPhoneNumber;
+
+    delete this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
+    delete this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
   }
 
   get onlyRegistrationInformation() {
