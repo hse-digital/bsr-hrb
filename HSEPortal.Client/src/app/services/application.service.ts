@@ -146,7 +146,6 @@ export class ApplicationService {
 
   async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
     try {
-
       let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress };
       await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', this.sanitize(request)));
       return true;
@@ -154,6 +153,7 @@ export class ApplicationService {
       return false;
     }
   }
+
 
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
 
@@ -240,6 +240,11 @@ export class BuildingRegistrationModel {
   ContactLastName?: string;
   ContactPhoneNumber?: string;
   ContactEmailAddress?: string;
+  NewPrimaryUserEmail?: string;
+  SecondaryFirstName?: string;
+  SecondaryLastName?: string;
+  SecondaryPhoneNumber?: string;
+  SecondaryEmailAddress?: string;
   NumberOfSections?: string;
   Sections: SectionModel[] = [];
   OutOfScopeContinueReason?: string;
@@ -547,6 +552,7 @@ export enum Status {
   ChangesInProgress = 1,
   ChangesComplete = 2,
   ChangesSubmitted = 4, 
+  Removed = 8
 }
 
 export enum BuildingApplicationStatuscode

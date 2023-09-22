@@ -630,7 +630,7 @@ public class DynamicsService
         return existingAreaAp.value.FirstOrDefault();
     }
 
-    private async Task AssignContactType(string contactId, string contactTypeId)
+    public async Task AssignContactType(string contactId, string contactTypeId)
     {
         await dynamicsApi.Create($"contacts({contactId})/bsr_contacttype_contact/$ref",
             new DynamicsContactType { contactTypeReferenceId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_contacttypes({contactTypeId})" });
@@ -903,7 +903,7 @@ public class DynamicsService
         return contact with { Id = existingContact.contactid };
     }
 
-    private async Task<DynamicsContact> FindExistingContactAsync(string firstName, string lastName, string email, string phoneNumber)
+    public async Task<DynamicsContact> FindExistingContactAsync(string firstName, string lastName, string email, string phoneNumber)
     {
         var response = await dynamicsApi.Get<DynamicsResponse<DynamicsContact>>("contacts",
             new[]
@@ -941,7 +941,7 @@ public class DynamicsService
         return response.AccessToken;
     }
 
-    private string ExtractEntityIdFromHeader(IReadOnlyNameValueList<string> headers)
+    public string ExtractEntityIdFromHeader(IReadOnlyNameValueList<string> headers)
     {
         var header = headers.FirstOrDefault(x => x.Name == "OData-EntityId");
         var id = Regex.Match(header.Value, @"\((.+)\)");

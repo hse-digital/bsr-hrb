@@ -18,16 +18,16 @@
         You can only have one secondary user at a time.
     </govuk-body>
 
-    <govuk-body *ngIf="!currentSecondaryUserExists() && !newSecondaryUserExists()">
+    <govuk-body *ngIf="(!currentSecondaryUserExists() && !newSecondaryUserExists()) || isSecondaryUserRemoved() ">
         <a class="govuk-link" (keyup.enter)="addSecondaryUser()" (click)="addSecondaryUser()" role="link" tabindex="0">Add a secondary user</a>
     </govuk-body>
 
-    <user-details *ngIf="currentSecondaryUserExists()" 
+    <user-details *ngIf="currentSecondaryUserExists() && !isSecondaryUserRemoved()" 
         [user]="currentSecondaryUser" 
         (removeClicked)="removeSecondaryUser()" 
         (changeClicked)="changeSecondaryUser()" />
 
-    <user-details *ngIf="!currentSecondaryUserExists() && newSecondaryUserExists()" 
+    <user-details *ngIf="!currentSecondaryUserExists() && newSecondaryUserExists() && !isSecondaryUserRemoved()" 
         [user]="newSecondaryUser"
         (removeClicked)="removeSecondaryUser()" 
         (changeClicked)="changeSecondaryUser()" />

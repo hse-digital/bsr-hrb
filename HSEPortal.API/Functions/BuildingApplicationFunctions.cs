@@ -6,6 +6,8 @@ using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.DurableTask;
+using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions;
@@ -43,8 +45,7 @@ public class BuildingApplicationFunctions
 
     [Function(nameof(ValidateApplicationNumber))]
     public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations",
-            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", Connection = "CosmosConnection")]
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and (StringEquals(c.ContactEmailAddress, {EmailAddress}, true) or StringEquals(c.SecondaryEmailAddress, {EmailAddress}, true) or StringEquals(c.NewPrimaryUserEmail, {EmailAddress}, true))", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
         return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
@@ -71,7 +72,7 @@ public class BuildingApplicationFunctions
     [Function(nameof(GetApplication))]
     public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request,
         [CosmosDBInput("hseportal", "building-registrations",
-            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", PartitionKey = "{ApplicationNumber}",
+            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and (StringEquals(c.ContactEmailAddress, {EmailAddress}, true) or StringEquals(c.SecondaryEmailAddress, {EmailAddress}, true) or StringEquals(c.NewPrimaryUserEmail, {EmailAddress}, true))", PartitionKey = "{ApplicationNumber}",
             Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
@@ -79,7 +80,9 @@ public class BuildingApplicationFunctions
         if (buildingApplications.Any())
         {
             var application = buildingApplications[0];
-            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress);
+            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress) 
+                || await otpService.ValidateToken(requestContent.OtpToken, application.SecondaryEmailAddress)
+                || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail);
             if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
                 return await request.CreateObjectResponseAsync(application);
@@ -259,4 +262,9 @@ public record RegisteredStructureModel
 public class RegisteredStructureRequestModel {
     public string Postcode {get; set;}
     public string AddressLineOne {get; set;}
+}
+
+public class ApplicationNumberAndEmail {
+    public string ApplicationNumber {get; set;}
+    public string EmailAddress {get; set;}
 }

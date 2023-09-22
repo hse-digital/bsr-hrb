@@ -31,10 +31,10 @@ export class UserListComponent  extends PageComponent<string> {
   override async onInit(applicationService: ApplicationService): Promise<void> {
     this.initChangeUser();
     this.initPrimaryUser();
+    this.initSecondaryUser();
     
     this.newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
     this.newSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
-    this.currentSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
 
   }
 
@@ -59,6 +59,32 @@ export class UserListComponent  extends PageComponent<string> {
         Lastname: this.applicationService.model.ContactLastName,
         Email: this.applicationService.model.ContactEmailAddress,
         PhoneNumber: this.applicationService.model.ContactPhoneNumber
+      }
+    }
+  }
+
+  private initSecondaryUser() {
+    if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Email) 
+      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Firstname)) {
+        let status = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status;
+        if(status != Status.Removed) {
+          this.currentSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser;
+        }
+    } else {
+      this.currentSecondaryUser = {
+        Status: Status.NoChanges,
+        Firstname: this.applicationService.model.SecondaryFirstName,
+        Lastname: this.applicationService.model.SecondaryLastName,
+        Email: this.applicationService.model.SecondaryEmailAddress,
+        PhoneNumber: this.applicationService.model.SecondaryPhoneNumber
+      }
+
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser = {
+        Status: Status.NoChanges,
+        Firstname: this.applicationService.model.SecondaryFirstName,
+        Lastname: this.applicationService.model.SecondaryLastName,
+        Email: this.applicationService.model.SecondaryEmailAddress,
+        PhoneNumber: this.applicationService.model.SecondaryPhoneNumber
       }
     }
   }
@@ -106,14 +132,18 @@ export class UserListComponent  extends PageComponent<string> {
     this.navigationService.navigateRelative(SelectSecondaryUserComponent.route, this.activatedRoute);
   }
 
+  isSecondaryUserRemoved() {
+    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.Removed;
+  }
+
   currentSecondaryUserExists() {
     return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser &&
-      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Firstname)
+      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Firstname);
   }
 
   newSecondaryUserExists() {
     return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser &&
-      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser.Firstname)
+      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser.Firstname);
   }
 
   newPrimaryUserExists() {

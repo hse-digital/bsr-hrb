@@ -10,6 +10,11 @@ public record BuildingApplicationModel(
     string ContactLastName = null,
     string ContactPhoneNumber = null,
     string ContactEmailAddress = null,
+    string NewPrimaryUserEmail = null,
+    string SecondaryFirstName = null,
+    string SecondaryLastName = null,
+    string SecondaryPhoneNumber = null,
+    string SecondaryEmailAddress = null,
     string NumberOfSections = null,
     SectionModel[] Sections = null,
     AccountablePerson[] AccountablePersons = null,
@@ -230,4 +235,5 @@ public enum Status {
     ChangesInProgress = 1,
     ChangesComplete = 2,
     ChangesSubmitted = 4,
+    Removed = 8
 }

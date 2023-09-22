@@ -78,15 +78,16 @@ export class ChangesTag extends ChangeTaskListTag {
         if (!manageAccess) return TagStatus.NoChangesMade;
 
         let primaryUserStatus = manageAccess?.PrimaryUser?.Status ?? Status.NoChanges;
+        let newSecondaryUserStatus = manageAccess?.NewSecondaryUser?.Status ?? Status.NoChanges;
         let secondaryUserStatus = manageAccess?.SecondaryUser?.Status ?? Status.NoChanges;
 
-        if (this.ContainsFlag(primaryUserStatus, Status.ChangesSubmitted) && this.ContainsFlag(secondaryUserStatus, Status.ChangesSubmitted)) {
+        if (this.ContainsFlag(primaryUserStatus, Status.ChangesSubmitted) && this.ContainsFlag(newSecondaryUserStatus, Status.ChangesSubmitted)) {
             return TagStatus.NoChangesMade;
-        } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesInProgress) || this.ContainsFlag(secondaryUserStatus, Status.ChangesInProgress)) {
+        } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesInProgress) || this.ContainsFlag(newSecondaryUserStatus, Status.ChangesInProgress)) {
             return TagStatus.MoreInformationNeeded;
-        } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesComplete) || this.ContainsFlag(secondaryUserStatus, Status.ChangesComplete)) {
+        } else if (this.ContainsFlag(primaryUserStatus, Status.ChangesComplete) || this.ContainsFlag(newSecondaryUserStatus, Status.ChangesComplete) || this.ContainsFlag(secondaryUserStatus, Status.Removed)) {
             return TagStatus.ChangesNotYetSubmitted;
-        } else if (this.ContainsFlag(primaryUserStatus, Status.NoChanges) && this.ContainsFlag(secondaryUserStatus, Status.NoChanges) ) {
+        } else if (this.ContainsFlag(primaryUserStatus, Status.NoChanges) && this.ContainsFlag(newSecondaryUserStatus, Status.NoChanges) ) {
             return TagStatus.NoChangesMade;
         }
 

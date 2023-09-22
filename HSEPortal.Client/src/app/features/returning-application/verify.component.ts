@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
 import { GovukErrorSummaryComponent } from "hse-angular";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { ApplicationService, BuildingApplicationStage } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { RegistrationAmendmentsService } from "src/app/services/registration-amendments.service";
 import { TitleService } from 'src/app/services/title.service';
 
 @Component({
@@ -25,7 +27,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
 
   @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private titleService: TitleService) { }
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private titleService: TitleService, private registrationAmendmentsService: RegistrationAmendmentsService) { }
 
   ngOnInit() {
     this.titleService.setTitle(ReturningApplicationVerifyComponent.title);
@@ -67,6 +69,9 @@ export class ReturningApplicationVerifyComponent implements OnInit {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
 
+      let isNewPrimaryUser = this.areEqual(this.applicationService.model.NewPrimaryUserEmail, this.emailAddress);
+      if(isNewPrimaryUser) await this.integratePrimaryUser();
+      
       if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);
       } else {
@@ -78,6 +83,33 @@ export class ReturningApplicationVerifyComponent implements OnInit {
       return false;
     }
   }
+
+  private areEqual(a?: string, b?: string) {
+    if(FieldValidations.IsNotNullOrWhitespace(a) && FieldValidations.IsNotNullOrWhitespace(b)) {
+      return a!.toLowerCase().trim() == b!.toLowerCase().trim();
+    }
+    return false;
+  }
+
+  private async integratePrimaryUser() {
+    await this.registrationAmendmentsService.syncNewPrimaryUser();
+    this.updatePrimaryUser();
+    this.applicationService.updateApplication();
+  }
+  
+  private updatePrimaryUser() {
+    let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+    if(!!newPrimaryUser) {
+      this.applicationService.model.ContactEmailAddress = newPrimaryUser.Email;
+      this.applicationService.model.ContactFirstName = newPrimaryUser.Firstname;
+      this.applicationService.model.ContactLastName = newPrimaryUser.Lastname;
+      this.applicationService.model.ContactPhoneNumber = newPrimaryUser.PhoneNumber;
+      delete this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+      delete this.applicationService.model.NewPrimaryUserEmail;
+    }
+  }
+
+
 
   private isAccountablePersonsComplete() {
     var applicationStatus = this.applicationService.model.ApplicationStatus;
