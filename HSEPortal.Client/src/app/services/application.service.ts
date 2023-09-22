@@ -144,18 +144,13 @@ export class ApplicationService {
     }));
   }
 
-  async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<{isValid: boolean, isNewPrimaryUser: boolean}> {
+  async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
     let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress };
     try {
       await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', request));
-      return {isValid: true, isNewPrimaryUser: false};
+      return true;
     } catch {
-      try {
-        await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumberNewPrimaryUser', request));
-        return {isValid: true, isNewPrimaryUser: true};
-      } catch {
-        return {isValid: false, isNewPrimaryUser: true};
-      }
+      return false;
     }
   }
 
@@ -553,6 +548,7 @@ export enum Status {
   ChangesInProgress = 1,
   ChangesComplete = 2,
   ChangesSubmitted = 4, 
+  Removed = 8
 }
 
 export enum BuildingApplicationStatuscode

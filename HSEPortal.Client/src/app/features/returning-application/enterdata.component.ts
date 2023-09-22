@@ -16,8 +16,6 @@ export class ReturningApplicationEnterDataComponent {
     applicationNumber: { hasError: false, errorText: '' }
   }
 
-  isNewPrimaryUser: boolean = false;
-
   @Input() emailAddress: string | undefined;
   @Output() emailAddressChange = new EventEmitter<string | undefined>();
 
@@ -25,7 +23,7 @@ export class ReturningApplicationEnterDataComponent {
   @Output() applicationNumberChange = new EventEmitter<string | undefined>();
 
   @Output()
-  onContinue = new EventEmitter<{ emailAddress: string, applicationNumber: string, isNewPrimaryUser: boolean }>();
+  onContinue = new EventEmitter<{ emailAddress: string, applicationNumber: string }>();
 
   @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
 
@@ -46,7 +44,7 @@ export class ReturningApplicationEnterDataComponent {
 
     if (!this.hasErrors) {
       await this.applicationService.sendVerificationEmail(this.emailAddress!,  this.applicationNumber!);
-      this.onContinue.emit({ emailAddress: this.emailAddress!, applicationNumber: this.applicationNumber!, isNewPrimaryUser: this.isNewPrimaryUser });
+      this.onContinue.emit({ emailAddress: this.emailAddress!, applicationNumber: this.applicationNumber! });
     } else {
       this.summaryError?.first?.focus();
       this.titleService.setTitleError();      
@@ -77,8 +75,6 @@ export class ReturningApplicationEnterDataComponent {
   }
 
   async doesApplicationNumberMatchEmail(): Promise<boolean> {
-    let applicationNumber = await this.applicationService.isApplicationNumberValid(this.emailAddress!, this.applicationNumber!);
-    this.isNewPrimaryUser = applicationNumber.isNewPrimaryUser;
-    return applicationNumber.isValid;
+    return await this.applicationService.isApplicationNumberValid(this.emailAddress!, this.applicationNumber!);
   }
 }

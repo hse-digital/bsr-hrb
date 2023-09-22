@@ -45,25 +45,10 @@ public class BuildingApplicationFunctions
 
     [Function(nameof(ValidateApplicationNumber))]
     public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and (StringEquals(c.ContactEmailAddress, {EmailAddress}, true) or StringEquals(c.SecondaryEmailAddress, {EmailAddress}, true))", Connection = "CosmosConnection")]
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and (StringEquals(c.ContactEmailAddress, {EmailAddress}, true) or StringEquals(c.SecondaryEmailAddress, {EmailAddress}, true) or StringEquals(c.NewPrimaryUserEmail, {EmailAddress}, true))", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
         return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
-    }
-
-    [Function(nameof(ValidateApplicationNumberNewPrimaryUser))]
-    public async Task<HttpResponseData> ValidateApplicationNumberNewPrimaryUser([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumberNewPrimaryUser")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", Connection = "CosmosConnection", PartitionKey = "{ApplicationNumber}")]
-        List<BuildingApplicationModel> buildingApplications)
-    {
-        if(buildingApplications.Any()) {
-            ApplicationNumberAndEmail input = await request.ReadAsJsonAsync<ApplicationNumberAndEmail>();
-            BuildingApplicationModel model = buildingApplications.FirstOrDefault();
-
-            string primaryUserEmail = model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser?.Email ?? "";
-            if(AreEqual(primaryUserEmail, input.EmailAddress)) return request.CreateResponse(HttpStatusCode.OK);
-        }
-        return request.CreateResponse(HttpStatusCode.BadRequest);
     }
 
     private bool AreEqual(string a, string b) {

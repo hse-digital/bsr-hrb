@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
 import { GovukErrorSummaryComponent } from "hse-angular";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { ApplicationService, BuildingApplicationStage } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { RegistrationAmendmentsService } from "src/app/services/registration-amendments.service";
@@ -15,7 +16,6 @@ export class ReturningApplicationVerifyComponent implements OnInit {
 
   @Input() emailAddress!: string;
   @Input() applicationNumber!: string;
-  @Input() isNewPrimaryUser!: boolean;
   @Output() onResendClicked = new EventEmitter();
 
   sendingRequest = false;
@@ -68,11 +68,10 @@ export class ReturningApplicationVerifyComponent implements OnInit {
   private async doesSecurityCodeMatch(): Promise<boolean> {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
-      if(this.isNewPrimaryUser) {
-        await this.registrationAmendmentsService.syncNewPrimaryUser();
-        this.updatePrimaryUser();
-        this.applicationService.updateApplication();
-      }
+
+      let isNewPrimaryUser = this.areEqual(this.applicationService.model.NewPrimaryUserEmail, this.emailAddress);
+      if(isNewPrimaryUser) await this.integratePrimaryUser();
+      
       if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);
       } else {
@@ -85,6 +84,18 @@ export class ReturningApplicationVerifyComponent implements OnInit {
     }
   }
 
+  private areEqual(a?: string, b?: string) {
+    if(FieldValidations.IsNotNullOrWhitespace(a) && FieldValidations.IsNotNullOrWhitespace(b)) {
+      return a!.toLowerCase().trim() == b!.toLowerCase().trim();
+    }
+    return false;
+  }
+
+  private async integratePrimaryUser() {
+    await this.registrationAmendmentsService.syncNewPrimaryUser();
+    this.updatePrimaryUser();
+    this.applicationService.updateApplication();
+  }
   
   private updatePrimaryUser() {
     let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
@@ -93,10 +104,12 @@ export class ReturningApplicationVerifyComponent implements OnInit {
       this.applicationService.model.ContactFirstName = newPrimaryUser.Firstname;
       this.applicationService.model.ContactLastName = newPrimaryUser.Lastname;
       this.applicationService.model.ContactPhoneNumber = newPrimaryUser.PhoneNumber;
+      delete this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+      delete this.applicationService.model.NewPrimaryUserEmail;
     }
-    delete this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
-    delete this.applicationService.model.NewPrimaryUserEmail;
   }
+
+
 
   private isAccountablePersonsComplete() {
     var applicationStatus = this.applicationService.model.ApplicationStatus;
