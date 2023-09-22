@@ -134,20 +134,20 @@ export class ApplicationService {
   }
 
   async sendVerificationEmail(emailAddress: string, applicationNumber: string, buildingName?: string): Promise<void> {
-    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": emailAddress, "ApplicationNumber": applicationNumber, "BuildingName": buildingName }));
+    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', this.sanitize({ "EmailAddress": emailAddress, "ApplicationNumber": applicationNumber, "BuildingName": buildingName })));
   }
 
   async validateOTPToken(otpToken: string, emailAddress: string): Promise<void> {
-    await firstValueFrom(this.httpClient.post('api/ValidateOTPToken', {
+    await firstValueFrom(this.httpClient.post('api/ValidateOTPToken', this.sanitize({
       "OTPToken": otpToken,
       "EmailAddress": emailAddress
-    }));
+    })));
   }
 
   async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
-    let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress };
     try {
-      await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', request));
+      let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress };
+      await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', this.sanitize(request)));
       return true;
     } catch {
       return false;
@@ -158,47 +158,47 @@ export class ApplicationService {
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
 
     let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress, OtpToken: otpToken };
-    let application: BuildingRegistrationModel = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/GetApplication', request));
+    let application: BuildingRegistrationModel = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/GetApplication', this.sanitize(request)));
     this.model = application;
     this.updateLocalStorage();
   }
 
   async registerNewBuildingApplication(): Promise<void> {
-    this.model = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/NewBuildingApplication', this.model));
+    this.model = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/NewBuildingApplication', this.sanitize(this.model)));
     this.updateLocalStorage();
   }
 
   async updateApplication(): Promise<void> {
     this.updateLocalStorage();
-    await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
+    await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.sanitize(this.model)));
   }
 
   async updateDynamicsBuildingSummaryStage(): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/UpdateDynamicsBuildingSummaryStage`, this.model));
+    await firstValueFrom(this.httpClient.post(`api/UpdateDynamicsBuildingSummaryStage`, this.sanitize(this.model)));
   }
 
   async updateDynamicsAccountablePersonsStage(): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/UpdateDynamicsAccountablePersonsStage`, this.model));
+    await firstValueFrom(this.httpClient.post(`api/UpdateDynamicsAccountablePersonsStage`, this.sanitize(this.model)));
   }
 
   async syncBuildingStructures(): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/SyncBuildingStructures`, this.model));
+    await firstValueFrom(this.httpClient.post(`api/SyncBuildingStructures`, this.sanitize(this.model)));
   }
 
   async syncAccountablePersons(): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/SyncAccountablePersons`, this.model));
+    await firstValueFrom(this.httpClient.post(`api/SyncAccountablePersons`, this.sanitize(this.model)));
   }
 
   async syncDeclaration(): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/SyncDeclaration`, this.model));
+    await firstValueFrom(this.httpClient.post(`api/SyncDeclaration`, this.sanitize(this.model)));
   }
 
   async syncPayment(): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
+    await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.sanitize(this.model)));
   }
 
   async createInvoicePayment(paymentDetails: PaymentInvoiceDetails): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/InitialiseInvoicePayment/${this.model.id}`, paymentDetails));
+    await firstValueFrom(this.httpClient.post(`api/InitialiseInvoicePayment/${this.model.id}`, this.sanitize(paymentDetails)));
   }
 
   async getApplicationPayments(): Promise<any[]> {
@@ -220,6 +220,10 @@ export class ApplicationService {
 
   async getBuildingApplicationStatuscode(applicationid: string): Promise<BuildingApplicationStatuscode> {
     return await firstValueFrom(this.httpClient.get<BuildingApplicationStatuscode>(`api/GetBuildingApplicationStatuscode?applicationid=${applicationid}`));
+  }
+
+  sanitize(body: any): string {
+    return JSON.stringify(body).replaceAll("'", "&39");;
   }
 }
 
