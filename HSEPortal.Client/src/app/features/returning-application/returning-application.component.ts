@@ -15,7 +15,6 @@ export class ReturningApplicationComponent extends BaseComponent{
   step = "enterdata";
   emailAddress?: string;
   applicationNumber?: string;
-  isNewPrimaryUser: boolean = false;
 
   constructor(router: Router, applicationService: ApplicationService, navigationService: NavigationService, activatedRoute: ActivatedRoute, titleService: TitleService) {
     super(router, applicationService, navigationService, activatedRoute, titleService);
@@ -25,8 +24,7 @@ export class ReturningApplicationComponent extends BaseComponent{
     return false;
   }
 
-  showVerifyApplication(event?: any) {
-    this.isNewPrimaryUser = event?.isNewPrimaryUser ?? false;
+  showVerifyApplication() {
     this.step = 'verify';
   }
 

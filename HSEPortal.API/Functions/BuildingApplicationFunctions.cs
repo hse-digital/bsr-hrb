@@ -51,11 +51,6 @@ public class BuildingApplicationFunctions
         return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 
-    private bool AreEqual(string a, string b) {
-        if(a == null || b == null || a.Equals(string.Empty) || b.Equals(string.Empty)) return false;
-        return a.ToLower().Equals(b.ToLower());
-    }
-
     [Function(nameof(GetSubmissionDate))]
     public async Task<HttpResponseData> GetSubmissionDate(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetSubmissionDate/{applicationNumber}")]
