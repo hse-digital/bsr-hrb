@@ -27,8 +27,14 @@ export class RaConfirmationComponent  extends PageComponent<void> {
     var payments = await this.applicationService.getApplicationPayments()
     this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
 
-    this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser
-    this.secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser
+    this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser
+    this.secondaryUser = {
+      Status: Status.ChangesSubmitted,
+      Email: this.applicationService.model.SecondaryEmailAddress,
+      Firstname: this.applicationService.model.SecondaryFirstName,
+      Lastname: this.applicationService.model.SecondaryLastName,
+      PhoneNumber: this.applicationService.model.SecondaryPhoneNumber
+    }
 
   }
 
