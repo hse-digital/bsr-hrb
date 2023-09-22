@@ -132,14 +132,18 @@ export class UserListComponent  extends PageComponent<string> {
     this.navigationService.navigateRelative(SelectSecondaryUserComponent.route, this.activatedRoute);
   }
 
+  isSecondaryUserRemoved() {
+    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.Removed;
+  }
+
   currentSecondaryUserExists() {
     return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser &&
-      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Firstname)
+      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Firstname);
   }
 
   newSecondaryUserExists() {
     return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser &&
-      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser.Firstname)
+      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser.Firstname);
   }
 
   newPrimaryUserExists() {

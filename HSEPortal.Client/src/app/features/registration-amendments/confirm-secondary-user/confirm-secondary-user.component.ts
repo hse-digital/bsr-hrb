@@ -24,20 +24,9 @@ export class ConfirmSecondaryUserComponent extends PageComponent<void> {
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    if(!!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser!.Status = Status.ChangesComplete; 
-      this.updateSecondaryUser();
-    } else {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser! = {Status: Status.ChangesComplete};
+    if(!!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser.Status = Status.ChangesComplete; 
     }
-  }
-
-  private updateSecondaryUser() {
-    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser
-    this.applicationService.model.SecondaryEmailAddress = secondaryUser?.Email;
-    this.applicationService.model.SecondaryFirstName = secondaryUser?.Firstname;
-    this.applicationService.model.SecondaryLastName = secondaryUser?.Lastname;
-    this.applicationService.model.SecondaryPhoneNumber = secondaryUser?.PhoneNumber;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

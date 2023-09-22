@@ -54,7 +54,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     let NewSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
     if (secondaryUser?.Status == Status.Removed) {
 
-      this.registrationAmendmentsService.deleteSecondaryUserLookup();
+      await this.registrationAmendmentsService.deleteSecondaryUserLookup();
       this.deleteSecondaryUser();
 
     } else if (!!NewSecondaryUser && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Email) && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Firstname)) {

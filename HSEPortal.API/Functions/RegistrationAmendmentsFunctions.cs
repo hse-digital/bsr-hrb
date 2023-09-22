@@ -62,8 +62,7 @@ public class RegistrationAmendmentsFunctions
         var secondaryBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
 
         if(buildingApplicationModel.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.Removed) {
-            await dynamicsApi.Update($"bsr_buildingapplications({secondaryBuildingApplication.bsr_buildingapplicationid})",
-                new DynamicsBuildingApplication { secondaryContactReferenceId = null });
+            await dynamicsApi.Delete($"bsr_buildingapplications({secondaryBuildingApplication.bsr_buildingapplicationid})/bsr_secondaryapplicantid/$ref");
             return request.CreateResponse(HttpStatusCode.OK);
         }
         return request.CreateResponse(HttpStatusCode.BadRequest);
