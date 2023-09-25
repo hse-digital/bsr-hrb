@@ -57,6 +57,7 @@ export class AddressComponent implements OnInit {
   }
 
   manualAddressEntered(address: AddressModel) {
+    this.searchModel.postcode = address?.Postcode;
     this.address = address;
     this.changeStepTo('confirm');
   }
