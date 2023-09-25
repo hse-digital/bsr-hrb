@@ -62,6 +62,16 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     }
   }
 
+  namedContactExists() {
+    let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
+    let namedContactLastName = this.applicationService.model.AccountablePersons[0].LeadLastName;
+    let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail;
+    
+    return FieldValidations.IsNotNullOrWhitespace(namedContactLastName) 
+      && FieldValidations.IsNotNullOrWhitespace(namedContactFirstName)
+      && FieldValidations.IsNotNullOrWhitespace(namedContactEmail);
+  }
+
   isNamedContactAnExistingUser() {
     return this.areNamedContactAndPrimaryUserTheSame() ||  this.areNamedContactAndSecondaryUserTheSame();
   }
@@ -84,7 +94,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
     let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
 
-    let secondaryUser =this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
+    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
 
     let currentSecondaryUserEmail = secondaryUser?.Email?.trim().toLowerCase();
     let currentSecondaryUserFirstName = secondaryUser?.Firstname;
