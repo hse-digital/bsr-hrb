@@ -95,6 +95,9 @@
 
         <ng-container *ngIf="isViewSeven()">
           <ng-container *ngTemplateOutlet="MakingChanges" />
+          <ng-container *ngIf="!isKbiSubmitted">
+            <ng-container *ngTemplateOutlet="WhatsNext" />
+          </ng-container>          
           <!-- <ng-container *ngTemplateOutlet="Remove" /> -->
         </ng-container>
       </ng-container>
