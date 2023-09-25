@@ -1,5 +1,6 @@
 <hse-address [addressName]="getAddressSectionName()"
              [searchMode]="searchMode"
              [address]="address"
+             [isStructureAddress]="true"
              (onAddressConfirmed)="updateSectionAddress($event)"
              (onChangeStep)="changeStep($event)"/>
