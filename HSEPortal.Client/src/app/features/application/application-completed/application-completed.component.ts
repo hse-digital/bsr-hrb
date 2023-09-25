@@ -56,11 +56,6 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     await this.navigationService.navigate('/select');
   }
 
-  private sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
-
   isViewOne(): boolean {
     return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
@@ -71,13 +66,15 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   isViewTwo() {
     return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isNotNewInProgressSubmittedRegisteredWithdrawnRejected(this.applicationStatuscode) &&
-      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus);
+      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus) &&
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
   isViewThree() {
     return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isRegistered(this.applicationStatuscode) &&
-      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus);
+      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus) &&
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
   isViewFour() {
@@ -90,13 +87,15 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   isViewFive() {
     return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isNotNewInProgressSubmittedRegisteredWithdrawnRejected(this.applicationStatuscode) &&
-      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus);
+      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus) &&
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
   isViewSix() {
     return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isRegistered(this.applicationStatuscode) &&
-      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus);
+      ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus) &&
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
   isViewSeven() {
