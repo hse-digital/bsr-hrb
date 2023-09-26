@@ -13,6 +13,8 @@ export class RaDeclarationComponent extends PageComponent<void> {
   static route: string = 'declaration';
   static title: string = "Declaration about changes - Register a high-rise building - GOV.UK";
 
+  loading = false;
+
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
@@ -43,6 +45,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   async submitUserChanges() {
+    this.loading = true;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesSubmitted;
     
     let NewPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
