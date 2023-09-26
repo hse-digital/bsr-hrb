@@ -211,7 +211,7 @@ public record PaymentInvoiceDetails
 
 public record RegistrationAmendmentsModel {
     public ChangeUser ChangeUser { get; set; }
-    public int Date { get; set; }
+    public long Date { get; set; }
 }
 
 public record ChangeUser {
