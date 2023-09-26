@@ -517,7 +517,7 @@ export class RegistrationAmendmentsModel {
   SubmitStatus: Status = Status.NoChanges;
 
   ChangeUser?: ChangeUser;
-
+  Date?: number;
 }
 
 export class ChangeAccountablePerson {

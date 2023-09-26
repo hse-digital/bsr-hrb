@@ -16,7 +16,7 @@
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">Changes submitted</td>
-                <td class="govuk-table__cell">{{payment?.bsr_timeanddateoftransaction | date: 'dd MMMM yyyy'}}</td>
+                <td class="govuk-table__cell">{{applicationService.model.RegistrationAmendmentsModel?.Date | date: 'dd MMMM yyyy'}}</td>
             </tr>
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../../summary']" href="" target="_blank" role="link" tabindex="0">Registration application</a></td>

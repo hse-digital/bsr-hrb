@@ -43,6 +43,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   async submitUserChanges() {
+    this.applicationService.model.RegistrationAmendmentsModel!.Date = Date.now();
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesSubmitted;
     
     let NewPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
