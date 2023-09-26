@@ -53,9 +53,9 @@ export class UserListComponent extends PageComponent<string> {
     let primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser;
     let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
 
-    if (primaryUser?.Status == Status.ChangesComplete && FieldValidations.IsNotNullOrWhitespace(newPrimaryUser?.Email) && FieldValidations.IsNotNullOrWhitespace(newPrimaryUser?.Firstname)) {
+    if (this.newPrimaryUserExists()) {
       this.primaryUser = {
-        Status: primaryUser?.Status,
+        Status: primaryUser?.Status ?? Status.ChangesInProgress,
         Firstname: newPrimaryUser?.Firstname,
         Lastname: newPrimaryUser?.Lastname,
         Email: newPrimaryUser?.Email,
