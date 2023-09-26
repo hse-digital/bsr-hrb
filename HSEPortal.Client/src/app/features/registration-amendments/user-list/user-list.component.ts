@@ -12,12 +12,12 @@ import { ChangeTaskListComponent } from '../change-task-list/change-task-list.co
   selector: 'hse-user-list',
   templateUrl: './user-list.component.html'
 })
-export class UserListComponent  extends PageComponent<string> {
+export class UserListComponent extends PageComponent<string> {
   static route: string = 'user-list';
   static title: string = "Manage who can tell us about this building - Register a high-rise building - GOV.UK";
 
   ChangeUserStatuses = Status;
-  
+
   primaryUser?: User;
   newPrimaryUser?: User;
 
@@ -32,14 +32,14 @@ export class UserListComponent  extends PageComponent<string> {
     this.initChangeUser();
     this.initPrimaryUser();
     this.initSecondaryUser();
-    
+
     this.newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
     this.newSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
 
   }
 
   private initChangeUser() {
-    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser) {
+    if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser = {
         PrimaryUser: {
           Status: Status.NoChanges
@@ -49,9 +49,18 @@ export class UserListComponent  extends PageComponent<string> {
   }
 
   private initPrimaryUser() {
-    if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Email) 
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Firstname)) {
-        this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser;
+
+    let primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser;
+    let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+
+    if (primaryUser?.Status == Status.ChangesComplete && FieldValidations.IsNotNullOrWhitespace(newPrimaryUser?.Email) && FieldValidations.IsNotNullOrWhitespace(newPrimaryUser?.Firstname)) {
+      this.primaryUser = {
+        Status: primaryUser?.Status,
+        Firstname: newPrimaryUser?.Firstname,
+        Lastname: newPrimaryUser?.Lastname,
+        Email: newPrimaryUser?.Email,
+        PhoneNumber: newPrimaryUser?.PhoneNumber
+      }
     } else {
       this.primaryUser = {
         Status: Status.NoChanges,
@@ -64,12 +73,12 @@ export class UserListComponent  extends PageComponent<string> {
   }
 
   private initSecondaryUser() {
-    if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Email) 
+    if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Email)
       && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Firstname)) {
-        let status = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status;
-        if(status != Status.Removed) {
-          this.currentSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser;
-        }
+      let status = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status;
+      if (status != Status.Removed) {
+        this.currentSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser;
+      }
     } else {
       this.currentSecondaryUser = {
         Status: Status.NoChanges,
@@ -90,7 +99,7 @@ export class UserListComponent  extends PageComponent<string> {
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-    
+
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
