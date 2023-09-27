@@ -95,13 +95,16 @@ export class SyncChangeApplicantHelper {
   }
 
   async syncChangeApplicant() {
-    this.changeApplicantHelper.changePrimaryUserStatusToSubmitted();
-    this.changeApplicantHelper.setNewPrimaryUserEmail();
-    
-    this.createChangeForPrimaryUser();    
+   
+    if (this.changeApplicantHelper.newPrimaryUserExists()) {
+      this.createChangeForPrimaryUser();
+      this.changeApplicantHelper.changePrimaryUserStatusToSubmitted();
+      this.changeApplicantHelper.setNewPrimaryUserEmail();
+    }
     
     if (this.changeApplicantHelper.isSecondaryUserRemoved()) {
 
+      this.createChangeForSecondaryUser();
       await this.registrationAmendmentsService.deleteSecondaryUserLookup();
       this.changeApplicantHelper.deleteSecondaryUser();
 

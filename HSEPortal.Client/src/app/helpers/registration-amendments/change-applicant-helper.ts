@@ -84,6 +84,11 @@ export class ChangeApplicantHelper {
         return !!NewSecondaryUser && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Email) && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Firstname)
     }
 
+    newPrimaryUserExists() {
+        let NewPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+        return !!NewPrimaryUser && FieldValidations.IsNotNullOrWhitespace(NewPrimaryUser.Email) && FieldValidations.IsNotNullOrWhitespace(NewPrimaryUser.Firstname)        
+    }
+
     isSecondaryUserRemoved() {
         let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
         return secondaryUser?.Status == Status.Removed

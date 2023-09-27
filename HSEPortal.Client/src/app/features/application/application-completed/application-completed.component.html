@@ -107,7 +107,7 @@
 
 <ng-template #ApplicationHistoryChangesSubmitted>
   <tr class="govuk-table__row">
-    <td class="govuk-table__cell"><a class="govuk-link" target="_blank" role="link" tabindex="0">Changes submitted</a></td>
+    <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../registration-amendments/summary']" target="_blank" role="link" tabindex="0">Changes submitted</a></td>
     <td class="govuk-table__cell">{{applicationService.model.RegistrationAmendmentsModel?.Date | date: 'dd MMMM yyyy'}}</td>
   </tr>
 </ng-template>
