@@ -1,4 +1,4 @@
-<govuk-formpage saveAndContinueText="Declare and submit" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+<govuk-formpage [hideSaveAndContinue]="true" [hideSaveAndComeBack]="true">
 
     <h1 class="govuk-heading-l">Declaration</h1>
 
@@ -26,4 +26,6 @@
         <ng-container *ngIf="onlyRegistrationInformation"> Knowingly or recklessly giving false or misleading information is a criminal offence punishable by up to 2 years in prision.</ng-container>
     </govuk-body>
         
+    <govuk-button [isLoading]="loading" loadingText="Loading..." [disabled]="loading" (onClick)="saveAndContinue()">Declare and submit</govuk-button>
+
 </govuk-formpage>

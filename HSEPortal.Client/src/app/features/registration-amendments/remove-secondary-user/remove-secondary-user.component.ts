@@ -36,7 +36,8 @@ export class RemoveSecondaryUserComponent extends PageComponent<void> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return true; 
+    return !!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser 
+        || !!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser; 
   }
 
   override isValid(): boolean {

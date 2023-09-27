@@ -21,18 +21,18 @@ import { KeepSecondaryUserComponent } from './keep-secondary-user/keep-secondary
 import { RaConfirmationComponent } from './ra-confirmation/ra-confirmation.component';
 
 const routes = new HseRoutes([
-  HseRoute.unsafe(ChangeTaskListComponent.route, ChangeTaskListComponent, undefined, ChangeTaskListComponent.title),
-  HseRoute.unsafe(UserListComponent.route, UserListComponent, undefined, UserListComponent.title),
-  HseRoute.unsafe(SelectPrimaryUserComponent.route, SelectPrimaryUserComponent, undefined, SelectPrimaryUserComponent.title),
-  HseRoute.unsafe(PrimaryUserDetailsComponent.route, PrimaryUserDetailsComponent, undefined, PrimaryUserDetailsComponent.title),
-  HseRoute.unsafe(ConfirmPrimaryUserComponent.route, ConfirmPrimaryUserComponent, undefined, ConfirmPrimaryUserComponent.title),
-  HseRoute.unsafe(SelectSecondaryUserComponent.route, SelectSecondaryUserComponent, undefined, SelectSecondaryUserComponent.title),
-  HseRoute.unsafe(SecondaryUserDetailsComponent.route, SecondaryUserDetailsComponent, undefined, SecondaryUserDetailsComponent.title),
-  HseRoute.unsafe(ConfirmSecondaryUserComponent.route, ConfirmSecondaryUserComponent, undefined, ConfirmSecondaryUserComponent.title),
-  HseRoute.unsafe(RemoveSecondaryUserComponent.route, RemoveSecondaryUserComponent, undefined, RemoveSecondaryUserComponent.title),
-  HseRoute.unsafe(KeepSecondaryUserComponent.route, KeepSecondaryUserComponent, undefined, KeepSecondaryUserComponent.title),
-  HseRoute.unsafe(RaDeclarationComponent.route, RaDeclarationComponent, undefined, RaDeclarationComponent.title),
-  HseRoute.unsafe(RaConfirmationComponent.route, RaConfirmationComponent, undefined, RaConfirmationComponent.title),
+  HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
+  HseRoute.protected(UserListComponent.route, UserListComponent, UserListComponent.title),
+  HseRoute.protected(SelectPrimaryUserComponent.route, SelectPrimaryUserComponent, SelectPrimaryUserComponent.title),
+  HseRoute.protected(PrimaryUserDetailsComponent.route, PrimaryUserDetailsComponent, PrimaryUserDetailsComponent.title),
+  HseRoute.protected(ConfirmPrimaryUserComponent.route, ConfirmPrimaryUserComponent, ConfirmPrimaryUserComponent.title),
+  HseRoute.protected(SelectSecondaryUserComponent.route, SelectSecondaryUserComponent, SelectSecondaryUserComponent.title),
+  HseRoute.protected(SecondaryUserDetailsComponent.route, SecondaryUserDetailsComponent, SecondaryUserDetailsComponent.title),
+  HseRoute.protected(ConfirmSecondaryUserComponent.route, ConfirmSecondaryUserComponent, ConfirmSecondaryUserComponent.title),
+  HseRoute.protected(RemoveSecondaryUserComponent.route, RemoveSecondaryUserComponent, RemoveSecondaryUserComponent.title),
+  HseRoute.protected(KeepSecondaryUserComponent.route, KeepSecondaryUserComponent, KeepSecondaryUserComponent.title),
+  HseRoute.protected(RaDeclarationComponent.route, RaDeclarationComponent, RaDeclarationComponent.title),
+  HseRoute.protected(RaConfirmationComponent.route, RaConfirmationComponent, RaConfirmationComponent.title),
 ]);
 
 @NgModule({
