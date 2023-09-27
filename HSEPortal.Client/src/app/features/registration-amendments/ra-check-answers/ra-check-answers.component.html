@@ -42,7 +42,7 @@
                 tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
             </dd>
           </div>
-          <div class="govuk-summary-list__row" *ngIf="isThereNewSecondaryUser()">
+          <div class="govuk-summary-list__row" *ngIf="isThereNewSecondaryUser() || secondaryUserRemoved()">
             <dt class="govuk-summary-list__key">
               Secondary user
             </dt>
@@ -54,10 +54,13 @@
             <dd class="govuk-summary-list__value" *ngIf="!isTherePreviousSecondaryUser()">
               <div>None</div>
             </dd>
-            <dd class="govuk-summary-list__value">
+            <dd class="govuk-summary-list__value" *ngIf="!secondaryUserRemoved()">
               <div>{{secondaryUser?.Firstname}} {{secondaryUser?.Lastname}}</div>
               <div>{{secondaryUser?.Email}}</div>
               <div>{{secondaryUser?.PhoneNumber}}</div>
+            </dd>
+            <dd class="govuk-summary-list__value" *ngIf="secondaryUserRemoved()">
+              <div>None</div>
             </dd>
             <dd class="govuk-summary-list__actions">
               <a class="govuk-link" role="link" (click)="changeSecondaryUser()" (keyup.enter)="changeSecondaryUser()"

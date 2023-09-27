@@ -62,4 +62,8 @@ export class RaCheckAnswersComponent extends PageComponent<void> {
       && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.SecondaryFirstName);
   }
 
+  secondaryUserRemoved() {
+    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.Removed;
+  }
+
 }
