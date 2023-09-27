@@ -34,6 +34,7 @@ const routes = new HseRoutes([
   HseRoute.protected(KeepSecondaryUserComponent.route, KeepSecondaryUserComponent, KeepSecondaryUserComponent.title),
   HseRoute.protected(RaDeclarationComponent.route, RaDeclarationComponent, RaDeclarationComponent.title),
   HseRoute.protected(RaConfirmationComponent.route, RaConfirmationComponent, RaConfirmationComponent.title),
+  HseRoute.protected(RaCheckAnswersComponent.route, RaCheckAnswersComponent, RaCheckAnswersComponent.title),
 ]);
 
 @NgModule({
