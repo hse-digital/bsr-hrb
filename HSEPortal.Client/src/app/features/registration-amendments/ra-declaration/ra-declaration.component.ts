@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, Status } from 'src/app/services/application.service';
+import { ApplicationService } from 'src/app/services/application.service';
 import { RaConfirmationComponent } from '../ra-confirmation/ra-confirmation.component';
-import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { ChangeApplicantModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
+import { ChangeApplicantHelper } from 'src/app/helpers/registration-amendments/change-applicant-helper';
+import { RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -13,18 +15,20 @@ export class RaDeclarationComponent extends PageComponent<void> {
   static route: string = 'declaration';
   static title: string = "Declaration about changes - Register a high-rise building - GOV.UK";
 
+  private syncChangeApplicantHelper: SyncChangeApplicantHelper;
+
   loading = false;
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, registrationAmendmentsService: RegistrationAmendmentsService) {
     super(activatedRoute);
+
+    this.syncChangeApplicantHelper = new SyncChangeApplicantHelper(this.applicationService, registrationAmendmentsService);
   }
 
-  override onInit(applicationService: ApplicationService): void | Promise<void> {
-
-  }
+  override onInit(applicationService: ApplicationService): void | Promise<void> { }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): Promise<void> {
-    await this.submitUserChanges();
+    await this.submit();
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -44,57 +48,20 @@ export class RaDeclarationComponent extends PageComponent<void> {
     return pap.Type == 'organisation' && pap.Role == 'registering_for';
   }
 
-  async submitUserChanges() {
-    this.applicationService.model.RegistrationAmendmentsModel!.Date = Date.now();
+  async submit() {
     this.loading = true;
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesSubmitted;
+    this.applicationService.model.RegistrationAmendmentsModel!.Date = Date.now();
     
-    let NewPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
-    if (!!NewPrimaryUser) {
-      this.applicationService.model.NewPrimaryUserEmail = NewPrimaryUser?.Email;
-    }
-
-    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
-    let NewSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
-    if (secondaryUser?.Status == Status.Removed) {
-
-      await this.registrationAmendmentsService.deleteSecondaryUserLookup();
-      this.deleteSecondaryUser();
-
-    } else if (!!NewSecondaryUser && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Email) && FieldValidations.IsNotNullOrWhitespace(NewSecondaryUser.Firstname)) {
-      
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser = {
-        Status: Status.ChangesSubmitted,
-        Email: NewSecondaryUser?.Email,
-        Firstname: NewSecondaryUser?.Firstname,
-        Lastname: NewSecondaryUser?.Lastname,
-        PhoneNumber: NewSecondaryUser?.PhoneNumber
-      }
-  
-      this.updateSecondaryUser();
-
-      await this.registrationAmendmentsService.syncSecondaryUser();
-      
-      delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser;
-    }
+    this.initialiseChanges();
+    this.syncChangeApplicantHelper.createChangeRequest();
+    
+    await this.syncChangeApplicantHelper.syncChangeApplicant();
   }
 
-  private updateSecondaryUser() {
-    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser
-    this.applicationService.model.SecondaryEmailAddress = secondaryUser?.Email;
-    this.applicationService.model.SecondaryFirstName = secondaryUser?.Firstname;
-    this.applicationService.model.SecondaryLastName = secondaryUser?.Lastname;
-    this.applicationService.model.SecondaryPhoneNumber = secondaryUser?.PhoneNumber;
-  }
-
-  private deleteSecondaryUser() {
-    delete this.applicationService.model.SecondaryEmailAddress;
-    delete this.applicationService.model.SecondaryFirstName;
-    delete this.applicationService.model.SecondaryLastName;
-    delete this.applicationService.model.SecondaryPhoneNumber;
-
-    delete this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
-    delete this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
+  initialiseChanges() {
+    if (!this.applicationService.model.RegistrationAmendmentsModel?.Change) {
+      this.applicationService.model.RegistrationAmendmentsModel!.Change = [];
+    }
   }
 
   get onlyRegistrationInformation() {
@@ -109,4 +76,68 @@ export class RaDeclarationComponent extends PageComponent<void> {
     return false;
   }
 
+}
+
+export class SyncChangeApplicantHelper {
+
+  private changeApplicantHelper: ChangeApplicantHelper;
+  private applicationService: ApplicationService;
+  private registrationAmendmentsService: RegistrationAmendmentsService;
+  private changeApplicantModelBuilder: ChangeApplicantModelBuilder
+
+  constructor(applicationService: ApplicationService, registrationAmendmentsService: RegistrationAmendmentsService) {
+    this.applicationService = applicationService;
+    this.changeApplicantHelper = new ChangeApplicantHelper(this.applicationService);
+    this.registrationAmendmentsService = registrationAmendmentsService;
+    this.changeApplicantModelBuilder = new ChangeApplicantModelBuilder()
+      .SetApplicationId(this.applicationService.model.id!)
+      .SetBuildingName(this.applicationService.model.BuildingName!);
+  }
+
+  async syncChangeApplicant() {
+    this.changeApplicantHelper.changePrimaryUserStatusToSubmitted();
+    this.changeApplicantHelper.setNewPrimaryUserEmail();
+    
+    this.createChangeForPrimaryUser();    
+    
+    if (this.changeApplicantHelper.isSecondaryUserRemoved()) {
+
+      await this.registrationAmendmentsService.deleteSecondaryUserLookup();
+      this.changeApplicantHelper.deleteSecondaryUser();
+
+    } else if (this.changeApplicantHelper.newSecondaryUserExists()) {
+
+      this.changeApplicantHelper.setSecondaryUser();
+      this.changeApplicantHelper.updateSecondaryUser();
+      this.createChangeForSecondaryUser();
+      await this.registrationAmendmentsService.syncSecondaryUser();
+      
+      this.changeApplicantHelper.deleteNewSecondaryUser();
+    }
+  }
+
+  private createChangeForPrimaryUser() {
+    let originalAnswer = this.changeApplicantHelper.getOriginalPrimaryAnswer();
+    let newAnswer = this.changeApplicantHelper.getNewPrimaryAnswer();
+  
+    let change = this.changeApplicantModelBuilder.SetField("Primary Applicant")
+      .Change(originalAnswer, newAnswer).CreateChange();
+
+    this.applicationService.model.RegistrationAmendmentsModel?.Change?.push(change);
+  }
+
+  private createChangeForSecondaryUser() {
+    let originalAnswer = this.changeApplicantHelper.getOriginalSecondaryAnswer();
+    let newAnswer = this.changeApplicantHelper.getNewSecondaryAnswer();
+  
+    let change = this.changeApplicantModelBuilder.SetField("Secondary Applicant")
+      .Change(originalAnswer, newAnswer).CreateChange();
+
+    this.applicationService.model.RegistrationAmendmentsModel?.Change?.push(change);
+  }
+
+  createChangeRequest() {
+    let changeRequest = this.changeApplicantModelBuilder!.CreateChangeRequest();
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest = changeRequest;
+  }
 }

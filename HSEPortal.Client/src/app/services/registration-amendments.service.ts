@@ -21,3 +21,31 @@ export class RegistrationAmendmentsService {
     await firstValueFrom(this.httpClient.post(`api/DeleteSecondaryUserLookup/${this.applicationService.model.id}`, this.applicationService.model));
   }
 }
+
+
+export class ChangeRequest {
+  Name?: string;
+  Category?: ChangeCategory;
+  Declaration?: boolean;
+  ReviewRequired?: boolean;
+  StatusReason?: StatusReason;
+}
+
+export class Change {
+  Name?: string;
+  Table?: string;
+  FieldName?: string;
+  OriginalAnswer?: string;
+  NewAnswer?: string;
+}
+
+export enum ChangeCategory {
+  ApplicationBuildingAmendments,
+  ChangeApplicantUser,
+  DeRegistration
+}
+
+export enum StatusReason {
+  New = 1,
+  Submitted = 760_810_001
+}

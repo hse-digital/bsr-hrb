@@ -4,6 +4,7 @@ import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
 import { FieldValidations } from "../helpers/validators/fieldvalidations";
+import { Change, ChangeRequest } from "./registration-amendments.service";
 
 @Injectable()
 export class ApplicationService {
@@ -518,6 +519,9 @@ export class RegistrationAmendmentsModel {
 
   ChangeUser?: ChangeUser;
   Date?: number;
+
+  ChangeRequest?: ChangeRequest;
+  Change?: Change[];
 }
 
 export class ChangeAccountablePerson {
