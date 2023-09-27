@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { Status } from 'src/app/services/application.service';
 import { PrimaryUserDetailsComponent } from '../primary-user-details/primary-user-details.component';
 import { ConfirmPrimaryUserComponent } from '../confirm-primary-user/confirm-primary-user.component';
@@ -46,7 +46,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return true;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete;
   }
 
   override isValid(): boolean {
@@ -149,7 +149,6 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   setSecondaryUserAsPrimary() {
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser!.Status = Status.Removed;
     let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
       Status: Status.ChangesInProgress,

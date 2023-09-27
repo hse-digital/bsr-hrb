@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, Status } from 'src/app/services/application.service';
 import { UserListComponent } from '../user-list/user-list.component';
 import { ConfirmSecondaryUserComponent } from '../confirm-secondary-user/confirm-secondary-user.component';
 import { SecondaryUserDetailsComponent } from '../secondary-user-details/secondary-user-details.component';
@@ -45,7 +45,7 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return true;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete;
   }
 
   override isValid(): boolean {

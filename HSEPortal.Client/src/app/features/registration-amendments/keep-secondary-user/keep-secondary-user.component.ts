@@ -34,7 +34,7 @@ export class KeepSecondaryUserComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return true;
+    return this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status == Status.ChangesComplete;
   }
 
   override isValid(): boolean {
