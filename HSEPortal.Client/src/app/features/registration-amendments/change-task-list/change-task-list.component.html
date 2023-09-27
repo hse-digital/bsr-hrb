@@ -70,7 +70,7 @@
             <ul class="app-task-list__items">
               <li class="app-task-list__item firstItem">
                 <span class="app-task-list__task-name">
-                    <a *ngIf="isLinkEnable(taskListSteps.Submit)" class="govuk-link" tabindex="0" role="link" [routerLink]="['../declaration']">Submit changes</a>
+                    <a *ngIf="isLinkEnable(taskListSteps.Submit)" class="govuk-link" tabindex="0" role="link" [routerLink]="['../check-answers']">Submit changes</a>
                     <ng-container *ngIf="!isLinkEnable(taskListSteps.Submit)">Submit changes</ng-container>
                 </span>    
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.Submit)}}">{{getTagFor(taskListSteps.Submit)}}</govuk-tag>                
