@@ -77,40 +77,18 @@ public class RegistrationAmendmentsFunctions
             ? dynamicsBuildingApplication._bsr_secondaryapplicantid_value
             : dynamicsBuildingApplication._bsr_registreeid_value;
 
-
         ChangeRequest changeRequest = buildingApplicationModel.RegistrationAmendmentsModel.ChangeRequest;
         
-        if (changeRequest != null) {
-            DynamicsChangeRequest dynamicsChangeRequest = new DynamicsChangeRequest {
-                bsr_declaration = changeRequest.Declaration,
-                bsr_reviewrequired = changeRequest.ReviewRequired,
-                buildingApplicationId = $"/bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
-                changeCategory = $"/bsr_changecategories({DynamicsChangeCategory[changeRequest.Category]})",
-                applicantReferenceId = $"/contacts({applicantReferenceId})"
-            };
-
-            var response = await dynamicsApi.Create("bsr_changerequests", dynamicsChangeRequest);
-            string changeRequestId = dynamicsService.ExtractEntityIdFromHeader(response.Headers);
-
+        if (changeRequest != null) {            
+            var changeRequestResponse = await RaService.CreateChangeRequest(changeRequest, dynamicsBuildingApplication.bsr_buildingapplicationid, applicantReferenceId);
+            string changeRequestId = dynamicsService.ExtractEntityIdFromHeader(changeRequestResponse.Headers);
             foreach (Change change in changeRequest.Change) {
-                DynamicsChange dynamicsChange = new DynamicsChange {
-                    changeRequestId = $"/bsr_changerequests({changeRequestId})",
-                    bsr_fieldname = change.FieldName,
-                    bsr_newanswer = change.NewAnswer,
-                    bsr_originalanswer = change.OriginalAnswer,
-                    bsr_table = change.Table,
-                };
-                await dynamicsApi.Create("bsr_changes", dynamicsChange);
+                await RaService.CreateChange(change, changeRequestId);
             }
-
             return request.CreateResponse(HttpStatusCode.OK);
         }
         return request.CreateResponse(HttpStatusCode.BadRequest);
     }
 
-    private Dictionary<ChangeCategory, string> DynamicsChangeCategory = new Dictionary<ChangeCategory, string>() {
-        {ChangeCategory.ApplicationBuildingAmendments, "c3d77a4f-6051-ee11-be6f-002248c725da"},
-        {ChangeCategory.ChangeApplicantUser, "2bd56b5b-6051-ee11-be6f-002248c725da"},
-        {ChangeCategory.DeRegistration, "71e16861-6051-ee11-be6f-002248c725da"},
-    };
+
 }
