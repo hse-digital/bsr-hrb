@@ -7,10 +7,13 @@ import { LocalStorage } from 'src/app/helpers/local-storage';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingRegistrationModel, Status, User } from 'src/app/services/application.service';
+import { Change, ChangeRequest } from 'src/app/services/registration-amendments.service';
 
 @Component({
   selector: 'hse-ra-summary-page',
-  templateUrl: './ra-summary-page.component.html'
+  templateUrl: './ra-summary-page.component.html',
+  styles: ['.govuk-summary-list__key { width:20%!important; }']
+
 })
 export class RaSummaryPageComponent  extends PageComponent<void> {
   public static route: string = "summary";
@@ -18,8 +21,7 @@ export class RaSummaryPageComponent  extends PageComponent<void> {
 
   shouldRender: boolean = false;
 
-  primaryUser?: User;
-  secondaryUser?: User;
+  changeRequest?: ChangeRequest;
   
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
@@ -28,10 +30,9 @@ export class RaSummaryPageComponent  extends PageComponent<void> {
   override async onInit(applicationService: ApplicationService): Promise<void> {
     if(!FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.BuildingName)) {
       await this.getApplicationDataFromBroadcastChannel();
-    } 
+    }
 
-    this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
-    this.secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
+    this.changeRequest = this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest;
 
     this.shouldRender = true;
   }
@@ -65,27 +66,8 @@ export class RaSummaryPageComponent  extends PageComponent<void> {
       .catch(() => this.navigationService.navigate(NotFoundComponent.route));
   }
 
-  
-  isThereNewPrimaryUser() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Status == Status.ChangesSubmitted
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser?.Email)
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser?.Firstname);
-  }
-
-  isThereNewSecondaryUser() {
-    return true;
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Status == Status.ChangesSubmitted
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Email)
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Firstname);
-  }
-
-  isTherePreviousSecondaryUser() {
-    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.SecondaryEmailAddress)
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.SecondaryFirstName);
-  }
-
-  secondaryUserRemoved() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.Removed;
+  get applicantChanges() {
+    return this.changeRequest?.Change?.filter(x => x.FieldName?.endsWith('Applicant')) ?? [];
   }
 
 }

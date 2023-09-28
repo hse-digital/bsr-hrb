@@ -6,59 +6,10 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
 
-        <h1 class="govuk-heading-l">You told us about these changes to {{applicationService.model.BuildingName}} on {{applicationService.model.RegistrationAmendmentsModel?.Date | date: 'dd MMMM yyyy'}}</h1>
+        <h1 class="govuk-heading-l">You told us about these changes to {{applicationService.model.BuildingName}} on
+          {{applicationService.model.RegistrationAmendmentsModel?.Date | date: 'dd MMMM yyyy'}}</h1>
 
-        <h2 class="govuk-heading-m">Who can access this application</h2>
-
-        <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                What's changing
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <strong>What it was</strong>
-              </dd>
-              <dd class="govuk-summary-list__value">
-                <strong style="white-space: nowrap;">What you're changing it to</strong>
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row" *ngIf="isThereNewPrimaryUser()">
-              <dt class="govuk-summary-list__key">
-                Primary user
-              </dt>
-              <dd class="govuk-summary-list__value">
-                <div>{{applicationService.model.ContactFirstName}} {{applicationService.model.ContactLastName}}</div>
-                <div>{{applicationService.model.ContactEmailAddress}}</div>
-                <div>{{applicationService.model.ContactPhoneNumber}}</div>
-              </dd>
-              <dd class="govuk-summary-list__value">
-                <div>{{primaryUser?.Firstname}} {{primaryUser?.Lastname}}</div>
-                <div>{{primaryUser?.Email}}</div>
-                <div>{{primaryUser?.PhoneNumber}}</div>
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row" *ngIf="isThereNewSecondaryUser() || secondaryUserRemoved()">
-              <dt class="govuk-summary-list__key">
-                Secondary user
-              </dt>
-              <dd class="govuk-summary-list__value" *ngIf="isTherePreviousSecondaryUser()">
-                <div>{{applicationService.model.SecondaryFirstName}} {{applicationService.model.SecondaryLastName}}</div>
-                <div>{{applicationService.model.SecondaryEmailAddress}}</div>
-                <div>{{applicationService.model.SecondaryPhoneNumber}}</div>
-              </dd>
-              <dd class="govuk-summary-list__value" *ngIf="!isTherePreviousSecondaryUser()">
-                <div>None</div>
-              </dd>
-              <dd class="govuk-summary-list__value" *ngIf="!secondaryUserRemoved()">
-                <div>{{secondaryUser?.Firstname}} {{secondaryUser?.Lastname}}</div>
-                <div>{{secondaryUser?.Email}}</div>
-                <div>{{secondaryUser?.PhoneNumber}}</div>
-              </dd>
-              <dd class="govuk-summary-list__value" *ngIf="secondaryUserRemoved()">
-                <div>None</div>
-              </dd>
-            </div>
-          </dl>
+        <ra-summary-change-applicant [changes]="applicantChanges" />
 
       </div>
     </div>

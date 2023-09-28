@@ -29,6 +29,8 @@ export class ChangeRequest {
   Declaration?: boolean;
   ReviewRequired?: boolean;
   StatusReason?: StatusReason;
+  CreatedOn?: number;
+  Change?: Change[];
 }
 
 export class Change {
@@ -36,6 +38,7 @@ export class Change {
   Table?: string;
   FieldName?: string;
   OriginalAnswer?: string;
+  CreatedOn?: number;
   NewAnswer?: string;
 }
 

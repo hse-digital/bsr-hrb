@@ -21,6 +21,7 @@ import { KeepSecondaryUserComponent } from './keep-secondary-user/keep-secondary
 import { RaConfirmationComponent } from './ra-confirmation/ra-confirmation.component';
 import { RaCheckAnswersComponent } from './ra-check-answers/ra-check-answers.component';
 import { RaSummaryPageComponent } from './ra-summary-page/ra-summary-page.component';
+import { RaSummaryChangeApplicantComponent } from './ra-summary-page/ra-summary-change-applicant.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -55,6 +56,7 @@ const routes = new HseRoutes([
     RaConfirmationComponent,
     RaCheckAnswersComponent,
     RaSummaryPageComponent,
+    RaSummaryChangeApplicantComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

@@ -52,15 +52,15 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.loading = true;
     this.applicationService.model.RegistrationAmendmentsModel!.Date = Date.now();
     
-    this.initialiseChanges();
     this.syncChangeApplicantHelper.createChangeRequest();
+    this.initialiseChanges();
     
     await this.syncChangeApplicantHelper.syncChangeApplicant();
   }
 
   initialiseChanges() {
-    if (!this.applicationService.model.RegistrationAmendmentsModel?.Change) {
-      this.applicationService.model.RegistrationAmendmentsModel!.Change = [];
+    if (!this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest!.Change = [];
     }
   }
 
@@ -110,9 +110,9 @@ export class SyncChangeApplicantHelper {
 
     } else if (this.changeApplicantHelper.newSecondaryUserExists()) {
 
+      this.createChangeForSecondaryUser();
       this.changeApplicantHelper.setSecondaryUser();
       this.changeApplicantHelper.updateSecondaryUser();
-      this.createChangeForSecondaryUser();
       await this.registrationAmendmentsService.syncSecondaryUser();
       
       this.changeApplicantHelper.deleteNewSecondaryUser();
@@ -126,7 +126,7 @@ export class SyncChangeApplicantHelper {
     let change = this.changeApplicantModelBuilder.SetField("Primary Applicant")
       .Change(originalAnswer, newAnswer).CreateChange();
 
-    this.applicationService.model.RegistrationAmendmentsModel?.Change?.push(change);
+    this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change?.push(change);
   }
 
   private createChangeForSecondaryUser() {
@@ -136,7 +136,7 @@ export class SyncChangeApplicantHelper {
     let change = this.changeApplicantModelBuilder.SetField("Secondary Applicant")
       .Change(originalAnswer, newAnswer).CreateChange();
 
-    this.applicationService.model.RegistrationAmendmentsModel?.Change?.push(change);
+    this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change?.push(change);
   }
 
   createChangeRequest() {

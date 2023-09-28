@@ -521,7 +521,6 @@ export class RegistrationAmendmentsModel {
   Date?: number;
 
   ChangeRequest?: ChangeRequest;
-  Change?: Change[];
 }
 
 export class ChangeAccountablePerson {

@@ -49,7 +49,8 @@ export abstract class ChangesDirector {
             Table: this.Table,
             FieldName: this.FieldName,
             OriginalAnswer: this.OriginalAnswer,
-            NewAnswer: this.NewAnswer
+            NewAnswer: this.NewAnswer,
+            CreatedOn: Date.now(),
         };
     }
 
@@ -59,6 +60,7 @@ export abstract class ChangesDirector {
             Name: this.ChangeRequestName,
             Category: this.Category,
             ReviewRequired: this.ReviewRequired,
+            CreatedOn: Date.now(),
         };
     }
 
