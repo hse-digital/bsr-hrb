@@ -20,6 +20,10 @@ export class RegistrationAmendmentsService {
   async deleteSecondaryUserLookup() {
     await firstValueFrom(this.httpClient.post(`api/DeleteSecondaryUserLookup/${this.applicationService.model.id}`, this.applicationService.model));
   }
+
+  async syncChangeRequest() {
+    await firstValueFrom(this.httpClient.post(`api/CreateChangeRequest/${this.applicationService.model.id}`, this.applicationService.model));
+  }
 }
 
 
@@ -29,7 +33,6 @@ export class ChangeRequest {
   Declaration?: boolean;
   ReviewRequired?: boolean;
   StatusReason?: StatusReason;
-  CreatedOn?: number;
   Change?: Change[];
 }
 
@@ -38,7 +41,6 @@ export class Change {
   Table?: string;
   FieldName?: string;
   OriginalAnswer?: string;
-  CreatedOn?: number;
   NewAnswer?: string;
 }
 

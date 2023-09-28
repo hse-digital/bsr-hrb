@@ -56,6 +56,8 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.initialiseChanges();
     
     await this.syncChangeApplicantHelper.syncChangeApplicant();
+
+    await this.registrationAmendmentsService.syncChangeRequest();
   }
 
   initialiseChanges() {

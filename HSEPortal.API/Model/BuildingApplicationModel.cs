@@ -15,6 +15,7 @@ public record BuildingApplicationModel(
     string SecondaryLastName = null,
     string SecondaryPhoneNumber = null,
     string SecondaryEmailAddress = null,
+    bool? IsSecondary = null,
     string NumberOfSections = null,
     SectionModel[] Sections = null,
     AccountablePerson[] AccountablePersons = null,
@@ -212,6 +213,7 @@ public record PaymentInvoiceDetails
 public record RegistrationAmendmentsModel {
     public ChangeUser ChangeUser { get; set; }
     public long Date { get; set; }
+    public ChangeRequest ChangeRequest { get; set; }
 }
 
 public record ChangeUser {
@@ -237,4 +239,26 @@ public enum Status {
     ChangesComplete = 2,
     ChangesSubmitted = 4,
     Removed = 8
+}
+
+public record ChangeRequest {
+    public string Name { get; set; }
+    public ChangeCategory Category { get; set; }
+    public bool Declaration { get; set; }
+    public bool ReviewRequired { get; set; }
+    public Change[] Change { get; set; }
+}
+
+public record Change {
+    public string Name { get; set; }
+    public string Table { get; set; }
+    public string FieldName { get; set; }
+    public string OriginalAnswer { get; set; }
+    public string NewAnswer { get; set; }
+}
+
+public enum ChangeCategory {
+  ApplicationBuildingAmendments,
+  ChangeApplicantUser,
+  DeRegistration
 }

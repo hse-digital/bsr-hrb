@@ -3,12 +3,11 @@ import { Change, ChangeCategory, ChangeRequest } from "src/app/services/registra
 export abstract class ChangesDirector {
     protected Category?: ChangeCategory;    
     protected Table?: string;
-    protected ChangeName?: string;
-    protected ChangeRequestName?: string;
-    protected FieldName?: string
-    protected OriginalAnswer?: string
-    protected NewAnswer?: string
-    protected ReviewRequired?: boolean
+    protected FieldName?: string;
+    protected OriginalAnswer?: string;
+    protected NewAnswer?: string;
+    protected ReviewRequired?: boolean;
+    protected Declaration?: boolean;
 
     protected ApplicationId?: string;
     protected BuildingName?: string;
@@ -23,14 +22,6 @@ export abstract class ChangesDirector {
         return this;
     }
 
-    private SetChangeName() {
-        return `${this.ApplicationId}:${this.BuildingName} - ${this.ChangeCategoryMapper[this.Category!]}`;
-    }
-
-    private SetChangeRequestName() {
-        return `${this.ApplicationId}:${this.BuildingName} - ${this.ChangeCategoryMapper[this.Category!]}`;
-    }
-
     SetField(name: string) {
         this.FieldName = name;
         return this;
@@ -43,31 +34,20 @@ export abstract class ChangesDirector {
     }
 
     CreateChange(): Change {
-        this.ChangeName = this.SetChangeName();
         return {
-            Name: this.ChangeName,
             Table: this.Table,
             FieldName: this.FieldName,
             OriginalAnswer: this.OriginalAnswer,
-            NewAnswer: this.NewAnswer,
-            CreatedOn: Date.now(),
+            NewAnswer: this.NewAnswer
         };
     }
 
     CreateChangeRequest(): ChangeRequest {
-        this.ChangeRequestName = this.SetChangeRequestName();
         return {
-            Name: this.ChangeRequestName,
             Category: this.Category,
             ReviewRequired: this.ReviewRequired,
-            CreatedOn: Date.now(),
+            Declaration: this.Declaration
         };
-    }
-
-    private ChangeCategoryMapper : Record<ChangeCategory, string> = {
-        [ChangeCategory.ApplicationBuildingAmendments]: "Application/Building Amendments",
-        [ChangeCategory.ChangeApplicantUser]: "Change Applicant/User",
-        [ChangeCategory.DeRegistration]: "De-registration"
     }
 }
 
@@ -75,4 +55,5 @@ export class ChangeApplicantModelBuilder extends ChangesDirector {
     protected override Category: ChangeCategory = ChangeCategory.ApplicationBuildingAmendments;
     protected override Table: string = "Building Application";
     protected override ReviewRequired: boolean = false;
+    protected override Declaration: boolean = true;
 }
