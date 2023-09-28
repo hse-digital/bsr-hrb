@@ -32,7 +32,7 @@ export class RaSummaryPageComponent  extends PageComponent<void> {
       await this.getApplicationDataFromBroadcastChannel();
     }
 
-    this.changeRequest = this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest;
+    this.changeRequest = await this.registrationAmendmentsService.getChangeRequest();
 
     this.shouldRender = true;
   }

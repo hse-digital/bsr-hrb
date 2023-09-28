@@ -24,6 +24,10 @@ export class RegistrationAmendmentsService {
   async syncChangeRequest() {
     await firstValueFrom(this.httpClient.post(`api/CreateChangeRequest/${this.applicationService.model.id}`, this.applicationService.model));
   }
+
+  async getChangeRequest(): Promise<ChangeRequest> {
+    return firstValueFrom(this.httpClient.get(`api/GetChangeRequest/${this.applicationService.model.id}`))
+  }
 }
 
 

@@ -90,5 +90,42 @@ public class RegistrationAmendmentsFunctions
         return request.CreateResponse(HttpStatusCode.BadRequest);
     }
 
+    [Function(nameof(GetChangeRequest))]
+    public async Task<ChangeRequest> GetChangeRequest([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetChangeRequest/{applicationNumber}")] HttpRequestData request, string applicationNumber){
+
+        var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationNumber);
+        string buildingApplicationId = dynamicsBuildingApplication.bsr_buildingapplicationid;
+
+        var changeRequests = await dynamicsApi.Get<DynamicsResponse<DynamicsChangeRequestResponse>>("bsr_changerequests",
+            ("$filter", $"_bsr_buildingapplicationid_value eq '{buildingApplicationId.EscapeSingleQuote()}'"),
+            ("$expand", "bsr_change_changerequestid"),
+            ("$orderby", "createdon desc"));
+
+        var changeRequest = changeRequests.value.First();
+        
+        Change[] changes = new Change[changeRequest.bsr_change_changerequestid.Length];
+        for (int i = 0; i < changeRequest.bsr_change_changerequestid.Length; i++) {
+            DynamicsChangeResponse change = changeRequest.bsr_change_changerequestid[i];
+            changes[i] = new Change {
+                FieldName = change.bsr_fieldname,
+                Name = change.bsr_name,
+                NewAnswer = change.bsr_newanswer,
+                OriginalAnswer = change.bsr_originalanswer,
+                Table = change.bsr_table
+            };
+        }
+
+        return new ChangeRequest {
+            Name = changeRequest.bsr_name,
+            Declaration = changeRequest.bsr_declaration,
+            ReviewRequired = changeRequest.bsr_reviewrequired,
+            Change = changes
+        };
+
+        //https://bsr-ws1-dev1.api.crm11.dynamics.com/api/data/v9.2/bsr_changerequests?$filter=_bsr_buildingapplicationid_value%20eq%20%2700b0c542-f35d-ee11-8def-002248c725da%27&$top=1&$expand=bsr_change_changerequestid
+    }
+
+
+
 
 }

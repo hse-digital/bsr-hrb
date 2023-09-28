@@ -23,3 +23,18 @@ public record DynamicsChange(
     string bsr_originalanswer = null,
     string bsr_table = null
 );
+
+public record DynamicsChangeRequestResponse(
+    DynamicsChangeResponse[] bsr_change_changerequestid = null,
+    string bsr_name = null,
+    bool bsr_reviewrequired = false,
+    bool bsr_declaration = false
+);
+
+public record DynamicsChangeResponse(
+    string bsr_fieldname = null,
+    string bsr_name = null,
+    string bsr_newanswer = null,
+    string bsr_originalanswer = null,
+    string bsr_table = null
+);
