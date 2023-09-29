@@ -66,6 +66,27 @@ public class RegistrationAmendmentsService
         return await dynamicsApi.Create("bsr_changes", dynamicsChange);
     }
 
+    public ChangeRequest BuildChangeRequestResponse(DynamicsChangeRequestResponse changeRequest) {
+        Change[] changes = new Change[changeRequest.bsr_change_changerequestid.Length];
+        for (int i = 0; i < changeRequest.bsr_change_changerequestid.Length; i++) {
+            DynamicsChangeResponse change = changeRequest.bsr_change_changerequestid[i];
+            changes[i] = new Change {
+                FieldName = change.bsr_fieldname,
+                Name = change.bsr_name,
+                NewAnswer = change.bsr_newanswer,
+                OriginalAnswer = change.bsr_originalanswer,
+                Table = change.bsr_table
+            };
+        }
+
+        return new ChangeRequest {
+            Name = changeRequest.bsr_name,
+            Declaration = changeRequest.bsr_declaration,
+            ReviewRequired = changeRequest.bsr_reviewrequired,
+            Change = changes
+        };
+    }
+
     private Dictionary<ChangeCategory, string> DynamicsChangeCategory = new Dictionary<ChangeCategory, string>() {
         {ChangeCategory.ApplicationBuildingAmendments, "c3d77a4f-6051-ee11-be6f-002248c725da"},
         {ChangeCategory.ChangeApplicantUser, "2bd56b5b-6051-ee11-be6f-002248c725da"},

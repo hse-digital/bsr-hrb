@@ -36,7 +36,6 @@ export class ChangeRequest {
   Category?: ChangeCategory;
   Declaration?: boolean;
   ReviewRequired?: boolean;
-  StatusReason?: StatusReason;
   Change?: Change[];
 }
 
@@ -52,9 +51,4 @@ export enum ChangeCategory {
   ApplicationBuildingAmendments,
   ChangeApplicantUser,
   DeRegistration
-}
-
-export enum StatusReason {
-  New = 1,
-  Submitted = 760_810_001
 }
