@@ -13,14 +13,14 @@ export class RaSummaryChangeApplicantComponent {
     constructor(){ }
 
     getFullName(answer: string) {
-        return answer.split('-')[0].trim();
-      }
-      
-      getEmailAddress(answer: string) {
-        return answer.split('-')[1].trim();
-      }
+      return answer.split('-')[0].trim();
+    }
     
-      getPhoneNumber(answer: string) {
-        return answer.split('-')[2].trim();
-      }
+    getEmailAddress(answer: string) {
+      return answer.split('-')[1].trim();
+    }
+  
+    getPhoneNumber(answer: string) {
+      return answer.split('-')[2].trim();
+    }
 }
