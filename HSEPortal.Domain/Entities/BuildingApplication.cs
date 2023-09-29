@@ -10,6 +10,7 @@ public record DynamicsBuildingApplication(string bsr_buildingapplicationid = nul
     string contactReferenceId = null,
     [property: JsonPropertyName("bsr_secondaryapplicantid@odata.bind")]
     string secondaryContactReferenceId = null,
+    string _bsr_secondaryapplicantid_value = null,
     [property: JsonPropertyName("bsr_Building@odata.bind")]
     string buildingReferenceId = null,
     BuildingApplicationStage? bsr_applicationstage = null,

@@ -71,6 +71,9 @@ export class ReturningApplicationVerifyComponent implements OnInit {
 
       let isNewPrimaryUser = this.areEqual(this.applicationService.model.NewPrimaryUserEmail, this.emailAddress);
       if(isNewPrimaryUser) await this.integratePrimaryUser();
+
+      this.applicationService.model.IsSecondary = this.emailAddress.trim().toLowerCase() == this.applicationService.model.SecondaryEmailAddress?.trim().toLowerCase();
+      
       
       if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);

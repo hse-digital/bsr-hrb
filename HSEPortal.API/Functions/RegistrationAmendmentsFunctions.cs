@@ -67,4 +67,51 @@ public class RegistrationAmendmentsFunctions
         }
         return request.CreateResponse(HttpStatusCode.BadRequest);
     }
+
+    [Function(nameof(CreateChangeRequest))]
+    public async Task<HttpResponseData> CreateChangeRequest([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(CreateChangeRequest)}/{{applicationId}}")] HttpRequestData request, string applicationId){
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+
+        string applicantReferenceId = (buildingApplicationModel.IsSecondary ?? false)
+            ? dynamicsBuildingApplication._bsr_secondaryapplicantid_value
+            : dynamicsBuildingApplication._bsr_registreeid_value;
+
+        if (applicantReferenceId == null && (buildingApplicationModel.IsSecondary ?? false)) {
+            var secondaryContact = await dynamicsService.FindExistingContactAsync( 
+                buildingApplicationModel.SecondaryFirstName,
+                buildingApplicationModel.SecondaryLastName,
+                buildingApplicationModel.SecondaryEmailAddress,
+                buildingApplicationModel.SecondaryPhoneNumber);
+            applicantReferenceId = secondaryContact.contactid;
+        }
+
+        ChangeRequest changeRequest = buildingApplicationModel.RegistrationAmendmentsModel.ChangeRequest;
+        
+        if (changeRequest != null) {            
+            var changeRequestResponse = await RaService.CreateChangeRequest(changeRequest, dynamicsBuildingApplication.bsr_buildingapplicationid, applicantReferenceId);
+            string changeRequestId = dynamicsService.ExtractEntityIdFromHeader(changeRequestResponse.Headers);
+            foreach (Change change in changeRequest.Change) {
+                await RaService.CreateChange(change, changeRequestId);
+            }
+            return request.CreateResponse(HttpStatusCode.OK);
+        }
+        return request.CreateResponse(HttpStatusCode.BadRequest);
+    }
+
+    [Function(nameof(GetChangeRequest))]
+    public async Task<ChangeRequest> GetChangeRequest([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetChangeRequest/{applicationNumber}")] HttpRequestData request, string applicationNumber){
+
+        var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationNumber);
+        string buildingApplicationId = dynamicsBuildingApplication.bsr_buildingapplicationid;
+
+        var changeRequests = await dynamicsApi.Get<DynamicsResponse<DynamicsChangeRequestResponse>>("bsr_changerequests",
+            ("$filter", $"_bsr_buildingapplicationid_value eq '{buildingApplicationId.EscapeSingleQuote()}'"),
+            ("$expand", "bsr_change_changerequestid"),
+            ("$orderby", "createdon desc"));
+
+        var changeRequest = changeRequests.value.First();
+        
+        return RaService.BuildChangeRequestResponse(changeRequest);
+    }
 }

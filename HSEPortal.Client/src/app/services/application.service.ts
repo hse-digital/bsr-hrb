@@ -4,6 +4,7 @@ import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
 import { FieldValidations } from "../helpers/validators/fieldvalidations";
+import { ChangeRequest } from "./registration-amendments.service";
 
 @Injectable()
 export class ApplicationService {
@@ -245,6 +246,7 @@ export class BuildingRegistrationModel {
   SecondaryLastName?: string;
   SecondaryPhoneNumber?: string;
   SecondaryEmailAddress?: string;
+  IsSecondary: boolean = false;
   NumberOfSections?: string;
   Sections: SectionModel[] = [];
   OutOfScopeContinueReason?: string;
@@ -518,6 +520,8 @@ export class RegistrationAmendmentsModel {
 
   ChangeUser?: ChangeUser;
   Date?: number;
+
+  ChangeRequest?: ChangeRequest;
 }
 
 export class ChangeAccountablePerson {

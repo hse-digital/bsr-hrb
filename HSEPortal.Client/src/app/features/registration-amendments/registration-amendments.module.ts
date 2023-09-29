@@ -20,6 +20,8 @@ import { RaDeclarationComponent } from './ra-declaration/ra-declaration.componen
 import { KeepSecondaryUserComponent } from './keep-secondary-user/keep-secondary-user.component';
 import { RaConfirmationComponent } from './ra-confirmation/ra-confirmation.component';
 import { RaCheckAnswersComponent } from './ra-check-answers/ra-check-answers.component';
+import { RaSummaryPageComponent } from './ra-summary-page/ra-summary-page.component';
+import { RaSummaryChangeApplicantComponent } from './ra-summary-page/ra-summary-change-applicant.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -35,6 +37,7 @@ const routes = new HseRoutes([
   HseRoute.protected(RaDeclarationComponent.route, RaDeclarationComponent, RaDeclarationComponent.title),
   HseRoute.protected(RaConfirmationComponent.route, RaConfirmationComponent, RaConfirmationComponent.title),
   HseRoute.protected(RaCheckAnswersComponent.route, RaCheckAnswersComponent, RaCheckAnswersComponent.title),
+  HseRoute.protected(RaSummaryPageComponent.route, RaSummaryPageComponent, RaSummaryPageComponent.title),
 ]);
 
 @NgModule({
@@ -52,6 +55,8 @@ const routes = new HseRoutes([
     KeepSecondaryUserComponent,
     RaConfirmationComponent,
     RaCheckAnswersComponent,
+    RaSummaryPageComponent,
+    RaSummaryChangeApplicantComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

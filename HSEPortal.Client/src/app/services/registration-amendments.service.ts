@@ -20,4 +20,35 @@ export class RegistrationAmendmentsService {
   async deleteSecondaryUserLookup() {
     await firstValueFrom(this.httpClient.post(`api/DeleteSecondaryUserLookup/${this.applicationService.model.id}`, this.applicationService.model));
   }
+
+  async syncChangeRequest() {
+    await firstValueFrom(this.httpClient.post(`api/CreateChangeRequest/${this.applicationService.model.id}`, this.applicationService.model));
+  }
+
+  async getChangeRequest(): Promise<ChangeRequest> {
+    return firstValueFrom(this.httpClient.get(`api/GetChangeRequest/${this.applicationService.model.id}`))
+  }
+}
+
+
+export class ChangeRequest {
+  Name?: string;
+  Category?: ChangeCategory;
+  Declaration?: boolean;
+  ReviewRequired?: boolean;
+  Change?: Change[];
+}
+
+export class Change {
+  Name?: string;
+  Table?: string;
+  FieldName?: string;
+  OriginalAnswer?: string;
+  NewAnswer?: string;
+}
+
+export enum ChangeCategory {
+  ApplicationBuildingAmendments,
+  ChangeApplicantUser,
+  DeRegistration
 }

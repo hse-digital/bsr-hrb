@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
+import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStage, Status, User } from 'src/app/services/application.service';
@@ -21,6 +22,8 @@ export class RaConfirmationComponent  extends PageComponent<void> {
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
     
+    this.sendApplicationDataToBroadcastChannel();
+
     this.submittionDate = await this.applicationService.getSubmissionDate();
     this.kbiSubmittionDate = await this.applicationService.getKbiSubmissionDate();
 
@@ -36,6 +39,12 @@ export class RaConfirmationComponent  extends PageComponent<void> {
       PhoneNumber: this.applicationService.model.SecondaryPhoneNumber
     }
 
+  }
+
+  private sendApplicationDataToBroadcastChannel() {
+    new BroadcastChannelPrimaryHelper()
+      .OpenChannel(this.applicationService.model.id!)
+      .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
@@ -55,7 +64,8 @@ export class RaConfirmationComponent  extends PageComponent<void> {
   }
 
   newPrimaryUser() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Status == Status.ChangesSubmitted;
+    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Status == Status.ChangesSubmitted &&
+      FieldValidations.IsNotNullOrWhitespace(this.primaryUser?.Email) && FieldValidations.IsNotNullOrWhitespace(this.primaryUser?.Firstname);
   }
 
   newSecondaryUser() {

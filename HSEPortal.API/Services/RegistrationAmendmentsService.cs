@@ -3,6 +3,7 @@ using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
 using Microsoft.Extensions.Options;
 using HSEPortal.Domain.DynamicsDefinitions;
+using Flurl.Http;
 
 namespace HSEPortal.API.Services;
 
@@ -39,5 +40,60 @@ public class RegistrationAmendmentsService
 
         return contact with { Id = existingContact.contactid };
     }
+
+    public async Task<IFlurlResponse> CreateChangeRequest(ChangeRequest changeRequest, string bsr_buildingapplicationid, string applicantReferenceId)
+    {
+        DynamicsChangeRequest dynamicsChangeRequest = new DynamicsChangeRequest {
+            bsr_declaration = changeRequest.Declaration,
+            bsr_reviewrequired = changeRequest.ReviewRequired,
+            buildingApplicationId = $"/bsr_buildingapplications({bsr_buildingapplicationid})",
+            changeCategory = $"/bsr_changecategories({DynamicsChangeCategory[changeRequest.Category]})"            
+        };
+
+        if(applicantReferenceId != null && !applicantReferenceId.Equals(string.Empty)) {
+            dynamicsChangeRequest = dynamicsChangeRequest with {applicantReferenceId = $"/contacts({applicantReferenceId})"};
+        }
+
+        return await dynamicsApi.Create("bsr_changerequests", dynamicsChangeRequest);
+    }
+
+    public async Task<IFlurlResponse> CreateChange(Change change, string changeRequestId)
+    {
+        DynamicsChange dynamicsChange = new DynamicsChange {
+            changeRequestId = $"/bsr_changerequests({changeRequestId})",
+            bsr_fieldname = change.FieldName,
+            bsr_newanswer = change.NewAnswer,
+            bsr_originalanswer = change.OriginalAnswer,
+            bsr_table = change.Table,
+        };
+        return await dynamicsApi.Create("bsr_changes", dynamicsChange);
+    }
+
+    public ChangeRequest BuildChangeRequestResponse(DynamicsChangeRequestResponse changeRequest) {
+        Change[] changes = new Change[changeRequest.bsr_change_changerequestid.Length];
+        for (int i = 0; i < changeRequest.bsr_change_changerequestid.Length; i++) {
+            DynamicsChangeResponse change = changeRequest.bsr_change_changerequestid[i];
+            changes[i] = new Change {
+                FieldName = change.bsr_fieldname,
+                Name = change.bsr_name,
+                NewAnswer = change.bsr_newanswer,
+                OriginalAnswer = change.bsr_originalanswer,
+                Table = change.bsr_table
+            };
+        }
+
+        return new ChangeRequest {
+            Name = changeRequest.bsr_name,
+            Declaration = changeRequest.bsr_declaration,
+            ReviewRequired = changeRequest.bsr_reviewrequired,
+            Change = changes
+        };
+    }
+
+    private Dictionary<ChangeCategory, string> DynamicsChangeCategory = new Dictionary<ChangeCategory, string>() {
+        {ChangeCategory.ApplicationBuildingAmendments, "c3d77a4f-6051-ee11-be6f-002248c725da"},
+        {ChangeCategory.ChangeApplicantUser, "2bd56b5b-6051-ee11-be6f-002248c725da"},
+        {ChangeCategory.DeRegistration, "71e16861-6051-ee11-be6f-002248c725da"},
+    };
 
 }
