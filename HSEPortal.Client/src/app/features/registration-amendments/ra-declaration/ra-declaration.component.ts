@@ -15,13 +15,14 @@ export class RaDeclarationComponent extends PageComponent<void> {
   static route: string = 'declaration';
   static title: string = "Declaration about changes - Register a high-rise building - GOV.UK";
 
+  private changeApplicantHelper: ChangeApplicantHelper;
   private syncChangeApplicantHelper: SyncChangeApplicantHelper;
 
   loading = false;
 
   constructor(activatedRoute: ActivatedRoute, registrationAmendmentsService: RegistrationAmendmentsService) {
     super(activatedRoute);
-
+    this.changeApplicantHelper = new ChangeApplicantHelper(this.applicationService);
     this.syncChangeApplicantHelper = new SyncChangeApplicantHelper(this.applicationService, registrationAmendmentsService);
   }
 
@@ -55,9 +56,18 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.syncChangeApplicantHelper.createChangeRequest();
     this.initialiseChanges();
     
-    await this.syncChangeApplicantHelper.syncChangeApplicant();
+    if (this.changeApplicantHelper.isSecondaryUserRemoved() || this.changeApplicantHelper.newSecondaryUserExists()) {
+      this.syncChangeApplicantHelper.createChangeForSecondaryUser();
+    }
+
+    if (this.changeApplicantHelper.newPrimaryUserExists()) {
+      this.syncChangeApplicantHelper.createChangeForPrimaryUser();
+    }
 
     await this.registrationAmendmentsService.syncChangeRequest();
+
+    await this.syncChangeApplicantHelper.syncChangeApplicant();
+
   }
 
   initialiseChanges() {
@@ -99,20 +109,15 @@ export class SyncChangeApplicantHelper {
   async syncChangeApplicant() {
    
     if (this.changeApplicantHelper.newPrimaryUserExists()) {
-      this.createChangeForPrimaryUser();
       this.changeApplicantHelper.changePrimaryUserStatusToSubmitted();
       this.changeApplicantHelper.setNewPrimaryUserEmail();
     }
     
     if (this.changeApplicantHelper.isSecondaryUserRemoved()) {
-
-      this.createChangeForSecondaryUser();
       await this.registrationAmendmentsService.deleteSecondaryUserLookup();
       this.changeApplicantHelper.deleteSecondaryUser();
 
     } else if (this.changeApplicantHelper.newSecondaryUserExists()) {
-
-      this.createChangeForSecondaryUser();
       this.changeApplicantHelper.setSecondaryUser();
       this.changeApplicantHelper.updateSecondaryUser();
       await this.registrationAmendmentsService.syncSecondaryUser();
@@ -121,7 +126,7 @@ export class SyncChangeApplicantHelper {
     }
   }
 
-  private createChangeForPrimaryUser() {
+  public createChangeForPrimaryUser() {
     let originalAnswer = this.changeApplicantHelper.getOriginalPrimaryAnswer();
     let newAnswer = this.changeApplicantHelper.getNewPrimaryAnswer();
   
@@ -131,7 +136,7 @@ export class SyncChangeApplicantHelper {
     this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change?.push(change);
   }
 
-  private createChangeForSecondaryUser() {
+  public createChangeForSecondaryUser() {
     let originalAnswer = this.changeApplicantHelper.getOriginalSecondaryAnswer();
     let newAnswer = this.changeApplicantHelper.getNewSecondaryAnswer();
   

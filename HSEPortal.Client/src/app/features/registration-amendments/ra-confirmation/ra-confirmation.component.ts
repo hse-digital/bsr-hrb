@@ -64,7 +64,8 @@ export class RaConfirmationComponent  extends PageComponent<void> {
   }
 
   newPrimaryUser() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Status == Status.ChangesSubmitted;
+    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Status == Status.ChangesSubmitted &&
+      FieldValidations.IsNotNullOrWhitespace(this.primaryUser?.Email) && FieldValidations.IsNotNullOrWhitespace(this.primaryUser?.Firstname);
   }
 
   newSecondaryUser() {

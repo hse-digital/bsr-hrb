@@ -47,9 +47,12 @@ public class RegistrationAmendmentsService
             bsr_declaration = changeRequest.Declaration,
             bsr_reviewrequired = changeRequest.ReviewRequired,
             buildingApplicationId = $"/bsr_buildingapplications({bsr_buildingapplicationid})",
-            changeCategory = $"/bsr_changecategories({DynamicsChangeCategory[changeRequest.Category]})",
-            applicantReferenceId = $"/contacts({applicantReferenceId})"
+            changeCategory = $"/bsr_changecategories({DynamicsChangeCategory[changeRequest.Category]})"            
         };
+
+        if(applicantReferenceId != null && !applicantReferenceId.Equals(string.Empty)) {
+            dynamicsChangeRequest = dynamicsChangeRequest with {applicantReferenceId = $"/contacts({applicantReferenceId})"};
+        }
 
         return await dynamicsApi.Create("bsr_changerequests", dynamicsChangeRequest);
     }

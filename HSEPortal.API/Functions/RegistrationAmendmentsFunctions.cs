@@ -73,9 +73,18 @@ public class RegistrationAmendmentsFunctions
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
 
-        string applicantReferenceId = buildingApplicationModel.IsSecondary ?? false 
+        string applicantReferenceId = (buildingApplicationModel.IsSecondary ?? false)
             ? dynamicsBuildingApplication._bsr_secondaryapplicantid_value
             : dynamicsBuildingApplication._bsr_registreeid_value;
+
+        if (applicantReferenceId == null && (buildingApplicationModel.IsSecondary ?? false)) {
+            var secondaryContact = await dynamicsService.FindExistingContactAsync( 
+                buildingApplicationModel.SecondaryFirstName,
+                buildingApplicationModel.SecondaryLastName,
+                buildingApplicationModel.SecondaryEmailAddress,
+                buildingApplicationModel.SecondaryPhoneNumber);
+            applicantReferenceId = secondaryContact.contactid;
+        }
 
         ChangeRequest changeRequest = buildingApplicationModel.RegistrationAmendmentsModel.ChangeRequest;
         
