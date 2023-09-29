@@ -13,7 +13,7 @@ import { SecondaryUserDetailsComponent } from '../secondary-user-details/seconda
 })
 export class SelectSecondaryUserComponent  extends PageComponent<string> {
   static route: string = 'select-secondary-user';
-  static title: string = "Select the new secondary user - Register a high-rise building - GOV.UK";
+  static title: string = "Who will become the secondary user? - Register a high-rise building - GOV.UK";
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
