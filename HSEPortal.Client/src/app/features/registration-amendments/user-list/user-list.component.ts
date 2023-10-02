@@ -73,10 +73,10 @@ export class UserListComponent extends PageComponent<string> {
   }
 
   private initSecondaryUser() {
-    if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Email)
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Firstname)) {
-      let status = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status;
-      if (status != Status.Removed) {
+    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser;
+    if (FieldValidations.IsNotNullOrWhitespace(secondaryUser?.Email) && FieldValidations.IsNotNullOrWhitespace(secondaryUser?.Firstname)
+      && secondaryUser?.Status != Status.ChangesSubmitted) {
+      if (secondaryUser?.Status != Status.Removed) {
         this.currentSecondaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser;
       }
     } else {
