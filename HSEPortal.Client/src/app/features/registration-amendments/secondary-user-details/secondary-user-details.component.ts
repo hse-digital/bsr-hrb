@@ -42,7 +42,8 @@ export class SecondaryUserDetailsComponent extends PageComponent<User> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary == "new-user"
+    return this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary == "new-user" 
+      && !this.applicationService.model.IsSecondary
   }
 
   override isValid(): boolean {
