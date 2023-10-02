@@ -6,6 +6,7 @@ import { ApplicationService, BuildingApplicationStage } from 'src/app/services/a
 import { Status } from 'src/app/services/application.service';
 import { PrimaryUserDetailsComponent } from '../primary-user-details/primary-user-details.component';
 import { ConfirmPrimaryUserComponent } from '../confirm-primary-user/confirm-primary-user.component';
+import { UserListComponent } from '../user-list/user-list.component';
 
 @Component({
   selector: 'hse-select-primary-user',
@@ -37,7 +38,8 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
       case "new-named-contact":
         this.setNewNamedContactAsPrimary(); break;
       case "keep-me":
-        this.setApplicantAsPrimary(); break;
+        this.setApplicantAsPrimary();
+        break;
       case "new-user":
         if(previousSelectionIsNotNewUser) { this.clearNewPrimaryUser(); }
         break;
@@ -56,6 +58,8 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   override async navigateNext(): Promise<boolean | void> {
     if(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "new-user") {
       return this.navigationService.navigateRelative(PrimaryUserDetailsComponent.route, this.activatedRoute);
+    } else if (this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "keep-me") {
+      return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
     }
     return this.navigationService.navigateRelative(ConfirmPrimaryUserComponent.route, this.activatedRoute);
   }
@@ -160,13 +164,8 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   setApplicantAsPrimary() {
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
-      Status: Status.ChangesInProgress,
-      Firstname: this.applicationService.model.ContactFirstName,
-      Lastname: this.applicationService.model.ContactLastName,
-      Email: this.applicationService.model.ContactEmailAddress,
-      PhoneNumber: this.applicationService.model.ContactPhoneNumber
-    }
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.NoChanges; 
+    delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
   }
 
   clearNewPrimaryUser() {
