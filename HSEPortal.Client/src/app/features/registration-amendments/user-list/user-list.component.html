@@ -32,7 +32,7 @@
         (removeClicked)="removeSecondaryUser()" 
         (changeClicked)="changeSecondaryUser()" />
 
-    <govuk-body *ngIf="newSecondaryUserExists()">Once you submit your changes, we'll invite {{ newSecondaryUser?.Firstname }} {{ newSecondaryUser?.Lastname }} to become the secondary user 
+    <govuk-body *ngIf="newSecondaryUserExists() && !isSecondaryUserRemoved()">Once you submit your changes, we'll invite {{ newSecondaryUser?.Firstname }} {{ newSecondaryUser?.Lastname }} to become the secondary user 
         <ng-container *ngIf="currentSecondaryUserExists()">and {{ currentSecondaryUser?.Firstname }} {{ currentSecondaryUser?.Lastname }} will lose access</ng-container>.
     </govuk-body>
 
