@@ -22,12 +22,12 @@
         <a class="govuk-link" (keyup.enter)="addSecondaryUser()" (click)="addSecondaryUser()" role="link" tabindex="0">Add a secondary user</a>
     </govuk-body>
 
-    <user-details *ngIf="currentSecondaryUserExists() && !isSecondaryUserRemoved()" 
+    <user-details *ngIf="currentSecondaryUserExists() && !newSecondaryUserExists() && !isSecondaryUserRemoved()" 
         [user]="currentSecondaryUser" 
         (removeClicked)="removeSecondaryUser()" 
         (changeClicked)="changeSecondaryUser()" />
 
-    <user-details *ngIf="!currentSecondaryUserExists() && newSecondaryUserExists() && !isSecondaryUserRemoved()" 
+    <user-details *ngIf="newSecondaryUserExists() && !isSecondaryUserRemoved()" 
         [user]="newSecondaryUser"
         (removeClicked)="removeSecondaryUser()" 
         (changeClicked)="changeSecondaryUser()" />
