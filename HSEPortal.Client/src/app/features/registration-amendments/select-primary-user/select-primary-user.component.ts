@@ -98,7 +98,8 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
 
   secondaryUserExist() {
     return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser &&
-      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Email);
+      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Email)
+      && this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Status != Status.Removed;
   }
 
   newNamedContact() {
