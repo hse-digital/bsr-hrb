@@ -26,6 +26,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     let previousSelectionIsNotNewUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary != "new-user";
+    let previousSelection = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary = this.model;
 
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesInProgress; 
@@ -38,7 +39,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
       case "new-named-contact":
         this.setNewNamedContactAsPrimary(); break;
       case "keep-me":
-        this.setApplicantAsPrimary();
+        this.setApplicantAsPrimary(previousSelection);
         break;
       case "new-user":
         if(previousSelectionIsNotNewUser) { this.clearNewPrimaryUser(); }
@@ -97,7 +98,8 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
 
   secondaryUserExist() {
     return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser &&
-      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Email);
+      FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Email)
+      && this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser.Status != Status.Removed;
   }
 
   newNamedContact() {
@@ -164,7 +166,11 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
     }
   }
 
-  setApplicantAsPrimary() {
+  setApplicantAsPrimary(previousSelection?: string) {
+    let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser;
+    if(previousSelection?.trim() == "secondary-user" && !!secondaryUser && FieldValidations.IsNotNullOrWhitespace(secondaryUser?.Email) && secondaryUser.Status == Status.Removed) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser!.Status = Status.NoChanges;
+    }
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.NoChanges; 
     delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
   }
