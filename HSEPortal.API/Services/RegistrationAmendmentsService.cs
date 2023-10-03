@@ -47,7 +47,8 @@ public class RegistrationAmendmentsService
             bsr_declaration = changeRequest.Declaration,
             bsr_reviewrequired = changeRequest.ReviewRequired,
             buildingApplicationId = $"/bsr_buildingapplications({bsr_buildingapplicationid})",
-            changeCategory = $"/bsr_changecategories({DynamicsChangeCategory[changeRequest.Category]})"            
+            changeCategory = $"/bsr_changecategories({DynamicsChangeCategory[changeRequest.Category]})",
+            statuscode = 760_810_001 //submitted         
         };
 
         if(applicantReferenceId != null && !applicantReferenceId.Equals(string.Empty)) {

@@ -66,4 +66,10 @@ export class RaCheckAnswersComponent extends PageComponent<void> {
     return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.Removed;
   }
 
+  get numberOfChanges() {
+    let numChanges = this.isThereNewPrimaryUser() ? 1 : 0;
+    numChanges += (this.isThereNewSecondaryUser() || this.secondaryUserRemoved()) ? 1 : 0;
+    return numChanges;
+  }
+
 }

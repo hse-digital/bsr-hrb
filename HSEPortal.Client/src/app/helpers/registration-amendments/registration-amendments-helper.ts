@@ -52,7 +52,7 @@ export abstract class ChangesDirector {
 }
 
 export class ChangeApplicantModelBuilder extends ChangesDirector {
-    protected override Category: ChangeCategory = ChangeCategory.ApplicationBuildingAmendments;
+    protected override Category: ChangeCategory = ChangeCategory.ChangeApplicantUser;
     protected override Table: string = "Building Application";
     protected override ReviewRequired: boolean = false;
     protected override Declaration: boolean = true;

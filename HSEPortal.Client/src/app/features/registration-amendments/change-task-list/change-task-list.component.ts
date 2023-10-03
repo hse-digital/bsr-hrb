@@ -74,6 +74,13 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     return this.TagToCssClass[this.tagDirector?.getTag()];
   }
 
+  get submitSectionNumber() {
+    let sectionNumber = 2;
+    sectionNumber += !this.applicationService.model.IsSecondary ? 1 : 0;
+    sectionNumber += this.isKbiSubmitted() ? 1 : 0;
+    return sectionNumber;
+  }
+
   private TagToText: Record<TagStatus, string> = {
     [TagStatus.NotYetAvailable]: "NOT YET AVAILABLE",
     [TagStatus.CannotStartYet]: "CANNOT START YET",
