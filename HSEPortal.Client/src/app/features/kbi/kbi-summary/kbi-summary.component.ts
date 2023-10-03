@@ -31,7 +31,7 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
       await this.getApplicationDataFromBroadcastChannel();
     }
 
-    if (!this.paymentComplete() || !this.kbiComplete()) {
+    if (!this.kbiComplete()) {
       this.navigationService.navigate(NotFoundComponent.route);
     } else {
       this.shouldRender = true;
@@ -44,7 +44,7 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
       this.InScopeStructures.forEach((x, index) => this.applicationService.model.Kbi!.KbiSections[index].StructureName = x.Name)
     }
 
-    this.submissionDate = await this.applicationService.getSubmissionDate();
+    this.submissionDate = await this.applicationService.getKbiSubmissionDate();
   }
 
   private async getApplicationDataFromBroadcastChannel() {
