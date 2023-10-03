@@ -47,7 +47,7 @@
               </li>
             </ul>
           </li>
-          <li>
+          <li *ngIf="!applicationService.model.IsSecondary">
             <h2 class="app-task-list__section">
               <span class="app-task-list__section-number">{{isKbiSubmitted() ? "3" : "2"}}.</span>
               Who can tell us about changes
@@ -61,10 +61,9 @@
               </li>
             </ul>
           </li>
-
           <li>
             <h2 class="app-task-list__section">
-              <span class="app-task-list__section-number">{{isKbiSubmitted() ? "4" : "3"}}.</span>
+              <span class="app-task-list__section-number">{{submitSectionNumber}}.</span>
               Submit
             </h2>
             <ul class="app-task-list__items">

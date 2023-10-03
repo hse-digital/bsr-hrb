@@ -40,7 +40,7 @@ export class ConfirmPrimaryUserComponent  extends PageComponent<void> {
       && FieldValidations.IsNotNullOrWhitespace(primaryUser?.Email) 
       && FieldValidations.IsNotNullOrWhitespace(primaryUser?.PhoneNumber)
       && primaryUser?.Status == Status.ChangesInProgress;
-    return canAccess; 
+    return canAccess && !this.applicationService.model.IsSecondary; 
   }
 
   override isValid(): boolean {

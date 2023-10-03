@@ -29,6 +29,10 @@ export class UserListComponent extends PageComponent<string> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
+    if(this.applicationService.model.IsSecondary) {
+      this.navigationService.navigateRelative(ChangeTaskListComponent.route, this.activatedRoute);
+    }
+    
     this.initChangeUser();
     this.initPrimaryUser();
     this.initSecondaryUser();

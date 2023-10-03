@@ -42,7 +42,7 @@ export class PrimaryUserDetailsComponent  extends PageComponent<User> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return true;
+    return !this.applicationService.model.IsSecondary;
   }
 
   override isValid(): boolean {
