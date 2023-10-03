@@ -246,7 +246,7 @@ export class BuildingRegistrationModel {
   SecondaryLastName?: string;
   SecondaryPhoneNumber?: string;
   SecondaryEmailAddress?: string;
-  IsSecondary: boolean = false;
+  IsSecondary?: boolean;
   NumberOfSections?: string;
   Sections: SectionModel[] = [];
   OutOfScopeContinueReason?: string;
