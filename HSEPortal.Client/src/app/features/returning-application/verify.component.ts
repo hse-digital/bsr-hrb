@@ -68,11 +68,13 @@ export class ReturningApplicationVerifyComponent implements OnInit {
   private async doesSecurityCodeMatch(): Promise<boolean> {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
+      
+      this.applicationService.model.IsSecondary = this.emailAddress.trim().toLowerCase() == this.applicationService.model.SecondaryEmailAddress?.trim().toLowerCase();
+      this.applicationService.updateApplication();
 
       let isNewPrimaryUser = this.areEqual(this.applicationService.model.NewPrimaryUserEmail, this.emailAddress);
       if(isNewPrimaryUser) await this.integratePrimaryUser();
 
-      this.applicationService.model.IsSecondary = this.emailAddress.trim().toLowerCase() == this.applicationService.model.SecondaryEmailAddress?.trim().toLowerCase();
       
       
       if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete()) {
