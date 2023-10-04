@@ -3,7 +3,8 @@ import { User } from 'src/app/services/application.service';
 
 @Component({
   selector: 'user-details',
-  templateUrl: './user-details.component.html'
+  templateUrl: './user-details.component.html',
+  styles: ['.govuk-summary-list__actions { width:30%!important; }']
 })
 export class UserDetailsComponent {
   @Input() public user?: User;
