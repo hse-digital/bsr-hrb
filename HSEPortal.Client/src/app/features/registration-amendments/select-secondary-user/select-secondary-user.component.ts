@@ -27,10 +27,9 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
     let previousSelectionIsNotNewUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary != "new-user";
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomeSecondary = this.model;
     
-    if(!!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser) {
+    if(!!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser && this.model != "no-secondary-user") {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser!.Status = Status.ChangesInProgress; 
-    }
-    
+    }    
 
     switch(this.model) {
       case "named-contact": 
@@ -129,6 +128,6 @@ export class SelectSecondaryUserComponent  extends PageComponent<string> {
   }
 
   removeNewSecondaryUser() {
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser = undefined;
+    delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewSecondaryUser;
   }
 }
