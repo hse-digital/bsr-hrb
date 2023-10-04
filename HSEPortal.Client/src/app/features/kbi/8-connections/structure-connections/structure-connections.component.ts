@@ -1,7 +1,7 @@
 import { Component, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { GovukCheckboxComponent } from 'hse-angular';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { OtherHighRiseBuildingConnectionsComponent } from '../other-high-rise-building-connections/other-high-rise-building-connections.component';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { CloneHelper } from 'src/app/helpers/array-helper';
@@ -33,7 +33,7 @@ export class StructureConnectionsComponent extends PageComponent<string[]> {
       this.applicationService.currentKbiModel!.Connections.StructureConnections = [];
     }
 
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiConnectionsInProgress;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.KbiConnectionsInProgress;
     await this.applicationService.updateApplication();
     
     this.model = CloneHelper.DeepCopy(this.applicationService.currentKbiModel!.Connections.StructureConnections);
@@ -81,7 +81,7 @@ export class StructureConnectionsComponent extends PageComponent<string[]> {
     return this.applicationService.model.BuildingName;
   }
 
-  containsFlag(flag: BuildingApplicationStatus) {
+  containsFlag(flag: BuildingApplicationStage) {
     return true;
   }
 

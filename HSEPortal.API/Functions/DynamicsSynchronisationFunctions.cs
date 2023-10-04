@@ -13,7 +13,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.DurableTask;
 using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Options;
-using BuildingApplicationStatus = HSEPortal.Domain.Entities.BuildingApplicationStatus;
+using BuildingApplicationStatuscode = HSEPortal.Domain.Entities.BuildingApplicationStatuscode;
 
 namespace HSEPortal.API.Functions;
 
@@ -73,7 +73,7 @@ public class DynamicsSynchronisationFunctions
         await UpdateBuildingApplicationStage(buildingApplicationModel, new DynamicsBuildingApplication
         {
             bsr_applicationstage = BuildingApplicationStage.BuildingSummary,
-            statuscode = BuildingApplicationStatus.InProgress
+            statuscode = BuildingApplicationStatuscode.InProgress
         });
 
         return request.CreateResponse();

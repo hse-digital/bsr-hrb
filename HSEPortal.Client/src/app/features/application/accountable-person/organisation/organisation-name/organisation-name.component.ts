@@ -57,7 +57,7 @@ export class OrganisationNameComponent extends PageComponent<string> implements 
   }
 
   selectCompanyName(company: string) {
-    this.applicationService.currentAccountablePerson.OrganisationName = company;
+    this.model = company;
   }
 
   getPrincipalOrOther() {

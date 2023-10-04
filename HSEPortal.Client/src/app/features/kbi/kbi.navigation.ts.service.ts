@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseNavigation, KbiNavigationNode } from '../../services/navigation';
-import { ApplicationService, KbiSectionModel, BuildingApplicationStatus, KbiModel } from '../../services/application.service';
+import { ApplicationService, KbiSectionModel, BuildingApplicationStage, KbiModel } from '../../services/application.service';
 import { CheckBeforeStartComponent } from 'src/app/features/kbi/check-before-start/check-before-start.component';
 import { EvacuationStrategyComponent } from 'src/app/features/kbi/1-fire/evacuation-strategy/evacuation-strategy.component';
 import { ProvisionsEquipmentComponent } from 'src/app/features/kbi/1-fire/provisions-equipment/provisions-equipment.component';
@@ -137,7 +137,7 @@ class CheckBeforeStartNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbiSectionModel: KbiSectionModel, kbiSectionIndex: number) {
-    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) !== BuildingApplicationStatus.KbiCheckBeforeComplete) {
+    if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStage.KbiCheckBeforeComplete) !== BuildingApplicationStage.KbiCheckBeforeComplete) {
       return CheckBeforeStartComponent.route;
     }
     return this.evacuationStrategyNavigationNode.getNextRoute(kbiSectionModel, kbiSectionIndex);
@@ -839,14 +839,14 @@ class KbiDeclarationNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
-    if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress) 
-      || (this.containsFlag(BuildingApplicationStatus.KbiSubmitInProgress) && !this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete))) {
+    if (!this.containsFlag(BuildingApplicationStage.KbiSubmitInProgress) 
+      || (this.containsFlag(BuildingApplicationStage.KbiSubmitInProgress) && !this.containsFlag(BuildingApplicationStage.KbiSubmitComplete))) {
       return `${KbiSubmitModule.baseRoute}/${DeclarationComponent.route}`;
     }
     return this.kbiConfirmNavigationNode.getNextRoute(kbi, kbiSectionIndex);
   }
 
-  private containsFlag(flag: BuildingApplicationStatus) {
+  private containsFlag(flag: BuildingApplicationStage) {
     return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
 
@@ -859,13 +859,13 @@ class KbiConfirmNavigationNode extends KbiNavigationNode {
   }
 
   override getNextRoute(kbi: KbiModel, kbiSectionIndex: number): string {
-    if (!this.containsFlag(BuildingApplicationStatus.KbiSubmitComplete)) {
+    if (!this.containsFlag(BuildingApplicationStage.KbiSubmitComplete)) {
       return `${KbiSubmitModule.baseRoute}/${ConfirmComponent.route}`;
     }
     return `${KbiSubmitModule.baseRoute}/${ConfirmComponent.route}`;
   }
 
-  private containsFlag(flag: BuildingApplicationStatus) {
+  private containsFlag(flag: BuildingApplicationStage) {
     return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
 }

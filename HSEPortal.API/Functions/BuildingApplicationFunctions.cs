@@ -6,6 +6,8 @@ using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.DurableTask;
+using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions;
@@ -47,8 +49,7 @@ public class BuildingApplicationFunctions
 
     [Function(nameof(ValidateApplicationNumber))]
     public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations",
-            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", Connection = "CosmosConnection")]
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and (StringEquals(c.ContactEmailAddress, {EmailAddress}, true) or StringEquals(c.SecondaryEmailAddress, {EmailAddress}, true) or StringEquals(c.NewPrimaryUserEmail, {EmailAddress}, true))", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
         return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
@@ -63,10 +64,19 @@ public class BuildingApplicationFunctions
         return await request.CreateObjectResponseAsync(submissionDate);
     }
 
+    [Function(nameof(GetKbiSubmissionDate))]
+    public async Task<HttpResponseData> GetKbiSubmissionDate(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetKbiSubmissionDate/{applicationNumber}")]
+        HttpRequestData request, string applicationNumber)
+    {
+        string submissionDate = await dynamicsService.GetKbiSubmissionDate(applicationNumber);
+        return await request.CreateObjectResponseAsync(submissionDate);
+    }
+
     [Function(nameof(GetApplication))]
     public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request,
         [CosmosDBInput("hseportal", "building-registrations",
-            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and StringEquals(c.ContactEmailAddress, {EmailAddress}, true)", PartitionKey = "{ApplicationNumber}",
+            SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and (StringEquals(c.ContactEmailAddress, {EmailAddress}, true) or StringEquals(c.SecondaryEmailAddress, {EmailAddress}, true) or StringEquals(c.NewPrimaryUserEmail, {EmailAddress}, true))", PartitionKey = "{ApplicationNumber}",
             Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
@@ -74,7 +84,9 @@ public class BuildingApplicationFunctions
         if (buildingApplications.Any())
         {
             var application = buildingApplications[0];
-            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress);
+            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress) 
+                || await otpService.ValidateToken(requestContent.OtpToken, application.SecondaryEmailAddress)
+                || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail);
             if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
                 return await request.CreateObjectResponseAsync(application);
@@ -206,6 +218,19 @@ public class BuildingApplicationFunctions
         var applicationCost = new { applicationCost = integrationOptions.PaymentAmount / 100 };
         return await request.CreateObjectResponseAsync(applicationCost);
     }
+
+    [Function(nameof(GetBuildingApplicationStatuscode))]
+    public async Task<HttpResponseData> GetBuildingApplicationStatuscode([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
+    {
+        var parameters = request.GetQueryParameters();
+        var applicationid = parameters["applicationid"];
+
+        if (string.IsNullOrWhiteSpace(applicationid))
+            return request.CreateResponse(HttpStatusCode.BadRequest);
+
+        var statuscodeModel = await dynamicsService.GetBuildingApplicationStatuscodeBy(applicationid);
+        return await request.CreateObjectResponseAsync(statuscodeModel.statuscode);
+    }
 }
 
 public class CustomHttpResponseData
@@ -241,4 +266,9 @@ public record RegisteredStructureModel
 public class RegisteredStructureRequestModel {
     public string Postcode {get; set;}
     public string AddressLineOne {get; set;}
+}
+
+public class ApplicationNumberAndEmail {
+    public string ApplicationNumber {get; set;}
+    public string EmailAddress {get; set;}
 }

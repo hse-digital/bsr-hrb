@@ -14,6 +14,7 @@ export class ConfirmAddressComponent {
   @Input() address!: AddressModel;
   @Input() addressName?: string;
   @Input() selfAddress = false;
+  @Input() isStructureAddress: boolean = false;
   @Output() onAddressConfirmed = new EventEmitter<boolean | undefined>();
   @Output() onSearchAgain = new EventEmitter();
   @Output() onEnterManualAddress = new EventEmitter();

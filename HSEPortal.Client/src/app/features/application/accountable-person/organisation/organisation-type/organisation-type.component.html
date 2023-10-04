@@ -22,7 +22,7 @@
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="rmc-or-organisation" value="rmc-or-organisation" label="Resident management company (RMC) or organisation" hint="A non-profit company formed by residents who manage or maintain the building they live in." />
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="rtm-or-organisation" value="rtm-or-organisation" label="Right to manage (RTM) company or organisation" hint="A non-profit company formed by long leaseholders who manage or maintain the building they live in." />
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="other" label="Other" value="other" hint="Any other type of organisation.">
-            <govuk-input (onKeyupEnter)="saveAndContinue()" id="other-conditional" label="Other organisation type" [(model)]="model" class="govuk-!-margin-bottom-5" />
+            <govuk-input (onKeyupEnter)="saveAndContinue()" id="other-conditional" label="Other organisation type" [(model)]="otherOptionModel" class="govuk-!-margin-bottom-5" />
           </govuk-radio>
         </govuk-radio-group>
 

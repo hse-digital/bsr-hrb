@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { ProvisionsEquipmentComponent } from '../provisions-equipment/provisions-equipment.component';
 import { KbiService } from 'src/app/services/kbi.service';
 import { PageComponent } from 'src/app/helpers/page.component';
@@ -39,7 +39,7 @@ export class EvacuationStrategyComponent extends PageComponent<string> {
     return !!this.applicationService.model.Kbi
     && !!this.applicationService.model.Kbi.SectionStatus
     && this.applicationService.model.Kbi.SectionStatus.length > 0
-    && (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiCheckBeforeComplete) == BuildingApplicationStatus.KbiCheckBeforeComplete;
+    && (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.KbiCheckBeforeComplete) == BuildingApplicationStage.KbiCheckBeforeComplete;
   }
 
   override isValid(): boolean {

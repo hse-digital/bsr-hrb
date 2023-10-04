@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Injector, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { HseAngularModule } from 'hse-angular';
 
 import { AppComponent } from './app.component';
@@ -22,6 +22,10 @@ import { HelpPagesModule } from './components/footer/help-pages.module';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { KbiService } from './services/kbi.service';
 import { GetInjector } from './helpers/injector.helper';
+import { WhatWantToDoComponent } from './features/registration-amendments/what-want-to-do/what-want-to-do.component';
+import { ComponentsModule } from './components/components.module';
+import { CommonModule } from '@angular/common';
+import { RegistrationAmendmentsService } from './services/registration-amendments.service';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title), HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
@@ -30,6 +34,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(HomeComponent.route, HomeComponent, undefined, HomeComponent.title),
   HseRoute.unsafe(TimeoutComponent.route, TimeoutComponent, undefined, TimeoutComponent.title),
   HseRoute.unsafe(NotFoundComponent.route, NotFoundComponent, undefined, NotFoundComponent.title),
+  HseRoute.unsafe(WhatWantToDoComponent.route, WhatWantToDoComponent, undefined, WhatWantToDoComponent.title),
   HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent, undefined, ReturningApplicationComponent.title),
   HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forLoadChildren(HelpPagesModule.baseRoute, () => import('./components/footer/help-pages.module').then(m => m.HelpPagesModule)),
@@ -48,16 +53,19 @@ const routes = new HseRoutes([
     ReturningApplicationResendCodeComponent,
     ReturningApplicationVerifyComponent,
     TimeoutModalComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    WhatWantToDoComponent
   ],
   imports: [
     RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking', scrollPositionRestoration: 'enabled' }),
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
-    FormsModule,
     HseAngularModule,
-    HttpClientModule
+    CommonModule,
+    HttpClientModule,
+    ComponentsModule,
+    FormsModule
   ],
-  providers: [HttpClient, ApplicationService, KbiService],
+  providers: [HttpClient, ApplicationService, KbiService, RegistrationAmendmentsService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

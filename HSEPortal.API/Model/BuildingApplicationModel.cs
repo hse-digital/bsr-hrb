@@ -10,6 +10,12 @@ public record BuildingApplicationModel(
     string ContactLastName = null,
     string ContactPhoneNumber = null,
     string ContactEmailAddress = null,
+    string NewPrimaryUserEmail = null,
+    string SecondaryFirstName = null,
+    string SecondaryLastName = null,
+    string SecondaryPhoneNumber = null,
+    string SecondaryEmailAddress = null,
+    bool? IsSecondary = null,
     string NumberOfSections = null,
     SectionModel[] Sections = null,
     AccountablePerson[] AccountablePersons = null,
@@ -21,7 +27,8 @@ public record BuildingApplicationModel(
     BuildingApplicationStatus ApplicationStatus = BuildingApplicationStatus.None,
     bool? DuplicateDetected = null,
     bool? ShareDetailsDeclared = null,
-    string[] DuplicateBuildingApplicationIds = null) : IValidatableModel
+    string[] DuplicateBuildingApplicationIds = null,
+    RegistrationAmendmentsModel RegistrationAmendmentsModel = null) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
@@ -201,4 +208,57 @@ public record PaymentInvoiceDetails
     public string OrderNumberOption { get; set; }
     public string OrderNumber { get; set; }
     public string Status { get; set; }
+}
+
+public record RegistrationAmendmentsModel {
+    public ChangeUser ChangeUser { get; set; }
+    public long Date { get; set; }
+    public ChangeRequest ChangeRequest { get; set; }
+}
+
+public record ChangeUser {
+    public User PrimaryUser { get; set; }
+    public User NewPrimaryUser { get; set; }
+    public User SecondaryUser { get; set; }
+    public User NewSecondaryUser { get; set; }
+    public string WhoBecomePrimary { get; set; }
+    public string WhoBecomeSecondary { get; set; }
+}
+
+public record User {
+    public Status Status { get; set; }
+    public string Firstname { get; set; }
+    public string Lastname { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
+}
+
+public enum Status {
+    NoChanges = 0,
+    ChangesInProgress = 1,
+    ChangesComplete = 2,
+    ChangesSubmitted = 4,
+    Removed = 8
+}
+
+public record ChangeRequest {
+    public string Name { get; set; }
+    public ChangeCategory Category { get; set; }
+    public bool Declaration { get; set; }
+    public bool ReviewRequired { get; set; }
+    public Change[] Change { get; set; }
+}
+
+public record Change {
+    public string Name { get; set; }
+    public string Table { get; set; }
+    public string FieldName { get; set; }
+    public string OriginalAnswer { get; set; }
+    public string NewAnswer { get; set; }
+}
+
+public enum ChangeCategory {
+  ApplicationBuildingAmendments,
+  ChangeApplicantUser,
+  DeRegistration
 }

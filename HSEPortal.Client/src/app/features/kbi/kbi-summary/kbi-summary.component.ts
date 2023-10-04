@@ -5,7 +5,7 @@ import { NotFoundComponent } from 'src/app/components/not-found/not-found.compon
 import { BroadcastChannelSecondaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { LocalStorage } from 'src/app/helpers/local-storage';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStatus, BuildingRegistrationModel, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, BuildingRegistrationModel, SectionModel } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
@@ -31,7 +31,7 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
       await this.getApplicationDataFromBroadcastChannel();
     }
 
-    if (!this.paymentComplete() || !this.kbiComplete()) {
+    if (!this.kbiComplete()) {
       this.navigationService.navigate(NotFoundComponent.route);
     } else {
       this.shouldRender = true;
@@ -44,7 +44,7 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
       this.InScopeStructures.forEach((x, index) => this.applicationService.model.Kbi!.KbiSections[index].StructureName = x.Name)
     }
 
-    this.submissionDate = await this.applicationService.getSubmissionDate();
+    this.submissionDate = await this.applicationService.getKbiSubmissionDate();
   }
 
   private async getApplicationDataFromBroadcastChannel() {
@@ -63,10 +63,10 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
   }
 
   private paymentComplete(): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete
   }
 
   private kbiComplete(): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.KbiSubmitComplete) == BuildingApplicationStatus.KbiSubmitComplete
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.KbiSubmitComplete) == BuildingApplicationStage.KbiSubmitComplete
   }
 }

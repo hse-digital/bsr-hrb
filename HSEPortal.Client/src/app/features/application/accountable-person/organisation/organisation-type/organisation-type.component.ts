@@ -16,6 +16,7 @@ export class OrganisationTypeComponent extends PageComponent<string> implements 
 
   organisationTypeHasErrors = false;
 
+  otherOptionModel?: string;
 
 
   constructor(activatedRoute: ActivatedRoute) {
@@ -42,10 +43,12 @@ export class OrganisationTypeComponent extends PageComponent<string> implements 
 
   override onInit(applicationService: ApplicationService): void {
     this.model = this.applicationService.currentAccountablePerson.OrganisationType;
+    this.otherOptionModel = this.applicationService.currentAccountablePerson.OrganisationTypeDescription
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentAccountablePerson.OrganisationType = this.model;
+    this.applicationService.currentAccountablePerson.OrganisationTypeDescription = this.otherOptionModel;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

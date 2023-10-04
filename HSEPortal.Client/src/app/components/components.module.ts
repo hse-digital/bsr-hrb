@@ -23,6 +23,7 @@ import { GovukTableComponent } from './govuk-table/govuk-table.component';
 import { GovukTableRowComponent } from './govuk-table/govuk-table-row.component';
 import { GovukTableCellComponent } from './govuk-table/govuk-table-cell.component';
 import { GovukTableColComponent } from './govuk-table/govuk-table-col.component';
+import { UserDetailsComponent } from './user-details/user-details.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { GovukTableColComponent } from './govuk-table/govuk-table-col.component'
     GovukTableComponent,
     GovukTableRowComponent,
     GovukTableCellComponent,
-    GovukTableColComponent
+    GovukTableColComponent,
+    UserDetailsComponent
   ],
   imports: [
     HseAngularModule,
@@ -64,7 +66,8 @@ import { GovukTableColComponent } from './govuk-table/govuk-table-col.component'
     GovukTableComponent,
     GovukTableRowComponent,
     GovukTableCellComponent,
-    GovukTableColComponent
+    GovukTableColComponent,
+    UserDetailsComponent
   ],
   providers: [HttpClient, AddressService]
 })

@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStatus, OutOfScopeReason, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, OutOfScopeReason, SectionModel } from 'src/app/services/application.service';
 import { AccountablePersonModule } from '../../accountable-person/accountable-person.module';
 import { AccountablePersonComponent } from '../../accountable-person/accountable-person/accountable-person.component';
 import { NumberOfSectionsComponment } from '../number-of-sections/number-of-sections.component';
@@ -55,7 +55,7 @@ export class SectionCheckAnswersComponent extends PageComponent<void> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStatus.BlocksInBuildingInProgress) == BuildingApplicationStatus.BlocksInBuildingInProgress;
+    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.BlocksInBuildingInProgress) == BuildingApplicationStage.BlocksInBuildingInProgress;
   }
 
   override isValid(): boolean {
@@ -109,7 +109,7 @@ export class SectionCheckAnswersComponent extends PageComponent<void> {
   }
 
   override async onSave(): Promise<void> {
-    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.BlocksInBuildingComplete;
+    this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStage.BlocksInBuildingComplete;
     await this.applicationService.syncBuildingStructures();
 
     this.applicationService.model.Sections =  this.getActiveSections();

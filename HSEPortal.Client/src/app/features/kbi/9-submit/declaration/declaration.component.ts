@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStatus } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { ConfirmComponent } from '../confirm/confirm.component';
 import { KbiService } from 'src/app/services/kbi.service';
 import { PageComponent } from 'src/app/helpers/page.component';
@@ -22,12 +22,12 @@ export class DeclarationComponent extends PageComponent<void> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.model.ApplicationStatus |= BuildingApplicationStatus.KbiSubmitInProgress;
+    this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.KbiSubmitInProgress;
     await this.applicationService.updateApplication();
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return this.containsFlag(BuildingApplicationStatus.KbiConnectionsComplete);
+    return this.containsFlag(BuildingApplicationStage.KbiConnectionsComplete);
   }
 
   override isValid(): boolean {
@@ -38,7 +38,7 @@ export class DeclarationComponent extends PageComponent<void> {
     return this.navigationService.navigateRelative(ConfirmComponent.route, this.activatedRoute);
   }
 
-  containsFlag(flag: BuildingApplicationStatus) {
+  containsFlag(flag: BuildingApplicationStage) {
     return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
 
