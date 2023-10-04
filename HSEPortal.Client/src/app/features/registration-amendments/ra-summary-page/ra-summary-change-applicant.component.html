@@ -1,0 +1,37 @@
+<h2 class="govuk-heading-m">Who can access this application</h2>
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            What's changing
+        </dt>
+        <dd class="govuk-summary-list__value">
+            <strong>What it was</strong>
+        </dd>
+        <dd class="govuk-summary-list__value">
+            <strong style="white-space: nowrap;">What you're changing it to</strong>
+        </dd>
+    </div>
+    <ng-container *ngFor="let change of changes">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                {{change.FieldName == "Primary Applicant" ? "Primary User" : "Secondary User"}}
+            </dt>
+            <dd class="govuk-summary-list__value" *ngIf="change.OriginalAnswer == 'None'">
+                <div>None</div>
+            </dd>
+            <dd class="govuk-summary-list__value" *ngIf="change.OriginalAnswer != 'None'">
+                <div>{{getFullName(change.OriginalAnswer!)}}</div>
+                <div>{{getEmailAddress(change.OriginalAnswer!)}}</div>
+                <div>{{getPhoneNumber(change.OriginalAnswer!)}}</div>
+            </dd>
+            <dd class="govuk-summary-list__value" *ngIf="change.NewAnswer == 'None'">
+                <div>None</div>
+            </dd>
+            <dd class="govuk-summary-list__value" *ngIf="change.NewAnswer != 'None'">
+                <div>{{getFullName(change.NewAnswer!)}}</div>
+                <div>{{getEmailAddress(change.NewAnswer!)}}</div>
+                <div>{{getPhoneNumber(change.NewAnswer!)}}</div>
+            </dd>
+        </div>
+    </ng-container>
+</dl>

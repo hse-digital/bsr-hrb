@@ -4,6 +4,7 @@ import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
 import { FieldValidations } from "../helpers/validators/fieldvalidations";
+import { ChangeRequest } from "./registration-amendments.service";
 
 @Injectable()
 export class ApplicationService {
@@ -138,15 +139,14 @@ export class ApplicationService {
   }
 
   async validateOTPToken(otpToken: string, emailAddress: string): Promise<void> {
-    await firstValueFrom(this.httpClient.post('api/ValidateOTPToken', {
+    await firstValueFrom(this.httpClient.post('api/ValidateOTPToken', this.sanitize({
       "OTPToken": otpToken,
       "EmailAddress": emailAddress
-    }));
+    })));
   }
 
   async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
     try {
-
       let request = { ApplicationNumber: applicationNumber, EmailAddress: emailAddress };
       await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', this.sanitize(request)));
       return true;
@@ -154,6 +154,7 @@ export class ApplicationService {
       return false;
     }
   }
+
 
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
 
@@ -209,9 +210,17 @@ export class ApplicationService {
     return await firstValueFrom(this.httpClient.get<string>(`api/GetSubmissionDate/${this.model.id}`));
   }
 
+  async getKbiSubmissionDate(): Promise<string> {
+    return await firstValueFrom(this.httpClient.get<string>(`api/GetKbiSubmissionDate/${this.model.id}`));
+  }
+
   async getApplicationCost(): Promise<number> {
     var response = await firstValueFrom(this.httpClient.get<any>('api/GetApplicationCost'));
     return response.applicationCost;
+  }
+
+  async getBuildingApplicationStatuscode(applicationid: string): Promise<BuildingApplicationStatuscode> {
+    return await firstValueFrom(this.httpClient.get<BuildingApplicationStatuscode>(`api/GetBuildingApplicationStatuscode?applicationid=${applicationid}`));
   }
 
   sanitize(body: any): string {
@@ -232,21 +241,28 @@ export class BuildingRegistrationModel {
   ContactLastName?: string;
   ContactPhoneNumber?: string;
   ContactEmailAddress?: string;
+  NewPrimaryUserEmail?: string;
+  SecondaryFirstName?: string;
+  SecondaryLastName?: string;
+  SecondaryPhoneNumber?: string;
+  SecondaryEmailAddress?: string;
+  IsSecondary?: boolean;
   NumberOfSections?: string;
   Sections: SectionModel[] = [];
   OutOfScopeContinueReason?: string;
   PrincipalAccountableType?: string;
   AccountablePersons: AccountablePersonModel[] = [];
-  ApplicationStatus: BuildingApplicationStatus = BuildingApplicationStatus.None;
+  ApplicationStatus: BuildingApplicationStage = BuildingApplicationStage.None;
   Kbi?: KbiModel;
   PaymentType?: string | undefined;
   PaymentInvoiceDetails?: PaymentInvoiceDetails;
   DuplicateDetected?: boolean;
   ShareDetailsDeclared?: boolean;
   DuplicateBuildingApplicationIds?: string[];
+  RegistrationAmendmentsModel?: RegistrationAmendmentsModel;
 }
 
-export enum BuildingApplicationStatus {
+export enum BuildingApplicationStage {
   None = 0,
   BlocksInBuildingInProgress = 1,
   BlocksInBuildingComplete = 2,
@@ -494,4 +510,71 @@ export class PaymentInvoiceDetails {
   OrderNumberOption?: string;
   OrderNumber?: string;
   Status?: string;
+}
+
+export class RegistrationAmendmentsModel {
+  BuildingSummaryStatus: Status = Status.NoChanges;
+  AccountablePersonStatus?: ChangeAccountablePerson;
+  ConnectionStatus: Status = Status.NoChanges;
+  SubmitStatus: Status = Status.NoChanges;
+
+  ChangeUser?: ChangeUser;
+  Date?: number;
+
+  ChangeRequest?: ChangeRequest;
+}
+
+export class ChangeAccountablePerson {
+  Status: Status = Status.NoChanges;
+  
+  NewNamedContact?: boolean;
+  NewNamedContactFirstName?: string;
+  NewNamedContactLastName?: string;
+  NewNamedContactEmail?: string;
+  NewNamedContactPhonenumber?: string;
+}
+
+export class ChangeUser {
+  PrimaryUser?: User;
+  NewPrimaryUser?: User;
+  SecondaryUser?: User;
+  NewSecondaryUser?: User;
+  WhoBecomePrimary?: string;
+  WhoBecomeSecondary?: string;
+}
+
+export class User {
+  Status: Status = Status.NoChanges;
+  Firstname?: string;
+  Lastname?: string;
+  Email?: string;
+  PhoneNumber?: string;
+}
+
+export enum Status {
+  NoChanges = 0,
+  ChangesInProgress = 1,
+  ChangesComplete = 2,
+  ChangesSubmitted = 4, 
+  Removed = 8
+}
+
+export enum BuildingApplicationStatuscode
+{
+    New = 760_810_001,
+    InProgress = 760_810_002,
+    SubmittedAwaitingAllocation = 760_810_003,
+    AllocatedReview = 760_810_004,
+    UnderReview = 760_810_005,
+    RegisteredPendingQA = 760_810_006,
+    RejectedPendingQA = 760_810_007,
+    AllocatedRework = 760_810_012,
+    ReadyForQA = 760_810_008,
+    Registered = 760_810_015,
+    QAInProgress = 760_810_009,
+    RegisteredPendingChange = 760_810_016,
+    RegisteredKbiValidated = 760_810_017,
+    Rejected = 760_810_011,
+    Withdrawn = 760_810_013,
+    OnHold = 760_810_014,
 }

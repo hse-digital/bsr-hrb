@@ -1,0 +1,17 @@
+<i class="fa fa-spinner fa-spin loading" *ngIf="!shouldRender"></i>
+
+<ng-container *ngIf="shouldRender">
+
+  <div class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+
+        <h1 class="govuk-heading-l">You told us about these changes to {{applicationService.model.BuildingName}} on
+          {{applicationService.model.RegistrationAmendmentsModel?.Date | date: 'dd MMMM yyyy'}}</h1>
+
+        <ra-summary-change-applicant [changes]="applicantChanges" />
+
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,40 @@
+<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+    
+    <h1 class="govuk-heading-l">Manage who can tell us about {{applicationService.model.BuildingName}}</h1>
+    <h1 class="govuk-heading-m">Primary user</h1>
+    
+    <user-details [user]="primaryUser" [showRemoveAction]="false" (changeClicked)="changePrimaryUser()" />
+
+    <govuk-body *ngIf="newPrimaryUserExists()">
+        Once you submit your changes, we'll invite {{ newPrimaryUser!.Firstname }} {{ newPrimaryUser!.Lastname }} to become the primary user. You'll still be the primary user until they accept that invitation.
+    </govuk-body>
+
+    <h1 class="govuk-heading-m">Secondary user</h1>
+    <govuk-body>
+        A secondary user can access this application to {{!isKbiSummitted() ? "give structure and fire safety information, or" : ""}} tell the Building Safety Regulator about changes. They cannot give access to other people. You can remove their access at any time.
+    </govuk-body>
+
+    <govuk-body>
+        You can only have one secondary user at a time.
+    </govuk-body>
+
+    <govuk-body *ngIf="(!currentSecondaryUserExists() && !newSecondaryUserExists()) || isSecondaryUserRemoved() ">
+        <a class="govuk-link" (keyup.enter)="addSecondaryUser()" (click)="addSecondaryUser()" role="link" tabindex="0">Add a secondary user</a>
+    </govuk-body>
+
+    <user-details *ngIf="currentSecondaryUserExists() && !newSecondaryUserExists() && !isSecondaryUserRemoved()" 
+        [user]="currentSecondaryUser" 
+        (removeClicked)="removeSecondaryUser()" 
+        (changeClicked)="changeSecondaryUser()" />
+
+    <user-details *ngIf="newSecondaryUserExists() && !isSecondaryUserRemoved()" 
+        [user]="newSecondaryUser"
+        (removeClicked)="removeSecondaryUser()" 
+        (changeClicked)="changeSecondaryUser()" />
+
+    <govuk-body *ngIf="newSecondaryUserExists() && !isSecondaryUserRemoved()">Once you submit your changes, we'll invite {{ newSecondaryUser?.Firstname }} {{ newSecondaryUser?.Lastname }} to become the secondary user 
+        <ng-container *ngIf="currentSecondaryUserExists()">and {{ currentSecondaryUser?.Firstname }} {{ currentSecondaryUser?.Lastname }} will lose access</ng-container>.
+    </govuk-body>
+
+
+</govuk-formpage>

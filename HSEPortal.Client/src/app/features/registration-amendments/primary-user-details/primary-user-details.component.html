@@ -1,0 +1,36 @@
+<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link *ngIf="firstNameHasErrors" anchorId="input-first-name" message="Enter the primary user's first name" />
+        <govuk-error-link *ngIf="lastNameHasErrors" anchorId="input-last-name" message="Enter the primary user's last name" />
+        <govuk-error-link *ngIf="emailHasErrors" anchorId="input-email-address" message="You must enter an email address in the correct format, like name@example.com" />
+        <govuk-error-link *ngIf="phoneNumberHasErrors" anchorId="input-phone-number" message="You must enter a UK telephone number. For example, 01632 960 001, 07700 900 982 or +44 808 157 0192" />
+    </govuk-error-summary>
+
+    <h1 class="govuk-heading-l">Tell us about the new primary user</h1>
+
+    <govuk-input id="first-name" label="First name"
+                [(model)]="model!.Firstname" #field [govukRequired]="field"
+                [errorText]="getErrorDescription(firstNameHasErrors, 'Enter the primary user\'s first name')"
+                class="govuk-!-margin-bottom-5"
+                (onKeyupEnter)="saveAndContinue()" />
+
+    <govuk-input id="last-name" label="Last name"
+                [(model)]="model!.Lastname" #field2 [govukRequired]="field2"
+                [errorText]="getErrorDescription(lastNameHasErrors, 'Enter the primary user\'s last name')"
+                class="govuk-!-margin-bottom-5"
+                (onKeyupEnter)="saveAndContinue()" />
+
+    <govuk-input id="email-address" label="Email address"
+                [(model)]="model!.Email" #field3 [govukRequired]="field3"
+                [errorText]="getErrorDescription(emailHasErrors, 'You must enter an email address in the correct format, like name@example.com')"
+                class="govuk-!-margin-bottom-5"
+                (onKeyupEnter)="saveAndContinue()" />
+
+    <govuk-input id="phone-number" label="Phone number"
+                [(model)]="model!.PhoneNumber" #field4 [govukRequired]="field4"
+                [errorText]="getErrorDescription(phoneNumberHasErrors, 'You must enter a UK telephone number. For example, 01632 960 001, 07700 900 982 or +44 808 157 0192')"
+                class="govuk-!-margin-bottom-5"
+                (onKeyupEnter)="saveAndContinue()" />
+
+</govuk-formpage>

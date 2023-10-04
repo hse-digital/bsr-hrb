@@ -32,6 +32,7 @@ export class ManualAddressComponent {
 
   confirmAddress() {
     if (this.isModelValid()) {
+      this.model.PostcodeEntered = this.model.Postcode;
       this.onAddressEntered.emit(this.model);
     } else {
       this.summaryError?.first?.focus();

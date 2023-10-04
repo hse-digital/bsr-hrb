@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
-import { ApplicationService, BuildingApplicationStatus, PaymentStatus } from "src/app/services/application.service";
+import { ApplicationService, BuildingApplicationStage, PaymentStatus } from "src/app/services/application.service";
 import { PaymentDeclarationComponent } from "../payment/payment-declaration/payment-declaration.component";
 import { PaymentModule } from "../payment/payment.module";
 import { BuildingSummaryNavigation } from "src/app/features/application/building-summary/building-summary.navigation";
@@ -17,7 +17,7 @@ export class ApplicationTaskListComponent extends PageComponent<void> {
   static route: string = '';
   static title: string = "Registration task list - Register a high-rise building - GOV.UK";
 
-  applicationStatus = BuildingApplicationStatus;
+  applicationStatus = BuildingApplicationStage;
   completedSections: number = 0;
   paymentEnum = PaymentStatus;
   paymentStatus?: PaymentStatus;
@@ -29,12 +29,12 @@ export class ApplicationTaskListComponent extends PageComponent<void> {
   checkingStatus = true;
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    if (this.containsFlag(BuildingApplicationStatus.BlocksInBuildingComplete)) this.completedSections++;
-    if (this.containsFlag(BuildingApplicationStatus.AccountablePersonsComplete)) {
+    if (this.containsFlag(BuildingApplicationStage.BlocksInBuildingComplete)) this.completedSections++;
+    if (this.containsFlag(BuildingApplicationStage.AccountablePersonsComplete)) {
       await this.getPaymentStatus();
       this.completedSections++;
     }
-    if (this.containsFlag(BuildingApplicationStatus.PaymentComplete)) this.completedSections++;
+    if (this.containsFlag(BuildingApplicationStage.PaymentComplete)) this.completedSections++;
 
     this.checkingStatus = false;
   }
@@ -80,7 +80,7 @@ export class ApplicationTaskListComponent extends PageComponent<void> {
     this.navigationService.navigateAppend(appendRoute, this.activatedRoute);
   }
 
-  containsFlag(flag: BuildingApplicationStatus) {
+  containsFlag(flag: BuildingApplicationStage) {
     return (this.applicationService.model.ApplicationStatus & flag) == flag;
   }
 
@@ -95,7 +95,7 @@ export class ApplicationTaskListComponent extends PageComponent<void> {
         this.paymentStatus = sucesssfulpayment ? PaymentStatus.Success : PaymentStatus.Failed;
 
         if (this.paymentStatus == PaymentStatus.Success) {
-          this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStatus.PaymentComplete;
+          this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStage.PaymentComplete;
           await this.applicationService.updateApplication();
         }
       } else if (payments[0].bsr_govukpaystatus == 'open') {
@@ -103,7 +103,7 @@ export class ApplicationTaskListComponent extends PageComponent<void> {
       } else {
         this.paymentStatus = PaymentStatus.Failed;
       }
-    } else if (this.containsFlag(BuildingApplicationStatus.PaymentInProgress)) {
+    } else if (this.containsFlag(BuildingApplicationStage.PaymentInProgress)) {
       this.paymentStatus = PaymentStatus.Started;
     }
   }

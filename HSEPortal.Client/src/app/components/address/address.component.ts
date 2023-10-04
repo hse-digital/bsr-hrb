@@ -13,6 +13,7 @@ export class AddressComponent implements OnInit {
   @Input() address?: AddressModel;
   @Input() addressName!: string;
   @Input() selfAddress = false;
+  @Input() isStructureAddress: boolean = false;
   @Output() onAddressConfirmed = new EventEmitter();
   @Output() onChangeStep = new EventEmitter();
 
@@ -56,6 +57,7 @@ export class AddressComponent implements OnInit {
   }
 
   manualAddressEntered(address: AddressModel) {
+    this.searchModel.postcode = address?.Postcode;
     this.address = address;
     this.changeStepTo('confirm');
   }

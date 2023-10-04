@@ -1,0 +1,13 @@
+<govuk-formpage saveAndContinueText="Confirm" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+
+    <h1 class="govuk-heading-l">Confirm change of primary user</h1>
+
+    <govuk-body>The new primary user will be:</govuk-body>
+
+    <govuk-inset-text>
+        <div>{{primaryUser!.Firstname}} {{primaryUser!.Lastname}}</div>
+        <div>{{primaryUser!.Email}}</div>
+        <div>{{primaryUser!.PhoneNumber}}</div>
+    </govuk-inset-text>
+    
+</govuk-formpage>

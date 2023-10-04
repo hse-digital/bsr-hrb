@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
 import { GovukErrorSummaryComponent } from "hse-angular";
-import { ApplicationService, BuildingApplicationStatus } from "src/app/services/application.service";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
+import { ApplicationService, BuildingApplicationStage } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
+import { RegistrationAmendmentsService } from "src/app/services/registration-amendments.service";
 import { TitleService } from 'src/app/services/title.service';
 
 @Component({
@@ -25,7 +27,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
 
   @ViewChildren("summaryError") summaryError?: QueryList<GovukErrorSummaryComponent>;
 
-  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private titleService: TitleService) { }
+  constructor(private applicationService: ApplicationService, private navigationService: NavigationService, private titleService: TitleService, private registrationAmendmentsService: RegistrationAmendmentsService) { }
 
   ngOnInit() {
     this.titleService.setTitle(ReturningApplicationVerifyComponent.title);
@@ -66,19 +68,61 @@ export class ReturningApplicationVerifyComponent implements OnInit {
   private async doesSecurityCodeMatch(): Promise<boolean> {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
+      
+      this.applicationService.model.IsSecondary = this.emailAddress.trim().toLowerCase() == this.applicationService.model.SecondaryEmailAddress?.trim().toLowerCase();
+      this.applicationService.updateApplication();
 
-      var applicationStatus = this.applicationService.model.ApplicationStatus;
-      if ((applicationStatus & BuildingApplicationStatus.KbiSubmitComplete) == BuildingApplicationStatus.KbiSubmitComplete) {
-        this.navigationService.navigate(`application/${this.applicationNumber}/application-completed`);
-      } else if ((applicationStatus & BuildingApplicationStatus.PaymentComplete) == BuildingApplicationStatus.PaymentComplete) {
-        this.navigationService.navigate(`application/${this.applicationNumber}/kbi`);
-      } else {
+      let isNewPrimaryUser = this.areEqual(this.applicationService.model.NewPrimaryUserEmail, this.emailAddress);
+      if(isNewPrimaryUser) await this.integratePrimaryUser();
+
+      
+      
+      if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);
+      } else {
+        this.navigationService.navigate(`application/${this.applicationNumber}/application-completed`);
       }
 
       return true;
     } catch {
       return false;
     }
+  }
+
+  private areEqual(a?: string, b?: string) {
+    if(FieldValidations.IsNotNullOrWhitespace(a) && FieldValidations.IsNotNullOrWhitespace(b)) {
+      return a!.toLowerCase().trim() == b!.toLowerCase().trim();
+    }
+    return false;
+  }
+
+  private async integratePrimaryUser() {
+    await this.registrationAmendmentsService.syncNewPrimaryUser();
+    this.updatePrimaryUser();
+    this.applicationService.updateApplication();
+  }
+  
+  private updatePrimaryUser() {
+    let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+    if(!!newPrimaryUser) {
+      this.applicationService.model.ContactEmailAddress = newPrimaryUser.Email;
+      this.applicationService.model.ContactFirstName = newPrimaryUser.Firstname;
+      this.applicationService.model.ContactLastName = newPrimaryUser.Lastname;
+      this.applicationService.model.ContactPhoneNumber = newPrimaryUser.PhoneNumber;
+      delete this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+      delete this.applicationService.model.NewPrimaryUserEmail;
+    }
+  }
+
+
+
+  private isAccountablePersonsComplete() {
+    var applicationStatus = this.applicationService.model.ApplicationStatus;
+    return (applicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete
+  }
+
+  private isBlocksInBuildingComplete() {
+    var applicationStatus = this.applicationService.model.ApplicationStatus;
+    return (applicationStatus & BuildingApplicationStage.BlocksInBuildingComplete) == BuildingApplicationStage.BlocksInBuildingComplete;
   }
 }

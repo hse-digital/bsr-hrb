@@ -1,0 +1,27 @@
+<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+   
+<govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="keep-me-input" message="Select who will become the new primary user" />
+  </govuk-error-summary>
+
+  <h1 class="govuk-heading-l">Primary user</h1>
+
+  <govuk-body>If you make someone else the primary user, you'll lose access to this application after you submit your changes.</govuk-body>
+
+  <govuk-radio-group title="Who will become the primary user?" [isPageHeading]=false [errorText]="getErrorDescription(hasErrors, 'Select who will become the new primary user')" 
+    [(model)]="model" #field [govukRequired]="field" hintText="">
+
+    <govuk-radio *ngIf="!isNamedContactAnExistingUser()" (onKeyupEnter)="saveAndContinue()" [model]="model" name="primary-user-group" 
+        id="named-contact" value="named-contact" label="{{NamedContact}}" hint="{{NamedContactEmail}}" />
+
+    <govuk-radio *ngIf="secondaryUserExist() && !areNamedContactAndSecondaryUserTheSame()" (onKeyupEnter)="saveAndContinue()" [model]="model" name="primary-user-group" 
+        id="secondary-user" value="secondary-user" label="{{SecondaryUserName}}" hint="{{SecondaryUserEmail}}" />
+        
+    <govuk-radio *ngIf="newNamedContact()" (onKeyupEnter)="saveAndContinue()" [model]="model" name="primary-user-group" 
+        id="new-named-contact" value="new-named-contact" label="{{NewNamedContact}}" hint="{{NewNamedContactEmail}}" />
+    
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="primary-user-group" id="new-user" value="new-user" label="A new user" />
+    <div class="govuk-radios__divider">or</div>
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="primary-user-group" id="keep-me" value="keep-me" label="Keep me as the primary user" />
+  </govuk-radio-group>
+</govuk-formpage>
