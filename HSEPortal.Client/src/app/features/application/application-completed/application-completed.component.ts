@@ -12,7 +12,7 @@ import { NavigationService } from 'src/app/services/navigation.service';
 export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   static route: string = 'application-completed';
-  static title: string = "Application completed - Register a high-rise building - GOV.UK";
+  static title: string = "Application history - Register a high-rise building - GOV.UK";
   
   shouldRender: boolean = false;
   submittionDate?: string;
