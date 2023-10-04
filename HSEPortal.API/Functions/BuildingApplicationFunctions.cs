@@ -65,7 +65,7 @@ public class BuildingApplicationFunctions
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetKbiSubmissionDate/{applicationNumber}")]
         HttpRequestData request, string applicationNumber)
     {
-        string submissionDate = await dynamicsService.GetSubmissionDate(applicationNumber);
+        string submissionDate = await dynamicsService.GetKbiSubmissionDate(applicationNumber);
         return await request.CreateObjectResponseAsync(submissionDate);
     }
 
