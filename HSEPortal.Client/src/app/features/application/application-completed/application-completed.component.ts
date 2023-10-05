@@ -65,7 +65,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   isViewOne(): boolean {
     return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
-      ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.payment?.bsr_govukpaystatus) &&
+      ApplicationStageHelper.isApplicationSubmittedAndInvoicePaid(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.payment?.bsr_govukpaystatus) &&
       !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
@@ -93,7 +93,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   isViewFour() {
     return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
-      ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.payment?.bsr_govukpaystatus) &&
+      ApplicationStageHelper.isApplicationSubmittedAndInvoicePaid(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.payment?.bsr_govukpaystatus) &&
       !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
@@ -222,12 +222,10 @@ class ApplicationStageHelper {
     return isAppSubmitted && raisedAnInvoice;
   }
 
-  static isApplicationSubmittedAndInvoicePaid(currentApplicationStage: BuildingApplicationStage, paymentType?: string, paymentInvoiceStatus?: string) {
-    let isAppSubmitted = ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.AccountablePersonsComplete) &&
-      ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentInProgress);
+  static isApplicationSubmittedAndInvoicePaid(currentApplicationStage: BuildingApplicationStage, paymentType?: string, paymentStatus?: string) {
+    let isAppSubmitted = ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.AccountablePersonsComplete);
 
-    let raisedAndPaidAnInvoice = paymentType == 'invoice' && paymentInvoiceStatus == 'success';
-    return isAppSubmitted && raisedAndPaidAnInvoice;
+    return isAppSubmitted && paymentStatus == 'success';
   }
 
   static isApplicationSubmittedAndPaid(currentApplicationStage: BuildingApplicationStage) {
