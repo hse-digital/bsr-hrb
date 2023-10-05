@@ -28,13 +28,13 @@ import { CommonModule } from '@angular/common';
 import { RegistrationAmendmentsService } from './services/registration-amendments.service';
 
 const routes = new HseRoutes([
-  HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title), HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
-  HseRoute.unsafe('select', undefined, ApplicationSelectorComponent.route),
-  
+  HseRoute.unsafe(WhatWantToDoComponent.route, WhatWantToDoComponent, undefined, WhatWantToDoComponent.title),
+  HseRoute.unsafe('what-you-want-to-do', undefined, WhatWantToDoComponent.route),
+
   HseRoute.unsafe(HomeComponent.route, HomeComponent, undefined, HomeComponent.title),
   HseRoute.unsafe(TimeoutComponent.route, TimeoutComponent, undefined, TimeoutComponent.title),
   HseRoute.unsafe(NotFoundComponent.route, NotFoundComponent, undefined, NotFoundComponent.title),
-  HseRoute.unsafe(WhatWantToDoComponent.route, WhatWantToDoComponent, undefined, WhatWantToDoComponent.title),
+  HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title), 
   HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent, undefined, ReturningApplicationComponent.title),
   HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forLoadChildren(HelpPagesModule.baseRoute, () => import('./components/footer/help-pages.module').then(m => m.HelpPagesModule)),
