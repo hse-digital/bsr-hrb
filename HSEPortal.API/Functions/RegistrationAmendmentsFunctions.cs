@@ -31,7 +31,7 @@ public class RegistrationAmendmentsFunctions
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
 
         var newPrimaryUser = buildingApplicationModel.RegistrationAmendmentsModel.ChangeUser.NewPrimaryUser;
-        if(newPrimaryUser.Email != null && newPrimaryUser.Firstname != null && !newPrimaryUser.Email.Equals(string.Empty)) {
+        if(newPrimaryUser != null && newPrimaryUser.Email != null && newPrimaryUser.Firstname != null && !newPrimaryUser.Email.Equals(string.Empty)) {
             var contact = await RaService.CreateContactAsync(newPrimaryUser.Email, newPrimaryUser.Firstname, newPrimaryUser.Lastname, newPrimaryUser.PhoneNumber);
             await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})",
                 new DynamicsBuildingApplication { contactReferenceId = $"/contacts({contact.Id})" });
