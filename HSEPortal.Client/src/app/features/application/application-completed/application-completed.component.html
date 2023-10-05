@@ -23,6 +23,11 @@
               <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
             </ng-container>
 
+            <ng-container *ngIf="isViewOneA()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
+              <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
+            </ng-container>
+
             <ng-container *ngIf="isViewTwo()">
               <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />
               <ng-container *ngTemplateOutlet="ApplicationHistoryStructureFireSafetyInformation" />
@@ -34,6 +39,10 @@
             </ng-container>
 
             <ng-container *ngIf="isViewFour()">
+              <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
+            </ng-container>
+
+            <ng-container *ngIf="isViewFourA()">
               <ng-container *ngTemplateOutlet="ApplicationHistoryRegistrationApplication" />    
             </ng-container>
       
@@ -65,6 +74,12 @@
           <!-- <ng-container *ngTemplateOutlet="WithdrawOptionOne" /> -->
         </ng-container>
 
+        <ng-container *ngIf="isViewOneA()">
+          <ng-container *ngTemplateOutlet="YouMustPay" />
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionOne" /> -->
+        </ng-container>
+
         <ng-container *ngIf="isViewTwo()">
           <ng-container *ngTemplateOutlet="MakingChanges" />
           <!-- <ng-container *ngTemplateOutlet="WithdrawOptionTwo" /> -->
@@ -77,6 +92,12 @@
 
         <ng-container *ngIf="isViewFour()">
           <ng-container *ngTemplateOutlet="WhatsNext" />
+          <ng-container *ngTemplateOutlet="MakingChanges" />
+          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionOne" /> -->
+        </ng-container>
+
+        <ng-container *ngIf="isViewFourA()">
+          <ng-container *ngTemplateOutlet="YouMustPayAndKBI" />
           <ng-container *ngTemplateOutlet="MakingChanges" />
           <!-- <ng-container *ngTemplateOutlet="WithdrawOptionOne" /> -->
         </ng-container>
@@ -115,7 +136,7 @@
 <ng-template #ApplicationHistoryRegistrationApplication>
   <tr class="govuk-table__row">
     <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Registration application</a></td>
-    <td class="govuk-table__cell">{{submittionDate | date: 'dd MMMM yyyy'}}</td>
+    <td class="govuk-table__cell">{{ registrationApplicationDate | date: 'dd MMMM yyyy'}}</td>
   </tr>
 </ng-template>
 
@@ -134,6 +155,16 @@
 <ng-template #WhatsNext>
   <h2 class="govuk-heading-m">What's next</h2>
   <govuk-body>You must <a href="" [routerLink]="['../kbi']" class="govuk-link" tabindex="0" role="link">give structure and fire safety information</a> by {{isSubmittionBefore3Sep2023() ? '30 september 2023' : get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.</govuk-body>
+</ng-template>
+
+<ng-template #YouMustPay>
+  <h2 class="govuk-heading-m">What's next</h2>
+  <govuk-body>You must pay the invoice.</govuk-body>
+</ng-template>
+
+<ng-template #YouMustPayAndKBI>
+  <h2 class="govuk-heading-m">What's next</h2>
+  <govuk-body>You must pay the invoice and <a href="" [routerLink]="['../kbi']" class="govuk-link" tabindex="0" role="link">give structure and fire safety information</a>.</govuk-body>
 </ng-template>
 
 <ng-template #WithdrawOptionOne>
