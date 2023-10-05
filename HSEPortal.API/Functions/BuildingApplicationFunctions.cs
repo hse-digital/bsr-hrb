@@ -206,7 +206,8 @@ public class BuildingApplicationFunctions
             payment.bsr_paymentreconciliationstatus,
             payment.bsr_amountpaid,
             payment.bsr_transactionid,
-            payment.bsr_timeanddateoftransaction
+            payment.bsr_timeanddateoftransaction,
+            payment.bsr_invoicecreationdate
         });
 
         return await request.CreateObjectResponseAsync(payments);

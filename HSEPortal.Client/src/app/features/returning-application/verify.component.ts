@@ -97,9 +97,12 @@ export class ReturningApplicationVerifyComponent implements OnInit {
   }
 
   private async integratePrimaryUser() {
-    await this.registrationAmendmentsService.syncNewPrimaryUser();
-    this.updatePrimaryUser();
-    this.applicationService.updateApplication();
+    let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
+    if (!!newPrimaryUser && FieldValidations.IsNotNullOrWhitespace(newPrimaryUser?.Email) && FieldValidations.IsNotNullOrWhitespace(newPrimaryUser?.Firstname)) {
+      await this.registrationAmendmentsService.syncNewPrimaryUser();
+      this.updatePrimaryUser();
+      this.applicationService.updateApplication();
+    }
   }
   
   private updatePrimaryUser() {
