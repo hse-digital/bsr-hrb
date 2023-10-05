@@ -3,14 +3,9 @@
   <h1 class="govuk-heading-l">Awaiting payment for application to register {{applicationService.model.BuildingName}}</h1>
   <govuk-body>We have sent an invoice to <b>{{applicationService.model.PaymentInvoiceDetails?.Email}}</b>. If you cannot find the email, check your junk or spam folders.</govuk-body>
   <govuk-body>Your application will be submitted when we receive your payment.</govuk-body>
-  <govuk-body>You must pay the fee before we can assess your application.</govuk-body>
-
-  <h2 class="govuk-heading-m">Do not delay payment</h2>
-  <govuk-body>If you do not pay before 30 September 2023, your building will not be registered in time.</govuk-body>
-  <govuk-body>If you take too long to pay, we could prosecute you under building safety law.</govuk-body>
   
-
   <h2 class="govuk-heading-m">What happens next</h2>
+  <govuk-body>You must pay the invoice before we can assess your application.</govuk-body>
   <govuk-body>You can <a class="govuk-link" [routerLink]="['../../summary']" href="" target="_blank" role="link" tabindex="0">view your application (opens in a new tab)</a>.</govuk-body>
   <govuk-body>You can continue to give us structure and afire safety information about {{applicationService.model.BuildingName}}</govuk-body>
   <govuk-button (onClick)="continueToKbi()">Continue to structure and safety information</govuk-button>

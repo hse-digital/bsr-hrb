@@ -19,6 +19,7 @@ export class RaConfirmationComponent  extends PageComponent<void> {
   submittionDate?: string;
   kbiSubmittionDate?: string;
   payment?: any;
+  openPayment?: any;
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
     
@@ -29,6 +30,7 @@ export class RaConfirmationComponent  extends PageComponent<void> {
 
     var payments = await this.applicationService.getApplicationPayments()
     this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
+    this.openPayment = payments.find(x => x.bsr_govukpaystatus == "open");
 
     this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser
     this.secondaryUser = {
@@ -95,6 +97,11 @@ export class RaConfirmationComponent  extends PageComponent<void> {
       return submittionDate.setDate(submittionDate.getDate() + 28);
     }
     return undefined;
+  }
+
+  get registrationApplicationDate() {
+    let invoiceCreationDate = this.openPayment?.bsr_invoicecreationdate ?? "";
+    return FieldValidations.IsNotNullOrWhitespace(this.submittionDate) ? this.submittionDate : invoiceCreationDate;
   }
 
 }
