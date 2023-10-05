@@ -18,6 +18,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   submittionDate?: string;
   kbiSubmittionDate?: string;
   payment?: any;
+  openPayment?: any;
   applicationStatuscode: BuildingApplicationStatuscode = BuildingApplicationStatuscode.New;
 
   constructor(public applicationService: ApplicationService, private navigationService: NavigationService) {
@@ -39,7 +40,9 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     this.applicationStatuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
 
     var payments = await this.applicationService.getApplicationPayments()
+
     this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
+    this.openPayment = payments.find(x => x.bsr_govukpaystatus == "open");
 
     this.shouldRender = true;
   }
@@ -62,7 +65,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   isViewOne(): boolean {
     return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
-      ApplicationStageHelper.isApplicationSubmittedAndInvoicePaid(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
+      ApplicationStageHelper.isApplicationSubmittedAndInvoicePaid(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.payment?.bsr_govukpaystatus) &&
       !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
@@ -90,7 +93,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   isViewFour() {
     return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
-      ApplicationStageHelper.isApplicationSubmittedAndInvoicePaid(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
+      ApplicationStageHelper.isApplicationSubmittedAndInvoicePaid(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.payment?.bsr_govukpaystatus) &&
       !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
   }
 
@@ -173,7 +176,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   }
 
   get registrationApplicationDate() {
-    return FieldValidations.IsNotNullOrWhitespace(this.submittionDate) ? this.submittionDate : this.payment.bsr_invoicecreationdate;
+    let invoiceCreationDate = this.openPayment.bsr_invoicecreationdate ?? "";
+    return FieldValidations.IsNotNullOrWhitespace(this.submittionDate) ? this.submittionDate : invoiceCreationDate;
   }
 
 }
@@ -214,7 +218,6 @@ class ApplicationStageHelper {
   static isApplicationSubmittedAndRaisedAnInvoice(currentApplicationStage: BuildingApplicationStage, paymentType?: string, paymentInvoiceStatus?: string) {
     let isAppSubmitted = ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.AccountablePersonsComplete) &&
       ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentInProgress);
-
     let raisedAnInvoice = paymentType == 'invoice' && paymentInvoiceStatus == 'awaiting';
     return isAppSubmitted && raisedAnInvoice;
   }
@@ -223,7 +226,7 @@ class ApplicationStageHelper {
     let isAppSubmitted = ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.AccountablePersonsComplete) &&
       ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.PaymentInProgress);
 
-    let raisedAndPaidAnInvoice = paymentType == 'invoice' && paymentInvoiceStatus == 'completed';
+    let raisedAndPaidAnInvoice = paymentType == 'invoice' && paymentInvoiceStatus == 'success';
     return isAppSubmitted && raisedAndPaidAnInvoice;
   }
 
