@@ -11,7 +11,7 @@ import { PageComponent } from "src/app/helpers/page.component";
 })
 export class SectionYearRangeComponent extends PageComponent<string> {
     static route: string = 'year-range';
-    static title: string = "What year range was the section originally built?- Register a high-rise building - GOV.UK";
+    static title: string = "Range of years it was completed in - Register a high-rise building - GOV.UK";
     yearRangeHasErrors = false;
 
 
