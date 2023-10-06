@@ -1,0 +1,13 @@
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
+   
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="keep-me-input" [message]="errorMessage" />
+    </govuk-error-summary>
+
+    <govuk-radio-group title="Who issued the completion certificate for {{buildingName}}?" [isPageHeading]=true [errorText]="getErrorDescription(hasErrors, errorMessage)" 
+        [(model)]="model" #field [govukRequired]="field">
+
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="who-issued-group" id="bsr" value="bsr" label="The Building Safety Regulator (BSR)" />
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="who-issued-group" id="another" value="another" label="Another building control body" />
+    </govuk-radio-group>
+</govuk-formpage>
