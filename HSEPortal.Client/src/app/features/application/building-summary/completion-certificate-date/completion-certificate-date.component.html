@@ -1,0 +1,15 @@
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
+   
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="certificate-day" *ngIf="errors?.format?.hasError" [message]="errors?.format?.message" />
+        <govuk-error-link anchorId="certificate-day" *ngIf="errors?.day?.hasError" [message]="errors?.day?.message" />
+        <govuk-error-link anchorId="certificate-month" *ngIf="errors?.month?.hasError" [message]="errors?.month?.message" />
+        <govuk-error-link anchorId="certificate-year" *ngIf="errors?.year?.hasError" [message]="errors?.year?.message" />
+        <govuk-error-link anchorId="certificate-day" *ngIf="errors?.future?.hasError" [message]="errors?.future?.message" />
+    </govuk-error-summary>
+
+    <govuk-date-input title="Completion certificate date for {{buildingName}}" [isPageHeading]=true titleClass="govuk-fieldset__legend--l"
+        [errorText]="getErrorDescription(hasErrors, dateInputErrorMessage ?? '')" id="certificate"
+        [(model)]="model" #field [govukRequired]="field" hint="For example, 27 3 2023" />
+
+</govuk-formpage>
