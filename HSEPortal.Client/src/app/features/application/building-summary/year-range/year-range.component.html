@@ -8,7 +8,7 @@
           <govuk-error-link anchorId="before-1900-input" message="Select one of the options below" />
         </govuk-error-summary>
 
-        <govuk-radio-group title="When was {{sectionBuildingName()}} originally built?" [isPageHeading]=true [errorText]="getErrorDescription(yearRangeHasErrors, 'Select one of the options below')" 
+        <govuk-radio-group title="Range of years {{sectionBuildingName()}} was completed in" [isPageHeading]=true [errorText]="getErrorDescription(yearRangeHasErrors, 'Select one of the options below')" 
           [(model)]="model" #field [govukRequired]="field" 
           hintText="These date ranges relate to approximate changes in building regulations. If you're not sure, tell us your best estimate.">
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="before-1900" value="Before-1900" label="Before 1900" />
