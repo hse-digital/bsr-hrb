@@ -1,0 +1,17 @@
+<dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row" *ngFor="let m of model">
+    <dt class="govuk-summary-list__key">
+      {{m.FileName}}
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <strong [ngClass]="[m.Progress == 100 ? 'govuk-tag govuk-tag--green' : 'govuk-tag govuk-tag--yellow']" role="progressbar" attr.aria-valuenow="{{ m.Progress }}" aria-valuemin="0" aria-valuemax="100">{{ m.Progress }}% {{ m.Progress == 100 ? 'Uploaded' : 'Uploading'}}</strong>
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a name="{{m.FileName}}" class="govuk-link" role="link" (click)="onClick.emit($event)" (keyup.enter)="onKeyupEnter.emit($event)" tabindex="0">
+        Remove
+      </a>
+    </dd>
+  </div>
+</dl>
+
+<govuk-body *ngIf="showUploadedFiles" aria-live="polite"> {{showUploadingInfo ? fileUploadingInfoModel : null}} {{fileInfoModel}}</govuk-body>

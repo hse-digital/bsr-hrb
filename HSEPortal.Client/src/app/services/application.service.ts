@@ -260,6 +260,7 @@ export class BuildingRegistrationModel {
   ShareDetailsDeclared?: boolean;
   DuplicateBuildingApplicationIds?: string[];
   RegistrationAmendmentsModel?: RegistrationAmendmentsModel;
+  FilesUploaded: any;
 }
 
 export enum BuildingApplicationStage {
@@ -579,4 +580,12 @@ export enum BuildingApplicationStatuscode
     Rejected = 760_810_011,
     Withdrawn = 760_810_013,
     OnHold = 760_810_014,
+}
+
+export class FileUploadModel {
+  Progress: number = 0;
+  FileName?: string;  
+  Status?: string;
+  Message?: string;
+  CaseId?: string;
 }
