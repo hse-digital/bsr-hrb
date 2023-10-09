@@ -32,6 +32,7 @@ import { WhyContinueRegisterComponent } from './duplicates/why-continue-register
 import { NotNeedRegisterMultiDuplicatedStructuresComponent } from './duplicates/not-reg-multi-dupli-struct/not-register-multi-dupli-structures.component';
 import { WhoIssuedCertificateComponent } from './who-issued-certificate/who-issued-certificate.component';
 import { CompletionCertificateDateComponent } from './completion-certificate-date/completion-certificate-date.component';
+import { UploadCompletionCertificateComponent } from './upload-completion-certificate/upload-completion-certificate.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
@@ -89,7 +90,8 @@ const routes = new HseRoutes([
     WhyContinueRegisterComponent,
     NotNeedRegisterMultiDuplicatedStructuresComponent,
     WhoIssuedCertificateComponent,
-    CompletionCertificateDateComponent
+    CompletionCertificateDateComponent,
+    UploadCompletionCertificateComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
