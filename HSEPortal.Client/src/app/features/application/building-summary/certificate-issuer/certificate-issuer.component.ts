@@ -4,6 +4,7 @@ import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { CertificateNumberComponent } from "../certificate-number/certificate-number.component";
 import { PageComponent } from "src/app/helpers/page.component";
+import { CompletionCertificateDateComponent } from "../completion-certificate-date/completion-certificate-date.component";
 
 @Component({
   templateUrl: './certificate-issuer.component.html'
@@ -54,7 +55,7 @@ export class CertificateIssuerComponent extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean> {
-    return this.navigationService.navigateRelative(CertificateNumberComponent.route, this.activatedRoute);
+    return this.navigationService.navigateRelative(CompletionCertificateDateComponent.route, this.activatedRoute);
   }
 
 }
