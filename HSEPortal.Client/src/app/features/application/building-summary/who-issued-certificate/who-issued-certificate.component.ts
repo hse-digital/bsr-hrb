@@ -3,6 +3,8 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
+import { CertificateIssuerComponent } from '../certificate-issuer/certificate-issuer.component';
+import { CompletionCertificateDateComponent } from '../completion-certificate-date/completion-certificate-date.component';
 
 @Component({
   selector: 'hse-who-issued-certificate',
@@ -25,7 +27,7 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    throw new Error('Method not implemented.');
+    return true;
   }
 
   override isValid(): boolean {
@@ -33,7 +35,10 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean | void> {
-    throw new Error('Method not implemented.');
+    if (this.model == 'another') {
+      return this.navigationService.navigateRelative(CertificateIssuerComponent.route, this.activatedRoute);
+    }
+    return this.navigationService.navigateRelative(CompletionCertificateDateComponent.route, this.activatedRoute);
   }
 
   get errorMessage() {

@@ -31,6 +31,7 @@ import { KeepStructureDeclarationComponent } from './duplicates/keep-structure-d
 import { WhyContinueRegisterComponent } from './duplicates/why-continue-register/why-continue-register.component';
 import { NotNeedRegisterMultiDuplicatedStructuresComponent } from './duplicates/not-reg-multi-dupli-struct/not-register-multi-dupli-structures.component';
 import { WhoIssuedCertificateComponent } from './who-issued-certificate/who-issued-certificate.component';
+import { CompletionCertificateDateComponent } from './completion-certificate-date/completion-certificate-date.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
@@ -57,6 +58,7 @@ const routes = new HseRoutes([
     HseRoute.protected(KeepStructureDeclarationComponent.route, KeepStructureDeclarationComponent, KeepStructureDeclarationComponent.title),
     HseRoute.protected(WhyContinueRegisterComponent.route, WhyContinueRegisterComponent, WhyContinueRegisterComponent.title),
     HseRoute.protected(WhoIssuedCertificateComponent.route, WhoIssuedCertificateComponent, WhoIssuedCertificateComponent.title),
+    HseRoute.protected(CompletionCertificateDateComponent.route, CompletionCertificateDateComponent, CompletionCertificateDateComponent.title),
   ])),
 ]);
 
@@ -86,7 +88,8 @@ const routes = new HseRoutes([
     KeepStructureDeclarationComponent,
     WhyContinueRegisterComponent,
     NotNeedRegisterMultiDuplicatedStructuresComponent,
-    WhoIssuedCertificateComponent
+    WhoIssuedCertificateComponent,
+    CompletionCertificateDateComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),

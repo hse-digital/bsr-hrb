@@ -5,6 +5,7 @@ import { ApplicationService } from "src/app/services/application.service";
 import { SectionAddressComponent } from "../address/address.component";
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 import { PageComponent } from "src/app/helpers/page.component";
+import { WhoIssuedCertificateComponent } from "../who-issued-certificate/who-issued-certificate.component";
 
 @Component({
     templateUrl: './year-range.component.html'
@@ -48,6 +49,6 @@ export class SectionYearRangeComponent extends PageComponent<string> {
             return this.navigationService.navigateRelative(SectionAddressComponent.route, this.activatedRoute);
         }
 
-        return this.navigationService.navigateRelative(CertificateIssuerComponent.route, this.activatedRoute);
+        return this.navigationService.navigateRelative(WhoIssuedCertificateComponent.route, this.activatedRoute);
     }
 }
