@@ -80,7 +80,7 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
   }  
 
   private isDateInFuture() {
-    let date = new Date(Number(this.model!.year!), Number(this.model?.month), Number(this.model?.day));
+    let date = new Date(Number(this.model!.year!), Number(this.model?.month) - 1, Number(this.model?.day));
     let isInFuture = date > new Date(Date.now());
     this.errors!.future = { hasError: isInFuture, message: "Completion certificate date must be today or in the past" }
     this.dateInputErrorMessage = this.errors!.future.message;

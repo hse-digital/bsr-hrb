@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
-import { SectionHelper } from "src/app/helpers/section-helper";
+import { SectionHelper } from "src/app/helpers/section-helper"; 
 import { ApplicationService } from "src/app/services/application.service";
 import { SectionAddressComponent } from "../address/address.component";
 import { PageComponent } from "src/app/helpers/page.component";
@@ -22,16 +22,9 @@ export class CertificateNumberComponent extends PageComponent<string> {
 
   override onInit(applicationService: ApplicationService): void {
     this.model = this.applicationService.currentSection.CompletionCertificateReference;
-    if (this.applicationService.currentSection.YearOfCompletionOption == 'year-exact') {
-      var yearOfCompletion = Number(this.applicationService.currentSection.YearOfCompletion);
-      if (yearOfCompletion && yearOfCompletion >= 2023) {
-        this.isOptional = false;
-      }
-    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
-      if (this.applicationService.currentSection.YearOfCompletionRange == "2023-onwards") {
-        this.isOptional = false;
-      }
-    }
+    let date =  new Date(Number(this.applicationService.currentSection.CompletionCertificateDate));
+    let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
+    this.isOptional = date < FirstOctober2023;
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
@@ -54,6 +47,10 @@ export class CertificateNumberComponent extends PageComponent<string> {
   sectionBuildingName() {
     return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
       this.applicationService.currentSection.Name;
+  }
+
+  get errorMessage() {
+    return `Enter the completion certificate number for ${this.sectionBuildingName()}`;
   }
 
 }
