@@ -60,6 +60,7 @@ const routes = new HseRoutes([
     HseRoute.protected(WhyContinueRegisterComponent.route, WhyContinueRegisterComponent, WhyContinueRegisterComponent.title),
     HseRoute.protected(WhoIssuedCertificateComponent.route, WhoIssuedCertificateComponent, WhoIssuedCertificateComponent.title),
     HseRoute.protected(CompletionCertificateDateComponent.route, CompletionCertificateDateComponent, CompletionCertificateDateComponent.title),
+    HseRoute.protected(UploadCompletionCertificateComponent.route, UploadCompletionCertificateComponent, UploadCompletionCertificateComponent.title),
   ])),
 ]);
 
