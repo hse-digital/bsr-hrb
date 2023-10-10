@@ -8,7 +8,7 @@
         <govuk-error-link anchorId="certificate-day" *ngIf="errors?.future?.hasError" [message]="errors?.future?.message" />
     </govuk-error-summary>
 
-    <govuk-date-input title="Completion certificate date for {{buildingName}}" [isPageHeading]=true titleClass="govuk-fieldset__legend--l"
+    <govuk-date-input title="Completion certificate date for {{buildingName}} {{isOptional ? '(optional)' : '' }}" [isPageHeading]=true titleClass="govuk-fieldset__legend--l"
         [errorText]="getErrorDescription(hasErrors, dateInputErrorMessage ?? '')" id="certificate"
         [(model)]="model" #field [govukRequired]="field" hint="For example, 27 3 2023" />
 
