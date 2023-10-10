@@ -1,19 +1,19 @@
 <govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBackLater)="saveAndComeBack()">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link *ngIf="certificateHasErrors" anchorId="input-block-name" message="Enter the completion certificate issuer" />
+          <govuk-error-link *ngIf="certificateHasErrors" anchorId="input-certificate-issuer" message="Enter who issued the completion certificate" />
         </govuk-error-summary>
 
-        <h1 class="govuk-heading-l">Completion certificate issuer for {{sectionBuildingName()}}</h1>
+        <h1 class="govuk-heading-l">Completion certificate for {{sectionBuildingName()}}</h1>
 
         <govuk-details summaryText="Help with completion certificate">
           <p>A building control body or authority issues a completion certificate as proof that the building work has been inspected and complies with building regulations.</p>
         </govuk-details>
 
         <govuk-input label="Who issued the completion certificate?{{ isOptional ? ' (optional)' : ''}}" labelClass="govuk-label--s"
-                     hint="Enter the full name of the building control body or authority that issued the completion certificate.{{ isOptional ? ' If you do not have access to the completion certificate, leave this blank.' : ''}}"
+                     hint="Enter the full name of the building control body or authority that issued the completion certificate.{{ isOptional ? ' If you do not know who issued the completion certificate, leave this blank.' : ''}}"
                      id="certificate-issuer" [(model)]="model"
                      (onKeyupEnter)="saveAndContinue()" #field [govukRequired]="field"
-                     [errorText]="getErrorDescription(certificateHasErrors, 'Enter the completion certificate issuer')"  />
+                     [errorText]="getErrorDescription(certificateHasErrors, 'Enter who issued the completion certificate')"  />
 
 </govuk-formpage>
