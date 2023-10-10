@@ -91,7 +91,7 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
   private isDateFormatValid() {
     let date = new Date(Number(this.model!.year!), Number(this.model?.month) - 1, Number(this.model?.day));
     let isValid = this.isDayValid() && this.isMonthValid() && this.isYearValid();
-    isValid &&= date.getDate().toString() == this.model?.day && (date.getMonth() + 1).toString() == this.model.month && date.getFullYear().toString() == this.model.year;
+    isValid &&= date.getDate() == Number(this.model?.day) && (date.getMonth() + 1) == Number(this.model?.month) && date.getFullYear() == Number(this.model?.year);
     
     this.errors!.format = { hasError: !isValid, message: "Completion certificate date must be a real date, for example 27 3 2023" }
     this.dateInputErrorMessage = this.errors!.format.message;
