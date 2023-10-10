@@ -15,8 +15,6 @@ export class CertificateIssuerComponent extends PageComponent<string> {
   static route: string = 'certificate-issuer';
   static title: string = "Who is the section completion certificate issuer? - Register a high-rise building - GOV.UK";
 
-
-
   isOptional: boolean = true;
   certificateHasErrors: boolean = false;
 
