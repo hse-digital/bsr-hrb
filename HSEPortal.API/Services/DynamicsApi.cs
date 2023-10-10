@@ -107,4 +107,29 @@ public class DynamicsApi
             .WithOAuthBearerToken(token)
             .DeleteAsync();
     }
+
+    private async Task<string> Login()
+    {
+        var response = await $"https://login.microsoftonline.com/{dynamicsOptions.TenantId}/oauth2/token"
+            .PostUrlEncodedAsync(new { grant_type = "client_credentials", client_id = dynamicsOptions.ClientId, client_secret = dynamicsOptions.ClientSecret, resource = dynamicsOptions.EnvironmentUrl }).ReceiveJson<DynamicsAuthenticationModel>();
+
+        return response.AccessToken;
+    }
+
+    public async Task CreateTaskDocument(string documentid, string buildingControlApplicationId, string taskId)
+    {
+        var token = await Login();
+
+        await dynamicsOptions.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", "bsr_projecttaskdocuments")
+            .WithOAuthBearerToken(token)
+            .PostJsonAsync(new {});
+    }
+
+    // new MDTProjectDocument
+    //         {
+    //             buildingControlReference = $"/bsr_buildingcontrolapplications({buildingControlApplicationId})",
+    //             taskReference = $"/tasks({taskId})",
+    //             documentReference = $"/bsr_bsrdocuments({documentid})",
+    //             bsr_typecode = MDTTaskDocumentType.AttachedByMDT
+    //         }
 }
