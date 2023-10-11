@@ -1,4 +1,3 @@
-
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -41,9 +40,10 @@ public class RegistrationAmendmentsService
         return contact with { Id = existingContact.contactid };
     }
 
-    public async Task<IFlurlResponse> CreateChangeRequest(ChangeRequest changeRequest, string bsr_buildingapplicationid, string applicantReferenceId)
+    public async Task<DynamicsChangeRequest> CreateChangeRequest(ChangeRequest changeRequest, string bsr_buildingapplicationid, string applicantReferenceId)
     {
-        DynamicsChangeRequest dynamicsChangeRequest = new DynamicsChangeRequest {
+        var dynamicsChangeRequest = new DynamicsChangeRequest
+        {
             bsr_declaration = changeRequest.Declaration,
             bsr_reviewrequired = changeRequest.ReviewRequired,
             buildingApplicationId = $"/bsr_buildingapplications({bsr_buildingapplicationid})",
@@ -51,16 +51,19 @@ public class RegistrationAmendmentsService
             statuscode = 760_810_001 //submitted         
         };
 
-        if(applicantReferenceId != null && !applicantReferenceId.Equals(string.Empty)) {
-            dynamicsChangeRequest = dynamicsChangeRequest with {applicantReferenceId = $"/contacts({applicantReferenceId})"};
+        if (applicantReferenceId != null && !applicantReferenceId.Equals(string.Empty))
+        {
+            dynamicsChangeRequest = dynamicsChangeRequest with { applicantReferenceId = $"/contacts({applicantReferenceId})" };
         }
 
-        return await dynamicsApi.Create("bsr_changerequests", dynamicsChangeRequest);
+        var response = await dynamicsApi.Create("bsr_changerequests", dynamicsChangeRequest, returnObjectResponse: true);
+        return await response.GetJsonAsync<DynamicsChangeRequest>();
     }
 
     public async Task<IFlurlResponse> CreateChange(Change change, string changeRequestId)
     {
-        DynamicsChange dynamicsChange = new DynamicsChange {
+        DynamicsChange dynamicsChange = new DynamicsChange
+        {
             changeRequestId = $"/bsr_changerequests({changeRequestId})",
             bsr_fieldname = change.FieldName,
             bsr_newanswer = change.NewAnswer,
@@ -70,11 +73,14 @@ public class RegistrationAmendmentsService
         return await dynamicsApi.Create("bsr_changes", dynamicsChange);
     }
 
-    public ChangeRequest BuildChangeRequestResponse(DynamicsChangeRequestResponse changeRequest) {
+    public ChangeRequest BuildChangeRequestResponse(DynamicsChangeRequestResponse changeRequest)
+    {
         Change[] changes = new Change[changeRequest.bsr_change_changerequestid.Length];
-        for (int i = 0; i < changeRequest.bsr_change_changerequestid.Length; i++) {
+        for (int i = 0; i < changeRequest.bsr_change_changerequestid.Length; i++)
+        {
             DynamicsChangeResponse change = changeRequest.bsr_change_changerequestid[i];
-            changes[i] = new Change {
+            changes[i] = new Change
+            {
                 FieldName = change.bsr_fieldname,
                 Name = change.bsr_name,
                 NewAnswer = change.bsr_newanswer,
@@ -83,18 +89,13 @@ public class RegistrationAmendmentsService
             };
         }
 
-        return new ChangeRequest {
-            Name = changeRequest.bsr_name,
-            Declaration = changeRequest.bsr_declaration,
-            ReviewRequired = changeRequest.bsr_reviewrequired,
-            Change = changes
-        };
+        return new ChangeRequest { Name = changeRequest.bsr_name, Declaration = changeRequest.bsr_declaration, ReviewRequired = changeRequest.bsr_reviewrequired, Change = changes };
     }
 
-    private Dictionary<ChangeCategory, string> DynamicsChangeCategory = new Dictionary<ChangeCategory, string>() {
-        {ChangeCategory.ApplicationBuildingAmendments, "c3d77a4f-6051-ee11-be6f-002248c725da"},
-        {ChangeCategory.ChangeApplicantUser, "2bd56b5b-6051-ee11-be6f-002248c725da"},
-        {ChangeCategory.DeRegistration, "71e16861-6051-ee11-be6f-002248c725da"},
+    private Dictionary<ChangeCategory, string> DynamicsChangeCategory = new Dictionary<ChangeCategory, string>()
+    {
+        { ChangeCategory.ApplicationBuildingAmendments, "c3d77a4f-6051-ee11-be6f-002248c725da" },
+        { ChangeCategory.ChangeApplicantUser, "2bd56b5b-6051-ee11-be6f-002248c725da" },
+        { ChangeCategory.DeRegistration, "71e16861-6051-ee11-be6f-002248c725da" },
     };
-
 }

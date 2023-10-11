@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using HSEPortal.API.Functions;
 using HSEPortal.API.Model;
@@ -12,9 +13,15 @@ public static class HttpRequestDataExtensions
     public static async Task<T> ReadAsJsonAsync<T>(this HttpRequestData httpRequestData)
     {
         var requestContent = await httpRequestData.ReadAsStringAsync();
-        requestContent = requestContent!.Replace("&39", "'");
+        if (string.IsNullOrEmpty(requestContent)) return default;
 
-        return JsonSerializer.Deserialize<T>(requestContent);
+        var content = requestContent;
+        if (requestContent.StartsWith("base64:"))
+        {
+            content = Uri.UnescapeDataString(Encoding.UTF8.GetString(Convert.FromBase64String(content[7..])));
+        }
+
+        return JsonSerializer.Deserialize<T>(content);
     }
 
     public static async Task<T> ReadAsJsonAsync<T>(this HttpResponseData httpRequestData)

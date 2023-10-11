@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { Injector, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -26,6 +26,7 @@ import { WhatWantToDoComponent } from './features/registration-amendments/what-w
 import { ComponentsModule } from './components/components.module';
 import { CommonModule } from '@angular/common';
 import { RegistrationAmendmentsService } from './services/registration-amendments.service';
+import { HttpInterceptorService } from './services/http.interceptor';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
@@ -63,7 +64,10 @@ const routes = new HseRoutes([
     ComponentsModule,
     FormsModule
   ],
-  providers: [HttpClient, ApplicationService, KbiService, RegistrationAmendmentsService],
+  providers: [
+    HttpClient, ApplicationService, KbiService, RegistrationAmendmentsService,
+    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
