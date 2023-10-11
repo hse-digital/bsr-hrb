@@ -51,4 +51,9 @@ export class SectionYearRangeComponent extends PageComponent<string> {
 
         return this.navigationService.navigateRelative(WhoIssuedCertificateComponent.route, this.activatedRoute);
     }
+
+    get errorMessage() {
+        return `Select what range of years ${this.sectionBuildingName()} was completed in`;
+    }
+
 }
