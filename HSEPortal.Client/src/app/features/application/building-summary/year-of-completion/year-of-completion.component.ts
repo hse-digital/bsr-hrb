@@ -6,6 +6,7 @@ import { SectionAddressComponent } from "../address/address.component";
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 import { SectionYearRangeComponent } from "../year-range/year-range.component";
 import { PageComponent } from "src/app/helpers/page.component";
+import { WhoIssuedCertificateComponent } from "../who-issued-certificate/who-issued-certificate.component";
 
 export type YearOfCompletion = {YearOfCompletionOption?: string, YearOfCompletion?: string}
 
@@ -18,13 +19,11 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
 
   yearOfCompletionHasErrors = false;
   exactYearHasErrors = false;
-  errorMessage = `Select when ${this.sectionBuildingName()} was originally built`;
+  errorMessage = `Select if you know what year ${this.sectionBuildingName()} was completed`;
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
-
-
 
   override onInit(applicationService: ApplicationService): void {
     this.model = {};
@@ -74,7 +73,7 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
   }
 
   override navigateNext(): Promise<boolean> {
-    let route = CertificateIssuerComponent.route;
+    let route = WhoIssuedCertificateComponent.route;
 
     if (this.model?.YearOfCompletionOption == 'not-completed') {
       route = SectionAddressComponent.route;

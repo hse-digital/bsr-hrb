@@ -288,6 +288,8 @@ export class SectionModel {
   YearOfCompletion?: string;
   YearOfCompletionRange?: string;
 
+  WhoIssuedCertificate?: string;
+  CompletionCertificateDate?: string;
   CompletionCertificateIssuer?: any;
   CompletionCertificateReference?: any;
   Addresses: AddressModel[] = [];
