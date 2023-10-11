@@ -36,11 +36,11 @@ public class BlobEndpoints
     }
 
     [Function(nameof(GetSasUri))]
-    public async Task<HttpResponseData> GetSasUri([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetSasUri)}/{{taskId}}/{{blobName}}")] HttpRequestData requestData, string taskId, string blobName)
+    public async Task<HttpResponseData> GetSasUri([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetSasUri)}/{{*blobName}}")] HttpRequestData requestData, string blobName)
     {
         var containerClient = blobServiceClient.GetBlobContainerClient(blobOptions.ContainerName);
 
-        var blobClient = containerClient.GetBlobClient($"{taskId}/{blobName}");
+        var blobClient = containerClient.GetBlobClient(blobName);
         var fullUri = blobClient.GenerateSasUri(BlobSasPermissions.Write | BlobSasPermissions.Delete, DateTime.UtcNow.AddDays(1));
 
         return await requestData.CreateObjectResponseAsync(new { blobUri = fullUri });
@@ -54,7 +54,7 @@ public class BlobEndpoints
 
         await integrationOptions.CommonAPIEndpoint.AppendPathSegments("api", "ScanFile")
             .WithHeader("x-functions-key", integrationOptions.CommonAPIKey)
-            .PostJsonAsync(new { id = fileScanId, ContainerName = blobOptions.ContainerName, FileName = $"{scanRequest.TaskId}/{scanRequest.BlobName}", Application = "mdtportal" });
+            .PostJsonAsync(new { id = fileScanId, ContainerName = blobOptions.ContainerName, FileName = scanRequest.BlobName, Application = "hseportal" });
 
         return await requestData.CreateObjectResponseAsync(new { scanId = fileScanId });
     }
