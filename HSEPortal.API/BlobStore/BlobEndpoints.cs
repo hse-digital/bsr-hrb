@@ -16,23 +16,17 @@ namespace HSEPortal.API.BlobStore;
 public class BlobEndpoints
 {
     private readonly BlobServiceClient blobServiceClient;
-    private readonly IScanApi scanApi;
-    private readonly DynamicsApi dynamicsApi;
+    private readonly DynamicsService dynamicsService;
     private readonly BlobOptions blobOptions;
-    private readonly DynamicsOptions dynamicsOptions;
     private readonly IntegrationsOptions integrationOptions;
-    private readonly SharepointOptions sharepointOptions;
 
-    public BlobEndpoints(BlobServiceClient blobServiceClient, IScanApi scanApi, IOptions<BlobOptions> blobOptions, IOptions<DynamicsOptions> dynamicsOptions,
-        IOptions<IntegrationsOptions> integrationOptions, IOptions<SharepointOptions> sharepointOptions, DynamicsApi dynamicsApi)
+    public BlobEndpoints(BlobServiceClient blobServiceClient, IOptions<BlobOptions> blobOptions,
+        IOptions<IntegrationsOptions> integrationOptions, DynamicsService dynamicsService)
     {
         this.blobServiceClient = blobServiceClient;
-        this.scanApi = scanApi;
-        this.dynamicsApi = dynamicsApi;
+        this.dynamicsService = dynamicsService;
         this.blobOptions = blobOptions.Value;
-        this.dynamicsOptions = dynamicsOptions.Value;
         this.integrationOptions = integrationOptions.Value;
-        this.sharepointOptions = sharepointOptions.Value;
     }
 
     [Function(nameof(GetSasUri))]
@@ -47,9 +41,9 @@ public class BlobEndpoints
     }
 
     [Function(nameof(TriggerFileScan))]
-    public async Task<HttpResponseData> TriggerFileScan([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData requestData, EncodedRequest encodedRequest)
+    public async Task<HttpResponseData> TriggerFileScan([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData requestData)
     {
-        var scanRequest = encodedRequest.GetDecodedData<ScanAndUploadRequest>()!;
+        var scanRequest = await requestData.ReadAsJsonAsync<ScanAndUploadRequest>();
         var fileScanId = Guid.NewGuid().ToString();
 
         await integrationOptions.CommonAPIEndpoint.AppendPathSegments("api", "ScanFile")
@@ -76,32 +70,12 @@ public class BlobEndpoints
     }
 
     [Function(nameof(UploadToSharepoint))]
-    public async Task<HttpResponseData> UploadToSharepoint([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData requestData, EncodedRequest encodedRequest)
+    public async Task<HttpResponseData> UploadToSharepoint([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData requestData)
     {
-        var scanRequest = encodedRequest.GetDecodedData<ScanAndUploadRequest>()!;
+        var scanRequest = await requestData.ReadAsJsonAsync<ScanAndUploadRequest>();
 
-        await CreateTaskDocument(scanRequest.BuildingControlApplicationId, scanRequest.BlobName, encodedRequest);
+        await CreateTaskDocument(scanRequest.ApplicationId, scanRequest.BlobName);
         return requestData.CreateResponse(HttpStatusCode.OK);
-    }
-
-    [Function(nameof(DownloadFile))]
-    public async Task<HttpResponseData> DownloadFile([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData)
-    {
-        var fileName = requestData.GetQueryParameters()["fileName"];
-
-        var response = await integrationOptions.CommonAPIEndpoint.AppendPathSegments("api", "GetSharepointFileDownloadUrl")
-            .SetQueryParams(new { siteId = sharepointOptions.SiteId, driveId = sharepointOptions.DriveId, fileName = fileName })
-            .WithHeader("x-functions-key", integrationOptions.CommonAPIKey)
-            .AllowHttpStatus(HttpStatusCode.NotFound)
-            .GetAsync();
-
-        if (response.StatusCode == (int)HttpStatusCode.NotFound)
-        {
-            return requestData.CreateResponse(HttpStatusCode.NotFound);
-        }
-
-        var graphFile = await response.GetJsonAsync<GraphFile>();
-        return await requestData.CreateObjectResponseAsync(graphFile);
     }
 
     private async Task DeleteBlobAsync(string blobName)
@@ -110,16 +84,18 @@ public class BlobEndpoints
         await client.DeleteBlobAsync(blobName);
     }
 
-    private async Task CreateTaskDocument(string buildingControlApplicationId, string blobName, EncodedRequest appUser)
+    private async Task CreateTaskDocument(string applicationId, string blobName)
     {
-        var flowDocumentResponse = await integrationOptions.CommonAPIEndpoint.AppendPathSegments("api", "UploadToSharepoint")
+        var buildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+        
+        await integrationOptions.CommonAPIEndpoint.AppendPathSegments("api", "UploadToSharepoint")
             .WithHeader("x-functions-key", integrationOptions.CommonAPIKey).PostJsonAsync(new
             {
                 fileName = blobName,
                 subFolderPath = "BSR User Uploads",
                 fileDescription = "Uploaded from HSE Portal",
-                providerContactId = appUser.Contact.contactid,
-                targetRecordId = buildingControlApplicationId,
+                // providerContactId = buildingApplication._bsr_registreeid_value,
+                targetRecordId = buildingApplication.bsr_buildingapplicationid,
                 targetTable = "bsr_buildingapplication",
                 azureBlobFilePath = $"{blobOptions.ContainerName}/{blobName}"
             }).ReceiveJson<NewFlowDocumentResponse>();
@@ -129,6 +105,10 @@ public class BlobEndpoints
     }
 }
 
-public record ScanAndUploadRequest(string BuildingControlApplicationId, string TaskId, string BlobName);
+public class ScanAndUploadRequest
+{
+    public string ApplicationId { get; set; } 
+    public string BlobName { get; set; } 
+} 
 
 public record FileUploadStatus(string id, string ContainerName, string Application, string FileName, bool Success);

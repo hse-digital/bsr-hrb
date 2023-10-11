@@ -22,24 +22,24 @@ export class FileUploadService {
   async scanFile(fileName: string): Promise<any> {
     return await fetch('api/TriggerFileScan', {
       method: 'POST',
-      body: {
+      body: JSON.stringify({
         BlobName: fileName
-      } as any
+      })
     }).then(e => e.json());
   }
 
 
   async getFileScanResult(id: string): Promise<any> {
-    return await fetch(`api/GetFileScanResult?id=${id}`).then(resp => resp.json());
+    return await fetch(`api/GetFileScanResult?id=${id}`).then(resp => resp.status == 204 ? null : resp.json());
   }
 
-  async uploadToSharepoint(buildingControlApplicationId: string, fileName: string): Promise<any> {
+  async uploadToSharepoint(applicationId: string, fileName: string): Promise<any> {
     return await fetch('api/UploadToSharepoint', {
       method: 'POST',
-      body: {
-        BuildingControlApplicationId: buildingControlApplicationId,
+      body: JSON.stringify({
+        ApplicationId: applicationId,
         BlobName: fileName
-      } as any
+      })
     }).then(e => e.status);
   }
 

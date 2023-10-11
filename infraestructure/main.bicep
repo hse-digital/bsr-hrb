@@ -136,6 +136,20 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
     properties: {}
 }
 
+resource bsrFilesStorageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' existing = {
+    name: 's118${environment}bsrfiles'
+}
+
+resource filesBlobServices 'Microsoft.Storage/storageAccounts/blobServices@2023-01-01' existing = {
+    name: 'default'
+    parent: bsrFilesStorageAccount
+}
+
+resource uploadsContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
+    name: 'hseuploads'
+    parent: filesBlobServices
+}
+
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
     name: 's118-${environment}-bsr-acs-portal-fa'
     location: location
@@ -235,11 +249,19 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                 }
                 {
                     name: 'Integrations__Environment'
-                    value: '${environment}'
+                    value: environment
                 }
                 {
                     name: 'Swa__Url'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Swa--Url)'
+                }
+                {
+                    name: 'Blob__ConnectionString'
+                    value: 'DefaultEndpointsProtocol=https;AccountName=${bsrFilesStorageAccount.name};EndpointSuffix=${az.environment().suffixes.storage};AccountKey=${bsrFilesStorageAccount.listKeys().keys[0].value}'
+                }
+                {
+                    name: 'Blob__ContainerName'
+                    value: uploadsContainer.name
                 }
                 {
                     name: 'Feature__DisableOtpValidation'

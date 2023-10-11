@@ -11,23 +11,9 @@ namespace HSEPortal.API.Extensions;
 
 public record EncodedRequest
 {
-    public string? Body { get; set; }
-    
-    [JsonPropertyName("userId")]
-    public string? UserId { get; set; }
-    
-    [JsonPropertyName("userRoles")]
-    public string[]? UserRoles { get; set; }
-    
-    [JsonPropertyName("identityProvider")]
-    public string? IdentityProvider { get; set; }
-    
-    [JsonPropertyName("userDetails")]
-    public string? UserDetails { get; set; }
-    
-    public DynamicsContact? Contact { get; set; }
+    public string Body { get; set; }
 
-    public T? GetDecodedData<T>() where T : class
+    public T GetDecodedData<T>() where T : class
     {
         if (string.IsNullOrEmpty(Body)) return null;
 
