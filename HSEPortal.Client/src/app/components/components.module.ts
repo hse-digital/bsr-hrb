@@ -24,9 +24,6 @@ import { GovukTableRowComponent } from './govuk-table/govuk-table-row.component'
 import { GovukTableCellComponent } from './govuk-table/govuk-table-cell.component';
 import { GovukTableColComponent } from './govuk-table/govuk-table-col.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
-import { FileUploadInfoComponent } from "./file-upload/file-upload-info.component";
-import { FileUploadInputComponent } from "./file-upload/file-upload-input.component";
-import { FileUploadViewComponent } from "./file-upload/file-upload-view.component";
 
 @NgModule({
   declarations: [
@@ -49,10 +46,7 @@ import { FileUploadViewComponent } from "./file-upload/file-upload-view.componen
     GovukTableRowComponent,
     GovukTableCellComponent,
     GovukTableColComponent,
-    UserDetailsComponent,
-    FileUploadInfoComponent,
-    FileUploadInputComponent,
-    FileUploadViewComponent
+    UserDetailsComponent
   ],
   imports: [
     HseAngularModule,
@@ -73,10 +67,7 @@ import { FileUploadViewComponent } from "./file-upload/file-upload-view.componen
     GovukTableRowComponent,
     GovukTableCellComponent,
     GovukTableColComponent,
-    UserDetailsComponent,
-    FileUploadInfoComponent,
-    FileUploadInputComponent,
-    FileUploadViewComponent
+    UserDetailsComponent
   ],
   providers: [HttpClient, AddressService]
 })

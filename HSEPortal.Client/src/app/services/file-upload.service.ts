@@ -3,48 +3,45 @@ import { TransferProgressEvent } from "@azure/core-http";
 import { Injectable } from "@angular/core";
 import { distinctUntilChanged, firstValueFrom, from, Observable, Subscriber } from "rxjs";
 import { BlockBlobClient} from "@azure/storage-blob";
+import { ApplicationService } from "./application.service";
 
 @Injectable()
 export class FileUploadService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private applicationService: ApplicationService) { }
  
-  async uploadFile(file: File, sasUrl: string) {
-    
-    const blockBlobClient = new BlockBlobClient(sasUrl);
-
-    return new Observable<number>(observer => {
-      blockBlobClient
-        .uploadData(file, {
-          onProgress: this.onProgress(observer),
-          blockSize: 4 * 1024 * 1024, // 4 MiB max block size
-          concurrency: 2, // maximum number of parallel transfer workers
-          blobHTTPHeaders: {
-            blobContentType: file.type
-          }
-        })
-        .then(
-          this.onUploadComplete(observer, file),
-          this.onUploadError(observer)
-        );
-    }).pipe(distinctUntilChanged());;
-  }
-  private onUploadError(observer: Subscriber<number>) {
-    return (error: any) => observer.error(error);
-  }
-
-  private onUploadComplete(observer: Subscriber<number>, file: File) {
-    return () => {
-      observer.next(file.size);
-      observer.complete();
-    };
-  }
-  private onProgress(observer: Subscriber<number>) {
-    return (progress: TransferProgressEvent) =>
-      observer.next(progress.loadedBytes);
-  }
   async getSASUri(blobName: string): Promise<string> {
     return await firstValueFrom(this.httpClient.get<string>(`api/GetSASUri/${blobName}`)); 
+  }
+
+  async getSasUrl(taskId: string, fileName: string): Promise<string> {
+    var response = await fetch(`api/GetSasUri/${fileName}`).then(resp => resp.json());
+    return response.blobUri;
+  }
+
+  async scanFile(buildingControlApplicationId: string, fileName: string): Promise<any> {
+    return await fetch('api/TriggerFileScan', {
+      method: 'POST',
+      body: {
+        BuildingControlApplicationId: buildingControlApplicationId,
+        BlobName: fileName
+      } as any
+    }).then(e => e.json());
+  }
+
+
+  async getFileScanResult(id: string): Promise<any> {
+    return await fetch(`api/GetFileScanResult?id=${id}`).then(resp => resp.json());
+  }
+
+  async uploadToSharepoint(buildingControlApplicationId: string, fileName: string): Promise<any> {
+    return await fetch('api/UploadToSharepoint', {
+      method: 'POST',
+      body: {
+        BuildingControlApplicationId: buildingControlApplicationId,
+        BlobName: fileName
+      } as any
+    }).then(e => e.status);
   }
 
   deleteBlobItem(sasUrl: string) {
