@@ -80,7 +80,7 @@ public class BlobEndpoints
     {
         var scanRequest = encodedRequest.GetDecodedData<ScanAndUploadRequest>()!;
 
-        await CreateTaskDocument(scanRequest.BuildingControlApplicationId, scanRequest.TaskId, scanRequest.BlobName, encodedRequest);
+        await CreateTaskDocument(scanRequest.BuildingControlApplicationId, scanRequest.BlobName, encodedRequest);
         return requestData.CreateResponse(HttpStatusCode.OK);
     }
 
@@ -110,22 +110,22 @@ public class BlobEndpoints
         await client.DeleteBlobAsync(blobName);
     }
 
-    private async Task CreateTaskDocument(string buildingControlApplicationId, string taskId, string blobName, EncodedRequest appUser)
+    private async Task CreateTaskDocument(string buildingControlApplicationId, string blobName, EncodedRequest appUser)
     {
         var flowDocumentResponse = await integrationOptions.CommonAPIEndpoint.AppendPathSegments("api", "UploadToSharepoint")
             .WithHeader("x-functions-key", integrationOptions.CommonAPIKey).PostJsonAsync(new
             {
                 fileName = blobName,
-                subFolderPath = "MDT User Uploads",
-                fileDescription = "Uploaded from MDT Portal",
+                subFolderPath = "BSR User Uploads",
+                fileDescription = "Uploaded from HSE Portal",
                 providerContactId = appUser.Contact.contactid,
                 targetRecordId = buildingControlApplicationId,
-                targetTable = "bsr_buildingcontrolapplication",
-                azureBlobFilePath = $"{blobOptions.ContainerName}/{taskId}/{blobName}"
+                targetTable = "bsr_buildingapplication",
+                azureBlobFilePath = $"{blobOptions.ContainerName}/{blobName}"
             }).ReceiveJson<NewFlowDocumentResponse>();
 
-        await DeleteBlobAsync($"{taskId}/{blobName}");
-        await dynamicsApi.CreateTaskDocument(flowDocumentResponse.bsr_documentid, buildingControlApplicationId, taskId);
+        await DeleteBlobAsync(blobName);
+        //await dynamicsApi.CreateTaskDocument(flowDocumentResponse.bsr_documentid, buildingControlApplicationId);
     }
 }
 

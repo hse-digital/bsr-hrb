@@ -14,16 +14,15 @@ export class FileUploadService {
     return await firstValueFrom(this.httpClient.get<string>(`api/GetSASUri/${blobName}`)); 
   }
 
-  async getSasUrl(taskId: string, fileName: string): Promise<string> {
+  async getSasUrl(fileName: string): Promise<string> {
     var response = await fetch(`api/GetSasUri/${fileName}`).then(resp => resp.json());
     return response.blobUri;
   }
 
-  async scanFile(buildingControlApplicationId: string, fileName: string): Promise<any> {
+  async scanFile(fileName: string): Promise<any> {
     return await fetch('api/TriggerFileScan', {
       method: 'POST',
       body: {
-        BuildingControlApplicationId: buildingControlApplicationId,
         BlobName: fileName
       } as any
     }).then(e => e.json());

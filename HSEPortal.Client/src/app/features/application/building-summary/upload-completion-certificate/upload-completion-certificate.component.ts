@@ -76,7 +76,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<string> 
     await Promise.all(this.fileUploads.filter(x => x.status != 'uploaded' && x.status != 'invalid' && x.status != 'toolarge').map(async (upload) => {
       upload.status = 'uploading';
 
-      const fileUrl = await this.fileUploadService.getSasUrl(this.applicationService.model.id!, upload.file.name);
+      const fileUrl = await this.fileUploadService.getSasUrl(upload.file.name);
 
       const client = new BlockBlobClient(fileUrl);
       await client.uploadData(upload.file, {
@@ -89,7 +89,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<string> 
       });
 
       upload.status = 'scanning';
-      const fileScanId = await this.fileUploadService.scanFile(this.applicationService.model.id!, upload.file.name);
+      const fileScanId = await this.fileUploadService.scanFile(upload.file.name);
       const scanResultInterval = setInterval(async () => {
         var scanResult = await this.fileUploadService.getFileScanResult(fileScanId.scanId);
         if (scanResult != null) {

@@ -9,7 +9,7 @@
 
     <govuk-error id="error-uploads" *ngIf="hasErrors" [text]="errorMessage" />
 
-    <input class="govuk-file-upload govuk-!-margin-bottom-5" aria-label="Upload evidence file" aria-describedby="hint-upload-file-hint" id="upload-input" [attr.aria-describedby]="getUploadError()" type="file" (change)="fileSelected($event)" multiple="true" accept=".ods,.pdf,.jpeg,.tif,.bmp,.png">
+    <input class="govuk-file-upload govuk-!-margin-bottom-5" aria-label="Upload evidence file" aria-describedby="hint-upload-file-hint" id="upload-input" [attr.aria-describedby]="getUploadError()" type="file" (change)="fileSelected($event)" multiple="false" accept=".ods,.pdf,.jpeg,.tif,.bmp,.png">
 
     <div class="govuk-!-margin-bottom-8" *ngIf="fileUploads.length == 0"></div>
 
