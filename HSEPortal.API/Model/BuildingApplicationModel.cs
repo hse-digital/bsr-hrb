@@ -75,7 +75,7 @@ public record BuildingApplicationModel(
 
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
-    string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange, string WhoIssuedCertificate,
+    string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange, string WhoIssuedCertificate, string CompletionCertificateDate,
     string CompletionCertificateIssuer, string CompletionCertificateReference, Scope Scope, string Statecode, BuildingAddress[] Addresses = null,
     Duplicate Duplicate = null);
 
