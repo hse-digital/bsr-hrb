@@ -6,7 +6,7 @@
       <div class="govuk-form-group">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-          <govuk-error-link *ngIf="certificateHasErrors" anchorId="input-block-name" [message]="errorMessage" />
+          <govuk-error-link *ngIf="certificateHasErrors" anchorId="input-certificate-reference" [message]="errorMessage" />
         </govuk-error-summary>
 
         <h1 class="govuk-heading-l">Completion certificate reference for {{sectionBuildingName()}}{{ isOptional ? ' (optional)' : ''}}</h1>

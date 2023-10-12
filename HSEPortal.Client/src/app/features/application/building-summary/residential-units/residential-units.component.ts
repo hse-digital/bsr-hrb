@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApplicationService, OutOfScopeReason } from "src/app/services/application.service";
-import { SectionPeopleLivingInBuildingComponent } from "../people-living-in-building/people-living-in-building.component";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
+import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
 
 @Component({
   templateUrl: './residential-units.component.html'
@@ -18,7 +18,6 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
-
 
   residentialUnitsHasErrors = false;
   errorMessage: string = 'Enter the number of residential units';
@@ -53,7 +52,7 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
   }
   
   override navigateNext(): Promise<boolean> {
-    let route: string = SectionPeopleLivingInBuildingComponent.route;
+    let route: string = SectionYearOfCompletionComponent.route;
     if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
       route = this.applicationService.model.NumberOfSections == 'one' 
         ? NotNeedRegisterSingleStructureComponent.route

@@ -79,8 +79,8 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
       route = SectionAddressComponent.route;
     } else if (this.model?.YearOfCompletionOption == 'year-exact') {
       var yearOfCompletion = Number(this.model?.YearOfCompletion);
-      if (yearOfCompletion && yearOfCompletion < 1985) {
-        route = SectionAddressComponent.route;
+      if (yearOfCompletion && yearOfCompletion < 2023) {
+        route = CertificateIssuerComponent.route;
       }
     } else if (this.model?.YearOfCompletionOption == 'year-not-exact') {
       route = SectionYearRangeComponent.route;
