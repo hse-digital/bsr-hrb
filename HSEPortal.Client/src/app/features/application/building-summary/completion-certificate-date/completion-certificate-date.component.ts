@@ -16,6 +16,8 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
   static route: string = 'completion-certificate-date';
   static title: string = 'Completion certificate date - Register a high-rise building - GOV.UK';
   
+  isOptional: boolean = true;
+
   dateInputErrorMessage?: string;
   errors?: {
     day?: error,
@@ -31,6 +33,8 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
     
+    this.isInputOptional();
+    
     this.model = { day: "", month: "", year: "" } as CompletionDate;
     
     if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.CompletionCertificateDate)) {
@@ -43,8 +47,23 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
     }
   }
 
+  private isInputOptional() {
+    if (this.applicationService.currentSection.YearOfCompletionOption == 'year-exact') {
+      var yearOfCompletion = Number(this.applicationService.currentSection.YearOfCompletion);
+      if (yearOfCompletion && yearOfCompletion >= 2023) {
+        this.isOptional = false;
+      }
+    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
+      if (this.applicationService.currentSection.YearOfCompletionRange == "2023-onwards") {
+        this.isOptional = false;
+      }
+    }
+  }
+
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    this.applicationService.currentSection.CompletionCertificateDate = new Date(Number(this.model!.year!), (Number(this.model?.month) - 1), Number(this.model?.day)).getTime().toString();
+    if(!this.isInputEmpty()) {
+      this.applicationService.currentSection.CompletionCertificateDate = new Date(Number(this.model!.year!), (Number(this.model?.month) - 1), Number(this.model?.day)).getTime().toString();
+    }
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -52,6 +71,7 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
   }
 
   override isValid(): boolean {
+    if (this.isOptional && this.isInputEmpty()) return true;
     this.errors = {};
     let isFormatValid = this.isDateFormatValid();
     let isInputValid = this.isDateNotNullOrWhitespace();
@@ -71,7 +91,7 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
   private isDateFormatValid() {
     let date = new Date(Number(this.model!.year!), Number(this.model?.month) - 1, Number(this.model?.day));
     let isValid = this.isDayValid() && this.isMonthValid() && this.isYearValid();
-    isValid &&= date.getDate().toString() == this.model?.day && (date.getMonth() + 1).toString() == this.model.month && date.getFullYear().toString() == this.model.year;
+    isValid &&= date.getDate() == Number(this.model?.day) && (date.getMonth() + 1) == Number(this.model?.month) && date.getFullYear() == Number(this.model?.year);
     
     this.errors!.format = { hasError: !isValid, message: "Completion certificate date must be a real date, for example 27 3 2023" }
     this.dateInputErrorMessage = this.errors!.format.message;
@@ -105,6 +125,12 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
 
   private isYearValid() {
     return FieldValidations.IsNotNullOrWhitespace(this.model?.year) && this.model?.year.length == 4 && !!Number(this.model?.year) && Number(this.model?.year) > 0;
+  }
+
+  private isInputEmpty() {
+    return !FieldValidations.IsNotNullOrWhitespace(this.model?.day) 
+      && !FieldValidations.IsNotNullOrWhitespace(this.model?.month)
+      && !FieldValidations.IsNotNullOrWhitespace(this.model?.year);
   }
 
   override navigateNext(): Promise<boolean | void> {

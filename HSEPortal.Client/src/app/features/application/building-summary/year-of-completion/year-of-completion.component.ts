@@ -19,7 +19,7 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
 
   yearOfCompletionHasErrors = false;
   exactYearHasErrors = false;
-  errorMessage = `Select when ${this.sectionBuildingName()} was originally built`;
+  errorMessage = `Select if you know what year ${this.sectionBuildingName()} was completed`;
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);

@@ -24,6 +24,9 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     this.applicationService.currentSection.WhoIssuedCertificate = this.model;
+    if (this.model == "bsr") {
+      this.applicationService.currentSection.CompletionCertificateIssuer = "The building Safety Regulator (BSR)";
+    }
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

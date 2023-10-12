@@ -5,6 +5,8 @@ import { ApplicationService } from "src/app/services/application.service";
 import { CertificateNumberComponent } from "../certificate-number/certificate-number.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { CompletionCertificateDateComponent } from "../completion-certificate-date/completion-certificate-date.component";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
+import { SectionAddressComponent } from "../address/address.component";
 
 @Component({
   templateUrl: './certificate-issuer.component.html'
@@ -12,8 +14,6 @@ import { CompletionCertificateDateComponent } from "../completion-certificate-da
 export class CertificateIssuerComponent extends PageComponent<string> {
   static route: string = 'certificate-issuer';
   static title: string = "Who is the section completion certificate issuer? - Register a high-rise building - GOV.UK";
-
-
 
   isOptional: boolean = true;
   certificateHasErrors: boolean = false;
@@ -55,6 +55,9 @@ export class CertificateIssuerComponent extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean> {
+    if(this.isOptional && !FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.CompletionCertificateIssuer)) {
+      return this.navigationService.navigateRelative(SectionAddressComponent.route, this.activatedRoute);  
+    }
     return this.navigationService.navigateRelative(CompletionCertificateDateComponent.route, this.activatedRoute);
   }
 
