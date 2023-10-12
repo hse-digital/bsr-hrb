@@ -45,8 +45,11 @@ export class SectionYearRangeComponent extends PageComponent<string> {
 
     override navigateNext(): Promise<boolean> {
         var selectedOption = this.applicationService.currentSection.YearOfCompletionRange;
-        if (["Before-1900","1901-to-1955","1956-to-1969","1970-to-1984"].indexOf(selectedOption!) > -1) {
+
+        if (selectedOption == "not-completed") {
             return this.navigationService.navigateRelative(SectionAddressComponent.route, this.activatedRoute);
+        } else if (selectedOption != "2023-onwards") {
+            return this.navigationService.navigateRelative(CertificateIssuerComponent.route, this.activatedRoute);
         }
 
         return this.navigationService.navigateRelative(WhoIssuedCertificateComponent.route, this.activatedRoute);
