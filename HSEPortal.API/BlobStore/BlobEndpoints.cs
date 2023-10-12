@@ -1,7 +1,6 @@
 using System.Net;
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
-using Cloudmersive.APIClient.NETCore.VirusScan.Api;
 using Flurl;
 using Flurl.Http;
 using HSEPortal.API.Extensions;

@@ -10,8 +10,6 @@ using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Services;
 using HSEPortal.API.Services.CompanySearch;
 using HSEPortal.Domain.DynamicsDefinitions;
-using Cloudmersive.APIClient.NETCore.VirusScan.Api;
-using Cloudmersive.APIClient.NETCore.VirusScan.Client;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -49,12 +47,6 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.AddTransient<CompanySearchService>();
     serviceCollection.AddTransient<CompanySearchFactory>();
     serviceCollection.AddTransient<RegistrationAmendmentsService>();
-
-    serviceCollection.AddTransient<IScanApi>(_ =>
-    {
-        Configuration.Default.AddApiKey("Apikey", builderContext.Configuration["CloudmersiveApiKey"]);
-        return new ScanApi();
-    });
 
     serviceCollection.AddSingleton(_ => new MapperConfiguration(config =>
     {

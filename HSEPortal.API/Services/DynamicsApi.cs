@@ -115,21 +115,4 @@ public class DynamicsApi
 
         return response.AccessToken;
     }
-
-    public async Task CreateTaskDocument(string documentid, string buildingControlApplicationId, string taskId)
-    {
-        var token = await Login();
-
-        await dynamicsOptions.EnvironmentUrl.AppendPathSegments("api", "data", "v9.2", "bsr_projecttaskdocuments")
-            .WithOAuthBearerToken(token)
-            .PostJsonAsync(new {});
-    }
-
-    // new MDTProjectDocument
-    //         {
-    //             buildingControlReference = $"/bsr_buildingcontrolapplications({buildingControlApplicationId})",
-    //             taskReference = $"/tasks({taskId})",
-    //             documentReference = $"/bsr_bsrdocuments({documentid})",
-    //             bsr_typecode = MDTTaskDocumentType.AttachedByMDT
-    //         }
 }
