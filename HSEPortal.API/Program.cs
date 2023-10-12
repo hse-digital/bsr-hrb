@@ -10,6 +10,7 @@ using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Services;
 using HSEPortal.API.Services.CompanySearch;
 using HSEPortal.Domain.DynamicsDefinitions;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -25,10 +26,18 @@ host.Run();
 
 static void ConfigureServices(HostBuilderContext builderContext, IServiceCollection serviceCollection)
 {
+    serviceCollection.AddAzureClients(builder =>
+    {
+        var blobOptions = builderContext.Configuration.GetSection(BlobOptions.SectionName);
+        builder.AddBlobServiceClient(blobOptions["ConnectionString"]);
+    });
+
     serviceCollection.Configure<DynamicsOptions>(builderContext.Configuration.GetSection(DynamicsOptions.Dynamics));
     serviceCollection.Configure<IntegrationsOptions>(builderContext.Configuration.GetSection(IntegrationsOptions.Integrations));
     serviceCollection.Configure<FeatureOptions>(builderContext.Configuration.GetSection(FeatureOptions.Feature));
     serviceCollection.Configure<SwaOptions>(builderContext.Configuration.GetSection(SwaOptions.Swa));
+    serviceCollection.Configure<SharepointOptions>(builderContext.Configuration.GetSection(SharepointOptions.SectionName));
+    serviceCollection.Configure<BlobOptions>(builderContext.Configuration.GetSection(BlobOptions.SectionName));
 
     serviceCollection.AddTransient<DynamicsService>();
     serviceCollection.AddTransient<KbiService>();

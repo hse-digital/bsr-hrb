@@ -26,6 +26,7 @@ import { WhatWantToDoComponent } from './features/registration-amendments/what-w
 import { ComponentsModule } from './components/components.module';
 import { CommonModule } from '@angular/common';
 import { RegistrationAmendmentsService } from './services/registration-amendments.service';
+import { FileUploadService } from './services/file-upload.service';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
@@ -63,7 +64,7 @@ const routes = new HseRoutes([
     ComponentsModule,
     FormsModule
   ],
-  providers: [HttpClient, ApplicationService, KbiService, RegistrationAmendmentsService],
+  providers: [HttpClient, ApplicationService, KbiService, RegistrationAmendmentsService, FileUploadService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
