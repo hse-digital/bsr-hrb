@@ -968,4 +968,19 @@ public class DynamicsService
         dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
         return dateTime;
     }
+
+    public async Task<NewFlowDocumentResponse> UploadFileToSharepoint(SharepointUploadRequestModel requestModel)
+    {
+        var flowModel = requestModel with { fileName = AddTimeToFileName(requestModel.fileName!) };
+        return await dynamicsOptions.UploadFileFlowUrl.PostJsonAsync(flowModel).ReceiveJson<NewFlowDocumentResponse>();
+    }
+
+    private string AddTimeToFileName(string oldFileName)
+    {
+        var fileNameOnly = Path.GetFileNameWithoutExtension(oldFileName);
+        var fileExtension = Path.GetExtension(oldFileName);
+        var newFileNameOnly = $"{fileNameOnly}_{DateTime.UtcNow:s}".Replace(':', '-');
+
+        return $"{newFileNameOnly}{fileExtension}";
+    }
 }

@@ -87,21 +87,19 @@ public class BlobEndpoints
     private async Task CreateTaskDocument(string applicationId, string blobName)
     {
         var buildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
-        
-        await integrationOptions.CommonAPIEndpoint.AppendPathSegments("api", "UploadToSharepoint")
-            .WithHeader("x-functions-key", integrationOptions.CommonAPIKey).PostJsonAsync(new
-            {
-                fileName = blobName,
-                subFolderPath = "BSR User Uploads",
-                fileDescription = "Uploaded from HSE Portal",
-                // providerContactId = buildingApplication._bsr_registreeid_value,
-                targetRecordId = buildingApplication.bsr_buildingapplicationid,
-                targetTable = "bsr_buildingapplication",
-                azureBlobFilePath = $"{blobOptions.ContainerName}/{blobName}"
-            }).ReceiveJson<NewFlowDocumentResponse>();
+
+        var flowResponse = await dynamicsService.UploadFileToSharepoint(new SharepointUploadRequestModel
+        {
+            fileName = blobName,
+            subFolderPath = "BSR User Uploads",
+            fileDescription = "Uploaded from HSE Portal",
+            providerContactId = buildingApplication._bsr_registreeid_value,
+            targetRecordId = buildingApplication.bsr_buildingapplicationid,
+            targetTable = "bsr_buildingapplication",
+            azureBlobFilePath = $"{blobOptions.ContainerName}/{blobName}"
+        });
 
         await DeleteBlobAsync(blobName);
-        //await dynamicsApi.CreateTaskDocument(flowDocumentResponse.bsr_documentid, buildingControlApplicationId);
     }
 }
 
