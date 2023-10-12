@@ -73,20 +73,14 @@ export class SectionCheckAnswersComponent extends PageComponent<void> {
 
         if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.NumberResidentialUnits)) {
 
-          if (section.YearOfCompletionOption != 'not-completed') {
-            canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.PeopleLivingInBuilding);
+          canContinue &&= (section.YearOfCompletionOption == "not-completed") || (section.YearOfCompletionOption == "year-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletion)) || (section.YearOfCompletionOption == "year-not-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletionRange));
+          canContinue &&= section.Addresses?.length > 0;
+
+          if ((section.YearOfCompletionOption == 'year-exact' && Number(section.YearOfCompletion) >= 2023) || (section.YearOfCompletionOption == 'year-not-exact' && section.YearOfCompletionRange == '2023-onwards')) {
+            canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateIssuer);
+            canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateReference);
           }
 
-          if (!this.isSectionOutOfScopeBecause(section, OutOfScopeReason.PeopleLivingInBuilding)) {
-
-            canContinue &&= (section.YearOfCompletionOption == "not-completed") || (section.YearOfCompletionOption == "year-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletion)) || (section.YearOfCompletionOption == "year-not-exact" && FieldValidations.IsNotNullOrWhitespace(section.YearOfCompletionRange));
-            canContinue &&= section.Addresses?.length > 0;
-
-            if ((section.YearOfCompletionOption == 'year-exact' && Number(section.YearOfCompletion) >= 2023) || (section.YearOfCompletionOption == 'year-not-exact' && section.YearOfCompletionRange == '2023-onwards')) {
-              canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateIssuer);
-              canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateReference);
-            }
-          }
         }
       }
     }
