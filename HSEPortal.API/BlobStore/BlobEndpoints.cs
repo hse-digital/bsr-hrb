@@ -88,7 +88,7 @@ public class BlobEndpoints
     {
         var buildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
 
-        var flowResponse = await dynamicsService.UploadFileToSharepoint(new SharepointUploadRequestModel
+        await dynamicsService.UploadFileToSharepoint(new SharepointUploadRequestModel
         {
             fileName = blobName,
             subFolderPath = "BSR User Uploads",

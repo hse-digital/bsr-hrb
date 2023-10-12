@@ -1,4 +1,4 @@
-<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBackLater)="saveAndComeBack()">
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()" [processing]="processing">
 
     <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
       <govuk-error-link *ngIf="certificateHasErrors" anchorId="input-block-name" [message]="errorMessage" />
@@ -13,7 +13,7 @@
 
     <div class="govuk-!-margin-bottom-8 file-list" *ngIf="selectedFileUpload">
       <div class="file-list-item" id="upload-tag-0">
-        <govuk-body class="file-list-key">{{selectedFileUpload.file.name}}</govuk-body>
+        <govuk-body class="file-list-key">{{selectedFileUpload.file.name.replace('C:\\fakepath\\', '')}}</govuk-body>
         <div class="file-list-value">
           <govuk-tag class="govuk-tag--yellow upload-progress" *ngIf="selectedFileUpload.status == 'uploading'" [style]="getFileProgress(selectedFileUpload)">UPLOADING</govuk-tag>
           <govuk-tag class="govuk-tag--yellow" *ngIf="selectedFileUpload.status == 'scanning' || selectedFileUpload.status == 'processing'">{{selectedFileUpload.status}}</govuk-tag>

@@ -23,6 +23,7 @@ import { AccountablePersonNavigation } from "src/app/features/application/accoun
 import { KbiModule } from "../kbi/kbi.module";
 import { KbiNavigation } from "src/app/features/kbi/kbi.navigation.ts.service";
 import { RegistrationAmendmentsModule } from "../registration-amendments/registration-amendments.module";
+import { FormsModule } from "@angular/forms";
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent, ApplicationTaskListComponent.title),
@@ -55,7 +56,8 @@ const routes = new HseRoutes([
     ComponentsModule,
     CommonModule,
     PipesModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [
     HttpClient,

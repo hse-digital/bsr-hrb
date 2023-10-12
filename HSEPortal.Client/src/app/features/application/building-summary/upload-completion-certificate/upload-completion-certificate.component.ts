@@ -13,7 +13,7 @@ type error = { hasError: boolean, message?: string }
   selector: 'hse-upload-completion-certificate',
   templateUrl: './upload-completion-certificate.component.html'
 })
-export class UploadCompletionCertificateComponent extends PageComponent<string> {
+export class UploadCompletionCertificateComponent extends PageComponent<{Filename: string, Uploaded: boolean}> {
   static route: string = 'upload-completion-certificate';
   static title: string = "Upload completion certificate - Register a high-rise building - GOV.UK";
 
@@ -43,13 +43,21 @@ export class UploadCompletionCertificateComponent extends PageComponent<string> 
   }
 
   override onInit(applicationService: ApplicationService): void {
+    this.model = this.applicationService.currentSection.CompletionCertificateFile;
+    if (this.model) {
+      this.selectedFileUpload = { status: 'uploaded', file: new File([], this.model.Filename), alreadyUploaded: this.model.Uploaded };
+    }
+
     let date = new Date(Number(this.applicationService.currentSection.CompletionCertificateDate));
     let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
     this.isOptional = date < FirstOctober2023;
   }
 
-  override async onSave(applicationService: ApplicationService): Promise<void> {
-    if (this.selectedFileUpload) {
+  override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
+    this.applicationService.currentSection.CompletionCertificateFile = this.model;
+    
+    if (this.selectedFileUpload && !this.model!.Uploaded && isSaveAndContinue) {
+      this.model!.Uploaded = true;
       await this.fileUploadService.uploadToSharepoint(this.applicationService.model.id!, this.selectedFileUpload.file.name)
     }
   }
@@ -67,16 +75,17 @@ export class UploadCompletionCertificateComponent extends PageComponent<string> 
   }
 
   progressMap = new Map<File, number>();
-  selectedFileUpload?: { status: string, file: File };
+  selectedFileUpload?: { status: string, file: File, alreadyUploaded: boolean };
   async fileSelected(event: Event) {
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;
     const file = files.item(0);
 
     if (file != null) {
-      this.selectedFileUpload = { status: this.getInitialFileStatus(file), file: file };
+      this.selectedFileUpload = { status: this.getInitialFileStatus(file), file: file, alreadyUploaded: false };
       if (this.selectedFileUpload.status != 'invalid' && this.selectedFileUpload.status != 'toolarge') {
         this.selectedFileUpload.status = 'uploading';
+        this.model = {Filename: file.name, Uploaded: false };
 
         const fileUrl = await this.fileUploadService.getSasUrl(this.selectedFileUpload.file.name);
 

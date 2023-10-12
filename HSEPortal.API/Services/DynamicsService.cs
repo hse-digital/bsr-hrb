@@ -969,10 +969,10 @@ public class DynamicsService
         return dateTime;
     }
 
-    public async Task<NewFlowDocumentResponse> UploadFileToSharepoint(SharepointUploadRequestModel requestModel)
+    public async Task UploadFileToSharepoint(SharepointUploadRequestModel requestModel)
     {
         var flowModel = requestModel with { fileName = AddTimeToFileName(requestModel.fileName!) };
-        return await dynamicsOptions.UploadFileFlowUrl.PostJsonAsync(flowModel).ReceiveJson<NewFlowDocumentResponse>();
+        await dynamicsOptions.UploadFileFlowUrl.PostJsonAsync(flowModel).ReceiveJson<NewFlowDocumentResponse>();
     }
 
     private string AddTimeToFileName(string oldFileName)

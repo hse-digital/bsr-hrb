@@ -22,6 +22,7 @@ import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { AlreadyRegisteredMultiComponent } from "./duplicates/already-registered-multi/already-registered-multi.component";
 import { WhyContinueRegisterComponent } from "./duplicates/why-continue-register/why-continue-register.component";
 import { KeepStructureDeclarationComponent } from "./duplicates/keep-structure-declaration/keep-structure-declaration.component";
+import { UploadCompletionCertificateComponent } from "./upload-completion-certificate/upload-completion-certificate.component";
 
 @Injectable()
 export class BuildingSummaryNavigation extends BaseNavigation {
@@ -286,8 +287,22 @@ class CompletionCertificateIssuerNavigationNode extends BuildingNavigationNode {
   }
 }
 
-class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNode {
+class CompletionCertificateFileNavigationNode extends BuildingNavigationNode {
   constructor(private sectionAddressNavigationNode: SectionAddressNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(section: SectionModel, sectionIndex: number): string {
+    if (!section.CompletionCertificateFile || !section.CompletionCertificateFile.Uploaded) {
+      return UploadCompletionCertificateComponent.route;
+    }
+
+    return this.sectionAddressNavigationNode.getNextRoute(section, sectionIndex);
+  }
+}
+
+class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNode {
+  constructor(private completionCertificateFileNavigationNode: CompletionCertificateFileNavigationNode) {
     super();
   }
 
@@ -296,7 +311,7 @@ class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNod
       return CertificateNumberComponent.route;
     }
 
-    return this.sectionAddressNavigationNode.getNextRoute(section, sectionIndex);
+    return this.completionCertificateFileNavigationNode.getNextRoute(section, sectionIndex);
   }
 }
 
@@ -434,7 +449,8 @@ class AddAnotherSectionNavigationTree extends BuildingNavigationNode {
   private alreadyRegisteredMultiNavigationNode = new AlreadyRegisteredMultiNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode, this.keepStructureDeclarationNavigationNode);
   
   private sectionAddressNavigationNode = new SectionAddressNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode, this.alreadyRegisteredMultiNavigationNode, this.alreadyRegisteredSingleNavigationNode);
-  private completionCertificateReferenceNavigationNode = new CompletionCertificateReferenceNavigationNode(this.sectionAddressNavigationNode);
+  private completionCertificateFilerNavigationNode = new CompletionCertificateFileNavigationNode(this.sectionAddressNavigationNode);
+  private completionCertificateReferenceNavigationNode = new CompletionCertificateReferenceNavigationNode(this.completionCertificateFilerNavigationNode);
   private completionCertificateIssuerNavigationNode = new CompletionCertificateIssuerNavigationNode(this.completionCertificateReferenceNavigationNode, this.sectionAddressNavigationNode);
   private yearRangeNavigationNode = new YearRangeNavigationNode(this.completionCertificateIssuerNavigationNode);
   private yearOfCompletionNavigationNode = new YearOfCompletionNavigationNode(this.yearRangeNavigationNode, this.completionCertificateIssuerNavigationNode, this.sectionAddressNavigationNode);

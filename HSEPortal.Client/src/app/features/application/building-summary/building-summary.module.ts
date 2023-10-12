@@ -33,6 +33,7 @@ import { NotNeedRegisterMultiDuplicatedStructuresComponent } from './duplicates/
 import { WhoIssuedCertificateComponent } from './who-issued-certificate/who-issued-certificate.component';
 import { CompletionCertificateDateComponent } from './completion-certificate-date/completion-certificate-date.component';
 import { UploadCompletionCertificateComponent } from './upload-completion-certificate/upload-completion-certificate.component';
+import { FormsModule } from "@angular/forms";
 
 const routes = new HseRoutes([
   HseRoute.protected(AddMoreSectionsComponent.route, AddMoreSectionsComponent, undefined),
@@ -100,7 +101,8 @@ const routes = new HseRoutes([
     CommonModule,
     HttpClientModule,
     PipesModule,
-    ComponentsModule
+    ComponentsModule,
+    FormsModule
   ],
   providers: [
     ...routes.getProviders()
