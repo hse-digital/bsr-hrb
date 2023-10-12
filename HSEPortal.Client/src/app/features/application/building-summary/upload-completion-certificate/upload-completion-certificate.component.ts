@@ -13,7 +13,7 @@ type error = { hasError: boolean, message?: string }
   selector: 'hse-upload-completion-certificate',
   templateUrl: './upload-completion-certificate.component.html'
 })
-export class UploadCompletionCertificateComponent extends PageComponent<{Filename: string, Uploaded: boolean}> {
+export class UploadCompletionCertificateComponent extends PageComponent<{ Filename: string, Uploaded: boolean }> {
   static route: string = 'upload-completion-certificate';
   static title: string = "Upload completion certificate - Register a high-rise building - GOV.UK";
 
@@ -22,6 +22,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{Filenam
   isOptional: boolean = true;
   certificateHasErrors: boolean = false;
 
+  errorMessage?: string;
   errors = {
     empty: { hasError: false, message: `Upload the completion certificate for ${this.sectionBuildingName()}` } as error,
     extension: { hasError: false, message: "The selected file must be ODS, PDF, JPG, TIF, BMP or PNG" } as error,
@@ -55,7 +56,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{Filenam
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
     this.applicationService.currentSection.CompletionCertificateFile = this.model;
-    
+
     if (this.selectedFileUpload && !this.model!.Uploaded && isSaveAndContinue) {
       this.model!.Uploaded = true;
       await this.fileUploadService.uploadToSharepoint(this.applicationService.model.id!, this.selectedFileUpload.file.name)
@@ -63,20 +64,30 @@ export class UploadCompletionCertificateComponent extends PageComponent<{Filenam
   }
 
   override isValid(): boolean {
-    return !this.selectedFileUpload || this.selectedFileUpload.status == 'uploaded';
+    this.errorMessage = undefined;
+
+    if (!this.selectedFileUpload && !this.isOptional) {
+      this.errorMessage = `Upload the completion certificate for ${this.sectionBuildingName()}`;
+    } else if (this.selectedFileUpload) {
+      if (this.selectedFileUpload.status == 'toolarge') {
+        this.errorMessage = this.errors.size.message;
+      } else if (this.selectedFileUpload.status == 'invalid') {
+        this.errorMessage = this.errors.extension.message;
+      }
+    }
+    
+    return !this.errorMessage;
   }
 
   override navigateNext(): Promise<boolean> {
     return this.navigationService.navigateRelative(SectionAddressComponent.route, this.activatedRoute);
   }
 
-  get errorMessage() {
-    return `Upload the completion certificate for ${this.sectionBuildingName()}`;
-  }
-
   progressMap = new Map<File, number>();
   selectedFileUpload?: { status: string, file: File, alreadyUploaded: boolean };
   async fileSelected(event: Event) {
+    this.errorMessage = undefined;
+
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;
     const file = files.item(0);
@@ -85,7 +96,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{Filenam
       this.selectedFileUpload = { status: this.getInitialFileStatus(file), file: file, alreadyUploaded: false };
       if (this.selectedFileUpload.status != 'invalid' && this.selectedFileUpload.status != 'toolarge') {
         this.selectedFileUpload.status = 'uploading';
-        this.model = {Filename: file.name, Uploaded: false };
+        this.model = { Filename: file.name, Uploaded: false };
 
         const fileUrl = await this.fileUploadService.getSasUrl(this.selectedFileUpload.file.name);
 

@@ -1,7 +1,7 @@
 <govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()" [processing]="processing">
 
     <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-      <govuk-error-link *ngIf="certificateHasErrors" anchorId="input-block-name" [message]="errorMessage" />
+      <govuk-error-link *ngIf="errorMessage" anchorId="upload-input" [message]="errorMessage" />
     </govuk-error-summary>
 
     <h1 class="govuk-heading-l govuk-!-margin-bottom-1">Upload completion certificate {{ isOptional ? '(optional)' : ''}}</h1>
