@@ -24,6 +24,7 @@ import { WhyContinueRegisterComponent } from "./duplicates/why-continue-register
 import { KeepStructureDeclarationComponent } from "./duplicates/keep-structure-declaration/keep-structure-declaration.component";
 import { WhoIssuedCertificateComponent } from "./who-issued-certificate/who-issued-certificate.component";
 import { CompletionCertificateDateComponent } from "./completion-certificate-date/completion-certificate-date.component";
+import { UploadCompletionCertificateComponent } from "./upload-completion-certificate/upload-completion-certificate.component";
 
 @Injectable()
 export class BuildingSummaryNavigation extends BaseNavigation {
@@ -304,8 +305,21 @@ class CompletionCertificateIssuerNavigationNode extends BuildingNavigationNode {
 
 }
 
-class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNode {
+class CompletionCertificateFileNavigationNode extends BuildingNavigationNode {
   constructor(private sectionAddressNavigationNode: SectionAddressNavigationNode) {
+    super();
+  }
+
+  override getNextRoute(section: SectionModel, sectionIndex: number): string {    
+    if (!section.CompletionCertificateFile || !section.CompletionCertificateFile.Uploaded) {
+      return UploadCompletionCertificateComponent.route;
+    }
+    return this.sectionAddressNavigationNode.getNextRoute(section, sectionIndex);
+  }
+}
+
+class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNode {
+  constructor(private completionCertificateFileNavigationNode: CompletionCertificateFileNavigationNode, private sectionAddressNavigationNode: SectionAddressNavigationNode ) {
     super();
   }
 
@@ -314,11 +328,13 @@ class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNod
     let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
     let isOptional = date < FirstOctober2023;
 
-    if (!section.CompletionCertificateReference && !isOptional) {
+    if (!section.CompletionCertificateReference && !isOptional) {      
       return CertificateNumberComponent.route;
+    } else if (section.WhoIssuedCertificate == "bsr") {
+      return this.sectionAddressNavigationNode.getNextRoute(section, sectionIndex);
     }
 
-    return this.sectionAddressNavigationNode.getNextRoute(section, sectionIndex);
+    return this.completionCertificateFileNavigationNode.getNextRoute(section, sectionIndex);
   }
 }
 
@@ -456,7 +472,8 @@ class AddAnotherSectionNavigationTree extends BuildingNavigationNode {
   private alreadyRegisteredMultiNavigationNode = new AlreadyRegisteredMultiNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode, this.keepStructureDeclarationNavigationNode);
   
   private sectionAddressNavigationNode = new SectionAddressNavigationNode(this.applicationService, this.addAnotherSectionNavigationNode, this.alreadyRegisteredMultiNavigationNode, this.alreadyRegisteredSingleNavigationNode);
-  private completionCertificateReferenceNavigationNode = new CompletionCertificateReferenceNavigationNode(this.sectionAddressNavigationNode);
+  private completionCertificateFilerNavigationNode = new CompletionCertificateFileNavigationNode(this.sectionAddressNavigationNode);  
+  private completionCertificateReferenceNavigationNode = new CompletionCertificateReferenceNavigationNode(this.completionCertificateFilerNavigationNode, this.sectionAddressNavigationNode);
   private completionCertificateDateNavigationNode = new CompletionCertificateDateNavigationNode(this.completionCertificateReferenceNavigationNode);
   private completionCertificateIssuerNavigationNode = new CompletionCertificateIssuerNavigationNode(this.completionCertificateDateNavigationNode, this.sectionAddressNavigationNode);
   private whoIssuedCertificateNavigationNode = new WhoIssuedCertificateNavigationNode(this.completionCertificateIssuerNavigationNode, this.completionCertificateDateNavigationNode);

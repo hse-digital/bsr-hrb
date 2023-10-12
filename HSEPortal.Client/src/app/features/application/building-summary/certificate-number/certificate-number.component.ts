@@ -4,6 +4,7 @@ import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService } from "src/app/services/application.service";
 import { SectionAddressComponent } from "../address/address.component";
 import { PageComponent } from "src/app/helpers/page.component";
+import { UploadCompletionCertificateComponent } from "../upload-completion-certificate/upload-completion-certificate.component";
 
 @Component({
   templateUrl: './certificate-number.component.html'
@@ -41,6 +42,9 @@ export class CertificateNumberComponent extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean> {
+    if(this.applicationService.currentSection.WhoIssuedCertificate != "bsr") {
+      return this.navigationService.navigateRelative(UploadCompletionCertificateComponent.route,  this.activatedRoute);  
+    }
     return this.navigationService.navigateRelative(SectionAddressComponent.route,  this.activatedRoute);
   }
 

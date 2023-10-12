@@ -9,6 +9,7 @@
 
     <govuk-summary-list-row *ngIf="showCompletionCertificate() && isInScope" (onKeyupEnter)="navigateTo('certificate-issuer')" (onClick)="navigateTo('certificate-issuer')" key="Completion certificate issuer" [showAction]=true>{{section.CompletionCertificateIssuer}} </govuk-summary-list-row>
     <govuk-summary-list-row *ngIf="showCompletionCertificate() && isInScope" (onKeyupEnter)="navigateTo('certificate-number')" (onClick)="navigateTo('certificate-number')" key="Completion certificate number" [showAction]=true>{{section.CompletionCertificateReference}} </govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="showCompletionCertificate() && isInScope" (onKeyupEnter)="navigateTo('upload-completion-certificate')" (onClick)="navigateTo('upload-completion-certificate')" key="Completion certificate file" [showAction]=true>{{section.CompletionCertificateFile?.Filename}} </govuk-summary-list-row>
 
     <ng-container *ngIf="isInScope && (section.Addresses == undefined || section.Addresses.length == 0)">
         <govuk-summary-list-row (onClick)="navigateTo('address')" (onKeyupEnter)="navigateTo('address')" key="Address" [showAction]=true>
