@@ -127,6 +127,10 @@ export class SectionAddressComponent implements OnInit, CanActivate {
     this.titleService.setTitle(SectionAddressComponent.title);
   }
 
+  searchAgain($event: any) {
+    this.applicationService.currentSection.Duplicate = undefined;
+  }
+
   canActivate(routeSnapshot: ActivatedRouteSnapshot) {
 
     ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
