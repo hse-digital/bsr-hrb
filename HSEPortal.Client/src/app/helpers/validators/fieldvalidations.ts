@@ -9,4 +9,5 @@ export class FieldValidations {
   static IsNotNullAndValuesAreNotEmpty: (value: Record<string, string[]> | undefined) => boolean = (value) => value !==undefined && Object.keys(value).length > 0 && Object.keys(value).every(x => !!value[x] && value[x].length > 0);
   static IsNotNullAndValueIsNotNullOrWhitespace: (value: Record<string, string> | undefined) => boolean = (value) => value !==undefined && Object.keys(value).length > 0 && Object.keys(value).every(x => !!value[x] && value[x].length > 0);
   static IsNotNullAndValueIsAPositiveNumber: (value: Record<string, number> | undefined) => boolean = (value) => value !==undefined && Object.keys(value).length > 0 && Object.keys(value).every(x => !!value[x] && value[x] > -1);
+  static AreEqual: (a?: string, b?: string) => boolean = (a?: string, b?: string) => a?.trim()?.toLowerCase() == b?.trim()?.toLowerCase();
 }
