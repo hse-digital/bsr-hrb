@@ -260,6 +260,7 @@ export class BuildingRegistrationModel {
   ShareDetailsDeclared?: boolean;
   DuplicateBuildingApplicationIds?: string[];
   RegistrationAmendmentsModel?: RegistrationAmendmentsModel;
+  FilesUploaded: any;
 }
 
 export enum BuildingApplicationStage {
@@ -291,8 +292,11 @@ export class SectionModel {
   YearOfCompletion?: string;
   YearOfCompletionRange?: string;
 
+  WhoIssuedCertificate?: string;
+  CompletionCertificateDate?: string;
   CompletionCertificateIssuer?: any;
   CompletionCertificateReference?: any;
+  CompletionCertificateFile?: { Filename: string, Uploaded: boolean };
   Addresses: AddressModel[] = [];
 
   Statecode?: string;
@@ -421,7 +425,7 @@ export class Fire {
   FireSmokeProvisionLocations?: Record<string, string[]>;
   Lifts?: string[];
   ResidentialUnitFrontDoors?: ResidentialUnitFrontDoors = {};
-  FireDoorsCommon?: FireDoorsCommon  = {};
+  FireDoorsCommon?: FireDoorsCommon = {};
 }
 
 export type ResidentialUnitFrontDoors = {
@@ -526,7 +530,7 @@ export class RegistrationAmendmentsModel {
 
 export class ChangeAccountablePerson {
   Status: Status = Status.NoChanges;
-  
+
   NewNamedContact?: boolean;
   NewNamedContactFirstName?: string;
   NewNamedContactLastName?: string;
@@ -555,26 +559,33 @@ export enum Status {
   NoChanges = 0,
   ChangesInProgress = 1,
   ChangesComplete = 2,
-  ChangesSubmitted = 4, 
+  ChangesSubmitted = 4,
   Removed = 8
 }
 
-export enum BuildingApplicationStatuscode
-{
-    New = 760_810_001,
-    InProgress = 760_810_002,
-    SubmittedAwaitingAllocation = 760_810_003,
-    AllocatedReview = 760_810_004,
-    UnderReview = 760_810_005,
-    RegisteredPendingQA = 760_810_006,
-    RejectedPendingQA = 760_810_007,
-    AllocatedRework = 760_810_012,
-    ReadyForQA = 760_810_008,
-    Registered = 760_810_015,
-    QAInProgress = 760_810_009,
-    RegisteredPendingChange = 760_810_016,
-    RegisteredKbiValidated = 760_810_017,
-    Rejected = 760_810_011,
-    Withdrawn = 760_810_013,
-    OnHold = 760_810_014,
+export enum BuildingApplicationStatuscode {
+  New = 760_810_001,
+  InProgress = 760_810_002,
+  SubmittedAwaitingAllocation = 760_810_003,
+  AllocatedReview = 760_810_004,
+  UnderReview = 760_810_005,
+  RegisteredPendingQA = 760_810_006,
+  RejectedPendingQA = 760_810_007,
+  AllocatedRework = 760_810_012,
+  ReadyForQA = 760_810_008,
+  Registered = 760_810_015,
+  QAInProgress = 760_810_009,
+  RegisteredPendingChange = 760_810_016,
+  RegisteredKbiValidated = 760_810_017,
+  Rejected = 760_810_011,
+  Withdrawn = 760_810_013,
+  OnHold = 760_810_014,
+}
+
+export class FileUploadModel {
+  Progress: number = 0;
+  FileName?: string;
+  Status?: string;
+  Message?: string;
+  CaseId?: string;
 }

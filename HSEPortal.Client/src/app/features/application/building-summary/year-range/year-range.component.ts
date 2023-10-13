@@ -5,13 +5,14 @@ import { ApplicationService } from "src/app/services/application.service";
 import { SectionAddressComponent } from "../address/address.component";
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 import { PageComponent } from "src/app/helpers/page.component";
+import { WhoIssuedCertificateComponent } from "../who-issued-certificate/who-issued-certificate.component";
 
 @Component({
     templateUrl: './year-range.component.html'
 })
 export class SectionYearRangeComponent extends PageComponent<string> {
     static route: string = 'year-range';
-    static title: string = "What year range was the section originally built?- Register a high-rise building - GOV.UK";
+    static title: string = "Range of years it was completed in - Register a high-rise building - GOV.UK";
     yearRangeHasErrors = false;
 
 
@@ -44,10 +45,18 @@ export class SectionYearRangeComponent extends PageComponent<string> {
 
     override navigateNext(): Promise<boolean> {
         var selectedOption = this.applicationService.currentSection.YearOfCompletionRange;
-        if (["Before-1900","1901-to-1955","1956-to-1969","1970-to-1984"].indexOf(selectedOption!) > -1) {
+
+        if (selectedOption == "not-completed") {
             return this.navigationService.navigateRelative(SectionAddressComponent.route, this.activatedRoute);
+        } else if (selectedOption != "2023-onwards") {
+            return this.navigationService.navigateRelative(CertificateIssuerComponent.route, this.activatedRoute);
         }
 
-        return this.navigationService.navigateRelative(CertificateIssuerComponent.route, this.activatedRoute);
+        return this.navigationService.navigateRelative(WhoIssuedCertificateComponent.route, this.activatedRoute);
     }
+
+    get errorMessage() {
+        return `Select what range of years ${this.sectionBuildingName()} was completed in`;
+    }
+
 }

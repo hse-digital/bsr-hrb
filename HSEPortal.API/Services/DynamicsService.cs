@@ -661,6 +661,14 @@ public class DynamicsService
         return existingAccount.accountid;
     }
 
+    private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+    public static DateTime UnixTimeToDateTime(string text)
+    {
+        double seconds = double.Parse(text, CultureInfo.InvariantCulture);
+        return Epoch.AddMilliseconds(seconds);
+    }
+
     private async Task CreateStructureCompletionCertificate(SectionModel section, DynamicsStructure dynamicsStructure)
     {
         if (!string.IsNullOrWhiteSpace(section.CompletionCertificateIssuer) || !string.IsNullOrWhiteSpace(section.CompletionCertificateReference))
@@ -670,6 +678,7 @@ public class DynamicsService
                     $"bsr_certificatereferencenumber eq '{section.CompletionCertificateReference.EscapeSingleQuote()}' and bsr_issuingorganisation eq '{section.CompletionCertificateIssuer.EscapeSingleQuote()}'"));
             if (!existingCertificate.value.Any())
             {
+                var formatedDate = UnixTimeToDateTime(section.CompletionCertificateDate).AddHours(1).ToString("d", CultureInfo.InvariantCulture);
                 var response = await dynamicsApi.Create("bsr_completioncertificates",
                     new DynamicsCompletionCertificate
                     {
@@ -677,7 +686,8 @@ public class DynamicsService
                             string.Join(" - ", new[] { section.CompletionCertificateReference, section.CompletionCertificateIssuer }.Where(x => !string.IsNullOrWhiteSpace(x))),
                         bsr_certificatereferencenumber = section.CompletionCertificateReference,
                         bsr_issuingorganisation = section.CompletionCertificateIssuer,
-                        structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
+                        structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})",
+                        bsr_certificatecompletiondate = formatedDate
                     }, returnObjectResponse: true);
 
                 var certificate = await response.GetJsonAsync<DynamicsCompletionCertificate>();
@@ -967,5 +977,20 @@ public class DynamicsService
         DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
         return dateTime;
+    }
+
+    public async Task UploadFileToSharepoint(SharepointUploadRequestModel requestModel)
+    {
+        var flowModel = requestModel with { fileName = AddTimeToFileName(requestModel.fileName!) };
+        await dynamicsOptions.UploadFileFlowUrl.PostJsonAsync(flowModel).ReceiveJson<NewFlowDocumentResponse>();
+    }
+
+    private string AddTimeToFileName(string oldFileName)
+    {
+        var fileNameOnly = Path.GetFileNameWithoutExtension(oldFileName);
+        var fileExtension = Path.GetExtension(oldFileName);
+        var newFileNameOnly = $"{fileNameOnly}_{DateTime.UtcNow:s}".Replace(':', '-');
+
+        return $"{newFileNameOnly}{fileExtension}";
     }
 }
