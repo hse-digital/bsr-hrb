@@ -75,8 +75,8 @@ public record BuildingApplicationModel(
 
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
-    string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange,
-    string CompletionCertificateIssuer, string CompletionCertificateReference, Scope Scope, string Statecode, BuildingAddress[] Addresses = null,
+    string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange, string WhoIssuedCertificate, string CompletionCertificateDate,
+    string CompletionCertificateIssuer, string CompletionCertificateReference, FileUploadModel CompletionCertificateFile, Scope Scope, string Statecode, BuildingAddress[] Addresses = null,
     Duplicate Duplicate = null);
 
 public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
@@ -99,6 +99,8 @@ public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress
     string LeadEmail, string LeadPhoneNumber, SectionAccountability[] SectionsAccountability, string AddAnother);
 
 public record SectionAccountability(string SectionName, string[] Accountability);
+
+public record FileUploadModel(string Filename, bool Uploaded);
 
 [Flags]
 public enum BuildingApplicationStatus

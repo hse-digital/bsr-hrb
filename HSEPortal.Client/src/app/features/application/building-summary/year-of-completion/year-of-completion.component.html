@@ -9,16 +9,16 @@
           <govuk-error-link anchorId="year-exact-input" [message]="errorMessage" />
         </govuk-error-summary>
 
-        <govuk-radio-group title="When was {{sectionBuildingName()}} originally built?" [isPageHeading]=true (onRadioSelected)="radioChange()" 
+        <govuk-radio-group title="Do you know what year {{sectionBuildingName()}} was completed?" [isPageHeading]=true (onRadioSelected)="radioChange()" 
           [errorText]="getErrorDescription(yearOfCompletionHasErrors && !exactYearHasErrors, errorMessage)" 
-          [(model)]="model!.YearOfCompletionOption" #field [govukRequired]="field">
+          [(model)]="model!.YearOfCompletionOption" #field [govukRequired]="field" hintText="This is the year when it was ready for residents to occupy it.">
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model!.YearOfCompletionOption" name="application-group" id="year-exact" value="year-exact" label="I know the exact year">
             <govuk-input (onKeyupEnter)="saveAndContinue()" [errorText]="getErrorDescription(exactYearHasErrors, errorMessage)" [(model)]="model!.YearOfCompletion"
                          class="govuk-input--width-4" labelClass="govuk-label--s" label="Exact Year" hint="For example '1983'." />
           </govuk-radio>
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model!.YearOfCompletionOption" name="application-group" id="year-not-exact" value="year-not-exact" label="I do not know the exact year" hint="Select this option if you know a general range." />
           <div class="govuk-radios__divider">or</div>
-          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model!.YearOfCompletionOption" name="application-group" id="not-completed" value="not-completed" label="Not yet built" />
+          <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model!.YearOfCompletionOption" name="application-group" id="not-completed" value="not-completed" label="Not yet completed" />
         </govuk-radio-group>
 
       </div>

@@ -107,4 +107,12 @@ public class DynamicsApi
             .WithOAuthBearerToken(token)
             .DeleteAsync();
     }
+
+    private async Task<string> Login()
+    {
+        var response = await $"https://login.microsoftonline.com/{dynamicsOptions.TenantId}/oauth2/token"
+            .PostUrlEncodedAsync(new { grant_type = "client_credentials", client_id = dynamicsOptions.ClientId, client_secret = dynamicsOptions.ClientSecret, resource = dynamicsOptions.EnvironmentUrl }).ReceiveJson<DynamicsAuthenticationModel>();
+
+        return response.AccessToken;
+    }
 }
