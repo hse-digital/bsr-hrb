@@ -40,6 +40,9 @@ export abstract class PageComponent<T> implements OnInit {
   constructor(activatedRoute?: ActivatedRoute) {
     if(activatedRoute) this.activatedRoute = activatedRoute;
     this.triggerScreenReaderNotification("");
+    this.activatedRoute.queryParams.subscribe(query => {
+      this.returnUrl = query['return'];
+    });
   }
 
   async ngOnInit() {
