@@ -12,7 +12,7 @@ export class DuplicatesService {
 
   constructor(private httpClient: HttpClient, private applicationService: ApplicationService) { }
 
-  async GetRegisteredStructure() { 
+  async GetRegisteredStructure() {
     let postcode = this.applicationService.currentSectionAddress?.Postcode ?? "";
     let addressLineOne = this.applicationService.currentSectionAddress?.Address ?? "";
     return FieldValidations.IsNotNullOrWhitespace(postcode) ? await this.GetRegisteredStructureBy(postcode!, addressLineOne!) : {};
@@ -20,10 +20,10 @@ export class DuplicatesService {
 
   async GetRegisteredStructureBy(postcode: string, addressLineOne: string): Promise<RegisteredStructureModel | undefined> {
     try {
-      return await firstValueFrom(this.httpClient.post<RegisteredStructureModel>("api/GetRegisteredStructure", this.applicationService.sanitize({
+      return await firstValueFrom(this.httpClient.post<RegisteredStructureModel>("api/GetRegisteredStructure", {
         Postcode: postcode,
         AddressLineOne: addressLineOne
-      })));
+      }));
     } catch {
       return undefined;
     }
