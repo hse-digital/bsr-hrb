@@ -18,7 +18,7 @@ public class WhenValidatingApplicationNumber : UnitTestBase
     }
 
     [Fact]
-    public void ShouldReturnOkWhenApplicationExists()
+    public async Task ShouldReturnOkWhenApplicationExists()
     {
         var applicationId = "RegistrationId";
         var contactEmailAddress = "ContactEmailAddress";
@@ -28,18 +28,17 @@ public class WhenValidatingApplicationNumber : UnitTestBase
             new(applicationId, "BuildingName", "ContactFirstName", "ContactLastName", "ContactPhoneNumber", contactEmailAddress)
         };
 
-        var response = buildingApplicationFunctions.ValidateApplicationNumber(BuildHttpRequestData(new object(), applicationId, contactEmailAddress), applicationsInjectedByCosmos);
-
+        var response = await buildingApplicationFunctions.ValidateApplicationNumber(BuildHttpRequestData(new ValidateApplicationRequest(applicationId, contactEmailAddress), applicationId, contactEmailAddress), applicationsInjectedByCosmos);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
-    public void ShouldReturnBadRequestIfApplicationDoesNotExist()
+    public async Task ShouldReturnBadRequestIfApplicationDoesNotExist()
     {
         var applicationId = "RegistrationId";
         var contactEmailAddress = "ContactEmailAddress";
 
-        var response = buildingApplicationFunctions.ValidateApplicationNumber(BuildHttpRequestData(new object(), applicationId, contactEmailAddress), new List<BuildingApplicationModel>());
+        var response = await buildingApplicationFunctions.ValidateApplicationNumber(BuildHttpRequestData(new object(), applicationId, contactEmailAddress), new List<BuildingApplicationModel>());
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }

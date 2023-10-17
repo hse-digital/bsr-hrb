@@ -44,11 +44,16 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(ValidateApplicationNumber))]
-    public HttpResponseData ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber} and (StringEquals(c.ContactEmailAddress, {EmailAddress}, true) or StringEquals(c.SecondaryEmailAddress, {EmailAddress}, true) or StringEquals(c.NewPrimaryUserEmail, {EmailAddress}, true))", Connection = "CosmosConnection")]
+    public async Task<HttpResponseData> ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
-        return request.CreateResponse(buildingApplications.Any() ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
+        var validateApplicationRequest = await request.ReadAsJsonAsync<ValidateApplicationRequest>();
+        var matchingApplication = buildingApplications.Any(x => x.ContactEmailAddress?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
+                                                                x.SecondaryEmailAddress?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
+                                                                x.NewPrimaryUserEmail?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true);
+        
+        return request.CreateResponse(matchingApplication ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 
     [Function(nameof(GetSubmissionDate))]
@@ -269,3 +274,5 @@ public class ApplicationNumberAndEmail {
     public string ApplicationNumber {get; set;}
     public string EmailAddress {get; set;}
 }
+
+public record ValidateApplicationRequest(string ApplicationNumber, string EmailAddress);
