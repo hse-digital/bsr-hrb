@@ -26,7 +26,7 @@
           <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
           <strong class="govuk-warning-text__text">
             <span class="govuk-warning-text__assistive">Warning</span>
-            You must give us structure and fire safety information for {{applicationService.model.BuildingName}} by 30 September 2023.
+            You must give us structure and fire safety information for {{applicationService.model.BuildingName}} by {{get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.
           </strong>
         </div>
 

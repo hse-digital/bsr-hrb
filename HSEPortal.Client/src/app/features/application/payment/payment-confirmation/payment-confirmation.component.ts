@@ -90,4 +90,10 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   async continueToKbi() {
     await this.navigationService.navigateRelative("../kbi", this.activatedRoute);
   }
+
+  get28DaysAfterSubmittionDate() {
+    let submittionDate = new Date(Date.now());
+    return submittionDate.setDate(submittionDate.getDate() + 28);
+  }
+
 }
