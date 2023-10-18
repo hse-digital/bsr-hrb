@@ -221,7 +221,7 @@ public class DynamicsService
                     await AssignContactType(leadContactId, DynamicsContactTypes.PAPOrganisationLeadContact);
                 }
 
-                foreach (var accountability in accountablePerson.SectionsAccountability)
+                foreach (var accountability in accountablePerson.SectionsAccountability ?? Array.Empty<SectionAccountability>())
                 {
                     var sectionName = accountability.SectionName ?? dynamicsBuildingApplication.bsr_Building.bsr_name;
                     var areas = accountability.Accountability;
@@ -278,7 +278,7 @@ public class DynamicsService
                     }
                 }
 
-                foreach (var accountability in accountablePerson.SectionsAccountability)
+                foreach (var accountability in accountablePerson.SectionsAccountability ?? Array.Empty<SectionAccountability>())
                 {
                     var sectionName = accountability.SectionName ?? dynamicsBuildingApplication.bsr_Building.bsr_name;
                     var areas = accountability.Accountability;
