@@ -7,7 +7,7 @@ export class LocalStorage {
     if (typeof sessionStorage !== 'undefined') {
       var localStorageModel = sessionStorage.getItem(key);
       if (localStorageModel) {
-        return JSON.parse(atob(localStorageModel));
+        return JSON.parse(decodeURIComponent(atob(localStorageModel)));
       }
     }
 
@@ -16,7 +16,7 @@ export class LocalStorage {
 
   static setJSON(key: string, value: any) {
     if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem(key, btoa(JSON.stringify(value)));
+      sessionStorage.setItem(key, btoa(encodeURIComponent(JSON.stringify(value))));
     }
   }
 

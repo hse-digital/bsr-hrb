@@ -15,11 +15,13 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   static title: string = "Registration complete confirmation - Register a high-rise building - GOV.UK";
   payment?: PaymentModel;
   shouldRender = false;
+  submittionDate?: number;
 
   constructor(public applicationService: ApplicationService, public paymentService: PaymentService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
   }
 
   async ngOnInit() {
+    this.submittionDate = Date.now();
     this.sendApplicationDataToBroadcastChannel();
 
     if (this.applicationService.model.PaymentType == 'card') {
@@ -90,4 +92,10 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   async continueToKbi() {
     await this.navigationService.navigateRelative("../kbi", this.activatedRoute);
   }
+
+  get28DaysAfterSubmittionDate() {
+    let date = new Date(this.submittionDate!);
+    return date!.setDate(date!.getDate() + 28);
+  }
+
 }

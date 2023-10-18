@@ -10,22 +10,22 @@ export class KbiService {
   }
 
   async startKbi(sectionModel: KbiSectionModel): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/SyncKbiStructureStart/${this.applicationService.model.id}`, this.applicationService.sanitize(sectionModel)));
+    await firstValueFrom(this.httpClient.post(`api/SyncKbiStructureStart/${this.applicationService.model.id}`, sectionModel));
   }
 
   async syncFireEnergy(sectionModel: KbiSectionModel | undefined) {
-    await firstValueFrom(this.httpClient.post(`api/SyncKbiFireAndEnergy/${this.applicationService.model.id}`, this.applicationService.sanitize(sectionModel)));
+    await firstValueFrom(this.httpClient.post(`api/SyncKbiFireAndEnergy/${this.applicationService.model.id}`, sectionModel));
   }
 
   async syncStructureRoofStaircasesAndWalls(sectionModel: KbiSectionModel | undefined) {
-    await firstValueFrom(this.httpClient.post(`api/SyncKbiStructureRoofStaircasesAndWalls/${this.applicationService.model.id}`, this.applicationService.sanitize(sectionModel)));
+    await firstValueFrom(this.httpClient.post(`api/SyncKbiStructureRoofStaircasesAndWalls/${this.applicationService.model.id}`, sectionModel));
   }
 
   async syncBuilding(sectionModel: KbiSectionModel | undefined) {
-    await firstValueFrom(this.httpClient.post(`api/SyncKbiBuildingUse/${this.applicationService.model.id}`, this.applicationService.sanitize(sectionModel)));
+    await firstValueFrom(this.httpClient.post(`api/SyncKbiBuildingUse/${this.applicationService.model.id}`, sectionModel));
   }
 
   async syncConnectionsAndDeclaration(kbiModel: KbiModel) {
-    await firstValueFrom(this.httpClient.post(`api/SyncKbiConnectionsAndDeclaration/${this.applicationService.model.id}`, this.applicationService.sanitize(kbiModel)));
+    await firstValueFrom(this.httpClient.post(`api/SyncKbiConnectionsAndDeclaration/${this.applicationService.model.id}`, kbiModel));
   }
 }
