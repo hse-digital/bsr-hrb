@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService, Status, User } from 'src/app/services/application.service';
-import { UserListComponent } from '../user-list/user-list.component';
+import { UserListComponent } from '../change-applicant/user-list/user-list.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { RaDeclarationComponent } from '../ra-declaration/ra-declaration.component';
 

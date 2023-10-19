@@ -13,8 +13,8 @@
             <ul class="app-task-list__items">
               <li class="app-task-list__item firstItem">
                 <span class="app-task-list__task-name">
-                    <span task *ngIf="true">Building summary</span>
-                    <a task *ngIf="false" class="govuk-link" (keyup.enter)="navigateToSections()" (click)="navigateToSections()" tabindex="0" role="link">Building summary</a>
+                    <span task *ngIf="false">Building summary</span>
+                    <a class="govuk-link" tabindex="0" role="link" [routerLink]="['../building-change-check-answers']">Building summary</a>
                 </span>
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.BuildingSummary)}}">{{getTagFor(taskListSteps.BuildingSummary)}}</govuk-tag>
               </li>
@@ -56,6 +56,7 @@
               <li class="app-task-list__item firstItem">
                 <span class="app-task-list__task-name">
                     <a class="govuk-link" tabindex="0" role="link" [routerLink]="['../user-list']">Manage who can access this application</a>
+                    
                 </span>    
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.Changes)}}">{{getTagFor(taskListSteps.Changes)}}</govuk-tag>            
               </li>
