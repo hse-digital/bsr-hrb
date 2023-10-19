@@ -511,7 +511,7 @@ export class PaymentInvoiceDetails {
 }
 
 export class RegistrationAmendmentsModel {
-  BuildingSummaryStatus: Status = Status.NoChanges;
+  ChangeBuildingSummary?: ChangeBuildingSummary;
   AccountablePersonStatus?: ChangeAccountablePerson;
   ConnectionStatus: Status = Status.NoChanges;
   SubmitStatus: Status = Status.NoChanges;
@@ -520,6 +520,17 @@ export class RegistrationAmendmentsModel {
   Date?: number;
 
   ChangeRequest?: ChangeRequest;
+}
+
+export class ChangeBuildingSummary {
+  Status: Status = Status.NoChanges;
+  Sections: ChangeSection[] = [];
+}
+
+export class ChangeSection {
+  Status: Status = Status.NoChanges;
+  WhyWantRemoveSection?: string;
+  SectionModel?: SectionModel;
 }
 
 export class ChangeAccountablePerson {
