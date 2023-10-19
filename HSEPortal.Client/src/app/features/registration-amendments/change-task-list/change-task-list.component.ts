@@ -25,7 +25,6 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     this.InScopeSections = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
     if(!this.applicationService.model.RegistrationAmendmentsModel) {
       this.applicationService.model.RegistrationAmendmentsModel = {
-        BuildingSummaryStatus: Status.NoChanges,
         ConnectionStatus: Status.NoChanges,
         SubmitStatus: Status.NoChanges,
       };
