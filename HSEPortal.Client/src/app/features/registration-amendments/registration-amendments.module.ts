@@ -22,6 +22,9 @@ import { RaConfirmationComponent } from './ra-confirmation/ra-confirmation.compo
 import { RaCheckAnswersComponent } from './ra-check-answers/ra-check-answers.component';
 import { RaSummaryPageComponent } from './ra-summary-page/ra-summary-page.component';
 import { RaSummaryChangeApplicantComponent } from './ra-summary-page/ra-summary-change-applicant.component';
+import { BuildingChangeCheckAnswersComponent } from './change-building-summary/building-change-check-answers/building-change-check-answers.component';
+import { BuildingChangeSectionAnswersComponent } from './change-building-summary/building-change-check-answers/building-change-section-answers.component';
+import { BuildingChangeRemovedSectionAnswersComponent } from './change-building-summary/building-change-check-answers/building-change-removed-section-answers.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -38,6 +41,7 @@ const routes = new HseRoutes([
   HseRoute.protected(RaConfirmationComponent.route, RaConfirmationComponent, RaConfirmationComponent.title),
   HseRoute.protected(RaCheckAnswersComponent.route, RaCheckAnswersComponent, RaCheckAnswersComponent.title),
   HseRoute.protected(RaSummaryPageComponent.route, RaSummaryPageComponent, RaSummaryPageComponent.title),
+  HseRoute.protected(BuildingChangeCheckAnswersComponent.route, BuildingChangeCheckAnswersComponent, BuildingChangeCheckAnswersComponent.title),
 ]);
 
 @NgModule({
@@ -56,7 +60,10 @@ const routes = new HseRoutes([
     RaConfirmationComponent,
     RaCheckAnswersComponent,
     RaSummaryPageComponent,
-    RaSummaryChangeApplicantComponent
+    RaSummaryChangeApplicantComponent,
+    BuildingChangeCheckAnswersComponent,
+    BuildingChangeSectionAnswersComponent,
+    BuildingChangeRemovedSectionAnswersComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
