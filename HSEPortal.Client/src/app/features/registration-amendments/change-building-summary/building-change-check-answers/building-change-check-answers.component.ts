@@ -10,7 +10,7 @@ import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper'
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { AddressModel } from 'src/app/services/address.service';
-import { ApplicationService, BuildingApplicationStage, ChangeSection, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, ChangeBuildingSummary, ChangeSection, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';
 import { RemoveStructureComponent } from '../remove-structure/remove-structure.component';
 
 @Component({
@@ -33,6 +33,24 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     this.applicationService.model.Sections.filter(x => x.Statecode != "1").map(x => x.Statecode = "0");
   }
 
+  private initChangeBuildingSummary() {
+    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary = {
+        Status: Status.NoChanges,
+        Sections: Array<ChangeSection>(this.applicationService.model.Sections.length)
+      }
+    }
+  }
+
+  private initChangeSectionModel(index: number) {
+    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
+        Status: Status.NoChanges,
+        SectionModel: new SectionModel()
+      }
+    }
+  }
+
   private getActiveSections() {
     return this.applicationService.model.Sections.filter(x => x.Statecode != "1");
   }
@@ -53,6 +71,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
 
   override onInit(applicationService: ApplicationService): void {
     this.initStatecode();
+    this.initChangeBuildingSummary();
     this.activeSections = this.getSections();
   }
 
@@ -116,6 +135,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   removeStructure(index: number) {
+    this.initChangeSectionModel(index);
     return this.navigationService.navigateRelative(RemoveStructureComponent.route, this.activatedRoute, {
       index: index
     });
@@ -126,7 +146,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   isSectionRemoved(index: number) {
-    return (this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[index].Status ?? Status.NoChanges) == Status.Removed;
+    return (this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[index]?.Status ?? Status.NoChanges) == Status.Removed;
   }
 
   getSections(): SectionModel[] {
