@@ -213,9 +213,22 @@ public record PaymentInvoiceDetails
 }
 
 public record RegistrationAmendmentsModel {
+    public ChangeBuildingSummary ChangeBuildingSummary { get; set; }
     public ChangeUser ChangeUser { get; set; }
     public long Date { get; set; }
     public ChangeRequest ChangeRequest { get; set; }
+}
+
+public record ChangeBuildingSummary {
+    public Status Status { get; set; }
+    public ChangeSection[] Sections;
+}
+
+public record ChangeSection {
+    public Status Status { get; set; }
+    public string WhyWantRemoveSection { get; set; }
+    public string RemoveStructureAreYouSure { get; set; }
+    public SectionModel SectionModel { get; set; } 
 }
 
 public record ChangeUser {

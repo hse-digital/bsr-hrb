@@ -25,6 +25,7 @@ import { RaSummaryChangeApplicantComponent } from './ra-summary-page/ra-summary-
 import { BuildingChangeCheckAnswersComponent } from './change-building-summary/building-change-check-answers/building-change-check-answers.component';
 import { BuildingChangeSectionAnswersComponent } from './change-building-summary/building-change-check-answers/building-change-section-answers.component';
 import { BuildingChangeRemovedSectionAnswersComponent } from './change-building-summary/building-change-check-answers/building-change-removed-section-answers.component';
+import { RemoveStructureComponent } from './change-building-summary/remove-structure/remove-structure.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -42,6 +43,7 @@ const routes = new HseRoutes([
   HseRoute.protected(RaCheckAnswersComponent.route, RaCheckAnswersComponent, RaCheckAnswersComponent.title),
   HseRoute.protected(RaSummaryPageComponent.route, RaSummaryPageComponent, RaSummaryPageComponent.title),
   HseRoute.protected(BuildingChangeCheckAnswersComponent.route, BuildingChangeCheckAnswersComponent, BuildingChangeCheckAnswersComponent.title),
+  HseRoute.protected(RemoveStructureComponent.route, RemoveStructureComponent, RemoveStructureComponent.title),
 ]);
 
 @NgModule({
@@ -63,7 +65,8 @@ const routes = new HseRoutes([
     RaSummaryChangeApplicantComponent,
     BuildingChangeCheckAnswersComponent,
     BuildingChangeSectionAnswersComponent,
-    BuildingChangeRemovedSectionAnswersComponent
+    BuildingChangeRemovedSectionAnswersComponent,
+    RemoveStructureComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

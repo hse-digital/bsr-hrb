@@ -1,5 +1,5 @@
 import { TaskListSteps, TagStatus } from "./change-task-list.component";
-import { ApplicationService, Status } from "src/app/services/application.service";
+import { ApplicationService, ChangeBuildingSummary, Status } from "src/app/services/application.service";
 
 export class TagDirector {
     private Tag?: ChangeTaskListTag;
@@ -43,7 +43,20 @@ export abstract class ChangeTaskListTag {
 
 export class BuildingSummaryTag extends ChangeTaskListTag {
     getTag(): TagStatus {
-        return TagStatus.NotYetAvailable;
+        let changeBuildingSummaryModel = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary;
+        
+        if (!changeBuildingSummaryModel) return TagStatus.NoChangesMade;
+
+        if (changeBuildingSummaryModel.Status == Status.ChangesInProgress) {
+            return TagStatus.MoreInformationNeeded;
+        } else if (changeBuildingSummaryModel.Status == Status.ChangesComplete || this.areThereAnySectionsRemoved(changeBuildingSummaryModel)) {
+            return TagStatus.ChangesNotYetSubmitted;
+        }
+        return TagStatus.NoChangesMade;
+    }
+
+    areThereAnySectionsRemoved(changeModel?: ChangeBuildingSummary ) {
+        return changeModel?.Sections.some(x => x.Status == Status.Removed) ?? false;
     }
 }
 

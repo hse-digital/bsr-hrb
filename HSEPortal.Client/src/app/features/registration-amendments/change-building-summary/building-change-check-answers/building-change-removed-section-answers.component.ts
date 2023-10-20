@@ -18,17 +18,10 @@ export class BuildingChangeRemovedSectionAnswersComponent implements OnInit {
 
     }
 
-    navigateTo(url: string, query?: string) {
-        // this.navigationService.navigateRelative(`section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
-        //     return: 'check-answers'
-        // });
-    }
-
-    navigateToAddress(url: string, addressIndex: number) {
-        // this.navigationService.navigateRelative(`section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
-        //     return: 'check-answers',
-        //     address: addressIndex + 1
-        // });
+    navigateTo(url: string) {
+        this.navigationService.navigateRelative(url, this.activatedRoute, {
+            index: this.sectionIndex
+        });
     }
 
     get key() {
