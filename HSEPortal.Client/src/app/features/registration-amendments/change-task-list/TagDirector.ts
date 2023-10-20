@@ -45,7 +45,7 @@ export class BuildingSummaryTag extends ChangeTaskListTag {
     getTag(): TagStatus {
         let changeBuildingSummaryModel = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary;
         
-        if (!changeBuildingSummaryModel) return TagStatus.NoChangesMade;
+        if (!changeBuildingSummaryModel || !changeBuildingSummaryModel?.Sections) return TagStatus.NoChangesMade;
 
         if (changeBuildingSummaryModel.Status == Status.ChangesInProgress) {
             return TagStatus.MoreInformationNeeded;

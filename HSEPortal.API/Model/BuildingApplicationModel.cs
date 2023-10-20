@@ -221,7 +221,7 @@ public record RegistrationAmendmentsModel {
 
 public record ChangeBuildingSummary {
     public Status Status { get; set; }
-    public ChangeSection[] Sections;
+    public ChangeSection[] Sections { get; set; }
 }
 
 public record ChangeSection {
