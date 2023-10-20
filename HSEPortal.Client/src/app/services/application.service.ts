@@ -530,6 +530,7 @@ export class ChangeBuildingSummary {
 export class ChangeSection {
   Status: Status = Status.NoChanges;
   WhyWantRemoveSection?: string;
+  RemoveStructureAreYouSure?: string;
   SectionModel?: SectionModel;
 }
 
