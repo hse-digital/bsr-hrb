@@ -4,6 +4,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStage, ChangeSection, Status } from 'src/app/services/application.service';
 import { BuildingChangeCheckAnswersComponent } from '../building-change-check-answers/building-change-check-answers.component';
+import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 
 @Component({
   selector: 'hse-remove-structure',
@@ -23,8 +24,9 @@ export class RemoveStructureComponent extends PageComponent<string> {
   override async onInit(applicationService: ApplicationService): Promise<void> {
     this.activatedRoute.queryParams.subscribe(params => {
       this.index = params['index'];
+      if(!this.index) this.navigationService.navigateRelative(NotFoundComponent.route, this.activatedRoute);
+      this.model = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[this.index ?? 0].RemoveStructureAreYouSure;
     });
-    this.model = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[this.index ?? 0].RemoveStructureAreYouSure;
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
@@ -34,7 +36,7 @@ export class RemoveStructureComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[this.index ?? 0];
+    return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections && this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections?.length > 0;
   }
 
   override isValid(): boolean {
@@ -58,7 +60,11 @@ export class RemoveStructureComponent extends PageComponent<string> {
   }
 
   get errorMessage() {
-    return `Select 'yes' if you want to remove ${this.applicationService.currentSection.Name} from this application`;
+    return `Select 'yes' if you want to remove ${this.sectionName} from this application`;
+  }
+
+  get sectionName() {
+    return this.applicationService.model.Sections[this.index ?? 0].Name;
   }
 
 }

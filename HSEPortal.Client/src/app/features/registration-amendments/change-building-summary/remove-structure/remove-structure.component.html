@@ -4,7 +4,7 @@
         <govuk-error-link anchorId="yes-input" [message]="errorMessage" />
       </govuk-error-summary>
     
-    <govuk-radio-group title="Are you sure you want to remove {{applicationService.currentSection.Name}} from this application?"
+    <govuk-radio-group title="Are you sure you want to remove {{sectionName}} from this application?"
         hintText="You will lose access to all information you have told us about this structure. {{ isKbiComplete() ? 'This includes structure and fire safety information' : ''}}"
         [isPageHeading]=true [errorText]="getErrorDescription(hasErrors, errorMessage)" 
         [(model)]="model" #field [govukRequired]="field">

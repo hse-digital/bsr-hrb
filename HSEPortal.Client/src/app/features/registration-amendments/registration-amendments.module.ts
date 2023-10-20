@@ -43,6 +43,7 @@ const routes = new HseRoutes([
   HseRoute.protected(RaCheckAnswersComponent.route, RaCheckAnswersComponent, RaCheckAnswersComponent.title),
   HseRoute.protected(RaSummaryPageComponent.route, RaSummaryPageComponent, RaSummaryPageComponent.title),
   HseRoute.protected(BuildingChangeCheckAnswersComponent.route, BuildingChangeCheckAnswersComponent, BuildingChangeCheckAnswersComponent.title),
+  HseRoute.protected(RemoveStructureComponent.route, RemoveStructureComponent, RemoveStructureComponent.title),
 ]);
 
 @NgModule({
