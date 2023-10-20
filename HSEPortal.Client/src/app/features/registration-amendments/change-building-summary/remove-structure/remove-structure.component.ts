@@ -45,7 +45,7 @@ export class RemoveStructureComponent extends PageComponent<string> {
 
   override async navigateNext(): Promise<boolean | void> {
     if(this.model == 'yes') {
-      return this.navigationService.navigateRelative(RemoveStructureComponent.route, this.activatedRoute);
+      return true;
     }    
     return this.navigationService.navigateRelative(BuildingChangeCheckAnswersComponent.route, this.activatedRoute);
   }
