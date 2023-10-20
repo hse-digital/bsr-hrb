@@ -11,6 +11,7 @@ import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { AddressModel } from 'src/app/services/address.service';
 import { ApplicationService, BuildingApplicationStage, ChangeSection, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';
+import { RemoveStructureComponent } from '../remove-structure/remove-structure.component';
 
 @Component({
   selector: 'hse-building-change-check-answers',
@@ -115,16 +116,9 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   removeStructure(index: number) {
-    this.applicationService.removeStructure(index);
-    if (this.applicationService.model.Sections.filter(x => x.Statecode != "1").length == 1) {
-      this.changeNumberOfSectionsToOne();
-    }
-    this.activeSections = this.getActiveSections();
-  }
-
-  private changeNumberOfSectionsToOne() {
-    this.applicationService.model.NumberOfSections = 'one';
-    this.applicationService.updateApplication();
+    return this.navigationService.navigateRelative(RemoveStructureComponent.route, this.activatedRoute, {
+      index: index
+    });
   }
 
   addAnotherStructure() {
