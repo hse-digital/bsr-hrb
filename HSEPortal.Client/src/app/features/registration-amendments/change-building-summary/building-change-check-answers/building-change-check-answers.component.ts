@@ -10,8 +10,9 @@ import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper'
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { AddressModel } from 'src/app/services/address.service';
-import { ApplicationService, BuildingApplicationStage, ChangeBuildingSummary, ChangeSection, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, ChangeSection, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';
 import { RemoveStructureComponent } from '../remove-structure/remove-structure.component';
+import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 @Component({
   selector: 'hse-building-change-check-answers',
@@ -72,7 +73,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   override onInit(applicationService: ApplicationService): void {
     this.initStatecode();
     this.initChangeBuildingSummary();
-    this.activeSections = this.getSections();
+    this.activeSections = new ChangeBuildingSummaryHelper(this.applicationService).getSections();
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -149,40 +150,5 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     return (this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[index]?.Status ?? Status.NoChanges) == Status.Removed;
   }
 
-  getSections(): SectionModel[] {
-    return this.applicationService.model.Sections.map((section, index) => {
-      let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections ?? new Array<ChangeSection>(this.applicationService.model.Sections.length);
-      return this.getSection(section, changedSections[index]?.SectionModel ?? new SectionModel());
-    });
-  }
-
-  getSection(section: SectionModel, changedSection: SectionModel): SectionModel {
-    let sectionModel: SectionModel = new SectionModel();
-    sectionModel.Name = this.getLatestValueOf(section.Name, changedSection.Name);
-    sectionModel.FloorsAbove = this.getLatestValueOf(section.FloorsAbove, changedSection.FloorsAbove);
-    sectionModel.Height = this.getLatestValueOf(section.Height, changedSection.Height);
-    sectionModel.ResidentialUnits = this.getLatestValueOf(section.ResidentialUnits, changedSection.ResidentialUnits);
-    sectionModel.WhoIssuedCertificate = this.getLatestValueOf(section.WhoIssuedCertificate, changedSection.WhoIssuedCertificate);
-    sectionModel.YearOfCompletion = this.getLatestValueOf(section.YearOfCompletion, changedSection.YearOfCompletion);
-    sectionModel.YearOfCompletionOption = this.getLatestValueOf(section.YearOfCompletionOption, changedSection.YearOfCompletionOption);
-    sectionModel.YearOfCompletionRange = this.getLatestValueOf(section.YearOfCompletionRange, changedSection.YearOfCompletionRange);
-    sectionModel.CompletionCertificateIssuer = this.getLatestValueOf(section.CompletionCertificateIssuer, changedSection.CompletionCertificateIssuer);
-    sectionModel.CompletionCertificateReference = this.getLatestValueOf(section.CompletionCertificateReference, changedSection.CompletionCertificateReference);
-    sectionModel.CompletionCertificateFile = this.getLatestValueOf(section.CompletionCertificateFile, changedSection.CompletionCertificateFile);
-    sectionModel.CompletionCertificateDate = this.getLatestValueOf(section.CompletionCertificateDate, changedSection.CompletionCertificateDate);
-    sectionModel.Addresses = this.getSectionAddresses(section.Addresses, changedSection.Addresses);
-    return sectionModel;    
-  }
-
-  getSectionAddresses(SectionAddresses: AddressModel[], ChangeSectionAddresses: AddressModel[]): AddressModel[] {
-    return SectionAddresses.map((element, index) => {
-      return this.getLatestValueOf(element, ChangeSectionAddresses[index]);
-    }); 
-  }
-
-  getLatestValueOf(field?: any, changedField?: any) {
-    let hasChanged = typeof changedField == "string" ? FieldValidations.IsNotNullOrWhitespace(changedField) : changedField != undefined;
-    return hasChanged ? changedField : field;
-  }
 
 }

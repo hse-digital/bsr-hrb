@@ -3,8 +3,9 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ChangeSection, ApplicationService } from 'src/app/services/application.service';
+import { ChangeSection, ApplicationService, Status } from 'src/app/services/application.service';
 import { BuildingChangeCheckAnswersComponent } from '../building-change-check-answers/building-change-check-answers.component';
+import { NumberOfSectionsComponment } from 'src/app/features/application/building-summary/number-of-sections/number-of-sections.component';
 
 @Component({
   selector: 'hse-why-remove',
@@ -42,7 +43,10 @@ export class WhyRemoveComponent  extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return this.navigationService.navigateRelative(BuildingChangeCheckAnswersComponent.route, this.activatedRoute);
+    if (this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections!.filter(x => x.Status != Status.Removed)!.length > 1) {
+      return this.navigationService.navigateRelative(BuildingChangeCheckAnswersComponent.route, this.activatedRoute);
+    }
+    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { index: this.index }); 
   }
 
   get errorMessage() {
