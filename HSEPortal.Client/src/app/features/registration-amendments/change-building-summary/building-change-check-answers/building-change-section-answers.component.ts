@@ -25,13 +25,13 @@ export class BuildingChangeSectionAnswersComponent implements OnInit {
 
     navigateTo(url: string, query?: string) {
         this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
-            return: 'check-answers'
+            return: 'change-answers'
         });
     }
 
     navigateToAddress(url: string, addressIndex: number) {
         this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
-            return: 'check-answers',
+            return: 'change-answers',
             address: addressIndex + 1
         });
     }
