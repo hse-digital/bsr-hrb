@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ApplicationService, OutOfScopeReason, SectionModel } from "src/app/services/application.service";
+import { ApplicationService, OutOfScopeReason, SectionModel, Status } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { AddMoreSectionsComponent } from "src/app/features/application/building-summary/add-more-sections/add-more-sections.component";
+import { RegistrationAmendmentsService } from "src/app/services/registration-amendments.service";
 
 @Component({
     selector: 'building-change-section-answers',
@@ -11,7 +12,7 @@ import { AddMoreSectionsComponent } from "src/app/features/application/building-
 })
 export class BuildingChangeSectionAnswersComponent implements OnInit {
 
-    constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private applicationService: ApplicationService) { }
+    constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private applicationService: ApplicationService, private registrationAmendmentsService: RegistrationAmendmentsService) { }
 
     @Input() section!: SectionModel;
     @Input() sectionIndex!: number;
@@ -21,17 +22,18 @@ export class BuildingChangeSectionAnswersComponent implements OnInit {
 
     ngOnInit(): void {
         this.isInScope = !this.section.Scope?.IsOutOfScope;
+        this.initChangeSectionModel(this.sectionIndex);
+        this.applicationService.updateApplication();
     }
 
     navigateTo(url: string, query?: string) {
-        this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
-            return: 'check-answers'
-        });
+        this.registrationAmendmentsService.currentChange = url;
+        this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute);
     }
 
     navigateToAddress(url: string, addressIndex: number) {
+        this.registrationAmendmentsService.currentChange = url;
         this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
-            return: 'check-answers',
             address: addressIndex + 1
         });
     }
@@ -59,6 +61,19 @@ export class BuildingChangeSectionAnswersComponent implements OnInit {
 
     isNotNullOrWhitespace(value?: string) {
         return FieldValidations.IsNotNullOrWhitespace(value);
+    }
+
+    private initChangeSectionModel(index: number) {
+        if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
+            this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
+                Status: Status.NoChanges,
+                SectionModel: new SectionModel()
+            }
+        }
+        
+        if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)!.SectionModel) {
+            this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)!.SectionModel = new SectionModel;
+        }
     }
 
 }

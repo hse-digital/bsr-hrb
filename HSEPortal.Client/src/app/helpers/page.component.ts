@@ -17,6 +17,8 @@ export abstract class PageComponent<T> implements OnInit {
   processing: boolean = false;
   hasErrors: boolean = false;
   updateOnSave: boolean = true;
+  changed: boolean = false;
+  changedReturnUrl?: string;
   returnUrl?: string;
   
   private injector: Injector = GetInjector();
@@ -35,15 +37,22 @@ export abstract class PageComponent<T> implements OnInit {
   abstract canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean;
   abstract isValid(): boolean;
   abstract navigateNext(): Promise<boolean | void>;
-
-
+  
+  
   constructor(activatedRoute?: ActivatedRoute) {
     if(activatedRoute) this.activatedRoute = activatedRoute;
     this.triggerScreenReaderNotification("");
   }
-
+  
+  onInitChange(applicationService: ApplicationService): Promise<void> | void { }
+  onChange(applicationService: ApplicationService): Promise<void> | void { }
+  
   async ngOnInit() {
-    await this.onInit(this.applicationService);
+    if (this.changed) {
+      await this.onInitChange(this.applicationService);
+    } else {
+      await this.onInit(this.applicationService);
+    }
   }
 
   async saveAndContinue(): Promise<void> {
@@ -53,6 +62,13 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.hasErrors) {
       this.triggerScreenReaderNotification();
       this.applicationService.updateLocalStorage();
+
+      if (this.changed) {
+        await this.onChange(this.applicationService);
+        this.navigationService.navigateRelative(`../../registration-amendments/${this.changedReturnUrl}`, this.activatedRoute);
+        return;
+      }
+
       if (this.updateOnSave) {
         await this.saveAndUpdate(true);
       }
@@ -161,5 +177,10 @@ export abstract class PageComponent<T> implements OnInit {
   protected focusAndUpdateErrors() {
     this.summaryError?.first?.focus();
     this.titleService.setTitleError();
+  }
+
+  protected changeInBuildingSummary(route: string) {
+    this.changed = this.registrationAmendmentsService.currentChange == route;
+    this.changedReturnUrl = "building-change-check-answers";
   }
 }

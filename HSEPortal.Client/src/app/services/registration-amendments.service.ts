@@ -9,6 +9,8 @@ export class RegistrationAmendmentsService {
   constructor(private httpClient: HttpClient, private applicationService: ApplicationService) {
   }
 
+  currentChange?: string;
+
   async syncNewPrimaryUser() {
     await firstValueFrom(this.httpClient.post(`api/UpdatePrimaryApplicant/${this.applicationService.model.id}`, this.applicationService.model));
   }

@@ -14,10 +14,9 @@ export class SectionNameComponent extends PageComponent<string> {
 
   blockNameHasErrors = false;
 
-
-
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
+    this.changeInBuildingSummary(SectionNameComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void {
@@ -27,6 +26,14 @@ export class SectionNameComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     applicationService.currentSection.Name = this.model;
+  }
+
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    this.model = this.applicationService.currentChangedSection.SectionModel?.Name;
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+    this.applicationService.currentChangedSection!.SectionModel!.Name = this.model;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

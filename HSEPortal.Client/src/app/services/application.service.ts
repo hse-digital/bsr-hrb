@@ -27,6 +27,10 @@ export class ApplicationService {
     return this.model.AccountablePersons[this._currentAccountablePersonIndex];
   }
 
+  get currentChangedSection(): ChangeSection {
+    return this.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[this._currentSectionIndex]!;
+  }
+
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('application_data') ?? {};
     this._currentSectionIndex = this.model?.Sections?.length - 1 ?? 0;

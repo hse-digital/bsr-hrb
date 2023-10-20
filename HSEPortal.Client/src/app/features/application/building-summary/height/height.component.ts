@@ -17,9 +17,8 @@ export class SectionHeightComponent extends PageComponent<number> {
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
+    this.changeInBuildingSummary(SectionHeightComponent.route);
   }
-
-
 
   heightHasErrors = false;
   errorMessage: string = 'Enter the height in metres';
@@ -30,6 +29,15 @@ export class SectionHeightComponent extends PageComponent<number> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentSection.Height = this.model;
+  }
+
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    if (!this.applicationService.currentChangedSection.SectionModel?.Height) this.onInit(this.applicationService);
+    else this.model = this.applicationService.currentChangedSection.SectionModel?.Height;
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+    this.applicationService.currentChangedSection!.SectionModel!.Height = this.model;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
