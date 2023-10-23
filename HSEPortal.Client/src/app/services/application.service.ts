@@ -529,6 +529,8 @@ export class RegistrationAmendmentsModel {
 export class ChangeBuildingSummary {
   Status: Status = Status.NoChanges;
   Sections: ChangeSection[] = [];
+  CurrentChange?: string;
+  CurrentSectionIndex?: number;
 }
 
 export class ChangeSection {

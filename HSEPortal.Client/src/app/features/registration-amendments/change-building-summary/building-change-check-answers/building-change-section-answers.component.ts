@@ -27,12 +27,16 @@ export class BuildingChangeSectionAnswersComponent implements OnInit {
     }
 
     navigateTo(url: string, query?: string) {
-        this.registrationAmendmentsService.currentChange = url;
+        this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = url;
+        this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.sectionIndex;
+        this.applicationService.updateApplication();
         this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute);
     }
 
     navigateToAddress(url: string, addressIndex: number) {
-        this.registrationAmendmentsService.currentChange = url;
+        this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = url;
+        this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.sectionIndex;
+        this.applicationService.updateApplication();
         this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
             address: addressIndex + 1
         });

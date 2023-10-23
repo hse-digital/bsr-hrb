@@ -179,7 +179,9 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   protected changeInBuildingSummary(route: string) {
-    this.changed = this.registrationAmendmentsService.currentChange == route;
+    let isIndex = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex;
+    this.changed = isIndex && this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange == route;
+
     this.changedReturnUrl = "building-change-check-answers";
   }
 }

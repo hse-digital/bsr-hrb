@@ -7,6 +7,7 @@ import { CertificateIssuerComponent } from "../certificate-issuer/certificate-is
 import { SectionYearRangeComponent } from "../year-range/year-range.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { WhoIssuedCertificateComponent } from "../who-issued-certificate/who-issued-certificate.component";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 
 export type YearOfCompletion = {YearOfCompletionOption?: string, YearOfCompletion?: string}
 
@@ -42,9 +43,11 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
     this.model.YearOfCompletionOption = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption;
     this.model.YearOfCompletion = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion;
 
-    if (!this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption) {
+    if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption)) {
       this.model.YearOfCompletionOption = this.applicationService.currentSection.YearOfCompletionOption;
-    } else if (!this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion) {
+    }
+    
+    if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion)) {
       this.model.YearOfCompletion = this.applicationService.currentSection.YearOfCompletion;
     }
   }
