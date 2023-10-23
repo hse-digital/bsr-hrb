@@ -16,7 +16,7 @@ export class SectionNameComponent extends PageComponent<string> {
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.changeInBuildingSummary(SectionNameComponent.route);
+    this.isPageChangingBuildingSummary(SectionNameComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void {

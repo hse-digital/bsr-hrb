@@ -20,7 +20,7 @@ export class CertificateIssuerComponent extends PageComponent<string> {
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.changeInBuildingSummary(CertificateIssuerComponent.route);
+    this.isPageChangingBuildingSummary(CertificateIssuerComponent.route);
   }
 
   sectionBuildingName() {

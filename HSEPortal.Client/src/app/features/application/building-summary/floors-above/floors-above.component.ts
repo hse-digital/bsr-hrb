@@ -13,7 +13,7 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.changeInBuildingSummary(SectionFloorsAboveComponent.route);
+    this.isPageChangingBuildingSummary(SectionFloorsAboveComponent.route);
   }
 
   errorMessage: string = 'Enter the number of floors at or above ground level';

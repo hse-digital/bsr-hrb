@@ -17,7 +17,7 @@ export class SectionHeightComponent extends PageComponent<number> {
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.changeInBuildingSummary(SectionHeightComponent.route);
+    this.isPageChangingBuildingSummary(SectionHeightComponent.route);
   }
 
   heightHasErrors = false;

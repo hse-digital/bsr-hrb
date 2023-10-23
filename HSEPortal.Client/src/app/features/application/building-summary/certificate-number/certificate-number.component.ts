@@ -20,7 +20,7 @@ export class CertificateNumberComponent extends PageComponent<string> {
   certificateHasErrors: boolean = false;
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.changeInBuildingSummary(CertificateNumberComponent.route);
+    this.isPageChangingBuildingSummary(CertificateNumberComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void {

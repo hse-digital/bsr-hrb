@@ -178,7 +178,7 @@ export abstract class PageComponent<T> implements OnInit {
     this.titleService.setTitleError();
   }
 
-  protected changeInBuildingSummary(route: string) {
+  protected isPageChangingBuildingSummary(route: string) {
     let isIndex = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex;
     this.changed = isIndex && this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange == route;
 

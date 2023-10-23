@@ -17,7 +17,7 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.changeInBuildingSummary(SectionResidentialUnitsComponent.route);
+    this.isPageChangingBuildingSummary(SectionResidentialUnitsComponent.route);
   }
 
   residentialUnitsHasErrors = false;

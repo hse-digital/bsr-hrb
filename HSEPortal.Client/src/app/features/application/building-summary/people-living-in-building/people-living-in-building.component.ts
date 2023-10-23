@@ -17,7 +17,7 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.changeInBuildingSummary(SectionPeopleLivingInBuildingComponent.route);
+    this.isPageChangingBuildingSummary(SectionPeopleLivingInBuildingComponent.route);
   }
 
 
