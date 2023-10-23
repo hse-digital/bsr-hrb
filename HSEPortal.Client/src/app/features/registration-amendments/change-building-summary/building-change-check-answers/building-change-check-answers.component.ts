@@ -14,6 +14,7 @@ import { ApplicationService, BuildingApplicationStage, ChangeBuildingSummary, Ch
 import { RemoveStructureComponent } from '../remove-structure/remove-structure.component';
 import { ChangeTaskListComponent } from '../../change-task-list/change-task-list.component';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
+import { SectionNameComponent } from 'src/app/features/application/building-summary/name/name.component';
 
 @Component({
   selector: 'hse-building-change-check-answers',
@@ -160,8 +161,13 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     });
   }
 
-  addAnotherStructure() {
-
+  async addAnotherStructure() {
+    let section = this.applicationService.startNewSection();
+    this.initChangeSectionModel(this.applicationService._currentSectionIndex);
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = SectionNameComponent.route;
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
+    await this.applicationService.updateApplication();
+    return this.navigationService.navigateRelative(`${section}/${SectionNameComponent.route}`, this.activatedRoute);
   }
 
   isSectionRemoved(index: number) {

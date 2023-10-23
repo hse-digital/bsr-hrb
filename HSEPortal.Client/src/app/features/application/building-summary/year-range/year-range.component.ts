@@ -50,8 +50,7 @@ export class SectionYearRangeComponent extends PageComponent<string> {
     }
 
     override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-        return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && 
-            this.applicationService.currentSection.YearOfCompletionOption == "year-not-exact";
+        return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
     }
 
     override isValid(): boolean {
