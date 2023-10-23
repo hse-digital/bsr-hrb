@@ -51,9 +51,13 @@ export abstract class PageComponent<T> implements OnInit {
   nextChangeRoute() {}
   navigateToNextChange(applicationService: ApplicationService) {  
     let nextRoute = this.nextChangeRoute();
+
     if (nextRoute == void 0 || nextRoute == "building-change-check-answers") {
       this.navigationService.navigateRelative(`../../registration-amendments/${this.changedReturnUrl}`, this.activatedRoute);
     } else {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = nextRoute;
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
+      this.applicationService.updateApplication();
       this.navigationService.navigateRelative(nextRoute, this.activatedRoute);
     }
   }
@@ -73,6 +77,7 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.hasErrors) {
       this.triggerScreenReaderNotification();
       this.applicationService.updateLocalStorage();
+
       if (this.changed) {
         await this.onChange(this.applicationService);
         await this.navigateToNextChange(this.applicationService);
@@ -125,10 +130,11 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.canAccess(this.applicationService, route)) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
-    } else if (!this.isSummaryPage() && this.changed && !this.isKbiPage() && !this.isReturningApplicationPage() && !this.isRegistrationAmendments() && !this.isApplicationCompletedPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
-      this.navigationService.navigate(ApplicationSubmittedHelper.getApplicationCompletedRoute(this.applicationService));
-      return false;
-    }
+    } 
+    // else if (!this.isSummaryPage() && !this.changed && !this.isKbiPage() && !this.isReturningApplicationPage() && !this.isRegistrationAmendments() && !this.isApplicationCompletedPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
+    //   this.navigationService.navigate(ApplicationSubmittedHelper.getApplicationCompletedRoute(this.applicationService));
+    //   return false;
+    // }
 
     return true;
   }
@@ -194,8 +200,9 @@ export abstract class PageComponent<T> implements OnInit {
 
   protected isPageChangingBuildingSummary(route: string) {
     let isIndex = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex;
+    
     this.changed = isIndex && this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange == route;
-
+    
     this.changedReturnUrl = "building-change-check-answers";
   }
 }

@@ -4,6 +4,7 @@ import { ApplicationService } from "src/app/services/application.service";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { PageComponent } from "src/app/helpers/page.component";
 import { BuildingSummaryNavigation } from "../building-summary.navigation";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
   templateUrl: './floors-above.component.html'
@@ -44,7 +45,8 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
   }
 
   override nextChangeRoute(): string {
-    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
+    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
   
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

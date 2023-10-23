@@ -5,6 +5,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CertificateNumberComponent } from '../certificate-number/certificate-number.component';
 import { BuildingSummaryNavigation } from '../building-summary.navigation';
+import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 type CompletionDate = { day: string, month: string, year: string };
 type error = { hasError: boolean, message?: string };
@@ -77,7 +78,8 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
   }
 
   override nextChangeRoute(): string {
-    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
+    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
   private initPageModel(completionCertificateDate?: string) {

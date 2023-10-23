@@ -8,6 +8,7 @@ import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-mul
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
 import { BuildingSummaryNavigation } from "../building-summary.navigation";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
@@ -46,7 +47,8 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
   }
 
   override nextChangeRoute(): string {
-    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
+    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
   override isValid(): boolean {

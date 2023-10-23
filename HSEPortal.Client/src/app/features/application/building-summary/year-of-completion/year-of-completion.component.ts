@@ -9,6 +9,7 @@ import { PageComponent } from "src/app/helpers/page.component";
 import { WhoIssuedCertificateComponent } from "../who-issued-certificate/who-issued-certificate.component";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { BuildingSummaryNavigation } from "../building-summary.navigation";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 export type YearOfCompletion = {YearOfCompletionOption?: string, YearOfCompletion?: string}
 
@@ -59,7 +60,8 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
   }
 
   override nextChangeRoute(): string {
-    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
+    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

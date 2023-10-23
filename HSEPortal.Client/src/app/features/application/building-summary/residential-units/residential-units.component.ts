@@ -8,6 +8,7 @@ import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper"
 import { PageComponent } from "src/app/helpers/page.component";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
 import { BuildingSummaryNavigation } from "../building-summary.navigation";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
   templateUrl: './residential-units.component.html'
@@ -42,7 +43,8 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
   }
   
   override nextChangeRoute(): string {
-    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
+    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

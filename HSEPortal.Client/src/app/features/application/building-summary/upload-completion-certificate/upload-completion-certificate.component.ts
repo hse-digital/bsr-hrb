@@ -8,6 +8,7 @@ import { BlockBlobClient } from '@azure/storage-blob';
 import { TransferProgressEvent } from "@azure/core-http";
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { BuildingSummaryNavigation } from '../building-summary.navigation';
+import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 type error = { hasError: boolean, message?: string }
 
@@ -88,7 +89,8 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
   }
 
   override nextChangeRoute(): string {
-    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
+    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
   isPageOptional(completionCertificateDate?: string) {

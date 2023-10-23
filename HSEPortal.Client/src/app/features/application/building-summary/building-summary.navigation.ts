@@ -61,9 +61,8 @@ export class BuildingSummaryNavigation extends BaseNavigation {
     return `sections/${SectionCheckAnswersComponent.route}`;
   }
 
-  getNextChangeRoute(sectionIndex?: number) {
-    let section = this.applicationService.model.Sections[sectionIndex ?? 0];
-    let sectionRoute = this.numberOfSectionsNavigationNode.getNextRoute(section, sectionIndex ?? 0);
+  getNextChangeRoute(section: SectionModel) {
+    let sectionRoute = this.numberOfSectionsNavigationNode.getNextRoute(section, 0);
     if (sectionRoute === void 0 || sectionRoute == SectionCheckAnswersComponent.route || sectionRoute == AddMoreSectionsComponent.route) {
       return BuildingChangeCheckAnswersComponent.route;
     }
