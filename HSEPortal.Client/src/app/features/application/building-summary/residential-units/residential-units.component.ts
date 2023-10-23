@@ -7,6 +7,7 @@ import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-mul
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
 
 @Component({
   templateUrl: './residential-units.component.html'
@@ -15,7 +16,7 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
   static route: string = 'residential-units';
   static title: string = "Number of residential units in the section - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
     this.isPageChangingBuildingSummary(SectionResidentialUnitsComponent.route);
   }
@@ -40,6 +41,10 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
     this.applicationService.currentChangedSection!.SectionModel!.ResidentialUnits = this.model;
   }
   
+  override nextChangeRoute(): string {
+    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
+  }
+
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }

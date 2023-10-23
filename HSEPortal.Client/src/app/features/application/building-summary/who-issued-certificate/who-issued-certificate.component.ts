@@ -5,6 +5,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CertificateIssuerComponent } from '../certificate-issuer/certificate-issuer.component';
 import { CompletionCertificateDateComponent } from '../completion-certificate-date/completion-certificate-date.component';
+import { BuildingSummaryNavigation } from '../building-summary.navigation';
 
 @Component({
   selector: 'hse-who-issued-certificate',
@@ -14,7 +15,7 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
   static route: string = 'who-issued-certificate';
   static title: string = 'Who issued the completion certificate - Register a high-rise building - GOV.UK';
   
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
     this.isPageChangingBuildingSummary(WhoIssuedCertificateComponent.route);
   }
@@ -40,6 +41,10 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
       if (this.model == "bsr") {
         this.applicationService.currentChangedSection.SectionModel!.CompletionCertificateIssuer = "The building Safety Regulator (BSR)";
       }
+  }
+
+  override nextChangeRoute(): string {
+    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

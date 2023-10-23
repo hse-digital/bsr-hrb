@@ -7,6 +7,7 @@ import { PageComponent } from "src/app/helpers/page.component";
 import { CompletionCertificateDateComponent } from "../completion-certificate-date/completion-certificate-date.component";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { SectionAddressComponent } from "../address/address.component";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
 
 @Component({
   templateUrl: './certificate-issuer.component.html'
@@ -18,7 +19,7 @@ export class CertificateIssuerComponent extends PageComponent<string> {
   isOptional: boolean = true;
   certificateHasErrors: boolean = false;
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
     this.isPageChangingBuildingSummary(CertificateIssuerComponent.route);
   }
@@ -61,6 +62,10 @@ export class CertificateIssuerComponent extends PageComponent<string> {
 
   override onChange(applicationService: ApplicationService): void | Promise<void> {
     this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateIssuer = this.model;
+  }
+
+  override nextChangeRoute(): string {
+    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
   }
 
   private isInputOptional(yearOfCompletionOption: string, yearOfCompletionRange?: string, yearOfCompletion?: string) {

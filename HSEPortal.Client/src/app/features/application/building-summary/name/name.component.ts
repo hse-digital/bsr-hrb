@@ -4,6 +4,7 @@ import { ApplicationService, SectionModel } from 'src/app/services/application.s
 import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { PageComponent } from 'src/app/helpers/page.component';
+import { BuildingSummaryNavigation } from '../building-summary.navigation';
 
 @Component({
   templateUrl: './name.component.html'
@@ -14,7 +15,7 @@ export class SectionNameComponent extends PageComponent<string> {
 
   blockNameHasErrors = false;
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
     this.isPageChangingBuildingSummary(SectionNameComponent.route);
   }
@@ -35,6 +36,10 @@ export class SectionNameComponent extends PageComponent<string> {
 
   override onChange(applicationService: ApplicationService): void | Promise<void> {
     this.applicationService.currentChangedSection!.SectionModel!.Name = this.model;
+  }
+
+  override nextChangeRoute(): string {
+    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

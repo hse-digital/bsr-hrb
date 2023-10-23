@@ -6,6 +6,7 @@ import { SectionAddressComponent } from "../address/address.component";
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { WhoIssuedCertificateComponent } from "../who-issued-certificate/who-issued-certificate.component";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
 
 @Component({
     templateUrl: './year-range.component.html'
@@ -15,7 +16,7 @@ export class SectionYearRangeComponent extends PageComponent<string> {
     static title: string = "Range of years it was completed in - Register a high-rise building - GOV.UK";
     yearRangeHasErrors = false;
 
-    constructor(activatedRoute: ActivatedRoute) {
+    constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
         super(activatedRoute);
         this.isPageChangingBuildingSummary(SectionYearRangeComponent.route);
     }
@@ -40,6 +41,10 @@ export class SectionYearRangeComponent extends PageComponent<string> {
 
     override onChange(applicationService: ApplicationService): void | Promise<void> {
         this.applicationService.currentChangedSection!.SectionModel!.YearOfCompletionRange = this.model;
+    }
+
+    override nextChangeRoute(): string {
+        return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
     }
 
     override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

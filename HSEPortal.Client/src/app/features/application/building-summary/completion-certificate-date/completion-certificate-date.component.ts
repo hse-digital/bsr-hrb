@@ -4,6 +4,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CertificateNumberComponent } from '../certificate-number/certificate-number.component';
+import { BuildingSummaryNavigation } from '../building-summary.navigation';
 
 type CompletionDate = { day: string, month: string, year: string };
 type error = { hasError: boolean, message?: string };
@@ -27,7 +28,7 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
     future?: error
   }
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
     this.isPageChangingBuildingSummary(CompletionCertificateDateComponent.route);
   }
@@ -73,6 +74,10 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
     if(!this.isInputEmpty()) {
       this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateDate = new Date(Number(this.model!.year!), (Number(this.model?.month) - 1), Number(this.model?.day)).getTime().toString();
     }
+  }
+
+  override nextChangeRoute(): string {
+    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
   }
 
   private initPageModel(completionCertificateDate?: string) {

@@ -10,6 +10,8 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot, Ur
 import { ApplicationSubmittedHelper } from "./app-submitted-helper";
 import { GetInjector } from "./injector.helper";
 import { RegistrationAmendmentsService } from "../services/registration-amendments.service";
+import { BuildingChangeCheckAnswersComponent } from "../features/registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component";
+import { BuildingSummaryNavigation } from "../features/application/building-summary/building-summary.navigation";
 
 @Component({ template: '' })
 export abstract class PageComponent<T> implements OnInit {
@@ -38,14 +40,23 @@ export abstract class PageComponent<T> implements OnInit {
   abstract isValid(): boolean;
   abstract navigateNext(): Promise<boolean | void>;
   
-  
   constructor(activatedRoute?: ActivatedRoute) {
     if(activatedRoute) this.activatedRoute = activatedRoute;
+  
     this.triggerScreenReaderNotification("");
   }
   
   onInitChange(applicationService: ApplicationService): Promise<void> | void { }
   onChange(applicationService: ApplicationService): Promise<void> | void { }
+  nextChangeRoute() {}
+  navigateToNextChange(applicationService: ApplicationService) {  
+    let nextRoute = this.nextChangeRoute();
+    if (nextRoute == void 0 || nextRoute == "building-change-check-answers") {
+      this.navigationService.navigateRelative(`../../registration-amendments/${this.changedReturnUrl}`, this.activatedRoute);
+    } else {
+      this.navigationService.navigateRelative(nextRoute, this.activatedRoute);
+    }
+  }
   
   async ngOnInit() {
     if (this.changed) {
@@ -64,7 +75,7 @@ export abstract class PageComponent<T> implements OnInit {
       this.applicationService.updateLocalStorage();
       if (this.changed) {
         await this.onChange(this.applicationService);
-        this.navigationService.navigateRelative(`../../registration-amendments/${this.changedReturnUrl}`, this.activatedRoute);
+        await this.navigateToNextChange(this.applicationService);
         return;
       }
 
@@ -88,6 +99,9 @@ export abstract class PageComponent<T> implements OnInit {
 
     this.processing = false;
   }
+
+  
+
 
   async saveAndComeBack(): Promise<void> {
     this.processing = true;

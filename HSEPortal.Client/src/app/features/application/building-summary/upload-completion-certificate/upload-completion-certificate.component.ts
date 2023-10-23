@@ -7,6 +7,7 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 import { BlockBlobClient } from '@azure/storage-blob';
 import { TransferProgressEvent } from "@azure/core-http";
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { BuildingSummaryNavigation } from '../building-summary.navigation';
 
 type error = { hasError: boolean, message?: string }
 
@@ -31,7 +32,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
     issue: { hasError: false, message: "The selected file could not be uploaded - try again" } as error
   };
 
-  constructor(activatedRoute: ActivatedRoute, private fileUploadService: FileUploadService) {
+  constructor(activatedRoute: ActivatedRoute, private fileUploadService: FileUploadService, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
     this.isPageChangingBuildingSummary(UploadCompletionCertificateComponent.route);
   }
@@ -84,6 +85,10 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
       this.model!.Uploaded = true;
       await this.fileUploadService.uploadToSharepoint(this.applicationService.model.id!, this.selectedFileUpload.file.name)
     }
+  }
+
+  override nextChangeRoute(): string {
+    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
   }
 
   isPageOptional(completionCertificateDate?: string) {

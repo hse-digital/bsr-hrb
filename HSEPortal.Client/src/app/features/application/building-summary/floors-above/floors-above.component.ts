@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApplicationService } from "src/app/services/application.service";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { PageComponent } from "src/app/helpers/page.component";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
 
 @Component({
   templateUrl: './floors-above.component.html'
@@ -11,7 +12,7 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
   static route: string = 'floors';
   static title: string = "Number of floors at or above ground level in the section - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
     this.isPageChangingBuildingSummary(SectionFloorsAboveComponent.route);
   }
@@ -40,6 +41,10 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
 
   override onChange(applicationService: ApplicationService): void | Promise<void> {
     this.applicationService.currentChangedSection!.SectionModel!.FloorsAbove = this.model;
+  }
+
+  override nextChangeRoute(): string {
+    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
   }
   
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

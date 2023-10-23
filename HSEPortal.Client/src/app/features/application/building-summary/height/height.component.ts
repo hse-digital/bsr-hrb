@@ -7,6 +7,7 @@ import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-si
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
 
 @Component({
   templateUrl: './height.component.html',
@@ -15,7 +16,7 @@ export class SectionHeightComponent extends PageComponent<number> {
   static route: string = 'height';
   static title: string = "What is the section height - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
     this.isPageChangingBuildingSummary(SectionHeightComponent.route);
   }
@@ -38,6 +39,10 @@ export class SectionHeightComponent extends PageComponent<number> {
 
   override onChange(applicationService: ApplicationService): void | Promise<void> {
     this.applicationService.currentChangedSection!.SectionModel!.Height = this.model;
+  }
+
+  override nextChangeRoute(): string {
+    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

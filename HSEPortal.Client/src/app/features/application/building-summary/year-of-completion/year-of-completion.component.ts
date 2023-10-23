@@ -8,6 +8,7 @@ import { SectionYearRangeComponent } from "../year-range/year-range.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { WhoIssuedCertificateComponent } from "../who-issued-certificate/who-issued-certificate.component";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
 
 export type YearOfCompletion = {YearOfCompletionOption?: string, YearOfCompletion?: string}
 
@@ -22,7 +23,7 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
   exactYearHasErrors = false;
   errorMessage = `Select if you know what year ${this.sectionBuildingName()} was completed`;
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
     this.isPageChangingBuildingSummary(SectionYearOfCompletionComponent.route);
   }
@@ -55,6 +56,10 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
   override onChange(applicationService: ApplicationService): void | Promise<void> {    
     this.applicationService.currentChangedSection.SectionModel!.YearOfCompletionOption = this.model?.YearOfCompletionOption;
     this.applicationService.currentChangedSection.SectionModel!.YearOfCompletion = this.model?.YearOfCompletion;
+  }
+
+  override nextChangeRoute(): string {
+    return this.buildingSummaryNavigation.getNextChangeRoute(this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex);  
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
