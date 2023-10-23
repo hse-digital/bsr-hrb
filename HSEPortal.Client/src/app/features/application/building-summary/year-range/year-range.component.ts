@@ -15,7 +15,6 @@ export class SectionYearRangeComponent extends PageComponent<string> {
     static title: string = "Range of years it was completed in - Register a high-rise building - GOV.UK";
     yearRangeHasErrors = false;
 
-
     constructor(activatedRoute: ActivatedRoute) {
         super(activatedRoute);
     }
@@ -31,6 +30,15 @@ export class SectionYearRangeComponent extends PageComponent<string> {
 
     override async onSave(applicationService: ApplicationService): Promise<void> {
         applicationService.currentSection.YearOfCompletionRange = this.model;
+    }
+
+    override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+        if (!this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange) this.onInit(this.applicationService);
+        else this.model = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange;
+    }
+
+    override onChange(applicationService: ApplicationService): void | Promise<void> {
+        this.applicationService.currentChangedSection!.SectionModel!.YearOfCompletionRange = this.model;
     }
 
     override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

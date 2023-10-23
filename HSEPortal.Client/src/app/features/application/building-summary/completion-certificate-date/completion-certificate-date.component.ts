@@ -33,36 +33,66 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
     
-    this.isInputOptional();
+    this.isInputOptional(
+      this.applicationService.currentSection.YearOfCompletionOption,
+      this.applicationService.currentSection.YearOfCompletionRange,
+      this.applicationService.currentSection.YearOfCompletion,
+    );
     
     this.model = { day: "", month: "", year: "" } as CompletionDate;
     
     if (FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.CompletionCertificateDate)) {
-      let date = new Date(Number(this.applicationService.currentSection.CompletionCertificateDate!));
-      this.model = {
-        day: date.getDate().toString(),
-        month: (date.getMonth() + 1).toString(),
-        year: date.getFullYear().toString()
-      }
-    }
-  }
-
-  private isInputOptional() {
-    if (this.applicationService.currentSection.YearOfCompletionOption == 'year-exact') {
-      var yearOfCompletion = Number(this.applicationService.currentSection.YearOfCompletion);
-      if (yearOfCompletion && yearOfCompletion >= 2023) {
-        this.isOptional = false;
-      }
-    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
-      if (this.applicationService.currentSection.YearOfCompletionRange == "2023-onwards") {
-        this.isOptional = false;
-      }
+      this.initPageModel(this.applicationService.currentSection.CompletionCertificateDate);
     }
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     if(!this.isInputEmpty()) {
       this.applicationService.currentSection.CompletionCertificateDate = new Date(Number(this.model!.year!), (Number(this.model?.month) - 1), Number(this.model?.day)).getTime().toString();
+    }
+  }
+
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    this.isInputOptional(
+      this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption ?? this.applicationService.currentSection.YearOfCompletionOption,
+      this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange ?? this.applicationService.currentSection.YearOfCompletionRange,
+      this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion ?? this.applicationService.currentSection.YearOfCompletion,
+    );
+    
+    this.model = { day: "", month: "", year: "" } as CompletionDate;
+    
+    let completionCertificateDate = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate) 
+      ? this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
+      : this.applicationService.currentSection.CompletionCertificateDate;
+
+    this.initPageModel(completionCertificateDate)
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+    if(!this.isInputEmpty()) {
+      this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateDate = new Date(Number(this.model!.year!), (Number(this.model?.month) - 1), Number(this.model?.day)).getTime().toString();
+    }
+  }
+
+  private initPageModel(completionCertificateDate?: string) {
+    let date = new Date(Number(completionCertificateDate));
+    this.model = {
+      day: date.getDate().toString(),
+      month: (date.getMonth() + 1).toString(),
+      year: date.getFullYear().toString()
+    }
+  }
+
+  private isInputOptional(yearOfCompletionOption: string, yearOfCompletionRange?: string, yearOfCompletion?: string) {
+    if (yearOfCompletionOption == 'year-exact') {
+      var year = Number(yearOfCompletion);
+      if (year && year >= 2023) {
+        this.isOptional = false;
+      }
+    } else if (yearOfCompletionOption == 'year-not-exact') {
+      if (yearOfCompletionRange == "2023-onwards") {
+        this.isOptional = false;
+      }
     }
   }
 

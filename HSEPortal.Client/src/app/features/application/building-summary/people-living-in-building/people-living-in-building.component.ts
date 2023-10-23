@@ -30,6 +30,15 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
     this.applicationService.currentSection.PeopleLivingInBuilding = this.model;
   }
 
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    if (!this.applicationService.currentChangedSection.SectionModel?.PeopleLivingInBuilding) this.onInit(this.applicationService);
+    else this.model = this.applicationService.currentChangedSection.SectionModel?.PeopleLivingInBuilding;
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+    this.applicationService.currentChangedSection!.SectionModel!.PeopleLivingInBuilding = this.model;
+  }
+
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }

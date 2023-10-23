@@ -6,6 +6,7 @@ import { SectionAddressComponent } from '../address/address.component';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { BlockBlobClient } from '@azure/storage-blob';
 import { TransferProgressEvent } from "@azure/core-http";
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 type error = { hasError: boolean, message?: string }
 
@@ -49,9 +50,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
       this.selectedFileUpload = { status: 'uploaded', file: new File([], this.model.Filename), alreadyUploaded: this.model.Uploaded };
     }
 
-    let date = new Date(Number(this.applicationService.currentSection.CompletionCertificateDate));
-    let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
-    this.isOptional = date < FirstOctober2023;
+    this.isPageOptional(this.applicationService.currentSection.CompletionCertificateDate);
   }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
@@ -61,6 +60,35 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
       this.model!.Uploaded = true;
       await this.fileUploadService.uploadToSharepoint(this.applicationService.model.id!, this.selectedFileUpload.file.name)
     }
+  }
+
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    if (!this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateFile) this.onInit(this.applicationService);
+    else {
+      this.model = this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateFile;
+      this.selectedFileUpload = { status: 'uploaded', file: new File([], this.model.Filename), alreadyUploaded: this.model.Uploaded };
+    }
+
+    let completionCertificateDate = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate)
+      ? this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
+      : this.applicationService.currentSection.CompletionCertificateDate;
+      
+    this.isPageOptional(completionCertificateDate);
+  }
+
+  override async onChange(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateFile = this.model;
+
+    if (this.selectedFileUpload && !this.model!.Uploaded) {
+      this.model!.Uploaded = true;
+      await this.fileUploadService.uploadToSharepoint(this.applicationService.model.id!, this.selectedFileUpload.file.name)
+    }
+  }
+
+  isPageOptional(completionCertificateDate?: string) {
+    let date = new Date(Number(completionCertificateDate));
+    let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
+    this.isOptional = date < FirstOctober2023;
   }
 
   override isValid(): boolean {

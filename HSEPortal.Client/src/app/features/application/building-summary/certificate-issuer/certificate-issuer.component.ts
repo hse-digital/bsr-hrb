@@ -33,20 +33,46 @@ export class CertificateIssuerComponent extends PageComponent<string> {
 
   override onInit(applicationService: ApplicationService): void {
     this.model = this.applicationService.currentSection.CompletionCertificateIssuer;
-    if (this.applicationService.currentSection.YearOfCompletionOption == 'year-exact') {
-      var yearOfCompletion = Number(this.applicationService.currentSection.YearOfCompletion);
-      if (yearOfCompletion && yearOfCompletion >= 2023) {
-        this.isOptional = false;
-      }
-    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
-      if (this.applicationService.currentSection.YearOfCompletionRange == "2023-onwards") {
-        this.isOptional = false;
-      }
-    }
+    
+    this.isInputOptional(
+      this.applicationService.currentSection.YearOfCompletionOption,
+      this.applicationService.currentSection.YearOfCompletionRange,
+      this.applicationService.currentSection.YearOfCompletion,
+    );
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentSection.CompletionCertificateIssuer = this.model;
+  }
+
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    if (!this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateIssuer) this.onInit(this.applicationService);
+    else {
+      this.model = this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateIssuer;
+    
+      this.isInputOptional(
+        this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption ?? this.applicationService.currentSection.YearOfCompletionOption,
+        this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange ?? this.applicationService.currentSection.YearOfCompletionRange,
+        this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion ?? this.applicationService.currentSection.YearOfCompletion,
+      );
+    }
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+    this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateIssuer = this.model;
+  }
+
+  private isInputOptional(yearOfCompletionOption: string, yearOfCompletionRange?: string, yearOfCompletion?: string) {
+    if (yearOfCompletionOption == 'year-exact') {
+      var year = Number(yearOfCompletion);
+      if (year && year >= 2023) {
+        this.isOptional = false;
+      }
+    } else if (yearOfCompletionOption == 'year-not-exact') {
+      if (yearOfCompletionRange == "2023-onwards") {
+        this.isOptional = false;
+      }
+    }
   }
 
   override isValid(): boolean {

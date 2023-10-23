@@ -36,6 +36,23 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
     this.applicationService.currentSection.YearOfCompletion = this.model?.YearOfCompletion;
   }
 
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    this.model = {};
+    this.model.YearOfCompletionOption = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption;
+    this.model.YearOfCompletion = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion;
+
+    if (!this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption) {
+      this.model.YearOfCompletionOption = this.applicationService.currentSection.YearOfCompletionOption;
+    } else if (!this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion) {
+      this.model.YearOfCompletion = this.applicationService.currentSection.YearOfCompletion;
+    }
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {    
+    this.applicationService.currentChangedSection.SectionModel!.YearOfCompletionOption = this.model?.YearOfCompletionOption;
+    this.applicationService.currentChangedSection.SectionModel!.YearOfCompletion = this.model?.YearOfCompletion;
+  }
+
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }

@@ -31,6 +31,15 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentSection.FloorsAbove = this.model;
   }
+
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    if (!this.applicationService.currentChangedSection.SectionModel?.FloorsAbove) this.onInit(this.applicationService);
+    else this.model = this.applicationService.currentChangedSection.SectionModel?.FloorsAbove;
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+    this.applicationService.currentChangedSection!.SectionModel!.FloorsAbove = this.model;
+  }
   
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
