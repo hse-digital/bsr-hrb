@@ -76,7 +76,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.BlocksInBuildingInProgress) == BuildingApplicationStage.BlocksInBuildingInProgress;
+    return true;
   }
 
   override isValid(): boolean {

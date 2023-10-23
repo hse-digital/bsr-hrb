@@ -33,6 +33,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
 
   constructor(activatedRoute: ActivatedRoute, private fileUploadService: FileUploadService) {
     super(activatedRoute);
+    this.changeInBuildingSummary(UploadCompletionCertificateComponent.route);
   }
 
   sectionBuildingName() {

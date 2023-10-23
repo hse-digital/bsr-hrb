@@ -17,6 +17,7 @@ export class SectionYearRangeComponent extends PageComponent<string> {
 
     constructor(activatedRoute: ActivatedRoute) {
         super(activatedRoute);
+        this.changeInBuildingSummary(SectionYearRangeComponent.route);
     }
 
     sectionBuildingName() {

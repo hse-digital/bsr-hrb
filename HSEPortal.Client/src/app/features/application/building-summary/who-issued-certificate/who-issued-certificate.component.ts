@@ -16,6 +16,7 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
   
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
+    this.changeInBuildingSummary(WhoIssuedCertificateComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {

@@ -62,7 +62,6 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.hasErrors) {
       this.triggerScreenReaderNotification();
       this.applicationService.updateLocalStorage();
-
       if (this.changed) {
         await this.onChange(this.applicationService);
         this.navigationService.navigateRelative(`../../registration-amendments/${this.changedReturnUrl}`, this.activatedRoute);
@@ -112,7 +111,7 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.canAccess(this.applicationService, route)) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
-    } else if (!this.isSummaryPage() && !this.isKbiPage() && !this.isReturningApplicationPage() && !this.isRegistrationAmendments() && !this.isApplicationCompletedPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
+    } else if (!this.isSummaryPage() && this.changed && !this.isKbiPage() && !this.isReturningApplicationPage() && !this.isRegistrationAmendments() && !this.isApplicationCompletedPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
       this.navigationService.navigate(ApplicationSubmittedHelper.getApplicationCompletedRoute(this.applicationService));
       return false;
     }

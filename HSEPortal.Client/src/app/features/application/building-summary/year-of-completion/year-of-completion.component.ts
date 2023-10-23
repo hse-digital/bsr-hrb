@@ -23,6 +23,7 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
+    this.changeInBuildingSummary(SectionYearOfCompletionComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void {

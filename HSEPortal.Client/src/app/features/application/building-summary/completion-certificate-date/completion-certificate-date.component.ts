@@ -29,6 +29,7 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
+    this.changeInBuildingSummary(CompletionCertificateDateComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
