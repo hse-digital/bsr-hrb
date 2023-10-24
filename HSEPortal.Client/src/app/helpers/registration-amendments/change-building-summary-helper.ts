@@ -34,9 +34,9 @@ export class ChangeBuildingSummaryHelper {
     }
 
     getSectionAddresses(SectionAddresses: AddressModel[], ChangeSectionAddresses: AddressModel[]): AddressModel[] {
-        return ChangeSectionAddresses.map((change, index) => {
-            let hasChanged = this.hasChanged(SectionAddresses[index], change);
-            return hasChanged ? change : SectionAddresses[index];
+        return ChangeSectionAddresses.map((element, index) => {
+            let hasChanged = this.hasChanged((SectionAddresses.at(index) ?? new AddressModel), element);
+            return hasChanged ? element: (SectionAddresses.at(index) ?? new AddressModel);
         });
     }
 

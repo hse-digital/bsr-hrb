@@ -38,21 +38,21 @@ export class SectionAddressComponent implements OnInit, CanActivate {
   changed: boolean = false;
 
   ngOnInit(): void {
-    this.changed = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex;
+    this.changed = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex;
     this.activatedRoute.queryParams.subscribe(query => {
       this.addressIndex = query['address'];
       this.returnUrl = query['return'];
 
       let currentAddresses: any = this.applicationService.currentSection.Addresses;
-      let newAddresses = this.applicationService.currentChangedSection.SectionModel?.Addresses;
+      let newAddresses = this.applicationService.currentChangedSection?.SectionModel?.Addresses;
       
       if(this.changed && (!newAddresses || newAddresses.length == 0)) {
-        this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[this.applicationService._currentSectionIndex].SectionModel!.Addresses = Array<AddressModel>(currentAddresses.length);
-        newAddresses = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[this.applicationService._currentSectionIndex].SectionModel?.Addresses;
+        this.applicationService.currentChangedSection.SectionModel!.Addresses = Array<AddressModel>(currentAddresses.length);
+        newAddresses = this.applicationService.currentChangedSection.SectionModel?.Addresses;
       }
 
       let addresses = new ChangeBuildingSummaryHelper(this.applicationService).getSectionAddresses(currentAddresses, newAddresses!);
-
+      console.log(addresses);
       if (!this.addressIndex) {
         this.addressIndex = 1;
       } else if ((addresses.length + 1) < this.addressIndex) {
@@ -69,6 +69,27 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
     await this.isDuplicate(address);
 
+    if(this.changed) this.change(address);
+    else this.save(address);
+
+    await this.applicationService.updateApplication();
+
+    if (this.changed) this.navigateToNextChange()
+    else await this.navigateNext();
+  }
+
+  private change(address:AddressModel) {
+    if (this.addressIndex) {
+      this.applicationService.currentChangedSection.SectionModel!.Addresses[this.addressIndex - 1] = address;
+    } else {
+      if (!this.applicationService.currentChangedSection.SectionModel?.Addresses)
+        this.applicationService.currentChangedSection.SectionModel!.Addresses = [];
+
+      this.applicationService.currentChangedSection.SectionModel!.Addresses.push(address);
+    }
+  }
+
+  private save(address: AddressModel) {
     if (this.addressIndex) {
       this.applicationService.currentSection.Addresses[this.addressIndex - 1] = address;
     } else {
@@ -77,8 +98,17 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
       this.applicationService.currentSection.Addresses.push(address);
     }
-    await this.applicationService.updateApplication();
+  }
 
+  private navigateToNextChange() {
+    if (this.applicationService.currentSection.Addresses.length < 5) {
+      this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
+    } else {
+      this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
+    }
+  }
+
+  private async navigateNext() {
     if (this.returnUrl) {
       this.navigationService.navigateRelative(`../${this.returnUrl}`, this.activatedRoute);
     } else if (this.applicationService.currentSection.Addresses.length < 5) {
@@ -147,8 +177,7 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
   canActivate(routeSnapshot: ActivatedRouteSnapshot) {
     
-    
-    if(!this.changed) {
+    if(!this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary) {
       ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
     }
 

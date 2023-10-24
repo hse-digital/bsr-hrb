@@ -8,23 +8,23 @@
         <govuk-table-col width="30%">Your answers</govuk-table-col>
         <govuk-table-row header="Name">
             <govuk-table-cell>{{registeredStructure?.Name}}</govuk-table-cell>
-            <govuk-table-cell>{{applicationService.currentSection.Name}}</govuk-table-cell>
+            <govuk-table-cell>{{section.Name}}</govuk-table-cell>
         </govuk-table-row>
         <govuk-table-row header="Number of floors">
             <govuk-table-cell>{{registeredStructure?.NumFloors}}</govuk-table-cell>
-            <govuk-table-cell>{{applicationService.currentSection.FloorsAbove}}</govuk-table-cell>
+            <govuk-table-cell>{{section.FloorsAbove}}</govuk-table-cell>
         </govuk-table-row>
         <govuk-table-row header="Height">
             <govuk-table-cell>{{registeredStructure?.Height}}</govuk-table-cell>
-            <govuk-table-cell>{{applicationService.currentSection.Height}}</govuk-table-cell>
+            <govuk-table-cell>{{section.Height}}</govuk-table-cell>
         </govuk-table-row>
         <govuk-table-row header="Number of residential units">
             <govuk-table-cell>{{registeredStructure?.ResidentialUnits}}</govuk-table-cell>
-            <govuk-table-cell>{{applicationService.currentSection.ResidentialUnits}}</govuk-table-cell>
+            <govuk-table-cell>{{section.ResidentialUnits}}</govuk-table-cell>
         </govuk-table-row>
         <govuk-table-row header="Address">
             <govuk-table-cell><address-description [address]="registeredStructure?.StructureAddress"/></govuk-table-cell>
-            <govuk-table-cell><address-description [address]="applicationService.currentSectionAddress"/></govuk-table-cell>
+            <govuk-table-cell><address-description [address]="address"/></govuk-table-cell>
         </govuk-table-row>
         <govuk-table-row header="Principal accountable person">
             <govuk-table-cell>{{registeredStructure?.PapIsOrganisation 
@@ -47,17 +47,17 @@
         </govuk-table-row>
     </govuk-table>
 
-    <h2 class="govuk-heading-m">It looks like you do not need to register {{applicationService.currentSection.Name}}</h2>
-    <govuk-body>You can keep {{applicationService.currentSection.Name}} in this application, if:</govuk-body>
+    <h2 class="govuk-heading-m">It looks like you do not need to register {{section.Name}}</h2>
+    <govuk-body>You can keep {{section.Name}} in this application, if:</govuk-body>
 
     <govuk-list classes='govuk-list--bullet'>
         <govuk-list-item text="you're not applying to register the structure in the application we already received ({{registeredStructure?.BuildingName}})" />
         <govuk-list-item text="we told you to re-register ({{registeredStructure?.BuildingName}})" />
         <govuk-list-item text="you need to re-register ({{applicationService.model.BuildingName}}) and might need to withdraw your original application later" />
-        <govuk-list-item text="it is the same {{applicationService.currentSection.Name}} but the listed principal accountable person is incorrect" />
+        <govuk-list-item text="it is the same {{section.Name}} but the listed principal accountable person is incorrect" />
     </govuk-list>
     
-    <govuk-radio-group class="govuk-heading-s" title="Do you want to keep {{applicationService.currentSection.Name}} in this application?" 
+    <govuk-radio-group class="govuk-heading-s" title="Do you want to keep {{section.Name}} in this application?" 
             #field [govukRequired]="field" id="keep-structure" [isPageHeading]=false [(model)]="model"
             [errorText]="getErrorDescription(hasErrors, errorMessage)">
         <govuk-radio [model]="model" name="keep-structure" id="yes" value="yes" label="Yes" (onKeyupEnter)="saveAndContinue()" />

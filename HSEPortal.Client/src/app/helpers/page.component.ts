@@ -59,8 +59,10 @@ export abstract class PageComponent<T> implements OnInit {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = nextRoute;
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
       this.applicationService.updateApplication();
-      if (nextRoute == SectionAddressComponent.route) {
-        this.navigationService.navigateRelative(nextRoute, this.activatedRoute, {index});
+      if (nextRoute == "address") {
+        this.navigationService.navigateRelative(nextRoute, this.activatedRoute, { address: this.applicationService.currentChangedSection.SectionModel!.Addresses.length + 1 });
+      } else {
+        this.navigationService.navigateRelative(nextRoute, this.activatedRoute);
       }
     }
   }
@@ -82,6 +84,7 @@ export abstract class PageComponent<T> implements OnInit {
       this.applicationService.updateLocalStorage();
 
       if (this.changed) {
+        console.log("changed");
         await this.onChange(this.applicationService);
         await this.navigateToNextChange(this.applicationService);
         return;
@@ -202,7 +205,7 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   protected isPageChangingBuildingSummary(route: string) {
-    this.changed = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex;
+    this.changed = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex;
     
     this.changedReturnUrl = "building-change-check-answers";
   }
