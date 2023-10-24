@@ -77,7 +77,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
 
       
       
-      if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete()) {
+      if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete() || !this.isPaymentComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);
       } else {
         this.navigationService.navigate(`application/${this.applicationNumber}/application-completed`);
@@ -127,5 +127,12 @@ export class ReturningApplicationVerifyComponent implements OnInit {
   private isBlocksInBuildingComplete() {
     var applicationStatus = this.applicationService.model.ApplicationStatus;
     return (applicationStatus & BuildingApplicationStage.BlocksInBuildingComplete) == BuildingApplicationStage.BlocksInBuildingComplete;
+  }
+
+  private isPaymentComplete() {
+    var applicationStatus = this.applicationService.model.ApplicationStatus;
+    let isPaymentComplete = (applicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete;
+    let isInvoice = this.applicationService.model.PaymentType == 'invoice' && (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed')
+    return isPaymentComplete || isInvoice;
   }
 }

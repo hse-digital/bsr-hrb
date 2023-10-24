@@ -9,8 +9,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { AddressModel } from 'src/app/services/address.service';
-import { ApplicationService, BuildingApplicationStage, ChangeBuildingSummary, ChangeSection, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, ChangeSection, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';
 import { RemoveStructureComponent } from '../remove-structure/remove-structure.component';
 import { ChangeTaskListComponent } from '../../change-task-list/change-task-list.component';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
@@ -41,16 +40,18 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary = {
         Status: Status.NoChanges,
-        Sections: Array<ChangeSection>(this.applicationService.model.Sections.length)
+        Sections: this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection))
       }
     }
   }
 
   private initChangeSectionModel(index: number) {
+    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections)
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections = this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection));
+    
     if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
-        Status: Status.NoChanges,
-        SectionModel: new SectionModel()
+        Status: Status.NoChanges
       }
     }
   }

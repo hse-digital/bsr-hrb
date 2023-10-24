@@ -35,17 +35,42 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     this.sendApplicationDataToBroadcastChannel();
 
     this.submittionDate = await this.applicationService.getSubmissionDate();
+
     this.kbiSubmittionDate = await this.applicationService.getKbiSubmissionDate();
 
     this.applicationStatuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
 
-    var payments = await this.applicationService.getApplicationPayments()
-
-    this.payment = payments.find(x => x.bsr_govukpaystatus == "success");
-    this.openPayment = payments.find(x => x.bsr_govukpaystatus == "open");
-
-    this.shouldRender = true;
+    var payments = await this.applicationService.getApplicationPayments();
+    if(payments != undefined) {
+      this.initPayment(payments);
+      this.shouldRender = true;
+    } else {
+      this.getPaymentInformation().then((result: any) => {
+        payments = result;
+        this.initPayment(payments);
+        this.shouldRender = true;
+      });
+    }
   }
+
+  private initPayment(payments: any) {
+    this.payment = payments.find((x: { bsr_govukpaystatus: string; }) => x.bsr_govukpaystatus == "success");
+    this.openPayment = payments.find((x: { bsr_govukpaystatus: string; }) => x.bsr_govukpaystatus == "open");
+  }
+
+  private async getPaymentInformation() {
+    return await new Promise(resolve => {
+      const interval = setInterval(() => {
+        this.applicationService.getApplicationPayments().then((result) => {
+          if (result != undefined && result.length > 0) {
+            resolve(result);
+            clearInterval(interval);
+          };
+        });
+      }, 5000);
+    });
+  }
+
 
   private sendApplicationDataToBroadcastChannel() {
     new BroadcastChannelPrimaryHelper()
