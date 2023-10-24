@@ -22,11 +22,6 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
 
   floorsHasError = false;
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
-
   override onInit(applicationService: ApplicationService): void {
     this.model = this.applicationService.currentSection.FloorsAbove;
   }

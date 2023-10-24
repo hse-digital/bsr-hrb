@@ -13,6 +13,7 @@ import { RegistrationAmendmentsService } from "../services/registration-amendmen
 import { BuildingChangeCheckAnswersComponent } from "../features/registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component";
 import { BuildingSummaryNavigation } from "../features/application/building-summary/building-summary.navigation";
 import { SectionAddressComponent } from "../features/application/building-summary/address/address.component";
+import { FieldValidations } from "./validators/fieldvalidations";
 
 @Component({ template: '' })
 export abstract class PageComponent<T> implements OnInit {
@@ -208,5 +209,11 @@ export abstract class PageComponent<T> implements OnInit {
     this.changed = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex;
     
     this.changedReturnUrl = "building-change-check-answers";
+  }
+
+  get buildingOrSectionName() {
+    let newName = this.applicationService.currentChangedSection.SectionModel?.Name;
+    let sectionName = this.changed && FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
+    return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 }

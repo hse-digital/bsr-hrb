@@ -37,10 +37,7 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
     }
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
+  
 
   override onInit(applicationService: ApplicationService): void {
     this.activatedRoute.queryParams.subscribe(query => {

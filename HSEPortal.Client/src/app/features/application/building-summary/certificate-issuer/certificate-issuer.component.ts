@@ -25,11 +25,6 @@ export class CertificateIssuerComponent extends PageComponent<string> {
     this.isPageChangingBuildingSummary(CertificateIssuerComponent.route);
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
-
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }

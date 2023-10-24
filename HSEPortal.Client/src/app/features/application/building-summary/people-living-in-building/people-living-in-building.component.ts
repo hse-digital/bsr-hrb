@@ -83,12 +83,8 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
     }
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
 
   getErrorMessage() {
-    return `Select if people are living in ${this.sectionBuildingName()}`;
+    return `Select if people are living in ${this.buildingOrSectionName}`;
   }
 }

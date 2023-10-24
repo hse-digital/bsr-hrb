@@ -76,13 +76,8 @@ export class CertificateNumberComponent extends PageComponent<string> {
     return this.navigationService.navigateRelative(SectionAddressComponent.route,  this.activatedRoute);
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
-
   get errorMessage() {
-    return `Enter the completion certificate number for ${this.sectionBuildingName()}`;
+    return `Enter the completion certificate number for ${this.buildingOrSectionName}`;
   }
 
 }

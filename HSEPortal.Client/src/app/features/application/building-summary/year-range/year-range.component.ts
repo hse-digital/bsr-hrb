@@ -22,11 +22,6 @@ export class SectionYearRangeComponent extends PageComponent<string> {
         this.isPageChangingBuildingSummary(SectionYearRangeComponent.route);
     }
 
-    sectionBuildingName() {
-        return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-            this.applicationService.currentSection.Name;
-    }
-
     override onInit(applicationService: ApplicationService): void {
         this.model = applicationService.currentSection.YearOfCompletionRange
     }
@@ -71,7 +66,7 @@ export class SectionYearRangeComponent extends PageComponent<string> {
     }
 
     get errorMessage() {
-        return `Select what range of years ${this.sectionBuildingName()} was completed in`;
+        return `Select what range of years ${this.buildingOrSectionName} was completed in`;
     }
 
 }

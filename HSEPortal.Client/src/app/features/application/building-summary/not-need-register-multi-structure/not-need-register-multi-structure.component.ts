@@ -39,11 +39,6 @@ export class NotNeedRegisterMultiStructureComponent extends PageComponent<void> 
     return this.navigationService.navigateRelative(`../${AddMoreSectionsComponent.route}`, this.activatedRoute);
   }
 
-  sectionBuildingName() : string {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName! :
-      this.applicationService.currentSection.Name!;
-  }
-
   private OutOfScopeClarification: Record<OutOfScopeReason, string> = {
     [OutOfScopeReason.Height]: "You only need to tell us about high-rise residential structures that have at least 7 floors or are at least 18 metres in height.",
     [OutOfScopeReason.NumberResidentialUnits]: "You only need to register a high-rise building if it has at least 2 residential units.",

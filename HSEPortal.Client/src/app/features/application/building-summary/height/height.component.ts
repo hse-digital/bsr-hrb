@@ -93,8 +93,4 @@ export class SectionHeightComponent extends PageComponent<number> {
     }
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
 }

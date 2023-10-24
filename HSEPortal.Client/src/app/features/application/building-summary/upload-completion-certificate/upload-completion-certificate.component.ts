@@ -27,7 +27,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
 
   errorMessage?: string;
   errors = {
-    empty: { hasError: false, message: `Upload the completion certificate for ${this.sectionBuildingName()}` } as error,
+    empty: { hasError: false, message: `Upload the completion certificate for ${this.buildingOrSectionName}` } as error,
     extension: { hasError: false, message: "The selected file must be ODS, PDF, JPG, TIF, BMP or PNG" } as error,
     size: { hasError: false, message: "The selected file must be smaller than 25mb" } as error,
     issue: { hasError: false, message: "The selected file could not be uploaded - try again" } as error
@@ -38,10 +38,6 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
     this.isPageChangingBuildingSummary(UploadCompletionCertificateComponent.route);
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return true;
@@ -103,7 +99,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
     this.errorMessage = undefined;
 
     if (!this.selectedFileUpload && !this.isOptional) {
-      this.errorMessage = `Upload the completion certificate for ${this.sectionBuildingName()}`;
+      this.errorMessage = `Upload the completion certificate for ${this.buildingOrSectionName}`;
     } else if (this.selectedFileUpload) {
       if (this.selectedFileUpload.status == 'toolarge') {
         this.errorMessage = this.errors.size.message;

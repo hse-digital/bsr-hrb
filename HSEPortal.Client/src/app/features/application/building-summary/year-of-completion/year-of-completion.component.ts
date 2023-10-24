@@ -22,7 +22,7 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
 
   yearOfCompletionHasErrors = false;
   exactYearHasErrors = false;
-  errorMessage = `Select if you know what year ${this.sectionBuildingName()} was completed`;
+  errorMessage = `Select if you know what year ${this.buildingOrSectionName} was completed`;
 
   constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
@@ -123,8 +123,4 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
     }
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
 }
