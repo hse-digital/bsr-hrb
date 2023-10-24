@@ -355,10 +355,11 @@ class SectionAddressNavigationNode extends BuildingNavigationNode {
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
+    console.log(section.Addresses);
     if ((section.Addresses?.length ?? 0) == 0 || section.Addresses.filter(x => !x.Postcode).length > 0) {
       return SectionAddressComponent.route;
     }
-    
+    console.log("section route");
     if (!!section.Duplicate?.RegisteredStructureModel || (!!section.Duplicate?.DuplicationDetected && section.Duplicate?.DuplicationDetected?.length > 0) ) {
       return this.applicationService.model.NumberOfSections == 'one' 
         ? this.alreadyRegisteredSingleNavigationNode.getNextRoute(section, sectionIndex)

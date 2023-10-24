@@ -12,6 +12,7 @@ import { GetInjector } from "./injector.helper";
 import { RegistrationAmendmentsService } from "../services/registration-amendments.service";
 import { BuildingChangeCheckAnswersComponent } from "../features/registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component";
 import { BuildingSummaryNavigation } from "../features/application/building-summary/building-summary.navigation";
+import { SectionAddressComponent } from "../features/application/building-summary/address/address.component";
 
 @Component({ template: '' })
 export abstract class PageComponent<T> implements OnInit {
@@ -58,7 +59,9 @@ export abstract class PageComponent<T> implements OnInit {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = nextRoute;
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
       this.applicationService.updateApplication();
-      this.navigationService.navigateRelative(nextRoute, this.activatedRoute);
+      if (nextRoute == SectionAddressComponent.route) {
+        this.navigationService.navigateRelative(nextRoute, this.activatedRoute, {index});
+      }
     }
   }
   
