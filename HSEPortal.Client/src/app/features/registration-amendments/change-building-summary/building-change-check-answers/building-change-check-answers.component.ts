@@ -168,7 +168,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = SectionNameComponent.route;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
     await this.applicationService.updateApplication();
-    return this.navigationService.navigateRelative(`${section}/${SectionNameComponent.route}`, this.activatedRoute);
+    return this.navigationService.navigateRelative(`../sections/${section}/${SectionNameComponent.route}`, this.activatedRoute);
   }
 
   isSectionRemoved(index: number) {
