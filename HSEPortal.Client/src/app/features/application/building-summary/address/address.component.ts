@@ -67,7 +67,7 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
   async updateSectionAddress(address: AddressModel) {
 
-    await this.isDuplicate(address);
+    //await this.isDuplicate(address);
 
     if(this.changed) this.change(address);
     else this.save(address);

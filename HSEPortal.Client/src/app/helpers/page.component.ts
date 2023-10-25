@@ -111,10 +111,7 @@ export abstract class PageComponent<T> implements OnInit {
 
     this.processing = false;
   }
-
   
-
-
   async saveAndComeBack(): Promise<void> {
     this.processing = true;
     let canSave = this.requiredFieldsAreEmpty() || this.isValid();
@@ -137,35 +134,28 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.canAccess(this.applicationService, route)) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
-    } 
-    // else if (!this.isSummaryPage() && !this.changed && !this.isKbiPage() && !this.isReturningApplicationPage() && !this.isRegistrationAmendments() && !this.isApplicationCompletedPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
-    //   this.navigationService.navigate(ApplicationSubmittedHelper.getApplicationCompletedRoute(this.applicationService));
-    //   return false;
-    // }
-
+    } else if (this.isApplicationSubmitted() && this.isRegisterBuildingTaskList()) {
+      this.navigationService.navigate(ApplicationSubmittedHelper.getApplicationCompletedRoute(this.applicationService));
+      return false;
+    }
     return true;
   }
 
-  private isSummaryPage() {
-    return location.href.endsWith(`/${this.applicationService.model.id}/summary`);
+  private isApplicationSubmitted() {
+    return this.isPaymentComplete();
   }
 
-  private isKbiPage() {
-    return location.href.includes(`/${this.applicationService.model.id}/kbi`);
+  private isPaymentComplete() {
+    var applicationStatus = this.applicationService.model.ApplicationStatus;
+    let isPaymentComplete = (applicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete;
+    let isInvoice = this.applicationService.model.PaymentType == 'invoice' && (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed')
+    console.log(isPaymentComplete, isInvoice);
+    return isPaymentComplete || isInvoice;
   }
 
-  private isRegistrationAmendments() {
-    return location.href.includes(`/${this.applicationService.model.id}/registration-amendments`);
+  private isRegisterBuildingTaskList() {
+    return location.href.endsWith(`/${this.applicationService.model.id}`) || location.href.endsWith(`/${this.applicationService.model.id}/`);
   }
-
-  private isReturningApplicationPage() {
-    return location.href.includes(`returning-application`);
-  }
-
-  private isApplicationCompletedPage() {
-    return location.href.includes(`application-completed`);
-  }
-
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
     return this.hasErrors && showError ? errorMessage : undefined;

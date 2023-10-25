@@ -51,7 +51,8 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     
     if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
-        Status: Status.NoChanges
+        Status: Status.NoChanges,
+        SectionModel: new SectionModel()
       }
     }
   }
