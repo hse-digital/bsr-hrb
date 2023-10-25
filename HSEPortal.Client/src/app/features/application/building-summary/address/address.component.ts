@@ -16,6 +16,7 @@ import { DuplicatesService } from "src/app/services/duplicates.service";
 import { AlreadyRegisteredSingleComponent } from "../duplicates/already-registered-single/already-registered-single.component";
 import { AlreadyRegisteredMultiComponent } from "../duplicates/already-registered-multi/already-registered-multi.component";
 import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 
 @Component({
   templateUrl: './address.component.html'
@@ -154,11 +155,10 @@ export class SectionAddressComponent implements OnInit, CanActivate {
       : AlreadyRegisteredMultiComponent.route;
   }
 
-  getAddressSectionName() {
-    if (this.applicationService.model.NumberOfSections == "one")
-      return this.applicationService.model.BuildingName!;
-
-    return this.applicationService.currentSection.Name!;
+  get buildingOrSectionName() {
+    let newName = this.applicationService.currentChangedSection.SectionModel?.Name;
+    let sectionName = this.changed && FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
+    return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 
   changeStep(event: any) {
