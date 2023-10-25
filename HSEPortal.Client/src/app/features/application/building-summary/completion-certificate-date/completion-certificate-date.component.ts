@@ -68,7 +68,7 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
       ? this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
       : this.applicationService.currentSection.CompletionCertificateDate;
 
-    this.initPageModel(completionCertificateDate)
+    if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) this.initPageModel(completionCertificateDate)
   }
 
   override onChange(applicationService: ApplicationService): void | Promise<void> {
