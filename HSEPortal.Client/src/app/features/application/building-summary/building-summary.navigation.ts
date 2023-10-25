@@ -319,10 +319,17 @@ class CompletionCertificateFileNavigationNode extends BuildingNavigationNode {
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {    
-    if (!section.CompletionCertificateFile || !section.CompletionCertificateFile.Uploaded) {
+    let isOptional = this.isPageOptional(section.CompletionCertificateDate);
+    if ((!section.CompletionCertificateFile || !section.CompletionCertificateFile.Uploaded) && !isOptional) {
       return UploadCompletionCertificateComponent.route;
     }
     return this.sectionAddressNavigationNode.getNextRoute(section, sectionIndex);
+  }
+
+  isPageOptional(completionCertificateDate?: string) {
+    let date = new Date(Number(completionCertificateDate));
+    let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
+    return date < FirstOctober2023;
   }
 }
 
