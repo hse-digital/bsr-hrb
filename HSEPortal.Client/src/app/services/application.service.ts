@@ -220,6 +220,15 @@ export class ApplicationService {
   async getBuildingApplicationStatuscode(applicationid: string): Promise<BuildingApplicationStatuscode> {
     return await firstValueFrom(this.httpClient.get<BuildingApplicationStatuscode>(`api/GetBuildingApplicationStatuscode?applicationid=${applicationid}`));
   }
+
+  async verifyPaymentStatus(): Promise<void> {
+    var payments = await this.getApplicationPayments();
+    var hasSuccessfulPayment = payments.find(x => x.bsr_govukpaystatus == "success");
+    if (hasSuccessfulPayment) {
+      this.model.ApplicationStatus = this.model.ApplicationStatus | BuildingApplicationStage.PaymentComplete;
+      this.updateApplication();
+    }
+  }
 }
 
 export class BuildingRegistrationModel {
