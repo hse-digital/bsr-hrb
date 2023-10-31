@@ -6,6 +6,7 @@ import { ApplicationService, BuildingApplicationStage, ChangeSection, Status } f
 import { BuildingChangeCheckAnswersComponent } from '../building-change-check-answers/building-change-check-answers.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { WhyRemoveComponent } from '../why-remove/why-remove.component';
+import { NumberOfSectionsComponment } from 'src/app/features/application/building-summary/number-of-sections/number-of-sections.component';
 
 @Component({
   selector: 'hse-remove-structure',
@@ -46,11 +47,11 @@ export class RemoveStructureComponent extends PageComponent<string> {
 
   override async navigateNext(): Promise<boolean | void> {
     if(this.model == 'yes') {
-      return this.navigationService.navigateRelative(WhyRemoveComponent.route, this.activatedRoute,{
-        index: this.index
-      });
-    }    
-    return this.navigationService.navigateRelative(BuildingChangeCheckAnswersComponent.route, this.activatedRoute);
+      return this.navigationService.navigateRelative(WhyRemoveComponent.route, this.activatedRoute, { index: this.index });
+    } else if (this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections!.filter(x => x.Status != Status.Removed)!.length > 1) {
+      return this.navigationService.navigateRelative(BuildingChangeCheckAnswersComponent.route, this.activatedRoute);
+    }
+    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { index: this.index });
   }
 
   isKbiComplete() {
