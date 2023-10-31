@@ -77,7 +77,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
 
       
       
-      if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete() || !this.isPaymentComplete()) {
+      if (!this.isPaymentComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);
       } else {
         this.navigationService.navigate(`application/${this.applicationNumber}/application-completed`);

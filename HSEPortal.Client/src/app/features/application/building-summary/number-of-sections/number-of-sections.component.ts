@@ -3,6 +3,8 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { PageComponent } from 'src/app/helpers/page.component';
+import { BuildingChangeCheckAnswersComponent } from 'src/app/features/registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component';
+import { RegistrationAmendmentsModule } from 'src/app/features/registration-amendments/registration-amendments.module';
 
 @Component({
   templateUrl: './number-of-sections.component.html'
@@ -44,6 +46,10 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean> {
+    let changed = !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary;
+    if (changed && this.applicationService.model.NumberOfSections == "one") {
+      return this.navigationService.navigateRelative(`/${RegistrationAmendmentsModule.baseRoute}/${BuildingChangeCheckAnswersComponent.route}`, this.activatedRoute);
+    }
     // user is changing the answer
     if (this.previousAnswer && this.previousAnswer != this.applicationService.model.NumberOfSections) {
       this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStage.BlocksInBuildingComplete;
