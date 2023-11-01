@@ -15,6 +15,8 @@ import { ApplicationSubmittedHelper } from "src/app/helpers/app-submitted-helper
 import { DuplicatesService } from "src/app/services/duplicates.service";
 import { AlreadyRegisteredSingleComponent } from "../duplicates/already-registered-single/already-registered-single.component";
 import { AlreadyRegisteredMultiComponent } from "../duplicates/already-registered-multi/already-registered-multi.component";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 
 @Component({
   templateUrl: './address.component.html'
@@ -34,27 +36,61 @@ export class SectionAddressComponent implements OnInit, CanActivate {
   private addressIndex?: number;
   private returnUrl?: string;
   address?: AddressModel;
+  changed: boolean = false;
 
   ngOnInit(): void {
+    this.changed = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex;
     this.activatedRoute.queryParams.subscribe(query => {
       this.addressIndex = query['address'];
       this.returnUrl = query['return'];
 
+      let currentAddresses: any = this.applicationService.currentSection.Addresses;
+      let newAddresses = this.applicationService.currentChangedSection?.SectionModel?.Addresses;
+      
+      if(this.changed && (!newAddresses || newAddresses.length == 0)) {
+        this.applicationService.currentChangedSection.SectionModel!.Addresses = Array<AddressModel>(currentAddresses.length);
+        newAddresses = this.applicationService.currentChangedSection.SectionModel?.Addresses;
+      }
+
+      let addresses = new ChangeBuildingSummaryHelper(this.applicationService).getSectionAddresses(currentAddresses, newAddresses!);
+      console.log(addresses);
       if (!this.addressIndex) {
         this.addressIndex = 1;
-      } else if ((this.applicationService.currentSection.Addresses.length + 1) < this.addressIndex) {
-        this.addressIndex = this.applicationService.currentSection.Addresses.length + 1;
+      } else if ((addresses.length + 1) < this.addressIndex) {
+        this.addressIndex = addresses.length + 1;
       }
 
       this.applicationService._currentSectionAddressIndex = this.addressIndex - 1;
-      this.address = this.applicationService.currentSection.Addresses[this.addressIndex - 1];
+      this.address = addresses[this.addressIndex - 1];
+
     });
   }
 
   async updateSectionAddress(address: AddressModel) {
 
-    await this.isDuplicate(address);
+    //await this.isDuplicate(address);
 
+    if(this.changed) this.change(address);
+    else this.save(address);
+
+    await this.applicationService.updateApplication();
+
+    if (this.changed) this.navigateToNextChange()
+    else await this.navigateNext();
+  }
+
+  private change(address:AddressModel) {
+    if (this.addressIndex) {
+      this.applicationService.currentChangedSection.SectionModel!.Addresses[this.addressIndex - 1] = address;
+    } else {
+      if (!this.applicationService.currentChangedSection.SectionModel?.Addresses)
+        this.applicationService.currentChangedSection.SectionModel!.Addresses = [];
+
+      this.applicationService.currentChangedSection.SectionModel!.Addresses.push(address);
+    }
+  }
+
+  private save(address: AddressModel) {
     if (this.addressIndex) {
       this.applicationService.currentSection.Addresses[this.addressIndex - 1] = address;
     } else {
@@ -63,8 +99,17 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
       this.applicationService.currentSection.Addresses.push(address);
     }
-    await this.applicationService.updateApplication();
+  }
 
+  private navigateToNextChange() {
+    if (this.applicationService.currentSection.Addresses.length < 5) {
+      this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
+    } else {
+      this.navigationService.navigateRelative(SectionOtherAddressesComponent.route, this.activatedRoute);
+    }
+  }
+
+  private async navigateNext() {
     if (this.returnUrl) {
       this.navigationService.navigateRelative(`../${this.returnUrl}`, this.activatedRoute);
     } else if (this.applicationService.currentSection.Addresses.length < 5) {
@@ -110,11 +155,10 @@ export class SectionAddressComponent implements OnInit, CanActivate {
       : AlreadyRegisteredMultiComponent.route;
   }
 
-  getAddressSectionName() {
-    if (this.applicationService.model.NumberOfSections == "one")
-      return this.applicationService.model.BuildingName!;
-
-    return this.applicationService.currentSection.Name!;
+  get buildingOrSectionName() {
+    let newName = this.applicationService.currentChangedSection.SectionModel?.Name;
+    let sectionName = this.changed && FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
+    return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 
   changeStep(event: any) {
@@ -132,8 +176,10 @@ export class SectionAddressComponent implements OnInit, CanActivate {
   }
 
   canActivate(routeSnapshot: ActivatedRouteSnapshot) {
-
-    ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
+    
+    if(!this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary) {
+      ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
+    }
 
     if (!SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService)) {
       this.navigationService.navigate(NotFoundComponent.route);

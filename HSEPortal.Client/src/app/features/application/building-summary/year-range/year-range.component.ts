@@ -6,6 +6,8 @@ import { SectionAddressComponent } from "../address/address.component";
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { WhoIssuedCertificateComponent } from "../who-issued-certificate/who-issued-certificate.component";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
     templateUrl: './year-range.component.html'
@@ -15,14 +17,9 @@ export class SectionYearRangeComponent extends PageComponent<string> {
     static title: string = "Range of years it was completed in - Register a high-rise building - GOV.UK";
     yearRangeHasErrors = false;
 
-
-    constructor(activatedRoute: ActivatedRoute) {
+    constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
         super(activatedRoute);
-    }
-
-    sectionBuildingName() {
-        return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-            this.applicationService.currentSection.Name;
+        this.isPageChangingBuildingSummary(SectionYearRangeComponent.route);
     }
 
     override onInit(applicationService: ApplicationService): void {
@@ -33,9 +30,22 @@ export class SectionYearRangeComponent extends PageComponent<string> {
         applicationService.currentSection.YearOfCompletionRange = this.model;
     }
 
+    override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+        if (!this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange) this.onInit(this.applicationService);
+        else this.model = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange;
+    }
+
+    override onChange(applicationService: ApplicationService): void | Promise<void> {
+        this.applicationService.currentChangedSection!.SectionModel!.YearOfCompletionRange = this.model;
+    }
+
+    override nextChangeRoute(): string {
+        let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+        return this.buildingSummaryNavigation.getNextChangeRoute(section); 
+    }
+
     override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-        return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && 
-            this.applicationService.currentSection.YearOfCompletionOption == "year-not-exact";
+        return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
     }
 
     override isValid(): boolean {
@@ -56,7 +66,7 @@ export class SectionYearRangeComponent extends PageComponent<string> {
     }
 
     get errorMessage() {
-        return `Select what range of years ${this.sectionBuildingName()} was completed in`;
+        return `Select what range of years ${this.buildingOrSectionName} was completed in`;
     }
 
 }

@@ -12,7 +12,7 @@ export class PeopleLivingInSectionDescriptionPipe implements PipeTransform {
             case "no_wont_move": return "No and people will not be moving in";
         }
 
-        return "";
+        return "Not answered";
     }
 
 }

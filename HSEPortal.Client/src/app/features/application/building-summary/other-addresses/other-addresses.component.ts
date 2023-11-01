@@ -8,6 +8,10 @@ import { SectionCheckAnswersComponent } from "../check-answers/check-answers.com
 import { SectionNameComponent } from "../name/name.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { NotNeedRegisterMultiDuplicatedStructuresComponent } from "../duplicates/not-reg-multi-dupli-struct/not-register-multi-dupli-structures.component";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
+import { SectionResidentialUnitsComponent } from "../residential-units/residential-units.component";
+import { BuildingChangeCheckAnswersComponent } from "src/app/features/registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component";
 
 @Component({
   templateUrl: './other-addresses.component.html',
@@ -22,8 +26,9 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
   hasMoreAddressesError = false;
   hasMoreAddresses?: string;
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
+    this.isPageChangingBuildingSummary(SectionOtherAddressesComponent.route);
   }
 
   updateReturnUrl() {
@@ -32,10 +37,7 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
     }
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
+  
 
   override onInit(applicationService: ApplicationService): void {
     this.activatedRoute.queryParams.subscribe(query => {
@@ -52,6 +54,24 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && this.applicationService.currentSection.Addresses?.length <= 5;
   }
+
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    this.activatedRoute.queryParams.subscribe(query => {
+      this.addressIndex = query['address'];
+      if (this.addressIndex) {
+        this.hasMoreAddresses = this.applicationService.currentChangedSection.SectionModel!.Addresses.length > this.addressIndex ? 'yes' : 'no';
+        this.previousAnswer = this.hasMoreAddresses;
+      }
+    });
+  }
+
+  override nextChangeRoute(): string {
+    if (this.hasMoreAddresses == 'no') {
+      return BuildingChangeCheckAnswersComponent.route;
+    }
+    return SectionAddressComponent.route;
+  }
+
 
   override isValid(): boolean {
     this.hasMoreAddressesError = !this.hasMoreAddresses;

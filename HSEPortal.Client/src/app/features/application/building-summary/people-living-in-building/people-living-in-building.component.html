@@ -9,7 +9,7 @@
           <govuk-error-link anchorId="yes-input" [message]="getErrorMessage()" />
         </govuk-error-summary>
 
-        <govuk-radio-group title="Is anyone living in {{sectionBuildingName()}}?" [isPageHeading]=true id="peopleLivingInBuilding" 
+        <govuk-radio-group title="Is anyone living in {{buildingOrSectionName}}?" [isPageHeading]=true id="peopleLivingInBuilding" 
           [(model)]="model" #field [govukRequired]="field" 
           [errorText]="getErrorDescription(peopleLivingHasErrors, getErrorMessage())">
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="people-living" id="yes" value="yes" label="Yes" />

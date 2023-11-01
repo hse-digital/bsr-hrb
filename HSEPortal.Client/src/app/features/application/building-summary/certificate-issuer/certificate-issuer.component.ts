@@ -7,6 +7,8 @@ import { PageComponent } from "src/app/helpers/page.component";
 import { CompletionCertificateDateComponent } from "../completion-certificate-date/completion-certificate-date.component";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { SectionAddressComponent } from "../address/address.component";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
   templateUrl: './certificate-issuer.component.html'
@@ -18,13 +20,9 @@ export class CertificateIssuerComponent extends PageComponent<string> {
   isOptional: boolean = true;
   certificateHasErrors: boolean = false;
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-  }
-
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
+    this.isPageChangingBuildingSummary(CertificateIssuerComponent.route);
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -33,20 +31,52 @@ export class CertificateIssuerComponent extends PageComponent<string> {
 
   override onInit(applicationService: ApplicationService): void {
     this.model = this.applicationService.currentSection.CompletionCertificateIssuer;
-    if (this.applicationService.currentSection.YearOfCompletionOption == 'year-exact') {
-      var yearOfCompletion = Number(this.applicationService.currentSection.YearOfCompletion);
-      if (yearOfCompletion && yearOfCompletion >= 2023) {
-        this.isOptional = false;
-      }
-    } else if (this.applicationService.currentSection.YearOfCompletionOption == 'year-not-exact') {
-      if (this.applicationService.currentSection.YearOfCompletionRange == "2023-onwards") {
-        this.isOptional = false;
-      }
-    }
+
+    this.isInputOptional(
+      this.applicationService.currentSection.YearOfCompletionOption,
+      this.applicationService.currentSection.YearOfCompletionRange,
+      this.applicationService.currentSection.YearOfCompletion,
+    );
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentSection.CompletionCertificateIssuer = this.model;
+  }
+
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    if (!this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateIssuer) {
+      this.model = this.applicationService.currentSection.CompletionCertificateIssuer;
+    } else {
+      this.model = this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateIssuer;    
+    }
+
+    let yearOfCompletionOption = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption) ? this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption : this.applicationService.currentSection.YearOfCompletionOption;
+    let yearOfCompletionRange = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange) ? this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange : this.applicationService.currentSection.YearOfCompletionRange;
+    let yearOfCompletion = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion) ? this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion : this.applicationService.currentSection.YearOfCompletion;
+    
+    this.isInputOptional(yearOfCompletionOption, yearOfCompletionRange, yearOfCompletion);
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+    this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateIssuer = this.model;
+  }
+
+  override nextChangeRoute(): string {
+    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
+  }
+
+  private isInputOptional(yearOfCompletionOption: string, yearOfCompletionRange?: string, yearOfCompletion?: string) {
+    if (yearOfCompletionOption == 'year-exact') {
+      var year = Number(yearOfCompletion);
+      if (year && year >= 2023) {
+        this.isOptional = false;
+      }
+    } else if (yearOfCompletionOption == 'year-not-exact') {
+      if (yearOfCompletionRange == "2023-onwards") {
+        this.isOptional = false;
+      }
+    }
   }
 
   override isValid(): boolean {

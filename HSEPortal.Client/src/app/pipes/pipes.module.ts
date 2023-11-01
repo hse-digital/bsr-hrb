@@ -10,6 +10,7 @@ import { AccountabilityDescriptionPipe } from './accountability-description.pipe
 import { ExternalWallMaterialsPipe } from './external-wall-materials.pipe';
 import { ConnectionTypesPipe } from './connection-types.pipe';
 import { WhyWantRemoveSectionPipe } from "./why-want-remove-section.pipe";
+import { QuestionNotAnsweredPipe } from './question-not-answered.pipe';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { WhyWantRemoveSectionPipe } from "./why-want-remove-section.pipe";
     AccountabilityDescriptionPipe,
     ExternalWallMaterialsPipe,
     ConnectionTypesPipe,
-    WhyWantRemoveSectionPipe
+    WhyWantRemoveSectionPipe,
+    QuestionNotAnsweredPipe
   ],
   exports: [
     PeopleLivingInSectionDescriptionPipe,
@@ -36,7 +38,8 @@ import { WhyWantRemoveSectionPipe } from "./why-want-remove-section.pipe";
     AccountabilityDescriptionPipe,
     ExternalWallMaterialsPipe,
     ConnectionTypesPipe,
-    WhyWantRemoveSectionPipe
+    WhyWantRemoveSectionPipe,
+    QuestionNotAnsweredPipe
   ]
 })
 export class PipesModule { }

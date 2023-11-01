@@ -5,6 +5,8 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CertificateIssuerComponent } from '../certificate-issuer/certificate-issuer.component';
 import { CompletionCertificateDateComponent } from '../completion-certificate-date/completion-certificate-date.component';
+import { BuildingSummaryNavigation } from '../building-summary.navigation';
+import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 @Component({
   selector: 'hse-who-issued-certificate',
@@ -14,8 +16,9 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
   static route: string = 'who-issued-certificate';
   static title: string = 'Who issued the completion certificate - Register a high-rise building - GOV.UK';
   
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
+    this.isPageChangingBuildingSummary(WhoIssuedCertificateComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
@@ -27,6 +30,23 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
     if (this.model == "bsr") {
       this.applicationService.currentSection.CompletionCertificateIssuer = "The building Safety Regulator (BSR)";
     }
+  }
+
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    if (!this.applicationService.currentChangedSection.SectionModel?.WhoIssuedCertificate) this.onInit(this.applicationService);
+    else this.model = this.applicationService.currentChangedSection.SectionModel?.WhoIssuedCertificate;
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+      this.applicationService.currentChangedSection.SectionModel!.WhoIssuedCertificate = this.model;
+      if (this.model == "bsr") {
+        this.applicationService.currentChangedSection.SectionModel!.CompletionCertificateIssuer = "The building Safety Regulator (BSR)";
+      }
+  }
+
+  override nextChangeRoute(): string {
+    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

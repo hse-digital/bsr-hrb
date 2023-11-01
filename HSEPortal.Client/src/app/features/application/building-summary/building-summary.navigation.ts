@@ -6,7 +6,6 @@ import { SectionNameComponent } from "./name/name.component";
 import { SectionFloorsAboveComponent } from "./floors-above/floors-above.component";
 import { SectionHeightComponent } from "./height/height.component";
 import { SectionResidentialUnitsComponent } from "./residential-units/residential-units.component";
-import { SectionPeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
 import { SectionYearOfCompletionComponent } from "./year-of-completion/year-of-completion.component";
 import { SectionYearRangeComponent } from "./year-range/year-range.component";
 import { CertificateIssuerComponent } from "./certificate-issuer/certificate-issuer.component";
@@ -25,6 +24,7 @@ import { KeepStructureDeclarationComponent } from "./duplicates/keep-structure-d
 import { WhoIssuedCertificateComponent } from "./who-issued-certificate/who-issued-certificate.component";
 import { CompletionCertificateDateComponent } from "./completion-certificate-date/completion-certificate-date.component";
 import { UploadCompletionCertificateComponent } from "./upload-completion-certificate/upload-completion-certificate.component";
+import { BuildingChangeCheckAnswersComponent } from "../../registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component";
 
 @Injectable()
 export class BuildingSummaryNavigation extends BaseNavigation {
@@ -59,6 +59,14 @@ export class BuildingSummaryNavigation extends BaseNavigation {
     }
 
     return `sections/${SectionCheckAnswersComponent.route}`;
+  }
+
+  getNextChangeRoute(section: SectionModel) {
+    let sectionRoute = this.numberOfSectionsNavigationNode.getNextRoute(section, 0);
+    if (sectionRoute === void 0 || sectionRoute == SectionCheckAnswersComponent.route || sectionRoute == AddMoreSectionsComponent.route) {
+      return BuildingChangeCheckAnswersComponent.route;
+    }
+    return sectionRoute;
   }
 }
 
@@ -311,10 +319,17 @@ class CompletionCertificateFileNavigationNode extends BuildingNavigationNode {
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {    
-    if (!section.CompletionCertificateFile || !section.CompletionCertificateFile.Uploaded) {
+    let isOptional = this.isPageOptional(section.CompletionCertificateDate);
+    if ((!section.CompletionCertificateFile || !section.CompletionCertificateFile.Uploaded) && !isOptional) {
       return UploadCompletionCertificateComponent.route;
     }
     return this.sectionAddressNavigationNode.getNextRoute(section, sectionIndex);
+  }
+
+  isPageOptional(completionCertificateDate?: string) {
+    let date = new Date(Number(completionCertificateDate));
+    let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
+    return date < FirstOctober2023;
   }
 }
 
@@ -347,10 +362,11 @@ class SectionAddressNavigationNode extends BuildingNavigationNode {
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
+    console.log(section.Addresses);
     if ((section.Addresses?.length ?? 0) == 0 || section.Addresses.filter(x => !x.Postcode).length > 0) {
       return SectionAddressComponent.route;
     }
-    
+    console.log("section route");
     if (!!section.Duplicate?.RegisteredStructureModel || (!!section.Duplicate?.DuplicationDetected && section.Duplicate?.DuplicationDetected?.length > 0) ) {
       return this.applicationService.model.NumberOfSections == 'one' 
         ? this.alreadyRegisteredSingleNavigationNode.getNextRoute(section, sectionIndex)

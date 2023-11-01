@@ -11,7 +11,9 @@ import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStage, ChangeSection, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';
 import { RemoveStructureComponent } from '../remove-structure/remove-structure.component';
+import { ChangeTaskListComponent } from '../../change-task-list/change-task-list.component';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
+import { SectionNameComponent } from 'src/app/features/application/building-summary/name/name.component';
 
 @Component({
   selector: 'hse-building-change-check-answers',
@@ -24,6 +26,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   static title: string = "Check your answers about the building summary - Register a high-rise building - GOV.UK";
 
   activeSections: SectionModel[] = [];
+  changeBuildingSummaryHelper?: ChangeBuildingSummaryHelper;
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
@@ -42,20 +45,14 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     }
   }
 
-  override onInit(applicationService: ApplicationService): void {
-    this.initStatecode();
-    this.initChangeBuildingSummary();
-    this.activeSections = new ChangeBuildingSummaryHelper(this.applicationService).getSections();
-    this.applicationService.updateApplication();
-  }
-
   private initChangeSectionModel(index: number) {
     if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections)
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections = this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection));
     
     if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
-        Status: Status.NoChanges
+        Status: Status.NoChanges,
+        SectionModel: new SectionModel()
       }
     }
   }
@@ -78,13 +75,38 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     return section?.Name ?? `${SectionHelper.getSectionCardinalName(sectionIndex)} high-rise residential structure`;
   }
 
+  override onInit(applicationService: ApplicationService): void {
+    this.initStatecode();
+    this.initChangeBuildingSummary();
+    this.changeBuildingSummaryHelper = new ChangeBuildingSummaryHelper(this.applicationService);
+    this.activeSections = this.changeBuildingSummaryHelper.getSections();
+    this.updateBuildingChangeStatus();
+  }
+
+  private updateBuildingChangeStatus() {
+    if(this.changeBuildingSummaryHelper?.hasBuildingChange()) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Status = this.validateModel() 
+        ? Status.ChangesComplete 
+        : Status.ChangesInProgress;
+    } else {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Status = Status.NoChanges;
+    }
+  }
+
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.BlocksInBuildingInProgress) == BuildingApplicationStage.BlocksInBuildingInProgress;
+    return true;
   }
 
   override isValid(): boolean {
-    var canContinue = true;
-    for (var section of this.activeSections) {
+    var canContinue = this.validateModel();
+    this.hasIncompleteData = !canContinue;
+    return canContinue;
+  }
+
+  private validateModel() {
+    let canContinue = true;
+    let sections = this.activeSections.filter((x, index) => !this.isSectionRemoved(index));
+    for (var section of sections) {
       if (this.applicationService.model.NumberOfSections == "two_or_more") {
         canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.Name);
       }
@@ -108,22 +130,11 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
         }
       }
     }
-
-    this.hasIncompleteData = !canContinue;
     return canContinue;
   }
 
   override navigateNext(): Promise<boolean> {
-    if (ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService)) {
-      return this.navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, this.activatedRoute);
-    }
-
-    var sectionsOutOfScope = this.getOutOfScopeSections();
-    if (sectionsOutOfScope.length > 0) {
-      return this.navigationService.navigateRelative(MoreInformationComponent.route, this.activatedRoute);
-    }
-
-    return this.navigationService.navigateRelative(`../${AccountablePersonModule.baseRoute}/${AccountablePersonComponent.route}`, this.activatedRoute);
+    return this.navigationService.navigateRelative(ChangeTaskListComponent.route, this.activatedRoute);
   }
 
   override async onSave(): Promise<void> {
@@ -144,12 +155,17 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     });
   }
 
-  addAnotherStructure() {
-    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute); 
+  async addAnotherStructure() {
+    let section = this.applicationService.startNewSection();
+    this.initChangeSectionModel(this.applicationService._currentSectionIndex);
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = SectionNameComponent.route;
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
+    await this.applicationService.updateApplication();
+    return this.navigationService.navigateRelative(`../sections/${section}/${SectionNameComponent.route}`, this.activatedRoute);
   }
 
   isSectionRemoved(index: number) {
-    return (this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections?.at(index)?.Status ?? Status.NoChanges) == Status.Removed;
+    return (this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[index]?.Status ?? Status.NoChanges) == Status.Removed;
   }
 
 }

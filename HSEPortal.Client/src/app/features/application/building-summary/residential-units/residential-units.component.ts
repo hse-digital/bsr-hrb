@@ -7,6 +7,9 @@ import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-mul
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
+import { NeedRemoveWithdrawComponent } from "src/app/features/registration-amendments/change-building-summary/need-remove-withdraw/need-remove-withdraw.component";
 
 @Component({
   templateUrl: './residential-units.component.html'
@@ -15,8 +18,9 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
   static route: string = 'residential-units';
   static title: string = "Number of residential units in the section - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
+    this.isPageChangingBuildingSummary(SectionResidentialUnitsComponent.route);
   }
 
   residentialUnitsHasErrors = false;
@@ -29,7 +33,24 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentSection.ResidentialUnits = this.model;
   }
+
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    if (!this.applicationService.currentChangedSection.SectionModel?.ResidentialUnits) this.onInit(this.applicationService);
+    else this.model = this.applicationService.currentChangedSection.SectionModel?.ResidentialUnits;
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+    this.applicationService.currentChangedSection!.SectionModel!.ResidentialUnits = this.model;
+  }
   
+  override nextChangeRoute(): string {
+    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    if (section.ResidentialUnits! < 2) {
+      return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
+    }
+    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
+  }
+
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
@@ -76,8 +97,4 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
     }
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
 }

@@ -7,6 +7,9 @@ import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-si
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
+import { BuildingSummaryNavigation } from "../building-summary.navigation";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
+import { NeedRemoveWithdrawComponent } from "src/app/features/registration-amendments/change-building-summary/need-remove-withdraw/need-remove-withdraw.component";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
@@ -15,8 +18,9 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
   static route: string = 'people-living';
   static title: string = "Are people living in the building? - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
+    this.isPageChangingBuildingSummary(SectionPeopleLivingInBuildingComponent.route);
   }
 
 
@@ -30,8 +34,25 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
     this.applicationService.currentSection.PeopleLivingInBuilding = this.model;
   }
 
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    if (!this.applicationService.currentChangedSection.SectionModel?.PeopleLivingInBuilding) this.onInit(this.applicationService);
+    else this.model = this.applicationService.currentChangedSection.SectionModel?.PeopleLivingInBuilding;
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+    this.applicationService.currentChangedSection!.SectionModel!.PeopleLivingInBuilding = this.model;
+  }
+
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
+  }
+
+  override nextChangeRoute(): string {
+    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    if (section.PeopleLivingInBuilding == "no_wont_move") {
+      return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
+    }
+    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
   override isValid(): boolean {
@@ -66,12 +87,8 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
     }
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
 
   getErrorMessage() {
-    return `Select if people are living in ${this.sectionBuildingName()}`;
+    return `Select if people are living in ${this.buildingOrSectionName}`;
   }
 }

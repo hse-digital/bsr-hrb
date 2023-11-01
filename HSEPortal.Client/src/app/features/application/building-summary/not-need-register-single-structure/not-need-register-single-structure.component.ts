@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, OutOfScopeReason } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
@@ -21,8 +22,9 @@ export class NotNeedRegisterSingleStructureComponent implements CanActivate {
   }
 
   sectionBuildingName(): string {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName! :
-      this.applicationService.currentSection.Name!;
+    let newName = this.applicationService.currentChangedSection.SectionModel?.Name;
+    let sectionName = FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
+    return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName! : sectionName!;
   }
 
   async newApplication() {

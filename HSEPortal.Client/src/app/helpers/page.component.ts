@@ -10,6 +10,10 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot, Ur
 import { ApplicationSubmittedHelper } from "./app-submitted-helper";
 import { GetInjector } from "./injector.helper";
 import { RegistrationAmendmentsService } from "../services/registration-amendments.service";
+import { BuildingChangeCheckAnswersComponent } from "../features/registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component";
+import { BuildingSummaryNavigation } from "../features/application/building-summary/building-summary.navigation";
+import { SectionAddressComponent } from "../features/application/building-summary/address/address.component";
+import { FieldValidations } from "./validators/fieldvalidations";
 
 @Component({ template: '' })
 export abstract class PageComponent<T> implements OnInit {
@@ -17,6 +21,8 @@ export abstract class PageComponent<T> implements OnInit {
   processing: boolean = false;
   hasErrors: boolean = false;
   updateOnSave: boolean = true;
+  changed: boolean = false;
+  changedReturnUrl?: string;
   returnUrl?: string;
   
   private injector: Injector = GetInjector();
@@ -35,15 +41,39 @@ export abstract class PageComponent<T> implements OnInit {
   abstract canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean;
   abstract isValid(): boolean;
   abstract navigateNext(): Promise<boolean | void>;
-
-
+  
   constructor(activatedRoute?: ActivatedRoute) {
     if(activatedRoute) this.activatedRoute = activatedRoute;
+  
     this.triggerScreenReaderNotification("");
   }
+  
+  onInitChange(applicationService: ApplicationService): Promise<void> | void { }
+  onChange(applicationService: ApplicationService): Promise<void> | void { }
+  nextChangeRoute() {}
+  navigateToNextChange(applicationService: ApplicationService) {  
+    let nextRoute = this.nextChangeRoute();
 
+    if (nextRoute == void 0 || nextRoute == "building-change-check-answers") {
+      this.navigationService.navigateRelative(`../../registration-amendments/${this.changedReturnUrl}`, this.activatedRoute);
+    } else {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = nextRoute;
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
+      this.applicationService.updateApplication();
+      if (nextRoute == "address") {
+        this.navigationService.navigateRelative(nextRoute, this.activatedRoute, { address: this.applicationService.currentChangedSection.SectionModel!.Addresses.length + 1 });
+      } else {
+        this.navigationService.navigateRelative(nextRoute, this.activatedRoute);
+      }
+    }
+  }
+  
   async ngOnInit() {
-    await this.onInit(this.applicationService);
+    if (this.changed) {
+      await this.onInitChange(this.applicationService);
+    } else {
+      await this.onInit(this.applicationService);
+    }
   }
 
   async saveAndContinue(): Promise<void> {
@@ -53,6 +83,14 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.hasErrors) {
       this.triggerScreenReaderNotification();
       this.applicationService.updateLocalStorage();
+
+      if (this.changed) {
+        console.log("changed");
+        await this.onChange(this.applicationService);
+        await this.navigateToNextChange(this.applicationService);
+        return;
+      }
+
       if (this.updateOnSave) {
         await this.saveAndUpdate(true);
       }
@@ -73,7 +111,7 @@ export abstract class PageComponent<T> implements OnInit {
 
     this.processing = false;
   }
-
+  
   async saveAndComeBack(): Promise<void> {
     this.processing = true;
     let canSave = this.requiredFieldsAreEmpty() || this.isValid();
@@ -96,34 +134,28 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.canAccess(this.applicationService, route)) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
-    } else if (!this.isSummaryPage() && !this.isKbiPage() && !this.isReturningApplicationPage() && !this.isRegistrationAmendments() && !this.isApplicationCompletedPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
+    } else if (this.isApplicationSubmitted() && this.isRegisterBuildingTaskList()) {
       this.navigationService.navigate(ApplicationSubmittedHelper.getApplicationCompletedRoute(this.applicationService));
       return false;
     }
-
     return true;
   }
 
-  private isSummaryPage() {
-    return location.href.endsWith(`/${this.applicationService.model.id}/summary`);
+  private isApplicationSubmitted() {
+    return this.isPaymentComplete();
   }
 
-  private isKbiPage() {
-    return location.href.includes(`/${this.applicationService.model.id}/kbi`);
+  private isPaymentComplete() {
+    var applicationStatus = this.applicationService.model.ApplicationStatus;
+    let isPaymentComplete = (applicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete;
+    let isInvoice = this.applicationService.model.PaymentType == 'invoice' && (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed')
+    console.log(isPaymentComplete, isInvoice);
+    return isPaymentComplete || isInvoice;
   }
 
-  private isRegistrationAmendments() {
-    return location.href.includes(`/${this.applicationService.model.id}/registration-amendments`);
+  private isRegisterBuildingTaskList() {
+    return location.href.endsWith(`/${this.applicationService.model.id}`) || location.href.endsWith(`/${this.applicationService.model.id}/`);
   }
-
-  private isReturningApplicationPage() {
-    return location.href.includes(`returning-application`);
-  }
-
-  private isApplicationCompletedPage() {
-    return location.href.includes(`application-completed`);
-  }
-
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
     return this.hasErrors && showError ? errorMessage : undefined;
@@ -161,5 +193,17 @@ export abstract class PageComponent<T> implements OnInit {
   protected focusAndUpdateErrors() {
     this.summaryError?.first?.focus();
     this.titleService.setTitleError();
+  }
+
+  protected isPageChangingBuildingSummary(route: string) {
+    this.changed = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex;
+    
+    this.changedReturnUrl = "building-change-check-answers";
+  }
+
+  get buildingOrSectionName() {
+    let newName = this.applicationService.currentChangedSection.SectionModel?.Name;
+    let sectionName = this.changed && FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
+    return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 }
