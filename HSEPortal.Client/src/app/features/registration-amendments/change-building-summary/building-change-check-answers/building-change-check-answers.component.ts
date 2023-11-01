@@ -105,7 +105,8 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
 
   private validateModel() {
     let canContinue = true;
-    for (var section of this.activeSections) {
+    let sections = this.activeSections.filter((x, index) => !this.isSectionRemoved(index));
+    for (var section of sections) {
       if (this.applicationService.model.NumberOfSections == "two_or_more") {
         canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.Name);
       }
@@ -133,15 +134,6 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   override navigateNext(): Promise<boolean> {
-    if (ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService)) {
-      return this.navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, this.activatedRoute);
-    }
-
-    var sectionsOutOfScope = this.getOutOfScopeSections();
-    if (sectionsOutOfScope.length > 0) {
-      return this.navigationService.navigateRelative(MoreInformationComponent.route, this.activatedRoute);
-    }
-
     return this.navigationService.navigateRelative(ChangeTaskListComponent.route, this.activatedRoute);
   }
 
