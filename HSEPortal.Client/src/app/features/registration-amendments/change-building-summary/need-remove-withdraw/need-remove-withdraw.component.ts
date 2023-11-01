@@ -13,12 +13,21 @@ export class NeedRemoveWithdrawComponent extends PageComponent<SectionModel> {
   static route: string = 'need-remove-withdraw-structure';
   static title: string = "Changes you will make next - Register a high-rise building - GOV.UK";
 
+  heading?: string;
+  firstSentence?: string;
+  secondSentence?: string;
+  isAppAccepted?: boolean;
+
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
     this.model = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    this.isAppAccepted = await this.isApplicationAccepted();
+    this.heading = this.getHeading();
+    this.firstSentence = this.getFirstSentence();
+    this.secondSentence = this.getSecondSentence();
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
@@ -35,36 +44,39 @@ export class NeedRemoveWithdrawComponent extends PageComponent<SectionModel> {
 
   override async navigateNext(): Promise<boolean | void> {
     if (!this.isSingleStructure()) {
-      return this.navigationService.navigateRelative(RemoveStructureComponent.route, this.activatedRoute);
+      return this.navigationService.navigateRelative(RemoveStructureComponent.route, this.activatedRoute, {
+        index: this.applicationService._currentSectionIndex
+      });
     }
+    return true;
   }
 
   isKbiComplete() {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.KbiSubmitComplete) == BuildingApplicationStage.KbiSubmitComplete;
   }
 
-  async isViewOne() {
-    return this.isSingleStructure() && await this.isApplicationAccepted() && this.isFloorsAndHeightOutOfScope();
+  isViewOne() {
+    return this.isSingleStructure() && this.isAppAccepted && this.isFloorsAndHeightOutOfScope();
   }
 
-  async isViewTwo() {
-    return this.isSingleStructure() && await this.isApplicationAccepted() && this.isResidentialUnitsOutOfScope();
+  isViewTwo() {
+    return this.isSingleStructure() && this.isAppAccepted && this.isResidentialUnitsOutOfScope();
   }
 
-  async isViewThree() {
-    return this.isSingleStructure() && await this.isApplicationAccepted() && this.isPeopleLivingInBuildingOutOfScope();
+  isViewThree() {
+    return this.isSingleStructure() && this.isAppAccepted && this.isPeopleLivingInBuildingOutOfScope();
   }
 
   isViewFour() {
-    return this.isSingleStructure() && !this.isApplicationAccepted() && this.isFloorsAndHeightOutOfScope();
+    return this.isSingleStructure() && !this.isAppAccepted && this.isFloorsAndHeightOutOfScope();
   }
 
   isViewFive() {
-    return this.isSingleStructure() && !this.isApplicationAccepted() && this.isResidentialUnitsOutOfScope();
+    return this.isSingleStructure() && !this.isAppAccepted && this.isResidentialUnitsOutOfScope();
   }
 
   isViewSix() {
-    return this.isSingleStructure() && !this.isApplicationAccepted() && this.isPeopleLivingInBuildingOutOfScope();
+    return this.isSingleStructure() && !this.isAppAccepted && this.isPeopleLivingInBuildingOutOfScope();
   }
 
   isViewSeven() {
@@ -100,8 +112,8 @@ export class NeedRemoveWithdrawComponent extends PageComponent<SectionModel> {
     return statuscode == BuildingApplicationStatuscode.Registered || statuscode == BuildingApplicationStatuscode.RegisteredKbiValidated;
   }
 
-  async getHeading() {
-    if(await this.isViewOne() || await this.isViewTwo() || await this.isViewThree()) {
+  getHeading() {
+    if(this.isViewOne() || this.isViewTwo() || this.isViewThree()) {
       return `You need to remove ${this.buildingOrSectionName} from the register`;
     } else if (this.isViewFour() || this.isViewFive() || this.isViewSix()) {
       return `You need to withdraw your application for ${this.buildingOrSectionName}`;
@@ -111,23 +123,23 @@ export class NeedRemoveWithdrawComponent extends PageComponent<SectionModel> {
     return "";
   }
 
-  async getFirstSentence() {
-    if(await this.isViewOne() || this.isViewFour() || this.isViewSeven()) {
+  getFirstSentence() {
+    if(this.isViewOne() || this.isViewFour() || this.isViewSeven()) {
       return this.floorsAndHeightSentence;
-    } else if (await this.isViewTwo() || this.isViewFive() || this.isViewEight()) {
+    } else if (this.isViewTwo() || this.isViewFive() || this.isViewEight()) {
       return this.residentialUnitsSentence;
-    } else if (await this.isViewThree() || this.isViewSix() || this.isViewNine()) {
+    } else if (this.isViewThree() || this.isViewSix() || this.isViewNine()) {
       return this.peopleLivingInBuildingSentence;
     }
     return "";
   }
 
-  async getSecondSentence() {
-    if(await this.isViewOne() || this.isViewFour() || this.isViewSeven()) {
+  getSecondSentence() {
+    if(this.isViewOne() || this.isViewFour() || this.isViewSeven()) {
       return this.floorsAndHeightSecondSentence;
-    } else if (await this.isViewTwo() || this.isViewFive() || this.isViewEight()) {
+    } else if (this.isViewTwo() || this.isViewFive() || this.isViewEight()) {
       return this.residentialUnitsSecondSentence;
-    } else if (await this.isViewThree() || this.isViewSix() || this.isViewNine()) {
+    } else if (this.isViewThree() || this.isViewSix() || this.isViewNine()) {
       return this.peopleLivingInBuildingSecondSentence;
     }
     return "";
