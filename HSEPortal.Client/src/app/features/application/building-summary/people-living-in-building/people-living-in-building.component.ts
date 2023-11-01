@@ -9,6 +9,7 @@ import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper"
 import { PageComponent } from "src/app/helpers/page.component";
 import { BuildingSummaryNavigation } from "../building-summary.navigation";
 import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
+import { NeedRemoveWithdrawComponent } from "src/app/features/registration-amendments/change-building-summary/need-remove-withdraw/need-remove-withdraw.component";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
@@ -48,6 +49,9 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
 
   override nextChangeRoute(): string {
     let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    if (section.PeopleLivingInBuilding == "no_wont_move") {
+      return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
+    }
     return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
