@@ -328,6 +328,7 @@ export class Duplicate {
   DuplicateFound?: boolean;
   RegisteredStructureModel?: RegisteredStructureModel;
   BlockIds?: string[];
+  DuplicatedAddressIndex?: string;
 }
 
 export type RegisteredStructureModel = {

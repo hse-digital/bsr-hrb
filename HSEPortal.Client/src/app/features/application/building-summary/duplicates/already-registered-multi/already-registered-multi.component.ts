@@ -34,13 +34,17 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
 
     this.registeredStructure = this.applicationService.currentSection.Duplicate?.RegisteredStructureModel;
 
-    if (!this.registeredStructure || this.registeredStructure.StructureAddress?.Postcode != this.applicationService.currentSectionAddress?.Postcode) {
-      this.GetRegisteredStructure();      
+    this.addressIndex = Number(this.applicationService.currentSection.Duplicate!.DuplicatedAddressIndex);
+
+    let currentAddress = this.changed ? this.applicationService.currentChangedSection.SectionModel!.Addresses[this.addressIndex! - 1] : this.applicationService.currentSectionAddress;
+
+    if (!this.registeredStructure || this.registeredStructure.StructureAddress?.Postcode != currentAddress?.Postcode) {
+      this.GetRegisteredStructure();
     }
   }
 
   private async GetRegisteredStructure() {
-    this.registeredStructure = await this.duplicatesService.GetRegisteredStructure(this.applicationService._currentSectionAddressIndex);
+    this.registeredStructure = await this.duplicatesService.GetRegisteredStructure(this.addressIndex! - 1);
   }
 
   override onSave(applicationService: ApplicationService): void | Promise<void> {
@@ -92,7 +96,7 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
   }
 
   get address() {
-    return this.changed ? this.applicationService.currentChangedSection.SectionModel?.Addresses[this.applicationService._currentSectionAddressIndex] : this.applicationService.currentSectionAddress;;
+    return this.changed ? this.applicationService.currentChangedSection.SectionModel?.Addresses[this.addressIndex!] : this.applicationService.currentSectionAddress;
   }
 
 }
