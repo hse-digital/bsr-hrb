@@ -71,47 +71,47 @@
 
         <ng-container *ngIf="isViewOne()">
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionOne" /> -->
+          <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
         </ng-container>
 
         <ng-container *ngIf="isViewOneA()">
           <ng-container *ngTemplateOutlet="YouMustPay" />
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionOne" /> -->
+          <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
         </ng-container>
 
         <ng-container *ngIf="isViewTwo()">
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionTwo" /> -->
+          <ng-container *ngTemplateOutlet="WithdrawOptionTwo" />
         </ng-container>
 
         <ng-container *ngIf="isViewThree()">
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <!-- <ng-container *ngTemplateOutlet="Remove" /> -->
+          <ng-container *ngTemplateOutlet="Remove" />
         </ng-container>
 
         <ng-container *ngIf="isViewFour()">
           <ng-container *ngTemplateOutlet="WhatsNext" />
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionOne" /> -->
+          <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
         </ng-container>
 
         <ng-container *ngIf="isViewFourA()">
           <ng-container *ngTemplateOutlet="YouMustPayAndKBI" />
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionOne" /> -->
+          <ng-container *ngTemplateOutlet="WithdrawOptionOne" />
         </ng-container>
 
         <ng-container *ngIf="isViewFive()">
           <ng-container *ngTemplateOutlet="WhatsNext" />
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <!-- <ng-container *ngTemplateOutlet="WithdrawOptionTwo" /> -->
+          <ng-container *ngTemplateOutlet="WithdrawOptionTwo" />
         </ng-container>
 
         <ng-container *ngIf="isViewSix()">
           <ng-container *ngTemplateOutlet="WhatsNext" />
           <ng-container *ngTemplateOutlet="MakingChanges" />
-          <!-- <ng-container *ngTemplateOutlet="Remove" /> -->
+          <ng-container *ngTemplateOutlet="Remove" />
         </ng-container>
 
         <ng-container *ngIf="isViewSeven()">
@@ -119,7 +119,7 @@
           <ng-container *ngIf="!isKbiSubmitted">
             <ng-container *ngTemplateOutlet="WhatsNext" />
           </ng-container>          
-          <!-- <ng-container *ngTemplateOutlet="Remove" /> -->
+          <ng-container *ngTemplateOutlet="Remove" />
         </ng-container>
       </ng-container>
     </div>
@@ -174,12 +174,12 @@
 
 <ng-template #WithdrawOptionTwo>
   <h2 class="govuk-heading-m">Withdraw this application</h2>
-  <govuk-body>We have started looking at your application. You can <a class="govuk-link" tabindex="0" role="link">ask to withdraw this application</a> but you will not get a refund.</govuk-body>
+  <govuk-body>We have started looking at your application. You can <a class="govuk-link" [routerLink]="['../registration-amendments/deregister-are-you-sure']" tabindex="0" role="link">ask to withdraw this application</a> but you will not get a refund.</govuk-body>
 </ng-template>
 
 <ng-template #Remove>
   <h2 class="govuk-heading-m">Remove this building from the register</h2>
-  <govuk-body>If it is no longer a residential high-rise building, you can <a class="govuk-link" tabindex="0" role="link">ask to withdraw this application</a>.</govuk-body>
+  <govuk-body>If it is no longer a residential high-rise building, you can <a class="govuk-link" [routerLink]="['../registration-amendments/deregister-are-you-sure']" tabindex="0" role="link">ask to withdraw this application</a>.</govuk-body>
 </ng-template>
 
 <ng-template #WhatElseCanDo>
