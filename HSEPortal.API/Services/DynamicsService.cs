@@ -821,6 +821,7 @@ public class DynamicsService
             bsr_uprn = primaryAddress.UPRN,
             bsr_usrn = primaryAddress.USRN,
             bsr_manualaddress = primaryAddress.IsManual ? YesNoOption.Yes : YesNoOption.No,
+            bsr_localauthorityarea = primaryAddress.AdministrativeArea,
             bsr_classificationcode = primaryAddress.ClassificationCode,
             bsr_postcodeentered = primaryAddress.PostcodeEntered
         };
