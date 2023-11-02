@@ -678,17 +678,22 @@ public class DynamicsService
                     $"bsr_certificatereferencenumber eq '{section.CompletionCertificateReference.EscapeSingleQuote()}' and bsr_issuingorganisation eq '{section.CompletionCertificateIssuer.EscapeSingleQuote()}'"));
             if (!existingCertificate.value.Any())
             {
-                var formatedDate = UnixTimeToDateTime(section.CompletionCertificateDate).AddHours(1).ToString("d", CultureInfo.InvariantCulture);
-                var response = await dynamicsApi.Create("bsr_completioncertificates",
-                    new DynamicsCompletionCertificate
+                var dynamicsValue = new DynamicsCompletionCertificate
                     {
-                        bsr_name =
-                            string.Join(" - ", new[] { section.CompletionCertificateReference, section.CompletionCertificateIssuer }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                        bsr_name = string.Join(" - ", new[] { section.CompletionCertificateReference, section.CompletionCertificateIssuer }.Where(x => !string.IsNullOrWhiteSpace(x))),
                         bsr_certificatereferencenumber = section.CompletionCertificateReference,
                         bsr_issuingorganisation = section.CompletionCertificateIssuer,
-                        structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})",
+                        structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
+                    };
+
+                if (section.CompletionCertificateDate != null && section.CompletionCertificateDate.Length > 0) {
+                    var formatedDate = UnixTimeToDateTime(section.CompletionCertificateDate).AddHours(1).ToString("d", CultureInfo.InvariantCulture);
+                    dynamicsValue = dynamicsValue with {
                         bsr_certificatecompletiondate = formatedDate
-                    }, returnObjectResponse: true);
+                    };
+                }
+
+                var response = await dynamicsApi.Create("bsr_completioncertificates", dynamicsValue, returnObjectResponse: true);
 
                 var certificate = await response.GetJsonAsync<DynamicsCompletionCertificate>();
                 await dynamicsApi.Update($"/bsr_blocks({dynamicsStructure.bsr_blockid})",
