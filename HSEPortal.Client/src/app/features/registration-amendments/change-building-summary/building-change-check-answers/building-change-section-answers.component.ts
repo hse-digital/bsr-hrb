@@ -5,6 +5,7 @@ import { NavigationService } from "src/app/services/navigation.service";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { AddMoreSectionsComponent } from "src/app/features/application/building-summary/add-more-sections/add-more-sections.component";
 import { RegistrationAmendmentsService } from "src/app/services/registration-amendments.service";
+import { AddressModel } from "src/app/services/address.service";
 
 @Component({
     selector: 'building-change-section-answers',
@@ -78,6 +79,10 @@ export class BuildingChangeSectionAnswersComponent implements OnInit {
         if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)!.SectionModel) {
             this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)!.SectionModel = new SectionModel;
         }
+    }
+
+    getAddresses(addresses: AddressModel[]) {
+        return addresses.filter(x => FieldValidations.IsNotNullOrWhitespace(x.Postcode) && FieldValidations.IsNotNullOrWhitespace(x.Address));
     }
 
 }

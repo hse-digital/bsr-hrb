@@ -31,8 +31,8 @@ export class SectionNameComponent extends PageComponent<string> {
   }
 
   override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.Name) this.onInit(this.applicationService);
-    else this.model = this.applicationService.currentChangedSection.SectionModel?.Name;
+    if (!this.applicationService.currentChangedSection?.SectionModel?.Name) this.onInit(this.applicationService);
+    else this.model = this.applicationService.currentChangedSection?.SectionModel?.Name;
   }
 
   override onChange(applicationService: ApplicationService): void | Promise<void> {

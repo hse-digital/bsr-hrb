@@ -1,12 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { AccountablePersonModule } from 'src/app/features/application/accountable-person/accountable-person.module';
-import { AccountablePersonComponent } from 'src/app/features/application/accountable-person/accountable-person/accountable-person.component';
-import { MoreInformationComponent } from 'src/app/features/application/building-summary/more-information/more-information.component';
 import { NumberOfSectionsComponment } from 'src/app/features/application/building-summary/number-of-sections/number-of-sections.component';
-import { BuildingOutOfScopeComponent } from 'src/app/features/application/out-of-scope/out-of-scope.component';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ScopeAndDuplicateHelper } from 'src/app/helpers/scope-duplicate-helper';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStage, ChangeSection, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';

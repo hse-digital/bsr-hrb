@@ -44,16 +44,16 @@ export class SectionAddressComponent implements OnInit, CanActivate {
       this.addressIndex = query['address'];
       this.returnUrl = query['return'];
 
-      let currentAddresses: any = this.applicationService.currentSection.Addresses;
+      let addresses = this.applicationService.currentSection.Addresses;
       let newAddresses = this.applicationService.currentChangedSection?.SectionModel?.Addresses;
       
       if(this.changed && (!newAddresses || newAddresses.length == 0)) {
-        this.applicationService.currentChangedSection.SectionModel!.Addresses = Array<AddressModel>(currentAddresses.length);
+        this.applicationService.currentChangedSection.SectionModel!.Addresses = Array<AddressModel>(addresses.length);
         newAddresses = this.applicationService.currentChangedSection.SectionModel?.Addresses;
       }
-
-      let addresses = new ChangeBuildingSummaryHelper(this.applicationService).getSectionAddresses(currentAddresses, newAddresses!);
-      console.log(addresses);
+      
+      if (this.changed) addresses = new ChangeBuildingSummaryHelper(this.applicationService).getSectionAddresses(addresses, newAddresses!);
+      
       if (!this.addressIndex) {
         this.addressIndex = 1;
       } else if ((addresses.length + 1) < this.addressIndex) {
@@ -68,7 +68,7 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
   async updateSectionAddress(address: AddressModel) {
 
-    //await this.isDuplicate(address);
+    await this.isDuplicate(address);
 
     if(this.changed) this.change(address);
     else this.save(address);
@@ -139,14 +139,12 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
   private SetDuplicationDetected(duplicatedStructure: RegisteredStructureModel) {
     if (!this.applicationService.currentSection.Duplicate) {
-      this.applicationService.currentSection.Duplicate = { DuplicationDetected: [], RegisteredStructureModel: {}};
+      this.applicationService.currentSection.Duplicate = { RegisteredStructureModel: {}};
     }
 
     this.applicationService.currentSection.Duplicate.RegisteredStructureModel = duplicatedStructure;
-
-    if(this.applicationService.currentSection.Duplicate!.DuplicationDetected!.indexOf((this.addressIndex ?? 0).toString()) == -1) {
-      this.applicationService.currentSection.Duplicate!.DuplicationDetected?.push((this.addressIndex ?? 0).toString());
-    };
+    this.applicationService.currentSection.Duplicate.DuplicateFound = true;
+    this.applicationService.currentSection.Duplicate.DuplicatedAddressIndex = (this.addressIndex ?? 1).toString();
   }
 
   private getDuplicationCheckScreenRoute(): string {
@@ -156,7 +154,7 @@ export class SectionAddressComponent implements OnInit, CanActivate {
   }
 
   get buildingOrSectionName() {
-    let newName = this.applicationService.currentChangedSection.SectionModel?.Name;
+    let newName = this.applicationService.currentChangedSection?.SectionModel?.Name ?? "";
     let sectionName = this.changed && FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
     return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
