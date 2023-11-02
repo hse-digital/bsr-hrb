@@ -28,6 +28,7 @@ import { BuildingChangeRemovedSectionAnswersComponent } from './change-building-
 import { RemoveStructureComponent } from './change-building-summary/remove-structure/remove-structure.component';
 import { WhyRemoveComponent } from './change-building-summary/why-remove/why-remove.component';
 import { NeedRemoveWithdrawComponent } from './change-building-summary/need-remove-withdraw/need-remove-withdraw.component';
+import { DeregisterAreYouSureComponent } from './change-deregister/deregister-are-you-sure/deregister-are-you-sure.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -48,6 +49,7 @@ const routes = new HseRoutes([
   HseRoute.protected(RemoveStructureComponent.route, RemoveStructureComponent, RemoveStructureComponent.title),
   HseRoute.protected(WhyRemoveComponent.route, WhyRemoveComponent, WhyRemoveComponent.title),
   HseRoute.protected(NeedRemoveWithdrawComponent.route, NeedRemoveWithdrawComponent, NeedRemoveWithdrawComponent.title),
+  HseRoute.protected(DeregisterAreYouSureComponent.route, DeregisterAreYouSureComponent, DeregisterAreYouSureComponent.title),
 ]);
 
 @NgModule({
@@ -72,7 +74,8 @@ const routes = new HseRoutes([
     BuildingChangeRemovedSectionAnswersComponent,
     RemoveStructureComponent,
     WhyRemoveComponent,
-    NeedRemoveWithdrawComponent
+    NeedRemoveWithdrawComponent,
+    DeregisterAreYouSureComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
