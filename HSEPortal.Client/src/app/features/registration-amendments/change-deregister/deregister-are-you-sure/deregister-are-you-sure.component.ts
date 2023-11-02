@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
-import { NumberOfSectionsComponment } from 'src/app/features/application/building-summary/number-of-sections/number-of-sections.component';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ChangeSection, ApplicationService, Status, BuildingApplicationStage, BuildingApplicationStatuscode } from 'src/app/services/application.service';
-import { BuildingChangeCheckAnswersComponent } from '../../change-building-summary/building-change-check-answers/building-change-check-answers.component';
-import { WhyRemoveComponent } from '../../change-building-summary/why-remove/why-remove.component';
+import { ChangeSection, ApplicationService, BuildingApplicationStatuscode, OutOfScopeReason } from 'src/app/services/application.service';
+import { SectionHeightComponent } from 'src/app/features/application/building-summary/height/height.component';
+import { SectionResidentialUnitsComponent } from 'src/app/features/application/building-summary/residential-units/residential-units.component';
+import { SectionPeopleLivingInBuildingComponent } from 'src/app/features/application/building-summary/people-living-in-building/people-living-in-building.component';
+import { ApplicationCompletedComponent } from 'src/app/features/application/application-completed/application-completed.component';
 
 @Component({
   selector: 'hse-deregister-are-you-sure',
@@ -44,12 +45,31 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    if(this.model == 'yes') {
-      return this.navigationService.navigateRelative(WhyRemoveComponent.route, this.activatedRoute, { index: this.index });
-    } else if (this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections!.filter(x => x.Status != Status.Removed)!.length > 1) {
-      return this.navigationService.navigateRelative(BuildingChangeCheckAnswersComponent.route, this.activatedRoute);
+    let isOutOfScope = this.applicationService.currentChangedSection.SectionModel?.Scope?.IsOutOfScope;
+    if(this.model == 'no') {      
+      return this.navigationService.navigateRelative(this.getNextRoute(isOutOfScope), this.activatedRoute);
+    } else {
+      // let nextRoute = isOutOfScope 
+      //   ? // re enter app number screen 
+      //   : // why screen;
     }
-    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { index: this.index });
+    return true;
+  }
+
+  private getNextRoute(isOutOfScope?: boolean) {
+    let outOfScopeRoute = this.getNextOutOfScopeRoute(this.applicationService.currentChangedSection.SectionModel?.Scope?.OutOfScopeReason);
+    return isOutOfScope 
+      ? `../section/section-${this.applicationService._currentSectionIndex + 1}/${outOfScopeRoute}` 
+      : `../${ApplicationCompletedComponent.route}`;
+  }
+
+  private getNextOutOfScopeRoute(outOfScopeReason?: OutOfScopeReason) {
+    switch(outOfScopeReason) {
+      case OutOfScopeReason.Height: return SectionHeightComponent.route;
+      case OutOfScopeReason.NumberResidentialUnits: return SectionResidentialUnitsComponent.route;
+      case OutOfScopeReason.PeopleLivingInBuilding: return SectionPeopleLivingInBuildingComponent.route;
+    }
+    return ""
   }
 
   get errorMessage() {
