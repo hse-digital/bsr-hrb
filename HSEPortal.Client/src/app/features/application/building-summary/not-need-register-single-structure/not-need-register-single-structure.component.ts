@@ -22,7 +22,7 @@ export class NotNeedRegisterSingleStructureComponent implements CanActivate {
   }
 
   sectionBuildingName(): string {
-    let newName = this.applicationService.currentChangedSection.SectionModel?.Name;
+    let newName = this.applicationService.currentChangedSection?.SectionModel?.Name;
     let sectionName = FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
     return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName! : sectionName!;
   }

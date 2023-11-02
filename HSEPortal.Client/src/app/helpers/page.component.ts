@@ -10,9 +10,6 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot, Ur
 import { ApplicationSubmittedHelper } from "./app-submitted-helper";
 import { GetInjector } from "./injector.helper";
 import { RegistrationAmendmentsService } from "../services/registration-amendments.service";
-import { BuildingChangeCheckAnswersComponent } from "../features/registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component";
-import { BuildingSummaryNavigation } from "../features/application/building-summary/building-summary.navigation";
-import { SectionAddressComponent } from "../features/application/building-summary/address/address.component";
 import { FieldValidations } from "./validators/fieldvalidations";
 
 @Component({ template: '' })
@@ -202,7 +199,7 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   get buildingOrSectionName() {
-    let newName = this.applicationService.currentChangedSection.SectionModel?.Name;
+    let newName = this.applicationService.currentChangedSection?.SectionModel?.Name ?? "";
     let sectionName = this.changed && FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
     return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }

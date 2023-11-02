@@ -325,7 +325,7 @@ export class Duplicate {
   WhyContinue?: string;
   IsDuplicated?: boolean;
   IncludeStructure?: string;
-  DuplicationDetected?: string[];
+  DuplicateFound?: boolean;
   RegisteredStructureModel?: RegisteredStructureModel;
   BlockIds?: string[];
 }
