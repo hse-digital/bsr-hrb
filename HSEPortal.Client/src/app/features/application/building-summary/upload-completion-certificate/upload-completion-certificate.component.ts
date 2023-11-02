@@ -90,9 +90,11 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
   }
 
   isPageOptional(completionCertificateDate?: string) {
-    let date = new Date(Number(completionCertificateDate));
-    let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
-    this.isOptional = date < FirstOctober2023;
+    if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) {
+      let date =  new Date(Number(completionCertificateDate));
+      let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
+      this.isOptional = date < FirstOctober2023;
+    }
   }
 
   override isValid(): boolean {
