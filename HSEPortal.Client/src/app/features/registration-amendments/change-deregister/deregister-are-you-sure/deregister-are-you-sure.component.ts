@@ -43,9 +43,14 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
 
   override async navigateNext(): Promise<boolean | void> {
     let isOutOfScope = this.applicationService.currentChangedSection.SectionModel?.Scope?.IsOutOfScope;
-    if(this.model == 'no') {      
-      let route = this.getNextRouteWhenNo(isOutOfScope);
-      return this.navigationService.navigateRelative(route, this.activatedRoute);
+    if(this.model == 'no') {
+      let outOfScopeRoute = this.getNextOutOfScopeRoute(this.applicationService.currentChangedSection.SectionModel?.Scope?.OutOfScopeReason);
+      if (isOutOfScope && FieldValidations.IsNotNullOrWhitespace(outOfScopeRoute)) {
+        this.applicationService.currentChangedSection.SectionModel!.Scope = {};
+        return this.navigateToSectionPage(outOfScopeRoute);
+      } else {
+        return this.navigationService.navigateRelative(`../${ApplicationCompletedComponent.route}`, this.activatedRoute);
+      }
     } else {
       // let nextRoute = isOutOfScope 
       //   ? // re enter app number screen 
@@ -54,11 +59,11 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
     return true;
   }
 
-  private getNextRouteWhenNo(isOutOfScope?: boolean) {
-    let outOfScopeRoute = this.getNextOutOfScopeRoute(this.applicationService.currentChangedSection.SectionModel?.Scope?.OutOfScopeReason);
-    return isOutOfScope 
-      ? `../section/section-${this.applicationService._currentSectionIndex + 1}/${outOfScopeRoute}` 
-      : `../${ApplicationCompletedComponent.route}`;
+  navigateToSectionPage(url: string, query?: string) {
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = url;
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
+    this.applicationService.updateApplication();
+    return this.navigationService.navigateRelative(`../sections/section-${this.applicationService._currentSectionIndex + 1}/${url}`, this.activatedRoute);
   }
 
   private getNextOutOfScopeRoute(outOfScopeReason?: OutOfScopeReason) {

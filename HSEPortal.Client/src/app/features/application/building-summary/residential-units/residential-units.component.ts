@@ -46,9 +46,18 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
   override nextChangeRoute(): string {
     let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
     if (section.ResidentialUnits! < 2) {
+      this.initScope();
+      this.applicationService.currentChangedSection.SectionModel!.Scope!.IsOutOfScope = true;
+      this.applicationService.currentChangedSection.SectionModel!.Scope!.OutOfScopeReason = OutOfScopeReason.NumberResidentialUnits;
       return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
     }
     return this.buildingSummaryNavigation.getNextChangeRoute(section); 
+  }
+
+  private initScope() {
+    if (!this.applicationService.currentChangedSection.SectionModel!.Scope) {
+      this.applicationService.currentChangedSection.SectionModel!.Scope = {};
+    }
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
