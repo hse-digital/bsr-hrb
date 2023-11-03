@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ChangeSection, ApplicationService, BuildingApplicationStatuscode } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatuscode } from 'src/app/services/application.service';
+import { DeregisterApplicationNumberComponent } from '../deregister-application-number/deregister-application-number.component';
 
 @Component({
   selector: 'hse-deregister-why',
@@ -36,7 +37,7 @@ export class DeregisterWhyComponent extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return true;
+    return this.navigationService.navigateRelative(DeregisterApplicationNumberComponent.route, this.activatedRoute);
   }
 
   async isApplicationAccepted() {

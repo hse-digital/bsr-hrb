@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ChangeSection, ApplicationService, BuildingApplicationStatuscode, OutOfScopeReason } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatuscode, OutOfScopeReason } from 'src/app/services/application.service';
 import { SectionHeightComponent } from 'src/app/features/application/building-summary/height/height.component';
 import { SectionResidentialUnitsComponent } from 'src/app/features/application/building-summary/residential-units/residential-units.component';
 import { SectionPeopleLivingInBuildingComponent } from 'src/app/features/application/building-summary/people-living-in-building/people-living-in-building.component';
 import { ApplicationCompletedComponent } from 'src/app/features/application/application-completed/application-completed.component';
 import { DeregisterWhyComponent } from '../deregister-why/deregister-why.component';
+import { DeregisterApplicationNumberComponent } from '../deregister-application-number/deregister-application-number.component';
 
 @Component({
   selector: 'hse-deregister-are-you-sure',
@@ -59,12 +59,9 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
         return this.navigationService.navigateRelative(`../${ApplicationCompletedComponent.route}`, this.activatedRoute);
       }
     } else {
-      return this.navigationService.navigateRelative(DeregisterWhyComponent.route, this.activatedRoute);
-      // let nextRoute = isOutOfScope 
-      //   ? // re enter app number screen 
-      //   : // why screen;
+      let nextRoute = isOutOfScope ? DeregisterApplicationNumberComponent.route : DeregisterWhyComponent.route;
+      return this.navigationService.navigateRelative(nextRoute, this.activatedRoute);
     }
-    return true;
   }
 
   navigateToSectionPage(url: string, query?: string) {

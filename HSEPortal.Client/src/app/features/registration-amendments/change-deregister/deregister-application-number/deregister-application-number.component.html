@@ -1,0 +1,17 @@
+<govuk-formpage saveAndContinueText="Confirm" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+   
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="input-application-number" [message]="errorMessage" />
+    </govuk-error-summary>
+    
+    <h1 class="govuk-heading-l">Confirm you want to {{isAppAccepted ? "remove" : "withdraw the application for"}} {{applicationService.model.BuildingName}}</h1>
+    
+    <govuk-body>To confirm you want {{isAppAccepted ? "us to remove it from the register," : "to withdraw this application,"}} enter the application reference.</govuk-body>
+
+    <govuk-input id="application-number" label="Application reference"
+        [(model)]="model" labelClass="govuk-label--s"
+        [errorText]="getErrorDescription(hasErrors, errorMessage)"
+        class="govuk-!-margin-bottom-5"
+        (onKeyupEnter)="saveAndContinue()" />
+
+</govuk-formpage>
