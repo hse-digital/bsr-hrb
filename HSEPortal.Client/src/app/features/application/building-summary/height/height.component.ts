@@ -96,7 +96,7 @@ export class SectionHeightComponent extends PageComponent<number> {
 
     if (height < 18 && this.applicationService.currentSection.FloorsAbove! < 7) {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.Height };
-      ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService,);
+      if(!this.changed) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService,);
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;

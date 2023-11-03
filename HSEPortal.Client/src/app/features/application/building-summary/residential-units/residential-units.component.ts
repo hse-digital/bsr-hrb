@@ -96,7 +96,7 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
 
     if (residentialUnits < 2) {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.NumberResidentialUnits };
-      ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService, false, true);
+      if(!this.changed) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService, false, true);
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;
