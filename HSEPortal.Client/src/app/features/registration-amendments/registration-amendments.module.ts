@@ -29,6 +29,7 @@ import { RemoveStructureComponent } from './change-building-summary/remove-struc
 import { WhyRemoveComponent } from './change-building-summary/why-remove/why-remove.component';
 import { NeedRemoveWithdrawComponent } from './change-building-summary/need-remove-withdraw/need-remove-withdraw.component';
 import { DeregisterAreYouSureComponent } from './change-deregister/deregister-are-you-sure/deregister-are-you-sure.component';
+import { DeregisterWhyComponent } from './change-deregister/deregister-why/deregister-why.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -50,6 +51,7 @@ const routes = new HseRoutes([
   HseRoute.protected(WhyRemoveComponent.route, WhyRemoveComponent, WhyRemoveComponent.title),
   HseRoute.protected(NeedRemoveWithdrawComponent.route, NeedRemoveWithdrawComponent, NeedRemoveWithdrawComponent.title),
   HseRoute.protected(DeregisterAreYouSureComponent.route, DeregisterAreYouSureComponent, DeregisterAreYouSureComponent.title),
+  HseRoute.protected(DeregisterWhyComponent.route, DeregisterWhyComponent, DeregisterWhyComponent.title),
 ]);
 
 @NgModule({
@@ -75,7 +77,8 @@ const routes = new HseRoutes([
     RemoveStructureComponent,
     WhyRemoveComponent,
     NeedRemoveWithdrawComponent,
-    DeregisterAreYouSureComponent
+    DeregisterAreYouSureComponent,
+    DeregisterWhyComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

@@ -8,6 +8,7 @@ import { SectionHeightComponent } from 'src/app/features/application/building-su
 import { SectionResidentialUnitsComponent } from 'src/app/features/application/building-summary/residential-units/residential-units.component';
 import { SectionPeopleLivingInBuildingComponent } from 'src/app/features/application/building-summary/people-living-in-building/people-living-in-building.component';
 import { ApplicationCompletedComponent } from 'src/app/features/application/application-completed/application-completed.component';
+import { DeregisterWhyComponent } from '../deregister-why/deregister-why.component';
 
 @Component({
   selector: 'hse-deregister-are-you-sure',
@@ -17,8 +18,6 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
   static route: string = 'deregister-are-you-sure';
   static title: string = "Confirm you want to remove this building - Register a high-rise building - GOV.UK";
 
-  index?: number;
-  changedSection?: ChangeSection;
   isAppAccepted?: boolean;
 
   constructor(activatedRoute: ActivatedRoute) {
@@ -27,10 +26,18 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
     this.isAppAccepted = await this.isApplicationAccepted();
+    this.initDeregister();
+  }
+
+  initDeregister() {
+    if (!this.applicationService.model.RegistrationAmendmentsModel!.Deregister) {
+      this.applicationService.model.RegistrationAmendmentsModel!.Deregister = {}
+    }
+    this.model = this.applicationService.model.RegistrationAmendmentsModel?.Deregister.AreYouSure;
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-
+    this.applicationService.model.RegistrationAmendmentsModel!.Deregister!.AreYouSure = this.model;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -52,6 +59,7 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
         return this.navigationService.navigateRelative(`../${ApplicationCompletedComponent.route}`, this.activatedRoute);
       }
     } else {
+      return this.navigationService.navigateRelative(DeregisterWhyComponent.route, this.activatedRoute);
       // let nextRoute = isOutOfScope 
       //   ? // re enter app number screen 
       //   : // why screen;

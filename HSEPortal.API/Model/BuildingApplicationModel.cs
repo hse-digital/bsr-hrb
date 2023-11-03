@@ -81,7 +81,7 @@ public record SectionModel(string Name,
 
 public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
 
-public record Duplicate(string WhyContinue = null, bool? IsDuplicated = null, 
+public record Duplicate(string WhyContinue = null, bool? IsDuplicated = null,
     string IncludeStructure = null, string[] BlockIds = null, bool? DuplicateFound = null, string DuplicatedAddressIndex = null);
 
 public enum OutOfScopeReason
@@ -212,28 +212,39 @@ public record PaymentInvoiceDetails
     public string Status { get; set; }
 }
 
-public record RegistrationAmendmentsModel {
+public record RegistrationAmendmentsModel
+{
     public ChangeBuildingSummary ChangeBuildingSummary { get; set; }
     public ChangeUser ChangeUser { get; set; }
     public long Date { get; set; }
+    public Deregister Deregister { get; set; }
     public ChangeRequest ChangeRequest { get; set; }
 }
 
-public record ChangeBuildingSummary {
+public record Deregister
+{
+    public string AreYouSure { get; set; }
+    public string Why { get; set; }
+}
+
+public record ChangeBuildingSummary
+{
     public Status Status { get; set; }
     public ChangeSection[] Sections { get; set; }
     public string CurrentChange { get; set; }
     public int CurrentSectionIndex { get; set; }
 }
 
-public record ChangeSection {
+public record ChangeSection
+{
     public Status Status { get; set; }
     public string WhyWantRemoveSection { get; set; }
     public string RemoveStructureAreYouSure { get; set; }
-    public SectionModel SectionModel { get; set; } 
+    public SectionModel SectionModel { get; set; }
 }
 
-public record ChangeUser {
+public record ChangeUser
+{
     public User PrimaryUser { get; set; }
     public User NewPrimaryUser { get; set; }
     public User SecondaryUser { get; set; }
@@ -242,7 +253,8 @@ public record ChangeUser {
     public string WhoBecomeSecondary { get; set; }
 }
 
-public record User {
+public record User
+{
     public Status Status { get; set; }
     public string Firstname { get; set; }
     public string Lastname { get; set; }
@@ -250,7 +262,8 @@ public record User {
     public string PhoneNumber { get; set; }
 }
 
-public enum Status {
+public enum Status
+{
     NoChanges = 0,
     ChangesInProgress = 1,
     ChangesComplete = 2,
@@ -258,7 +271,8 @@ public enum Status {
     Removed = 8
 }
 
-public record ChangeRequest {
+public record ChangeRequest
+{
     public string Name { get; set; }
     public ChangeCategory Category { get; set; }
     public bool Declaration { get; set; }
@@ -266,7 +280,8 @@ public record ChangeRequest {
     public Change[] Change { get; set; }
 }
 
-public record Change {
+public record Change
+{
     public string Name { get; set; }
     public string Table { get; set; }
     public string FieldName { get; set; }
@@ -274,8 +289,9 @@ public record Change {
     public string NewAnswer { get; set; }
 }
 
-public enum ChangeCategory {
-  ApplicationBuildingAmendments,
-  ChangeApplicantUser,
-  DeRegistration
+public enum ChangeCategory
+{
+    ApplicationBuildingAmendments,
+    ChangeApplicantUser,
+    DeRegistration
 }

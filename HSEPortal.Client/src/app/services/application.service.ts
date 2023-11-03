@@ -529,7 +529,7 @@ export class RegistrationAmendmentsModel {
   AccountablePersonStatus?: ChangeAccountablePerson;
   ConnectionStatus: Status = Status.NoChanges;
   SubmitStatus: Status = Status.NoChanges;
-
+  Deregister?: Deregister;
   ChangeUser?: ChangeUser;
   Date?: number;
 
@@ -558,6 +558,11 @@ export class ChangeAccountablePerson {
   NewNamedContactLastName?: string;
   NewNamedContactEmail?: string;
   NewNamedContactPhonenumber?: string;
+}
+
+export class Deregister {
+  AreYouSure?: string;
+  Why?: string;
 }
 
 export class ChangeUser {
