@@ -1,7 +1,7 @@
 <govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
    
     <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-        <govuk-error-link anchorId="yes-input" message="Select the reason why you want to withdraw this application" />
+        <govuk-error-link anchorId="floors-height-input" message="Select the reason why you want to withdraw this application" />
     </govuk-error-summary>
     
     <govuk-radio-group [title]="title" [isPageHeading]=true [errorText]="getErrorDescription(hasErrors, 'Select the reason why you want to withdraw this application')" 
