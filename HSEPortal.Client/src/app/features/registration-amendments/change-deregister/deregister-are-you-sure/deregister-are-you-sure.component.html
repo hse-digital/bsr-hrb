@@ -4,7 +4,7 @@
         <govuk-error-link anchorId="yes-input" [message]="errorMessage" />
     </govuk-error-summary>
     
-    <ng-container *ngIf="isApplicationAccepted(); then applicationAccepted else applicationNotAccepted"/>
+    <ng-container *ngIf="isAppAccepted; then applicationAccepted else applicationNotAccepted"/>
 
     <govuk-body>If you need to re-register {{applicationService.model.BuildingName}} in the future, you will have to pay the application fee again.</govuk-body>
 

@@ -19,17 +19,14 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
 
   index?: number;
   changedSection?: ChangeSection;
+  isAppAccepted?: boolean;
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.index = params['index'];
-      if(!this.index) this.navigationService.navigateRelative(NotFoundComponent.route, this.activatedRoute);
-      this.model = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[this.index ?? 0].RemoveStructureAreYouSure;
-    });
+    this.isAppAccepted = await this.isApplicationAccepted();
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
@@ -47,7 +44,8 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
   override async navigateNext(): Promise<boolean | void> {
     let isOutOfScope = this.applicationService.currentChangedSection.SectionModel?.Scope?.IsOutOfScope;
     if(this.model == 'no') {      
-      return this.navigationService.navigateRelative(this.getNextRoute(isOutOfScope), this.activatedRoute);
+      let route = this.getNextRouteWhenNo(isOutOfScope);
+      return this.navigationService.navigateRelative(route, this.activatedRoute);
     } else {
       // let nextRoute = isOutOfScope 
       //   ? // re enter app number screen 
@@ -56,7 +54,7 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
     return true;
   }
 
-  private getNextRoute(isOutOfScope?: boolean) {
+  private getNextRouteWhenNo(isOutOfScope?: boolean) {
     let outOfScopeRoute = this.getNextOutOfScopeRoute(this.applicationService.currentChangedSection.SectionModel?.Scope?.OutOfScopeReason);
     return isOutOfScope 
       ? `../section/section-${this.applicationService._currentSectionIndex + 1}/${outOfScopeRoute}` 
