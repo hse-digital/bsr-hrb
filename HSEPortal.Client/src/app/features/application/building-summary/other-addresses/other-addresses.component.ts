@@ -67,6 +67,10 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
 
   override nextChangeRoute(): string {
     if (this.hasMoreAddresses == 'no') {
+      if (this.previousAnswer && this.hasMoreAddresses != this.previousAnswer) {
+        this.applicationService.currentChangedSection.SectionModel!.Addresses.splice(this.addressIndex!, 1);
+        this.applicationService.updateApplication();
+      }
       return BuildingChangeCheckAnswersComponent.route;
     }
     return SectionAddressComponent.route;
