@@ -5,6 +5,7 @@ import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendm
 import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode, SectionModel } from 'src/app/services/application.service';
 import { RemoveStructureComponent } from '../remove-structure/remove-structure.component';
 import { DeregisterAreYouSureComponent } from '../../change-deregister/deregister-are-you-sure/deregister-are-you-sure.component';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   selector: 'hse-need-remove-withdraw',
@@ -15,20 +16,21 @@ export class NeedRemoveWithdrawComponent extends PageComponent<SectionModel> {
   static title: string = "Changes you will make next - Register a high-rise building - GOV.UK";
 
   heading?: string;
-  firstSentence?: string;
   secondSentence?: string;
   isAppAccepted?: boolean;
+  shouldRender: boolean = false;
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.shouldRender = false;
     this.model = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
     this.isAppAccepted = await this.isApplicationAccepted();
     this.heading = this.getHeading();
-    this.firstSentence = this.getFirstSentence();
     this.secondSentence = this.getSecondSentence();
+    this.shouldRender = true;
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
@@ -126,11 +128,11 @@ export class NeedRemoveWithdrawComponent extends PageComponent<SectionModel> {
 
   getFirstSentence() {
     if(this.isViewOne() || this.isViewFour() || this.isViewSeven()) {
-      return this.floorsAndHeightSentence;
+      return "floorsAndHeightSentence";
     } else if (this.isViewTwo() || this.isViewFive() || this.isViewEight()) {
-      return this.residentialUnitsSentence;
+      return "residentialUnitsSentence";
     } else if (this.isViewThree() || this.isViewSix() || this.isViewNine()) {
-      return this.peopleLivingInBuildingSentence;
+      return "peopleLivingInBuildingSentence";
     }
     return "";
   }
@@ -146,18 +148,6 @@ export class NeedRemoveWithdrawComponent extends PageComponent<SectionModel> {
     return "";
   }
 
-  get floorsAndHeightSentence() {
-    return `You've told us that ${this.buildingOrSectionName} has ${this.model?.FloorsAbove} floors and is ${this.model?.Height} metres in height.`;
-  }
-
-  get residentialUnitsSentence() {
-    return `You told us that ${this.buildingOrSectionName} has ${this.model?.ResidentialUnits} residential units.`;
-  }
-
-  get peopleLivingInBuildingSentence() {
-    return `You told us that no one is living in ${this.buildingOrSectionName} and people will not be moving in.`;
-  }
-
   get floorsAndHeightSecondSentence() {
     return `High-rise residential buildings have at least 7 floors or are at least 18 metres in height.`;
   }
@@ -168,6 +158,12 @@ export class NeedRemoveWithdrawComponent extends PageComponent<SectionModel> {
 
   get peopleLivingInBuildingSecondSentence() {
     return `High-rise buildings should only be on the register if you plan to allow residents to occupy it.`;
+  }
+
+  override get buildingOrSectionName() {
+    let newName = this.applicationService.currentChangedSection?.SectionModel?.Name ?? "";
+    let sectionName = FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
+    return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 
 }
