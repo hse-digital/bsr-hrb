@@ -16,12 +16,13 @@ import { SectionNameComponent } from 'src/app/features/application/building-summ
   styleUrls: ['./building-change-check-answers.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
+export class BuildingChangeCheckAnswersComponent extends PageComponent<void> {
   static route: string = 'building-change-check-answers';
   static title: string = "Check your answers about the building summary - Register a high-rise building - GOV.UK";
 
   activeSections: SectionModel[] = [];
   changeBuildingSummaryHelper?: ChangeBuildingSummaryHelper;
+  sectionNames: string[] = [];
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
@@ -32,7 +33,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   private initChangeBuildingSummary() {
-    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary) {
+    if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary = {
         Status: Status.NoChanges,
         Sections: this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection))
@@ -41,10 +42,10 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   private initChangeSectionModel(index: number) {
-    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections)
+    if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections)
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections = this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection));
-    
-    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
+
+    if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
         Status: Status.NoChanges,
         SectionModel: new SectionModel()
@@ -66,8 +67,8 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute);
   }
 
-  getSectionName(sectionIndex: number, section?: SectionModel) {
-    return section?.Name ?? `${SectionHelper.getSectionCardinalName(sectionIndex)} high-rise residential structure`;
+  getSectionName(index: number) {
+    return `${this.sectionNames[index]} high-rise residential structure`;
   }
 
   override onInit(applicationService: ApplicationService): void {
@@ -76,12 +77,24 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     this.changeBuildingSummaryHelper = new ChangeBuildingSummaryHelper(this.applicationService);
     this.activeSections = this.changeBuildingSummaryHelper.getSections();
     this.updateBuildingChangeStatus();
+
+    this.sectionNames = this.generateSectionNames();
+  }
+
+  private generateSectionNames() {
+    let sectionCardinalNameIndex = 0;
+    return this.activeSections.map((x, i) => {
+      let index = this.isSectionRemoved(i) ? -1 : sectionCardinalNameIndex;
+      if (!this.isSectionRemoved(i)) sectionCardinalNameIndex++;
+
+      return index != -1 ? SectionHelper.getSectionCardinalName(index) : "";
+    });
   }
 
   private updateBuildingChangeStatus() {
-    if(this.changeBuildingSummaryHelper?.hasBuildingChange()) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Status = this.validateModel() 
-        ? Status.ChangesComplete 
+    if (this.changeBuildingSummaryHelper?.hasBuildingChange()) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Status = this.validateModel()
+        ? Status.ChangesComplete
         : Status.ChangesInProgress;
     } else {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Status = Status.NoChanges;
@@ -136,7 +149,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStage.BlocksInBuildingComplete;
     await this.applicationService.syncBuildingStructures();
 
-    this.applicationService.model.Sections =  this.getActiveSections();
+    this.applicationService.model.Sections = this.getActiveSections();
   }
 
   private getOutOfScopeSections() {

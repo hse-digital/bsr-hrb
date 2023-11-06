@@ -22,7 +22,7 @@
         <ng-container *ngFor="let section of activeSections; let i = index">
           <div class="section-wrapper" *ngIf="!isSectionRemoved(i)">
             <div class="section-header">
-              {{ getSectionName(i, undefined) }}
+              {{ getSectionName(i) }}
               <a class="govuk-link remove-link" (click)="removeStructure(i)">Remove</a>
             </div>
             <div class="section-content">
