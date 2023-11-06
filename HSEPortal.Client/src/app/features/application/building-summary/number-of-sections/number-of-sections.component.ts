@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, SectionModel, Status } from 'src/app/services/application.service';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { BuildingChangeCheckAnswersComponent } from 'src/app/features/registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component';
 import { RegistrationAmendmentsModule } from 'src/app/features/registration-amendments/registration-amendments.module';
+import { SectionNameComponent } from '../name/name.component';
 
 @Component({
   templateUrl: './number-of-sections.component.html'
@@ -45,11 +46,10 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
     return !this.numberOfSectionsHasErrors;
   }
 
-  override navigateNext(): Promise<boolean> {
+  override async navigateNext(): Promise<boolean> {
     let changed = !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary;
-    if (changed && this.applicationService.model.NumberOfSections == "one") {
-      return this.navigationService.navigateRelative(`/${RegistrationAmendmentsModule.baseRoute}/${BuildingChangeCheckAnswersComponent.route}`, this.activatedRoute);
-    }
+    if (changed) return await this.changeBuildingSummary();
+
     // user is changing the answer
     if (this.previousAnswer && this.previousAnswer != this.applicationService.model.NumberOfSections) {
       this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStage.BlocksInBuildingComplete;
@@ -78,6 +78,36 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
     }
 
     return this.navigationService.navigateRelative(`/sections/section-1/${route}`, this.activatedRoute);
+  }
+
+  private async changeBuildingSummary(): Promise<boolean> {
+    if (this.applicationService.model.NumberOfSections == "one") {
+      return this.navigationService.navigateRelative(`/${RegistrationAmendmentsModule.baseRoute}/${BuildingChangeCheckAnswersComponent.route}`, this.activatedRoute);
+    } else {
+      return await this.addAnotherStructure();
+    }
+  }
+
+  private async addAnotherStructure() {
+    let section = this.applicationService.startNewSection();
+    this.initChangeSectionModel(this.applicationService._currentSectionIndex);
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = SectionNameComponent.route;
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
+    await this.applicationService.updateApplication();
+    return this.navigationService.navigateRelative(`sections/${section}/${SectionNameComponent.route}`, this.activatedRoute);
+  }
+
+  initChangeSectionModel(index: number) {
+    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
+        Status: Status.NoChanges,
+        SectionModel: new SectionModel()
+      }
+    } 
+    
+    if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)!.SectionModel) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)!.SectionModel = new SectionModel;
+    }
   }
 
   private returnToCheckAnswers: boolean = false;

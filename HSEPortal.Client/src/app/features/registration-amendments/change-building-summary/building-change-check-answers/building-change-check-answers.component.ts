@@ -63,7 +63,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   navigateToMultipleSections() {
-    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { return: 'sections/check-answers' });
+    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute);
   }
 
   getSectionName(sectionIndex: number, section?: SectionModel) {
