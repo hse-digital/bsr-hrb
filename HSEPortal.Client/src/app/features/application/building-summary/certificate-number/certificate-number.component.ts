@@ -35,14 +35,15 @@ export class CertificateNumberComponent extends PageComponent<string> {
   }
 
   override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateReference) this.onInit(this.applicationService);
-    else {
+    if (!this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateReference) {
+      this.model = this.applicationService.currentSection.CompletionCertificateReference;
+    } else {
       this.model = this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateReference;
-      let completionCertificateDate = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate) 
-        ?  this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
-        : this.applicationService.currentSection.CompletionCertificateDate;
-      this.isPageOptional(completionCertificateDate);
     }
+    let completionCertificateDate = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate) 
+      ?  this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
+      : this.applicationService.currentSection.CompletionCertificateDate;
+    this.isPageOptional(completionCertificateDate);
   }
 
   override onChange(applicationService: ApplicationService): void | Promise<void> {

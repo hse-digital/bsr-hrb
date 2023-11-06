@@ -1,0 +1,27 @@
+<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+   
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="yes-input" [message]="errorMessage" />
+    </govuk-error-summary>
+    
+    <ng-container *ngIf="isAppAccepted; then applicationAccepted else applicationNotAccepted"/>
+
+    <govuk-body>If you need to re-register {{applicationService.model.BuildingName}} in the future, you will have to pay the application fee again.</govuk-body>
+
+    <govuk-radio-group title="Are you sure?" [isPageHeading]=false [errorText]="getErrorDescription(hasErrors, errorMessage)" 
+        [(model)]="model" #field [govukRequired]="field">
+
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="remove-group" id="yes" value="yes" label="Yes" />
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="remove-group" id="no" value="no" label="No" />
+    </govuk-radio-group>
+</govuk-formpage>
+
+<ng-template #applicationNotAccepted>
+    <h1 class="govuk-heading-l">Withdraw the application to register {{applicationService.model.BuildingName}}</h1>
+    <govuk-body>You will lose access to all the information you gave us.</govuk-body>
+</ng-template>
+
+<ng-template #applicationAccepted>
+    <h1 class="govuk-heading-l">Remove {{applicationService.model.BuildingName}} from the public register</h1>
+    <govuk-body>You will lose all the information you gave us.</govuk-body>
+</ng-template>

@@ -46,9 +46,18 @@ export class SectionHeightComponent extends PageComponent<number> {
   override nextChangeRoute(): string {
     let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
     if (section.Height! < 18 && section.FloorsAbove! < 7) {
+      this.initScope();
+      this.applicationService.currentChangedSection.SectionModel!.Scope!.IsOutOfScope = true;
+      this.applicationService.currentChangedSection.SectionModel!.Scope!.OutOfScopeReason = OutOfScopeReason.Height;
       return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
     }
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
+    return this.buildingSummaryNavigation.getNextChangeRoute(section);
+  }
+
+  private initScope() {
+    if (!this.applicationService.currentChangedSection.SectionModel!.Scope) {
+      this.applicationService.currentChangedSection.SectionModel!.Scope = {};
+    }
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -87,7 +96,7 @@ export class SectionHeightComponent extends PageComponent<number> {
 
     if (height < 18 && this.applicationService.currentSection.FloorsAbove! < 7) {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.Height };
-      ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService,);
+      if(!this.changed) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService,);
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;

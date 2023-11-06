@@ -4,6 +4,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode, SectionModel } from 'src/app/services/application.service';
 import { RemoveStructureComponent } from '../remove-structure/remove-structure.component';
+import { DeregisterAreYouSureComponent } from '../../change-deregister/deregister-are-you-sure/deregister-are-you-sure.component';
 
 @Component({
   selector: 'hse-need-remove-withdraw',
@@ -48,7 +49,7 @@ export class NeedRemoveWithdrawComponent extends PageComponent<SectionModel> {
         index: this.applicationService._currentSectionIndex
       });
     }
-    return true;
+    return this.navigationService.navigateRelative(DeregisterAreYouSureComponent.route, this.activatedRoute);
   }
 
   isKbiComplete() {

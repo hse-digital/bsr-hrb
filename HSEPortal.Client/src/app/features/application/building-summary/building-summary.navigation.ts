@@ -342,9 +342,7 @@ class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNod
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
-    let date =  new Date(Number(section.CompletionCertificateDate));
-    let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
-    let isOptional = date < FirstOctober2023;
+    let isOptional = this.isPageOptional(section.CompletionCertificateDate);
 
     if (!section.CompletionCertificateReference && !isOptional) {      
       return CertificateNumberComponent.route;
@@ -353,6 +351,15 @@ class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNod
     }
 
     return this.completionCertificateFileNavigationNode.getNextRoute(section, sectionIndex);
+  }
+
+  isPageOptional(completionCertificateDate?: string) {
+    if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) {
+      let date =  new Date(Number(completionCertificateDate));
+      let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
+      return date < FirstOctober2023;
+    }
+    return true;
   }
 }
 

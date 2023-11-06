@@ -28,6 +28,9 @@ import { BuildingChangeRemovedSectionAnswersComponent } from './change-building-
 import { RemoveStructureComponent } from './change-building-summary/remove-structure/remove-structure.component';
 import { WhyRemoveComponent } from './change-building-summary/why-remove/why-remove.component';
 import { NeedRemoveWithdrawComponent } from './change-building-summary/need-remove-withdraw/need-remove-withdraw.component';
+import { DeregisterAreYouSureComponent } from './change-deregister/deregister-are-you-sure/deregister-are-you-sure.component';
+import { DeregisterWhyComponent } from './change-deregister/deregister-why/deregister-why.component';
+import { DeregisterApplicationNumberComponent } from './change-deregister/deregister-application-number/deregister-application-number.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -48,6 +51,9 @@ const routes = new HseRoutes([
   HseRoute.protected(RemoveStructureComponent.route, RemoveStructureComponent, RemoveStructureComponent.title),
   HseRoute.protected(WhyRemoveComponent.route, WhyRemoveComponent, WhyRemoveComponent.title),
   HseRoute.protected(NeedRemoveWithdrawComponent.route, NeedRemoveWithdrawComponent, NeedRemoveWithdrawComponent.title),
+  HseRoute.protected(DeregisterAreYouSureComponent.route, DeregisterAreYouSureComponent, DeregisterAreYouSureComponent.title),
+  HseRoute.protected(DeregisterWhyComponent.route, DeregisterWhyComponent, DeregisterWhyComponent.title),
+  HseRoute.protected(DeregisterApplicationNumberComponent.route, DeregisterApplicationNumberComponent, DeregisterApplicationNumberComponent.title),
 ]);
 
 @NgModule({
@@ -72,7 +78,10 @@ const routes = new HseRoutes([
     BuildingChangeRemovedSectionAnswersComponent,
     RemoveStructureComponent,
     WhyRemoveComponent,
-    NeedRemoveWithdrawComponent
+    NeedRemoveWithdrawComponent,
+    DeregisterAreYouSureComponent,
+    DeregisterWhyComponent,
+    DeregisterApplicationNumberComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

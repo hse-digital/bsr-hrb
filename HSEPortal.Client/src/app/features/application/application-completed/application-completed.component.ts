@@ -40,8 +40,9 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
     this.applicationStatuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
 
-    var payments = await this.applicationService.getApplicationPayments();
-    if(payments != undefined) {
+    var payments: any = await this.applicationService.getApplicationPayments();
+
+    if(payments != undefined && payments.some((x: { bsr_govukpaystatus: string; }) => x.bsr_govukpaystatus == "success" || x.bsr_govukpaystatus == "open")) {
       this.initPayment(payments);
       this.shouldRender = true;
     } else {
