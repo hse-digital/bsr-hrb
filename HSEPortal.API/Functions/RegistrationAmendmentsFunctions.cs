@@ -88,7 +88,7 @@ public class RegistrationAmendmentsFunctions
 
         ChangeRequest changeRequest = buildingApplicationModel.RegistrationAmendmentsModel.ChangeRequest;
         
-        if (changeRequest != null) {            
+        if (changeRequest != null && changeRequest.Change != null && changeRequest.Change.Length > 0) {            
             var changeRequestResponse = await RaService.CreateChangeRequest(changeRequest, dynamicsBuildingApplication.bsr_buildingapplicationid, applicantReferenceId);
             string changeRequestId = dynamicsService.ExtractEntityIdFromHeader(changeRequestResponse.Headers);
             foreach (Change change in changeRequest.Change) {

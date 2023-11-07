@@ -3,9 +3,10 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService } from 'src/app/services/application.service';
 import { RaConfirmationComponent } from '../ra-confirmation/ra-confirmation.component';
-import { ChangeApplicantModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
+import { ChangeApplicantModelBuilder, ChangeBuildingSummaryModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
 import { ChangeApplicantHelper } from 'src/app/helpers/registration-amendments/change-applicant-helper';
 import { RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
+import { BuildingSummaryChangeModel, ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -17,6 +18,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
 
   private changeApplicantHelper: ChangeApplicantHelper;
   private syncChangeApplicantHelper: SyncChangeApplicantHelper;
+  private syncChangeBuildingSummaryHelper: SyncChangeBuildingSummaryHelper;
 
   loading = false;
 
@@ -24,6 +26,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     super(activatedRoute);
     this.changeApplicantHelper = new ChangeApplicantHelper(this.applicationService);
     this.syncChangeApplicantHelper = new SyncChangeApplicantHelper(this.applicationService, registrationAmendmentsService);
+    this.syncChangeBuildingSummaryHelper = new SyncChangeBuildingSummaryHelper(this.applicationService, registrationAmendmentsService);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> { }
@@ -64,9 +67,18 @@ export class RaDeclarationComponent extends PageComponent<void> {
       this.syncChangeApplicantHelper.createChangeForPrimaryUser();
     }
 
+    if((this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change?.length ?? 0) > 0) {
+      await this.registrationAmendmentsService.syncChangeRequest();
+    }
+
+    this.syncChangeBuildingSummaryHelper.createChangeRequest();
+    this.initialiseChanges();
+    this.syncChangeBuildingSummaryHelper.createChanges();
+    
     await this.registrationAmendmentsService.syncChangeRequest();
 
     await this.syncChangeApplicantHelper.syncChangeApplicant();
+    await this.syncChangeBuildingSummaryHelper.syncChangeBuildingSummary(); // TO-DO
 
   }
 
@@ -149,5 +161,39 @@ export class SyncChangeApplicantHelper {
   createChangeRequest() {
     let changeRequest = this.changeApplicantModelBuilder!.CreateChangeRequest();
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest = changeRequest;
+  }
+}
+
+export class SyncChangeBuildingSummaryHelper {
+  private applicationService: ApplicationService;
+  private registrationAmendmentsService: RegistrationAmendmentsService;
+  private changeBuildingSummaryModelBuilder: ChangeBuildingSummaryModelBuilder
+
+  constructor(applicationService: ApplicationService, registrationAmendmentsService: RegistrationAmendmentsService) {
+    this.applicationService = applicationService;
+    this.registrationAmendmentsService = registrationAmendmentsService;
+    this.changeBuildingSummaryModelBuilder = new ChangeBuildingSummaryModelBuilder()
+      .SetApplicationId(this.applicationService.model.id!)
+      .SetBuildingName(this.applicationService.model.BuildingName!);
+  }
+
+  createChangeRequest() {
+    let changeRequest = this.changeBuildingSummaryModelBuilder!.CreateChangeRequest();
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest = changeRequest;
+  }
+
+  createChanges() {
+    let buildingSummaryChanges: (BuildingSummaryChangeModel | undefined)[] = new ChangeBuildingSummaryHelper(this.applicationService).getOnlyChanges();
+    
+    buildingSummaryChanges.forEach((x, index) => {
+      let change = this.changeBuildingSummaryModelBuilder.SetField(x?.Field!)
+      .Change(x?.OldValue!, x?.NewValue!).CreateChange();
+  
+      this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change?.push(change);
+    });
+  }
+
+  syncChangeBuildingSummary() {
+
   }
 }

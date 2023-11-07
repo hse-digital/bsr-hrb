@@ -57,3 +57,10 @@ export class ChangeApplicantModelBuilder extends ChangesDirector {
     protected override ReviewRequired: boolean = false;
     protected override Declaration: boolean = true;
 }
+
+export class ChangeBuildingSummaryModelBuilder extends ChangesDirector {
+    protected override Category: ChangeCategory = ChangeCategory.ApplicationBuildingAmendments;
+    protected override Table: string = "Structure";
+    protected override ReviewRequired: boolean = true;
+    protected override Declaration: boolean = true;
+}

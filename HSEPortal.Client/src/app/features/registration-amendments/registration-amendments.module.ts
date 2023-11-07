@@ -20,6 +20,8 @@ import { RaDeclarationComponent } from './ra-declaration/ra-declaration.componen
 import { KeepSecondaryUserComponent } from './change-applicant/keep-secondary-user/keep-secondary-user.component';
 import { RaConfirmationComponent } from './ra-confirmation/ra-confirmation.component';
 import { RaCheckAnswersComponent } from './ra-check-answers/ra-check-answers.component';
+import { RaCheckAnswersUsersComponent } from './ra-check-answers/ra-check-answers-users.component';
+import { RaCheckAnswersBuildingSummaryComponent } from './ra-check-answers/ra-check-answers-building-summary.component';
 import { RaSummaryPageComponent } from './ra-summary-page/ra-summary-page.component';
 import { RaSummaryChangeApplicantComponent } from './ra-summary-page/ra-summary-change-applicant.component';
 import { BuildingChangeCheckAnswersComponent } from './change-building-summary/building-change-check-answers/building-change-check-answers.component';
@@ -71,6 +73,8 @@ const routes = new HseRoutes([
     KeepSecondaryUserComponent,
     RaConfirmationComponent,
     RaCheckAnswersComponent,
+    RaCheckAnswersUsersComponent,
+    RaCheckAnswersBuildingSummaryComponent,
     RaSummaryPageComponent,
     RaSummaryChangeApplicantComponent,
     BuildingChangeCheckAnswersComponent,
@@ -81,7 +85,7 @@ const routes = new HseRoutes([
     NeedRemoveWithdrawComponent,
     DeregisterAreYouSureComponent,
     DeregisterWhyComponent,
-    DeregisterApplicationNumberComponent
+    DeregisterApplicationNumberComponent,
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
