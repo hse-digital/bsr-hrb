@@ -68,11 +68,19 @@ export class AccountablePersonComponent extends PageComponent<string> {
   }
 
   override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    
+    this.model = applicationService.model.RegistrationAmendmentsModel?.ChangeAccountablePerson?.PrincipalAccountableType;
   }
 
   override onChange(applicationService: ApplicationService): void | Promise<void> {
-    
+    if (!applicationService.model.RegistrationAmendmentsModel) {
+      applicationService.model.RegistrationAmendmentsModel = {};
+    }
+
+    if (!applicationService.model.RegistrationAmendmentsModel.ChangeAccountablePerson) {
+      applicationService.model.RegistrationAmendmentsModel.ChangeAccountablePerson = {};
+    }
+
+    applicationService.model.RegistrationAmendmentsModel!.ChangeAccountablePerson!.PrincipalAccountableType = this.model;
   }
 
   override navigateToNextChange(applicationService: ApplicationService): void {

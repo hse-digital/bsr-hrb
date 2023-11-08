@@ -92,6 +92,7 @@ public class BuildingApplicationFunctions
             
             if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
+                
                 return await request.CreateObjectResponseAsync(application);
             }
         }

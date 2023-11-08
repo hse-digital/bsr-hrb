@@ -526,9 +526,9 @@ export class PaymentInvoiceDetails {
 
 export class RegistrationAmendmentsModel {
   ChangeBuildingSummary?: ChangeBuildingSummary;
-  AccountablePersonStatus?: ChangeAccountablePerson;
-  ConnectionStatus: Status = Status.NoChanges;
-  SubmitStatus: Status = Status.NoChanges;
+  ChangeAccountablePerson?: ChangeAccountablePerson;
+  ConnectionStatus?: Status = Status.NoChanges;
+  SubmitStatus?: Status = Status.NoChanges;
   Deregister?: Deregister;
   ChangeUser?: ChangeUser;
   Date?: number;
@@ -551,9 +551,10 @@ export class ChangeSection {
 }
 
 export class ChangeAccountablePerson {
-  Status: Status = Status.NoChanges;
+  Status?: Status = Status.NoChanges;
 
   NewPap?: boolean;
+  PrincipalAccountableType?: string;
 
   NewNamedContact?: boolean;
   NewNamedContactFirstName?: string;
