@@ -5,6 +5,8 @@ namespace HSEPortal.Domain.Entities;
 public record DynamicsChangeRequest(
     [property: JsonPropertyName("bsr_buildingapplicationid@odata.bind")]
     string buildingApplicationId = null,
+    [property: JsonPropertyName("bsr_building@odata.bind")]
+    string building = null,
     [property: JsonPropertyName("bsr_changecategoryid@odata.bind")]
     string changeCategory = null,
     string bsr_changedescription = null,

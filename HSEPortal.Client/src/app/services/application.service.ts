@@ -4,7 +4,7 @@ import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
 import { FieldValidations } from "../helpers/validators/fieldvalidations";
-import { ChangeRequest } from "./registration-amendments.service";
+import { CancellationReason, ChangeRequest } from "./registration-amendments.service";
 import { Sanitizer } from "./http-interceptor";
 
 @Injectable()
@@ -310,6 +310,7 @@ export class SectionModel {
 
   Scope?: Scope;
   Duplicate?: Duplicate;
+  CancellationReason?: CancellationReason;
 }
 
 export class Scope {
@@ -533,7 +534,7 @@ export class RegistrationAmendmentsModel {
   ChangeUser?: ChangeUser;
   Date?: number;
 
-  ChangeRequest?: ChangeRequest;
+  ChangeRequest?: ChangeRequest[];
 }
 
 export class ChangeBuildingSummary {

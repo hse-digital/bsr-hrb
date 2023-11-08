@@ -46,7 +46,8 @@ export abstract class ChangesDirector {
         return {
             Category: this.Category,
             ReviewRequired: this.ReviewRequired,
-            Declaration: this.Declaration
+            Declaration: this.Declaration,
+            Change: []
         };
     }
 }
@@ -60,6 +61,13 @@ export class ChangeApplicantModelBuilder extends ChangesDirector {
 
 export class ChangeBuildingSummaryModelBuilder extends ChangesDirector {
     protected override Category: ChangeCategory = ChangeCategory.ApplicationBuildingAmendments;
+    protected override Table: string = "Structure";
+    protected override ReviewRequired: boolean = true;
+    protected override Declaration: boolean = true;
+}
+
+export class RemovedBuildingModelBuilder extends ChangesDirector {
+    protected override Category: ChangeCategory = ChangeCategory.DeRegistration;
     protected override Table: string = "Structure";
     protected override ReviewRequired: boolean = true;
     protected override Declaration: boolean = true;

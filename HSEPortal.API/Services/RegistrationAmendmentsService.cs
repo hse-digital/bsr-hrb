@@ -41,12 +41,13 @@ public class RegistrationAmendmentsService
         return contact with { Id = existingContact.contactid };
     }
 
-    public async Task<IFlurlResponse> CreateChangeRequest(ChangeRequest changeRequest, string bsr_buildingapplicationid, string applicantReferenceId)
+    public async Task<IFlurlResponse> CreateChangeRequest(ChangeRequest changeRequest, string bsr_buildingapplicationid, string _bsr_building_value, string applicantReferenceId)
     {
         DynamicsChangeRequest dynamicsChangeRequest = new DynamicsChangeRequest {
             bsr_declaration = changeRequest.Declaration,
             bsr_reviewrequired = changeRequest.ReviewRequired,
             buildingApplicationId = $"/bsr_buildingapplications({bsr_buildingapplicationid})",
+            building = $"/bsr_buildings({_bsr_building_value})",
             changeCategory = $"/bsr_changecategories({DynamicsChangeCategory[changeRequest.Category]})",
             statuscode = 760_810_001 //submitted         
         };
@@ -55,7 +56,7 @@ public class RegistrationAmendmentsService
             dynamicsChangeRequest = dynamicsChangeRequest with {applicantReferenceId = $"/contacts({applicantReferenceId})"};
         }
 
-        return await dynamicsApi.Create("bsr_changerequests", dynamicsChangeRequest);
+        return await dynamicsApi.Create("bsr_changerequests", dynamicsChangeRequest, true);
     }
 
     public async Task<IFlurlResponse> CreateChange(Change change, string changeRequestId)
@@ -97,4 +98,9 @@ public class RegistrationAmendmentsService
         {ChangeCategory.DeRegistration, "71e16861-6051-ee11-be6f-002248c725da"},
     };
 
+    public async Task<DynamicsStructure> GetDynamicsStructure(string structureName, string postcode, string applicationId)
+    {
+        var application = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+        return await dynamicsService.FindExistingStructureAsync(structureName, postcode, application.bsr_buildingapplicationid);
+    }
 }

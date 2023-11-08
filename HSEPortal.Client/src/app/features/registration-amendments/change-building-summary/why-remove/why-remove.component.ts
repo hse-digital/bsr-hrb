@@ -6,6 +6,8 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ChangeSection, ApplicationService, Status } from 'src/app/services/application.service';
 import { BuildingChangeCheckAnswersComponent } from '../building-change-check-answers/building-change-check-answers.component';
 import { NumberOfSectionsComponment } from 'src/app/features/application/building-summary/number-of-sections/number-of-sections.component';
+import { Dictionary } from 'src/app/services/file-upload.service';
+import { CancellationReason } from 'src/app/services/registration-amendments.service';
 
 @Component({
   selector: 'hse-why-remove',
@@ -32,7 +34,17 @@ export class WhyRemoveComponent  extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[this.index ?? 0].WhyWantRemoveSection = this.model;
+    this.applicationService.model.Sections[this.index ?? 0].CancellationReason = this.CancellationReasonMapper[this.model ?? ""];
   }
+
+  private CancellationReasonMapper: Record<string, CancellationReason> = {
+    "floors_height": CancellationReason.FloorsHeight,
+    "residential_units": CancellationReason.ResidentialUnits,
+    "everyone_moved_out": CancellationReason.EveryoneMovedOut,
+    "incorrectly_registered": CancellationReason.IncorrectlyRegistered,
+    "no_connected": CancellationReason.NoConnected,
+    "": CancellationReason.NoCancellationReason
+  };
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections && this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections?.length > 0;

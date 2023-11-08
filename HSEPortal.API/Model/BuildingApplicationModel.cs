@@ -76,7 +76,7 @@ public record BuildingApplicationModel(
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
     string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange, string WhoIssuedCertificate, string CompletionCertificateDate,
-    string CompletionCertificateIssuer, string CompletionCertificateReference, FileUploadModel CompletionCertificateFile, Scope Scope, string Statecode, BuildingAddress[] Addresses = null,
+    string CompletionCertificateIssuer, string CompletionCertificateReference, FileUploadModel CompletionCertificateFile, Scope Scope, string Statecode, CancellationReason CancellationReason = CancellationReason.NoCancellationReason, BuildingAddress[] Addresses = null,
     Duplicate Duplicate = null);
 
 public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
@@ -218,7 +218,7 @@ public record RegistrationAmendmentsModel
     public ChangeUser ChangeUser { get; set; }
     public long Date { get; set; }
     public Deregister Deregister { get; set; }
-    public ChangeRequest ChangeRequest { get; set; }
+    public ChangeRequest[] ChangeRequest { get; set; }
 }
 
 public record Deregister
@@ -278,6 +278,7 @@ public record ChangeRequest
     public bool Declaration { get; set; }
     public bool ReviewRequired { get; set; }
     public Change[] Change { get; set; }
+    public Status Status { get; set; }
 }
 
 public record Change
@@ -294,4 +295,13 @@ public enum ChangeCategory
     ApplicationBuildingAmendments,
     ChangeApplicantUser,
     DeRegistration
+}
+
+public enum CancellationReason {
+  FloorsHeight,
+  ResidentialUnits,
+  EveryoneMovedOut,
+  IncorrectlyRegistered,
+  NoConnected,
+  NoCancellationReason
 }

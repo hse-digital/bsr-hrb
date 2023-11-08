@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, Status } from 'src/app/services/application.service';
 import { RaConfirmationComponent } from '../ra-confirmation/ra-confirmation.component';
-import { ChangeApplicantModelBuilder, ChangeBuildingSummaryModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
+import { ChangeApplicantModelBuilder, ChangeBuildingSummaryModelBuilder, RemovedBuildingModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
 import { ChangeApplicantHelper } from 'src/app/helpers/registration-amendments/change-applicant-helper';
-import { RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
+import { Change, ChangeRequest, RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
 import { BuildingSummaryChangeModel, ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
+import { AddressModel } from 'src/app/services/address.service';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -56,36 +57,58 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.loading = true;
     this.applicationService.model.RegistrationAmendmentsModel!.Date = Date.now();
     
-    this.syncChangeApplicantHelper.createChangeRequest();
-    this.initialiseChanges();
-    
-    if (this.changeApplicantHelper.isSecondaryUserRemoved() || this.changeApplicantHelper.newSecondaryUserExists()) {
-      this.syncChangeApplicantHelper.createChangeForSecondaryUser();
-    }
-
-    if (this.changeApplicantHelper.newPrimaryUserExists()) {
-      this.syncChangeApplicantHelper.createChangeForPrimaryUser();
-    }
-
-    if((this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change?.length ?? 0) > 0) {
-      await this.registrationAmendmentsService.syncChangeRequest();
-    }
-
-    this.syncChangeBuildingSummaryHelper.createChangeRequest();
-    this.initialiseChanges();
-    this.syncChangeBuildingSummaryHelper.createChanges();
+    this.createUserChangeRequest();
+    this.createBuildingSummaryChangeRequest();
+    this.createRemovedStructureChangeRequest();
     
     await this.registrationAmendmentsService.syncChangeRequest();
+    
+    this.updateChangeRequestStatus();
+    await this.applicationService.updateApplication();
 
     await this.syncChangeApplicantHelper.syncChangeApplicant();
-    await this.syncChangeBuildingSummaryHelper.syncChangeBuildingSummary(); // TO-DO
+    await this.syncChangeBuildingSummaryHelper.syncRemovedStructures();
 
   }
 
-  initialiseChanges() {
-    if (!this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest!.Change = [];
+  private createUserChangeRequest() {
+    let changeRequest = this.syncChangeApplicantHelper.createChangeRequest();
+    changeRequest.Change = [];
+    
+    if (this.changeApplicantHelper.isSecondaryUserRemoved() || this.changeApplicantHelper.newSecondaryUserExists()) {
+      let change = this.syncChangeApplicantHelper.createChangeForSecondaryUser();
+      changeRequest.Change.push(change);
     }
+
+    if (this.changeApplicantHelper.newPrimaryUserExists()) {
+      let change = this.syncChangeApplicantHelper.createChangeForPrimaryUser();
+      changeRequest.Change.push(change);
+    }
+
+    this.addChangeRequestToModel(changeRequest);
+  }
+
+  private createBuildingSummaryChangeRequest() {
+    let changeRequest = this.syncChangeBuildingSummaryHelper.createChangeRequest();
+    let changes = this.syncChangeBuildingSummaryHelper.createChanges();
+    changeRequest.Change?.push(...changes);
+    this.addChangeRequestToModel(changeRequest);
+  }
+
+  private createRemovedStructureChangeRequest() {
+    let changeRequest = this.syncChangeBuildingSummaryHelper.createChangeRequestForRemovedStructures();
+    if (!!changeRequest) this.addChangeRequestToModel(changeRequest);
+  }
+
+  private addChangeRequestToModel(changeRequest: ChangeRequest) {
+    if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest = [];
+    }
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest?.push(changeRequest);
+  }
+
+  private updateChangeRequestStatus() {
+    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.forEach(x => x.Status = Status.ChangesSubmitted);
   }
 
   get onlyRegistrationInformation() {
@@ -142,32 +165,28 @@ export class SyncChangeApplicantHelper {
     let originalAnswer = this.changeApplicantHelper.getOriginalPrimaryAnswer();
     let newAnswer = this.changeApplicantHelper.getNewPrimaryAnswer();
   
-    let change = this.changeApplicantModelBuilder.SetField("Primary Applicant")
+    return this.changeApplicantModelBuilder.SetField("Primary Applicant")
       .Change(originalAnswer, newAnswer).CreateChange();
-
-    this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change?.push(change);
   }
 
   public createChangeForSecondaryUser() {
     let originalAnswer = this.changeApplicantHelper.getOriginalSecondaryAnswer();
     let newAnswer = this.changeApplicantHelper.getNewSecondaryAnswer();
   
-    let change = this.changeApplicantModelBuilder.SetField("Secondary Applicant")
+    return this.changeApplicantModelBuilder.SetField("Secondary Applicant")
       .Change(originalAnswer, newAnswer).CreateChange();
-
-    this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change?.push(change);
   }
 
   createChangeRequest() {
-    let changeRequest = this.changeApplicantModelBuilder!.CreateChangeRequest();
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest = changeRequest;
+    return this.changeApplicantModelBuilder!.CreateChangeRequest();
   }
 }
 
 export class SyncChangeBuildingSummaryHelper {
   private applicationService: ApplicationService;
   private registrationAmendmentsService: RegistrationAmendmentsService;
-  private changeBuildingSummaryModelBuilder: ChangeBuildingSummaryModelBuilder
+  private changeBuildingSummaryModelBuilder: ChangeBuildingSummaryModelBuilder;
+  private removedBuildingModelBuilder: RemovedBuildingModelBuilder;
 
   constructor(applicationService: ApplicationService, registrationAmendmentsService: RegistrationAmendmentsService) {
     this.applicationService = applicationService;
@@ -175,25 +194,43 @@ export class SyncChangeBuildingSummaryHelper {
     this.changeBuildingSummaryModelBuilder = new ChangeBuildingSummaryModelBuilder()
       .SetApplicationId(this.applicationService.model.id!)
       .SetBuildingName(this.applicationService.model.BuildingName!);
+    
+    this.removedBuildingModelBuilder = new RemovedBuildingModelBuilder()
+      .SetApplicationId(this.applicationService.model.id!)
+      .SetBuildingName(this.applicationService.model.BuildingName!);
+    
   }
 
   createChangeRequest() {
-    let changeRequest = this.changeBuildingSummaryModelBuilder!.CreateChangeRequest();
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest = changeRequest;
+    return this.changeBuildingSummaryModelBuilder!.CreateChangeRequest();
   }
 
-  createChanges() {
-    let buildingSummaryChanges: (BuildingSummaryChangeModel | undefined)[] = new ChangeBuildingSummaryHelper(this.applicationService).getOnlyChanges();
-    
+  createChanges(): Change[] {
+    let helper = new ChangeBuildingSummaryHelper(this.applicationService);
+    let buildingSummaryChanges: BuildingSummaryChangeModel[] = helper.getOnlyChanges();
+    let joinAddresses = (addresses?: AddressModel[]) => !!addresses ? addresses.map(x => x.Postcode).join(" - ") : "";
+    let changes: any = [];
+
     buildingSummaryChanges.forEach((x, index) => {
-      let change = this.changeBuildingSummaryModelBuilder.SetField(x?.Field!)
-      .Change(x?.OldValue!, x?.NewValue!).CreateChange();
+      let change = (x?.IsAddress ?? false)
+        ? this.changeBuildingSummaryModelBuilder.SetField(x?.Field!).Change(joinAddresses(x?.OldAddresses!), joinAddresses(x?.NewAddresses!)).CreateChange()
+        : this.changeBuildingSummaryModelBuilder.SetField(x?.Field!).Change(x?.OldValue!, x?.NewValue!).CreateChange();
   
-      this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.Change?.push(change);
+      changes.push(change);
     });
+
+    return changes;
   }
 
-  syncChangeBuildingSummary() {
-
+  createChangeRequestForRemovedStructures(): ChangeRequest | undefined {
+    let helper = new ChangeBuildingSummaryHelper(this.applicationService);
+    let removedStructures = helper.getRemovedStructures();
+    if (!removedStructures || removedStructures.length == 0) return undefined
+    return this.removedBuildingModelBuilder.CreateChangeRequest();
   }
+
+  async syncRemovedStructures() {
+    await this.registrationAmendmentsService.syncRemovedStructures();
+  }
+
 }
