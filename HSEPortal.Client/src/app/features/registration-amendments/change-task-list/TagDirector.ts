@@ -62,7 +62,10 @@ export class BuildingSummaryTag extends ChangeTaskListTag {
 
 export class AccountablePersonTag extends ChangeTaskListTag {
     getTag(): TagStatus {
-        return TagStatus.NotYetAvailable;
+        let changeApModel = this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus;
+        if (!changeApModel) return TagStatus.NoChangesMade;
+
+        return TagStatus.NoChangesMade;
     }
 }
 

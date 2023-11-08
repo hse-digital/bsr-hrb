@@ -31,6 +31,8 @@ import { NeedRemoveWithdrawComponent } from './change-building-summary/need-remo
 import { DeregisterAreYouSureComponent } from './change-deregister/deregister-are-you-sure/deregister-are-you-sure.component';
 import { DeregisterWhyComponent } from './change-deregister/deregister-why/deregister-why.component';
 import { DeregisterApplicationNumberComponent } from './change-deregister/deregister-application-number/deregister-application-number.component';
+import { SamePapComponent } from './change-accountable-persons/same-pap/same-pap.component';
+import { ApChangeCheckAnswersComponent } from './change-accountable-persons/ap-change-check-answers/ap-change-check-answers.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -54,6 +56,8 @@ const routes = new HseRoutes([
   HseRoute.protected(DeregisterAreYouSureComponent.route, DeregisterAreYouSureComponent, DeregisterAreYouSureComponent.title),
   HseRoute.protected(DeregisterWhyComponent.route, DeregisterWhyComponent, DeregisterWhyComponent.title),
   HseRoute.protected(DeregisterApplicationNumberComponent.route, DeregisterApplicationNumberComponent, DeregisterApplicationNumberComponent.title),
+  HseRoute.protected(SamePapComponent.route, SamePapComponent, SamePapComponent.title),
+  HseRoute.protected(ApChangeCheckAnswersComponent.route, ApChangeCheckAnswersComponent, ApChangeCheckAnswersComponent.title),
 ]);
 
 @NgModule({
@@ -81,7 +85,9 @@ const routes = new HseRoutes([
     NeedRemoveWithdrawComponent,
     DeregisterAreYouSureComponent,
     DeregisterWhyComponent,
-    DeregisterApplicationNumberComponent
+    DeregisterApplicationNumberComponent,
+    SamePapComponent,
+    ApChangeCheckAnswersComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

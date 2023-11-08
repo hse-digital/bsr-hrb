@@ -66,11 +66,14 @@ export abstract class PageComponent<T> implements OnInit {
   }
   
   async ngOnInit() {
-    if (this.changed) {
-      await this.onInitChange(this.applicationService);
-    } else {
-      await this.onInit(this.applicationService);
-    }
+    this.activatedRoute.queryParams.subscribe(async params => {
+      this.changed = params['change'] == true;
+      if (this.changed) {
+        await this.onInitChange(this.applicationService);
+      } else {
+        await this.onInit(this.applicationService);
+      }
+    });
   }
 
   async saveAndContinue(): Promise<void> {

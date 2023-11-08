@@ -20,8 +20,8 @@
               </li>
               <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
-                  <span task *ngIf="true">Accountable persons</span>
-                  <a task *ngIf="false" class="govuk-link" (keyup.enter)="navigateToPap()" (click)="navigateToPap()" role="link" tabindex="0">Accountable persons</a>
+                  <span task *ngIf="false">Accountable persons</span>
+                  <a task class="govuk-link"  [routerLink]="['../same-pap']" role="link" tabindex="0">Accountable persons</a>
                 </span>
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.AccountablePerson)}}">{{getTagFor(taskListSteps.AccountablePerson)}}</govuk-tag>
               </li>

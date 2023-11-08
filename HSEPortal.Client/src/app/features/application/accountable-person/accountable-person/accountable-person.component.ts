@@ -29,7 +29,6 @@ export class AccountablePersonComponent extends PageComponent<string> {
 
     await this.applicationService.updateApplication();
     await this.applicationService.updateDynamicsAccountablePersonsStage();
-
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -68,4 +67,15 @@ export class AccountablePersonComponent extends PageComponent<string> {
     }
   }
 
+  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
+    
+  }
+
+  override onChange(applicationService: ApplicationService): void | Promise<void> {
+    
+  }
+
+  override navigateToNextChange(applicationService: ApplicationService): void {
+    
+  }
 }

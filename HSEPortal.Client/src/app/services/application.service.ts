@@ -553,6 +553,8 @@ export class ChangeSection {
 export class ChangeAccountablePerson {
   Status: Status = Status.NoChanges;
 
+  NewPap?: boolean;
+
   NewNamedContact?: boolean;
   NewNamedContactFirstName?: string;
   NewNamedContactLastName?: string;

@@ -80,8 +80,6 @@ const routes = new HseRoutes([
     HseRoute.protected(OrganisationTypeComponent.route, OrganisationTypeComponent, OrganisationTypeComponent.title),
     HseRoute.protected(OrganisationNameComponent.route, OrganisationNameComponent, OrganisationNameComponent.title),
     HseRoute.protected(PapWhoAreYouComponent.route, PapWhoAreYouComponent, PapWhoAreYouComponent.title),
-    
-    
   ]))
 ]);
 
@@ -118,7 +116,7 @@ const routes = new HseRoutes([
     OrganisationTypeComponent,
     OrganisationNameComponent,
     AreasAccountabilityComponent,
-    NotAllocatedAccountabilityAreasComponent,
+    NotAllocatedAccountabilityAreasComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [
