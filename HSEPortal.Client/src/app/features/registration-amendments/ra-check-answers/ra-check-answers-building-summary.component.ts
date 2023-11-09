@@ -50,4 +50,8 @@ export class RaCheckAnswersBuildingSummaryComponent {
           address: addressIndex + 1
       });
   }
+
+  areStructuresDifferent() {
+    return this.OldStructures.length != this.NewStructures.length || this.OldStructures.some((x, index) => x != this.NewStructures[index]);
+  }
 }

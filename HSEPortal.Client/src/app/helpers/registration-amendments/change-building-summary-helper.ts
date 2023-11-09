@@ -1,5 +1,5 @@
 import { AddressModel } from "src/app/services/address.service";
-import { SectionModel, ChangeSection, ApplicationService } from "src/app/services/application.service";
+import { SectionModel, ChangeSection, ApplicationService, Status } from "src/app/services/application.service";
 import { FieldValidations } from "../validators/fieldvalidations";
 
 export type BuildingSummaryChangeModel = {
@@ -146,7 +146,7 @@ export class ChangeBuildingSummaryHelper {
 
     getOnlyChanges(): BuildingSummaryChangeModel[] {
         return this.applicationService.model.Sections.flatMap((section, index) => {
-            let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections ?? new Array<ChangeSection>(this.applicationService.model.Sections.length);
+            let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections.filter(x => x.Status != Status.Removed) ?? new Array<ChangeSection>(this.applicationService.model.Sections.length);
             return this.getSectionChanges(section, changedSections[index]?.SectionModel ?? new SectionModel(), index);
         });
     }
@@ -196,6 +196,8 @@ export class ChangeBuildingSummaryHelper {
 
     getSectionAddressChanges(SectionAddresses: AddressModel[], ChangeSectionAddresses: AddressModel[], fieldName: string, title: string, route: string, sectionName: string, sectionIndex: number): BuildingSummaryChangeModel | undefined {
         if (!SectionAddresses || SectionAddresses.length == 0 || SectionAddresses.every(x => x == null || x == undefined)) return undefined;
+        if (!ChangeSectionAddresses || ChangeSectionAddresses.length == 0 || ChangeSectionAddresses.every(x => x == null || x == undefined)) return undefined;
+        
         return {
             Title: title,
             Field: fieldName,
@@ -211,7 +213,13 @@ export class ChangeBuildingSummaryHelper {
     // Names
 
     getSectionNames(): string[] {
-        return this.getSections().map(x => x.Name!);
+        return this.getSections().filter((x, index) => this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[index].Status != Status.Removed).map(x => x.Name!);
+    }
+
+    // Removed structures that already exists
+
+    getRemovedStructures() {
+        return this.applicationService.model.Sections.filter((x, index) => this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[index].Status == Status.Removed && !!x.Addresses && x.Addresses.length > 0);
     }
 
 }
