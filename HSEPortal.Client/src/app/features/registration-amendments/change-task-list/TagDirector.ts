@@ -112,15 +112,20 @@ export class SubmitTag extends ChangeTaskListTag {
     getTag(): TagStatus {
         let changeUserTagStatus = new ChangesTag(this.applicationService).getTag();
         let changeBuildingSummaryTagStatus = new BuildingSummaryTag(this.applicationService).getTag();
-        let canSubmit = this.isNotSubmittedOrNotStarted(changeUserTagStatus) && this.isNotSubmittedOrNotStarted(changeBuildingSummaryTagStatus);
+ 
+        let canSubmit = !this.areAllNoChangesMade([changeUserTagStatus, changeBuildingSummaryTagStatus]) && this.isNotSubmittedOrNoChangesMade(changeUserTagStatus) && this.isNotSubmittedOrNoChangesMade(changeBuildingSummaryTagStatus);
         if(canSubmit) {
             return TagStatus.NotStarted
         }
         return TagStatus.CannotStartYet;
     }
 
-    isNotSubmittedOrNotStarted(tagStatus: TagStatus) {
+    isNotSubmittedOrNoChangesMade(tagStatus: TagStatus) {
         return tagStatus == TagStatus.ChangesNotYetSubmitted || tagStatus == TagStatus.NoChangesMade;
+    }
+
+    areAllNoChangesMade(tagStatus: TagStatus[]) {
+        return tagStatus.every(x => x == TagStatus.NoChangesMade);
     }
 
 }
