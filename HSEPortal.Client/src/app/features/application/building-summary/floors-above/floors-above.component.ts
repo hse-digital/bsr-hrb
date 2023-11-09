@@ -1,10 +1,11 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
-import { ApplicationService } from "src/app/services/application.service";
+import { ApplicationService, OutOfScopeReason } from "src/app/services/application.service";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { PageComponent } from "src/app/helpers/page.component";
 import { BuildingSummaryNavigation } from "../building-summary.navigation";
 import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
+import { NeedRemoveWithdrawComponent } from "src/app/features/registration-amendments/change-building-summary/need-remove-withdraw/need-remove-withdraw.component";
 
 @Component({
   templateUrl: './floors-above.component.html'
@@ -41,7 +42,19 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
 
   override nextChangeRoute(): string {
     let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    if (section.Height! < 18 && section.FloorsAbove! < 7) {
+      this.initScope();
+      this.applicationService.currentChangedSection.SectionModel!.Scope!.IsOutOfScope = true;
+      this.applicationService.currentChangedSection.SectionModel!.Scope!.OutOfScopeReason = OutOfScopeReason.Height;
+      return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
+    }
     return this.buildingSummaryNavigation.getNextChangeRoute(section); 
+  }
+
+  private initScope() {
+    if (!this.applicationService.currentChangedSection.SectionModel!.Scope) {
+      this.applicationService.currentChangedSection.SectionModel!.Scope = {};
+    }
   }
   
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
