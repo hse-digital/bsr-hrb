@@ -9,6 +9,7 @@ import { RemoveStructureComponent } from '../remove-structure/remove-structure.c
 import { ChangeTaskListComponent } from '../../change-task-list/change-task-list.component';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { SectionNameComponent } from 'src/app/features/application/building-summary/name/name.component';
+import { CloneHelper } from 'src/app/helpers/array-helper';
 
 @Component({
   selector: 'hse-building-change-check-answers',
@@ -36,19 +37,20 @@ export class BuildingChangeCheckAnswersComponent extends PageComponent<void> {
     if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary = {
         Status: Status.NoChanges,
-        Sections: this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection))
+        Sections: this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges, SectionModel: CloneHelper.DeepCopy(x) } as ChangeSection))
       }
     }
   }
 
   private initChangeSectionModel(index: number) {
     if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections)
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections = this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection));
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections = this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges, SectionModel: x } as ChangeSection));
 
     if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
+      let currentSection = this.applicationService.model.Sections.length > index ? this.applicationService.model.Sections[index] : new SectionModel();
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
         Status: Status.NoChanges,
-        SectionModel: new SectionModel()
+        SectionModel: CloneHelper.DeepCopy(currentSection)
       }
     }
   }
