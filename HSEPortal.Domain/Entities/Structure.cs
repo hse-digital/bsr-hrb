@@ -28,6 +28,7 @@ public record DynamicsStructure : DynamicsEntity<Structure>
     public int? statecode { get; init; }
     public AddressType? bsr_addresstype { get; init; }
     public YesNoOption? bsr_manualaddress { get; init; }
+    public string bsr_localauthorityarea { get; set; }
 
     public string _bsr_buildingid_value { get; set; }
 
