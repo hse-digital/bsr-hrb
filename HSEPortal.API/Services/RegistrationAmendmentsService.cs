@@ -56,7 +56,7 @@ public class RegistrationAmendmentsService
             dynamicsChangeRequest = dynamicsChangeRequest with {applicantReferenceId = $"/contacts({applicantReferenceId})"};
         }
 
-        return await dynamicsApi.Create("bsr_changerequests", dynamicsChangeRequest, true);
+        return await dynamicsApi.Create("bsr_changerequests", dynamicsChangeRequest);
     }
 
     public async Task<IFlurlResponse> CreateChange(Change change, string changeRequestId)
