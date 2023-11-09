@@ -67,7 +67,7 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
 
   private async GetRegisteredStructure() {
     console.log("GetRegisteredStructure");
-    this.registeredStructure = await this.duplicatesService.GetRegisteredStructure(this.addressIndex);
+    this.registeredStructure = await this.duplicatesService.GetRegisteredStructure(this.addressIndex! - 1);
   }
 
   override onSave(applicationService: ApplicationService): void | Promise<void> {

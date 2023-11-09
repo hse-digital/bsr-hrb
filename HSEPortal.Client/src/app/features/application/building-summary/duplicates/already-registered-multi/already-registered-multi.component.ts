@@ -96,7 +96,7 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
   }
 
   get address() {
-    return this.changed ? this.applicationService.currentChangedSection.SectionModel?.Addresses[this.addressIndex!] : this.applicationService.currentSectionAddress;
+    return this.changed ? this.applicationService.currentChangedSection.SectionModel?.Addresses[this.addressIndex! - 1] : this.applicationService.currentSectionAddress;
   }
 
 }
