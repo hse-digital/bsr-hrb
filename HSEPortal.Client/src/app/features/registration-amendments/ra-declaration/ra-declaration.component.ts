@@ -72,20 +72,23 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   private createUserChangeRequest() {
-    let changeRequest = this.syncChangeApplicantHelper.createChangeRequest();
-    changeRequest.Change = [];
-    
-    if (this.changeApplicantHelper.isSecondaryUserRemoved() || this.changeApplicantHelper.newSecondaryUserExists()) {
-      let change = this.syncChangeApplicantHelper.createChangeForSecondaryUser();
-      changeRequest.Change.push(change);
-    }
+    if (this.changeApplicantHelper.isSecondaryUserRemoved() || this.changeApplicantHelper.newSecondaryUserExists() || this.changeApplicantHelper.newPrimaryUserExists()) {
+      let changeRequest = this.syncChangeApplicantHelper.createChangeRequest();
+      changeRequest.Change = [];
 
-    if (this.changeApplicantHelper.newPrimaryUserExists()) {
-      let change = this.syncChangeApplicantHelper.createChangeForPrimaryUser();
-      changeRequest.Change.push(change);
-    }
+      if (this.changeApplicantHelper.isSecondaryUserRemoved() || this.changeApplicantHelper.newSecondaryUserExists()) {
+        let change = this.syncChangeApplicantHelper.createChangeForSecondaryUser();
+        changeRequest.Change.push(change);
+      }
+  
+      if (this.changeApplicantHelper.newPrimaryUserExists()) {
+        let change = this.syncChangeApplicantHelper.createChangeForPrimaryUser();
+        changeRequest.Change.push(change);
+      }
+  
+      this.addChangeRequestToModel(changeRequest);
+    }    
 
-    this.addChangeRequestToModel(changeRequest);
   }
 
   private createBuildingSummaryChangeRequest() {
