@@ -24,6 +24,7 @@ export class BuildingChangeCheckAnswersComponent extends PageComponent<void> {
   activeSections: SectionModel[] = [];
   changeBuildingSummaryHelper?: ChangeBuildingSummaryHelper;
   sectionNames: string[] = [];
+  canChangeNumberOfSections: boolean = false;
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
@@ -81,6 +82,7 @@ export class BuildingChangeCheckAnswersComponent extends PageComponent<void> {
     this.updateBuildingChangeStatus();
 
     this.sectionNames = this.generateSectionNames();
+    this.canChangeNumberOfSections = this.applicationService.model.Sections.filter((x, index) => !this.isSectionRemoved(index)).length == 1;
   }
 
   private generateSectionNames() {
