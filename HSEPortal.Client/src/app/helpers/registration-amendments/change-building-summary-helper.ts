@@ -146,12 +146,14 @@ export class ChangeBuildingSummaryHelper {
 
     getOnlyChanges(): BuildingSummaryChangeModel[] {
         return this.applicationService.model.Sections.flatMap((section, index) => {
-            let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections.filter(x => x.Status != Status.Removed) ?? new Array<ChangeSection>(this.applicationService.model.Sections.length);
-            return this.getSectionChanges(section, changedSections[index]?.SectionModel ?? new SectionModel(), index);
+            let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections ?? new Array<ChangeSection>(this.applicationService.model.Sections.length);
+            let change = changedSections[index]?.Status == Status.Removed ? new SectionModel() : changedSections[index]?.SectionModel;
+            return this.getSectionChanges(section, change ?? new SectionModel(), index);
         });
     }
 
     getSectionChanges(section: SectionModel, changedSection: SectionModel, sectionIndex: number): BuildingSummaryChangeModel[] {
+        if (!section || !section.Addresses || section.Addresses.length == 0) return [];
         let sectionName = this.getLatestValueOf(section.Name, changedSection.Name) ?? this.applicationService.model.BuildingName!;
         let changes: (BuildingSummaryChangeModel | undefined)[] = [];
         changes.push(this.getFieldChange(section.Name, changedSection.Name, "Name", "Name", "name", sectionName, sectionIndex));
