@@ -95,7 +95,7 @@ export class ChangeBuildingSummaryHelper {
 
     hasAddressChanged(SectionAddresses: AddressModel[], ChangeSectionAddresses: AddressModel[]) {
         return SectionAddresses.some((element, index) => {
-            return this.hasChanged(element, ChangeSectionAddresses[index]);
+            return this.hasChanged(element.Postcode, ChangeSectionAddresses[index].Postcode);
         });
     }
 
@@ -182,9 +182,7 @@ export class ChangeBuildingSummaryHelper {
     }
 
     getFieldChange(field: any, changedfield: any, fieldName: string, title: string, route: string, sectionName: string, sectionIndex: number): BuildingSummaryChangeModel | undefined {
-        let oldValueExists = typeof field == "string" ? FieldValidations.IsNotNullOrWhitespace(field) : field != undefined;
-        
-        return oldValueExists && this.hasChanged(field, changedfield) ?  {
+        return this.hasChanged(field, changedfield) ?  {
             Title: title,
             Field: fieldName,
             NewValue: changedfield,
@@ -200,7 +198,10 @@ export class ChangeBuildingSummaryHelper {
         if (!SectionAddresses || SectionAddresses.length == 0 || SectionAddresses.every(x => x == null || x == undefined)) return undefined;
         if (!ChangeSectionAddresses || ChangeSectionAddresses.length == 0 || ChangeSectionAddresses.every(x => x == null || x == undefined)) return undefined;
         
-        return {
+        let hasAddressesChanged = SectionAddresses.length != ChangeSectionAddresses.length;
+        if (!hasAddressesChanged) hasAddressesChanged = this.hasAddressChanged(SectionAddresses, ChangeSectionAddresses);
+
+        return hasAddressesChanged ? {
             Title: title,
             Field: fieldName,
             NewAddresses: ChangeSectionAddresses,
@@ -209,7 +210,7 @@ export class ChangeBuildingSummaryHelper {
             SectionName: sectionName,
             SectionIndex: sectionIndex,
             IsAddress: true
-        }
+        } : undefined;
     }
 
     // Names

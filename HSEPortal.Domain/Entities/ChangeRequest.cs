@@ -7,6 +7,8 @@ public record DynamicsChangeRequest(
     string buildingApplicationId = null,
     [property: JsonPropertyName("bsr_building@odata.bind")]
     string building = null,
+    [property: JsonPropertyName("bsr_structureid@odata.bind")]
+    string structure = null,
     [property: JsonPropertyName("bsr_changecategoryid@odata.bind")]
     string changeCategory = null,
     string bsr_changedescription = null,

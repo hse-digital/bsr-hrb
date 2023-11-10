@@ -41,6 +41,8 @@ export class ChangeRequest {
   Category?: ChangeCategory;
   Declaration?: boolean;
   ReviewRequired?: boolean;
+  StructureName?: string;
+  StructurePostcode?: string;
   Change?: Change[];
 }
 
@@ -55,7 +57,8 @@ export class Change {
 export enum ChangeCategory {
   ApplicationBuildingAmendments,
   ChangeApplicantUser,
-  DeRegistration
+  DeRegistration,
+  ChangePAPOrLeadContact
 }
 
 export enum CancellationReason {

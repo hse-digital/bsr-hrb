@@ -11,6 +11,8 @@ export abstract class ChangesDirector {
 
     protected ApplicationId?: string;
     protected BuildingName?: string;
+    protected StructureName?: string;
+    protected StructurePostcode?: string;
 
     SetApplicationId(applicationId: string) {
         this.ApplicationId = applicationId;
@@ -19,6 +21,12 @@ export abstract class ChangesDirector {
 
     SetBuildingName(buildingName: string) {
         this.BuildingName = buildingName;
+        return this;
+    }
+
+    SetStructure(name: string, postcode: string) {
+        this.StructureName = name;
+        this.StructurePostcode = postcode;
         return this;
     }
 
@@ -47,6 +55,8 @@ export abstract class ChangesDirector {
             Category: this.Category,
             ReviewRequired: this.ReviewRequired,
             Declaration: this.Declaration,
+            StructureName: this.StructureName,
+            StructurePostcode: this.StructurePostcode,
             Change: []
         };
     }

@@ -60,7 +60,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.createUserChangeRequest();
     this.createBuildingSummaryChangeRequest();
     this.createRemovedStructureChangeRequest();
-    
+
     await this.registrationAmendmentsService.syncChangeRequest();
     
     this.updateChangeRequestStatus();
@@ -99,8 +99,8 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   private createRemovedStructureChangeRequest() {
-    let changeRequest = this.syncChangeBuildingSummaryHelper.createChangeRequestForRemovedStructures();
-    if (!!changeRequest) this.addChangeRequestToModel(changeRequest);
+    let changeRequest: ChangeRequest[] = this.syncChangeBuildingSummaryHelper.createChangeRequestForRemovedStructures() ?? [];
+    if (!!changeRequest && changeRequest.length > 0) changeRequest.forEach(x => this.addChangeRequestToModel(x));
   }
 
   private addChangeRequestToModel(changeRequest: ChangeRequest) {
@@ -225,11 +225,11 @@ export class SyncChangeBuildingSummaryHelper {
     return changes;
   }
 
-  createChangeRequestForRemovedStructures(): ChangeRequest | undefined {
+  createChangeRequestForRemovedStructures(): ChangeRequest[] {
     let helper = new ChangeBuildingSummaryHelper(this.applicationService);
     let removedStructures = helper.getRemovedStructures();
-    if (!removedStructures || removedStructures.length == 0) return undefined
-    return this.removedBuildingModelBuilder.CreateChangeRequest();
+    if (!removedStructures || removedStructures.length == 0) return []
+    return removedStructures.map( x => this.removedBuildingModelBuilder.SetStructure(x.Name ?? "", x.Addresses[0].Postcode!).CreateChangeRequest());
   }
 
   async syncRemovedStructures() {

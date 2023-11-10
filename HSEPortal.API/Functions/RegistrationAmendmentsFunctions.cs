@@ -87,7 +87,8 @@ public class RegistrationAmendmentsFunctions
         ChangeRequest[] ChangeRequests = buildingApplicationModel.RegistrationAmendmentsModel.ChangeRequest.Where(x => x.Status != Status.ChangesSubmitted).ToArray();
         
         foreach (ChangeRequest changeRequest in ChangeRequests) {
-            var changeRequestResponse = await RaService.CreateChangeRequest(changeRequest, dynamicsBuildingApplication.bsr_buildingapplicationid, dynamicsBuildingApplication._bsr_building_value, applicantReferenceId);
+            var dynamicsStructure = await GetDynamicsStructure(changeRequest, applicationId);
+            var changeRequestResponse = await RaService.CreateChangeRequest(changeRequest, dynamicsBuildingApplication.bsr_buildingapplicationid, applicantReferenceId, dynamicsBuildingApplication._bsr_building_value, dynamicsStructure);
             if (changeRequest.Change != null && changeRequest.Change.Length > 0) {            
                 string changeRequestId = dynamicsService.ExtractEntityIdFromHeader(changeRequestResponse.Headers);
                 foreach (Change change in changeRequest.Change) {
@@ -97,6 +98,13 @@ public class RegistrationAmendmentsFunctions
         }
 
         return request.CreateResponse(HttpStatusCode.OK);
+    }
+
+    private async Task<DynamicsStructure> GetDynamicsStructure(ChangeRequest changeRequest, string applicationId) {
+        if (changeRequest.StructureName != null &&  changeRequest.StructurePostcode != null) {
+            return await RaService.GetDynamicsStructure(changeRequest.StructureName, changeRequest.StructurePostcode, applicationId);
+        }
+        return null;
     }
 
     [Function(nameof(GetChangeRequest))]

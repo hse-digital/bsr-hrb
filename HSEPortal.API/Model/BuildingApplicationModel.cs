@@ -274,6 +274,8 @@ public enum Status
 public record ChangeRequest
 {
     public string Name { get; set; }
+    public string StructureName { get; set; }
+    public string StructurePostcode { get; set; }
     public ChangeCategory Category { get; set; }
     public bool Declaration { get; set; }
     public bool ReviewRequired { get; set; }
@@ -294,7 +296,8 @@ public enum ChangeCategory
 {
     ApplicationBuildingAmendments,
     ChangeApplicantUser,
-    DeRegistration
+    DeRegistration,
+    ChangePAPOrLeadContact
 }
 
 public enum CancellationReason {
