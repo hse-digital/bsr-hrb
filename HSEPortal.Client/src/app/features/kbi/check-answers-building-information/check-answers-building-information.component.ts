@@ -37,8 +37,8 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
 
   hasIncompleteData = false;
   canContinue(): boolean {
-    this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].InProgress = false;
-    this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].Complete = true;
+    this.applicationService.currentVersion.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].InProgress = false;
+    this.applicationService.currentVersion.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].Complete = true;
 
     this.hasIncompleteData = !KbiValidator.isKbiSectionValid(this.applicationService.currentKbiSection);
 
@@ -47,7 +47,7 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
 
   override async onSave(): Promise<void> {
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.KbiStructureInformationInProgress;
-    if (this.applicationService._currentKbiSectionIndex == (this.applicationService.model.Kbi?.KbiSections.length! - 1)) {
+    if (this.applicationService._currentKbiSectionIndex == (this.applicationService.currentVersion.Kbi?.KbiSections.length! - 1)) {
       this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.KbiStructureInformationComplete;
     }
 
@@ -55,7 +55,7 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   navigateToNextPage(navigationService: NavigationService, activatedRoute: ActivatedRoute): Promise<boolean> {
-    let InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    let InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
     if (this.allKbiSectionCompleted()) {
       if (InScopeStructures.length == 1) {
         return navigationService.navigateRelative(`../../${KbiConnectionsModule.baseRoute}/${OtherHighRiseBuildingConnectionsComponent.route}`, activatedRoute);
@@ -75,7 +75,7 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   private allKbiSectionCompleted() {
-    return this.applicationService.model.Kbi!.SectionStatus.map(x => x.Complete).reduce((a, b) => a && b);
+    return this.applicationService.currentVersion.Kbi!.SectionStatus.map(x => x.Complete).reduce((a, b) => a && b);
   }
 
   override canAccess(_: ActivatedRouteSnapshot): boolean {

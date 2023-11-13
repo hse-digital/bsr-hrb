@@ -11,12 +11,17 @@ import { Sanitizer } from "./http-interceptor";
 export class ApplicationService {
   model: BuildingRegistrationModel;
 
+  _currentVersion;
   _currentSectionIndex;
   _currentSectionAddressIndex;
   _currentAccountablePersonIndex;
 
   get currentSection(): SectionModel {
-    return this.model.Sections[this._currentSectionIndex];
+    return this.currentVersion.Sections[this._currentSectionIndex];
+  }
+
+  get currentVersion(): BuildingRegistrationVersion {
+    return this.model.Versions[this._currentVersion];
   }
 
   get currentSectionAddress(): AddressModel {
@@ -24,7 +29,7 @@ export class ApplicationService {
   }
 
   get currentAccountablePerson(): AccountablePersonModel {
-    return this.model.AccountablePersons[this._currentAccountablePersonIndex];
+    return this.currentVersion.AccountablePersons[this._currentAccountablePersonIndex];
   }
 
   get currentChangedSection(): ChangeSection {
@@ -33,10 +38,10 @@ export class ApplicationService {
 
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('application_data') ?? {};
-    this._currentSectionIndex = this.model?.Sections?.length - 1 ?? 0;
-    this._currentSectionAddressIndex = !!this.model.Sections && this.model.Sections.length > 0
-      ? this.currentSection?.Addresses?.length - 1 : 0;
-    this._currentAccountablePersonIndex = this.model?.AccountablePersons?.length - 1 ?? 0;
+    this._currentVersion = 0;
+    this._currentSectionIndex = this.currentVersion.Sections?.length - 1 ?? 0;
+    this._currentSectionAddressIndex = !!this.currentVersion.Sections && this.currentVersion.Sections.length > 0 ? this.currentSection?.Addresses?.length - 1 : 0;
+    this._currentAccountablePersonIndex = this.currentVersion.AccountablePersons?.length - 1 ?? 0;
   }
 
   newApplication() {
@@ -59,12 +64,12 @@ export class ApplicationService {
 
   startSectionsEdit() {
     this._currentSectionIndex = 0;
-    this.model.Sections = [new SectionModel()];
+    this.currentVersion.Sections = [new SectionModel()];
   }
 
   startNewSection(): string {
-    this.model.Sections.push(new SectionModel());
-    this._currentSectionIndex = this.model.Sections.length - 1;
+    this.currentVersion.Sections.push(new SectionModel());
+    this._currentSectionIndex = this.currentVersion.Sections.length - 1;
 
     return `section-${this._currentSectionIndex + 1}`;
   }
@@ -82,60 +87,60 @@ export class ApplicationService {
   async startAccountablePersonEdit(): Promise<void> {
     this._currentAccountablePersonIndex = 0;
 
-    if (!this.model.AccountablePersons || this.model.AccountablePersons.length <= 1) {
+    if (!this.currentVersion.AccountablePersons || this.currentVersion.AccountablePersons.length <= 1) {
       let accountablePerson = new AccountablePersonModel();
       accountablePerson.Type = this.model.PrincipalAccountableType;
 
-      this.model.AccountablePersons = [accountablePerson];
+      this.currentVersion.AccountablePersons = [accountablePerson];
       await this.updateApplication();
     }
   }
 
   startNewAccountablePerson(): string {
-    this.model.AccountablePersons.push(new AccountablePersonModel());
-    this._currentAccountablePersonIndex = this.model.AccountablePersons.length - 1;
+    this.currentVersion.AccountablePersons.push(new AccountablePersonModel());
+    this._currentAccountablePersonIndex = this.currentVersion.AccountablePersons.length - 1;
 
     return `accountable-person-${this._currentAccountablePersonIndex + 1}`;
   }
 
   initKbi() {
-    let filteredSections = this.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
-    if (!this.model.Kbi) {
-      this.model.Kbi = new KbiModel();
+    let filteredSections = this.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    if (!this.currentVersion.Kbi) {
+      this.currentVersion.Kbi = new KbiModel();
       filteredSections.forEach(x => {
         var kbiSection = new KbiSectionModel();
         kbiSection.StructureName = x.Name;
         kbiSection.Postcode = FieldValidations.IsNotNullOrEmpty(x.Addresses) ? x.Addresses[0].Postcode : undefined;
 
-        this.model.Kbi!.KbiSections.push(kbiSection);
+        this.currentVersion.Kbi!.KbiSections.push(kbiSection);
       });
 
       this._currentSectionIndex = 0;
       this._currentKbiSectionIndex = 0;
     }
 
-    if (!this.model.Kbi.SectionStatus || this.model.Kbi.SectionStatus.length == 0) {
-      this.model.Kbi.SectionStatus = [];
-      filteredSections.map(x => this.model.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
+    if (!this.currentVersion.Kbi?.SectionStatus || this.currentVersion.Kbi?.SectionStatus.length == 0) {
+      this.currentVersion.Kbi!.SectionStatus = [];
+      filteredSections.map(x => this.currentVersion.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
     }
   }
 
   _currentKbiSectionIndex: number = 0;
   get currentKbiSection() {
-    return this.model.Kbi?.KbiSections[this._currentKbiSectionIndex];
+    return this.currentVersion.Kbi?.KbiSections[this._currentKbiSectionIndex];
   }
 
   get currentKbiModel() {
-    return this.model.Kbi;
+    return this.currentVersion.Kbi;
   }
 
   async removeAp(index: number) {
-    this.model.AccountablePersons.splice(index, 1);
+    this.currentVersion.AccountablePersons.splice(index, 1);
     await this.updateApplication();
   }
 
   async removeStructure(index: number) {
-    this.model.Sections.at(index)!.Statecode = "1";
+    this.currentVersion.Sections.at(index)!.Statecode = "1";
     await this.updateApplication();
   }
 
@@ -236,12 +241,6 @@ export class ApplicationService {
 }
 
 export class BuildingRegistrationModel {
-
-  constructor() {
-    this.AccountablePersons = [];
-    this.Sections = [];
-  }
-
   id?: string;
   BuildingName?: string;
   ContactFirstName?: string;
@@ -255,12 +254,8 @@ export class BuildingRegistrationModel {
   SecondaryEmailAddress?: string;
   IsSecondary?: boolean;
   NumberOfSections?: string;
-  Sections: SectionModel[] = [];
-  OutOfScopeContinueReason?: string;
   PrincipalAccountableType?: string;
-  AccountablePersons: AccountablePersonModel[] = [];
   ApplicationStatus: BuildingApplicationStage = BuildingApplicationStage.None;
-  Kbi?: KbiModel;
   PaymentType?: string | undefined;
   PaymentInvoiceDetails?: PaymentInvoiceDetails;
   DuplicateDetected?: boolean;
@@ -268,6 +263,23 @@ export class BuildingRegistrationModel {
   DuplicateBuildingApplicationIds?: string[];
   RegistrationAmendmentsModel?: RegistrationAmendmentsModel;
   FilesUploaded: any;
+
+  // versioning
+  Versions: BuildingRegistrationVersion[] = [];
+}
+
+export class BuildingRegistrationVersion {
+  constructor() {
+    this.AccountablePersons = [];
+    this.Sections = [];
+  }
+
+  Name?: string;
+  ReplacedBy?: string;
+
+  Sections: SectionModel[] = [];
+  AccountablePersons: AccountablePersonModel[] = [];
+  Kbi?: KbiModel;
 }
 
 export enum BuildingApplicationStage {

@@ -39,12 +39,12 @@ export class BuildingSummaryNavigation extends BaseNavigation {
   private numberOfSectionsNavigationNode = new NumberOfSectionsNavigationNode(this.applicationService, this.sectionsIntroNavigationNode, this.addAnotherSectionNavigationTree);
 
   override getNextRoute(): string {
-    if (this.applicationService.model.Sections == null || this.applicationService.model.Sections.length == 0) {
+    if (this.applicationService.currentVersion.Sections == null || this.applicationService.currentVersion.Sections.length == 0) {
       return NumberOfSectionsComponment.route;
     }
 
-    for (let sectionIndex = 0; sectionIndex < this.applicationService.model.Sections.length; sectionIndex++) {
-      let section = this.applicationService.model.Sections[sectionIndex];
+    for (let sectionIndex = 0; sectionIndex < this.applicationService.currentVersion.Sections.length; sectionIndex++) {
+      let section = this.applicationService.currentVersion.Sections[sectionIndex];
       let sectionRoute = this.numberOfSectionsNavigationNode.getNextRoute(section, sectionIndex);
 
       if (sectionRoute === void 0 || sectionRoute == SectionCheckAnswersComponent.route) {
@@ -469,7 +469,7 @@ class AddAnotherSectionNavigationNode extends BuildingNavigationNode {
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
-    if (sectionIndex == this.applicationService.model.Sections.length - 1 && this.applicationService.model.NumberOfSections == 'two_or_more') {
+    if (sectionIndex == this.applicationService.currentVersion.Sections.length - 1 && this.applicationService.model.NumberOfSections == 'two_or_more') {
       return AddMoreSectionsComponent.route;
     } else if (ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService)) {
       // goes to 6802 all structures are out of scope.

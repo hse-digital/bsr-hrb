@@ -32,7 +32,7 @@ export class AddAccountablePersonComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return this.applicationService.model.AccountablePersons?.length >= 1;
+    return this.applicationService.currentVersion.AccountablePersons?.length >= 1;
   }
 
   override isValid(): boolean {
@@ -50,7 +50,7 @@ export class AddAccountablePersonComponent extends PageComponent<string> {
   }
 
   principalName() {
-    var pap = this.applicationService.model.AccountablePersons[0];
+    var pap = this.applicationService.currentVersion.AccountablePersons[0];
     if (pap.Type == 'organisation') return pap.OrganisationName;
 
     if (pap.IsPrincipal == 'yes') {
@@ -62,7 +62,7 @@ export class AddAccountablePersonComponent extends PageComponent<string> {
   }
 
   otherAps() {
-    var aps = this.applicationService.model.AccountablePersons;
+    var aps = this.applicationService.currentVersion.AccountablePersons;
     return aps.slice(1, aps.length).filter(ap => ap.FirstName !== undefined || ap.LastName !== undefined || ap.OrganisationName !== undefined);
   }
 

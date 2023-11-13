@@ -117,7 +117,7 @@ export class SectionAddressComponent implements OnInit, CanActivate {
     } else {
       if (this.applicationService.model.NumberOfSections == 'one') {
         this.navigationService.navigateRelative(`../${SectionCheckAnswersComponent.route}`, this.activatedRoute);
-      } else if (this.applicationService.model.Sections.length > 1) {
+      } else if (this.applicationService.currentVersion.Sections.length > 1) {
         this.navigationService.navigateRelative(`../${AddMoreSectionsComponent.route}`, this.activatedRoute);
       } else {
         var nextSection = this.applicationService.startNewSection();

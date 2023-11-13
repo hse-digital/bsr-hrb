@@ -25,7 +25,7 @@ export class EvacuationStrategyComponent extends PageComponent<string> {
   override async onInit(applicationService: ApplicationService): Promise<void> {
     if (!this.applicationService.currentKbiSection?.Fire) this.applicationService.currentKbiSection!.Fire = {}
     this.model = this.applicationService.currentKbiSection?.Fire.StrategyEvacuateBuilding;
-    this.applicationService.model.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].InProgress = true;
+    this.applicationService.currentVersion.Kbi!.SectionStatus[this.applicationService._currentKbiSectionIndex].InProgress = true;
     this.errorMessage = `Select the strategy you use to evacuate the residential part of ${this.getInfraestructureName()}`;
 
     await this.kbiService.startKbi(this.applicationService.currentKbiSection!);
@@ -36,9 +36,9 @@ export class EvacuationStrategyComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return !!this.applicationService.model.Kbi
-    && !!this.applicationService.model.Kbi.SectionStatus
-    && this.applicationService.model.Kbi.SectionStatus.length > 0
+    return !!this.applicationService.currentVersion.Kbi
+    && !!this.applicationService.currentVersion.Kbi.SectionStatus
+    && this.applicationService.currentVersion.Kbi.SectionStatus.length > 0
     && (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.KbiCheckBeforeComplete) == BuildingApplicationStage.KbiCheckBeforeComplete;
   }
 

@@ -40,6 +40,6 @@ export class PaymentDeclarationComponent extends PageComponent<void> {
   }
   
   isPapRegisteringFor() {
-    return this.applicationService.model.AccountablePersons[0].Role == "registering_for";
+    return this.applicationService.currentVersion.AccountablePersons[0].Role == "registering_for";
   }
 }

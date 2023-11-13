@@ -14,6 +14,6 @@ export class AccountablePersonSummaryComponent {
   constructor(private applicationService: ApplicationService) { }
 
   ngOnInit(): void {
-    this.aps = this.applicationService.model.AccountablePersons;
+    this.aps = this.applicationService.currentVersion.AccountablePersons;
   }
 }

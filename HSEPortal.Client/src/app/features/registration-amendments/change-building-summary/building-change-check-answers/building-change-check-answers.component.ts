@@ -28,21 +28,21 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   private initStatecode() {
-    this.applicationService.model.Sections.filter(x => x.Statecode != "1").map(x => x.Statecode = "0");
+    this.applicationService.currentVersion.Sections.filter(x => x.Statecode != "1").map(x => x.Statecode = "0");
   }
 
   private initChangeBuildingSummary() {
     if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary = {
         Status: Status.NoChanges,
-        Sections: this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection))
+        Sections: this.applicationService.currentVersion.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection))
       }
     }
   }
 
   private initChangeSectionModel(index: number) {
     if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections)
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections = this.applicationService.model.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection));
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections = this.applicationService.currentVersion.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection));
     
     if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
@@ -53,7 +53,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   private getActiveSections() {
-    return this.applicationService.model.Sections.filter(x => x.Statecode != "1");
+    return this.applicationService.currentVersion.Sections.filter(x => x.Statecode != "1");
   }
 
   hasIncompleteData = false;
@@ -136,11 +136,11 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStage.BlocksInBuildingComplete;
     await this.applicationService.syncBuildingStructures();
 
-    this.applicationService.model.Sections =  this.getActiveSections();
+    this.applicationService.currentVersion.Sections =  this.getActiveSections();
   }
 
   private getOutOfScopeSections() {
-    return this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
+    return this.applicationService.currentVersion.Sections.filter(section => SectionHelper.isOutOfScope(section));
   }
 
   removeStructure(index: number) {

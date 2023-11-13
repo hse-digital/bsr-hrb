@@ -31,7 +31,7 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.model.NumberOfSections = this.model;
-    if (!this.applicationService.model.Sections || this.applicationService.model.Sections.length == 0) {
+    if (!this.applicationService.currentVersion.Sections || this.applicationService.currentVersion.Sections.length == 0) {
       this.applicationService.startSectionsEdit();
     }
   }
@@ -55,10 +55,10 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
       this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStage.BlocksInBuildingComplete;
       this.applicationService.updateApplication();
 
-      var firstSection = this.applicationService.model.Sections[0];
+      var firstSection = this.applicationService.currentVersion.Sections[0];
       if (this.applicationService.model.NumberOfSections == "one") {
         // keep only first section
-        this.applicationService.model.Sections = [firstSection];
+        this.applicationService.currentVersion.Sections = [firstSection];
       } else {
         if (!FieldValidations.IsNotNullOrWhitespace(firstSection.Name)) {
           return this.navigationService.navigateRelative(`/sections/section-1`, this.activatedRoute);

@@ -9,8 +9,8 @@ export class ChangeBuildingSummaryHelper {
     }
 
     getSections(): SectionModel[] {
-        return this.applicationService.model.Sections.map((section, index) => {
-            let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections ?? new Array<ChangeSection>(this.applicationService.model.Sections.length);
+        return this.applicationService.currentVersion.Sections.map((section, index) => {
+            let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections ?? new Array<ChangeSection>(this.applicationService.currentVersion.Sections.length);
             return this.getSection(section, changedSections[index]?.SectionModel ?? new SectionModel());
         });
     }
@@ -47,8 +47,8 @@ export class ChangeBuildingSummaryHelper {
     }
 
     hasBuildingChange() {
-        return this.applicationService.model.Sections.some((section, index) => {
-            let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections ?? new Array<ChangeSection>(this.applicationService.model.Sections.length);
+        return this.applicationService.currentVersion.Sections.some((section, index) => {
+            let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections ?? new Array<ChangeSection>(this.applicationService.currentVersion.Sections.length);
             return this.hasSectionChange(section, changedSections[index]?.SectionModel ?? new SectionModel());
         });
     }

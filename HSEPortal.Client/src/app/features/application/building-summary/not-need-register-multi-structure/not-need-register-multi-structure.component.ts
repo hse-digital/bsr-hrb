@@ -30,7 +30,7 @@ export class NotNeedRegisterMultiStructureComponent extends PageComponent<void> 
   }
 
   override async navigateNext(): Promise<boolean> {
-    if (this.applicationService.model.Sections.length == 1) {
+    if (this.applicationService.currentVersion.Sections.length == 1) {
       let section = this.applicationService.startNewSection();
       let nextPage = `../${section}/${SectionNameComponent.route}`;
       await this.applicationService.updateApplication();

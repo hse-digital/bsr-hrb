@@ -37,11 +37,11 @@ export class KbiSummaryComponent implements OnInit, CanActivate {
       this.shouldRender = true;
     }
 
-    this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
     if (this.InScopeStructures.length == 1) {
-      this.applicationService.model.Kbi!.KbiSections[0].StructureName = this.applicationService.model.BuildingName;
+      this.applicationService.currentVersion.Kbi!.KbiSections[0].StructureName = this.applicationService.model.BuildingName;
     } else {
-      this.InScopeStructures.forEach((x, index) => this.applicationService.model.Kbi!.KbiSections[index].StructureName = x.Name)
+      this.InScopeStructures.forEach((x, index) => this.applicationService.currentVersion.Kbi!.KbiSections[index].StructureName = x.Name)
     }
 
     this.submissionDate = await this.applicationService.getKbiSubmissionDate();

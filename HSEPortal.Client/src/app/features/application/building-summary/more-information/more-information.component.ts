@@ -19,14 +19,14 @@ export class MoreInformationComponent extends PageComponent<void> {
   outOfScopeSections?: SectionModel[];
 
   override onInit(applicationService: ApplicationService): void {
-    this.outOfScopeSections = this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
-    this.inScopeSections = this.applicationService.model.Sections.filter(section => !SectionHelper.isOutOfScope(section));
+    this.outOfScopeSections = this.applicationService.currentVersion.Sections.filter(section => SectionHelper.isOutOfScope(section));
+    this.inScopeSections = this.applicationService.currentVersion.Sections.filter(section => !SectionHelper.isOutOfScope(section));
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> { }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    let outOfScope = this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
+    let outOfScope = this.applicationService.currentVersion.Sections.filter(section => SectionHelper.isOutOfScope(section));
     return outOfScope?.length > 0;
   }
 

@@ -23,7 +23,7 @@ export class NotAllocatedAccountabilityComponent {
   }
 
   get accountablePersons(): string[] {
-    let persons = this.applicationService.model!.AccountablePersons!;
+    let persons = this.applicationService.currentVersion!.AccountablePersons!;
     let accountablePersonNames: string[] = [];
     for (let i: number = 0; i < persons.length; i++) {
       if (persons[i].Type == 'organisation') {

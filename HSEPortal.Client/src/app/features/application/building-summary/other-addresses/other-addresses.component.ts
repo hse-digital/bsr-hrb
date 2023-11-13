@@ -89,7 +89,7 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
 
       // user said there is only a single section in the building - go for check answers
       if (this.applicationService.model.NumberOfSections == 'one') {
-        let areAllStructuresIncluded = this.applicationService.model.Sections.every(x => !!x.Duplicate?.IncludeStructure && x.Duplicate?.IncludeStructure == 'no');
+        let areAllStructuresIncluded = this.applicationService.currentVersion.Sections.every(x => !!x.Duplicate?.IncludeStructure && x.Duplicate?.IncludeStructure == 'no');
         if (areAllStructuresIncluded) {
           this.navigationService.navigateRelative(`../${NotNeedRegisterMultiDuplicatedStructuresComponent.route}`, this.activatedRoute);
         }
@@ -98,7 +98,7 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
 
       // user said there are two or more sections in the building
       // if the user entered more than one already, ask if there are more
-      if (this.applicationService.model.Sections.length > 1) {
+      if (this.applicationService.currentVersion.Sections.length > 1) {
         return this.navigationService.navigateRelative(`../${AddMoreSectionsComponent.route}`, this.activatedRoute);
       }
 

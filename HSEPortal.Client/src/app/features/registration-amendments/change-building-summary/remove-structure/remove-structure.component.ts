@@ -80,7 +80,7 @@ export class RemoveStructureComponent extends PageComponent<string> {
   }
 
   get sectionName() {
-    return this.applicationService.model.Sections[this.index ?? 0].Name;
+    return this.applicationService.currentVersion.Sections[this.index ?? 0].Name;
   }
 
 }

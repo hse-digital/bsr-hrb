@@ -22,7 +22,7 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
-    this.InScopeSections = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.InScopeSections = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
     if(!this.applicationService.model.RegistrationAmendmentsModel) {
       this.applicationService.model.RegistrationAmendmentsModel = {
         ConnectionStatus: Status.NoChanges,

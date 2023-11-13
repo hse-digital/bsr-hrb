@@ -23,7 +23,7 @@ export class SectionNameComponent extends PageComponent<string> {
 
   override onInit(applicationService: ApplicationService): void {
     this.model = applicationService.currentSection?.Name;
-    this.sections = this.applicationService.model.Sections.slice(0, this.applicationService.model.Sections.length - 1);
+    this.sections = this.applicationService.currentVersion.Sections.slice(0, this.applicationService.currentVersion.Sections.length - 1);
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {

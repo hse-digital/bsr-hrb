@@ -45,7 +45,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   userActingForPap() {
-    let pap = this.applicationService.model.AccountablePersons[0];
+    let pap = this.applicationService.currentVersion.AccountablePersons[0];
     return pap.Type == 'organisation' && pap.Role == 'registering_for';
   }
 
