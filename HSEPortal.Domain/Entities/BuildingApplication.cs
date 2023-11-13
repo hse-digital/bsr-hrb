@@ -29,7 +29,9 @@ public record DynamicsBuildingApplication(string bsr_buildingapplicationid = nul
     string bsr_submittedon = null,
     string bsr_numberofmanuallyenteredaddresses = null,
     bool? bsr_sharedetailsdeclared = null,
-    bool? bsr_duplicatedetected = null) : DynamicsEntity<BuildingApplication>;
+    bool? bsr_duplicatedetected = null,
+    [property: JsonPropertyName("bsr_cancellationreason@odata.bind")] 
+    string bsr_cancellationreason = null) : DynamicsEntity<BuildingApplication>;
 
 public enum BuildingApplicationStage
 {

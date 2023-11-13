@@ -139,6 +139,25 @@ public class RegistrationAmendmentsFunctions
         return request.CreateResponse(HttpStatusCode.OK);
     }
 
+    [Function(nameof(WithdrawApplicationOrBuilding))]
+    public async Task<HttpResponseData> WithdrawApplicationOrBuilding([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(WithdrawApplicationOrBuilding)}/{{applicationId}}")] HttpRequestData request, string applicationId)
+    {
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+
+        var cancellationReason = buildingApplicationModel.RegistrationAmendmentsModel.Deregister.CancellationReason;
+
+        if (RaService.IsApplicationAccepted(dynamicsBuildingApplication)) {
+            var updatedBuilding = new DynamicsBuilding { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[cancellationReason]})", bsr_registrationstatus = 760_810_002 };
+            await dynamicsApi.Update($"bsr_buildings({dynamicsBuildingApplication._bsr_building_value})", updatedBuilding);
+        } else {
+            var updatedApplication = new DynamicsBuildingApplication { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[cancellationReason]})" };
+            await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", updatedApplication);
+        }
+    
+        return request.CreateResponse(HttpStatusCode.OK);
+    }
+
     private Dictionary<CancellationReason, string> DynamicsCancellationReason = new Dictionary<CancellationReason, string>() {
         {CancellationReason.NoCancellationReason, ""},
         {CancellationReason.NoConnected, "9107fc3d-8671-ee11-8178-6045bd0c1726"},

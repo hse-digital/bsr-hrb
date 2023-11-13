@@ -5,8 +5,12 @@ namespace HSEPortal.Domain.Entities;
 public record Building(string Name, string Id = null) : Entity(Id);
 
 public record DynamicsBuilding(string bsr_name = null, string bsr_buildingid = null,
-    [property: JsonPropertyName("bsr_papid@odata.bind")]
-    string bsrPapReferenceId = null) : DynamicsEntity<Building>
+    [property: JsonPropertyName("bsr_papid@odata.bind")] 
+    string bsrPapReferenceId = null,
+    [property: JsonPropertyName("bsr_cancellationreason@odata.bind")] 
+    string bsr_cancellationreason = null,
+    int? bsr_registrationstatus = null
+    ) : DynamicsEntity<Building>
 {
     public string bsr_kbistartdate { get; set; }
     public string bsr_kbicompletiondate { get; set; }

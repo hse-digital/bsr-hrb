@@ -564,6 +564,7 @@ export class ChangeAccountablePerson {
 export class Deregister {
   AreYouSure?: string;
   Why?: string;
+  CancellationReason?: CancellationReason;
 }
 
 export class ChangeUser {

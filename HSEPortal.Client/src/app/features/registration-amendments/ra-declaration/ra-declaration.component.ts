@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStatuscode, Status } from 'src/app/services/application.service';
 import { RaConfirmationComponent } from '../ra-confirmation/ra-confirmation.component';
 import { ChangeApplicantModelBuilder, ChangeBuildingSummaryModelBuilder, RemovedBuildingModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
 import { ChangeApplicantHelper } from 'src/app/helpers/registration-amendments/change-applicant-helper';
 import { Change, ChangeRequest, RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
 import { BuildingSummaryChangeModel, ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { AddressModel } from 'src/app/services/address.service';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -60,6 +61,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.createUserChangeRequest();
     this.createBuildingSummaryChangeRequest();
     this.createRemovedStructureChangeRequest();
+    this.createDeregisterChangeRequest();
 
     await this.registrationAmendmentsService.syncChangeRequest();
     
@@ -68,7 +70,15 @@ export class RaDeclarationComponent extends PageComponent<void> {
 
     await this.syncChangeApplicantHelper.syncChangeApplicant();
     await this.syncChangeBuildingSummaryHelper.syncRemovedStructures();
+    await this.syncChangeBuildingSummaryHelper.syncDeregister();
 
+  }
+  
+  createDeregisterChangeRequest() {
+    let areYouSure = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure;
+    if (!!areYouSure && areYouSure == "yes") {
+      this.syncChangeBuildingSummaryHelper.createChangeRequestWhenDeregister();
+    }
   }
 
   private createUserChangeRequest() {
@@ -232,8 +242,27 @@ export class SyncChangeBuildingSummaryHelper {
     return removedStructures.map( x => this.removedBuildingModelBuilder.SetStructure(x.Name ?? "", x.Addresses[0].Postcode!).CreateChangeRequest());
   }
 
+  createChangeRequestWhenDeregister(): ChangeRequest | undefined {
+    let isAppDeregister = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure == "yes";
+
+    if (!isAppDeregister) return undefined;
+    
+    return this.removedBuildingModelBuilder.CreateChangeRequest();
+  }
+
   async syncRemovedStructures() {
     await this.registrationAmendmentsService.syncRemovedStructures();
   }
+
+  async syncDeregister() {
+    let isAppDeregister = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure == "yes";
+    if (isAppDeregister) await this.registrationAmendmentsService.syncDeregister();
+  }
+
+  async isApplicationAccepted() {
+    let statuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
+    return statuscode == BuildingApplicationStatuscode.Registered || statuscode == BuildingApplicationStatuscode.RegisteredKbiValidated;
+  }
+
 
 }

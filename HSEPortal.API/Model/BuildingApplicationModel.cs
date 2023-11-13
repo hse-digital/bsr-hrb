@@ -225,6 +225,7 @@ public record Deregister
 {
     public string AreYouSure { get; set; }
     public string Why { get; set; }
+    public CancellationReason CancellationReason { get; set; }
 }
 
 public record ChangeBuildingSummary
