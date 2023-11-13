@@ -17,9 +17,9 @@ public record BuildingApplicationModel(
     string SecondaryEmailAddress = null,
     bool? IsSecondary = null,
     string NumberOfSections = null,
-    SectionModel[] Sections = null,
-    AccountablePerson[] AccountablePersons = null,
-    KbiModel Kbi = null,
+    [property: Obsolete] SectionModel[] Sections = null,
+    [property: Obsolete] AccountablePerson[] AccountablePersons = null,
+    [property: Obsolete] KbiModel Kbi = null,
     string OutOfScopeContinueReason = null,
     string PrincipalAccountableType = null,
     string PaymentType = null,
@@ -28,7 +28,8 @@ public record BuildingApplicationModel(
     bool? DuplicateDetected = null,
     bool? ShareDetailsDeclared = null,
     string[] DuplicateBuildingApplicationIds = null,
-    RegistrationAmendmentsModel RegistrationAmendmentsModel = null) : IValidatableModel
+    RegistrationAmendmentsModel RegistrationAmendmentsModel = null,
+    List<BuildingApplicationVersion> Versions = null) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
@@ -71,7 +72,26 @@ public record BuildingApplicationModel(
         var noSpacesPhoneNumber = ContactPhoneNumber.Replace(" ", string.Empty);
         return Regex.IsMatch(noSpacesPhoneNumber, @"^\+44\d{10}$") || Regex.IsMatch(noSpacesPhoneNumber, @"^0\d{10}$");
     }
+
+    [JsonIgnore]
+    public BuildingApplicationVersion CurrentVersion
+    {
+        get
+        {
+            var version = Versions?.FirstOrDefault();
+            while (!string.IsNullOrEmpty(version?.ReplacedBy))
+            {
+                version = Versions.FirstOrDefault(x => x.Name == version.ReplacedBy);
+            }
+
+            return version;
+        }
+    }
 }
+
+public record BuildingApplicationVersion(string Name, string ReplacedBy = null, SectionModel[] Sections = null,
+    AccountablePerson[] AccountablePersons = null,
+    KbiModel Kbi = null);
 
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,

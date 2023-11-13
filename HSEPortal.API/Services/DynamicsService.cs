@@ -132,11 +132,11 @@ public class DynamicsService
 
     public async Task CreateAccountablePersons(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication)
     {
-        var pap = model.AccountablePersons[0];
+        var pap = model.CurrentVersion.AccountablePersons[0];
         var papId = await CreateAccountablePerson(pap, dynamicsBuildingApplication, pap: true);
         await UpdateBuildingApplicationPap(papId, pap.Type == "organisation", dynamicsBuildingApplication, pap.IsPrincipal == "yes", pap.Role);
 
-        foreach (var ap in model.AccountablePersons.Skip(1))
+        foreach (var ap in model.CurrentVersion.AccountablePersons.Skip(1))
         {
             await CreateAccountablePerson(ap, dynamicsBuildingApplication);
         }

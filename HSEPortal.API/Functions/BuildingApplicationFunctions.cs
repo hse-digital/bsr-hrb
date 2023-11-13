@@ -39,6 +39,14 @@ public class BuildingApplicationFunctions
         }
 
         buildingApplicationModel = await dynamicsService.RegisterNewBuildingApplicationAsync(buildingApplicationModel);
+        buildingApplicationModel = buildingApplicationModel with
+        {
+            Versions = new List<BuildingApplicationVersion>
+            {
+                new("original")
+            }
+        };
+        
         var response = await request.CreateObjectResponseAsync(buildingApplicationModel);
         return new CustomHttpResponseData { Application = buildingApplicationModel, HttpResponse = response };
     }
@@ -52,7 +60,7 @@ public class BuildingApplicationFunctions
         var matchingApplication = buildingApplications.Any(x => x.ContactEmailAddress?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
                                                                 x.SecondaryEmailAddress?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
                                                                 x.NewPrimaryUserEmail?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true);
-        
+
         return request.CreateResponse(matchingApplication ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 
@@ -86,12 +94,26 @@ public class BuildingApplicationFunctions
         if (matchingApplication)
         {
             var application = buildingApplications[0];
-            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress) 
-                || await otpService.ValidateToken(requestContent.OtpToken, application.SecondaryEmailAddress)
-                || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail);
-            
+            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress)
+                               || await otpService.ValidateToken(requestContent.OtpToken, application.SecondaryEmailAddress)
+                               || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail);
+
             if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
+                if (application.Versions == null || application.Versions.Count == 0)
+                {
+                    application = application with
+                    {
+                        Versions = new List<BuildingApplicationVersion>
+                        {
+                            new("original", Sections: application.Sections, AccountablePersons: application.AccountablePersons, Kbi: application.Kbi)
+                        },
+                        Sections = null,
+                        AccountablePersons = null,
+                        Kbi = null
+                    };
+                }
+
                 return await request.CreateObjectResponseAsync(application);
             }
         }
@@ -100,33 +122,38 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(GetRegisteredStructure))]
-    public async Task<HttpResponseData> GetRegisteredStructure([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetRegisteredStructure")] HttpRequestData request) {
+    public async Task<HttpResponseData> GetRegisteredStructure([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetRegisteredStructure")] HttpRequestData request)
+    {
         var requestData = await request.ReadAsJsonAsync<RegisteredStructureRequestModel>();
-        
+
         if (!IsRequestDataValid(requestData)) return request.CreateResponse(HttpStatusCode.BadRequest);
-        
+
         var dynamicsResponse = await dynamicsService.FindExistingStructureWithAccountablePersonAsync(requestData.Postcode);
 
         RegisteredStructureModel responseModel = BuildAlreadyRegisteredStructureResponseModel(dynamicsResponse, requestData.AddressLineOne);
-        
-        return responseModel != null 
+
+        return responseModel != null
             ? await request.CreateObjectResponseAsync(responseModel)
             : request.CreateResponse(HttpStatusCode.ExpectationFailed);
     }
 
-    private bool IsRequestDataValid(RegisteredStructureRequestModel requestData) {
-        return requestData != null 
-            && requestData.Postcode != null 
-            && !requestData.Postcode.Equals(string.Empty) 
-            && requestData.AddressLineOne != null 
-            && !requestData.AddressLineOne.Equals(string.Empty);
+    private bool IsRequestDataValid(RegisteredStructureRequestModel requestData)
+    {
+        return requestData != null
+               && requestData.Postcode != null
+               && !requestData.Postcode.Equals(string.Empty)
+               && requestData.AddressLineOne != null
+               && !requestData.AddressLineOne.Equals(string.Empty);
     }
 
-    private RegisteredStructureModel BuildAlreadyRegisteredStructureResponseModel(DynamicsResponse<IndependentSection> dynamicsResponse, string addressLineOne) {
+    private RegisteredStructureModel BuildAlreadyRegisteredStructureResponseModel(DynamicsResponse<IndependentSection> dynamicsResponse, string addressLineOne)
+    {
         IndependentSection section = dynamicsResponse.value.Find(section => IsSectionComplete(section, addressLineOne));
-        
-        if(section != null) {
-            var response = new RegisteredStructureModel {
+
+        if (section != null)
+        {
+            var response = new RegisteredStructureModel
+            {
                 BuildingName = section.bsr_BuildingId.bsr_name,
                 Name = section.bsr_name,
                 BlockId = section.bsr_blockid,
@@ -134,7 +161,8 @@ public class BuildingApplicationFunctions
                 Height = section.bsr_sectionheightinmetres.ToString(),
                 NumFloors = section.bsr_nooffloorsabovegroundlevel.ToString(),
                 ResidentialUnits = section.bsr_numberofresidentialunits.ToString(),
-                StructureAddress = new BuildingAddress {
+                StructureAddress = new BuildingAddress
+                {
                     Postcode = section.bsr_postcode,
                     Address = section.bsr_addressline1,
                     AddressLineTwo = section.bsr_addressline2,
@@ -143,9 +171,12 @@ public class BuildingApplicationFunctions
             };
 
             bool PapIsOrganisation = section.bsr_BuildingApplicationID.bsr_paptype == 760810001;
-            if (PapIsOrganisation) {
-                response = response with {
-                    PapAddress = new BuildingAddress {
+            if (PapIsOrganisation)
+            {
+                response = response with
+                {
+                    PapAddress = new BuildingAddress
+                    {
                         Postcode = section.bsr_BuildingApplicationID.bsr_papid_account.address1_postalcode,
                         Address = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line1,
                         AddressLineTwo = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line2,
@@ -155,29 +186,35 @@ public class BuildingApplicationFunctions
                     PapIsOrganisation = PapIsOrganisation
                 };
             }
+
             return response;
         }
+
         return null;
     }
 
-    private bool IsSectionComplete(IndependentSection section, string addressLineOne) {
+    private bool IsSectionComplete(IndependentSection section, string addressLineOne)
+    {
         bool isComplete = section != null
-            && section.bsr_BuildingId != null
-            && IsNotNullOrWhitespace(section.bsr_BuildingId.bsr_name)
-            && section.bsr_BuildingApplicationID != null
-            && section.bsr_BuildingApplicationID.bsr_paptype != null
-            && ((section.bsr_BuildingApplicationID.bsr_paptype == 760810001 && section.bsr_BuildingApplicationID.bsr_papid_account != null) || section.bsr_BuildingApplicationID.bsr_paptype == 760810000)
-            && NormaliseAddress(addressLineOne).Contains(NormaliseAddress(section.bsr_addressline1));
+                          && section.bsr_BuildingId != null
+                          && IsNotNullOrWhitespace(section.bsr_BuildingId.bsr_name)
+                          && section.bsr_BuildingApplicationID != null
+                          && section.bsr_BuildingApplicationID.bsr_paptype != null
+                          && ((section.bsr_BuildingApplicationID.bsr_paptype == 760810001 && section.bsr_BuildingApplicationID.bsr_papid_account != null) ||
+                              section.bsr_BuildingApplicationID.bsr_paptype == 760810000)
+                          && NormaliseAddress(addressLineOne).Contains(NormaliseAddress(section.bsr_addressline1));
         return isComplete;
     }
 
-    private bool IsNotNullOrWhitespace(string value) {
+    private bool IsNotNullOrWhitespace(string value)
+    {
         return value != null && !value.Equals(string.Empty);
     }
 
-    private string NormaliseAddress(string address) {
+    private string NormaliseAddress(string address)
+    {
         string result = address.ToLower().Replace("  ", " ");
-        return result; 
+        return result;
     }
 
     [Function(nameof(UpdateApplication))]
@@ -254,27 +291,29 @@ public class GetApplicationRequest
 
 public record RegisteredStructureModel
 {
-  public string BuildingName { get; set; }
-  public string Name { get; set; }
-  public string BlockId { get; set; }
-  public string BuildingApplicationId { get; set; }
-  public string NumFloors { get; set; }
-  public string Height { get; set; }
-  public string ResidentialUnits { get; set; }
-  public BuildingAddress StructureAddress { get; set; }
-  public string PapName { get; set; }
-  public BuildingAddress PapAddress { get; set; }
-  public bool PapIsOrganisation { get; set; }
+    public string BuildingName { get; set; }
+    public string Name { get; set; }
+    public string BlockId { get; set; }
+    public string BuildingApplicationId { get; set; }
+    public string NumFloors { get; set; }
+    public string Height { get; set; }
+    public string ResidentialUnits { get; set; }
+    public BuildingAddress StructureAddress { get; set; }
+    public string PapName { get; set; }
+    public BuildingAddress PapAddress { get; set; }
+    public bool PapIsOrganisation { get; set; }
 }
 
-public class RegisteredStructureRequestModel {
-    public string Postcode {get; set;}
-    public string AddressLineOne {get; set;}
+public class RegisteredStructureRequestModel
+{
+    public string Postcode { get; set; }
+    public string AddressLineOne { get; set; }
 }
 
-public class ApplicationNumberAndEmail {
-    public string ApplicationNumber {get; set;}
-    public string EmailAddress {get; set;}
+public class ApplicationNumberAndEmail
+{
+    public string ApplicationNumber { get; set; }
+    public string EmailAddress { get; set; }
 }
 
 public record ValidateApplicationRequest(string ApplicationNumber, string EmailAddress);
