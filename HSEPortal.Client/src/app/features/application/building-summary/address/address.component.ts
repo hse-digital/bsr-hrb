@@ -122,7 +122,7 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
     this.applicationService.currentSection.Duplicate.RegisteredStructureModel = duplicatedStructure;
     this.applicationService.currentSection.Duplicate.DuplicateFound = true;
-    this.applicationService.currentSection.Duplicate.DuplicatedAddressIndex = (this.addressIndex ?? 1).toString();
+    this.applicationService.currentSection.Duplicate.DuplicatedAddressIndex = this.addressIndex ?? 1;
   }
 
   private getDuplicationCheckScreenRoute(): string {

@@ -33,11 +33,6 @@ export class CertificateNumberComponent extends PageComponent<string> {
     applicationService.currentSection.CompletionCertificateReference = this.model;
   }
 
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section);  
-  }
-
   private isPageOptional(completionCertificateDate?: string) {
     if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) {
       let date =  new Date(Number(completionCertificateDate));

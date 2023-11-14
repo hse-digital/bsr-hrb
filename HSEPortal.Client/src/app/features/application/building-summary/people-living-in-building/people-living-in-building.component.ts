@@ -37,23 +37,6 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
 
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    if (section.PeopleLivingInBuilding == "no_wont_move") {
-      this.initScope();
-      this.applicationService.currentSection.Scope!.IsOutOfScope = true;
-      this.applicationService.currentSection.Scope!.OutOfScopeReason = OutOfScopeReason.PeopleLivingInBuilding;
-      return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
-    }
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
-  }
-
-  private initScope() {
-    if (!this.applicationService.currentSection.Scope) {
-      this.applicationService.currentSection.Scope = {};
-    }
-  }
-
   override isValid(): boolean {
     this.peopleLivingHasErrors = !this.model;
     if(!this.peopleLivingHasErrors) {
@@ -64,6 +47,9 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
 
   override navigateNext(): Promise<boolean> {
     if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
+      
+      if (this.changing) return this.navigationService.navigateRelative(`../../registration-amendments/${NeedRemoveWithdrawComponent.route}`, this.activatedRoute);
+
       return this.applicationService.model.NumberOfSections == 'one' 
         ? this.navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, this.activatedRoute)
         : this.navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, this.activatedRoute);
@@ -85,7 +71,6 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
       this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
     }
   }
-
 
   getErrorMessage() {
     return `Select if people are living in ${this.buildingOrSectionName}`;

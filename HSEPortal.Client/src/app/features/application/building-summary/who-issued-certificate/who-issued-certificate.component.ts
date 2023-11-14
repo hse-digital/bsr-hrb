@@ -31,11 +31,6 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
     }
   }
 
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
-  }
-
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return true;
   }

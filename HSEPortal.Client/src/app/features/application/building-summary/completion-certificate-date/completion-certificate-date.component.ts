@@ -54,11 +54,6 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
     }
   }
 
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
-  }
-
   private initPageModel(completionCertificateDate?: string) {
     let date = new Date(Number(completionCertificateDate));
     this.model = {

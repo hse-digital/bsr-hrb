@@ -44,18 +44,6 @@ export abstract class PageComponent<T> implements OnInit {
   
     this.triggerScreenReaderNotification("");
   }
-
-  nextChangeRoute() {}
-  navigateToNextChange(applicationService: ApplicationService) {  
-    let nextRoute = this.nextChangeRoute();
-    this.changedReturnUrl = "building-change-check-answers";
-    
-    if (nextRoute == void 0 || nextRoute == "building-change-check-answers") {
-      this.navigationService.navigateRelative(`../../registration-amendments/${this.changedReturnUrl}`, this.activatedRoute);
-    } else {
-      this.navigationService.navigateRelative(nextRoute, this.activatedRoute);
-    }
-  }
   
   async ngOnInit() {
     this.changing = (this.applicationService.currentVersion?.Name ?? "original") != "original";
@@ -69,11 +57,6 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.hasErrors) {
       this.triggerScreenReaderNotification();
       this.applicationService.updateLocalStorage();
-
-      if (this.changing) {
-        await this.navigateToNextChange(this.applicationService);
-        return;
-      }
 
       if (this.updateOnSave) {
         await this.saveAndUpdate(true);

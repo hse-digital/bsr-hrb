@@ -33,17 +33,6 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
     this.applicationService.currentSection.ResidentialUnits = this.model;
   }
   
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    if (section.ResidentialUnits! < 2) {
-      this.initScope();
-      this.applicationService.currentSection.Scope!.IsOutOfScope = true;
-      this.applicationService.currentSection.Scope!.OutOfScopeReason = OutOfScopeReason.NumberResidentialUnits;
-      return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
-    }
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
-  }
-
   private initScope() {
     if (!this.applicationService.currentSection.Scope) {
       this.applicationService.currentSection.Scope = {};
@@ -74,6 +63,9 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
   override navigateNext(): Promise<boolean> {
     let route: string = SectionYearOfCompletionComponent.route;
     if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
+
+      if (this.changing) return this.navigationService.navigateRelative(`../../registration-amendments/${NeedRemoveWithdrawComponent.route}`, this.activatedRoute);
+
       route = this.applicationService.model.NumberOfSections == 'one' 
         ? NotNeedRegisterSingleStructureComponent.route
         : NotNeedRegisterMultiStructureComponent.route;

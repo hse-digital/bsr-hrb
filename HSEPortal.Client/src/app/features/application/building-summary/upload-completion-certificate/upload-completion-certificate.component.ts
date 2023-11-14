@@ -59,11 +59,6 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
     }
   }
 
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section);
-  }
-
   isPageOptional(completionCertificateDate?: string) {
     if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) {
       let date =  new Date(Number(completionCertificateDate));

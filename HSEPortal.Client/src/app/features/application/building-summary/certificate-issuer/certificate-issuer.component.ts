@@ -42,11 +42,6 @@ export class CertificateIssuerComponent extends PageComponent<string> {
     this.applicationService.currentSection.CompletionCertificateIssuer = this.model;
   }
 
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
-  }
-
   private isInputOptional(yearOfCompletionOption: string, yearOfCompletionRange?: string, yearOfCompletion?: string) {
     if (yearOfCompletionOption == 'year-exact') {
       var year = Number(yearOfCompletion);

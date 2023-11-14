@@ -25,34 +25,22 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.addressIndex = Number(this.applicationService.currentSection.Duplicate!.DuplicatedAddressIndex);
-
     if(!this.applicationService.currentSection.Duplicate) {
-      this.applicationService.currentSection.Duplicate = {};
+      this.applicationService.currentSection.Duplicate = { BlockIds: [] };
     }
-
-    if (!this.applicationService.currentSection.Duplicate.BlockIds) {
-      this.applicationService.currentSection.Duplicate.BlockIds = [];
-    }
-
+    
     if (!this.applicationService.model.DuplicateBuildingApplicationIds) {
       this.applicationService.model.DuplicateBuildingApplicationIds = [];
     }
-
+    
+    this.addressIndex = this.applicationService.currentSection.Duplicate!.DuplicatedAddressIndex;
+    
     this.registeredStructure = this.applicationService.currentSection.Duplicate?.RegisteredStructureModel;
     
     let currentAddress = this.applicationService.currentSectionAddress;
 
     if (!this.registeredStructure || this.registeredStructure.StructureAddress?.Postcode != currentAddress?.Postcode) {
       this.GetRegisteredStructure();
-    }
-  }
-
-  override nextChangeRoute(): string {
-    if (this.applicationService.currentSection.Addresses.length < 5) {
-      return WhyContinueRegisterComponent.route;
-    } else {
-      return BuildingChangeCheckAnswersComponent.route;
     }
   }
 
@@ -76,10 +64,20 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
+    if (this.changing) this.registrationAmendmentsNavigation();
+
     if (this.applicationService.currentSection.Addresses.length < 5) {
       return this.navigationService.navigateRelative(WhyContinueRegisterComponent.route, this.activatedRoute);
     } else {
       return this.navigationService.navigateRelative(`../${SectionCheckAnswersComponent.route}`, this.activatedRoute);
+    }
+  }
+
+  private registrationAmendmentsNavigation(): string {
+    if (this.applicationService.currentSection.Addresses.length < 5) {
+      return WhyContinueRegisterComponent.route;
+    } else {
+      return BuildingChangeCheckAnswersComponent.route;
     }
   }
 

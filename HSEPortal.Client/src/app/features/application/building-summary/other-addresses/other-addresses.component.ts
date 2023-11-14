@@ -50,14 +50,6 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && this.applicationService.currentSection.Addresses?.length <= 5;
   }
 
-  override nextChangeRoute(): string {
-    if (this.hasMoreAddresses == 'no') {
-      return BuildingChangeCheckAnswersComponent.route;
-    }
-    return SectionAddressComponent.route;
-  }
-
-
   override isValid(): boolean {
     this.hasMoreAddressesError = !this.hasMoreAddresses;
     return !this.hasMoreAddressesError;
@@ -66,6 +58,9 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
   override async navigateNext(): Promise<boolean> {
     // section has a single address
     if (this.hasMoreAddresses == 'no') {
+
+      if (this.changing) return this.navigationService.navigateRelative(`../../registration-amendments/${BuildingChangeCheckAnswersComponent.route}`, this.activatedRoute);
+
       if (this.previousAnswer && this.hasMoreAddresses != this.previousAnswer) {
         this.applicationService.currentSection.Addresses.splice(this.addressIndex!, 1);
         this.applicationService.updateApplication();
