@@ -73,7 +73,6 @@ public record BuildingApplicationModel(
         return Regex.IsMatch(noSpacesPhoneNumber, @"^\+44\d{10}$") || Regex.IsMatch(noSpacesPhoneNumber, @"^0\d{10}$");
     }
 
-    [JsonIgnore]
     public BuildingApplicationVersion CurrentVersion
     {
         get
