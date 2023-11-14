@@ -77,7 +77,8 @@ export class RaDeclarationComponent extends PageComponent<void> {
   createDeregisterChangeRequest() {
     let areYouSure = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure;
     if (!!areYouSure && areYouSure == "yes") {
-      this.syncChangeBuildingSummaryHelper.createChangeRequestWhenDeregister();
+      let changeRequest = this.syncChangeBuildingSummaryHelper.createChangeRequestWhenDeregister();
+      if (changeRequest) this.addChangeRequestToModel(changeRequest);
     }
   }
 
