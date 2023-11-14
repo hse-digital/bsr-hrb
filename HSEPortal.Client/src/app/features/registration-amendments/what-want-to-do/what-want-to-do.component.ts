@@ -23,7 +23,7 @@ export class WhatWantToDoComponent extends PageComponent<string> {
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-    
+
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -35,10 +35,11 @@ export class WhatWantToDoComponent extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    if(this.model == 'register-building') {
+    if (this.model == 'register-building') {
       return this.navigationService.navigateRelative('/select', this.activatedRoute);
     }
-    return this.navigationService.navigateRelative(ReturningApplicationComponent.route, this.activatedRoute);;
+    
+    return this.navigationService.navigateRelative(ReturningApplicationComponent.route, this.activatedRoute);
   }
 
 }

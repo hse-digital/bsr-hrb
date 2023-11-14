@@ -45,6 +45,19 @@ export class ApplicationService {
     this.model = new BuildingRegistrationModel();
   }
 
+  validateCurrentVersion() {
+    var currentVersion = this.model.Versions.findIndex(x => (x.Submitted == null || x.Submitted == false) && x.Name != 'original');
+    if (currentVersion == -1) {
+      var newVersion = JSON.parse(JSON.stringify(this.currentVersion));
+      
+      var newIndex = this.model.Versions.length;
+      newVersion.Name = `V${newIndex}`;
+
+      this.model.Versions.push(newVersion);
+      currentVersion = newIndex;
+    }
+  }
+
   updateLocalStorage() {
     LocalStorage.setJSON('application_data', this.model)
   }
@@ -272,7 +285,9 @@ export class BuildingRegistrationVersion {
 
   Name?: string;
   ReplacedBy?: string;
-  
+  CreatedBy?: string;
+  Submitted?: boolean;
+
   BuildingStatus: Status = Status.NoChanges;
 
   Sections: SectionModel[] = [];

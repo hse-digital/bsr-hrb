@@ -88,7 +88,7 @@ public record BuildingApplicationModel(
     }
 }
 
-public record BuildingApplicationVersion(string Name, string ReplacedBy = null, SectionModel[] Sections = null,
+public record BuildingApplicationVersion(string Name, string ReplacedBy = null, string CreatedBy = null, bool? Submitted = null, SectionModel[] Sections = null,
     AccountablePerson[] AccountablePersons = null,
     KbiModel Kbi = null);
 
