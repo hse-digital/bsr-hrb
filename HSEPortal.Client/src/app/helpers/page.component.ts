@@ -49,14 +49,16 @@ export abstract class PageComponent<T> implements OnInit {
   navigateToNextChange(applicationService: ApplicationService) {  
     let nextRoute = this.nextChangeRoute();
     this.changedReturnUrl = "building-change-check-answers";
-
+    
     if (nextRoute == void 0 || nextRoute == "building-change-check-answers") {
       this.navigationService.navigateRelative(`../../registration-amendments/${this.changedReturnUrl}`, this.activatedRoute);
+    } else {
+      this.navigationService.navigateRelative(nextRoute, this.activatedRoute);
     }
   }
   
   async ngOnInit() {
-    this.changing = this.applicationService.currentVersion.Name != "original";
+    this.changing = (this.applicationService.currentVersion?.Name ?? "original") != "original";
     await this.onInit(this.applicationService);
   }
 
