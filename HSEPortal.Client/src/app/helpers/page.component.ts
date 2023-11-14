@@ -19,7 +19,6 @@ export abstract class PageComponent<T> implements OnInit {
   hasErrors: boolean = false;
   updateOnSave: boolean = true;
   changing: boolean = false;
-  changedReturnUrl?: string;
   returnUrl?: string;
   
   private injector: Injector = GetInjector();
@@ -42,6 +41,10 @@ export abstract class PageComponent<T> implements OnInit {
   constructor(activatedRoute?: ActivatedRoute) {
     if(activatedRoute) this.activatedRoute = activatedRoute;
   
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.returnUrl = params['return'];
+    });
+
     this.triggerScreenReaderNotification("");
   }
   
@@ -63,8 +66,7 @@ export abstract class PageComponent<T> implements OnInit {
       }
 
       if (this.returnUrl) {
-        let returnUri = this.returnUrl == 'check-answers' ? `../${this.returnUrl}` : this.returnUrl;
-        this.navigationService.navigateRelative(returnUri, this.activatedRoute);
+        this.navigateToReturnUrl(this.returnUrl);
         return;
       }
 
@@ -79,6 +81,15 @@ export abstract class PageComponent<T> implements OnInit {
     this.processing = false;
   }
   
+  private async navigateToReturnUrl(returnUrl: string) {
+    let returnUri = returnUrl;
+    switch(returnUrl) {
+      case 'check-answers': returnUri = `../${this.returnUrl}`; break;
+      case 'building-change-check-answers': returnUri = `../../registration-amendments/${this.returnUrl}`; break;
+    }
+    this.navigationService.navigateRelative(returnUri, this.activatedRoute);
+  }
+
   async saveAndComeBack(): Promise<void> {
     this.processing = true;
     let canSave = this.requiredFieldsAreEmpty() || this.isValid();
@@ -116,7 +127,7 @@ export abstract class PageComponent<T> implements OnInit {
     var applicationStatus = this.applicationService.model.ApplicationStatus;
     let isPaymentComplete = (applicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete;
     let isInvoice = this.applicationService.model.PaymentType == 'invoice' && (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed')
-    console.log(isPaymentComplete, isInvoice);
+
     return isPaymentComplete || isInvoice;
   }
 

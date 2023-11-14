@@ -28,12 +28,15 @@ export class BuildingChangeSectionAnswersComponent implements OnInit {
 
     navigateTo(url: string, query?: string) {
         this.applicationService.updateApplication();
-        this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute);
+        this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
+            return: 'building-change-check-answers'
+        });
     }
 
     navigateToAddress(url: string, addressIndex: number) {
         this.applicationService.updateApplication();
         this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
+            return: 'building-change-check-answers',
             address: addressIndex + 1
         });
     }
