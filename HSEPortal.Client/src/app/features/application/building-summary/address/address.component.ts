@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate } from "@angular/router";
 import { AddressSearchMode } from "src/app/components/address/address.component";
 import { NotFoundComponent } from "src/app/components/not-found/not-found.component";
 import { SectionHelper } from "src/app/helpers/section-helper";
@@ -15,7 +15,6 @@ import { ApplicationSubmittedHelper } from "src/app/helpers/app-submitted-helper
 import { DuplicatesService } from "src/app/services/duplicates.service";
 import { AlreadyRegisteredSingleComponent } from "../duplicates/already-registered-single/already-registered-single.component";
 import { AlreadyRegisteredMultiComponent } from "../duplicates/already-registered-multi/already-registered-multi.component";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 
 @Component({

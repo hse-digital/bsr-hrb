@@ -19,6 +19,7 @@ export class WhatWantToDoComponent extends PageComponent<string> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.resetCurrentVersionIndex();
     this.updateOnSave = false;
   }
 

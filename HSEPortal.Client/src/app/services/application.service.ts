@@ -34,7 +34,7 @@ export class ApplicationService {
 
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('application_data') ?? {};
-    this._currentVersion = 0;
+    this._currentVersion = LocalStorage.getJSON("versionindex") ?? 0;
     this._currentSectionIndex = this.currentVersion?.Sections?.length - 1 ?? 0;
     this._currentSectionAddressIndex = !!this.currentVersion?.Sections && this.currentVersion?.Sections.length > 0 ? this.currentSection?.Addresses?.length - 1 : 0;
     this._currentAccountablePersonIndex = this.currentVersion?.AccountablePersons?.length - 1 ?? 0;
@@ -56,6 +56,16 @@ export class ApplicationService {
       this.model.Versions.push(newVersion);
       currentVersion = newIndex;
     }
+    this.setVersionIndex(currentVersion);
+  }
+
+  resetCurrentVersionIndex() {
+    this.setVersionIndex(0);
+  }
+
+  private setVersionIndex(index: number) {
+    this._currentVersion = index;
+    LocalStorage.setJSON("versionindex", this._currentVersion);
   }
 
   updateLocalStorage() {
