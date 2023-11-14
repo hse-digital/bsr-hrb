@@ -89,19 +89,23 @@ public record BuildingApplicationModel(
 }
 
 public record BuildingApplicationVersion(string Name, string ReplacedBy = null, string CreatedBy = null, bool? Submitted = null, SectionModel[] Sections = null,
-    AccountablePerson[] AccountablePersons = null,
-    KbiModel Kbi = null);
+    AccountablePerson[] AccountablePersons = null, Status BuildingStatus = Status.NoChanges, KbiModel Kbi = null);
 
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
     string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange, string WhoIssuedCertificate, string CompletionCertificateDate,
     string CompletionCertificateIssuer, string CompletionCertificateReference, FileUploadModel CompletionCertificateFile, Scope Scope, string Statecode, BuildingAddress[] Addresses = null,
-    Duplicate Duplicate = null);
+    Duplicate Duplicate = null)
+{
+    public Status Status { get; set; }
+    public string WhyWantRemoveSection { get; set; }
+    public string RemoveStructureAreYouSure { get; set; }
+};
 
 public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
 
-public record Duplicate(string WhyContinue = null, bool? IsDuplicated = null,
-    string IncludeStructure = null, string[] BlockIds = null, bool? DuplicateFound = null, int? DuplicatedAddressIndex = null);
+public record Duplicate(string DuplicatedAddressIndex, string WhyContinue = null, bool? IsDuplicated = null,
+    string IncludeStructure = null, string[] BlockIds = null, bool? DuplicateFound = null);
 
 public enum OutOfScopeReason
 {
@@ -233,7 +237,6 @@ public record PaymentInvoiceDetails
 
 public record RegistrationAmendmentsModel
 {
-    public ChangeBuildingSummary ChangeBuildingSummary { get; set; }
     public ChangeUser ChangeUser { get; set; }
     public long Date { get; set; }
     public Deregister Deregister { get; set; }
@@ -246,20 +249,6 @@ public record Deregister
     public string Why { get; set; }
 }
 
-public record ChangeBuildingSummary
-{
-    public Status Status { get; set; }
-    public ChangeSection[] Sections { get; set; }
-    public int CurrentSectionIndex { get; set; }
-}
-
-public record ChangeSection
-{
-    public Status Status { get; set; }
-    public string WhyWantRemoveSection { get; set; }
-    public string RemoveStructureAreYouSure { get; set; }
-    public SectionModel SectionModel { get; set; }
-}
 
 public record ChangeUser
 {
