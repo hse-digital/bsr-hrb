@@ -34,7 +34,7 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
       this.applicationService.model.DuplicateBuildingApplicationIds = [];
     }
 
-    this.addressIndex = this.applicationService.currentSection.Duplicate!.DuplicatedAddressIndex;
+    this.addressIndex = Number(this.applicationService.currentSection.Duplicate!.DuplicatedAddressIndex);
 
     this.registeredStructure = this.applicationService.currentSection.Duplicate?.RegisteredStructureModel;
     
