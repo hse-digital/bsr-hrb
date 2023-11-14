@@ -26,7 +26,6 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
 
   constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(SectionYearOfCompletionComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void {
@@ -38,25 +37,6 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentSection.YearOfCompletionOption = this.model?.YearOfCompletionOption;
     this.applicationService.currentSection.YearOfCompletion = this.model?.YearOfCompletion;
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    this.model = {};
-    this.model.YearOfCompletionOption = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption;
-    this.model.YearOfCompletion = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion;
-
-    if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption)) {
-      this.model.YearOfCompletionOption = this.applicationService.currentSection.YearOfCompletionOption;
-    }
-    
-    if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion)) {
-      this.model.YearOfCompletion = this.applicationService.currentSection.YearOfCompletion;
-    }
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {    
-    this.applicationService.currentChangedSection.SectionModel!.YearOfCompletionOption = this.model?.YearOfCompletionOption;
-    this.applicationService.currentChangedSection.SectionModel!.YearOfCompletion = this.model?.YearOfCompletion;
   }
 
   override nextChangeRoute(): string {

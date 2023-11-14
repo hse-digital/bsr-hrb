@@ -35,9 +35,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
 
   constructor(activatedRoute: ActivatedRoute, private fileUploadService: FileUploadService, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(UploadCompletionCertificateComponent.route);
   }
-
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return true;
@@ -56,29 +54,6 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
     this.applicationService.currentSection.CompletionCertificateFile = this.model;
 
     if (this.selectedFileUpload && !this.model!.Uploaded && isSaveAndContinue) {
-      this.model!.Uploaded = true;
-      await this.fileUploadService.uploadToSharepoint(this.applicationService.model.id!, this.selectedFileUpload.file.name)
-    }
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateFile) this.onInit(this.applicationService);
-    else {
-      this.model = this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateFile;
-      this.selectedFileUpload = { status: 'uploaded', file: new File([], this.model.Filename), alreadyUploaded: this.model.Uploaded };
-    }
-
-    let completionCertificateDate = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate)
-      ? this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
-      : this.applicationService.currentSection.CompletionCertificateDate;
-      
-    this.isPageOptional(completionCertificateDate);
-  }
-
-  override async onChange(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateFile = this.model;
-
-    if (this.selectedFileUpload && !this.model!.Uploaded) {
       this.model!.Uploaded = true;
       await this.fileUploadService.uploadToSharepoint(this.applicationService.model.id!, this.selectedFileUpload.file.name)
     }

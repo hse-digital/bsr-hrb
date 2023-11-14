@@ -20,7 +20,6 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
 
   constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(SectionPeopleLivingInBuildingComponent.route);
   }
 
 
@@ -34,15 +33,6 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
     this.applicationService.currentSection.PeopleLivingInBuilding = this.model;
   }
 
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.PeopleLivingInBuilding) this.onInit(this.applicationService);
-    else this.model = this.applicationService.currentChangedSection.SectionModel?.PeopleLivingInBuilding;
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.PeopleLivingInBuilding = this.model;
-  }
-
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
@@ -51,16 +41,16 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
     let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
     if (section.PeopleLivingInBuilding == "no_wont_move") {
       this.initScope();
-      this.applicationService.currentChangedSection.SectionModel!.Scope!.IsOutOfScope = true;
-      this.applicationService.currentChangedSection.SectionModel!.Scope!.OutOfScopeReason = OutOfScopeReason.PeopleLivingInBuilding;
+      this.applicationService.currentSection.Scope!.IsOutOfScope = true;
+      this.applicationService.currentSection.Scope!.OutOfScopeReason = OutOfScopeReason.PeopleLivingInBuilding;
       return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
     }
     return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
   private initScope() {
-    if (!this.applicationService.currentChangedSection.SectionModel!.Scope) {
-      this.applicationService.currentChangedSection.SectionModel!.Scope = {};
+    if (!this.applicationService.currentSection.Scope) {
+      this.applicationService.currentSection.Scope = {};
     }
   }
 
@@ -86,7 +76,7 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
 
     if (!this.peopleLivingHasErrors && peopleLivingInBuilding == 'no_wont_move') {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.PeopleLivingInBuilding };
-      if(!this.changed) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService);
+      if(!this.changing) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService);
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;

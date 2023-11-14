@@ -4,7 +4,7 @@ import { NumberOfSectionsComponment } from 'src/app/features/application/buildin
 import { PageComponent } from 'src/app/helpers/page.component';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStage, ChangeSection, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, OutOfScopeReason, SectionModel, Status } from 'src/app/services/application.service';
 import { RemoveStructureComponent } from '../remove-structure/remove-structure.component';
 import { ChangeTaskListComponent } from '../../change-task-list/change-task-list.component';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
@@ -31,27 +31,6 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     this.applicationService.currentVersion.Sections.filter(x => x.Statecode != "1").map(x => x.Statecode = "0");
   }
 
-  private initChangeBuildingSummary() {
-    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary = {
-        Status: Status.NoChanges,
-        Sections: this.applicationService.currentVersion.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection))
-      }
-    }
-  }
-
-  private initChangeSectionModel(index: number) {
-    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections)
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections = this.applicationService.currentVersion.Sections.map(x => ({ Status: Status.NoChanges } as ChangeSection));
-    
-    if(!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
-        Status: Status.NoChanges,
-        SectionModel: new SectionModel()
-      }
-    }
-  }
-
   private getActiveSections() {
     return this.applicationService.currentVersion.Sections.filter(x => x.Statecode != "1");
   }
@@ -72,7 +51,6 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
 
   override onInit(applicationService: ApplicationService): void {
     this.initStatecode();
-    this.initChangeBuildingSummary();
     this.changeBuildingSummaryHelper = new ChangeBuildingSummaryHelper(this.applicationService);
     this.activeSections = this.changeBuildingSummaryHelper.getSections();
     this.updateBuildingChangeStatus();
@@ -80,11 +58,11 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
 
   private updateBuildingChangeStatus() {
     if(this.changeBuildingSummaryHelper?.hasBuildingChange()) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Status = this.validateModel() 
+      this.applicationService.currentVersion.BuildingStatus = this.validateModel() 
         ? Status.ChangesComplete 
         : Status.ChangesInProgress;
     } else {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Status = Status.NoChanges;
+      this.applicationService.currentVersion.BuildingStatus = Status.NoChanges;
     }
   }
 
@@ -144,7 +122,6 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   removeStructure(index: number) {
-    this.initChangeSectionModel(index);
     return this.navigationService.navigateRelative(RemoveStructureComponent.route, this.activatedRoute, {
       index: index
     });
@@ -152,15 +129,12 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
 
   async addAnotherStructure() {
     let section = this.applicationService.startNewSection();
-    this.initChangeSectionModel(this.applicationService._currentSectionIndex);
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = SectionNameComponent.route;
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
     await this.applicationService.updateApplication();
     return this.navigationService.navigateRelative(`../sections/${section}/${SectionNameComponent.route}`, this.activatedRoute);
   }
 
   isSectionRemoved(index: number) {
-    return (this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[index]?.Status ?? Status.NoChanges) == Status.Removed;
+    return (this.applicationService.currentSection.Status ?? Status.NoChanges) == Status.Removed;
   }
 
 }

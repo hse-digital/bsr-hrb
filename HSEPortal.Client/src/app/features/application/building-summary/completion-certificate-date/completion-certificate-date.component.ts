@@ -31,7 +31,6 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
 
   constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(CompletionCertificateDateComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
@@ -52,28 +51,6 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     if(!this.isInputEmpty()) {
       this.applicationService.currentSection.CompletionCertificateDate = new Date(Number(this.model!.year!), (Number(this.model?.month) - 1), Number(this.model?.day)).getTime().toString();
-    }
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    this.isInputOptional(
-      this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption ?? this.applicationService.currentSection.YearOfCompletionOption,
-      this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange ?? this.applicationService.currentSection.YearOfCompletionRange,
-      this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion ?? this.applicationService.currentSection.YearOfCompletion,
-    );
-    
-    this.model = { day: "", month: "", year: "" } as CompletionDate;
-    
-    let completionCertificateDate = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate) 
-      ? this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
-      : this.applicationService.currentSection.CompletionCertificateDate;
-
-    if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) this.initPageModel(completionCertificateDate)
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    if(!this.isInputEmpty()) {
-      this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateDate = new Date(Number(this.model!.year!), (Number(this.model?.month) - 1), Number(this.model?.day)).getTime().toString();
     }
   }
 

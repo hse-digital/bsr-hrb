@@ -15,7 +15,6 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
 
   constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(SectionFloorsAboveComponent.route);
   }
 
   errorMessage: string = 'Enter the number of floors at or above ground level';
@@ -30,18 +29,9 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
     this.applicationService.currentSection.FloorsAbove = this.model;
   }
 
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.FloorsAbove) this.onInit(this.applicationService);
-    else this.model = this.applicationService.currentChangedSection.SectionModel?.FloorsAbove;
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.FloorsAbove = this.model;
-  }
-
   override nextChangeRoute(): string {
     let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
+    return this.buildingSummaryNavigation.getNextChangeRoute(section);
   }
   
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

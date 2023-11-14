@@ -32,10 +32,6 @@ export class ApplicationService {
     return this.currentVersion.AccountablePersons[this._currentAccountablePersonIndex];
   }
 
-  get currentChangedSection(): ChangeSection {
-    return this.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[this._currentSectionIndex]!;
-  }
-
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('application_data') ?? {};
     this._currentVersion = 0;
@@ -276,6 +272,8 @@ export class BuildingRegistrationVersion {
 
   Name?: string;
   ReplacedBy?: string;
+  
+  BuildingStatus: Status = Status.NoChanges;
 
   Sections: SectionModel[] = [];
   AccountablePersons: AccountablePersonModel[] = [];
@@ -322,6 +320,10 @@ export class SectionModel {
 
   Scope?: Scope;
   Duplicate?: Duplicate;
+
+  Status: Status = Status.NoChanges;
+  WhyWantRemoveSection?: string;
+  RemoveStructureAreYouSure?: string;
 }
 
 export class Scope {
@@ -537,7 +539,6 @@ export class PaymentInvoiceDetails {
 }
 
 export class RegistrationAmendmentsModel {
-  ChangeBuildingSummary?: ChangeBuildingSummary;
   AccountablePersonStatus?: ChangeAccountablePerson;
   ConnectionStatus: Status = Status.NoChanges;
   SubmitStatus: Status = Status.NoChanges;
@@ -546,20 +547,6 @@ export class RegistrationAmendmentsModel {
   Date?: number;
 
   ChangeRequest?: ChangeRequest;
-}
-
-export class ChangeBuildingSummary {
-  Status: Status = Status.NoChanges;
-  Sections: ChangeSection[] = [];
-  CurrentChange?: string;
-  CurrentSectionIndex?: number;
-}
-
-export class ChangeSection {
-  Status: Status = Status.NoChanges;
-  WhyWantRemoveSection?: string;
-  RemoveStructureAreYouSure?: string;
-  SectionModel?: SectionModel;
 }
 
 export class ChangeAccountablePerson {

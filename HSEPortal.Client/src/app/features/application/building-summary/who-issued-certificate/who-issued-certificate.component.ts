@@ -18,7 +18,6 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
   
   constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(WhoIssuedCertificateComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
@@ -30,18 +29,6 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
     if (this.model == "bsr") {
       this.applicationService.currentSection.CompletionCertificateIssuer = "The building Safety Regulator (BSR)";
     }
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.WhoIssuedCertificate) this.onInit(this.applicationService);
-    else this.model = this.applicationService.currentChangedSection.SectionModel?.WhoIssuedCertificate;
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-      this.applicationService.currentChangedSection.SectionModel!.WhoIssuedCertificate = this.model;
-      if (this.model == "bsr") {
-        this.applicationService.currentChangedSection.SectionModel!.CompletionCertificateIssuer = "The building Safety Regulator (BSR)";
-      }
   }
 
   override nextChangeRoute(): string {

@@ -23,7 +23,6 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
 
   constructor(private duplicatesService: DuplicatesService, activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(AlreadyRegisteredMultiComponent.route);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
@@ -36,7 +35,7 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
 
     this.addressIndex = Number(this.applicationService.currentSection.Duplicate!.DuplicatedAddressIndex);
 
-    let currentAddress = this.changed ? this.applicationService.currentChangedSection.SectionModel!.Addresses[this.addressIndex! - 1] : this.applicationService.currentSectionAddress;
+    let currentAddress = this.applicationService.currentSectionAddress;
 
     if (!this.registeredStructure || this.registeredStructure.StructureAddress?.Postcode != currentAddress?.Postcode) {
       this.GetRegisteredStructure();
@@ -49,14 +48,6 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
 
   override onSave(applicationService: ApplicationService): void | Promise<void> {
     this.applicationService.currentSection.Duplicate!.IncludeStructure = this.model;
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    this.onInit(this.applicationService);
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.onSave(this.applicationService);
   }
 
   override nextChangeRoute(): string {
@@ -92,11 +83,11 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
   }
 
   get section() {
-    return this.changed ? this.applicationService.currentChangedSection.SectionModel! : this.applicationService.currentSection!;
+    return this.applicationService.currentSection;
   }
 
   get address() {
-    return this.changed ? this.applicationService.currentChangedSection.SectionModel?.Addresses[this.addressIndex!] : this.applicationService.currentSectionAddress;
+    return this.applicationService.currentSectionAddress;
   }
 
 }

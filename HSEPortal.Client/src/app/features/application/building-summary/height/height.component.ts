@@ -20,7 +20,6 @@ export class SectionHeightComponent extends PageComponent<number> {
 
   constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(SectionHeightComponent.route);
   }
 
   heightHasErrors = false;
@@ -34,29 +33,20 @@ export class SectionHeightComponent extends PageComponent<number> {
     this.applicationService.currentSection.Height = this.model;
   }
 
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.Height) this.onInit(this.applicationService);
-    else this.model = this.applicationService.currentChangedSection.SectionModel?.Height;
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.Height = this.model;
-  }
-
   override nextChangeRoute(): string {
     let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
     if (section.Height! < 18 && section.FloorsAbove! < 7) {
       this.initScope();
-      this.applicationService.currentChangedSection.SectionModel!.Scope!.IsOutOfScope = true;
-      this.applicationService.currentChangedSection.SectionModel!.Scope!.OutOfScopeReason = OutOfScopeReason.Height;
+      this.applicationService.currentSection.Scope!.IsOutOfScope = true;
+      this.applicationService.currentSection.Scope!.OutOfScopeReason = OutOfScopeReason.Height;
       return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
     }
     return this.buildingSummaryNavigation.getNextChangeRoute(section);
   }
 
   private initScope() {
-    if (!this.applicationService.currentChangedSection.SectionModel!.Scope) {
-      this.applicationService.currentChangedSection.SectionModel!.Scope = {};
+    if (!this.applicationService.currentSection.Scope) {
+      this.applicationService.currentSection.Scope = {};
     }
   }
 
@@ -96,7 +86,7 @@ export class SectionHeightComponent extends PageComponent<number> {
 
     if (height < 18 && this.applicationService.currentSection.FloorsAbove! < 7) {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.Height };
-      if(!this.changed) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService,);
+      if(!this.changing) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService,);
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;

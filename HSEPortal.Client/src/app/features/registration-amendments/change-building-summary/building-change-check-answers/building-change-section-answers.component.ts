@@ -23,20 +23,15 @@ export class BuildingChangeSectionAnswersComponent implements OnInit {
 
     ngOnInit(): void {
         this.isInScope = !this.section.Scope?.IsOutOfScope;
-        this.initChangeSectionModel(this.sectionIndex);
         this.applicationService.updateApplication();
     }
 
     navigateTo(url: string, query?: string) {
-        this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = url;
-        this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.sectionIndex;
         this.applicationService.updateApplication();
         this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute);
     }
 
     navigateToAddress(url: string, addressIndex: number) {
-        this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = url;
-        this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.sectionIndex;
         this.applicationService.updateApplication();
         this.navigationService.navigateRelative(`../sections/section-${this.sectionIndex + 1}/${url}`, this.activatedRoute, {
             address: addressIndex + 1
@@ -66,19 +61,6 @@ export class BuildingChangeSectionAnswersComponent implements OnInit {
 
     isNotNullOrWhitespace(value?: string) {
         return FieldValidations.IsNotNullOrWhitespace(value);
-    }
-
-    private initChangeSectionModel(index: number) {
-        if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)) {
-            this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[index] = {
-                Status: Status.NoChanges,
-                SectionModel: new SectionModel()
-            }
-        }
-        
-        if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)!.SectionModel) {
-            this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.at(index)!.SectionModel = new SectionModel;
-        }
     }
 
     getAddresses(addresses: AddressModel[]) {

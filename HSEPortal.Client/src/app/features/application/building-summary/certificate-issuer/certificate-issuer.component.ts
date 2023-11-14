@@ -22,7 +22,6 @@ export class CertificateIssuerComponent extends PageComponent<string> {
 
   constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(CertificateIssuerComponent.route);
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -41,24 +40,6 @@ export class CertificateIssuerComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentSection.CompletionCertificateIssuer = this.model;
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateIssuer) {
-      this.model = this.applicationService.currentSection.CompletionCertificateIssuer;
-    } else {
-      this.model = this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateIssuer;    
-    }
-
-    let yearOfCompletionOption = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption) ? this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption : this.applicationService.currentSection.YearOfCompletionOption;
-    let yearOfCompletionRange = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange) ? this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange : this.applicationService.currentSection.YearOfCompletionRange;
-    let yearOfCompletion = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion) ? this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion : this.applicationService.currentSection.YearOfCompletion;
-    
-    this.isInputOptional(yearOfCompletionOption, yearOfCompletionRange, yearOfCompletion);
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateIssuer = this.model;
   }
 
   override nextChangeRoute(): string {

@@ -1,5 +1,5 @@
 import { AddressModel } from "src/app/services/address.service";
-import { SectionModel, ChangeSection, ApplicationService } from "src/app/services/application.service";
+import { SectionModel, ApplicationService } from "src/app/services/application.service";
 import { FieldValidations } from "../validators/fieldvalidations";
 
 export class ChangeBuildingSummaryHelper {
@@ -10,8 +10,9 @@ export class ChangeBuildingSummaryHelper {
 
     getSections(): SectionModel[] {
         return this.applicationService.currentVersion.Sections.map((section, index) => {
-            let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections ?? new Array<ChangeSection>(this.applicationService.currentVersion.Sections.length);
-            return this.getSection(section, changedSections[index]?.SectionModel ?? new SectionModel());
+            let originalVersion = this.applicationService.model.Versions.find(x => x.Name == "original");
+            let originalSection = originalVersion!.Sections.length <= index ? new SectionModel() : originalVersion!.Sections[index];
+            return this.getSection(originalSection, section);
         });
     }
 
@@ -47,9 +48,10 @@ export class ChangeBuildingSummaryHelper {
     }
 
     hasBuildingChange() {
-        return this.applicationService.currentVersion.Sections.some((section, index) => {
-            let changedSections = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections ?? new Array<ChangeSection>(this.applicationService.currentVersion.Sections.length);
-            return this.hasSectionChange(section, changedSections[index]?.SectionModel ?? new SectionModel());
+        return this.applicationService.currentVersion.Sections.map((section, index) => {
+            let originalVersion = this.applicationService.model.Versions.find(x => x.Name == "original");
+            let originalSection = originalVersion!.Sections.length <= index ? new SectionModel() : originalVersion!.Sections[index];
+            return this.hasSectionChange(originalSection, section);
         });
     }
 

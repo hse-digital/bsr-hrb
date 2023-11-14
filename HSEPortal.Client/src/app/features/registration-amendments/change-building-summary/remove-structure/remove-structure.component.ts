@@ -2,9 +2,8 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStage, ChangeSection, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, Status } from 'src/app/services/application.service';
 import { BuildingChangeCheckAnswersComponent } from '../building-change-check-answers/building-change-check-answers.component';
-import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { WhyRemoveComponent } from '../why-remove/why-remove.component';
 import { NumberOfSectionsComponment } from 'src/app/features/application/building-summary/number-of-sections/number-of-sections.component';
 
@@ -16,29 +15,22 @@ export class RemoveStructureComponent extends PageComponent<string> {
   static route: string = 'remove-structure';
   static title: string = "Confirm you want to remove this structure - Register a high-rise building - GOV.UK";
 
-  index?: number;
-  changedSection?: ChangeSection;
-
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.index = params['index'];
-      if(!this.index) this.navigationService.navigateRelative(NotFoundComponent.route, this.activatedRoute);
-      this.model = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections[this.index ?? 0].RemoveStructureAreYouSure;
-    });
+    this.model = this.applicationService.currentSection.RemoveStructureAreYouSure;
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[this.index ?? 0].RemoveStructureAreYouSure = this.model;
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections[this.index ?? 0].Status = this.model == 'yes' ? Status.Removed : Status.NoChanges;
+    this.applicationService.currentSection.RemoveStructureAreYouSure = this.model;
+    this.applicationService.currentSection.Status = this.model == 'yes' ? Status.Removed : Status.NoChanges;
     this.changeNumberOfSections();
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections && this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.Sections?.length > 0;
+    return !!this.applicationService.currentSection;
   }
 
   override isValid(): boolean {
@@ -47,11 +39,11 @@ export class RemoveStructureComponent extends PageComponent<string> {
 
   override async navigateNext(): Promise<boolean | void> {
     if(this.model == 'yes') {
-      return this.navigationService.navigateRelative(WhyRemoveComponent.route, this.activatedRoute, { index: this.index });
-    } else if (this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections!.filter(x => x.Status != Status.Removed)!.length > 1) {
+      return this.navigationService.navigateRelative(WhyRemoveComponent.route, this.activatedRoute);
+    } else if (this.applicationService.currentVersion.Sections.filter(x => x.Status != Status.Removed)!.length > 1) {
       return this.navigationService.navigateRelative(BuildingChangeCheckAnswersComponent.route, this.activatedRoute);
     }
-    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { index: this.index });
+    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute);
   }
 
   isKbiComplete() {
@@ -59,9 +51,9 @@ export class RemoveStructureComponent extends PageComponent<string> {
   }
 
   private changeNumberOfSections() {
-    if (this.model == 'yes' && this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.filter(x => x.Status != Status.Removed).length == 1) 
+    if (this.model == 'yes' && this.applicationService.currentVersion.Sections.filter(x => x.Status != Status.Removed).length == 1) 
       this.changeNumberOfSectionsToOne()
-    else if (this.model == 'no' && this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.Sections.filter(x => x.Status != Status.Removed).length > 1) 
+    else if (this.model == 'no' && this.applicationService.currentVersion.Sections.filter(x => x.Status != Status.Removed).length > 1) 
       this.changeNumberOfSectionsToTwoOrMore()
   }
 
@@ -80,7 +72,7 @@ export class RemoveStructureComponent extends PageComponent<string> {
   }
 
   get sectionName() {
-    return this.applicationService.currentVersion.Sections[this.index ?? 0].Name;
+    return this.applicationService.currentSection.Name;
   }
 
 }

@@ -22,7 +22,6 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
 
   constructor(private duplicatesService: DuplicatesService, activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(AlreadyRegisteredSingleComponent.route);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
@@ -42,19 +41,11 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
 
     this.registeredStructure = this.applicationService.currentSection.Duplicate?.RegisteredStructureModel;
     
-    let currentAddress = this.changed ? this.applicationService.currentChangedSection.SectionModel!.Addresses[this.addressIndex! - 1] : this.applicationService.currentSectionAddress;
+    let currentAddress = this.applicationService.currentSectionAddress;
 
     if (!this.registeredStructure || this.registeredStructure.StructureAddress?.Postcode != currentAddress?.Postcode) {
       this.GetRegisteredStructure();
     }
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.onSave(applicationService);
-  }
-
-  override onInitChange(applicationService: ApplicationService): void {
-    this.onInit(applicationService);
   }
 
   override nextChangeRoute(): string {
@@ -66,7 +57,6 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
   }
 
   private async GetRegisteredStructure() {
-    console.log("GetRegisteredStructure");
     this.registeredStructure = await this.duplicatesService.GetRegisteredStructure(this.addressIndex);
   }
 
@@ -94,7 +84,7 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
   }
 
   get currentSectionAddress(): AddressModel {
-    return this.changed ? this.applicationService.currentChangedSection.SectionModel!.Addresses[this.addressIndex! - 1] : this.applicationService.currentSectionAddress;
+    return this.applicationService.currentSectionAddress;
   }
 
 }

@@ -251,7 +251,6 @@ public record ChangeBuildingSummary
 {
     public Status Status { get; set; }
     public ChangeSection[] Sections { get; set; }
-    public string CurrentChange { get; set; }
     public int CurrentSectionIndex { get; set; }
 }
 

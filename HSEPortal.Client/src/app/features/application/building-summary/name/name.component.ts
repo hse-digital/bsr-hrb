@@ -18,7 +18,6 @@ export class SectionNameComponent extends PageComponent<string> {
 
   constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(SectionNameComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void {
@@ -28,15 +27,6 @@ export class SectionNameComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     applicationService.currentSection.Name = this.model;
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection?.SectionModel?.Name) this.onInit(this.applicationService);
-    else this.model = this.applicationService.currentChangedSection?.SectionModel?.Name;
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.Name = this.model;
   }
 
   override nextChangeRoute(): string {

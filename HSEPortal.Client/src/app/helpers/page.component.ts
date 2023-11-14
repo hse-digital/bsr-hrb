@@ -18,7 +18,7 @@ export abstract class PageComponent<T> implements OnInit {
   processing: boolean = false;
   hasErrors: boolean = false;
   updateOnSave: boolean = true;
-  changed: boolean = false;
+  changing: boolean = false;
   changedReturnUrl?: string;
   returnUrl?: string;
   
@@ -44,33 +44,20 @@ export abstract class PageComponent<T> implements OnInit {
   
     this.triggerScreenReaderNotification("");
   }
-  
-  onInitChange(applicationService: ApplicationService): Promise<void> | void { }
-  onChange(applicationService: ApplicationService): Promise<void> | void { }
+
   nextChangeRoute() {}
   navigateToNextChange(applicationService: ApplicationService) {  
     let nextRoute = this.nextChangeRoute();
+    this.changedReturnUrl = "building-change-check-answers";
 
     if (nextRoute == void 0 || nextRoute == "building-change-check-answers") {
       this.navigationService.navigateRelative(`../../registration-amendments/${this.changedReturnUrl}`, this.activatedRoute);
-    } else {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = nextRoute;
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
-      this.applicationService.updateApplication();
-      if (nextRoute == "address") {
-        this.navigationService.navigateRelative(nextRoute, this.activatedRoute, { address: this.applicationService.currentChangedSection.SectionModel!.Addresses.length + 1 });
-      } else {
-        this.navigationService.navigateRelative(nextRoute, this.activatedRoute);
-      }
     }
   }
   
   async ngOnInit() {
-    if (this.changed) {
-      await this.onInitChange(this.applicationService);
-    } else {
-      await this.onInit(this.applicationService);
-    }
+    this.changing = this.applicationService.currentVersion.Name != "original";
+    await this.onInit(this.applicationService);
   }
 
   async saveAndContinue(): Promise<void> {
@@ -81,9 +68,7 @@ export abstract class PageComponent<T> implements OnInit {
       this.triggerScreenReaderNotification();
       this.applicationService.updateLocalStorage();
 
-      if (this.changed) {
-        console.log("changed");
-        await this.onChange(this.applicationService);
+      if (this.changing) {
         await this.navigateToNextChange(this.applicationService);
         return;
       }
@@ -192,15 +177,8 @@ export abstract class PageComponent<T> implements OnInit {
     this.titleService.setTitleError();
   }
 
-  protected isPageChangingBuildingSummary(route: string) {
-    this.changed = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex;
-    
-    this.changedReturnUrl = "building-change-check-answers";
-  }
-
   get buildingOrSectionName() {
-    let newName = this.applicationService.currentChangedSection?.SectionModel?.Name ?? "";
-    let sectionName = this.changed && FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
+    let sectionName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.Name) ? this.applicationService.currentSection.Name : this.applicationService.model.BuildingName; 
     return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 }

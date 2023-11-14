@@ -46,8 +46,8 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean> {
-    let changed = !!this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary;
-    if (changed && this.applicationService.model.NumberOfSections == "one") {
+    let changing = this.applicationService.currentVersion.Name != "original";
+    if (changing && this.applicationService.model.NumberOfSections == "one") {
       return this.navigationService.navigateRelative(`/${RegistrationAmendmentsModule.baseRoute}/${BuildingChangeCheckAnswersComponent.route}`, this.activatedRoute);
     }
     // user is changing the answer

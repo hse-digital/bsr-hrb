@@ -22,7 +22,6 @@ export class CertificateNumberComponent extends PageComponent<string> {
   certificateHasErrors: boolean = false;
   constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(CertificateNumberComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void {
@@ -32,22 +31,6 @@ export class CertificateNumberComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     applicationService.currentSection.CompletionCertificateReference = this.model;
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateReference) {
-      this.model = this.applicationService.currentSection.CompletionCertificateReference;
-    } else {
-      this.model = this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateReference;
-    }
-    let completionCertificateDate = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate) 
-      ?  this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
-      : this.applicationService.currentSection.CompletionCertificateDate;
-    this.isPageOptional(completionCertificateDate);
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateReference = this.model;
   }
 
   override nextChangeRoute(): string {

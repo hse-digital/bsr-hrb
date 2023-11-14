@@ -19,7 +19,6 @@ export class SectionYearRangeComponent extends PageComponent<string> {
 
     constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
         super(activatedRoute);
-        this.isPageChangingBuildingSummary(SectionYearRangeComponent.route);
     }
 
     override onInit(applicationService: ApplicationService): void {
@@ -28,15 +27,6 @@ export class SectionYearRangeComponent extends PageComponent<string> {
 
     override async onSave(applicationService: ApplicationService): Promise<void> {
         applicationService.currentSection.YearOfCompletionRange = this.model;
-    }
-
-    override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-        if (!this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange) this.onInit(this.applicationService);
-        else this.model = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange;
-    }
-
-    override onChange(applicationService: ApplicationService): void | Promise<void> {
-        this.applicationService.currentChangedSection!.SectionModel!.YearOfCompletionRange = this.model;
     }
 
     override nextChangeRoute(): string {
