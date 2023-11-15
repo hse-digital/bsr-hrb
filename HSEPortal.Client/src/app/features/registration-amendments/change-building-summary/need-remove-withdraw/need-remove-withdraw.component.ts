@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode, SectionModel } from 'src/app/services/application.service';
 import { RemoveStructureComponent } from '../remove-structure/remove-structure.component';
 import { DeregisterAreYouSureComponent } from '../../change-deregister/deregister-are-you-sure/deregister-are-you-sure.component';
@@ -24,7 +23,7 @@ export class NeedRemoveWithdrawComponent extends PageComponent<SectionModel> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.model = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
+    this.model = this.applicationService.currentSection;
     this.isAppAccepted = await this.isApplicationAccepted();
     this.heading = this.getHeading();
     this.firstSentence = this.getFirstSentence();

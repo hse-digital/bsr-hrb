@@ -57,7 +57,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   private updateBuildingChangeStatus() {
-    if(this.changeBuildingSummaryHelper?.hasBuildingChange()) {
+    if(this.changeBuildingSummaryHelper?.getChanges().length! > 0) {
       this.applicationService.currentVersion.BuildingStatus = this.validateModel() 
         ? Status.ChangesComplete 
         : Status.ChangesInProgress;

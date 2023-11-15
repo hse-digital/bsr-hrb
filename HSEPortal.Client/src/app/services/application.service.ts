@@ -4,7 +4,7 @@ import { firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
 import { FieldValidations } from "../helpers/validators/fieldvalidations";
-import { ChangeRequest } from "./registration-amendments.service";
+import { CancellationReason, ChangeRequest } from "./registration-amendments.service";
 import { Sanitizer } from "./http-interceptor";
 import { GetInjector } from "../helpers/injector.helper";
 import { BuildingSummaryNavigation } from "../features/application/building-summary/building-summary.navigation";
@@ -356,6 +356,7 @@ export class SectionModel {
   Status: Status = Status.NoChanges;
   WhyWantRemoveSection?: string;
   RemoveStructureAreYouSure?: string;
+  CancellationReason?: CancellationReason;
 }
 
 export class Scope {
@@ -578,7 +579,7 @@ export class RegistrationAmendmentsModel {
   ChangeUser?: ChangeUser;
   Date?: number;
 
-  ChangeRequest?: ChangeRequest;
+  ChangeRequest?: ChangeRequest[];
 }
 
 export class ChangeAccountablePerson {
@@ -594,6 +595,7 @@ export class ChangeAccountablePerson {
 export class Deregister {
   AreYouSure?: string;
   Why?: string;
+  CancellationReason?: CancellationReason;
 }
 
 export class ChangeUser {
