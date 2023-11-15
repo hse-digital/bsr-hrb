@@ -61,7 +61,7 @@ export class SectionHeightComponent extends PageComponent<number> {
 
   override navigateNext(): Promise<boolean> {
     if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
-      if (this.changing) this.navigationService.navigateRelative(`../../registration-amendments/${NeedRemoveWithdrawComponent.route}`, this.activatedRoute);
+      if (this.changing) return this.navigationService.navigateRelative(`../../registration-amendments/${NeedRemoveWithdrawComponent.route}`, this.activatedRoute);
       return this.applicationService.model.NumberOfSections == 'one'
         ? this.navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, this.activatedRoute)
         : this.navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, this.activatedRoute);
@@ -74,7 +74,10 @@ export class SectionHeightComponent extends PageComponent<number> {
 
     if (height < 18 && this.applicationService.currentSection.FloorsAbove! < 7) {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.Height };
+      
       if(!this.changing) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService,);
+      else this.returnUrl = undefined;
+    
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;

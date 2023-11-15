@@ -60,7 +60,10 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
 
     if (!this.peopleLivingHasErrors && peopleLivingInBuilding == 'no_wont_move') {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.PeopleLivingInBuilding };
+      
       if(!this.changing) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService);
+      else this.returnUrl = undefined;
+
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;

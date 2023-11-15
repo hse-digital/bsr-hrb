@@ -2,11 +2,14 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStage, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, OutOfScopeReason, Status } from 'src/app/services/application.service';
 import { BuildingChangeCheckAnswersComponent } from '../building-change-check-answers/building-change-check-answers.component';
 import { WhyRemoveComponent } from '../why-remove/why-remove.component';
 import { NumberOfSectionsComponment } from 'src/app/features/application/building-summary/number-of-sections/number-of-sections.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
+import { SectionHeightComponent } from 'src/app/features/application/building-summary/height/height.component';
+import { SectionPeopleLivingInBuildingComponent } from 'src/app/features/application/building-summary/people-living-in-building/people-living-in-building.component';
+import { SectionResidentialUnitsComponent } from 'src/app/features/application/building-summary/residential-units/residential-units.component';
 
 @Component({
   selector: 'hse-remove-structure',
@@ -44,12 +47,34 @@ export class RemoveStructureComponent extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    if(this.model == 'yes') {
+    let isOutOfScope = this.applicationService.currentSection.Scope?.IsOutOfScope;
+    let outOfScopeRoute = this.getNextOutOfScopeRoute(this.applicationService.currentSection?.Scope?.OutOfScopeReason);
+    
+    if (this.model == 'no' && isOutOfScope && FieldValidations.IsNotNullOrWhitespace(outOfScopeRoute)) {
+      this.applicationService.currentSection!.Scope = {};
+      return this.navigateToSectionPage(outOfScopeRoute);
+    } else if(this.model == 'yes') {
       return this.navigationService.navigateRelative(WhyRemoveComponent.route, this.activatedRoute, { index: this.index });
-    } else if (this.applicationService.currentVersion.Sections.filter(x => x.Status != Status.Removed)!.length > 1) {
+    } else if (this.applicationService.currentVersion.Sections!.filter(x => x.Status != Status.Removed)!.length > 1) {
       return this.navigationService.navigateRelative(BuildingChangeCheckAnswersComponent.route, this.activatedRoute);
     }
-    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute);
+    return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { index: this.index });
+  }
+
+  navigateToSectionPage(url: string, query?: string) {
+    this.applicationService.updateApplication();
+    return this.navigationService.navigateRelative(`../sections/section-${this.applicationService._currentSectionIndex + 1}/${url}`, this.activatedRoute, {
+      return: 'building-change-check-answers'
+    });
+  }
+
+  private getNextOutOfScopeRoute(outOfScopeReason?: OutOfScopeReason) {
+    switch(outOfScopeReason) {
+      case OutOfScopeReason.Height: return SectionHeightComponent.route;
+      case OutOfScopeReason.NumberResidentialUnits: return SectionResidentialUnitsComponent.route;
+      case OutOfScopeReason.PeopleLivingInBuilding: return SectionPeopleLivingInBuildingComponent.route;
+    }
+    return ""
   }
 
   isKbiComplete() {

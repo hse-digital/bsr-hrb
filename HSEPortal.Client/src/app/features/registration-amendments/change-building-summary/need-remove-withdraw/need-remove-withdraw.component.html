@@ -1,8 +1,22 @@
-<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+<i class="fa fa-spinner fa-spin loading" *ngIf="!shouldRender"></i>
+<govuk-formpage *ngIf="shouldRender" saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
     
     <h1 class="govuk-heading-l">{{heading}}</h1>
-    <govuk-body>{{firstSentence}}</govuk-body>
+    
+    <govuk-body *ngIf="this.getFirstSentence() == 'floorsAndHeightSentence'">
+        You've told us that {{this.buildingOrSectionName}} has <strong>{{this.model?.FloorsAbove}} floors</strong> and is <strong>{{this.model?.Height}} metres</strong> in height.
+    </govuk-body>
+
+    <govuk-body *ngIf="this.getFirstSentence() == 'residentialUnitsSentence'">
+        You told us that {{this.buildingOrSectionName}} has <strong>{{this.model?.ResidentialUnits}} residential units</strong>.
+    </govuk-body>
+
+    <govuk-body *ngIf="this.getFirstSentence() == 'peopleLivingInBuildingSentence'">
+        You told us that <strong>no one is living in {{this.buildingOrSectionName}} and people will not be moving in</strong>.
+    </govuk-body>
+
     <govuk-body>{{secondSentence}}</govuk-body>
 
 </govuk-formpage>
+
 
