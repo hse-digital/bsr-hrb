@@ -30,7 +30,7 @@ export class RegistrationAmendmentsService {
   }
   
   async syncRemovedStructures() {
-    await firstValueFrom(this.httpClient.post(`api/UpdateRemovedStructures/${this.applicationService.model.id}`, this.applicationService.model));
+    await firstValueFrom(this.httpClient.post(`api/UpdateRemovedStructures/${this.applicationService.model.id}/${this.applicationService.currentVersion.Name}`, this.applicationService.model));
   }
 
   async syncDeregister() {

@@ -4,6 +4,7 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, BuildingApplicationStatuscode } from 'src/app/services/application.service';
 import { DeregisterApplicationNumberComponent } from '../deregister-application-number/deregister-application-number.component';
+import { CancellationReason } from 'src/app/services/registration-amendments.service';
 
 @Component({
   selector: 'hse-deregister-why',
@@ -26,7 +27,17 @@ export class DeregisterWhyComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.model.RegistrationAmendmentsModel!.Deregister!.Why = this.model;
+    this.applicationService.model.RegistrationAmendmentsModel!.Deregister!.CancellationReason = this.CancellationReasonMapper[this.model ?? ""];
   }
+
+  private CancellationReasonMapper: Record<string, CancellationReason> = {
+    "floors-height": CancellationReason.FloorsHeight,
+    "residential-units": CancellationReason.ResidentialUnits,
+    "moved-out": CancellationReason.EveryoneMovedOut,
+    "incorrectly-registered": CancellationReason.IncorrectlyRegistered,
+    "no_connected": CancellationReason.NoConnected,
+    "": CancellationReason.NoCancellationReason
+  };
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return true;

@@ -32,37 +32,33 @@ export class ChangeBuildingSummaryHelper {
         return this.applicationService.currentVersion.Sections.flatMap((section, index) => {
             if (section.Status == Status.Removed) return undefined;
             let originalSection = originalVersion!.Sections.length <= index ? new SectionModel() : originalVersion!.Sections[index];
-            return this.getSectionChanges(section, originalSection, index);
+            return this.getSectionChanges(originalSection, section, index);
         }).filter(x => !!x).map(x => x!);
     }
 
-    private getSectionChanges(section: SectionModel, changedSection: SectionModel, sectionIndex: number): BuildingSummaryChangeModel[] {
-        if (!section || !section.Addresses || section.Addresses.length == 0) return [];
-        let sectionName = this.getLatestValueOf(section.Name, changedSection.Name) ?? this.applicationService.model.BuildingName!;
+    private getSectionChanges(originalSection: SectionModel, currentSection: SectionModel, sectionIndex: number): BuildingSummaryChangeModel[] {
+        if (!originalSection || !originalSection.Addresses || originalSection.Addresses.length == 0) return [];
+        let sectionName = this.getLatestValueOf(originalSection.Name, currentSection.Name) ?? this.applicationService.model.BuildingName!;
         let changes: (BuildingSummaryChangeModel | undefined)[] = [];
-        changes.push(this.getFieldChange(section.Name, changedSection.Name, "Name", "Name", "name", sectionName, sectionIndex));
-        changes.push(this.getFieldChange(section.FloorsAbove, changedSection.FloorsAbove, "Number of floors", sectionName + " number of floors", "floors", sectionName, sectionIndex));
-        changes.push(this.getFieldChange(section.Height, changedSection.Height, "Height", sectionName + " height", "height", sectionName, sectionIndex));
-        changes.push(this.getFieldChange(section.ResidentialUnits, changedSection.ResidentialUnits, "Residential units", sectionName + " number of residential units", "residential-units", sectionName, sectionIndex));
-        changes.push(this.getFieldChange(section.WhoIssuedCertificate, changedSection.WhoIssuedCertificate, "Who issued certificate", sectionName + " who issued certificate", "certificate-issuer", sectionName, sectionIndex));
+        changes.push(this.getFieldChange(originalSection.Name, currentSection.Name, "Name", "Name", "name", sectionName, sectionIndex));
+        changes.push(this.getFieldChange(originalSection.FloorsAbove, currentSection.FloorsAbove, "Number of floors", sectionName + " number of floors", "floors", sectionName, sectionIndex));
+        changes.push(this.getFieldChange(originalSection.Height, currentSection.Height, "Height", sectionName + " height", "height", sectionName, sectionIndex));
+        changes.push(this.getFieldChange(originalSection.ResidentialUnits, currentSection.ResidentialUnits, "Residential units", sectionName + " number of residential units", "residential-units", sectionName, sectionIndex));
+        changes.push(this.getFieldChange(originalSection.WhoIssuedCertificate, currentSection.WhoIssuedCertificate, "Who issued certificate", sectionName + " who issued certificate", "certificate-issuer", sectionName, sectionIndex));
 
-        changes.push(this.getYearOfCompletion(section, changedSection, sectionName, sectionIndex))
+        changes.push(this.getYearOfCompletion(originalSection, currentSection, sectionName, sectionIndex))
 
-        changes.push(this.getFieldChange(section.CompletionCertificateIssuer, changedSection.CompletionCertificateIssuer, "Completion certificate issuer", sectionName + " completion certificate issuer", "certificate-issuer", sectionName, sectionIndex));
-        changes.push(this.getFieldChange(section.CompletionCertificateReference, changedSection.CompletionCertificateReference, "Completion certificate reference", sectionName + " completion certificate reference", "certificate-number", sectionName, sectionIndex));
-        changes.push(this.getFieldChange(section.CompletionCertificateFile, changedSection.CompletionCertificateFile, "Completion certificate file", sectionName + " completion certificate file", "upload-completion-certificate", sectionName, sectionIndex));
-        changes.push(this.getSectionAddressChanges(section.Addresses, changedSection.Addresses, "Addresses", sectionName + " addresses", "building-change-check-answers", sectionName, sectionIndex));
+        changes.push(this.getFieldChange(originalSection.CompletionCertificateIssuer, currentSection.CompletionCertificateIssuer, "Completion certificate issuer", sectionName + " completion certificate issuer", "certificate-issuer", sectionName, sectionIndex));
+        changes.push(this.getFieldChange(originalSection.CompletionCertificateReference, currentSection.CompletionCertificateReference, "Completion certificate reference", sectionName + " completion certificate reference", "certificate-number", sectionName, sectionIndex));
+        changes.push(this.getFieldChange(originalSection.CompletionCertificateFile?.Filename, currentSection.CompletionCertificateFile?.Filename, "Completion certificate file", sectionName + " completion certificate file", "upload-completion-certificate", sectionName, sectionIndex));
+        changes.push(this.getSectionAddressChanges(originalSection.Addresses, currentSection.Addresses, "Addresses", sectionName + " addresses", "building-change-check-answers", sectionName, sectionIndex));
         return changes.filter(x => !!x && x != undefined).map(x => x!);
     }
 
-    private getYearOfCompletion(section: SectionModel, changedSection: SectionModel, sectionName: string, sectionIndex: number) {
-        let yearOfCompletionOption = this.getLatestValueOf(section.YearOfCompletionOption, changedSection.YearOfCompletionOption)
-        if (yearOfCompletionOption == "year-exact") {
-            return this.getFieldChange(section.YearOfCompletion, changedSection.YearOfCompletion, "Year of completion", "When was " + sectionName + " built?", "year-of-completion", sectionName, sectionIndex);
-        } else if (yearOfCompletionOption == "year-not-exact") {
-            return this.getFieldChange(section.YearOfCompletionRange, changedSection.YearOfCompletionRange, "Year of completion range", "When was " + sectionName + " built?", "year-range", sectionName, sectionIndex);
-        }
-        return undefined;
+    private getYearOfCompletion(originalSection: SectionModel, currentSection: SectionModel, sectionName: string, sectionIndex: number) {
+        let currentYear = currentSection.YearOfCompletionOption == "year-exact" ? currentSection.YearOfCompletion : currentSection.YearOfCompletionRange;
+        let originalYear = originalSection.YearOfCompletionOption == "year-exact" ? originalSection.YearOfCompletion : originalSection.YearOfCompletionRange;
+        return this.getFieldChange(originalYear, currentYear, "Year of completion", "When was " + sectionName + " built?", "year-of-completion", sectionName, sectionIndex);
     }
 
     private getFieldChange(field: any, changedfield: any, fieldName: string, title: string, route: string, sectionName: string, sectionIndex: number): BuildingSummaryChangeModel | undefined {

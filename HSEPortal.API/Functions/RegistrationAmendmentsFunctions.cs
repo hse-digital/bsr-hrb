@@ -126,12 +126,12 @@ public class RegistrationAmendmentsFunctions
     }
     
     [Function(nameof(UpdateRemovedStructures))]
-    public async Task<HttpResponseData> UpdateRemovedStructures([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(UpdateRemovedStructures)}/{{applicationId}}")] HttpRequestData request, string applicationId)
+    public async Task<HttpResponseData> UpdateRemovedStructures([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(UpdateRemovedStructures)}/{{applicationId}}/{{versionName}}")] HttpRequestData request, string applicationId, string versionName)
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
 
-        var removedStructures = buildingApplicationModel.Sections.Where(x => x.CancellationReason != CancellationReason.NoCancellationReason);
+        var removedStructures = buildingApplicationModel.Versions.Find(x => x.Name.Equals(versionName)).Sections.Where(x => x.CancellationReason != CancellationReason.NoCancellationReason);
         foreach(SectionModel section in removedStructures) {
             var dynamicsStructure = await RaService.GetDynamicsStructure(section.Name, section.Addresses[0].Postcode, applicationId);
             var updatedStructure = new DynamicsStructure { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[section.CancellationReason]})", statuscode = 760_810_007 }; // statuscode -> cancelled
