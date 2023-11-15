@@ -52,7 +52,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   override onInit(applicationService: ApplicationService): void {
     this.initStatecode();
     this.changeBuildingSummaryHelper = new ChangeBuildingSummaryHelper(this.applicationService);
-    this.activeSections = this.changeBuildingSummaryHelper.getSections();
+    this.activeSections = this.applicationService.currentVersion.Sections;
     this.updateBuildingChangeStatus();
   }
 
@@ -96,8 +96,8 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
           canContinue &&= section.Addresses?.length > 0;
 
           if ((section.YearOfCompletionOption == 'year-exact' && Number(section.YearOfCompletion) >= 2023) || (section.YearOfCompletionOption == 'year-not-exact' && section.YearOfCompletionRange == '2023-onwards')) {
+            canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.WhoIssuedCertificate);
             canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateIssuer);
-            canContinue &&= FieldValidations.IsNotNullOrWhitespace(section.CompletionCertificateReference);
           }
 
         }
