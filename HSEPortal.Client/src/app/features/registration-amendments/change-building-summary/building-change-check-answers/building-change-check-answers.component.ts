@@ -134,7 +134,7 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   }
 
   isSectionRemoved(index: number) {
-    return (this.applicationService.currentSection.Status ?? Status.NoChanges) == Status.Removed;
+    return (this.applicationService.currentVersion.Sections[index].Status ?? Status.NoChanges) == Status.Removed;
   }
 
 }

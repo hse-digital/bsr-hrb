@@ -33,7 +33,7 @@ export class BuildingChangeRemovedSectionAnswersComponent implements OnInit {
     }
 
     get reason() {
-        return this.applicationService.currentSection.WhyWantRemoveSection;
+        return this.applicationService.currentVersion.Sections[this.sectionIndex].WhyWantRemoveSection;
     }
 
 }

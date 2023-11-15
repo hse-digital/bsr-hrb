@@ -5,6 +5,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService, Status } from 'src/app/services/application.service';
 import { BuildingChangeCheckAnswersComponent } from '../building-change-check-answers/building-change-check-answers.component';
 import { NumberOfSectionsComponment } from 'src/app/features/application/building-summary/number-of-sections/number-of-sections.component';
+import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 
 @Component({
   selector: 'hse-why-remove',
@@ -18,16 +19,21 @@ export class WhyRemoveComponent  extends PageComponent<string> {
     super(activatedRoute);
   }
 
+  index?: number;
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.model = this.applicationService.currentSection.WhyWantRemoveSection;
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.index = params['index'];
+      if (!this.index) this.navigationService.navigate(NotFoundComponent.route);
+    });
+    this.model = this.applicationService.currentVersion.Sections[this.index!].WhyWantRemoveSection;
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.currentSection.WhyWantRemoveSection = this.model;
+    this.applicationService.currentVersion.Sections[this.index!].WhyWantRemoveSection = this.model;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return !!this.applicationService.currentSection;
+    return true;
   }
 
   override isValid(): boolean {
@@ -46,6 +52,6 @@ export class WhyRemoveComponent  extends PageComponent<string> {
   }
 
   get sectionName() {
-    return this.applicationService.currentSection.Name;
+    return this.applicationService.currentVersion.Sections[this.index!].Name;
   }
 }

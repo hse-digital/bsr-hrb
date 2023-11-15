@@ -6,6 +6,7 @@ import { ApplicationService, BuildingApplicationStage, Status } from 'src/app/se
 import { BuildingChangeCheckAnswersComponent } from '../building-change-check-answers/building-change-check-answers.component';
 import { WhyRemoveComponent } from '../why-remove/why-remove.component';
 import { NumberOfSectionsComponment } from 'src/app/features/application/building-summary/number-of-sections/number-of-sections.component';
+import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 
 @Component({
   selector: 'hse-remove-structure',
@@ -19,18 +20,23 @@ export class RemoveStructureComponent extends PageComponent<string> {
     super(activatedRoute);
   }
 
+  index?: number;
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.model = this.applicationService.currentSection.RemoveStructureAreYouSure;
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.index = params['index'];
+      if (!this.index) this.navigationService.navigate(NotFoundComponent.route);
+    });
+    this.model = this.applicationService.currentVersion.Sections[this.index!].RemoveStructureAreYouSure;
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.currentSection.RemoveStructureAreYouSure = this.model;
-    this.applicationService.currentSection.Status = this.model == 'yes' ? Status.Removed : Status.NoChanges;
+    this.applicationService.currentVersion.Sections[this.index!].RemoveStructureAreYouSure = this.model;
+    this.applicationService.currentVersion.Sections[this.index!].Status = this.model == 'yes' ? Status.Removed : Status.NoChanges;
     this.changeNumberOfSections();
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return !!this.applicationService.currentSection;
+    return true;
   }
 
   override isValid(): boolean {
@@ -39,7 +45,7 @@ export class RemoveStructureComponent extends PageComponent<string> {
 
   override async navigateNext(): Promise<boolean | void> {
     if(this.model == 'yes') {
-      return this.navigationService.navigateRelative(WhyRemoveComponent.route, this.activatedRoute);
+      return this.navigationService.navigateRelative(WhyRemoveComponent.route, this.activatedRoute, { index: this.index });
     } else if (this.applicationService.currentVersion.Sections.filter(x => x.Status != Status.Removed)!.length > 1) {
       return this.navigationService.navigateRelative(BuildingChangeCheckAnswersComponent.route, this.activatedRoute);
     }
@@ -72,7 +78,7 @@ export class RemoveStructureComponent extends PageComponent<string> {
   }
 
   get sectionName() {
-    return this.applicationService.currentSection.Name;
+    return this.applicationService.currentVersion.Sections[this.index!].Name;
   }
 
 }
