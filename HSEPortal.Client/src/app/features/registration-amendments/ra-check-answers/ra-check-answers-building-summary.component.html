@@ -1,0 +1,80 @@
+<h2 class="govuk-heading-m">Building summary</h2>
+
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            What's changing
+        </dt>
+        <dd class="govuk-summary-list__value">
+            <strong>What it was</strong>
+        </dd>
+        <dd class="govuk-summary-list__value">
+            <strong style="white-space: nowrap;">What you're changing it to</strong>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row" *ngIf="areStructuresDifferent()">
+        <dt class="govuk-summary-list__key">
+            Structures
+        </dt>
+        <dd class="govuk-summary-list__value">
+            <ng-container *ngFor="let name of OldStructures">
+                <div>{{name}}</div>
+            </ng-container>
+        </dd>
+        <dd class="govuk-summary-list__value">
+            <ng-container *ngFor="let name of NewStructures">
+                <div>{{name}}</div>
+            </ng-container>
+        </dd>
+        <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" role="link" (click)="navigateToBuildingCheckAnswersPage()" (keyup.enter)="navigateToBuildingCheckAnswersPage()"
+                tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row" *ngFor="let change of changes; let i = index">
+        <dt class="govuk-summary-list__key">
+            {{change!.Title}} 
+        </dt>
+        <dd class="govuk-summary-list__value" *ngIf="!change.IsAddress; else oldAddresses">
+            {{change!.OldValue}}
+        </dd>
+        <dd class="govuk-summary-list__value" *ngIf="!change.IsAddress; else newAddresses">
+            {{change!.NewValue}}
+        </dd>
+        <dd class="govuk-summary-list__actions" *ngIf="!change.IsAddress; else addressesRoute">
+            <a class="govuk-link" role="link" (click)="navigateTo(change!.Route!, i)" (keyup.enter)="navigateTo(change!.Route!, i)"
+                tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
+        </dd>
+
+        <ng-template #oldAddresses>
+            <dd class="govuk-summary-list__value">
+                <div class="govuk-!-margin-bottom-5" *ngFor="let address of change!.OldAddresses!">
+                    <address-description  [address]="address" />
+                    <!-- {{address.Address}} -->
+                </div>
+            </dd>
+        </ng-template>
+
+        <ng-template #newAddresses>
+            <dd class="govuk-summary-list__value">
+                <div class="govuk-!-margin-bottom-5" *ngFor="let address of change!.NewAddresses!">
+                    <address-description  [address]="address" />
+                    <!-- {{address.Address}} -->
+                </div>
+            </dd>
+        </ng-template>
+
+        <ng-template #addressesRoute>
+            <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" role="link" (click)="navigateToBuildingCheckAnswersPage()" (keyup.enter)="navigateToBuildingCheckAnswersPage()"
+                    tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
+            </dd>
+        </ng-template>
+
+    </div>
+    
+</dl>
+
