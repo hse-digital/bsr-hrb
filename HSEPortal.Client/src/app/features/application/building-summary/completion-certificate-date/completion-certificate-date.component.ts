@@ -4,8 +4,6 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CertificateNumberComponent } from '../certificate-number/certificate-number.component';
-import { BuildingSummaryNavigation } from '../building-summary.navigation';
-import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 type CompletionDate = { day: string, month: string, year: string };
 type error = { hasError: boolean, message?: string };
@@ -29,7 +27,7 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
     future?: error
   }
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 

@@ -6,8 +6,6 @@ import { SectionAddressComponent } from "../address/address.component";
 import { CertificateIssuerComponent } from "../certificate-issuer/certificate-issuer.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { WhoIssuedCertificateComponent } from "../who-issued-certificate/who-issued-certificate.component";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
     templateUrl: './year-range.component.html'
@@ -17,7 +15,7 @@ export class SectionYearRangeComponent extends PageComponent<string> {
     static title: string = "Range of years it was completed in - Register a high-rise building - GOV.UK";
     yearRangeHasErrors = false;
 
-    constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+    constructor(activatedRoute: ActivatedRoute) {
         super(activatedRoute);
     }
 

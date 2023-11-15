@@ -6,8 +6,6 @@ import { SectionAddressComponent } from "../address/address.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { UploadCompletionCertificateComponent } from "../upload-completion-certificate/upload-completion-certificate.component";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
   templateUrl: './certificate-number.component.html'
@@ -20,7 +18,7 @@ export class CertificateNumberComponent extends PageComponent<string> {
 
   isOptional: boolean = true;
   certificateHasErrors: boolean = false;
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 

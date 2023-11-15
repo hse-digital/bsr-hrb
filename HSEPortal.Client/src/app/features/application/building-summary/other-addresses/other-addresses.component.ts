@@ -24,7 +24,7 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
   hasMoreAddressesError = false;
   hasMoreAddresses?: string;
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 

@@ -4,8 +4,6 @@ import { ApplicationService, SectionModel } from 'src/app/services/application.s
 import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { BuildingSummaryNavigation } from '../building-summary.navigation';
-import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 @Component({
   templateUrl: './name.component.html'
@@ -16,7 +14,7 @@ export class SectionNameComponent extends PageComponent<string> {
 
   blockNameHasErrors = false;
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 

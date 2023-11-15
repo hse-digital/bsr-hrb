@@ -1,5 +1,6 @@
 import { NumberOfSectionsComponment } from "./number-of-sections/number-of-sections.component";
 import { ApplicationService, SectionModel } from "../../../services/application.service";
+import { Injectable } from "@angular/core";
 import { BaseNavigation, BuildingNavigationNode } from "../../../services/navigation";
 import { SectionsIntroComponent } from "./intro/intro.component";
 import { SectionNameComponent } from "./name/name.component";
@@ -12,7 +13,6 @@ import { CertificateIssuerComponent } from "./certificate-issuer/certificate-iss
 import { CertificateNumberComponent } from "./certificate-number/certificate-number.component";
 import { SectionAddressComponent } from "./address/address.component";
 import { SectionCheckAnswersComponent } from "./check-answers/check-answers.component";
-import { Injectable } from "@angular/core";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
 import { NotNeedRegisterSingleStructureComponent } from "./not-need-register-single-structure/not-need-register-single-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
@@ -24,7 +24,6 @@ import { KeepStructureDeclarationComponent } from "./duplicates/keep-structure-d
 import { WhoIssuedCertificateComponent } from "./who-issued-certificate/who-issued-certificate.component";
 import { CompletionCertificateDateComponent } from "./completion-certificate-date/completion-certificate-date.component";
 import { UploadCompletionCertificateComponent } from "./upload-completion-certificate/upload-completion-certificate.component";
-import { BuildingChangeCheckAnswersComponent } from "../../registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component";
 
 @Injectable()
 export class BuildingSummaryNavigation extends BaseNavigation {
@@ -61,12 +60,14 @@ export class BuildingSummaryNavigation extends BaseNavigation {
     return `sections/${SectionCheckAnswersComponent.route}`;
   }
 
-  getNextChangeRoute(section: SectionModel) {
-    let sectionRoute = this.numberOfSectionsNavigationNode.getNextRoute(section, 0);
-    if (sectionRoute === void 0 || sectionRoute == SectionCheckAnswersComponent.route || sectionRoute == AddMoreSectionsComponent.route) {
-      return BuildingChangeCheckAnswersComponent.route;
-    }
-    return sectionRoute;
+  getNextRouteIn(section: SectionModel) {
+    return this.numberOfSectionsNavigationNode.getNextRoute(section, 0);
+  }
+
+  getNextKnockOnQuestion(section: SectionModel) {
+    let route = this.getNextRouteIn(section);
+    if (route === void 0 || route == SectionCheckAnswersComponent.route || route == AddMoreSectionsComponent.route) return undefined;
+    else return route;
   }
 }
 

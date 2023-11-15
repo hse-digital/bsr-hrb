@@ -5,8 +5,6 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CertificateIssuerComponent } from '../certificate-issuer/certificate-issuer.component';
 import { CompletionCertificateDateComponent } from '../completion-certificate-date/completion-certificate-date.component';
-import { BuildingSummaryNavigation } from '../building-summary.navigation';
-import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 @Component({
   selector: 'hse-who-issued-certificate',
@@ -16,7 +14,7 @@ export class WhoIssuedCertificateComponent extends PageComponent<string> {
   static route: string = 'who-issued-certificate';
   static title: string = 'Who issued the completion certificate - Register a high-rise building - GOV.UK';
   
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 

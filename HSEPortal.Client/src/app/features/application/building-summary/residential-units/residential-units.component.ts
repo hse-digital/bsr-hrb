@@ -7,8 +7,6 @@ import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-mul
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 import { NeedRemoveWithdrawComponent } from "src/app/features/registration-amendments/change-building-summary/need-remove-withdraw/need-remove-withdraw.component";
 
 @Component({
@@ -18,7 +16,7 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
   static route: string = 'residential-units';
   static title: string = "Number of residential units in the section - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 

@@ -6,6 +6,8 @@ import { AddressModel } from "./address.service";
 import { FieldValidations } from "../helpers/validators/fieldvalidations";
 import { ChangeRequest } from "./registration-amendments.service";
 import { Sanitizer } from "./http-interceptor";
+import { GetInjector } from "../helpers/injector.helper";
+import { BuildingSummaryNavigation } from "../features/application/building-summary/building-summary.navigation";
 
 @Injectable()
 export class ApplicationService {
@@ -70,6 +72,11 @@ export class ApplicationService {
 
   updateLocalStorage() {
     LocalStorage.setJSON('application_data', this.model)
+  }
+
+  nextKnockOnQuestion() {
+    const buildingSummaryNavigation = GetInjector().get(BuildingSummaryNavigation);
+    return buildingSummaryNavigation.getNextKnockOnQuestion(this.currentSection);
   }
 
   clearApplication() {

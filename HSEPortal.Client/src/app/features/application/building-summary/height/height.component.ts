@@ -7,8 +7,6 @@ import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-si
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 import { NeedRemoveWithdrawComponent } from "src/app/features/registration-amendments/change-building-summary/need-remove-withdraw/need-remove-withdraw.component";
 
 @Component({
@@ -18,7 +16,7 @@ export class SectionHeightComponent extends PageComponent<number> {
   static route: string = 'height';
   static title: string = "What is the section height - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 

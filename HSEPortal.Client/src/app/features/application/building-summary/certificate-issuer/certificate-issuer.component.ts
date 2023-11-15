@@ -2,13 +2,10 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { ApplicationService } from "src/app/services/application.service";
-import { CertificateNumberComponent } from "../certificate-number/certificate-number.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { CompletionCertificateDateComponent } from "../completion-certificate-date/completion-certificate-date.component";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { SectionAddressComponent } from "../address/address.component";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
   templateUrl: './certificate-issuer.component.html'
@@ -20,7 +17,7 @@ export class CertificateIssuerComponent extends PageComponent<string> {
   isOptional: boolean = true;
   certificateHasErrors: boolean = false;
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 

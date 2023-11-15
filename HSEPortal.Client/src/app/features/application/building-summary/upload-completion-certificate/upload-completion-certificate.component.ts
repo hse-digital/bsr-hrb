@@ -7,8 +7,6 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 import { BlockBlobClient } from '@azure/storage-blob';
 import { TransferProgressEvent } from "@azure/core-http";
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { BuildingSummaryNavigation } from '../building-summary.navigation';
-import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 type error = { hasError: boolean, message?: string }
 
@@ -33,7 +31,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
     issue: { hasError: false, message: "The selected file could not be uploaded - try again" } as error
   };
 
-  constructor(activatedRoute: ActivatedRoute, private fileUploadService: FileUploadService, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute, private fileUploadService: FileUploadService) {
     super(activatedRoute);
   }
 

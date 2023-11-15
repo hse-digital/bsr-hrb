@@ -3,8 +3,6 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApplicationService } from "src/app/services/application.service";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { PageComponent } from "src/app/helpers/page.component";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
   templateUrl: './floors-above.component.html'
@@ -13,7 +11,7 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
   static route: string = 'floors';
   static title: string = "Number of floors at or above ground level in the section - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 

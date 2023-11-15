@@ -65,7 +65,7 @@ export abstract class PageComponent<T> implements OnInit {
         await this.saveAndUpdate(true);
       }
 
-      if (this.returnUrl) {
+      if (this.returnUrl && !this.KnockOnQuestions()) {
         this.navigateToReturnUrl(this.returnUrl);
         return;
       }
@@ -80,14 +80,23 @@ export abstract class PageComponent<T> implements OnInit {
 
     this.processing = false;
   }
-  
+
   private async navigateToReturnUrl(returnUrl: string) {
-    let returnUri = returnUrl;
-    switch(returnUrl) {
-      case 'check-answers': returnUri = `../${this.returnUrl}`; break;
-      case 'building-change-check-answers': returnUri = `../../registration-amendments/${this.returnUrl}`; break;
-    }
+    let returnUri = this.getCheckAnswersPageRoute(returnUrl);
     this.navigationService.navigateRelative(returnUri, this.activatedRoute);
+  }
+
+  private getCheckAnswersPageRoute(returnUrl: string) {
+    switch(returnUrl) {
+      case 'check-answers': return `../${this.returnUrl}`;
+      case 'building-change-check-answers': return `../../registration-amendments/${this.returnUrl}`;
+    }
+    return returnUrl;
+  }
+
+  private KnockOnQuestions() {
+    let nextKnockOnQuestion = this.applicationService.nextKnockOnQuestion();
+    return FieldValidations.IsNotNullOrWhitespace(nextKnockOnQuestion);
   }
 
   async saveAndComeBack(): Promise<void> {
