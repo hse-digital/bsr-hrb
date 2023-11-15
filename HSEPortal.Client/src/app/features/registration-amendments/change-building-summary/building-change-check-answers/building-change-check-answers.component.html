@@ -11,7 +11,7 @@
       </govuk-error-summary>
 
       <govuk-summary-list classes="govuk-summary-list--no-border answers-heading-border {{activeSections.length == 1 ? 'no-margin-bottom' : ''}}">
-        <govuk-summary-list-row (onClick)="navigateToMultipleSections()" (onKeyupEnter)="navigateToMultipleSections()" key="Is this a single high-rise residential structure?" [showAction]=true>
+        <govuk-summary-list-row (onClick)="navigateToMultipleSections()" (onKeyupEnter)="navigateToMultipleSections()" key="Is this a single high-rise residential structure?" [showAction]=canChangeNumberOfSections>
           {{applicationService.model.NumberOfSections == 'one' ? 'Yes' : 'No'}}
         </govuk-summary-list-row>
       </govuk-summary-list>
@@ -22,7 +22,7 @@
         <ng-container *ngFor="let section of activeSections; let i = index">
           <div class="section-wrapper" *ngIf="!isSectionRemoved(i)">
             <div class="section-header">
-              {{ getSectionName(i, undefined) }}
+              {{ getSectionName(i) }}
               <a class="govuk-link remove-link" (click)="removeStructure(i)">Remove</a>
             </div>
             <div class="section-content">

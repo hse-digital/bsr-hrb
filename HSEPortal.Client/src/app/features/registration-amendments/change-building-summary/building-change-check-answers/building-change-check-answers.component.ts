@@ -22,6 +22,8 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
 
   activeSections: SectionModel[] = [];
   changeBuildingSummaryHelper?: ChangeBuildingSummaryHelper;
+  sectionNames: string[] = [];
+  canChangeNumberOfSections: boolean = false;
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
@@ -45,8 +47,8 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     return this.navigationService.navigateRelative(`../${NumberOfSectionsComponment.route}`, this.activatedRoute, { return: 'sections/check-answers' });
   }
 
-  getSectionName(sectionIndex: number, section?: SectionModel) {
-    return section?.Name ?? `${SectionHelper.getSectionCardinalName(sectionIndex)} high-rise residential structure`;
+  getSectionName(index: number) {
+    return `${this.sectionNames[index]} high-rise residential structure`;
   }
 
   override onInit(applicationService: ApplicationService): void {
@@ -54,6 +56,19 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
     this.changeBuildingSummaryHelper = new ChangeBuildingSummaryHelper(this.applicationService);
     this.activeSections = this.applicationService.currentVersion.Sections;
     this.updateBuildingChangeStatus();
+
+    this.sectionNames = this.generateSectionNames();
+    this.canChangeNumberOfSections = this.applicationService.currentVersion.Sections.filter((x, index) => !this.isSectionRemoved(index)).length == 1;
+  }
+
+  private generateSectionNames() {
+    let sectionCardinalNameIndex = 0;
+    return this.activeSections.map((x, i) => {
+      let index = this.isSectionRemoved(i) ? -1 : sectionCardinalNameIndex;
+      if (!this.isSectionRemoved(i)) sectionCardinalNameIndex++;
+
+      return index != -1 ? SectionHelper.getSectionCardinalName(index) : "";
+    });
   }
 
   private updateBuildingChangeStatus() {
