@@ -86,17 +86,27 @@ public class RegistrationAmendmentsFunctions
             applicantReferenceId = secondaryContact.contactid;
         }
 
-        ChangeRequest changeRequest = buildingApplicationModel.RegistrationAmendmentsModel.ChangeRequest;
+        ChangeRequest[] ChangeRequests = buildingApplicationModel.RegistrationAmendmentsModel.ChangeRequest.Where(x => x.Status != Status.ChangesSubmitted).ToArray();
         
-        if (changeRequest != null) {            
-            var changeRequestResponse = await RaService.CreateChangeRequest(changeRequest, dynamicsBuildingApplication.bsr_buildingapplicationid, applicantReferenceId);
-            string changeRequestId = dynamicsService.ExtractEntityIdFromHeader(changeRequestResponse.Headers);
-            foreach (Change change in changeRequest.Change) {
-                await RaService.CreateChange(change, changeRequestId);
+        foreach (ChangeRequest changeRequest in ChangeRequests) {
+            var dynamicsStructure = await GetDynamicsStructure(changeRequest, applicationId);
+            var changeRequestResponse = await RaService.CreateChangeRequest(changeRequest, dynamicsBuildingApplication.bsr_buildingapplicationid, applicantReferenceId, dynamicsBuildingApplication._bsr_building_value, dynamicsStructure);
+            if (changeRequest.Change != null && changeRequest.Change.Length > 0) {            
+                string changeRequestId = dynamicsService.ExtractEntityIdFromHeader(changeRequestResponse.Headers);
+                foreach (Change change in changeRequest.Change) {
+                    await RaService.CreateChange(change, changeRequestId);
+                }
             }
-            return request.CreateResponse(HttpStatusCode.OK);
         }
-        return request.CreateResponse(HttpStatusCode.BadRequest);
+
+        return request.CreateResponse(HttpStatusCode.OK);
+    }
+
+    private async Task<DynamicsStructure> GetDynamicsStructure(ChangeRequest changeRequest, string applicationId) {
+        if (changeRequest.StructureName != null &&  changeRequest.StructurePostcode != null) {
+            return await RaService.GetDynamicsStructure(changeRequest.StructureName, changeRequest.StructurePostcode, applicationId);
+        }
+        return null;
     }
 
     [Function(nameof(GetChangeRequest))]
@@ -114,4 +124,48 @@ public class RegistrationAmendmentsFunctions
         
         return RaService.BuildChangeRequestResponse(changeRequest);
     }
+    
+    [Function(nameof(UpdateRemovedStructures))]
+    public async Task<HttpResponseData> UpdateRemovedStructures([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(UpdateRemovedStructures)}/{{applicationId}}")] HttpRequestData request, string applicationId)
+    {
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+
+        var removedStructures = buildingApplicationModel.Sections.Where(x => x.CancellationReason != CancellationReason.NoCancellationReason);
+        foreach(SectionModel section in removedStructures) {
+            var dynamicsStructure = await RaService.GetDynamicsStructure(section.Name, section.Addresses[0].Postcode, applicationId);
+            var updatedStructure = new DynamicsStructure { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[section.CancellationReason]})", statuscode = 760_810_007 }; // statuscode -> cancelled
+            await dynamicsApi.Update($"bsr_blocks({dynamicsStructure.bsr_blockid})", updatedStructure);
+        }
+
+        return request.CreateResponse(HttpStatusCode.OK);
+    }
+
+    [Function(nameof(WithdrawApplicationOrBuilding))]
+    public async Task<HttpResponseData> WithdrawApplicationOrBuilding([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(WithdrawApplicationOrBuilding)}/{{applicationId}}")] HttpRequestData request, string applicationId)
+    {
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+
+        var cancellationReason = buildingApplicationModel.RegistrationAmendmentsModel.Deregister.CancellationReason;
+
+        if (RaService.IsApplicationAccepted(dynamicsBuildingApplication)) {
+            var updatedBuilding = new DynamicsBuilding { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[cancellationReason]})", bsr_registrationstatus = 760_810_002 };
+            await dynamicsApi.Update($"bsr_buildings({dynamicsBuildingApplication._bsr_building_value})", updatedBuilding);
+        } else {
+            var updatedApplication = new DynamicsBuildingApplication { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[cancellationReason]})" };
+            await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", updatedApplication);
+        }
+    
+        return request.CreateResponse(HttpStatusCode.OK);
+    }
+
+    private Dictionary<CancellationReason, string> DynamicsCancellationReason = new Dictionary<CancellationReason, string>() {
+        {CancellationReason.NoCancellationReason, ""},
+        {CancellationReason.NoConnected, "9107fc3d-8671-ee11-8178-6045bd0c1726"},
+        {CancellationReason.IncorrectlyRegistered, "e098fc37-8671-ee11-8178-6045bd0c1726"},
+        {CancellationReason.EveryoneMovedOut, "b220e12b-8671-ee11-8178-6045bd0c1726"},
+        {CancellationReason.FloorsHeight, "f0696bf0-d177-ee11-8179-6045bd0c1726"},
+        {CancellationReason.ResidentialUnits, "f7e45d02-d277-ee11-8179-6045bd0c1726"},
+    };
 }

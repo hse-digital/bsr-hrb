@@ -94,7 +94,7 @@ public record BuildingApplicationVersion(string Name, string ReplacedBy = null, 
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
     string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange, string WhoIssuedCertificate, string CompletionCertificateDate,
-    string CompletionCertificateIssuer, string CompletionCertificateReference, FileUploadModel CompletionCertificateFile, Scope Scope, string Statecode, BuildingAddress[] Addresses = null,
+    string CompletionCertificateIssuer, string CompletionCertificateReference, FileUploadModel CompletionCertificateFile, Scope Scope, string Statecode, CancellationReason CancellationReason = CancellationReason.NoCancellationReason, BuildingAddress[] Addresses = null,
     Duplicate Duplicate = null)
 {
     public Status Status { get; set; }
@@ -240,13 +240,14 @@ public record RegistrationAmendmentsModel
     public ChangeUser ChangeUser { get; set; }
     public long Date { get; set; }
     public Deregister Deregister { get; set; }
-    public ChangeRequest ChangeRequest { get; set; }
+    public ChangeRequest[] ChangeRequest { get; set; }
 }
 
 public record Deregister
 {
     public string AreYouSure { get; set; }
     public string Why { get; set; }
+    public CancellationReason CancellationReason { get; set; }
 }
 
 
@@ -281,10 +282,13 @@ public enum Status
 public record ChangeRequest
 {
     public string Name { get; set; }
+    public string StructureName { get; set; }
+    public string StructurePostcode { get; set; }
     public ChangeCategory Category { get; set; }
     public bool Declaration { get; set; }
     public bool ReviewRequired { get; set; }
     public Change[] Change { get; set; }
+    public Status Status { get; set; }
 }
 
 public record Change
@@ -300,5 +304,15 @@ public enum ChangeCategory
 {
     ApplicationBuildingAmendments,
     ChangeApplicantUser,
-    DeRegistration
+    DeRegistration,
+    ChangePAPOrLeadContact
+}
+
+public enum CancellationReason {
+  FloorsHeight,
+  ResidentialUnits,
+  EveryoneMovedOut,
+  IncorrectlyRegistered,
+  NoConnected,
+  NoCancellationReason
 }
