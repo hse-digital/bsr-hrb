@@ -10,6 +10,7 @@ import { NotFoundComponent } from 'src/app/components/not-found/not-found.compon
 import { SectionHeightComponent } from 'src/app/features/application/building-summary/height/height.component';
 import { SectionPeopleLivingInBuildingComponent } from 'src/app/features/application/building-summary/people-living-in-building/people-living-in-building.component';
 import { SectionResidentialUnitsComponent } from 'src/app/features/application/building-summary/residential-units/residential-units.component';
+import { CancellationReason } from 'src/app/services/registration-amendments.service';
 
 @Component({
   selector: 'hse-remove-structure',
@@ -35,6 +36,8 @@ export class RemoveStructureComponent extends PageComponent<string> {
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentVersion.Sections[this.index!].RemoveStructureAreYouSure = this.model;
     this.applicationService.currentVersion.Sections[this.index!].Status = this.model == 'yes' ? Status.Removed : Status.NoChanges;
+    if (this.model == 'no') this.applicationService.currentVersion.Sections[this.index!].CancellationReason = CancellationReason.NoCancellationReason;
+    
     this.changeNumberOfSections();
   }
 
