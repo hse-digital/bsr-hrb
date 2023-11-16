@@ -75,6 +75,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
 
     this.applicationService.model.Versions.find(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy))!.ReplacedBy = this.applicationService.currentVersion.Name;
     this.applicationService.currentVersion.Submitted = true;
+    this.applicationService.currentVersion.BuildingStatus = Status.NoChanges;
 
   }
   
