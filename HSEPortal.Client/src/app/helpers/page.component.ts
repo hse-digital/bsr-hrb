@@ -49,7 +49,7 @@ export abstract class PageComponent<T> implements OnInit {
   }
   
   async ngOnInit() {
-    this.changing = this.applicationService.model.Versions.length > 1;
+    this.changing = this.applicationService.model?.Versions?.length > 1 ?? false;
     await this.onInit(this.applicationService);
   }
 
