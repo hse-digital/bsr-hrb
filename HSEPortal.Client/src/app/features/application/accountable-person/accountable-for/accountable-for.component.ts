@@ -25,7 +25,7 @@ export class ApAccountableForComponent extends PageComponent<SectionAccountabili
   }  
 
   override onInit(applicationService: ApplicationService): void {
-    this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
     this.multi = this.applicationService.model.NumberOfSections != 'one';
     this.errorMessage = `Select what ${this.getApName()} is accountable for`;
 

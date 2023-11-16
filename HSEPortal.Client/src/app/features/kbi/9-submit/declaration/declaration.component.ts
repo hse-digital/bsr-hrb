@@ -18,7 +18,7 @@ export class DeclarationComponent extends PageComponent<void> {
   }
 
   override async onSave(): Promise<void> {
-    await this.kbiService.syncConnectionsAndDeclaration(this.applicationService.model.Kbi!);
+    await this.kbiService.syncConnectionsAndDeclaration(this.applicationService.currentVersion.Kbi!);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {

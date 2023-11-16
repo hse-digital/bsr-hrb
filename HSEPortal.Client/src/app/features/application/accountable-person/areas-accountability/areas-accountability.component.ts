@@ -27,12 +27,12 @@ export class AreasAccountabilityComponent extends PageComponent<SectionAccountab
   } 
 
   override onInit(applicationService: ApplicationService): void {
-    this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
-    if (!this.applicationService.model.AccountablePersons[0].SectionsAccountability) {
-      this.applicationService.model.AccountablePersons[0].SectionsAccountability = [];
+    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    if (!this.applicationService.currentVersion.AccountablePersons[0].SectionsAccountability) {
+      this.applicationService.currentVersion.AccountablePersons[0].SectionsAccountability = [];
     }
 
-    this.model = CloneHelper.DeepCopy(this.applicationService.model.AccountablePersons[0].SectionsAccountability);
+    this.model = CloneHelper.DeepCopy(this.applicationService.currentVersion.AccountablePersons[0].SectionsAccountability);
 
     for (let i = 0; i < this.InScopeStructures.length; i++) {
       var section = this.InScopeStructures[i];
@@ -43,7 +43,7 @@ export class AreasAccountabilityComponent extends PageComponent<SectionAccountab
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.model.AccountablePersons[0].SectionsAccountability = CloneHelper.DeepCopy(this.model);
+    this.applicationService.currentVersion.AccountablePersons[0].SectionsAccountability = CloneHelper.DeepCopy(this.model);
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -64,7 +64,7 @@ export class AreasAccountabilityComponent extends PageComponent<SectionAccountab
   }
 
   override navigateNext(): Promise<boolean | void> {
-    let thereAreNotAllocatedAreas = this.InScopeStructures!.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.model.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
+    let thereAreNotAllocatedAreas = this.InScopeStructures!.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
     if (thereAreNotAllocatedAreas) {
       return this.navigationService.navigateRelative(NotAllocatedAccountabilityAreasComponent.route, this.activatedRoute);
     } else {
@@ -91,7 +91,7 @@ export class AreasAccountabilityComponent extends PageComponent<SectionAccountab
   }
 
   getApName() {
-    let pap = this.applicationService.model.AccountablePersons[0];
+    let pap = this.applicationService.currentVersion.AccountablePersons[0];
     return pap.Type == 'organisation' ? pap.OrganisationName :
       `${pap.FirstName ?? this.applicationService.model.ContactFirstName} ${pap.LastName ?? this.applicationService.model.ContactLastName}`;
   }

@@ -21,9 +21,9 @@
             </govuk-summary-list>
           </div>
 
-          <ng-container *ngFor="let kbiSection of applicationService.model.Kbi?.KbiSections" class="margin-bottom-30">
+          <ng-container *ngFor="let kbiSection of applicationService.currentVersion.Kbi?.KbiSections" class="margin-bottom-30">
 
-            <h2 class="govuk-heading-m no-margin-bottom" *ngIf="applicationService.model.Kbi!.KbiSections.length > 1">{{kbiSection.StructureName}}</h2>
+            <h2 class="govuk-heading-m no-margin-bottom" *ngIf="applicationService.currentVersion.Kbi!.KbiSections.length > 1">{{kbiSection.StructureName}}</h2>
 
             <div class="section-wrapper margin-bottom-30">
               <h2 class="govuk-heading-m" [class.section-header]>Fire and smoke controls</h2>
@@ -80,7 +80,7 @@
 
           <div class="section-wrapper">
             <h2 class="govuk-heading-m" [class.section-header]>Connections</h2>
-            <connections-summary [connections]="applicationService.model.Kbi?.Connections!" />
+            <connections-summary [connections]="applicationService.currentVersion.Kbi?.Connections!" />
           </div>
 
         </div>

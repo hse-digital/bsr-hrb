@@ -6,8 +6,6 @@ import { SectionAddressComponent } from "../address/address.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { UploadCompletionCertificateComponent } from "../upload-completion-certificate/upload-completion-certificate.component";
 import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
   templateUrl: './certificate-number.component.html'
@@ -20,9 +18,8 @@ export class CertificateNumberComponent extends PageComponent<string> {
 
   isOptional: boolean = true;
   certificateHasErrors: boolean = false;
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(CertificateNumberComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void {
@@ -32,27 +29,6 @@ export class CertificateNumberComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     applicationService.currentSection.CompletionCertificateReference = this.model;
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateReference) {
-      this.model = this.applicationService.currentSection.CompletionCertificateReference;
-    } else {
-      this.model = this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateReference;
-    }
-    let completionCertificateDate = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate) 
-      ?  this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
-      : this.applicationService.currentSection.CompletionCertificateDate;
-    this.isPageOptional(completionCertificateDate);
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateReference = this.model;
-  }
-
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section);  
   }
 
   private isPageOptional(completionCertificateDate?: string) {

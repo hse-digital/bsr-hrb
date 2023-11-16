@@ -22,51 +22,29 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
 
   constructor(private duplicatesService: DuplicatesService, activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(AlreadyRegisteredSingleComponent.route);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.addressIndex = Number(this.applicationService.currentSection.Duplicate!.DuplicatedAddressIndex);
-
     if(!this.applicationService.currentSection.Duplicate) {
-      this.applicationService.currentSection.Duplicate = {};
+      this.applicationService.currentSection.Duplicate = { BlockIds: [] };
     }
-
-    if (!this.applicationService.currentSection.Duplicate.BlockIds) {
-      this.applicationService.currentSection.Duplicate.BlockIds = [];
-    }
-
+    
     if (!this.applicationService.model.DuplicateBuildingApplicationIds) {
       this.applicationService.model.DuplicateBuildingApplicationIds = [];
     }
-
+    
+    this.addressIndex = Number(this.applicationService.currentSection.Duplicate!.DuplicatedAddressIndex);
+    
     this.registeredStructure = this.applicationService.currentSection.Duplicate?.RegisteredStructureModel;
     
-    let currentAddress = this.changed ? this.applicationService.currentChangedSection.SectionModel!.Addresses[this.addressIndex! - 1] : this.applicationService.currentSectionAddress;
+    let currentAddress = this.applicationService.currentSectionAddress;
 
     if (!this.registeredStructure || this.registeredStructure.StructureAddress?.Postcode != currentAddress?.Postcode) {
       this.GetRegisteredStructure();
     }
   }
 
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.onSave(applicationService);
-  }
-
-  override onInitChange(applicationService: ApplicationService): void {
-    this.onInit(applicationService);
-  }
-
-  override nextChangeRoute(): string {
-    if (this.applicationService.currentSection.Addresses.length < 5) {
-      return WhyContinueRegisterComponent.route;
-    } else {
-      return BuildingChangeCheckAnswersComponent.route;
-    }
-  }
-
   private async GetRegisteredStructure() {
-    console.log("GetRegisteredStructure");
     this.registeredStructure = await this.duplicatesService.GetRegisteredStructure(this.addressIndex);
   }
 
@@ -86,6 +64,8 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
+    if (this.changing) this.registrationAmendmentsNavigation();
+
     if (this.applicationService.currentSection.Addresses.length < 5) {
       return this.navigationService.navigateRelative(WhyContinueRegisterComponent.route, this.activatedRoute);
     } else {
@@ -93,8 +73,16 @@ export class AlreadyRegisteredSingleComponent extends PageComponent<void> {
     }
   }
 
+  private registrationAmendmentsNavigation(): string {
+    if (this.applicationService.currentSection.Addresses.length < 5) {
+      return WhyContinueRegisterComponent.route;
+    } else {
+      return BuildingChangeCheckAnswersComponent.route;
+    }
+  }
+
   get currentSectionAddress(): AddressModel {
-    return this.changed ? this.applicationService.currentChangedSection.SectionModel!.Addresses[this.addressIndex! - 1] : this.applicationService.currentSectionAddress;
+    return this.applicationService.currentSectionAddress;
   }
 
 }

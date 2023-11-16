@@ -36,19 +36,19 @@ export class NotAllocatedAccountabilityAreasComponent extends PageComponent<Acco
   } 
 
   override onInit(applicationService: ApplicationService): void {
-    this.model = CloneHelper.DeepCopy(this.applicationService.model.AccountablePersons);
-    this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.model = CloneHelper.DeepCopy(this.applicationService.currentVersion.AccountablePersons);
+    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
     this.InScopeStructures.forEach(section => {
       this.notAllocatedAreas.push(AccountabilityAreasHelper.getNotAllocatedAreasOf(this.model!, this.applicationService.model.BuildingName!, section))
     });
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.model.AccountablePersons = CloneHelper.DeepCopy(this.model!);
+    this.applicationService.currentVersion.AccountablePersons = CloneHelper.DeepCopy(this.model!);
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope)!.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.model.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
+    return this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope)!.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
   }
 
   override isValid(): boolean {

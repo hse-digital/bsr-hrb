@@ -60,7 +60,7 @@ export class AccountablePersonComponent extends PageComponent<string> {
       var replaceAp = new AccountablePersonModel();
       replaceAp.Type = newAnswer;
 
-      this.applicationService.model.AccountablePersons[0] = replaceAp;
+      this.applicationService.currentVersion.AccountablePersons[0] = replaceAp;
       this.applicationService._currentAccountablePersonIndex = 0;
       this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStage.AccountablePersonsComplete;
     } else if (!this.previousAnswer) {

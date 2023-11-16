@@ -3,8 +3,6 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApplicationService } from "src/app/services/application.service";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { PageComponent } from "src/app/helpers/page.component";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 @Component({
   templateUrl: './floors-above.component.html'
@@ -13,9 +11,8 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
   static route: string = 'floors';
   static title: string = "Number of floors at or above ground level in the section - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(SectionFloorsAboveComponent.route);
   }
 
   errorMessage: string = 'Enter the number of floors at or above ground level';
@@ -28,20 +25,6 @@ export class SectionFloorsAboveComponent extends PageComponent<number> {
   
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentSection.FloorsAbove = this.model;
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.FloorsAbove) this.onInit(this.applicationService);
-    else this.model = this.applicationService.currentChangedSection.SectionModel?.FloorsAbove;
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.FloorsAbove = this.model;
-  }
-
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
   
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

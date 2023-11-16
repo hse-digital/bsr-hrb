@@ -12,7 +12,7 @@
         <govuk-body>Based on the information you have told us:</govuk-body>
         
         <govuk-list classes='govuk-list--bullet'>
-          <govuk-list-item *ngFor="let section of applicationService.model.Sections" text="{{getOutOfScopeReason(section)}}" />
+          <govuk-list-item *ngFor="let section of applicationService.currentVersion.Sections" text="{{getOutOfScopeReason(section)}}" />
           <govuk-list-item>there are no other structures within {{applicationService.model.BuildingName}}</govuk-list-item>
         </govuk-list>
 

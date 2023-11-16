@@ -7,8 +7,6 @@ import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-si
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 import { NeedRemoveWithdrawComponent } from "src/app/features/registration-amendments/change-building-summary/need-remove-withdraw/need-remove-withdraw.component";
 
 @Component({
@@ -18,9 +16,8 @@ export class SectionHeightComponent extends PageComponent<number> {
   static route: string = 'height';
   static title: string = "What is the section height - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(SectionHeightComponent.route);
   }
 
   heightHasErrors = false;
@@ -34,29 +31,9 @@ export class SectionHeightComponent extends PageComponent<number> {
     this.applicationService.currentSection.Height = this.model;
   }
 
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.Height) this.onInit(this.applicationService);
-    else this.model = this.applicationService.currentChangedSection.SectionModel?.Height;
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.Height = this.model;
-  }
-
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    if (section.Height! < 18 && section.FloorsAbove! < 7) {
-      this.initScope();
-      this.applicationService.currentChangedSection.SectionModel!.Scope!.IsOutOfScope = true;
-      this.applicationService.currentChangedSection.SectionModel!.Scope!.OutOfScopeReason = OutOfScopeReason.Height;
-      return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
-    }
-    return this.buildingSummaryNavigation.getNextChangeRoute(section);
-  }
-
   private initScope() {
-    if (!this.applicationService.currentChangedSection.SectionModel!.Scope) {
-      this.applicationService.currentChangedSection.SectionModel!.Scope = {};
+    if (!this.applicationService.currentSection.Scope) {
+      this.applicationService.currentSection.Scope = {};
     }
   }
 
@@ -84,6 +61,7 @@ export class SectionHeightComponent extends PageComponent<number> {
 
   override navigateNext(): Promise<boolean> {
     if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
+      if (this.changing) return this.navigationService.navigateRelative(`../../registration-amendments/${NeedRemoveWithdrawComponent.route}`, this.activatedRoute);
       return this.applicationService.model.NumberOfSections == 'one'
         ? this.navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, this.activatedRoute)
         : this.navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, this.activatedRoute);
@@ -96,7 +74,10 @@ export class SectionHeightComponent extends PageComponent<number> {
 
     if (height < 18 && this.applicationService.currentSection.FloorsAbove! < 7) {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.Height };
-      if(!this.changed) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService,);
+      
+      if(!this.changing) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService,);
+      else this.returnUrl = undefined;
+    
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;

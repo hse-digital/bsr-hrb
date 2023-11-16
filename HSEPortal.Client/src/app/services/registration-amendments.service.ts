@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApplicationService } from './application.service';
+import { ApplicationService, Status } from './application.service';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
@@ -28,14 +28,25 @@ export class RegistrationAmendmentsService {
   async getChangeRequest(): Promise<ChangeRequest> {
     return firstValueFrom(this.httpClient.get(`api/GetChangeRequest/${this.applicationService.model.id}`))
   }
+  
+  async syncRemovedStructures() {
+    await firstValueFrom(this.httpClient.post(`api/UpdateRemovedStructures/${this.applicationService.model.id}/${this.applicationService.currentVersion.Name}`, this.applicationService.model));
+  }
+
+  async syncDeregister() {
+    await firstValueFrom(this.httpClient.post(`api/WithdrawApplicationOrBuilding/${this.applicationService.model.id}`, this.applicationService.model));
+  }
 }
 
 
 export class ChangeRequest {
+  Status?: Status;
   Name?: string;
   Category?: ChangeCategory;
   Declaration?: boolean;
   ReviewRequired?: boolean;
+  StructureName?: string;
+  StructurePostcode?: string;
   Change?: Change[];
 }
 
@@ -50,5 +61,15 @@ export class Change {
 export enum ChangeCategory {
   ApplicationBuildingAmendments,
   ChangeApplicantUser,
-  DeRegistration
+  DeRegistration,
+  ChangePAPOrLeadContact
+}
+
+export enum CancellationReason {
+  FloorsHeight,
+  ResidentialUnits,
+  EveryoneMovedOut,
+  IncorrectlyRegistered,
+  NoConnected,
+  NoCancellationReason
 }

@@ -1,5 +1,6 @@
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { TaskListSteps, TagStatus } from "./change-task-list.component";
-import { ApplicationService, ChangeBuildingSummary, Status } from "src/app/services/application.service";
+import { ApplicationService, SectionModel, Status } from "src/app/services/application.service";
 
 export class TagDirector {
     private Tag?: ChangeTaskListTag;
@@ -43,20 +44,17 @@ export abstract class ChangeTaskListTag {
 
 export class BuildingSummaryTag extends ChangeTaskListTag {
     getTag(): TagStatus {
-        let changeBuildingSummaryModel = this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary;
-        
-        if (!changeBuildingSummaryModel || !changeBuildingSummaryModel?.Sections) return TagStatus.NoChangesMade;
-
-        if (changeBuildingSummaryModel.Status == Status.ChangesInProgress) {
+        if (this.applicationService.currentVersion.BuildingStatus == Status.ChangesInProgress) {
             return TagStatus.MoreInformationNeeded;
-        } else if (changeBuildingSummaryModel.Status == Status.ChangesComplete || this.areThereAnySectionsRemoved(changeBuildingSummaryModel)) {
+        } else if (this.applicationService.currentVersion.BuildingStatus == Status.ChangesComplete || this.areThereAnySectionsRemoved(this.applicationService.currentVersion.Sections)) {
             return TagStatus.ChangesNotYetSubmitted;
         }
         return TagStatus.NoChangesMade;
     }
 
-    areThereAnySectionsRemoved(changeModel?: ChangeBuildingSummary ) {
-        return changeModel?.Sections.some(x => x.Status == Status.Removed) ?? false;
+    areThereAnySectionsRemoved(changeModel: SectionModel[] ) {
+        let previousSections = this.applicationService.model.Versions.find(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy))!.Sections;
+        return changeModel.some((x, index) => x.Status == Status.Removed && previousSections[index].Status != Status.Removed) ?? false;
     }
 }
 
@@ -111,10 +109,21 @@ export class ChangesTag extends ChangeTaskListTag {
 export class SubmitTag extends ChangeTaskListTag {
     getTag(): TagStatus {
         let changeUserTagStatus = new ChangesTag(this.applicationService).getTag();
-        if(changeUserTagStatus == TagStatus.ChangesNotYetSubmitted) {
+        let changeBuildingSummaryTagStatus = new BuildingSummaryTag(this.applicationService).getTag();
+ 
+        let canSubmit = !this.areAllNoChangesMade([changeUserTagStatus, changeBuildingSummaryTagStatus]) && this.isNotSubmittedOrNoChangesMade(changeUserTagStatus) && this.isNotSubmittedOrNoChangesMade(changeBuildingSummaryTagStatus);
+        if(canSubmit) {
             return TagStatus.NotStarted
         }
         return TagStatus.CannotStartYet;
+    }
+
+    isNotSubmittedOrNoChangesMade(tagStatus: TagStatus) {
+        return tagStatus == TagStatus.ChangesNotYetSubmitted || tagStatus == TagStatus.NoChangesMade;
+    }
+
+    areAllNoChangesMade(tagStatus: TagStatus[]) {
+        return tagStatus.every(x => x == TagStatus.NoChangesMade);
     }
 
 }

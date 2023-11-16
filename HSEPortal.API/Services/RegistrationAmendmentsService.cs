@@ -41,18 +41,23 @@ public class RegistrationAmendmentsService
         return contact with { Id = existingContact.contactid };
     }
 
-    public async Task<IFlurlResponse> CreateChangeRequest(ChangeRequest changeRequest, string bsr_buildingapplicationid, string applicantReferenceId)
+    public async Task<IFlurlResponse> CreateChangeRequest(ChangeRequest changeRequest, string bsr_buildingapplicationid, string applicantReferenceId, string _bsr_building_value, DynamicsStructure dynamicsStructure = null)
     {
         DynamicsChangeRequest dynamicsChangeRequest = new DynamicsChangeRequest {
             bsr_declaration = changeRequest.Declaration,
             bsr_reviewrequired = changeRequest.ReviewRequired,
             buildingApplicationId = $"/bsr_buildingapplications({bsr_buildingapplicationid})",
+            building = $"/bsr_buildings({_bsr_building_value})",
             changeCategory = $"/bsr_changecategories({DynamicsChangeCategory[changeRequest.Category]})",
             statuscode = 760_810_001 //submitted         
         };
 
+        if (dynamicsStructure != null && dynamicsStructure.bsr_blockid != null) {
+            dynamicsChangeRequest = dynamicsChangeRequest with { structure = $"/bsr_blocks({dynamicsStructure.bsr_blockid})" };
+        }
+
         if(applicantReferenceId != null && !applicantReferenceId.Equals(string.Empty)) {
-            dynamicsChangeRequest = dynamicsChangeRequest with {applicantReferenceId = $"/contacts({applicantReferenceId})"};
+            dynamicsChangeRequest = dynamicsChangeRequest with { applicantReferenceId = $"/contacts({applicantReferenceId})" };
         }
 
         return await dynamicsApi.Create("bsr_changerequests", dynamicsChangeRequest);
@@ -90,11 +95,22 @@ public class RegistrationAmendmentsService
             Change = changes
         };
     }
+    
+    public bool IsApplicationAccepted(DynamicsBuildingApplication dynamicsBuildingApplication) {
+        BuildingApplicationStatuscode statuscode = (BuildingApplicationStatuscode)dynamicsBuildingApplication.statuscode;
+        return statuscode == BuildingApplicationStatuscode.Registered || statuscode == BuildingApplicationStatuscode.Registered;
+    }
 
     private Dictionary<ChangeCategory, string> DynamicsChangeCategory = new Dictionary<ChangeCategory, string>() {
         {ChangeCategory.ApplicationBuildingAmendments, "c3d77a4f-6051-ee11-be6f-002248c725da"},
         {ChangeCategory.ChangeApplicantUser, "2bd56b5b-6051-ee11-be6f-002248c725da"},
         {ChangeCategory.DeRegistration, "71e16861-6051-ee11-be6f-002248c725da"},
+        {ChangeCategory.ChangePAPOrLeadContact, "54b32c53-0b7f-ee11-8179-6045bd0c14e5"},
     };
 
+    public async Task<DynamicsStructure> GetDynamicsStructure(string structureName, string postcode, string applicationId)
+    {
+        var application = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+        return await dynamicsService.FindExistingStructureAsync(structureName, postcode, application.bsr_buildingapplicationid);
+    }
 }

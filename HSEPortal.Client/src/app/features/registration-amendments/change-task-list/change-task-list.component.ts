@@ -14,15 +14,17 @@ export class ChangeTaskListComponent extends PageComponent<void> {
 
   taskListSteps = TaskListSteps;
   InScopeSections!: SectionModel[];
-  tagDirector: TagDirector;
+  tagDirector?: TagDirector;
 
   constructor() {
     super();
-    this.tagDirector  = new TagDirector(this.applicationService);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
-    this.InScopeSections = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.applicationService.validateCurrentVersion();
+    this.tagDirector  = new TagDirector(this.applicationService);
+
+    this.InScopeSections = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
     if(!this.applicationService.model.RegistrationAmendmentsModel) {
       this.applicationService.model.RegistrationAmendmentsModel = {
         ConnectionStatus: Status.NoChanges,
@@ -58,19 +60,19 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }
 
   isLinkEnable(step: TaskListSteps, index?: number): boolean {
-    this.tagDirector.setStep(step, index);
+    this.tagDirector?.setStep(step, index);
     let tag = this.tagDirector?.getTag()
     return tag != TagStatus.CannotStartYet && tag != TagStatus.NotYetAvailable;
   }
 
   getTagFor(step: TaskListSteps, index?: number): string {
-    this.tagDirector.setStep(step, index);
-    return this.TagToText[this.tagDirector?.getTag()];
+    this.tagDirector?.setStep(step, index);
+    return this.TagToText[this.tagDirector?.getTag() ?? TagStatus.NotYetAvailable];
   }
 
   getCssClassFor(step: TaskListSteps, index?: number): string {
-    this.tagDirector.setStep(step, index);
-    return this.TagToCssClass[this.tagDirector?.getTag()];
+    this.tagDirector?.setStep(step, index);
+    return this.TagToCssClass[this.tagDirector?.getTag() ?? TagStatus.NotYetAvailable];
   }
 
   get submitSectionNumber() {

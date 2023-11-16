@@ -109,7 +109,7 @@ public class DynamicsSynchronisationFunctions
         var dynamicsBuildingApplication = await orchestrationContext.CallActivityAsync<DynamicsBuildingApplication>(nameof(GetBuildingApplicationUsingId), buildingApplicationModel.Id);
         if (dynamicsBuildingApplication != null)
         {
-            await orchestrationContext.CallActivityAsync(nameof(CreateBuildingStructures), new Structures(buildingApplicationModel.Sections, dynamicsBuildingApplication));
+            await orchestrationContext.CallActivityAsync(nameof(CreateBuildingStructures), new Structures(buildingApplicationModel.CurrentVersion.Sections, dynamicsBuildingApplication));
         }
     }
 
@@ -210,10 +210,11 @@ public class DynamicsSynchronisationFunctions
 
     private int CountManualAddresses(BuildingApplicationModel model)
     {
-        var manualStructureAddresses = model.Sections?.SelectMany(x => x.Addresses).Count(x => x.IsManual) ?? 0;
-        var manualApAddresses = model.AccountablePersons?.Where(x => x.PapAddress != null).Select(x => x.PapAddress).Count(x => x.IsManual) ?? 0;
-        var manualPapAddresses = model.AccountablePersons?.Where(x => x.Address != null).Select(x => x.Address).Count(x => x.IsManual) ?? 0;
-        var manualActingForAddress = model.AccountablePersons?.Where(x => x.ActingForAddress != null).Select(x => x.ActingForAddress).Count(x => x.IsManual) ?? 0;
+        var buildingApplicationVersion = model.CurrentVersion;
+        var manualStructureAddresses = buildingApplicationVersion.Sections?.SelectMany(x => x.Addresses).Count(x => x.IsManual) ?? 0;
+        var manualApAddresses = buildingApplicationVersion.AccountablePersons?.Where(x => x.PapAddress != null).Select(x => x.PapAddress).Count(x => x.IsManual) ?? 0;
+        var manualPapAddresses = buildingApplicationVersion.AccountablePersons?.Where(x => x.Address != null).Select(x => x.Address).Count(x => x.IsManual) ?? 0;
+        var manualActingForAddress = buildingApplicationVersion.AccountablePersons?.Where(x => x.ActingForAddress != null).Select(x => x.ActingForAddress).Count(x => x.IsManual) ?? 0;
 
         return manualStructureAddresses + manualApAddresses + manualPapAddresses + manualActingForAddress;
     }

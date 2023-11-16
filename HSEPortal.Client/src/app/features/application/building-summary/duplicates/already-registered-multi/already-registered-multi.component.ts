@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, AccountablePersonModel, RegisteredStructureModel } from 'src/app/services/application.service';
+import { ApplicationService, RegisteredStructureModel } from 'src/app/services/application.service';
 import { DuplicatesService } from 'src/app/services/duplicates.service';
 import { SectionCheckAnswersComponent } from '../../check-answers/check-answers.component';
 import { SectionOtherAddressesComponent } from '../../other-addresses/other-addresses.component';
@@ -23,20 +23,24 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
 
   constructor(private duplicatesService: DuplicatesService, activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(AlreadyRegisteredMultiComponent.route);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
     if (!this.applicationService.currentSection.Duplicate) {
-      this.applicationService.currentSection.Duplicate = { IncludeStructure: "" }
+      this.applicationService.currentSection.Duplicate = { BlockIds: [] }
     }
-    this.model = this.applicationService.currentSection.Duplicate!.IncludeStructure;
 
-    this.registeredStructure = this.applicationService.currentSection.Duplicate?.RegisteredStructureModel;
+    if (!this.applicationService.model.DuplicateBuildingApplicationIds) {
+      this.applicationService.model.DuplicateBuildingApplicationIds = [];
+    }
 
     this.addressIndex = Number(this.applicationService.currentSection.Duplicate!.DuplicatedAddressIndex);
 
-    let currentAddress = this.changed ? this.applicationService.currentChangedSection.SectionModel!.Addresses[this.addressIndex! - 1] : this.applicationService.currentSectionAddress;
+    this.registeredStructure = this.applicationService.currentSection.Duplicate?.RegisteredStructureModel;
+    
+    let currentAddress = this.applicationService.currentSectionAddress;
+    
+    this.model = this.applicationService.currentSection.Duplicate!.IncludeStructure;
 
     if (!this.registeredStructure || this.registeredStructure.StructureAddress?.Postcode != currentAddress?.Postcode) {
       this.GetRegisteredStructure();
@@ -51,24 +55,6 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
     this.applicationService.currentSection.Duplicate!.IncludeStructure = this.model;
   }
 
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    this.onInit(this.applicationService);
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.onSave(this.applicationService);
-  }
-
-  override nextChangeRoute(): string {
-    if (this.model == 'yes') {
-      return KeepStructureDeclarationComponent.route;
-    } else if (this.applicationService.currentSection.Addresses.length < 5) {
-      return SectionOtherAddressesComponent.route
-    } else {
-      return BuildingChangeCheckAnswersComponent.route;
-    }
-  }
-
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService)
   }
@@ -78,6 +64,8 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
+    if (this.changing) this.registrationAmendmentsNavigation();
+
     if (this.model == 'yes') {
       return this.navigationService.navigateRelative(KeepStructureDeclarationComponent.route, this.activatedRoute);
     } else if (this.applicationService.currentSection.Addresses.length < 5) {
@@ -87,16 +75,26 @@ export class AlreadyRegisteredMultiComponent extends PageComponent<string> {
     }
   }
 
+  private registrationAmendmentsNavigation(): string {
+    if (this.model == 'yes') {
+      return KeepStructureDeclarationComponent.route;
+    } else if (this.applicationService.currentSection.Addresses.length < 5) {
+      return SectionOtherAddressesComponent.route
+    } else {
+      return BuildingChangeCheckAnswersComponent.route;
+    }
+  }
+
   get errorMessage() {
     return `Select yes if you would like to include ${this.applicationService.currentSection.Name} in your application`;
   }
 
   get section() {
-    return this.changed ? this.applicationService.currentChangedSection.SectionModel! : this.applicationService.currentSection!;
+    return this.applicationService.currentSection;
   }
 
   get address() {
-    return this.changed ? this.applicationService.currentChangedSection.SectionModel?.Addresses[this.addressIndex!] : this.applicationService.currentSectionAddress;
+    return this.applicationService.currentSectionAddress;
   }
 
 }

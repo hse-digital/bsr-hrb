@@ -28,7 +28,7 @@ export class AccountablePersonTypeComponent extends PageComponent<string> {
     let newAnswer = this.applicationService.currentAccountablePerson.Type;
     if (this.previousAnswer && this.previousAnswer != newAnswer) {
       this.returnUrl = undefined;
-      this.applicationService.model.AccountablePersons[this.applicationService._currentAccountablePersonIndex] = new AccountablePersonModel();
+      this.applicationService.currentVersion.AccountablePersons[this.applicationService._currentAccountablePersonIndex] = new AccountablePersonModel();
       this.applicationService.currentAccountablePerson.Type = newAnswer;
     }
   }

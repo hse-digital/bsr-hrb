@@ -27,8 +27,8 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   hasIncompleteData = false;
 
   override onInit(applicationService: ApplicationService): void {
-    this.aps = this.applicationService.model.AccountablePersons;
-    this.updateAddAnotherVariable(this.applicationService.model.AccountablePersons);
+    this.aps = this.applicationService.currentVersion.AccountablePersons;
+    this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -94,7 +94,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
       }
     }
     
-    canContinue &&= this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.model.AccountablePersons, this.applicationService.model.BuildingName!, section).length == 0);
+    canContinue &&= this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, section).length == 0);
 
     this.hasIncompleteData = !canContinue;
     return canContinue;
@@ -124,7 +124,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
 
   removeAp(ap: AccountablePersonModel, index: number) {
     this.applicationService.removeAp(index);
-    this.updateAddAnotherVariable(this.applicationService.model.AccountablePersons);
+    this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
   }
 
   private updateAddAnotherVariable(aps: AccountablePersonModel[]) {

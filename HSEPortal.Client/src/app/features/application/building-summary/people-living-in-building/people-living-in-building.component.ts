@@ -7,8 +7,6 @@ import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-si
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 import { NeedRemoveWithdrawComponent } from "src/app/features/registration-amendments/change-building-summary/need-remove-withdraw/need-remove-withdraw.component";
 
 @Component({
@@ -18,9 +16,8 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
   static route: string = 'people-living';
   static title: string = "Are people living in the building? - Register a high-rise building - GOV.UK";
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(SectionPeopleLivingInBuildingComponent.route);
   }
 
 
@@ -34,34 +31,8 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
     this.applicationService.currentSection.PeopleLivingInBuilding = this.model;
   }
 
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.PeopleLivingInBuilding) this.onInit(this.applicationService);
-    else this.model = this.applicationService.currentChangedSection.SectionModel?.PeopleLivingInBuilding;
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.PeopleLivingInBuilding = this.model;
-  }
-
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
-  }
-
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    if (section.PeopleLivingInBuilding == "no_wont_move") {
-      this.initScope();
-      this.applicationService.currentChangedSection.SectionModel!.Scope!.IsOutOfScope = true;
-      this.applicationService.currentChangedSection.SectionModel!.Scope!.OutOfScopeReason = OutOfScopeReason.PeopleLivingInBuilding;
-      return `../../registration-amendments/${NeedRemoveWithdrawComponent.route}`;
-    }
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
-  }
-
-  private initScope() {
-    if (!this.applicationService.currentChangedSection.SectionModel!.Scope) {
-      this.applicationService.currentChangedSection.SectionModel!.Scope = {};
-    }
   }
 
   override isValid(): boolean {
@@ -74,6 +45,9 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
 
   override navigateNext(): Promise<boolean> {
     if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
+      
+      if (this.changing) return this.navigationService.navigateRelative(`../../registration-amendments/${NeedRemoveWithdrawComponent.route}`, this.activatedRoute);
+
       return this.applicationService.model.NumberOfSections == 'one' 
         ? this.navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, this.activatedRoute)
         : this.navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, this.activatedRoute);
@@ -86,7 +60,10 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
 
     if (!this.peopleLivingHasErrors && peopleLivingInBuilding == 'no_wont_move') {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.PeopleLivingInBuilding };
-      if(!this.changed) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService);
+      
+      if(!this.changing) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService);
+      else this.returnUrl = undefined;
+
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;
@@ -95,7 +72,6 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
       this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
     }
   }
-
 
   getErrorMessage() {
     return `Select if people are living in ${this.buildingOrSectionName}`;

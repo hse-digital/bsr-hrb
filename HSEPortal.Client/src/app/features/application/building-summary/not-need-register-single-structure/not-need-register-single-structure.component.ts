@@ -21,10 +21,9 @@ export class NotNeedRegisterSingleStructureComponent implements CanActivate {
     return this.applicationService.model.NumberOfSections == 'one';
   }
 
-  sectionBuildingName(): string {
-    let newName = this.applicationService.currentChangedSection?.SectionModel?.Name;
-    let sectionName = FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
-    return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName! : sectionName!;
+  sectionBuildingName() {
+    let sectionName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.Name) ? this.applicationService.currentSection.Name : this.applicationService.model.BuildingName; 
+    return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 
   async newApplication() {

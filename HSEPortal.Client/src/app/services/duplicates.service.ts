@@ -20,21 +20,11 @@ export class DuplicatesService {
   }
 
   get postcode() {    
-    let currentSectionAddress = this.applicationService.currentSectionAddress;
-    let newSectionAddress = this.applicationService.currentChangedSection.SectionModel?.Addresses[this.index ?? this.applicationService._currentSectionAddressIndex];
-    
-    return !!newSectionAddress && FieldValidations.IsNotNullOrWhitespace(newSectionAddress.Postcode) 
-      ? newSectionAddress?.Postcode 
-      : currentSectionAddress?.Postcode;
+    return this.applicationService.currentSection.Addresses[this.index ?? 0].Postcode;
   }
 
   get addressLineOne() {
-    let currentSectionAddress = this.applicationService.currentSectionAddress;
-    let newSectionAddress = this.applicationService.currentChangedSection.SectionModel?.Addresses[this.index ?? this.applicationService._currentSectionAddressIndex];
-
-    return !!newSectionAddress && FieldValidations.IsNotNullOrWhitespace(newSectionAddress.Address) 
-      ? newSectionAddress?.Address 
-      : currentSectionAddress?.Address;
+    return this.applicationService.currentSection.Addresses[this.index ?? 0].Address;
   }
 
   async GetRegisteredStructureBy(postcode: string, addressLineOne: string): Promise<RegisteredStructureModel | undefined> {

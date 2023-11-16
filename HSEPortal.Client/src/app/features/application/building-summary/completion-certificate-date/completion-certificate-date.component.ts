@@ -4,8 +4,6 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { CertificateNumberComponent } from '../certificate-number/certificate-number.component';
-import { BuildingSummaryNavigation } from '../building-summary.navigation';
-import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 type CompletionDate = { day: string, month: string, year: string };
 type error = { hasError: boolean, message?: string };
@@ -29,9 +27,8 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
     future?: error
   }
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(CompletionCertificateDateComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
@@ -53,33 +50,6 @@ export class CompletionCertificateDateComponent extends PageComponent<Completion
     if(!this.isInputEmpty()) {
       this.applicationService.currentSection.CompletionCertificateDate = new Date(Number(this.model!.year!), (Number(this.model?.month) - 1), Number(this.model?.day)).getTime().toString();
     }
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    this.isInputOptional(
-      this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption ?? this.applicationService.currentSection.YearOfCompletionOption,
-      this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionRange ?? this.applicationService.currentSection.YearOfCompletionRange,
-      this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion ?? this.applicationService.currentSection.YearOfCompletion,
-    );
-    
-    this.model = { day: "", month: "", year: "" } as CompletionDate;
-    
-    let completionCertificateDate = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate) 
-      ? this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
-      : this.applicationService.currentSection.CompletionCertificateDate;
-
-    if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) this.initPageModel(completionCertificateDate)
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {
-    if(!this.isInputEmpty()) {
-      this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateDate = new Date(Number(this.model!.year!), (Number(this.model?.month) - 1), Number(this.model?.day)).getTime().toString();
-    }
-  }
-
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
   private initPageModel(completionCertificateDate?: string) {

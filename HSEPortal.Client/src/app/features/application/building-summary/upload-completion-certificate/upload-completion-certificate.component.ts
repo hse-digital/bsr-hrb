@@ -7,8 +7,6 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 import { BlockBlobClient } from '@azure/storage-blob';
 import { TransferProgressEvent } from "@azure/core-http";
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { BuildingSummaryNavigation } from '../building-summary.navigation';
-import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 
 type error = { hasError: boolean, message?: string }
 
@@ -33,11 +31,9 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
     issue: { hasError: false, message: "The selected file could not be uploaded - try again" } as error
   };
 
-  constructor(activatedRoute: ActivatedRoute, private fileUploadService: FileUploadService, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute, private fileUploadService: FileUploadService) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(UploadCompletionCertificateComponent.route);
   }
-
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return true;
@@ -59,34 +55,6 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
       this.model!.Uploaded = true;
       await this.fileUploadService.uploadToSharepoint(this.applicationService.model.id!, this.selectedFileUpload.file.name)
     }
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    if (!this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateFile) this.onInit(this.applicationService);
-    else {
-      this.model = this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateFile;
-      this.selectedFileUpload = { status: 'uploaded', file: new File([], this.model.Filename), alreadyUploaded: this.model.Uploaded };
-    }
-
-    let completionCertificateDate = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate)
-      ? this.applicationService.currentChangedSection.SectionModel?.CompletionCertificateDate
-      : this.applicationService.currentSection.CompletionCertificateDate;
-      
-    this.isPageOptional(completionCertificateDate);
-  }
-
-  override async onChange(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.currentChangedSection!.SectionModel!.CompletionCertificateFile = this.model;
-
-    if (this.selectedFileUpload && !this.model!.Uploaded) {
-      this.model!.Uploaded = true;
-      await this.fileUploadService.uploadToSharepoint(this.applicationService.model.id!, this.selectedFileUpload.file.name)
-    }
-  }
-
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section);
   }
 
   isPageOptional(completionCertificateDate?: string) {

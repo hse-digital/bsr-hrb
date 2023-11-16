@@ -17,9 +17,9 @@ public record BuildingApplicationModel(
     string SecondaryEmailAddress = null,
     bool? IsSecondary = null,
     string NumberOfSections = null,
-    SectionModel[] Sections = null,
-    AccountablePerson[] AccountablePersons = null,
-    KbiModel Kbi = null,
+    [property: Obsolete] SectionModel[] Sections = null,
+    [property: Obsolete] AccountablePerson[] AccountablePersons = null,
+    [property: Obsolete] KbiModel Kbi = null,
     string OutOfScopeContinueReason = null,
     string PrincipalAccountableType = null,
     string PaymentType = null,
@@ -28,7 +28,8 @@ public record BuildingApplicationModel(
     bool? DuplicateDetected = null,
     bool? ShareDetailsDeclared = null,
     string[] DuplicateBuildingApplicationIds = null,
-    RegistrationAmendmentsModel RegistrationAmendmentsModel = null) : IValidatableModel
+    RegistrationAmendmentsModel RegistrationAmendmentsModel = null,
+    List<BuildingApplicationVersion> Versions = null) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
@@ -71,18 +72,40 @@ public record BuildingApplicationModel(
         var noSpacesPhoneNumber = ContactPhoneNumber.Replace(" ", string.Empty);
         return Regex.IsMatch(noSpacesPhoneNumber, @"^\+44\d{10}$") || Regex.IsMatch(noSpacesPhoneNumber, @"^0\d{10}$");
     }
+
+    public BuildingApplicationVersion CurrentVersion
+    {
+        get
+        {
+            var version = Versions?.FirstOrDefault();
+            while (!string.IsNullOrEmpty(version?.ReplacedBy))
+            {
+                version = Versions.FirstOrDefault(x => x.Name == version.ReplacedBy);
+            }
+
+            return version;
+        }
+    }
 }
+
+public record BuildingApplicationVersion(string Name, string ReplacedBy = null, string CreatedBy = null, bool? Submitted = null, SectionModel[] Sections = null,
+    AccountablePerson[] AccountablePersons = null, Status BuildingStatus = Status.NoChanges, KbiModel Kbi = null);
 
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
     string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange, string WhoIssuedCertificate, string CompletionCertificateDate,
-    string CompletionCertificateIssuer, string CompletionCertificateReference, FileUploadModel CompletionCertificateFile, Scope Scope, string Statecode, BuildingAddress[] Addresses = null,
-    Duplicate Duplicate = null);
+    string CompletionCertificateIssuer, string CompletionCertificateReference, FileUploadModel CompletionCertificateFile, Scope Scope, string Statecode, CancellationReason CancellationReason = CancellationReason.NoCancellationReason, BuildingAddress[] Addresses = null,
+    Duplicate Duplicate = null)
+{
+    public Status Status { get; set; }
+    public string WhyWantRemoveSection { get; set; }
+    public string RemoveStructureAreYouSure { get; set; }
+};
 
 public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
 
-public record Duplicate(string WhyContinue = null, bool? IsDuplicated = null,
-    string IncludeStructure = null, string[] BlockIds = null, bool? DuplicateFound = null, string DuplicatedAddressIndex = null);
+public record Duplicate(string DuplicatedAddressIndex, string WhyContinue = null, bool? IsDuplicated = null,
+    string IncludeStructure = null, string[] BlockIds = null, bool? DuplicateFound = null);
 
 public enum OutOfScopeReason
 {
@@ -214,34 +237,19 @@ public record PaymentInvoiceDetails
 
 public record RegistrationAmendmentsModel
 {
-    public ChangeBuildingSummary ChangeBuildingSummary { get; set; }
     public ChangeUser ChangeUser { get; set; }
     public long Date { get; set; }
     public Deregister Deregister { get; set; }
-    public ChangeRequest ChangeRequest { get; set; }
+    public ChangeRequest[] ChangeRequest { get; set; }
 }
 
 public record Deregister
 {
     public string AreYouSure { get; set; }
     public string Why { get; set; }
+    public CancellationReason CancellationReason { get; set; }
 }
 
-public record ChangeBuildingSummary
-{
-    public Status Status { get; set; }
-    public ChangeSection[] Sections { get; set; }
-    public string CurrentChange { get; set; }
-    public int CurrentSectionIndex { get; set; }
-}
-
-public record ChangeSection
-{
-    public Status Status { get; set; }
-    public string WhyWantRemoveSection { get; set; }
-    public string RemoveStructureAreYouSure { get; set; }
-    public SectionModel SectionModel { get; set; }
-}
 
 public record ChangeUser
 {
@@ -274,10 +282,13 @@ public enum Status
 public record ChangeRequest
 {
     public string Name { get; set; }
+    public string StructureName { get; set; }
+    public string StructurePostcode { get; set; }
     public ChangeCategory Category { get; set; }
     public bool Declaration { get; set; }
     public bool ReviewRequired { get; set; }
     public Change[] Change { get; set; }
+    public Status Status { get; set; }
 }
 
 public record Change
@@ -293,5 +304,15 @@ public enum ChangeCategory
 {
     ApplicationBuildingAmendments,
     ChangeApplicantUser,
-    DeRegistration
+    DeRegistration,
+    ChangePAPOrLeadContact
+}
+
+public enum CancellationReason {
+  FloorsHeight,
+  ResidentialUnits,
+  EveryoneMovedOut,
+  IncorrectlyRegistered,
+  NoConnected,
+  NoCancellationReason
 }

@@ -43,12 +43,12 @@ export class AccountablePersonNavigation extends BaseNavigation {
   private PapNavigationTree = new PapNavigationTree(this.applicationService, this.AddAnotherApNavigationNode);
 
   override getNextRoute(): string {
-    if (this.applicationService.model.AccountablePersons == null || this.applicationService.model.AccountablePersons.length == 0) {
+    if (this.applicationService.currentVersion.AccountablePersons == null || this.applicationService.currentVersion.AccountablePersons.length == 0) {
       return AccountablePersonModule.baseRoute;
     }
 
-    for (let apIndex = 0; apIndex < this.applicationService.model.AccountablePersons.length; apIndex++) {
-      let ap = this.applicationService.model.AccountablePersons[apIndex];
+    for (let apIndex = 0; apIndex < this.applicationService.currentVersion.AccountablePersons.length; apIndex++) {
+      let ap = this.applicationService.currentVersion.AccountablePersons[apIndex];
       let apRoute: string;
       if (apIndex == 0) {
         console.log('0');
@@ -388,13 +388,13 @@ class PapAccountabilityNavigationNode extends ApNavigationNode {
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
     console.log('16');
-    var pap = this.applicationService.model.AccountablePersons[0];
+    var pap = this.applicationService.currentVersion.AccountablePersons[0];
     if (pap.SectionsAccountability == null || pap.SectionsAccountability.length == 0 || pap.SectionsAccountability.flatMap(x => x.Accountability)?.length == 0) {
       console.log('16.1');
       return AreasAccountabilityComponent.route;
     }
 
-    let thereAreNotAllocatedAreas = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope).some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.model.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
+    let thereAreNotAllocatedAreas = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope).some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
     if (thereAreNotAllocatedAreas) {
       console.log('16.2');
       return this.AccountabilityNotAllocatedNavigationNode.getNextRoute(ap, apIndex);
@@ -413,7 +413,7 @@ class AccountabilityNotAllocatedNavigationNode extends ApNavigationNode {
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
     console.log('17');
-    let thereAreNotAllocatedAreas = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope).some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.model.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
+    let thereAreNotAllocatedAreas = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope).some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
     if (thereAreNotAllocatedAreas) {
       console.log('17.1');
       return NotAllocatedAccountabilityAreasComponent.route;

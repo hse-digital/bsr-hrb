@@ -49,11 +49,11 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    let isOutOfScope = this.applicationService.currentChangedSection.SectionModel?.Scope?.IsOutOfScope;
+    let isOutOfScope = this.applicationService.currentSection.Scope?.IsOutOfScope;
     if(this.model == 'no') {
-      let outOfScopeRoute = this.getNextOutOfScopeRoute(this.applicationService.currentChangedSection.SectionModel?.Scope?.OutOfScopeReason);
+      let outOfScopeRoute = this.getNextOutOfScopeRoute(this.applicationService.currentSection.Scope?.OutOfScopeReason);
       if (isOutOfScope && FieldValidations.IsNotNullOrWhitespace(outOfScopeRoute)) {
-        this.applicationService.currentChangedSection.SectionModel!.Scope = {};
+        this.applicationService.currentSection.Scope = {};
         return this.navigateToSectionPage(outOfScopeRoute);
       } else {
         return this.navigationService.navigateRelative(`../${ApplicationCompletedComponent.route}`, this.activatedRoute);
@@ -65,8 +65,6 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
   }
 
   navigateToSectionPage(url: string, query?: string) {
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = url;
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
     this.applicationService.updateApplication();
     return this.navigationService.navigateRelative(`../sections/section-${this.applicationService._currentSectionIndex + 1}/${url}`, this.activatedRoute);
   }

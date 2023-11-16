@@ -7,9 +7,6 @@ import { CertificateIssuerComponent } from "../certificate-issuer/certificate-is
 import { SectionYearRangeComponent } from "../year-range/year-range.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { WhoIssuedCertificateComponent } from "../who-issued-certificate/who-issued-certificate.component";
-import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
-import { BuildingSummaryNavigation } from "../building-summary.navigation";
-import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 export type YearOfCompletion = {YearOfCompletionOption?: string, YearOfCompletion?: string}
 
@@ -24,9 +21,8 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
   exactYearHasErrors = false;
   errorMessage = `Select if you know what year ${this.buildingOrSectionName} was completed`;
 
-  constructor(activatedRoute: ActivatedRoute, private buildingSummaryNavigation: BuildingSummaryNavigation) {
+  constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-    this.isPageChangingBuildingSummary(SectionYearOfCompletionComponent.route);
   }
 
   override onInit(applicationService: ApplicationService): void {
@@ -38,30 +34,6 @@ export class SectionYearOfCompletionComponent extends PageComponent<YearOfComple
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentSection.YearOfCompletionOption = this.model?.YearOfCompletionOption;
     this.applicationService.currentSection.YearOfCompletion = this.model?.YearOfCompletion;
-  }
-
-  override onInitChange(applicationService: ApplicationService): void | Promise<void> {
-    this.model = {};
-    this.model.YearOfCompletionOption = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption;
-    this.model.YearOfCompletion = this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion;
-
-    if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletionOption)) {
-      this.model.YearOfCompletionOption = this.applicationService.currentSection.YearOfCompletionOption;
-    }
-    
-    if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentChangedSection.SectionModel?.YearOfCompletion)) {
-      this.model.YearOfCompletion = this.applicationService.currentSection.YearOfCompletion;
-    }
-  }
-
-  override onChange(applicationService: ApplicationService): void | Promise<void> {    
-    this.applicationService.currentChangedSection.SectionModel!.YearOfCompletionOption = this.model?.YearOfCompletionOption;
-    this.applicationService.currentChangedSection.SectionModel!.YearOfCompletion = this.model?.YearOfCompletion;
-  }
-
-  override nextChangeRoute(): string {
-    let section = new ChangeBuildingSummaryHelper(this.applicationService).getSections()[this.applicationService._currentSectionIndex];
-    return this.buildingSummaryNavigation.getNextChangeRoute(section); 
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

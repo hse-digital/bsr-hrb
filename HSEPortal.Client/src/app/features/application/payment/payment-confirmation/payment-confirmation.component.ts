@@ -70,7 +70,7 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   }
 
   notPap() {
-    var pap = this.applicationService.model.AccountablePersons[0];
+    var pap = this.applicationService.currentVersion.AccountablePersons[0];
     return (pap.IsPrincipal == 'no' && pap.Type == 'individual') ||
       (pap.Type == 'organisation' && pap.Role == 'registering_for');
   }

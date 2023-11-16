@@ -6,7 +6,7 @@ export class ApHelper {
     var requestedSectionIndex = routeSnapshot.parent?.params["id"];
     if (requestedSectionIndex) {
       let index = Number(requestedSectionIndex.split('-').at(-1)) - 1;
-      return applicationService.model.AccountablePersons.length > index;
+      return applicationService.currentVersion.AccountablePersons.length > index;
     }
 
     return false;
@@ -16,7 +16,7 @@ export class ApHelper {
     var requestedSectionIndex = routeSnapshot.parent?.params["id"];
     if (requestedSectionIndex) {
       let index = Number(requestedSectionIndex.split('-').at(-1)) - 1;
-      return applicationService.model.AccountablePersons[index]?.Type == "organisation";
+      return applicationService.currentVersion.AccountablePersons[index]?.Type == "organisation";
     }
 
     return false;

@@ -18,8 +18,7 @@ export abstract class PageComponent<T> implements OnInit {
   processing: boolean = false;
   hasErrors: boolean = false;
   updateOnSave: boolean = true;
-  changed: boolean = false;
-  changedReturnUrl?: string;
+  changing: boolean = false;
   returnUrl?: string;
   
   private injector: Injector = GetInjector();
@@ -42,35 +41,16 @@ export abstract class PageComponent<T> implements OnInit {
   constructor(activatedRoute?: ActivatedRoute) {
     if(activatedRoute) this.activatedRoute = activatedRoute;
   
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.returnUrl = params['return'];
+    });
+
     this.triggerScreenReaderNotification("");
   }
   
-  onInitChange(applicationService: ApplicationService): Promise<void> | void { }
-  onChange(applicationService: ApplicationService): Promise<void> | void { }
-  nextChangeRoute() {}
-  navigateToNextChange(applicationService: ApplicationService) {  
-    let nextRoute = this.nextChangeRoute();
-
-    if (nextRoute == void 0 || nextRoute == "building-change-check-answers") {
-      this.navigationService.navigateRelative(`../../registration-amendments/${this.changedReturnUrl}`, this.activatedRoute);
-    } else {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentChange = nextRoute;
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeBuildingSummary!.CurrentSectionIndex = this.applicationService._currentSectionIndex;
-      this.applicationService.updateApplication();
-      if (nextRoute == "address") {
-        this.navigationService.navigateRelative(nextRoute, this.activatedRoute, { address: this.applicationService.currentChangedSection.SectionModel!.Addresses.length + 1 });
-      } else {
-        this.navigationService.navigateRelative(nextRoute, this.activatedRoute);
-      }
-    }
-  }
-  
   async ngOnInit() {
-    if (this.changed) {
-      await this.onInitChange(this.applicationService);
-    } else {
-      await this.onInit(this.applicationService);
-    }
+    this.changing = this.applicationService.model?.Versions?.length > 1 ?? false;
+    await this.onInit(this.applicationService);
   }
 
   async saveAndContinue(): Promise<void> {
@@ -81,20 +61,12 @@ export abstract class PageComponent<T> implements OnInit {
       this.triggerScreenReaderNotification();
       this.applicationService.updateLocalStorage();
 
-      if (this.changed) {
-        console.log("changed");
-        await this.onChange(this.applicationService);
-        await this.navigateToNextChange(this.applicationService);
-        return;
-      }
-
       if (this.updateOnSave) {
         await this.saveAndUpdate(true);
       }
 
-      if (this.returnUrl) {
-        let returnUri = this.returnUrl == 'check-answers' ? `../${this.returnUrl}` : this.returnUrl;
-        this.navigationService.navigateRelative(returnUri, this.activatedRoute);
+      if (this.returnUrl && !this.KnockOnQuestions()) {
+        this.navigateToReturnUrl(this.returnUrl);
         return;
       }
 
@@ -108,7 +80,25 @@ export abstract class PageComponent<T> implements OnInit {
 
     this.processing = false;
   }
-  
+
+  private async navigateToReturnUrl(returnUrl: string) {
+    let returnUri = this.getCheckAnswersPageRoute(returnUrl);
+    this.navigationService.navigateRelative(returnUri, this.activatedRoute);
+  }
+
+  private getCheckAnswersPageRoute(returnUrl: string) {
+    switch(returnUrl) {
+      case 'check-answers': return `../${this.returnUrl}`;
+      case 'building-change-check-answers': return `../../registration-amendments/${this.returnUrl}`;
+    }
+    return returnUrl;
+  }
+
+  private KnockOnQuestions() {
+    let nextKnockOnQuestion = this.applicationService.nextKnockOnQuestion();
+    return FieldValidations.IsNotNullOrWhitespace(nextKnockOnQuestion);
+  }
+
   async saveAndComeBack(): Promise<void> {
     this.processing = true;
     let canSave = this.requiredFieldsAreEmpty() || this.isValid();
@@ -146,7 +136,7 @@ export abstract class PageComponent<T> implements OnInit {
     var applicationStatus = this.applicationService.model.ApplicationStatus;
     let isPaymentComplete = (applicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete;
     let isInvoice = this.applicationService.model.PaymentType == 'invoice' && (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed')
-    console.log(isPaymentComplete, isInvoice);
+
     return isPaymentComplete || isInvoice;
   }
 
@@ -192,15 +182,8 @@ export abstract class PageComponent<T> implements OnInit {
     this.titleService.setTitleError();
   }
 
-  protected isPageChangingBuildingSummary(route: string) {
-    this.changed = this.applicationService._currentSectionIndex == this.applicationService.model.RegistrationAmendmentsModel?.ChangeBuildingSummary?.CurrentSectionIndex;
-    
-    this.changedReturnUrl = "building-change-check-answers";
-  }
-
   get buildingOrSectionName() {
-    let newName = this.applicationService.currentChangedSection?.SectionModel?.Name ?? "";
-    let sectionName = this.changed && FieldValidations.IsNotNullOrWhitespace(newName) ? newName : this.applicationService.currentSection.Name; 
+    let sectionName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.Name) ? this.applicationService.currentSection.Name : this.applicationService.model.BuildingName; 
     return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 }
