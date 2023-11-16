@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BuildingSummaryChangeModel, ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, Status } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
 import { BuildingChangeCheckAnswersComponent } from '../change-building-summary/building-change-check-answers/building-change-check-answers.component';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   selector: 'ra-check-answers-building-summary',
@@ -22,7 +23,7 @@ export class RaCheckAnswersBuildingSummaryComponent {
   }
 
   get OldStructures(): string[] {
-    let names = this.applicationService.model.Versions.find(x => x.Name == "original")?.Sections.map(x => x.Name!);
+    let names = this.applicationService.model.Versions.find(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy))?.Sections.filter(x => x.Status != Status.Removed).map(x => x.Name!);
     if(!names || names.length == 0 || names.every(x => x == null || x == undefined)) return [this.applicationService.model.BuildingName!];
     return names;
   }

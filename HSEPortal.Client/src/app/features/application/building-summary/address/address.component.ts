@@ -152,7 +152,7 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
   canActivate(routeSnapshot: ActivatedRouteSnapshot) {
     
-    if(this.applicationService.currentVersion.Name == "original") {
+    if(this.applicationService.model.Versions.length == 1) {
       ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
     }
 

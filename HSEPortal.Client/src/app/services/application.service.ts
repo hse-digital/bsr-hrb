@@ -50,7 +50,11 @@ export class ApplicationService {
   validateCurrentVersion() {
     var currentVersion = this.model.Versions.findIndex(x => (x.Submitted == null || x.Submitted == false) && x.Name != 'original');
     if (currentVersion == -1) {
-      var newVersion = JSON.parse(JSON.stringify(this.currentVersion));
+      var newVersion: BuildingRegistrationVersion = JSON.parse(JSON.stringify(this.currentVersion));
+      
+      newVersion.ReplacedBy = "";
+      newVersion.Submitted = false;
+      newVersion.CreatedBy = this.model.IsSecondary ? this.model.SecondaryEmailAddress : this.model.ContactEmailAddress;
       
       var newIndex = this.model.Versions.length;
       newVersion.Name = `V${newIndex}`;
@@ -68,6 +72,7 @@ export class ApplicationService {
   private setVersionIndex(index: number) {
     this._currentVersion = index;
     LocalStorage.setJSON("versionindex", this._currentVersion);
+    this.updateApplication();
   }
 
   updateLocalStorage() {

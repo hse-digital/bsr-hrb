@@ -8,6 +8,7 @@ import { ChangeApplicantHelper } from 'src/app/helpers/registration-amendments/c
 import { Change, ChangeRequest, RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
 import { BuildingSummaryChangeModel, ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { AddressModel } from 'src/app/services/address.service';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -57,6 +58,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.loading = true;
     this.applicationService.model.RegistrationAmendmentsModel!.Date = Date.now();
     
+
     this.createUserChangeRequest();
     this.createBuildingSummaryChangeRequest();
     this.createRemovedStructureChangeRequest();
@@ -70,6 +72,9 @@ export class RaDeclarationComponent extends PageComponent<void> {
     await this.syncChangeApplicantHelper.syncChangeApplicant();
     await this.syncChangeBuildingSummaryHelper.syncRemovedStructures();
     await this.syncChangeBuildingSummaryHelper.syncDeregister();
+
+    this.applicationService.model.Versions.find(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy))!.ReplacedBy = this.applicationService.currentVersion.Name;
+    this.applicationService.currentVersion.Submitted = true;
 
   }
   
@@ -104,8 +109,10 @@ export class RaDeclarationComponent extends PageComponent<void> {
   private createBuildingSummaryChangeRequest() {
     let changeRequest = this.syncChangeBuildingSummaryHelper.createChangeRequest();
     let changes = this.syncChangeBuildingSummaryHelper.createChanges();
-    changeRequest.Change?.push(...changes);
-    this.addChangeRequestToModel(changeRequest);
+    if (!!changes && changes.length > 0) {
+      changeRequest.Change?.push(...changes);
+      this.addChangeRequestToModel(changeRequest);
+    }
   }
 
   private createRemovedStructureChangeRequest() {

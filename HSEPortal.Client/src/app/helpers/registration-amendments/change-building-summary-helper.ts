@@ -24,11 +24,12 @@ export class ChangeBuildingSummaryHelper {
     }
 
     getRemovedStructures() {
-        return this.applicationService.currentVersion.Sections.filter(section => section.Status == Status.Removed && !!section.Addresses && section.Addresses.length > 0);
+        let previousSections = this.applicationService.model.Versions.find(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy))!.Sections;
+        return this.applicationService.currentVersion.Sections.filter((section, index) => section.Status == Status.Removed && previousSections[index].Status != Status.Removed &&  !!section.Addresses && section.Addresses.length > 0);
     }
 
     getChanges(): BuildingSummaryChangeModel[] {
-        let originalVersion = this.applicationService.model.Versions.find(x => x.Name == "original");
+        let originalVersion = this.applicationService.model.Versions.find(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy));
         return this.applicationService.currentVersion.Sections.flatMap((section, index) => {
             if (section.Status == Status.Removed) return undefined;
             let originalSection = originalVersion!.Sections.length <= index ? new SectionModel() : originalVersion!.Sections[index];

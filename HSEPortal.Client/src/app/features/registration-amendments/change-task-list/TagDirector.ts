@@ -1,3 +1,4 @@
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { TaskListSteps, TagStatus } from "./change-task-list.component";
 import { ApplicationService, SectionModel, Status } from "src/app/services/application.service";
 
@@ -52,7 +53,8 @@ export class BuildingSummaryTag extends ChangeTaskListTag {
     }
 
     areThereAnySectionsRemoved(changeModel: SectionModel[] ) {
-        return changeModel.some(x => x.Status == Status.Removed) ?? false;
+        let previousSections = this.applicationService.model.Versions.find(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy))!.Sections;
+        return changeModel.some((x, index) => x.Status == Status.Removed && previousSections[index].Status != Status.Removed) ?? false;
     }
 }
 
