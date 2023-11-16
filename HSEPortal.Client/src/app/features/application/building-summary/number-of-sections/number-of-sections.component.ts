@@ -5,6 +5,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { BuildingChangeCheckAnswersComponent } from 'src/app/features/registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component';
 import { RegistrationAmendmentsModule } from 'src/app/features/registration-amendments/registration-amendments.module';
+import { SectionNameComponent } from '../name/name.component';
 
 @Component({
   templateUrl: './number-of-sections.component.html'
@@ -47,37 +48,47 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
 
   override navigateNext(): Promise<boolean> {
     let changing = this.applicationService.model.Versions.length > 1;
-    if (changing && this.applicationService.model.NumberOfSections == "one") {
-      return this.navigationService.navigateRelative(`/${RegistrationAmendmentsModule.baseRoute}/${BuildingChangeCheckAnswersComponent.route}`, this.activatedRoute);
-    }
-    // user is changing the answer
-    if (this.previousAnswer && this.previousAnswer != this.applicationService.model.NumberOfSections) {
-      this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStage.BlocksInBuildingComplete;
-      this.applicationService.updateApplication();
+    if (changing) return this.registrationAmendmentsNavigation();
+    else {
+      // user is changing the answer
+      if (this.previousAnswer && this.previousAnswer != this.applicationService.model.NumberOfSections) {
+        this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStage.BlocksInBuildingComplete;
+        this.applicationService.updateApplication();
 
-      var firstSection = this.applicationService.currentVersion.Sections[0];
-      if (this.applicationService.model.NumberOfSections == "one") {
-        // keep only first section
-        this.applicationService.currentVersion.Sections = [firstSection];
-      } else {
-        if (!FieldValidations.IsNotNullOrWhitespace(firstSection.Name)) {
-          return this.navigationService.navigateRelative(`/sections/section-1`, this.activatedRoute);
+        var firstSection = this.applicationService.currentVersion.Sections[0];
+        if (this.applicationService.model.NumberOfSections == "one") {
+          // keep only first section
+          this.applicationService.currentVersion.Sections = [firstSection];
         } else {
-          var sectionRoute = this.applicationService.startNewSection();
-          return this.navigationService.navigateRelative(`/sections/${sectionRoute}`, this.activatedRoute);
+          if (!FieldValidations.IsNotNullOrWhitespace(firstSection.Name)) {
+            return this.navigationService.navigateRelative(`/sections/section-1`, this.activatedRoute);
+          } else {
+            var sectionRoute = this.applicationService.startNewSection();
+            return this.navigationService.navigateRelative(`/sections/${sectionRoute}`, this.activatedRoute);
+          }
         }
       }
+
+      if (this.returnToCheckAnswers)
+        return this.navigationService.navigateRelative(`/sections/check-answers`, this.activatedRoute);
+
+      let route = '';
+      if (this.applicationService.model.NumberOfSections == "one") {
+        route = `floors`;
+      }
+
+      return this.navigationService.navigateRelative(`/sections/section-1/${route}`, this.activatedRoute);
     }
+  }
 
-    if (this.returnToCheckAnswers)
-      return this.navigationService.navigateRelative(`/sections/check-answers`, this.activatedRoute);
-
-    let route = '';
-    if (this.applicationService.model.NumberOfSections == "one") {
-      route = `floors`;
+  private async registrationAmendmentsNavigation() {
+    if (this.previousAnswer && this.previousAnswer == this.applicationService.model.NumberOfSections || this.applicationService.model.NumberOfSections == "one") {
+      return this.navigationService.navigateRelative(`/${RegistrationAmendmentsModule.baseRoute}/${BuildingChangeCheckAnswersComponent.route}`, this.activatedRoute);
+    } else {
+      let section = this.applicationService.startNewSection();
+      await this.applicationService.updateApplication();
+      return this.navigationService.navigateRelative(`sections/${section}/${SectionNameComponent.route}`, this.activatedRoute);
     }
-
-    return this.navigationService.navigateRelative(`/sections/section-1/${route}`, this.activatedRoute);
   }
 
   private returnToCheckAnswers: boolean = false;

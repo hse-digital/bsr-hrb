@@ -35,7 +35,7 @@
         
       </div>
 
-      <govuk-button *ngIf="applicationService.model.NumberOfSections == 'two_or_more'" (onClick)="addAnotherStructure()" [isLoading]="processing" classes="govuk-button--secondary" [ngStyle]="{'margin-right': '15px'}">Add another structure</govuk-button>
+      <govuk-button *ngIf="applicationService.model.NumberOfSections != 'one'" (onClick)="addAnotherStructure()" [isLoading]="processing" classes="govuk-button--secondary" [ngStyle]="{'margin-right': '15px'}">Add another structure</govuk-button>
       <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>
 
     </div>
