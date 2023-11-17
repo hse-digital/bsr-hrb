@@ -27,6 +27,16 @@ public class WhenGettingApplication : UnitTestBase
     {
         var token = "123123";
         var cosmosApplication = new BuildingApplicationModelBuilder().WithApplicationId(applicationId).WithContactEmailAddress(emailAddress).Build();
+        cosmosApplication = cosmosApplication with
+        {
+            Versions = new List<BuildingApplicationVersion>
+            {
+                new("original", Sections: cosmosApplication.Sections, AccountablePersons: cosmosApplication.AccountablePersons, Kbi: cosmosApplication.Kbi)
+            },
+            Sections = null,
+            AccountablePersons = null,
+            Kbi = null
+        };
 
         var request = new GetApplicationRequest { ApplicationNumber = applicationId, EmailAddress = emailAddress, OtpToken = token };
         var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(request), new List<BuildingApplicationModel> { cosmosApplication });
@@ -42,9 +52,9 @@ public class WhenGettingApplication : UnitTestBase
     {
         HttpTest.RespondWithJson(new { Token = "123123" });
         var token = await OtpService.GenerateToken(emailAddress);
-        
+
         HttpTest.RespondWithJson(string.Empty, 400);
-        
+
         var request = new GetApplicationRequest { ApplicationNumber = applicationId, OtpToken = token };
         var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: request), new List<BuildingApplicationModel>());
         applicationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -55,9 +65,9 @@ public class WhenGettingApplication : UnitTestBase
     {
         var invalidToken = "123456";
         var cosmosApplication = new BuildingApplicationModelBuilder().WithApplicationId(applicationId).WithContactEmailAddress(emailAddress).Build();
-        
+
         HttpTest.RespondWithJson(string.Empty, 400);
-        
+
         var request = new GetApplicationRequest { ApplicationNumber = applicationId, EmailAddress = emailAddress, OtpToken = invalidToken };
         var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: request), new List<BuildingApplicationModel> { cosmosApplication });
 
@@ -67,11 +77,12 @@ public class WhenGettingApplication : UnitTestBase
     [Fact]
     public async Task ShouldNotValidateTokenIfFeatureIsDisabled()
     {
-        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, new OptionsWrapper<FeatureOptions>(new FeatureOptions { DisableOtpValidation = true }), new OptionsWrapper<IntegrationsOptions>(IntegrationOptions));
+        buildingApplicationFunctions = new BuildingApplicationFunctions(DynamicsService, OtpService, new OptionsWrapper<FeatureOptions>(new FeatureOptions { DisableOtpValidation = true }),
+            new OptionsWrapper<IntegrationsOptions>(IntegrationOptions));
 
         var invalidToken = "123456";
         var cosmosApplication = new BuildingApplicationModelBuilder().WithApplicationId(applicationId).WithContactEmailAddress(emailAddress).Build();
-        
+
         var request = new GetApplicationRequest { ApplicationNumber = applicationId, EmailAddress = emailAddress, OtpToken = invalidToken };
         var applicationResponse = await buildingApplicationFunctions.GetApplication(BuildHttpRequestData(data: request), new List<BuildingApplicationModel> { cosmosApplication });
 
