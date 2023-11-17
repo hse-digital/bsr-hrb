@@ -166,10 +166,13 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   private navigateBack(): void {
-    let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete
-      ? `application/${this.applicationService.model.id}/kbi`
-      : `application/${this.applicationService.model.id}`;
-    this.navigationService.navigate(route);
+    if (this.changing) this.navigationService.navigate(`application/${this.applicationService.model.id}/application-completed`);
+    else {
+      let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete
+        ? `application/${this.applicationService.model.id}/kbi`
+        : `application/${this.applicationService.model.id}`;
+      this.navigationService.navigate(route);
+    }
   }
 
   protected async saveAndUpdate(isSaveAndContinue: boolean): Promise<void> {
