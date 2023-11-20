@@ -15,45 +15,28 @@
 
         </dd>
     </div>
-    <div class="govuk-summary-list__row" *ngIf="areStructuresDifferent()">
-        <dt class="govuk-summary-list__key">
-            Structures
-        </dt>
-        <dd class="govuk-summary-list__value">
-            <ng-container *ngFor="let name of OldStructures">
-                <div>{{name}}</div>
-            </ng-container>
-        </dd>
-        <dd class="govuk-summary-list__value">
-            <ng-container *ngFor="let name of NewStructures">
-                <div>{{name}}</div>
-            </ng-container>
-        </dd>
-        <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" role="link" (click)="navigateToBuildingCheckAnswersPage()" (keyup.enter)="navigateToBuildingCheckAnswersPage()"
-                tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
-        </dd>
-    </div>
     <div class="govuk-summary-list__row" *ngFor="let change of changes; let i = index">
-        <dt class="govuk-summary-list__key">
-            {{change!.Title}} 
-        </dt>
-        <dd class="govuk-summary-list__value" *ngIf="!change.IsAddress; else oldAddresses">
-            {{change!.OldValue}}
-        </dd>
-        <dd class="govuk-summary-list__value" *ngIf="!change.IsAddress; else newAddresses">
-            {{change!.NewValue}}
-        </dd>
-        <dd class="govuk-summary-list__actions" *ngIf="!change.IsAddress; else addressesRoute">
-            <a class="govuk-link" role="link" (click)="navigateTo(change!.Route!, i)" (keyup.enter)="navigateTo(change!.Route!, i)"
-                tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
-        </dd>
+        <ng-container *ngIf="change!.Title != 'Structures'; else Structures">
+            <dt class="govuk-summary-list__key">
+                {{change!.Title}} 
+            </dt>
+            <dd class="govuk-summary-list__value" *ngIf="!change.IsAddress; else oldAddresses">
+                {{change!.OldValue}}
+            </dd>
+            <dd class="govuk-summary-list__value" *ngIf="!change.IsAddress; else newAddresses">
+                {{change!.NewValue}}
+            </dd>
+            <dd class="govuk-summary-list__actions" *ngIf="!change.IsAddress; else navigateToCheckAnswersPage">
+                <a class="govuk-link" role="link" (click)="navigateTo(change!.Route!, i)" (keyup.enter)="navigateTo(change!.Route!, i)"
+                    tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
+            </dd>
+        </ng-container>
+        
 
         <ng-template #oldAddresses>
             <dd class="govuk-summary-list__value">
                 <div class="govuk-!-margin-bottom-5" *ngFor="let address of change!.OldAddresses!">
                     <address-description  [address]="address" />
-                    <!-- {{address.Address}} -->
                 </div>
             </dd>
         </ng-template>
@@ -62,16 +45,32 @@
             <dd class="govuk-summary-list__value">
                 <div class="govuk-!-margin-bottom-5" *ngFor="let address of change!.NewAddresses!">
                     <address-description  [address]="address" />
-                    <!-- {{address.Address}} -->
                 </div>
             </dd>
         </ng-template>
 
-        <ng-template #addressesRoute>
+        <ng-template #navigateToCheckAnswersPage>
             <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" role="link" (click)="navigateToBuildingCheckAnswersPage()" (keyup.enter)="navigateToBuildingCheckAnswersPage()"
                     tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
             </dd>
+        </ng-template>
+
+        <ng-template #Structures>
+            <dt class="govuk-summary-list__key">
+                {{change!.Title}} 
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <div class="govuk-!-margin-bottom-5">
+                    <div *ngFor="let name of change!.OldValue">{{name}}</div>
+                </div>
+            </dd>
+            <dd class="govuk-summary-list__value">
+                <div class="govuk-!-margin-bottom-5">
+                    <div *ngFor="let name of change!.NewValue">{{name}}</div>
+                </div>
+            </dd>
+            <ng-container *ngTemplateOutlet="navigateToCheckAnswersPage" />
         </ng-template>
 
     </div>

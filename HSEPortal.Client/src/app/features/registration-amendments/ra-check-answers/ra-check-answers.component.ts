@@ -37,7 +37,7 @@ export class RaCheckAnswersComponent extends PageComponent<void> {
   }
 
   get numberOfBuildingChanges() {
-    return  new ChangeBuildingSummaryHelper(this.applicationService).getChanges().length;
+    return new ChangeBuildingSummaryHelper(this.applicationService).getChanges().length;
   }
 
   get numberOfUserChanges() {

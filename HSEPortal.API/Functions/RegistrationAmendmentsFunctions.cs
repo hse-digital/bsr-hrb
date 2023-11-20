@@ -131,7 +131,7 @@ public class RegistrationAmendmentsFunctions
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
 
-        var removedStructures = buildingApplicationModel.Versions.Find(x => x.Name.Equals(versionName)).Sections.Where(x => x.CancellationReason != CancellationReason.NoCancellationReason);
+        var removedStructures = buildingApplicationModel.Versions.Find(x => x.Name.Equals(versionName)).Sections.Where(x => x.CancellationReason != CancellationReason.NoCancellationReason && x.Addresses != null && x.Addresses.Length > 0);
         foreach(SectionModel section in removedStructures) {
             var dynamicsStructure = await RaService.GetDynamicsStructure(section.Name, section.Addresses[0].Postcode, applicationId);
             var updatedStructure = new DynamicsStructure { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[section.CancellationReason]})", statuscode = 760_810_007 }; // statuscode -> cancelled

@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BuildingSummaryChangeModel, ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
-import { ApplicationService, Status } from 'src/app/services/application.service';
+import { ApplicationService } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 import { RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
 import { BuildingChangeCheckAnswersComponent } from '../change-building-summary/building-change-check-answers/building-change-check-answers.component';
-import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   selector: 'ra-check-answers-building-summary',
@@ -20,16 +19,6 @@ export class RaCheckAnswersBuildingSummaryComponent {
   private _changes: BuildingSummaryChangeModel[];
   get changes(): BuildingSummaryChangeModel[] {
     return this._changes;
-  }
-
-  get OldStructures(): string[] {
-    let names = this.applicationService.model.Versions.find(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy))?.Sections.filter(x => x.Status != Status.Removed).map(x => x.Name!);
-    if(!names || names.length == 0 || names.every(x => x == null || x == undefined)) return [this.applicationService.model.BuildingName!];
-    return names;
-  }
-
-  get NewStructures(): string[] {
-    return new ChangeBuildingSummaryHelper(this.applicationService).getSectionNames();
   }
 
   navigateToBuildingCheckAnswersPage() {
@@ -48,7 +37,4 @@ export class RaCheckAnswersBuildingSummaryComponent {
       });
   }
 
-  areStructuresDifferent() {
-    return this.OldStructures.length != this.NewStructures.length || this.OldStructures.some((x, index) => x != this.NewStructures[index]);
-  }
 }

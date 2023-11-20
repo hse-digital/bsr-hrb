@@ -8,7 +8,6 @@ import { ChangeApplicantHelper } from 'src/app/helpers/registration-amendments/c
 import { Change, ChangeRequest, RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
 import { BuildingSummaryChangeModel, ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { AddressModel } from 'src/app/services/address.service';
-import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -73,7 +72,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     await this.syncChangeBuildingSummaryHelper.syncRemovedStructures();
     await this.syncChangeBuildingSummaryHelper.syncDeregister();
 
-    this.applicationService.model.Versions.find(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy))!.ReplacedBy = this.applicationService.currentVersion.Name;
+    this.applicationService.previousVersion.ReplacedBy = this.applicationService.currentVersion.Name;
     this.applicationService.currentVersion.Submitted = true;
     this.applicationService.currentVersion.BuildingStatus = Status.NoChanges;
 

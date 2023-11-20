@@ -41,9 +41,9 @@ export abstract class ChangesDirector {
         return this;
     }
 
-    Change(OriginalAnswer: string, NewAnswer: string) {
-        this.OriginalAnswer = OriginalAnswer;
-        this.NewAnswer = NewAnswer;
+    Change(OriginalAnswer: any, NewAnswer: any) {
+        this.OriginalAnswer =  typeof OriginalAnswer == "object" ? this.arrayToString(OriginalAnswer) : OriginalAnswer;
+        this.NewAnswer = typeof NewAnswer == "object" ? this.arrayToString(NewAnswer) : NewAnswer;
         return this;
     }
 
@@ -65,6 +65,10 @@ export abstract class ChangesDirector {
             StructurePostcode: this.StructurePostcode,
             Change: []
         };
+    }
+
+    private arrayToString(array: any[]) {
+        return array.join(', ');
     }
 }
 

@@ -1,6 +1,6 @@
-import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 import { TaskListSteps, TagStatus } from "./change-task-list.component";
 import { ApplicationService, SectionModel, Status } from "src/app/services/application.service";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
 
 export class TagDirector {
     private Tag?: ChangeTaskListTag;
@@ -53,8 +53,7 @@ export class BuildingSummaryTag extends ChangeTaskListTag {
     }
 
     areThereAnySectionsRemoved(changeModel: SectionModel[] ) {
-        let previousSections = this.applicationService.model.Versions.find(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy))!.Sections;
-        return changeModel.some((x, index) => x.Status == Status.Removed && previousSections[index].Status != Status.Removed) ?? false;
+        return new ChangeBuildingSummaryHelper(this.applicationService).getRemovedStructures().length > 0;
     }
 }
 

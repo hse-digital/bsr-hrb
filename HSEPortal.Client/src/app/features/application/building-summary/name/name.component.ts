@@ -28,7 +28,7 @@ export class SectionNameComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && this.applicationService.model.NumberOfSections === "two_or_more";
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && this.applicationService.model.NumberOfSections != "one";
   }
 
   override isValid(): boolean {
