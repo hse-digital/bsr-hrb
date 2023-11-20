@@ -127,7 +127,6 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
 
   override async onSave(): Promise<void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStage.BlocksInBuildingComplete;
-    await this.applicationService.syncBuildingStructures();
 
     this.applicationService.currentVersion.Sections =  this.getActiveSections();
   }

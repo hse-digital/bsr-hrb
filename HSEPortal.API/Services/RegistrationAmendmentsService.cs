@@ -75,30 +75,40 @@ public class RegistrationAmendmentsService
         return await dynamicsApi.Create("bsr_changes", dynamicsChange);
     }
 
-    public ChangeRequest BuildChangeRequestResponse(DynamicsChangeRequestResponse changeRequest) {
-        Change[] changes = new Change[changeRequest.bsr_change_changerequestid.Length];
-        for (int i = 0; i < changeRequest.bsr_change_changerequestid.Length; i++) {
-            DynamicsChangeResponse change = changeRequest.bsr_change_changerequestid[i];
-            changes[i] = new Change {
-                FieldName = change.bsr_fieldname,
-                Name = change.bsr_name,
-                NewAnswer = change.bsr_newanswer,
-                OriginalAnswer = change.bsr_originalanswer,
-                Table = change.bsr_table
-            };
-        }
+    public ChangeRequest[] BuildChangeRequestResponse(List<DynamicsChangeRequestResponse> dynamicsChangeRequests) {
+        List<ChangeRequest> changeRequests = new List<ChangeRequest>();
 
-        return new ChangeRequest {
-            Name = changeRequest.bsr_name,
-            Declaration = changeRequest.bsr_declaration,
-            ReviewRequired = changeRequest.bsr_reviewrequired,
-            Change = changes
-        };
+        foreach (DynamicsChangeRequestResponse dynamicsCR in dynamicsChangeRequests)
+        {
+            Change[] changes = new Change[dynamicsCR.bsr_change_changerequestid.Length];
+            for (int i = 0; i < dynamicsCR.bsr_change_changerequestid.Length; i++) {
+                DynamicsChangeResponse change = dynamicsCR.bsr_change_changerequestid[i];
+                changes[i] = new Change {
+                    FieldName = change.bsr_fieldname,
+                    Name = change.bsr_name,
+                    NewAnswer = change.bsr_newanswer,
+                    OriginalAnswer = change.bsr_originalanswer,
+                    Table = change.bsr_table
+                };
+            }
+
+            changeRequests.Add(new ChangeRequest {
+                Name = dynamicsCR.bsr_name,
+                Declaration = dynamicsCR.bsr_declaration,
+                ReviewRequired = dynamicsCR.bsr_reviewrequired,
+                Change = changes
+            });
+        }
+        return changeRequests.ToArray();
     }
     
     public bool IsApplicationAccepted(DynamicsBuildingApplication dynamicsBuildingApplication) {
         BuildingApplicationStatuscode statuscode = (BuildingApplicationStatuscode)dynamicsBuildingApplication.statuscode;
         return statuscode == BuildingApplicationStatuscode.Registered || statuscode == BuildingApplicationStatuscode.Registered;
+    }
+
+    public bool IsCategoryValueEqualsTo(ChangeCategory category, string categoryIdValue) {
+        return DynamicsChangeCategory[category] == categoryIdValue;
     }
 
     private Dictionary<ChangeCategory, string> DynamicsChangeCategory = new Dictionary<ChangeCategory, string>() {

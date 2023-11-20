@@ -34,6 +34,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): Promise<void> {
     await this.submit();
+    await this.applicationService.syncBuildingStructures();
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -233,8 +234,8 @@ export class SyncChangeBuildingSummaryHelper {
 
     buildingSummaryChanges.forEach((x, index) => {
       let change = (x?.IsAddress ?? false)
-        ? this.changeBuildingSummaryModelBuilder.SetField(x?.Field!).Change(joinAddresses(x?.OldAddresses!), joinAddresses(x?.NewAddresses!)).CreateChange()
-        : this.changeBuildingSummaryModelBuilder.SetField(x?.Field!).Change(x?.OldValue!, x?.NewValue!).CreateChange();
+        ? this.changeBuildingSummaryModelBuilder.SetField(x?.Title!).Change(joinAddresses(x?.OldAddresses!), joinAddresses(x?.NewAddresses!)).CreateChange()
+        : this.changeBuildingSummaryModelBuilder.SetField(x?.Title!).Change(x?.OldValue!, x?.NewValue!).CreateChange();
   
       changes.push(change);
     });

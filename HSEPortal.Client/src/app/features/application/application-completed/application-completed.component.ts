@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode, RegistrationAmendmentsModel, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode, BuildingRegistrationVersion, RegistrationAmendmentsModel, Status } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
 
 @Component({
@@ -92,61 +92,61 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
       ApplicationStageHelper.isApplicationSubmittedAndInvoicePaid(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.payment?.bsr_govukpaystatus) &&
-      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
   }
 
   isViewOneA(): boolean {
     return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
       ApplicationStageHelper.isApplicationSubmittedAndRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
-      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
   }
 
   isViewTwo() {
     return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isNotNewInProgressSubmittedRegisteredWithdrawnRejected(this.applicationStatuscode) &&
       ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus) &&
-      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
   }
 
   isViewThree() {
     return ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isRegistered(this.applicationStatuscode) &&
       ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus) &&
-      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
   }
 
   isViewFour() {
     return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
       ApplicationStageHelper.isApplicationSubmittedAndInvoicePaid(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.payment?.bsr_govukpaystatus) &&
-      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
   }
 
   isViewFourA() {
     return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isAppStatusInProgressOrSubmitted(this.applicationStatuscode) &&
       ApplicationStageHelper.isApplicationSubmittedAndRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
-      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
   }
 
   isViewFive() {
     return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isNotNewInProgressSubmittedRegisteredWithdrawnRejected(this.applicationStatuscode) &&
       ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus) &&
-      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
   }
 
   isViewSix() {
     return !ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus) &&
       StatuscodeHelper.isRegistered(this.applicationStatuscode) &&
       ApplicationStageHelper.isApplicationSubmittedAndPaid(this.applicationService.model.ApplicationStatus) &&
-      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel);
+      !ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
   }
 
   isViewSeven() {
     return ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
-    ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.RegistrationAmendmentsModel) &&
+    ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions) &&
     !StatuscodeHelper.isRejected(this.applicationStatuscode);
   }
 
@@ -269,13 +269,8 @@ class ApplicationStageHelper {
     return ApplicationStageHelper.containsFlag(currentApplicationStage, BuildingApplicationStage.KbiSubmitComplete);
   }
 
-  static isChangeRequestSubmitted(model?: RegistrationAmendmentsModel) {
-    if (!model) return false;
-    let primaryUserStatus = model.ChangeUser?.PrimaryUser?.Status ?? Status.NoChanges;
-    let secondaryUserStatus = model.ChangeUser?.SecondaryUser?.Status ?? Status.NoChanges;
-    return (primaryUserStatus == Status.ChangesSubmitted && secondaryUserStatus == Status.ChangesSubmitted)
-      || (primaryUserStatus == Status.ChangesSubmitted && secondaryUserStatus == Status.NoChanges)
-      || (primaryUserStatus == Status.NoChanges && secondaryUserStatus == Status.ChangesSubmitted);
+  static isChangeRequestSubmitted(versions?: BuildingRegistrationVersion[]) {
+    return !!versions && versions.length > 1 && FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy);
   }
 
   static containsFlag(currentApplicationStage: BuildingApplicationStage, flag: BuildingApplicationStage) {

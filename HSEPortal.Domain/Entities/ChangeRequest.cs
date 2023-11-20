@@ -33,7 +33,8 @@ public record DynamicsChangeRequestResponse(
     DynamicsChangeResponse[] bsr_change_changerequestid = null,
     string bsr_name = null,
     bool bsr_reviewrequired = false,
-    bool bsr_declaration = false
+    bool bsr_declaration = false,
+    string _bsr_changecategoryid_value = null
 );
 
 public record DynamicsChangeResponse(

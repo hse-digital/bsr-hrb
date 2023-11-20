@@ -1,4 +1,3 @@
-
 using System.Net;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
@@ -6,8 +5,6 @@ using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.DurableTask;
-using Microsoft.DurableTask.Client;
 
 namespace HSEPortal.API.Functions;
 
@@ -110,7 +107,7 @@ public class RegistrationAmendmentsFunctions
     }
 
     [Function(nameof(GetChangeRequest))]
-    public async Task<ChangeRequest> GetChangeRequest([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetChangeRequest/{applicationNumber}")] HttpRequestData request, string applicationNumber){
+    public async Task<ChangeRequest[]> GetChangeRequest([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetChangeRequest/{applicationNumber}")] HttpRequestData request, string applicationNumber){
 
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationNumber);
         string buildingApplicationId = dynamicsBuildingApplication.bsr_buildingapplicationid;
@@ -120,9 +117,13 @@ public class RegistrationAmendmentsFunctions
             ("$expand", "bsr_change_changerequestid"),
             ("$orderby", "createdon desc"));
 
-        var changeRequest = changeRequests.value.First();
-        
-        return RaService.BuildChangeRequestResponse(changeRequest);
+        List<DynamicsChangeRequestResponse> dynamicsResponse = new List<DynamicsChangeRequestResponse>
+        {
+            changeRequests.value.Find(x => RaService.IsCategoryValueEqualsTo(ChangeCategory.ApplicationBuildingAmendments, x._bsr_changecategoryid_value)),
+            changeRequests.value.Find(x => RaService.IsCategoryValueEqualsTo(ChangeCategory.ChangeApplicantUser, x._bsr_changecategoryid_value))
+        };
+
+        return RaService.BuildChangeRequestResponse(dynamicsResponse.Where(x => x != null).ToList());
     }
     
     [Function(nameof(UpdateRemovedStructures))]

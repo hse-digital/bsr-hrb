@@ -6,8 +6,8 @@ import { BroadcastChannelSecondaryHelper } from 'src/app/helpers/BroadcastChanne
 import { LocalStorage } from 'src/app/helpers/local-storage';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingRegistrationModel, Status, User } from 'src/app/services/application.service';
-import { Change, ChangeRequest } from 'src/app/services/registration-amendments.service';
+import { ApplicationService, BuildingRegistrationModel } from 'src/app/services/application.service';
+import { ChangeCategory, ChangeRequest } from 'src/app/services/registration-amendments.service';
 
 @Component({
   selector: 'hse-ra-summary-page',
@@ -21,7 +21,7 @@ export class RaSummaryPageComponent  extends PageComponent<void> {
 
   shouldRender: boolean = false;
 
-  changeRequest?: ChangeRequest;
+  changeRequest?: ChangeRequest[];
   
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
@@ -67,7 +67,14 @@ export class RaSummaryPageComponent  extends PageComponent<void> {
   }
 
   get applicantChanges() {
-    return this.changeRequest?.Change?.filter(x => x.FieldName?.endsWith('Applicant')) ?? [];
+    if (!this.changeRequest || this.changeRequest!.length == 0) return [];
+    return this.changeRequest!.find(x => x.Category == ChangeCategory.ChangeApplicantUser)?.Change?.filter(x => x.FieldName?.endsWith('Applicant')) ?? [];
+  }
+
+  get structureChanges() {
+    if (!this.changeRequest || this.changeRequest!.length == 0) return [];
+    let changes = this.changeRequest!.find(x => x.Category == ChangeCategory.ApplicationBuildingAmendments)?.Change?.filter(x => x.Table == "Structure") ?? [];
+    return changes;
   }
 
 }

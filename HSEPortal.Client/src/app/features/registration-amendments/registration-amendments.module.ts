@@ -33,6 +33,7 @@ import { NeedRemoveWithdrawComponent } from './change-building-summary/need-remo
 import { DeregisterAreYouSureComponent } from './change-deregister/deregister-are-you-sure/deregister-are-you-sure.component';
 import { DeregisterWhyComponent } from './change-deregister/deregister-why/deregister-why.component';
 import { DeregisterApplicationNumberComponent } from './change-deregister/deregister-application-number/deregister-application-number.component';
+import { RaSummaryChangeBuildingSummaryComponent } from './ra-summary-page/ra-summary-change-building-summary.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -85,7 +86,8 @@ const routes = new HseRoutes([
     NeedRemoveWithdrawComponent,
     DeregisterAreYouSureComponent,
     DeregisterWhyComponent,
-    DeregisterApplicationNumberComponent
+    DeregisterApplicationNumberComponent,
+    RaSummaryChangeBuildingSummaryComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

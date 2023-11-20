@@ -42,8 +42,8 @@ export abstract class ChangesDirector {
     }
 
     Change(OriginalAnswer: any, NewAnswer: any) {
-        this.OriginalAnswer =  typeof OriginalAnswer == "object" ? this.arrayToString(OriginalAnswer) : OriginalAnswer;
-        this.NewAnswer = typeof NewAnswer == "object" ? this.arrayToString(NewAnswer) : NewAnswer;
+        this.OriginalAnswer = OriginalAnswer != null && typeof OriginalAnswer == "object" ? this.arrayToString(OriginalAnswer) : OriginalAnswer;
+        this.NewAnswer = NewAnswer != null && typeof NewAnswer == "object" ? this.arrayToString(NewAnswer) : NewAnswer;
         return this;
     }
 
