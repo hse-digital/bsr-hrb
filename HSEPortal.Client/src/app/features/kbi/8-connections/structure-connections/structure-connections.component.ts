@@ -25,6 +25,7 @@ export class StructureConnectionsComponent extends PageComponent<string[]> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.model = [];
     if (!this.applicationService.currentKbiModel?.Connections) {
       this.applicationService.currentKbiModel!.Connections = {};
     }

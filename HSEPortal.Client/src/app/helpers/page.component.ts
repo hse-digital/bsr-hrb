@@ -20,7 +20,7 @@ export abstract class PageComponent<T> implements OnInit {
   updateOnSave: boolean = true;
   changing: boolean = false;
   returnUrl?: string;
-  
+
   private injector: Injector = GetInjector();
   protected applicationService: ApplicationService = this.injector.get(ApplicationService);
   protected registrationAmendmentsService: RegistrationAmendmentsService = this.injector.get(RegistrationAmendmentsService);
@@ -37,17 +37,17 @@ export abstract class PageComponent<T> implements OnInit {
   abstract canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean;
   abstract isValid(): boolean;
   abstract navigateNext(): Promise<boolean | void>;
-  
+
   constructor(activatedRoute?: ActivatedRoute) {
-    if(activatedRoute) this.activatedRoute = activatedRoute;
-  
+    if (activatedRoute) this.activatedRoute = activatedRoute;
+
     this.activatedRoute.queryParams.subscribe(params => {
       this.returnUrl = params['return'];
     });
 
     this.triggerScreenReaderNotification("");
   }
-  
+
   async ngOnInit() {
     this.changing = this.applicationService.model?.Versions?.length > 1 ?? false;
     await this.onInit(this.applicationService);
@@ -83,15 +83,17 @@ export abstract class PageComponent<T> implements OnInit {
 
   private async navigateToReturnUrl(returnUrl: string) {
     let returnUri = this.getCheckAnswersPageRoute(returnUrl);
-    this.navigationService.navigateRelative(returnUri, this.activatedRoute);
+    this.navigationService.navigateRelative(returnUri.url, this.activatedRoute, returnUri.params);
   }
 
-  private getCheckAnswersPageRoute(returnUrl: string) {
-    switch(returnUrl) {
-      case 'check-answers': return `../${this.returnUrl}`;
-      case 'building-change-check-answers': return `../../registration-amendments/${this.returnUrl}`;
+  private getCheckAnswersPageRoute(returnUrl: string): { url: string, params?: any } {
+    switch (returnUrl) {
+      case 'check-answers': return { url: `../${this.returnUrl}` };
+      case 'building-change-check-answers': return { url: `../../registration-amendments/${this.returnUrl}` };
+      case 'change-check-answers': return { url: `../../../registration-amendments/change-kbi/${this.returnUrl}`, params: { index: this.applicationService._currentKbiSectionIndex } };
+      case 'change-connection-answers': return { url: `../../registration-amendments/${this.returnUrl}` };
     }
-    return returnUrl;
+    return { url: returnUrl };
   }
 
   private KnockOnQuestions() {
@@ -186,7 +188,7 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   get buildingOrSectionName() {
-    let sectionName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.Name) ? this.applicationService.currentSection.Name : this.applicationService.model.BuildingName; 
+    let sectionName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.Name) ? this.applicationService.currentSection.Name : this.applicationService.model.BuildingName;
     return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 }

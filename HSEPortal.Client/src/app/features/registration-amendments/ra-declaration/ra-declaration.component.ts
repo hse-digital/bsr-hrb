@@ -6,8 +6,11 @@ import { RaConfirmationComponent } from '../ra-confirmation/ra-confirmation.comp
 import { ChangeApplicantModelBuilder, ChangeBuildingSummaryModelBuilder, RemovedBuildingModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
 import { ChangeApplicantHelper } from 'src/app/helpers/registration-amendments/change-applicant-helper';
 import { Change, ChangeRequest, RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
-import { BuildingSummaryChangeModel, ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
+import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { AddressModel } from 'src/app/services/address.service';
+import { ChangedAnswersModel } from 'src/app/helpers/registration-amendments/change-helper';
+import { ChangeKbiHelper } from 'src/app/helpers/registration-amendments/change-kbi-helper';
+import { ChangeConnectionsHelper } from 'src/app/helpers/registration-amendments/change-connections-helper';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -76,7 +79,14 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.applicationService.previousVersion.ReplacedBy = this.applicationService.currentVersion.Name;
     this.applicationService.currentVersion.Submitted = true;
     this.applicationService.currentVersion.BuildingStatus = Status.NoChanges;
-
+    
+    if (!!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.Connections) {
+      this.applicationService.currentVersion.Kbi!.Connections.Status = Status.NoChanges;
+    }
+    
+    if (!!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.KbiSections && this.applicationService.currentVersion.Kbi.KbiSections.length > 0) {
+      this.applicationService.currentVersion.Kbi!.KbiSections.map(x => x.Status = Status.NoChanges);
+    }
   }
   
   createDeregisterChangeRequest() {
@@ -228,7 +238,7 @@ export class SyncChangeBuildingSummaryHelper {
 
   createChanges(): Change[] {
     let helper = new ChangeBuildingSummaryHelper(this.applicationService);
-    let buildingSummaryChanges: BuildingSummaryChangeModel[] = helper.getChanges();
+    let buildingSummaryChanges: ChangedAnswersModel[] = helper.getChanges();
     let joinAddresses = (addresses?: AddressModel[]) => !!addresses ? addresses.map(x => x.Postcode).join(" - ") : "";
     let changes: any = [];
 
@@ -237,6 +247,44 @@ export class SyncChangeBuildingSummaryHelper {
         ? this.changeBuildingSummaryModelBuilder.SetField(x?.Title!).Change(joinAddresses(x?.OldAddresses!), joinAddresses(x?.NewAddresses!)).CreateChange()
         : this.changeBuildingSummaryModelBuilder.SetField(x?.Title!).Change(x?.OldValue!, x?.NewValue!).CreateChange();
   
+      changes.push(change);
+    });
+
+    changes.push(...this.createKbiChanges());
+    changes.push(...this.createConnectionChanges());
+
+    return changes;
+  }
+
+  createKbiChanges() {
+    let changes: Change[] = [];
+    let helper = new ChangeKbiHelper(this.applicationService);
+    let kbiSections = this.applicationService.currentVersion.Kbi?.KbiSections ?? [];
+    for(let i = 0; i < kbiSections.length; i++) {
+      let kbiChanges: ChangedAnswersModel[] = helper.getChangesOf(kbiSections[i], i) ?? [];
+      kbiChanges.forEach(x => {
+        let name = this.applicationService.currentVersion?.Sections[i]?.Name ?? this.applicationService.model.BuildingName;
+        x.Title = `${name} - ${x.Title}`;
+        x.OldValue = x.OldValue instanceof Array ? x.OldValue.join(', ') : x.OldValue;
+        x.NewValue = x.NewValue instanceof Array ? x.NewValue.join(', ') : x.NewValue;
+
+        let change: Change = this.changeBuildingSummaryModelBuilder.SetField(x?.Title!).Change(x?.OldValue!, x?.NewValue!).CreateChange();
+        changes.push(change);
+      });
+    };
+    return changes;
+  }
+
+  createConnectionChanges() {
+    let changes: Change[] = [];
+    let helper = new ChangeConnectionsHelper(this.applicationService);
+
+    let connectionChanges: ChangedAnswersModel[] = helper.getChanges() ?? [];
+    connectionChanges.forEach(x => {
+      x.OldValue = x.OldValue instanceof Array ? x.OldValue.join(', ') : x.OldValue;
+      x.NewValue = x.NewValue instanceof Array ? x.NewValue.join(', ') : x.NewValue;
+
+      let change: Change = this.changeBuildingSummaryModelBuilder.SetField(x?.Title!).Change(x?.OldValue!, x?.NewValue!).CreateChange();
       changes.push(change);
     });
 

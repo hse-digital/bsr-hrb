@@ -140,25 +140,69 @@ export class ApplicationService {
   }
 
   initKbi() {
-    let filteredSections = this.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    let filteredSections = this.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
     if (!this.currentVersion.Kbi) {
-      this.currentVersion.Kbi = new KbiModel();
-      filteredSections.forEach(x => {
-        var kbiSection = new KbiSectionModel();
-        kbiSection.StructureName = x.Name;
-        kbiSection.Postcode = FieldValidations.IsNotNullOrEmpty(x.Addresses) ? x.Addresses[0].Postcode : undefined;
-
-        this.currentVersion.Kbi!.KbiSections.push(kbiSection);
-      });
-
-      this._currentSectionIndex = 0;
-      this._currentKbiSectionIndex = 0;
+      this.initKbiModel(filteredSections);
+    } else if (this.currentVersion.Kbi.KbiSections.length != filteredSections.length) {
+      this.updateKbiModel(filteredSections);
     }
 
     if (!this.currentVersion.Kbi?.SectionStatus || this.currentVersion.Kbi?.SectionStatus.length == 0) {
       this.currentVersion.Kbi!.SectionStatus = [];
       filteredSections.map(x => this.currentVersion.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
     }
+    
+    let missingStatuses = this.currentVersion.Kbi!.KbiSections.length - this.currentVersion.Kbi!.SectionStatus.length
+    if (missingStatuses != 0 && missingStatuses > 0) {
+      for (let index = 0; index < missingStatuses; index++) {
+        this.currentVersion.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false });        
+      }
+    } 
+
+    this.removeUnnecessaryKbiSections();
+  }
+
+  private initKbiModel(filteredSections: SectionModel[]) {
+    this.currentVersion.Kbi = new KbiModel();
+    filteredSections.forEach(x => {
+      var kbiSection = new KbiSectionModel();
+      kbiSection.StructureName = x.Name;
+      kbiSection.Postcode = FieldValidations.IsNotNullOrEmpty(x.Addresses) ? x.Addresses[0].Postcode : undefined;
+
+      this.currentVersion.Kbi!.KbiSections.push(kbiSection);
+    });
+
+    this._currentSectionIndex = 0;
+    this._currentKbiSectionIndex = 0;
+  }
+
+  private updateKbiModel(filteredSections: SectionModel[]) {
+    filteredSections.forEach(section => {
+      if (!this.currentVersion.Kbi?.KbiSections.some(kbiSection => kbiSection.StructureName == section.Name && this.arePostcodesEqual(kbiSection.Postcode, section.Addresses[0].Postcode))) {
+        var newKbiSection = new KbiSectionModel();
+        newKbiSection.StructureName = section.Name;
+        newKbiSection.Postcode = FieldValidations.IsNotNullOrEmpty(section.Addresses) ? section.Addresses[0].Postcode : undefined;
+  
+        this.currentVersion.Kbi!.KbiSections.push(newKbiSection);
+        this.currentVersion.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false });
+      }
+    });
+  }
+
+  private removeUnnecessaryKbiSections() {
+    let removedSections = this.currentVersion.Sections.filter(x => x.Scope?.IsOutOfScope || x.Status == Status.Removed);
+    removedSections.forEach(section => {
+      let index = this.currentVersion.Kbi?.KbiSections.findIndex(kbiSection => kbiSection.StructureName == section.Name && this.arePostcodesEqual(kbiSection.Postcode, section.Addresses[0].Postcode));
+      if (!!index && index > -1) {
+        this.currentVersion.Kbi!.KbiSections.at(index)!.Status = Status.Removed;
+        this.currentVersion.Kbi!.SectionStatus!.splice(index!, 1);
+      } 
+    });
+  }
+
+  private arePostcodesEqual(a?: string, b?: string) {
+    if (!FieldValidations.IsNotNullOrWhitespace(a) || !FieldValidations.IsNotNullOrWhitespace(b)) return false;
+    return a!.trim().replaceAll(' ', '').toLowerCase() == b!.trim().replaceAll(' ', '').toLowerCase();
   }
 
   _currentKbiSectionIndex: number = 0;
@@ -481,6 +525,7 @@ export class KbiSectionModel {
   StructureName?: string;
   Postcode?: string;
   StrategyEvacuateBuilding?: string;
+  Status: Status = Status.NoChanges;
 }
 
 export class Fire {
@@ -563,6 +608,7 @@ export class Connections {
   HowOtherHighRiseBuildingAreConnected?: string[];
   OtherBuildingConnections?: string;
   HowOtherBuildingAreConnected?: string[];
+  Status?: Status;
 }
 
 export class Submit {

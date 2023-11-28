@@ -5,6 +5,8 @@ import { ApplicationService } from 'src/app/services/application.service';
 import { RaDeclarationComponent } from '../ra-declaration/ra-declaration.component';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { RaCheckAnswersUsersHelper } from './ra-check-answers-users.component';
+import { ChangeKbiHelper } from 'src/app/helpers/registration-amendments/change-kbi-helper';
+import { ChangeConnectionsHelper } from 'src/app/helpers/registration-amendments/change-connections-helper';
 
 @Component({
   selector: 'hse-ra-check-answers',
@@ -33,7 +35,7 @@ export class RaCheckAnswersComponent extends PageComponent<void> {
   }
 
   get numberOfChanges() {
-    return this.numberOfBuildingChanges + this.numberOfUserChanges;
+    return this.numberOfBuildingChanges + this.numberOfUserChanges + this.numberOfKbiChanges + this.numberOfConnectionsChanges;
   }
 
   get numberOfBuildingChanges() {
@@ -42,6 +44,14 @@ export class RaCheckAnswersComponent extends PageComponent<void> {
 
   get numberOfUserChanges() {
     return new RaCheckAnswersUsersHelper(this.applicationService).numberOfUserChanges;
+  }
+
+  get numberOfKbiChanges() {
+    return new ChangeKbiHelper(this.applicationService).getChanges().length;
+  }
+
+  get numberOfConnectionsChanges() {
+    return new ChangeConnectionsHelper(this.applicationService).getChanges().length;
   }
 
 }

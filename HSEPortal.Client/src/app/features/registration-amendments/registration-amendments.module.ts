@@ -34,6 +34,10 @@ import { DeregisterAreYouSureComponent } from './change-deregister/deregister-ar
 import { DeregisterWhyComponent } from './change-deregister/deregister-why/deregister-why.component';
 import { DeregisterApplicationNumberComponent } from './change-deregister/deregister-application-number/deregister-application-number.component';
 import { RaSummaryChangeBuildingSummaryComponent } from './ra-summary-page/ra-summary-change-building-summary.component';
+import { KbiChangeCheckAnswersModule } from './change-kbi/check-answers-building-information/kbi.check-answers-building-information.module';
+import { RaCheckAnswersKbiComponent } from './ra-check-answers/ra-check-answers-kbi.component';
+import { ChangeConnectionsComponent } from './change-connections/change-connections/change-connections.component';
+import { RaCheckAnswersConnectionsComponent } from './ra-check-answers/ra-check-answers-connections.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -57,6 +61,8 @@ const routes = new HseRoutes([
   HseRoute.protected(DeregisterAreYouSureComponent.route, DeregisterAreYouSureComponent, DeregisterAreYouSureComponent.title),
   HseRoute.protected(DeregisterWhyComponent.route, DeregisterWhyComponent, DeregisterWhyComponent.title),
   HseRoute.protected(DeregisterApplicationNumberComponent.route, DeregisterApplicationNumberComponent, DeregisterApplicationNumberComponent.title),
+  HseRoute.forLoadChildren(KbiChangeCheckAnswersModule.baseRoute, () => import('./change-kbi/check-answers-building-information/kbi.check-answers-building-information.module').then(m => m.KbiChangeCheckAnswersModule)),
+  HseRoute.protected(ChangeConnectionsComponent.route, ChangeConnectionsComponent, ChangeConnectionsComponent.title),
 ]);
 
 @NgModule({
@@ -87,7 +93,10 @@ const routes = new HseRoutes([
     DeregisterAreYouSureComponent,
     DeregisterWhyComponent,
     DeregisterApplicationNumberComponent,
-    RaSummaryChangeBuildingSummaryComponent
+    RaSummaryChangeBuildingSummaryComponent,
+    RaCheckAnswersKbiComponent,
+    RaCheckAnswersConnectionsComponent,
+    ChangeConnectionsComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

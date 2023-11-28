@@ -1,0 +1,41 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">Check your answers about connections for {{applicationService.model.BuildingName}}</h1>
+
+      <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="input-floors-above" message="Provide an answer to all applicable questions" />
+      </govuk-error-summary>
+
+      <govuk-summary-list>
+        <govuk-summary-list-row *ngIf="InScopeStructures!.length > 1" key="Connections between the structures" (onClick)="navigateToStructureConnections()" (onKeyupEnter)="navigateToStructureConnections()" [showAction]=true>
+            <div *ngFor="let connection of applicationService.currentKbiModel!.Connections!.StructureConnections!">
+                {{connection | ConnectionTypesPipe}}
+            </div>
+        </govuk-summary-list-row>     
+        <govuk-summary-list-row key="Connected to other high-rise residential buildings?" (onClick)="navigateToOtherHighRiseBuildingConnections()" (onKeyupEnter)="navigateToOtherHighRiseBuildingConnections()" [showAction]=true>
+            {{applicationService.currentKbiModel!.Connections!.OtherHighRiseBuildingConnections!}}
+        </govuk-summary-list-row>
+        <govuk-summary-list-row key="Connections to other high-rise residential buildings" *ngIf="hasOtherHighRiseBuildingConnections()" (onClick)="navigateToHowOtherHighRiseBuildingsConnected()" (onKeyupEnter)="navigateToHowOtherHighRiseBuildingsConnected()" [showAction]=true>
+            <div *ngFor="let connection of applicationService.currentKbiModel!.Connections!.HowOtherHighRiseBuildingAreConnected!">
+                {{connection | ConnectionTypesPipe}}
+            </div>
+        </govuk-summary-list-row>
+        <govuk-summary-list-row key="Connected to other buildings?" (onClick)="navigateToOtherBuildingConnections()" (onKeyupEnter)="navigateToOtherBuildingConnections()" [showAction]=true>
+            {{applicationService.currentKbiModel!.Connections!.OtherBuildingConnections!}}        
+        </govuk-summary-list-row>
+        <govuk-summary-list-row key="Connections to other buildings" *ngIf="hasOtherBuildingConnections()" (onClick)="navigateToHowOtherBuildingsConnected()" (onKeyupEnter)="navigateToHowOtherBuildingsConnected()" [showAction]=true>
+            <div *ngFor="let connection of applicationService.currentKbiModel!.Connections!.HowOtherBuildingAreConnected!">
+                {{connection | ConnectionTypesPipe}}
+            </div>
+        </govuk-summary-list-row>     
+      </govuk-summary-list>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

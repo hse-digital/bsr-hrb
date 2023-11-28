@@ -33,15 +33,17 @@
               Structure and fire safety information
             </h2>
             <ul class="app-task-list__items">
-              <li class="app-task-list__item firstItem" *ngFor="let section of InScopeSections; let i = index">
+              <li class="app-task-list__item firstItem" *ngFor="let kbi of InScopeKbiSections; let i = index">
                 <span class="app-task-list__task-name">
-                    {{section.Name ?? applicationService.model.BuildingName}} information
+                  <a *ngIf="isLinkEnable(taskListSteps.Kbi)" class="govuk-link" tabindex="0" role="link" (onKeyupEnter)="navigateToKbi(i)" (click)="navigateToKbi(i)">{{ kbi.Name ?? applicationService.model.BuildingName}} information</a>
+                  <ng-container *ngIf="!isLinkEnable(taskListSteps.Kbi)">{{ kbi.Name ?? applicationService.model.BuildingName}} information</ng-container>
                 </span>
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.Kbi, i)}}">{{getTagFor(taskListSteps.Kbi, i)}}</govuk-tag>
               </li>
               <li class="app-task-list__item firstItem">
                 <span class="app-task-list__task-name">
-                    Connections
+                  <span task *ngIf="!isLinkEnable(taskListSteps.Connections)">Connections</span>
+                  <a class="govuk-link" *ngIf="isLinkEnable(taskListSteps.Connections)" tabindex="0" role="link" [routerLink]="['../change-connection-answers']">Connections</a>
                 </span>
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.Connections)}}">{{getTagFor(taskListSteps.Connections)}}</govuk-tag>
               </li>
