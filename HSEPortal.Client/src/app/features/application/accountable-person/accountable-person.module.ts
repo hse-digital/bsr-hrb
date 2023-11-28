@@ -36,6 +36,7 @@ import { PipesModule } from "src/app/pipes/pipes.module";
 import { AreasAccountabilityComponent } from './areas-accountability/areas-accountability.component';
 import { NotAllocatedAccountabilityAreasComponent } from './not-allocated-accountability-areas/not-allocated-accountability-areas.component';
 import { OutgoingAccountabilityPageComponent } from "./outgoing-accountability/outgoing-accountability.component";
+import { ConfirmRemoveComponent } from "./check-answers/confirm-remove.component";
 
 @Component({
   template: '<router-outlet></router-outlet>'
@@ -113,6 +114,7 @@ const routes = new HseRoutes([
     AccountablePersonCheckAnswersComponent,
     IndividualAnswersComponent,
     OrganisationAnswersComponent,
+    ConfirmRemoveComponent,
 
     OrganisationNamedContactComponent,
     OrganisationNamedContactDetailsComponent,

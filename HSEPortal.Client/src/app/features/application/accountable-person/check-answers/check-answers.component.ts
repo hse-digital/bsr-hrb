@@ -18,6 +18,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   static title: string = "Check your answers for PAP and AP - Register a high-rise building - GOV.UK";
 
   checkAnswersArea = AccountabilityArea.CheckAnswers;
+  apToRemove?: AccountablePersonModel;
 
   aps: AccountablePersonModel[] = [];
   constructor(activatedRoute: ActivatedRoute) {
@@ -131,8 +132,21 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   }
 
   removeAp(ap: AccountablePersonModel, index: number) {
-    this.applicationService.removeAp(index);
-    this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
+    if (this.applicationService.isChangeAmendmentInProgress) {
+      this.apToRemove = ap;
+    } else {
+      this.applicationService.removeAp(index);
+      this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
+    }
+  }
+
+  removeConfirmAp(confirm: boolean) {
+    if (confirm) {
+      this.applicationService.removeAp(this.applicationService.currentVersion.AccountablePersons.indexOf(this.apToRemove!));
+      this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
+    }
+    
+    this.apToRemove = undefined;
   }
 
   private updateAddAnotherVariable(aps: AccountablePersonModel[]) {
