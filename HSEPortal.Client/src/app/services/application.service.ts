@@ -39,6 +39,10 @@ export class ApplicationService {
     return this.currentVersion.AccountablePersons[this._currentAccountablePersonIndex];
   }
 
+  get isChangeAmendmentInProgress(): boolean {
+    return this.currentVersion.Name != 'original' && (this.currentVersion.ReplacedBy == null || this.currentVersion.ReplacedBy == '');
+  }
+
   constructor(private httpClient: HttpClient) {
     this.model = LocalStorage.getJSON('application_data') ?? {};
     this._currentVersion = LocalStorage.getJSON("versionindex") ?? 0;
@@ -583,6 +587,7 @@ export class PaymentInvoiceDetails {
 
 export class RegistrationAmendmentsModel {
   AccountablePersonStatus?: ChangeAccountablePerson;
+  ChangeAccountablePerson?: ChangeAccountablePerson;
   ConnectionStatus: Status = Status.NoChanges;
   SubmitStatus: Status = Status.NoChanges;
   Deregister?: Deregister;
@@ -594,6 +599,9 @@ export class RegistrationAmendmentsModel {
 
 export class ChangeAccountablePerson {
   Status: Status = Status.NoChanges;
+
+  NewPap?: boolean;
+  PrincipalAccountableType?: string;
 
   NewNamedContact?: boolean;
   NewNamedContactFirstName?: string;

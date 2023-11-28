@@ -6,6 +6,7 @@ import { OrganisationTypeComponent } from '../organisation/organisation-type/org
 import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { AccountablePersonNavigation } from '../accountable-person.navigation';
+import { PapNameComponent } from '../ap-name/pap-name.component';
 
 @Component({
   templateUrl: './accountable-person.component.html'
@@ -19,12 +20,12 @@ export class AccountablePersonComponent extends PageComponent<string> {
 
   constructor(activatedRoute: ActivatedRoute, private apNavigation: AccountablePersonNavigation) {
     super(activatedRoute);
-  } 
+  }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
     this.previousAnswer = this.applicationService.model.PrincipalAccountableType;
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.AccountablePersonsInProgress;
-    
+
     this.model = applicationService.model.PrincipalAccountableType;
 
     await this.applicationService.updateApplication();
@@ -42,15 +43,20 @@ export class AccountablePersonComponent extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean | void> {
-    let nextRoute = this.apNavigation.getNextRoute();
-    if (this.previousAnswer && this.previousAnswer == this.applicationService.model.PrincipalAccountableType && nextRoute.endsWith(AccountablePersonCheckAnswersComponent.route)) {
-      return this.navigationService.navigateAppend(AccountablePersonCheckAnswersComponent.route, this.activatedRoute);
+    if (this.applicationService.isChangeAmendmentInProgress && this.applicationService.currentAccountablePerson.Type == 'individual') {
+      let accountablePerson = `accountable-person-${this.applicationService._currentAccountablePersonIndex + 1}`
+      return this.navigationService.navigateAppend(`${accountablePerson}/${PapNameComponent.route}`, this.activatedRoute);
+    } else {
+      let nextRoute = this.apNavigation.getNextRoute();
+      if (this.previousAnswer && this.previousAnswer == this.applicationService.model.PrincipalAccountableType && nextRoute.endsWith(AccountablePersonCheckAnswersComponent.route)) {
+        return this.navigationService.navigateAppend(AccountablePersonCheckAnswersComponent.route, this.activatedRoute);
+      }
+
+      let accountablePerson = `accountable-person-${this.applicationService._currentAccountablePersonIndex + 1}`
+      let route = this.applicationService.currentAccountablePerson.Type == 'organisation' ? OrganisationTypeComponent.route : PrincipleAccountableSelection.route;
+
+      return this.navigationService.navigateAppend(`${accountablePerson}/${route}`, this.activatedRoute);
     }
-
-    let accountablePerson = `accountable-person-${this.applicationService._currentAccountablePersonIndex + 1}`
-    let route = this.applicationService.currentAccountablePerson.Type == 'organisation' ? OrganisationTypeComponent.route : PrincipleAccountableSelection.route;
-
-    return this.navigationService.navigateAppend(`${accountablePerson}/${route}`, this.activatedRoute);
   }
 
   override async onSave(): Promise<void> {

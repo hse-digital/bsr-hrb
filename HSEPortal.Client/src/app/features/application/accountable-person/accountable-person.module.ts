@@ -35,6 +35,7 @@ import { PrincipleAccountableSelection } from "./principal/principal.component";
 import { PipesModule } from "src/app/pipes/pipes.module";
 import { AreasAccountabilityComponent } from './areas-accountability/areas-accountability.component';
 import { NotAllocatedAccountabilityAreasComponent } from './not-allocated-accountability-areas/not-allocated-accountability-areas.component';
+import { OutgoingAccountabilityPageComponent } from "./outgoing-accountability/outgoing-accountability.component";
 
 @Component({
   template: '<router-outlet></router-outlet>'
@@ -58,6 +59,7 @@ const routes = new HseRoutes([
   HseRoute.protected(AddAccountablePersonComponent.route, AddAccountablePersonComponent, AddAccountablePersonComponent.title),
   HseRoute.protected(AccountablePersonCheckAnswersComponent.route, AccountablePersonCheckAnswersComponent, AccountablePersonCheckAnswersComponent.title),
   HseRoute.protected(AreasAccountabilityComponent.route, AreasAccountabilityComponent, AreasAccountabilityComponent.title),
+  HseRoute.protected(OutgoingAccountabilityPageComponent.route, OutgoingAccountabilityPageComponent, OutgoingAccountabilityPageComponent.title),
   HseRoute.protected(NotAllocatedAccountabilityAreasComponent.route, NotAllocatedAccountabilityAreasComponent, NotAllocatedAccountabilityAreasComponent.title),
   HseRoute.forChildren(':id', IdCaptureComponent, new HseRoutes([
     HseRoute.protected(PrincipleAccountableSelection.route, PrincipleAccountableSelection, PrincipleAccountableSelection.title),
@@ -118,6 +120,7 @@ const routes = new HseRoutes([
     OrganisationTypeComponent,
     OrganisationNameComponent,
     AreasAccountabilityComponent,
+    OutgoingAccountabilityPageComponent,
     NotAllocatedAccountabilityAreasComponent,
   ],
   providers: [HttpClient, ...routes.getProviders()],

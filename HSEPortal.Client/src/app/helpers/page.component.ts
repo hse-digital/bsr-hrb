@@ -20,7 +20,7 @@ export abstract class PageComponent<T> implements OnInit {
   updateOnSave: boolean = true;
   changing: boolean = false;
   returnUrl?: string;
-  
+
   private injector: Injector = GetInjector();
   protected applicationService: ApplicationService = this.injector.get(ApplicationService);
   protected registrationAmendmentsService: RegistrationAmendmentsService = this.injector.get(RegistrationAmendmentsService);
@@ -37,17 +37,17 @@ export abstract class PageComponent<T> implements OnInit {
   abstract canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean;
   abstract isValid(): boolean;
   abstract navigateNext(): Promise<boolean | void>;
-  
+
   constructor(activatedRoute?: ActivatedRoute) {
-    if(activatedRoute) this.activatedRoute = activatedRoute;
-  
+    if (activatedRoute) this.activatedRoute = activatedRoute;
+
     this.activatedRoute.queryParams.subscribe(params => {
       this.returnUrl = params['return'];
     });
 
     this.triggerScreenReaderNotification("");
   }
-  
+
   async ngOnInit() {
     this.changing = this.applicationService.model?.Versions?.length > 1 ?? false;
     await this.onInit(this.applicationService);
@@ -87,7 +87,7 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   private getCheckAnswersPageRoute(returnUrl: string) {
-    switch(returnUrl) {
+    switch (returnUrl) {
       case 'check-answers': return `../${this.returnUrl}`;
       case 'building-change-check-answers': return `../../registration-amendments/${this.returnUrl}`;
     }
@@ -186,7 +186,7 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   get buildingOrSectionName() {
-    let sectionName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.Name) ? this.applicationService.currentSection.Name : this.applicationService.model.BuildingName; 
+    let sectionName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.Name) ? this.applicationService.currentSection.Name : this.applicationService.model.BuildingName;
     return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 }

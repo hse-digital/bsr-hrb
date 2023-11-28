@@ -1,0 +1,16 @@
+<govuk-checkbox-group
+    [title]=title [hint]=hint [errorText]=errorText
+    [(model)]="model"
+    [id]="id" #field [govukRequired]="field">
+    <govuk-checkbox #checkbox (onKeyupEnter)="onKeyupEnter.emit()" [id]="id"
+        [model]="model"
+        text="External walls and roof" value="walls" (onClicked)="optionClicked()" [id]="id" />
+    <govuk-checkbox #checkbox (onKeyupEnter)="onKeyupEnter.emit()"
+        [model]="model"
+        text="Maintaining machinery and equipment" value="maintenance" (onClicked)="optionClicked()" [id]="id"
+        hint="This includes all utilities, fire alarms, sprinklers, and other fire and smoke provisions." />
+    <div class="govuk-radios__divider">or</div>
+    <govuk-checkbox #noneCheckbox (onKeyupEnter)="onKeyupEnter.emit()" (onClicked)="noneOptionClicked()"
+        [model]="model" [id]="id"
+        text="They are no longer accountable for any areas" value="none" />
+</govuk-checkbox-group>

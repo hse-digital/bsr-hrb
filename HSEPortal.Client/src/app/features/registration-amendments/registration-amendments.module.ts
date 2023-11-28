@@ -34,6 +34,7 @@ import { DeregisterAreYouSureComponent } from './change-deregister/deregister-ar
 import { DeregisterWhyComponent } from './change-deregister/deregister-why/deregister-why.component';
 import { DeregisterApplicationNumberComponent } from './change-deregister/deregister-application-number/deregister-application-number.component';
 import { RaSummaryChangeBuildingSummaryComponent } from './ra-summary-page/ra-summary-change-building-summary.component';
+import { SamePapComponent } from './change-accountable-persons/same-pap/same-pap.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -57,6 +58,7 @@ const routes = new HseRoutes([
   HseRoute.protected(DeregisterAreYouSureComponent.route, DeregisterAreYouSureComponent, DeregisterAreYouSureComponent.title),
   HseRoute.protected(DeregisterWhyComponent.route, DeregisterWhyComponent, DeregisterWhyComponent.title),
   HseRoute.protected(DeregisterApplicationNumberComponent.route, DeregisterApplicationNumberComponent, DeregisterApplicationNumberComponent.title),
+  HseRoute.protected(SamePapComponent.route, SamePapComponent, SamePapComponent.title),
 ]);
 
 @NgModule({
@@ -87,7 +89,8 @@ const routes = new HseRoutes([
     DeregisterAreYouSureComponent,
     DeregisterWhyComponent,
     DeregisterApplicationNumberComponent,
-    RaSummaryChangeBuildingSummaryComponent
+    RaSummaryChangeBuildingSummaryComponent,
+    SamePapComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

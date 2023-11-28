@@ -59,7 +59,7 @@ export class BuildingSummaryTag extends ChangeTaskListTag {
 
 export class AccountablePersonTag extends ChangeTaskListTag {
     getTag(): TagStatus {
-        return TagStatus.NotYetAvailable;
+        return TagStatus.NoChangesMade;
     }
 }
 
