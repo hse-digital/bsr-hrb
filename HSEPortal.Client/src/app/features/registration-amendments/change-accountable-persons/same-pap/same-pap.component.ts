@@ -18,19 +18,7 @@ export class SamePapComponent extends PageComponent<boolean> {
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    if (!this.applicationService.model.RegistrationAmendmentsModel) {
-      this.applicationService.model.RegistrationAmendmentsModel = {
-        ConnectionStatus: Status.NoChanges,
-        SubmitStatus: Status.NoChanges
-      };
-    }
-
-    if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeAccountablePerson) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeAccountablePerson = {
-        Status: Status.NoChanges
-      };
-    }
-
+    this.applicationService.currentVersion.ApChangesStatus = this.model == false ? Status.ChangesInProgress : Status.NoChanges;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeAccountablePerson!.NewPap = this.model;
   }
 
@@ -52,6 +40,7 @@ export class SamePapComponent extends PageComponent<boolean> {
       return this.navigationService.navigateRelative(`../accountable-person/${AccountablePersonCheckAnswersComponent.route}`, this.activatedRoute);
     }
 
+    this.applicationService.currentVersion.ApChangesStatus = Status.ChangesInProgress;
     return this.navigationService.navigateRelative('../accountable-person', this.activatedRoute);
   }
 

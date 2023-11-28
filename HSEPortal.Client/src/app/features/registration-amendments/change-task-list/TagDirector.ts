@@ -59,6 +59,11 @@ export class BuildingSummaryTag extends ChangeTaskListTag {
 
 export class AccountablePersonTag extends ChangeTaskListTag {
     getTag(): TagStatus {
+        if (this.applicationService.currentVersion.ApChangesStatus == Status.ChangesInProgress) {
+            return TagStatus.MoreInformationNeeded;
+        } else if (this.applicationService.currentVersion.ApChangesStatus == Status.ChangesComplete) {
+            return TagStatus.ChangesNotYetSubmitted;
+        }
         return TagStatus.NoChangesMade;
     }
 }

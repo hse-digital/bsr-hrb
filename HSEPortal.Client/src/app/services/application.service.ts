@@ -320,6 +320,7 @@ export class BuildingRegistrationVersion {
   Submitted?: boolean;
 
   BuildingStatus: Status = Status.NoChanges;
+  ApChangesStatus: Status = Status.NoChanges;
 
   Sections: SectionModel[] = [];
   AccountablePersons: AccountablePersonModel[] = [];

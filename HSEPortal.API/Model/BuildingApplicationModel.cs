@@ -89,7 +89,7 @@ public record BuildingApplicationModel(
 }
 
 public record BuildingApplicationVersion(string Name, string ReplacedBy = null, string CreatedBy = null, bool? Submitted = null, SectionModel[] Sections = null,
-    AccountablePerson[] AccountablePersons = null, Status BuildingStatus = Status.NoChanges, KbiModel Kbi = null);
+    AccountablePerson[] AccountablePersons = null, Status BuildingStatus = Status.NoChanges, Status ApChangesStatus = Status.NoChanges, KbiModel Kbi = null);
 
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
