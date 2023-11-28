@@ -19,6 +19,12 @@ export class SamePapComponent extends PageComponent<boolean> {
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     this.applicationService.currentVersion.ApChangesStatus = this.model == false ? Status.ChangesInProgress : Status.NoChanges;
+    if (!this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus) {
+      this.applicationService.model.RegistrationAmendmentsModel!.AccountablePersonStatus = {
+        Status: Status.NoChanges,
+      }
+    }
+
     this.applicationService.model.RegistrationAmendmentsModel!.AccountablePersonStatus!.NewPap = this.model;
   }
 
