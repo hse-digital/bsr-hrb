@@ -69,20 +69,34 @@ export class AccountablePersonTag extends ChangeTaskListTag {
 }
 
 export class KbiTag extends ChangeTaskListTag {
-    private index?: number;
+    private index: number = 0;
 
     setIndex(index: number): void {
         this.index = index;
     }
 
     getTag(): TagStatus {
-        return TagStatus.NotYetAvailable;
+        let kbiSection = this.applicationService.currentVersion.Kbi?.KbiSections.at(this.index);
+
+        if (kbiSection?.Status == Status.ChangesInProgress) {
+            return TagStatus.MoreInformationNeeded;
+        } else if (kbiSection?.Status == Status.ChangesComplete) {
+            return TagStatus.ChangesNotYetSubmitted;
+        }
+        return TagStatus.NoChangesMade;
     }
 }
 
 export class ConnectionsTag extends ChangeTaskListTag {
     getTag(): TagStatus {
-        return TagStatus.NotYetAvailable;
+        let connections = this.applicationService.currentVersion.Kbi?.Connections;
+
+        if (connections?.Status == Status.ChangesInProgress) {
+            return TagStatus.MoreInformationNeeded;
+        } else if (connections?.Status == Status.ChangesComplete) {
+            return TagStatus.ChangesNotYetSubmitted;
+        }
+        return TagStatus.NoChangesMade;
     }
 }
 
@@ -114,8 +128,15 @@ export class SubmitTag extends ChangeTaskListTag {
     getTag(): TagStatus {
         let changeUserTagStatus = new ChangesTag(this.applicationService).getTag();
         let changeBuildingSummaryTagStatus = new BuildingSummaryTag(this.applicationService).getTag();
+        let kbiTagStatus = new KbiTag(this.applicationService).getTag();
+        let connectionsTagStatus = new ConnectionsTag(this.applicationService).getTag();
  
-        let canSubmit = !this.areAllNoChangesMade([changeUserTagStatus, changeBuildingSummaryTagStatus]) && this.isNotSubmittedOrNoChangesMade(changeUserTagStatus) && this.isNotSubmittedOrNoChangesMade(changeBuildingSummaryTagStatus);
+        let canSubmit = !this.areAllNoChangesMade([changeUserTagStatus, changeBuildingSummaryTagStatus, kbiTagStatus, connectionsTagStatus]) 
+            && this.isNotSubmittedOrNoChangesMade(changeUserTagStatus) 
+            && this.isNotSubmittedOrNoChangesMade(changeBuildingSummaryTagStatus)
+            && this.isNotSubmittedOrNoChangesMade(kbiTagStatus)
+            && this.isNotSubmittedOrNoChangesMade(connectionsTagStatus);
+
         if(canSubmit) {
             return TagStatus.NotStarted
         }

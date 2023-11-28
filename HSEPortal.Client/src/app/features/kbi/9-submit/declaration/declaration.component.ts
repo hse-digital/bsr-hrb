@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, Status } from 'src/app/services/application.service';
 import { ConfirmComponent } from '../confirm/confirm.component';
 import { KbiService } from 'src/app/services/kbi.service';
 import { PageComponent } from 'src/app/helpers/page.component';
@@ -18,6 +18,10 @@ export class DeclarationComponent extends PageComponent<void> {
   }
 
   override async onSave(): Promise<void> {
+    if (this.applicationService.model.Versions.length > 1 && this.applicationService.currentVersion.Name != "original") {
+      this.applicationService.previousVersion.ReplacedBy = this.applicationService.currentVersion.Name;
+      this.applicationService.currentVersion.Submitted = true;
+    } 
     await this.kbiService.syncConnectionsAndDeclaration(this.applicationService.currentVersion.Kbi!);
   }
 

@@ -144,6 +144,11 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
   async addAnotherStructure() {
     let section = this.applicationService.startNewSection();
     await this.applicationService.updateApplication();
+    if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentVersion.Sections[0].Name)) {
+      return this.navigationService.navigateRelative(`../sections/section-1/${SectionNameComponent.route}`, this.activatedRoute, {
+        index: this.applicationService._currentSectionIndex
+      });
+    }
     return this.navigationService.navigateRelative(`../sections/${section}/${SectionNameComponent.route}`, this.activatedRoute);
   }
 

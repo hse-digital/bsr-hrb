@@ -83,15 +83,17 @@ export abstract class PageComponent<T> implements OnInit {
 
   private async navigateToReturnUrl(returnUrl: string) {
     let returnUri = this.getCheckAnswersPageRoute(returnUrl);
-    this.navigationService.navigateRelative(returnUri, this.activatedRoute);
+    this.navigationService.navigateRelative(returnUri.url, this.activatedRoute, returnUri.params);
   }
 
-  private getCheckAnswersPageRoute(returnUrl: string) {
+  private getCheckAnswersPageRoute(returnUrl: string): { url: string, params?: any } {
     switch (returnUrl) {
-      case 'check-answers': return `../${this.returnUrl}`;
-      case 'building-change-check-answers': return `../../registration-amendments/${this.returnUrl}`;
+      case 'check-answers': return { url: `../${this.returnUrl}` };
+      case 'building-change-check-answers': return { url: `../../registration-amendments/${this.returnUrl}` };
+      case 'change-check-answers': return { url: `../../../registration-amendments/change-kbi/${this.returnUrl}`, params: { index: this.applicationService._currentKbiSectionIndex } };
+      case 'change-connection-answers': return { url: `../../registration-amendments/${this.returnUrl}` };
     }
-    return returnUrl;
+    return { url: returnUrl };
   }
 
   private KnockOnQuestions() {

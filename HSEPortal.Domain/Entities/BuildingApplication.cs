@@ -73,4 +73,5 @@ public enum BuildingApplicationStatuscode
     Rejected = 760_810_011,
     Withdrawn = 760_810_013,
     OnHold = 760_810_014,
+    Cancelled  = 760_810_018
 }

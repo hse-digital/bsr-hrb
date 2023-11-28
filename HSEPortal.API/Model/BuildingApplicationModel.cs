@@ -89,7 +89,7 @@ public record BuildingApplicationModel(
 }
 
 public record BuildingApplicationVersion(string Name, string ReplacedBy = null, string CreatedBy = null, bool? Submitted = null, SectionModel[] Sections = null,
-    AccountablePerson[] AccountablePersons = null, Status BuildingStatus = Status.NoChanges, Status ApChangesStatus = Status.NoChanges, KbiModel Kbi = null);
+    AccountablePerson[] AccountablePersons = null, Status BuildingStatus = Status.NoChanges, Status ApChangesStatus = Status.NoChanges, KbiModel Kbi = null, ChangeRequest[] ChangeRequest = null);
 
 public record SectionModel(string Name,
     string FloorsAbove, string Height, string PeopleLivingInBuilding,
@@ -240,7 +240,6 @@ public record RegistrationAmendmentsModel
     public ChangeUser ChangeUser { get; set; }
     public long Date { get; set; }
     public Deregister Deregister { get; set; }
-    public ChangeRequest[] ChangeRequest { get; set; }
 }
 
 public record Deregister

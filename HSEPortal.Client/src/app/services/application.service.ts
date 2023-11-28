@@ -1,13 +1,13 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { firstValueFrom } from "rxjs";
-import { LocalStorage } from "src/app/helpers/local-storage";
-import { AddressModel } from "./address.service";
-import { FieldValidations } from "../helpers/validators/fieldvalidations";
-import { CancellationReason, ChangeRequest } from "./registration-amendments.service";
-import { Sanitizer } from "./http-interceptor";
-import { GetInjector } from "../helpers/injector.helper";
-import { BuildingSummaryNavigation } from "../features/application/building-summary/building-summary.navigation";
+import {HttpClient} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {firstValueFrom} from "rxjs";
+import {LocalStorage} from "src/app/helpers/local-storage";
+import {AddressModel} from "./address.service";
+import {FieldValidations} from "../helpers/validators/fieldvalidations";
+import {CancellationReason, ChangeRequest} from "./registration-amendments.service";
+import {Sanitizer} from "./http-interceptor";
+import {GetInjector} from "../helpers/injector.helper";
+import {BuildingSummaryNavigation} from "../features/application/building-summary/building-summary.navigation";
 
 @Injectable()
 export class ApplicationService {
@@ -59,12 +59,14 @@ export class ApplicationService {
   validateCurrentVersion() {
     var currentVersion = this.model.Versions.findIndex(x => (x.Submitted == null || x.Submitted == false) && x.Name != 'original');
     if (currentVersion == -1) {
+      this.setVersionIndex(this.getVersionIndex());
+
       var newVersion: BuildingRegistrationVersion = JSON.parse(JSON.stringify(this.currentVersion));
-      
+
       newVersion.ReplacedBy = "";
       newVersion.Submitted = false;
       newVersion.CreatedBy = this.model.IsSecondary ? this.model.SecondaryEmailAddress : this.model.ContactEmailAddress;
-      
+
       var newIndex = this.model.Versions.length;
       newVersion.Name = `V${newIndex}`;
 
@@ -72,6 +74,11 @@ export class ApplicationService {
       currentVersion = newIndex;
     }
     this.setVersionIndex(currentVersion);
+  }
+
+  private getVersionIndex() {
+    let index = this.model?.Versions?.findIndex(x => x.Submitted && !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy) && x.Name != 'original');
+    return !index || index == -1 ? 0 : index;
   }
 
   resetCurrentVersionIndex() {
@@ -144,28 +151,73 @@ export class ApplicationService {
   }
 
   initKbi() {
-    let filteredSections = this.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    let filteredSections = this.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
     if (!this.currentVersion.Kbi) {
-      this.currentVersion.Kbi = new KbiModel();
-      filteredSections.forEach(x => {
-        var kbiSection = new KbiSectionModel();
-        kbiSection.StructureName = x.Name;
-        kbiSection.Postcode = FieldValidations.IsNotNullOrEmpty(x.Addresses) ? x.Addresses[0].Postcode : undefined;
-
-        this.currentVersion.Kbi!.KbiSections.push(kbiSection);
-      });
-
-      this._currentSectionIndex = 0;
-      this._currentKbiSectionIndex = 0;
+      this.initKbiModel(filteredSections);
+    } else if (this.currentVersion.Kbi.KbiSections.length != filteredSections.length) {
+      this.updateKbiModel(filteredSections);
     }
 
     if (!this.currentVersion.Kbi?.SectionStatus || this.currentVersion.Kbi?.SectionStatus.length == 0) {
       this.currentVersion.Kbi!.SectionStatus = [];
-      filteredSections.map(x => this.currentVersion.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
+      filteredSections.map(x => this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false}));
     }
+
+    let missingStatuses = this.currentVersion.Kbi!.KbiSections.length - this.currentVersion.Kbi!.SectionStatus.length
+    if (missingStatuses != 0 && missingStatuses > 0) {
+      for (let index = 0; index < missingStatuses; index++) {
+        this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false});
+      }
+    }
+
+    this.removeUnnecessaryKbiSections();
+  }
+
+  private initKbiModel(filteredSections: SectionModel[]) {
+    this.currentVersion.Kbi = new KbiModel();
+    filteredSections.forEach(x => {
+      var kbiSection = new KbiSectionModel();
+      kbiSection.StructureName = x.Name;
+      kbiSection.Postcode = FieldValidations.IsNotNullOrEmpty(x.Addresses) ? x.Addresses[0].Postcode : undefined;
+
+      this.currentVersion.Kbi!.KbiSections.push(kbiSection);
+    });
+
+    this._currentSectionIndex = 0;
+    this._currentKbiSectionIndex = 0;
+  }
+
+  private updateKbiModel(filteredSections: SectionModel[]) {
+    filteredSections.forEach(section => {
+      if (!this.currentVersion.Kbi?.KbiSections.some(kbiSection => kbiSection.StructureName == section.Name && this.arePostcodesEqual(kbiSection.Postcode, section.Addresses[0].Postcode))) {
+        var newKbiSection = new KbiSectionModel();
+        newKbiSection.StructureName = section.Name;
+        newKbiSection.Postcode = FieldValidations.IsNotNullOrEmpty(section.Addresses) ? section.Addresses[0].Postcode : undefined;
+
+        this.currentVersion.Kbi!.KbiSections.push(newKbiSection);
+        this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false});
+      }
+    });
+  }
+
+  private removeUnnecessaryKbiSections() {
+    let removedSections = this.currentVersion.Sections.filter(x => x.Scope?.IsOutOfScope || x.Status == Status.Removed);
+    removedSections.forEach(section => {
+      let index = this.currentVersion.Kbi?.KbiSections.findIndex(kbiSection => kbiSection.StructureName == section.Name && this.arePostcodesEqual(kbiSection.Postcode, section.Addresses[0].Postcode));
+      if (!!index && index > -1) {
+        this.currentVersion.Kbi!.KbiSections.at(index)!.Status = Status.Removed;
+        this.currentVersion.Kbi!.SectionStatus!.splice(index!, 1);
+      }
+    });
+  }
+
+  private arePostcodesEqual(a?: string, b?: string) {
+    if (!FieldValidations.IsNotNullOrWhitespace(a) || !FieldValidations.IsNotNullOrWhitespace(b)) return false;
+    return a!.trim().replaceAll(' ', '').toLowerCase() == b!.trim().replaceAll(' ', '').toLowerCase();
   }
 
   _currentKbiSectionIndex: number = 0;
+
   get currentKbiSection() {
     return this.currentVersion.Kbi?.KbiSections[this._currentKbiSectionIndex];
   }
@@ -185,16 +237,23 @@ export class ApplicationService {
   }
 
   async sendVerificationEmail(emailAddress: string, applicationNumber: string, buildingName?: string): Promise<void> {
-    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', { "EmailAddress": Sanitizer.sanitizeField(emailAddress), "ApplicationNumber": applicationNumber, "BuildingName": buildingName }));
+    await firstValueFrom(this.httpClient.post('api/SendVerificationEmail', {
+      "EmailAddress": Sanitizer.sanitizeField(emailAddress),
+      "ApplicationNumber": applicationNumber,
+      "BuildingName": buildingName
+    }));
   }
 
   async validateOTPToken(otpToken: string, emailAddress: string): Promise<void> {
-    await firstValueFrom(this.httpClient.post('api/ValidateOTPToken', { "OTPToken": otpToken, "EmailAddress": emailAddress }));
+    await firstValueFrom(this.httpClient.post('api/ValidateOTPToken', {
+      "OTPToken": otpToken,
+      "EmailAddress": emailAddress
+    }));
   }
 
   async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
     try {
-      let request = { ApplicationNumber: applicationNumber, EmailAddress: Sanitizer.sanitizeField(emailAddress) };
+      let request = {ApplicationNumber: applicationNumber, EmailAddress: Sanitizer.sanitizeField(emailAddress)};
       await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', request));
       return true;
     } catch {
@@ -205,7 +264,11 @@ export class ApplicationService {
 
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
 
-    let request = { ApplicationNumber: applicationNumber, EmailAddress: Sanitizer.sanitizeField(emailAddress), OtpToken: otpToken };
+    let request = {
+      ApplicationNumber: applicationNumber,
+      EmailAddress: Sanitizer.sanitizeField(emailAddress),
+      OtpToken: otpToken
+    };
     let application: BuildingRegistrationModel = await firstValueFrom(this.httpClient.post<BuildingRegistrationModel>('api/GetApplication', request));
     this.model = application;
     this.updateLocalStorage();
@@ -325,6 +388,8 @@ export class BuildingRegistrationVersion {
   Sections: SectionModel[] = [];
   AccountablePersons: AccountablePersonModel[] = [];
   Kbi?: KbiModel;
+
+  ChangeRequest?: ChangeRequest[];
 }
 
 export enum BuildingApplicationStage {
@@ -486,6 +551,7 @@ export class KbiSectionModel {
   StructureName?: string;
   Postcode?: string;
   StrategyEvacuateBuilding?: string;
+  Status: Status = Status.NoChanges;
 }
 
 export class Fire {
@@ -568,6 +634,7 @@ export class Connections {
   HowOtherHighRiseBuildingAreConnected?: string[];
   OtherBuildingConnections?: string;
   HowOtherBuildingAreConnected?: string[];
+  Status?: Status;
 }
 
 export class Submit {
@@ -588,14 +655,9 @@ export class PaymentInvoiceDetails {
 
 export class RegistrationAmendmentsModel {
   AccountablePersonStatus?: ChangeAccountablePerson;
-  ChangeAccountablePerson?: ChangeAccountablePerson;
-  ConnectionStatus: Status = Status.NoChanges;
-  SubmitStatus: Status = Status.NoChanges;
   Deregister?: Deregister;
   ChangeUser?: ChangeUser;
   Date?: number;
-
-  ChangeRequest?: ChangeRequest[];
 }
 
 export class ChangeAccountablePerson {
@@ -659,6 +721,7 @@ export enum BuildingApplicationStatuscode {
   Rejected = 760_810_011,
   Withdrawn = 760_810_013,
   OnHold = 760_810_014,
+  Cancelled = 760_810_018
 }
 
 export class FileUploadModel {

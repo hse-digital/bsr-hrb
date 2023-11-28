@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { ApplicationService, BuildingApplicationStage, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, SectionModel, Status } from 'src/app/services/application.service';
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { KbiNavigation } from 'src/app/features/kbi/kbi.navigation.ts.service';
@@ -28,7 +28,7 @@ export class TaskListComponent implements CanActivate, OnInit {
 
   async ngOnInit() {
     this.applicationService.initKbi();
-    this.InScopeSections = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && !!x.Addresses && x.Addresses.length > 0);
+    this.InScopeSections = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && !!x.Addresses && x.Addresses.length > 0 && x.Status != Status.Removed);
     await this.applicationService.updateApplication();
   }
 

@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, BuildingApplicationStage, SectionModel, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, KbiSectionModel, SectionModel, Status } from 'src/app/services/application.service';
 import { TagDirector } from './TagDirector';
+import { KbiChangeCheckAnswersModule } from '../change-kbi/check-answers-building-information/kbi.check-answers-building-information.module';
+import { ChangeBuildingInformationCheckAnswersComponent } from '../change-kbi/check-answers-building-information/check-answers-building-information.component';
 
 @Component({
   selector: 'hse-change-task-list',
@@ -13,23 +15,22 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   static title: string = "Tell the Building Safety Regulator about changes to this building - Register a high-rise building - GOV.UK";
 
   taskListSteps = TaskListSteps;
-  InScopeSections!: SectionModel[];
+  InScopeKbiSections!: SectionModel[];
   tagDirector?: TagDirector;
 
-  constructor() {
-    super();
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
     this.applicationService.validateCurrentVersion();
     this.tagDirector  = new TagDirector(this.applicationService);
 
-    this.InScopeSections = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.InScopeKbiSections = this.applicationService.currentVersion.Sections
+      .filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
+
     if(!this.applicationService.model.RegistrationAmendmentsModel) {
-      this.applicationService.model.RegistrationAmendmentsModel = {
-        ConnectionStatus: Status.NoChanges,
-        SubmitStatus: Status.NoChanges,
-      };
+      this.applicationService.model.RegistrationAmendmentsModel = {};
     }
   }
 
@@ -70,6 +71,12 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   getCssClassFor(step: TaskListSteps, index?: number): string {
     this.tagDirector?.setStep(step, index);
     return this.TagToCssClass[this.tagDirector?.getTag() ?? TagStatus.NotYetAvailable];
+  }
+
+  async navigateToKbi(index: number) {
+    return this.navigationService.navigateRelative(`${KbiChangeCheckAnswersModule.baseRoute}/${ChangeBuildingInformationCheckAnswersComponent.route}`, this.activatedRoute, {
+      index: index
+    });
   }
 
   get submitSectionNumber() {

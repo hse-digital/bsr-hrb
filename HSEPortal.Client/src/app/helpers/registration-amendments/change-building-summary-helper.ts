@@ -1,19 +1,5 @@
-import { AddressModel } from "src/app/services/address.service";
 import { SectionModel, ApplicationService, Status } from "src/app/services/application.service";
-import { FieldValidations } from "../validators/fieldvalidations";
-
-export type BuildingSummaryChangeModel = {
-    SectionName?: string,
-    SectionIndex?: number,
-    OldValue?: any,
-    NewValue?: any,
-    Title?: string,
-    Field?: string,
-    Route?: string,
-    IsAddress?: boolean,
-    OldAddresses?: AddressModel[],
-    NewAddresses?: AddressModel[]
-}
+import { ChangeHelper, ChangedAnswersModel } from "./change-helper";
 
 export class ChangeBuildingSummaryHelper {
 
@@ -25,7 +11,7 @@ export class ChangeBuildingSummaryHelper {
         this._buildingSummaryInformationGetter = new BuildingSummaryInformationGetter(this.applicationService);
     }
 
-    getChanges(): BuildingSummaryChangeModel[] {
+    getChanges(): ChangedAnswersModel[] {
         return this._buildingSummaryChanges.getChanges(
             this._buildingSummaryInformationGetter.getPreviousSectionNames(),
             this._buildingSummaryInformationGetter.getCurrentSectionNames()
@@ -37,11 +23,13 @@ export class ChangeBuildingSummaryHelper {
     }
 }
 
-class BuildingSummaryChanges {
+class BuildingSummaryChanges extends ChangeHelper {
 
-    constructor (private applicationService: ApplicationService) { }
+    constructor (private applicationService: ApplicationService) {
+        super();
+    }
 
-    getChanges(previousSectionNames: string[], currentSectionNames: string[]): BuildingSummaryChangeModel[] {
+    getChanges(previousSectionNames: string[], currentSectionNames: string[]): ChangedAnswersModel[] {
         let previousVersion = this.applicationService.previousVersion;
         let changes = this.applicationService.currentVersion.Sections.flatMap((section, index) => {
             if (section.Status == Status.Removed) return undefined;
@@ -56,10 +44,10 @@ class BuildingSummaryChanges {
         return changes;
     }
 
-    private getSectionChanges(originalSection: SectionModel, currentSection: SectionModel, sectionIndex: number): BuildingSummaryChangeModel[] {
+    getSectionChanges(originalSection: SectionModel, currentSection: SectionModel, sectionIndex: number): ChangedAnswersModel[] {
         if (!originalSection || !originalSection.Addresses || originalSection.Addresses.length == 0) return [];
         let sectionName = this.getLatestValueOf(originalSection.Name, currentSection.Name) ?? this.applicationService.model.BuildingName!;
-        let changes: (BuildingSummaryChangeModel | undefined)[] = [];
+        let changes: (ChangedAnswersModel | undefined)[] = [];
         changes.push(this.getFieldChange(originalSection.Name, currentSection.Name, "Name", "Name", "name", sectionName, sectionIndex));
         changes.push(this.getFieldChange(originalSection.FloorsAbove, currentSection.FloorsAbove, "Number of floors", sectionName + " number of floors", "floors", sectionName, sectionIndex));
         changes.push(this.getFieldChange(originalSection.Height, currentSection.Height, "Height", sectionName + " height", "height", sectionName, sectionIndex));
@@ -71,7 +59,7 @@ class BuildingSummaryChanges {
         changes.push(this.getFieldChange(originalSection.CompletionCertificateIssuer, currentSection.CompletionCertificateIssuer, "Completion certificate issuer", sectionName + " completion certificate issuer", "certificate-issuer", sectionName, sectionIndex));
         changes.push(this.getFieldChange(originalSection.CompletionCertificateReference, currentSection.CompletionCertificateReference, "Completion certificate reference", sectionName + " completion certificate reference", "certificate-number", sectionName, sectionIndex));
         changes.push(this.getFieldChange(originalSection.CompletionCertificateFile?.Filename, currentSection.CompletionCertificateFile?.Filename, "Completion certificate file", sectionName + " completion certificate file", "upload-completion-certificate", sectionName, sectionIndex));
-        changes.push(this.getSectionAddressChanges(originalSection.Addresses, currentSection.Addresses, "Addresses", sectionName + " addresses", "building-change-check-answers", sectionName, sectionIndex));
+        changes.push(this.getAddressChanges(originalSection.Addresses, currentSection.Addresses, "Addresses", sectionName + " addresses", "building-change-check-answers", sectionName, sectionIndex));
         return changes.filter(x => !!x && x != undefined).map(x => x!);
     }
 
@@ -79,54 +67,6 @@ class BuildingSummaryChanges {
         let currentYear = currentSection.YearOfCompletionOption == "year-exact" ? currentSection.YearOfCompletion : currentSection.YearOfCompletionRange;
         let originalYear = originalSection.YearOfCompletionOption == "year-exact" ? originalSection.YearOfCompletion : originalSection.YearOfCompletionRange;
         return this.getFieldChange(originalYear, currentYear, "Year of completion", "When was " + sectionName + " built?", "year-of-completion", sectionName, sectionIndex);
-    }
-
-    private getFieldChange(field: any, changedfield: any, fieldName: string, title: string, route: string, sectionName: string, sectionIndex: number): BuildingSummaryChangeModel | undefined {
-        return this.hasChanged(field, changedfield) ? {
-            Title: title,
-            Field: fieldName,
-            NewValue: changedfield,
-            OldValue: field,
-            Route: route,
-            SectionName: sectionName,
-            SectionIndex: sectionIndex,
-            IsAddress: false
-        } : undefined;
-    }
-
-    private getSectionAddressChanges(SectionAddresses: AddressModel[], ChangeSectionAddresses: AddressModel[], fieldName: string, title: string, route: string, sectionName: string, sectionIndex: number): BuildingSummaryChangeModel | undefined {
-        if (!SectionAddresses || SectionAddresses.length == 0 || SectionAddresses.every(x => x == null || x == undefined)) return undefined;
-        if (!ChangeSectionAddresses || ChangeSectionAddresses.length == 0 || ChangeSectionAddresses.every(x => x == null || x == undefined)) return undefined;
-
-        let hasAddressesChanged = SectionAddresses.length != ChangeSectionAddresses.length;
-        if (!hasAddressesChanged) hasAddressesChanged = this.hasAddressChanged(SectionAddresses, ChangeSectionAddresses);
-
-        return hasAddressesChanged ? {
-            Title: title,
-            Field: fieldName,
-            NewAddresses: ChangeSectionAddresses,
-            OldAddresses: SectionAddresses,
-            Route: route,
-            SectionName: sectionName,
-            SectionIndex: sectionIndex,
-            IsAddress: true
-        } : undefined;
-    }
-
-    private getLatestValueOf(field?: any, changedField?: any) {
-        let hasChanged = this.hasChanged(field, changedField);
-        return hasChanged ? changedField : field;
-    }
-
-    private hasChanged(field?: any, changedField?: any) {
-        let hasNewValue = typeof changedField == "string" ? FieldValidations.IsNotNullOrWhitespace(changedField) : changedField != undefined;
-        return hasNewValue && field != changedField;
-    }
-
-    private hasAddressChanged(CurrentAddresses: AddressModel[], OriginalAddresses: AddressModel[]) { 
-        return CurrentAddresses.map(address => address.Postcode).some(current => {
-            return OriginalAddresses.map(original => original.Postcode).findIndex(original => original == current) == -1;
-        });
     }
 }
 
