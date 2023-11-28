@@ -30,10 +30,7 @@ export class ChangeTaskListComponent extends PageComponent<void> {
       .filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
 
     if(!this.applicationService.model.RegistrationAmendmentsModel) {
-      this.applicationService.model.RegistrationAmendmentsModel = {
-        ConnectionStatus: Status.NoChanges,
-        SubmitStatus: Status.NoChanges,
-      };
+      this.applicationService.model.RegistrationAmendmentsModel = {};
     }
   }
 

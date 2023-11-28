@@ -55,6 +55,8 @@ export class ApplicationService {
   validateCurrentVersion() {
     var currentVersion = this.model.Versions.findIndex(x => (x.Submitted == null || x.Submitted == false) && x.Name != 'original');
     if (currentVersion == -1) {
+      this.setVersionIndex(this.getVersionIndex());
+
       var newVersion: BuildingRegistrationVersion = JSON.parse(JSON.stringify(this.currentVersion));
       
       newVersion.ReplacedBy = "";
@@ -68,6 +70,11 @@ export class ApplicationService {
       currentVersion = newIndex;
     }
     this.setVersionIndex(currentVersion);
+  }
+
+  private getVersionIndex() {
+    let index = this.model?.Versions?.findIndex(x => x.Submitted && !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy) && x.Name != 'original');
+    return !index || index == -1 ? 0 : index; 
   }
 
   resetCurrentVersionIndex() {
@@ -364,6 +371,8 @@ export class BuildingRegistrationVersion {
   Sections: SectionModel[] = [];
   AccountablePersons: AccountablePersonModel[] = [];
   Kbi?: KbiModel;
+
+  ChangeRequest?: ChangeRequest[];
 }
 
 export enum BuildingApplicationStage {
@@ -629,13 +638,9 @@ export class PaymentInvoiceDetails {
 
 export class RegistrationAmendmentsModel {
   AccountablePersonStatus?: ChangeAccountablePerson;
-  ConnectionStatus: Status = Status.NoChanges;
-  SubmitStatus: Status = Status.NoChanges;
   Deregister?: Deregister;
   ChangeUser?: ChangeUser;
   Date?: number;
-
-  ChangeRequest?: ChangeRequest[];
 }
 
 export class ChangeAccountablePerson {
@@ -696,6 +701,7 @@ export enum BuildingApplicationStatuscode {
   Rejected = 760_810_011,
   Withdrawn = 760_810_013,
   OnHold = 760_810_014,
+  Cancelled = 760_810_018
 }
 
 export class FileUploadModel {

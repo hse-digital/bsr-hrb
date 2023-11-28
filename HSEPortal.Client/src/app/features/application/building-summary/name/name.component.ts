@@ -18,7 +18,13 @@ export class SectionNameComponent extends PageComponent<string> {
     super(activatedRoute);
   }
 
+  newStructureIndex?: number;
   override onInit(applicationService: ApplicationService): void {
+    this.activatedRoute.queryParams.subscribe(params => {
+      let index = params['index'];
+      this.newStructureIndex = index == this.applicationService.currentVersion.Sections.length - 1 ? index : undefined;
+    });
+
     this.model = applicationService.currentSection?.Name;
     this.sections = this.applicationService.currentVersion.Sections.slice(0, this.applicationService.currentVersion.Sections.length - 1);
   }
@@ -37,6 +43,11 @@ export class SectionNameComponent extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean> {
+    if(!!this.newStructureIndex && this.newStructureIndex > 0) {
+      let sectionIndex = Number(this.newStructureIndex) + 1;
+      this.model = "";
+      return this.navigationService.navigateRelative(`../section-${sectionIndex}/name`, this.activatedRoute);
+    } 
     return this.navigationService.navigateRelative(SectionFloorsAboveComponent.route, this.activatedRoute);
   }
 

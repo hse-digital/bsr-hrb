@@ -83,7 +83,7 @@ public class RegistrationAmendmentsFunctions
             applicantReferenceId = secondaryContact.contactid;
         }
 
-        ChangeRequest[] ChangeRequests = buildingApplicationModel.RegistrationAmendmentsModel.ChangeRequest.Where(x => x.Status != Status.ChangesSubmitted).ToArray();
+        ChangeRequest[] ChangeRequests = buildingApplicationModel.CurrentVersion.ChangeRequest.Where(x => x.Status != Status.ChangesSubmitted).ToArray();
         
         foreach (ChangeRequest changeRequest in ChangeRequests) {
             var dynamicsStructure = await GetDynamicsStructure(changeRequest, applicationId);
@@ -154,7 +154,7 @@ public class RegistrationAmendmentsFunctions
             var updatedBuilding = new DynamicsBuilding { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[cancellationReason]})", bsr_registrationstatus = 760_810_002 };
             await dynamicsApi.Update($"bsr_buildings({dynamicsBuildingApplication._bsr_building_value})", updatedBuilding);
         } else {
-            var updatedApplication = new DynamicsBuildingApplication { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[cancellationReason]})" };
+            var updatedApplication = new DynamicsBuildingApplication { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[cancellationReason]})", statuscode = BuildingApplicationStatuscode.Cancelled };
             await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", updatedApplication);
         }
     
@@ -165,7 +165,7 @@ public class RegistrationAmendmentsFunctions
         {CancellationReason.NoCancellationReason, ""},
         {CancellationReason.NoConnected, "9107fc3d-8671-ee11-8178-6045bd0c1726"},
         {CancellationReason.IncorrectlyRegistered, "e098fc37-8671-ee11-8178-6045bd0c1726"},
-        {CancellationReason.EveryoneMovedOut, "b220e12b-8671-ee11-8178-6045bd0c1726"},
+        {CancellationReason.EveryoneMovedOut, "be615a0e-d277-ee11-8179-6045bd0c1726"},
         {CancellationReason.FloorsHeight, "f0696bf0-d177-ee11-8179-6045bd0c1726"},
         {CancellationReason.ResidentialUnits, "f7e45d02-d277-ee11-8179-6045bd0c1726"},
     };

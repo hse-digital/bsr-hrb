@@ -14,7 +14,7 @@ import { DeregisterApplicationNumberComponent } from '../deregister-application-
   selector: 'hse-deregister-are-you-sure',
   templateUrl: './deregister-are-you-sure.component.html'
 })
-export class DeregisterAreYouSureComponent  extends PageComponent<string> {
+export class DeregisterAreYouSureComponent extends PageComponent<string> {
   static route: string = 'deregister-are-you-sure';
   static title: string = "Confirm you want to remove this building - Register a high-rise building - GOV.UK";
 
@@ -25,11 +25,15 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.applicationService.validateCurrentVersion();
     this.isAppAccepted = await this.isApplicationAccepted();
     this.initDeregister();
   }
 
   initDeregister() {
+    if (!this.applicationService.model.RegistrationAmendmentsModel) {
+      this.applicationService.model.RegistrationAmendmentsModel = {}
+    }
     if (!this.applicationService.model.RegistrationAmendmentsModel!.Deregister) {
       this.applicationService.model.RegistrationAmendmentsModel!.Deregister = {}
     }
@@ -49,7 +53,7 @@ export class DeregisterAreYouSureComponent  extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    let isOutOfScope = this.applicationService.currentSection.Scope?.IsOutOfScope;
+    let isOutOfScope = this.applicationService.currentSection?.Scope?.IsOutOfScope ?? false;
     if(this.model == 'no') {
       let outOfScopeRoute = this.getNextOutOfScopeRoute(this.applicationService.currentSection.Scope?.OutOfScopeReason);
       if (isOutOfScope && FieldValidations.IsNotNullOrWhitespace(outOfScopeRoute)) {

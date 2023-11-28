@@ -60,12 +60,16 @@ export class RaDeclarationComponent extends PageComponent<void> {
   async submit() {
     this.loading = true;
     this.applicationService.model.RegistrationAmendmentsModel!.Date = Date.now();
-    
 
     this.createUserChangeRequest();
     this.createBuildingSummaryChangeRequest();
     this.createRemovedStructureChangeRequest();
     this.createDeregisterChangeRequest();
+
+    this.applicationService.previousVersion.ReplacedBy = this.applicationService.currentVersion.Name;
+    this.applicationService.currentVersion.Submitted = true;
+    this.applicationService.currentVersion.BuildingStatus = Status.NoChanges;
+    this.applicationService.updateApplication();
 
     await this.registrationAmendmentsService.syncChangeRequest();
     
@@ -76,10 +80,10 @@ export class RaDeclarationComponent extends PageComponent<void> {
     await this.syncChangeBuildingSummaryHelper.syncRemovedStructures();
     await this.syncChangeBuildingSummaryHelper.syncDeregister();
 
-    this.applicationService.previousVersion.ReplacedBy = this.applicationService.currentVersion.Name;
-    this.applicationService.currentVersion.Submitted = true;
-    this.applicationService.currentVersion.BuildingStatus = Status.NoChanges;
-    
+    this.updateKbiStatus();
+  }
+
+  updateKbiStatus() {
     if (!!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.Connections) {
       this.applicationService.currentVersion.Kbi!.Connections.Status = Status.NoChanges;
     }
@@ -87,6 +91,8 @@ export class RaDeclarationComponent extends PageComponent<void> {
     if (!!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.KbiSections && this.applicationService.currentVersion.Kbi.KbiSections.length > 0) {
       this.applicationService.currentVersion.Kbi!.KbiSections.map(x => x.Status = Status.NoChanges);
     }
+
+    this.applicationService.updateApplication();
   }
   
   createDeregisterChangeRequest() {
@@ -132,14 +138,14 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   private addChangeRequestToModel(changeRequest: ChangeRequest) {
-    if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest) {
-      this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest = [];
+    if (!this.applicationService.currentVersion.ChangeRequest) {
+      this.applicationService.currentVersion.ChangeRequest = [];
     }
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeRequest?.push(changeRequest);
+    this.applicationService.currentVersion.ChangeRequest?.push(changeRequest);
   }
 
   private updateChangeRequestStatus() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeRequest?.forEach(x => x.Status = Status.ChangesSubmitted);
+    return this.applicationService.currentVersion.ChangeRequest?.forEach(x => x.Status = Status.ChangesSubmitted);
   }
 
   get onlyRegistrationInformation() {

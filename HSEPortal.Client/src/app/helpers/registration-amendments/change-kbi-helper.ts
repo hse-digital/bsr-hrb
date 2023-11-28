@@ -299,8 +299,8 @@ export class KbiTextMappers {
     }
 
     getSmokeAndFireDeviceLocations(device: string, FireSmokeProvisionLocations: Record<string, string[]>) {
-        if (!!FireSmokeProvisionLocations && Object.keys(FireSmokeProvisionLocations!).includes(device)) {
-            return this.getLocationName(FireSmokeProvisionLocations![device]);
+        if (!!FireSmokeProvisionLocations && Object.keys(FireSmokeProvisionLocations).includes(device)) {
+            return this.getLocationName(FireSmokeProvisionLocations[device]);
         }
         else {
             return ["None"]
@@ -389,7 +389,7 @@ export class KbiTextMappers {
     getModularMaterials(buildingStructure: BuildingStructure) {
         const modularMaterials = buildingStructure?.BuildingStructureType?.filter(material => material.toLowerCase().includes("modular")).map(material => this.getMaterialName(material));
 
-        if (modularMaterials!.length > 0) {
+        if ((modularMaterials?.length ?? 0) > 0) {
             return modularMaterials;
         }
         else {
@@ -402,7 +402,7 @@ export class KbiTextMappers {
     getNonModularMaterials(buildingStructure: BuildingStructure) {
         const nonModularMaterials = buildingStructure?.BuildingStructureType?.filter(material => !material.toLowerCase().includes("modular")).map(material => this.getMaterialName(material));
 
-        if (nonModularMaterials!.length > 0) {
+        if ((nonModularMaterials?.length ?? 0) > 0) {
             return nonModularMaterials;
         }
         else {
@@ -506,15 +506,15 @@ export class KbiTextMappers {
         "none": "None"
     }
     getInsulationName(ExternalWallInsulation: { CheckBoxSelection?: string[], OtherValue?: string }) {
-        return ExternalWallInsulation?.CheckBoxSelection?.map(x => x === 'other' ? `${this.insulationTypeMapper[x]} - ${ExternalWallInsulation!.OtherValue}` : this.insulationTypeMapper[x]) ?? [];
+        return ExternalWallInsulation?.CheckBoxSelection?.map(x => x === 'other' ? `${this.insulationTypeMapper[x]} - ${ExternalWallInsulation?.OtherValue ?? ""}` : this.insulationTypeMapper[x]) ?? [];
     }
     getInsulationNameWithPercentage(ExternalWallInsulation: { CheckBoxSelection?: string[], OtherValue?: string }, Percentages: Record<string, number>) {
-        return ExternalWallInsulation?.CheckBoxSelection?.map(x => x === 'other' ? `${this.insulationTypeMapper[x]} - ${ExternalWallInsulation!.OtherValue}: ${Percentages[x]}` : `${this.insulationTypeMapper[x]}: ${Percentages[x]}`) ?? [];
+        return ExternalWallInsulation?.CheckBoxSelection?.map(x => x === 'other' ? `${this.insulationTypeMapper[x]} - ${ExternalWallInsulation?.OtherValue ?? ""}: ${Percentages[x]}` : `${this.insulationTypeMapper[x]}: ${Percentages[x]}`) ?? [];
     }
 
     private features = ['balconies', 'communal_walkway', 'escape_route_roof', 'external_staircases', 'machinery_outbuilding', 'machinery_roof_room', 'roof_lights', 'solar_shading'];
     getAvailableFeatures(ExternalFeatures: string[]) {
-        return ExternalFeatures!.filter(x => this.features.includes(x));
+        return ExternalFeatures?.filter(x => this.features.includes(x)) ?? [];
     }
 
     private externalFeaturesMapper: Record<string, string> = {
@@ -554,11 +554,11 @@ export class KbiTextMappers {
 
     hasFeature(name: string, FeatureMaterialsOutside: Record<string, string[]>) {
         if (!FeatureMaterialsOutside) return false;
-        return Object.keys(FeatureMaterialsOutside!).includes(name);
+        return Object.keys(FeatureMaterialsOutside).includes(name);
     }
 
     getMaterials(feature: string, FeatureMaterialsOutside: Record<string, string[]>) {
-        return this.hasFeature(feature, FeatureMaterialsOutside) ? FeatureMaterialsOutside![feature] : [];
+        return this.hasFeature(feature, FeatureMaterialsOutside) ? FeatureMaterialsOutside[feature] : [];
     }
 
     private materialsMapper: Record<string, string> = {
