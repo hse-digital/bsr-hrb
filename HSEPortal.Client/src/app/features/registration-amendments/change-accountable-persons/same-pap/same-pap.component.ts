@@ -14,12 +14,12 @@ export class SamePapComponent extends PageComponent<boolean> {
   errorMessage: string = "";
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
-    this.model = this.applicationService.model.RegistrationAmendmentsModel?.ChangeAccountablePerson?.NewPap;
+    this.model = this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.NewPap;
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     this.applicationService.currentVersion.ApChangesStatus = this.model == false ? Status.ChangesInProgress : Status.NoChanges;
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeAccountablePerson!.NewPap = this.model;
+    this.applicationService.model.RegistrationAmendmentsModel!.AccountablePersonStatus!.NewPap = this.model;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

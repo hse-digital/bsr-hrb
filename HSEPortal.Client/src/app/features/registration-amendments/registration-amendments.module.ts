@@ -98,8 +98,7 @@ const routes = new HseRoutes([
     RaSummaryChangeBuildingSummaryComponent,
     RaCheckAnswersKbiComponent,
     RaCheckAnswersConnectionsComponent,
-    ChangeConnectionsComponent
-    RaSummaryChangeBuildingSummaryComponent,
+    ChangeConnectionsComponent,
     SamePapComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
