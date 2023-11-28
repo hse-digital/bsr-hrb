@@ -6,7 +6,7 @@ import { ApplicationCompletedComponent } from "../features/application/applicati
 export class ApplicationSubmittedHelper {
 
     public static navigateToPaymentConfirmationIfAppSubmitted(applicationService: ApplicationService, navigationService: NavigationService){
-        if (ApplicationSubmittedHelper.isPaymentCompleted(applicationService)) {
+        if (!applicationService.isChangeAmendmentInProgress && ApplicationSubmittedHelper.isPaymentCompleted(applicationService)) {
             navigationService.navigate(ApplicationSubmittedHelper.getPaymentConfirmationRoute(applicationService));
         }
     } 

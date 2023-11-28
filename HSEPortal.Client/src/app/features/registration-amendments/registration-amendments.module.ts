@@ -38,6 +38,7 @@ import { KbiChangeCheckAnswersModule } from './change-kbi/check-answers-building
 import { RaCheckAnswersKbiComponent } from './ra-check-answers/ra-check-answers-kbi.component';
 import { ChangeConnectionsComponent } from './change-connections/change-connections/change-connections.component';
 import { RaCheckAnswersConnectionsComponent } from './ra-check-answers/ra-check-answers-connections.component';
+import { SamePapComponent } from './change-accountable-persons/same-pap/same-pap.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -63,10 +64,11 @@ const routes = new HseRoutes([
   HseRoute.protected(DeregisterApplicationNumberComponent.route, DeregisterApplicationNumberComponent, DeregisterApplicationNumberComponent.title),
   HseRoute.forLoadChildren(KbiChangeCheckAnswersModule.baseRoute, () => import('./change-kbi/check-answers-building-information/kbi.check-answers-building-information.module').then(m => m.KbiChangeCheckAnswersModule)),
   HseRoute.protected(ChangeConnectionsComponent.route, ChangeConnectionsComponent, ChangeConnectionsComponent.title),
+  HseRoute.protected(SamePapComponent.route, SamePapComponent, SamePapComponent.title),
 ]);
 
 @NgModule({
-  declarations: [  
+  declarations: [
     UserListComponent,
     ChangeTaskListComponent,
     SelectPrimaryUserComponent,
@@ -96,7 +98,8 @@ const routes = new HseRoutes([
     RaSummaryChangeBuildingSummaryComponent,
     RaCheckAnswersKbiComponent,
     RaCheckAnswersConnectionsComponent,
-    ChangeConnectionsComponent
+    ChangeConnectionsComponent,
+    SamePapComponent
   ],
   providers: [HttpClient, ...routes.getProviders()],
   imports: [

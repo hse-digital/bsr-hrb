@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PaymentDeclarationComponent } from 'src/app/features/application/payment/payment-declaration/payment-declaration.component';
 import { PaymentModule } from 'src/app/features/application/payment/payment.module';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { AccountablePersonModel, ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
+import { AccountablePersonModel, ApplicationService, BuildingApplicationStage, Status } from 'src/app/services/application.service';
 import { AccountabilityArea } from 'src/app/components/pap-accountability/pap-accountability.component';
 import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper';
 import { PageComponent } from 'src/app/helpers/page.component';
@@ -18,11 +18,12 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   static title: string = "Check your answers for PAP and AP - Register a high-rise building - GOV.UK";
 
   checkAnswersArea = AccountabilityArea.CheckAnswers;
+  apToRemove?: AccountablePersonModel;
 
   aps: AccountablePersonModel[] = [];
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-  } 
+  }
 
   hasIncompleteData = false;
 
@@ -93,7 +94,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
         canContinue &&= (ap.SectionsAccountability?.findIndex(x => (x.Accountability?.length ?? 0) > 0) ?? -1) > -1;
       }
     }
-    
+
     canContinue &&= this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, section).length == 0);
 
     this.hasIncompleteData = !canContinue;
@@ -101,8 +102,12 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   }
 
   override navigateNext(): Promise<boolean | void> {
+    if (this.applicationService.isChangeAmendmentInProgress) {
+      return this.navigationService.navigateRelative(`../registration-amendments/change-task-list`, this.activatedRoute);
+    }
+
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStage.AccountablePersonsComplete;
-    
+
     this.applicationService.updateApplication();
 
     if ((this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete) {
@@ -114,6 +119,10 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
 
   override async onSave(): Promise<void> {
     await this.applicationService.syncAccountablePersons();
+
+    if (this.applicationService.isChangeAmendmentInProgress) {
+      this.applicationService.currentVersion.ApChangesStatus = Status.ChangesComplete;
+    }
   }
 
   navigateTo(url: string, apIndex: number) {
@@ -123,14 +132,27 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   }
 
   removeAp(ap: AccountablePersonModel, index: number) {
-    this.applicationService.removeAp(index);
-    this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
+    if (this.applicationService.isChangeAmendmentInProgress) {
+      this.apToRemove = ap;
+    } else {
+      this.applicationService.removeAp(index);
+      this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
+    }
+  }
+
+  removeConfirmAp(confirm: boolean) {
+    if (confirm) {
+      this.applicationService.removeAp(this.applicationService.currentVersion.AccountablePersons.indexOf(this.apToRemove!));
+      this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
+    }
+    
+    this.apToRemove = undefined;
   }
 
   private updateAddAnotherVariable(aps: AccountablePersonModel[]) {
-    if(!!aps && aps.length > 1) {
+    if (!!aps && aps.length > 1) {
       aps.slice(0, aps.length - 2).map(x => x.AddAnother = 'yes');
-      if(!!aps.at(-1)) aps.at(-1)!.AddAnother = 'no';
+      if (!!aps.at(-1)) aps.at(-1)!.AddAnother = 'no';
     }
   }
 }

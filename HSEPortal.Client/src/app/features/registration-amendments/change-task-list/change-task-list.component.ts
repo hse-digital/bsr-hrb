@@ -53,9 +53,6 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   async navigateToSections() {
   }
 
-  async navigateToPap() {
-  }
-
   isKbiSubmitted() {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.KbiSubmitComplete) == BuildingApplicationStage.KbiSubmitComplete;
   }
