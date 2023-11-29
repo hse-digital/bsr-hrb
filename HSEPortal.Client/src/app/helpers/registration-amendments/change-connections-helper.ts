@@ -8,8 +8,8 @@ export class ChangeConnectionsHelper extends ChangeHelper {
     }
 
     getChanges(): ChangedAnswersModel[] {
-        let original = this.applicationService.previousVersion!.Kbi!.Connections;
-        let current = this.applicationService.currentVersion!.Kbi!.Connections;
+        let original = this.applicationService.previousVersion?.Kbi?.Connections ?? {};
+        let current = this.applicationService.currentVersion?.Kbi?.Connections ?? {};
         return this.getConnectionChanges(original, current, 0, this.applicationService.model.BuildingName!).filter(x => !!x).map(x => x!);
     }
 
@@ -17,11 +17,11 @@ export class ChangeConnectionsHelper extends ChangeHelper {
         let groupName = "connections/";
         let changes: (ChangedAnswersModel | undefined)[] = [];
 
-        changes.push(this.getFieldChange(this.getConnectionTypes(original.StructureConnections!), this.getConnectionTypes(current.StructureConnections!), "Connections between the structures", "Connections between the structures", groupName + "structure-connections", sectionName, index));
+        changes.push(this.getFieldChange(this.getConnectionTypes(original.StructureConnections), this.getConnectionTypes(current.StructureConnections), "Connections between the structures", "Connections between the structures", groupName + "structure-connections", sectionName, index));
         changes.push(this.getFieldChange(original.OtherHighRiseBuildingConnections, current.OtherHighRiseBuildingConnections, "Connected to other high-rise residential buildings?", "Connected to other high-rise residential buildings?", groupName + "other-high-rise-building-connections", sectionName, index));
-        changes.push(this.getFieldChange(this.getConnectionTypes(original.HowOtherHighRiseBuildingAreConnected!), this.getConnectionTypes(current.HowOtherHighRiseBuildingAreConnected!), "Connections to other high-rise residential buildings", "Connections to other high-rise residential buildings", groupName + "how-high-rise-buildings-are-connected", sectionName, index));
+        changes.push(this.getFieldChange(this.getConnectionTypes(original.HowOtherHighRiseBuildingAreConnected), this.getConnectionTypes(current.HowOtherHighRiseBuildingAreConnected), "Connections to other high-rise residential buildings", "Connections to other high-rise residential buildings", groupName + "how-high-rise-buildings-are-connected", sectionName, index));
         changes.push(this.getFieldChange(original.OtherBuildingConnections, current.OtherBuildingConnections, "Connected to other buildings?", "Connected to other buildings?", groupName + "other-building-connection", sectionName, index));
-        changes.push(this.getFieldChange(this.getConnectionTypes(original.HowOtherBuildingAreConnected!), this.getConnectionTypes(current.HowOtherBuildingAreConnected!), "Connections to other buildings", "Connections to other buildings", groupName + "how-buildings-are-connected", sectionName, index));
+        changes.push(this.getFieldChange(this.getConnectionTypes(original.HowOtherBuildingAreConnected), this.getConnectionTypes(current.HowOtherBuildingAreConnected), "Connections to other buildings", "Connections to other buildings", groupName + "how-buildings-are-connected", sectionName, index));
         
         return changes;
     }
@@ -39,7 +39,7 @@ export class ChangeConnectionsHelper extends ChangeHelper {
         "other": "Other"
     }
 
-    getConnectionTypes(values: string[]): string[] {
+    getConnectionTypes(values?: string[]): string[] {
         return values?.map(x => this.connectionTypes[x]) ?? [];
     }
 }
