@@ -7,10 +7,11 @@
         </div>
     </div>
 
-    <h2 class="govuk-heading-m" *ngIf="newPrimaryUser() || newSecondaryUser()">What happens next</h2>
+    <h2 class="govuk-heading-m" *ngIf="newPrimaryUser() || newSecondaryUser() || buildingSummaryApKbiConnectionChanges()">What happens next</h2>
     <govuk-body *ngIf="newPrimaryUser()">We have sent an email to {{primaryUser?.Email}} inviting {{primaryUser?.Firstname}} {{primaryUser?.Lastname}} to access this application. Once they verify their email, you will no longer have access to this application.</govuk-body>
     <govuk-body *ngIf="newSecondaryUser()">We have sent an email to {{secondaryUser?.Email}} inviting {{secondaryUser?.Firstname}} {{secondaryUser?.Lastname}} to access this application.</govuk-body>
-    
+    <govuk-body *ngIf="buildingSummaryApKbiConnectionChanges()">We will send you an email when we have reviewed your changes</govuk-body>
+
     <h2 class="govuk-heading-m">Application history</h2>
     <table class="govuk-table">
         <tbody class="govuk-table__body">

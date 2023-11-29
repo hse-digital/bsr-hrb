@@ -48,8 +48,11 @@ export class RaDeclarationComponent extends PageComponent<void> {
     return true;
   }
 
+  newChanges: boolean = false;
   override async navigateNext(): Promise<boolean | void> {
-    return this.navigationService.navigateRelative(RaConfirmationComponent.route, this.activatedRoute);
+    return this.navigationService.navigateRelative(RaConfirmationComponent.route, this.activatedRoute, {
+      newChanges: this.newChanges
+    });
   }
 
   userActingForPap() {
@@ -100,6 +103,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     if (!!areYouSure && areYouSure == "yes") {
       let changeRequest = this.syncChangeBuildingSummaryHelper.createChangeRequestWhenDeregister();
       if (changeRequest) this.addChangeRequestToModel(changeRequest);
+      this.newChanges = true;
     }
   }
 
@@ -129,12 +133,16 @@ export class RaDeclarationComponent extends PageComponent<void> {
     if (!!changes && changes.length > 0) {
       changeRequest.Change?.push(...changes);
       this.addChangeRequestToModel(changeRequest);
+      this.newChanges = true;
     }
   }
 
   private createRemovedStructureChangeRequest() {
     let changeRequest: ChangeRequest[] = this.syncChangeBuildingSummaryHelper.createChangeRequestForRemovedStructures() ?? [];
-    if (!!changeRequest && changeRequest.length > 0) changeRequest.forEach(x => this.addChangeRequestToModel(x));
+    if (!!changeRequest && changeRequest.length > 0) {
+      changeRequest.forEach(x => this.addChangeRequestToModel(x));
+      this.newChanges = true;
+    }
   }
 
   private addChangeRequestToModel(changeRequest: ChangeRequest) {
