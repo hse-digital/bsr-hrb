@@ -5,7 +5,7 @@ import { ApplicationService, BuildingApplicationStatuscode, Status } from 'src/a
 import { RaConfirmationComponent } from '../ra-confirmation/ra-confirmation.component';
 import { ChangeApplicantModelBuilder, ChangeBuildingSummaryModelBuilder, RemovedBuildingModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
 import { ChangeApplicantHelper } from 'src/app/helpers/registration-amendments/change-applicant-helper';
-import { Change, ChangeRequest, RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
+import { Change, ChangeCategory, ChangeRequest, RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { AddressModel } from 'src/app/services/address.service';
 import { ChangedAnswersModel } from 'src/app/helpers/registration-amendments/change-helper';
@@ -157,7 +157,8 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   get onlyRegistrationInformation() {
-    return false;
+    let helper = new ChangeBuildingSummaryHelper(this.applicationService);
+    return helper.getChanges().length > 0 || helper.getRemovedStructures().length > 0;
   }
 
   get areasAccountability() {
@@ -165,7 +166,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   get deregistering() {
-    return false;
+    return this.applicationService.currentVersion.ChangeRequest?.find(x => x.Category == ChangeCategory.DeRegistration);
   }
 
 }
