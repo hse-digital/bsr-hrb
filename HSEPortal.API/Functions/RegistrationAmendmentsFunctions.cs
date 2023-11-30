@@ -161,6 +161,22 @@ public class RegistrationAmendmentsFunctions
         return request.CreateResponse(HttpStatusCode.OK);
     }
 
+    [Function(nameof(DeactivateSingleStructure))]
+    public async Task<HttpResponseData> DeactivateSingleStructure([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(DeactivateSingleStructure)}/{{applicationId}}/{{buildingName}}/{{postcode}}")] HttpRequestData request, string applicationId, string buildingName, string postcode)
+    {
+        var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+
+        var existingStructure = await this.dynamicsService.FindExistingStructureAsync(buildingName.EscapeSingleQuote(), postcode.EscapeSingleQuote(), dynamicsBuildingApplication.bsr_buildingapplicationid.EscapeSingleQuote());
+        if (existingStructure != null)
+        {
+            var dynamicsStructure = new DynamicsStructure { statecode = 1 };
+            await dynamicsApi.Update($"bsr_blocks({existingStructure.bsr_blockid})", dynamicsStructure);
+            return request.CreateResponse(HttpStatusCode.OK);
+        }
+    
+        return request.CreateResponse(HttpStatusCode.BadRequest);
+    }
+
     private Dictionary<CancellationReason, string> DynamicsCancellationReason = new Dictionary<CancellationReason, string>() {
         {CancellationReason.NoCancellationReason, ""},
         {CancellationReason.NoConnected, "9107fc3d-8671-ee11-8178-6045bd0c1726"},

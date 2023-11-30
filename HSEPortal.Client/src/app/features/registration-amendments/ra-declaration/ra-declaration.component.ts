@@ -69,6 +69,10 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.createRemovedStructureChangeRequest();
     this.createDeregisterChangeRequest();
 
+    if (this.applicationService.previousVersion.Sections.length == 1 && this.applicationService.currentVersion.Sections.length > 1) {
+      this.deactivateSingleStructure();
+    }
+
     this.applicationService.previousVersion.ReplacedBy = this.applicationService.currentVersion.Name;
     this.applicationService.currentVersion.Submitted = true;
     this.applicationService.currentVersion.BuildingStatus = Status.NoChanges;
@@ -84,6 +88,11 @@ export class RaDeclarationComponent extends PageComponent<void> {
     await this.syncChangeBuildingSummaryHelper.syncDeregister();
 
     this.updateKbiStatus();
+  }
+
+  deactivateSingleStructure() {
+    this.registrationAmendmentsService.deactivateSingleStructure(this.applicationService.model.BuildingName!,
+      this.applicationService.previousVersion.Sections[0].Addresses[0].Postcode!);
   }
 
   updateKbiStatus() {

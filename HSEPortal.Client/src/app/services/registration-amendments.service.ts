@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class RegistrationAmendmentsService {
-  
+ 
   constructor(private httpClient: HttpClient, private applicationService: ApplicationService) {
   }
 
@@ -35,6 +35,10 @@ export class RegistrationAmendmentsService {
 
   async syncDeregister() {
     await firstValueFrom(this.httpClient.post(`api/WithdrawApplicationOrBuilding/${this.applicationService.model.id}`, this.applicationService.model));
+  }
+
+  async deactivateSingleStructure(buildingName: string, postcode: string) {
+    await firstValueFrom(this.httpClient.post(`api/DeactivateSingleStructure/${this.applicationService.model.id}/${buildingName}/${postcode}`, this.applicationService.model));
   }
 }
 

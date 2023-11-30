@@ -11,11 +11,11 @@ export class ChangeKbiHelper extends ChangeHelper {
 
     getChanges(): ChangedAnswersModel[] {
         let previousVersion = this.applicationService.previousVersion;
-        let changes: ChangedAnswersModel[] = this.applicationService.currentVersion.Kbi!.KbiSections.flatMap((section, index) => {
+        let changes: ChangedAnswersModel[] = this.applicationService.currentVersion.Kbi?.KbiSections?.flatMap((section, index) => {
             if (section.Status == Status.Removed) return undefined;
             let originalSection = previousVersion!.Kbi!.KbiSections.length <= index ? new KbiSectionModel() : previousVersion!.Kbi!.KbiSections[index];
             return this.getKbiChanges(originalSection, section, index);
-        }).filter(x => !!x).map(x => x!);
+        }).filter(x => !!x).map(x => x!) ?? [];
         return changes;
     }
 
