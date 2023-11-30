@@ -1,8 +1,8 @@
 <govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true" [processing]="processing">
 
   <govuk-radio-group [title]="getPapNameDescription()" [isPageHeading]=true [(model)]="model" id="radios-same-pap" [errorText]="getErrorDescription(!model, errorMessage)">
-    <govuk-radio (onKeyupEnter)="saveAndContinue()" name="same-pap-group" id="same-pap-yes" [value]=true label="Yes" />
-    <govuk-radio (onKeyupEnter)="saveAndContinue()" name="same-pap-group" id="same-pap-no" [value]=false label="No" />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" name="same-pap-group" id="same-pap-yes" [value]=true [model]="model" label="Yes" />
+    <govuk-radio (onKeyupEnter)="saveAndContinue()" name="same-pap-group" id="same-pap-no" [value]=false [model]="model" label="No" />
   </govuk-radio-group>
 
 </govuk-formpage>
