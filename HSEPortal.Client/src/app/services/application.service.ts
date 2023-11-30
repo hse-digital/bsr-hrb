@@ -662,15 +662,7 @@ export class RegistrationAmendmentsModel {
 
 export class ChangeAccountablePerson {
   Status: Status = Status.NoChanges;
-
   NewPap?: boolean;
-  PrincipalAccountableType?: string;
-
-  NewNamedContact?: boolean;
-  NewNamedContactFirstName?: string;
-  NewNamedContactLastName?: string;
-  NewNamedContactEmail?: string;
-  NewNamedContactPhonenumber?: string;
 }
 
 export class Deregister {

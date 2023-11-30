@@ -240,6 +240,13 @@ public record RegistrationAmendmentsModel
     public ChangeUser ChangeUser { get; set; }
     public long Date { get; set; }
     public Deregister Deregister { get; set; }
+    public ChangeAccountablePerson AccountablePersonStatus { get; set; }
+}
+
+public record ChangeAccountablePerson
+{
+    public Status Status { get; set; }
+    public bool? NewPap { get; set; }
 }
 
 public record Deregister
