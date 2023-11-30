@@ -49,8 +49,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return ((this.applicationService.model.ApplicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete)
-      && !this.applicationService.model.IsSecondary;
+    return true;
   }
 
   override isValid(): boolean {
@@ -103,11 +102,13 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   newNamedContact() {
+    let previousPap = this.applicationService.previousVersion.AccountablePersons[0];
     let pap = this.applicationService.currentVersion.AccountablePersons[0];
+
     return this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.Status != Status.NoChanges
-      && this.NewNamedContact
-      && FieldValidations.IsNotNullOrWhitespace(pap.NamedContactFirstName)
-      && FieldValidations.IsNotNullOrWhitespace(pap.NamedContactLastName);
+    
+      && FieldValidations.IsNotNullOrWhitespace(pap.NamedContactFirstName) && FieldValidations.IsNotNullOrWhitespace(pap.NamedContactFirstName) && previousPap.NamedContactFirstName != pap.NamedContactFirstName
+      && FieldValidations.IsNotNullOrWhitespace(pap.NamedContactLastName) && FieldValidations.IsNotNullOrWhitespace(pap.NamedContactLastName) && previousPap.NamedContactLastName != pap.NamedContactLastName;
   }
 
   get NamedContact() {
