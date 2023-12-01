@@ -95,11 +95,6 @@ export class ApplicationService {
     LocalStorage.setJSON('application_data', this.model)
   }
 
-  nextKnockOnQuestion() {
-    const buildingSummaryNavigation = GetInjector().get(BuildingSummaryNavigation);
-    return buildingSummaryNavigation.getNextKnockOnQuestion(this.currentSection);
-  }
-
   clearApplication() {
     this.model = new BuildingRegistrationModel();
     this.updateLocalStorage();

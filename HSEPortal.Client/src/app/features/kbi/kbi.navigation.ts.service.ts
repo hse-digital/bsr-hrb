@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseNavigation, KbiNavigationNode } from '../../services/navigation';
-import { ApplicationService, KbiSectionModel, BuildingApplicationStage, KbiModel } from '../../services/application.service';
+import { ApplicationService, KbiSectionModel, BuildingApplicationStage, KbiModel, SectionModel } from '../../services/application.service';
 import { CheckBeforeStartComponent } from 'src/app/features/kbi/check-before-start/check-before-start.component';
 import { EvacuationStrategyComponent } from 'src/app/features/kbi/1-fire/evacuation-strategy/evacuation-strategy.component';
 import { ProvisionsEquipmentComponent } from 'src/app/features/kbi/1-fire/provisions-equipment/provisions-equipment.component';
@@ -127,6 +127,18 @@ export class KbiNavigation extends BaseNavigation {
     let kbiSection = this.applicationService.currentVersion.Kbi!.KbiSections[sectionIndex!];
     let sectionRoute = this.checkBeforeStartNavigationNode.getNextRoute(kbiSection, sectionIndex!);
     return `${sectionRoute}`;
+  }
+
+  getNextKnockOnQuestion(sectionIndex: number) {
+    let route = this.getNextRoute(sectionIndex);
+    if (route === void 0 || route.endsWith(BuildingInformationCheckAnswersComponent.route)) return undefined;
+    else return route;
+  }
+
+  getNextConnectionKnockOnQuestion() {
+    let route = this.getNextConnectionRoute();
+    if (route === void 0 || route.endsWith(ConnectionsCheckAnswerComponent.route)) return undefined;
+    else return route;
   }
 }
 

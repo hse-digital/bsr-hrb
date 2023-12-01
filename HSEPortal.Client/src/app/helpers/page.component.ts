@@ -11,6 +11,8 @@ import { ApplicationSubmittedHelper } from "./app-submitted-helper";
 import { GetInjector } from "./injector.helper";
 import { RegistrationAmendmentsService } from "../services/registration-amendments.service";
 import { FieldValidations } from "./validators/fieldvalidations";
+import { BuildingSummaryNavigation } from "../features/application/building-summary/building-summary.navigation";
+import { KbiNavigation } from "../features/kbi/kbi.navigation.ts.service";
 
 @Component({ template: '' })
 export abstract class PageComponent<T> implements OnInit {
@@ -65,7 +67,7 @@ export abstract class PageComponent<T> implements OnInit {
         await this.saveAndUpdate(true);
       }
 
-      if (this.returnUrl && !this.KnockOnQuestions()) {
+      if (this.returnUrl && !this.KnockOnQuestions(this.returnUrl)) {
         this.navigateToReturnUrl(this.returnUrl);
         return;
       }
@@ -96,9 +98,34 @@ export abstract class PageComponent<T> implements OnInit {
     return { url: returnUrl };
   }
 
-  private KnockOnQuestions() {
-    let nextKnockOnQuestion = this.applicationService.nextKnockOnQuestion();
-    return FieldValidations.IsNotNullOrWhitespace(nextKnockOnQuestion);
+  private KnockOnQuestions(returnUrl: string) {
+    switch (returnUrl) {
+      case 'building-change-check-answers':
+        let nextKnockOnQuestion = this.buildingSummaryNextKnockOnQuestion();
+        return FieldValidations.IsNotNullOrWhitespace(nextKnockOnQuestion);
+      case 'change-check-answers': 
+        let kbiNextKnockOnQuestion = this.kbiNextKnockOnQuestion();
+        return FieldValidations.IsNotNullOrWhitespace(kbiNextKnockOnQuestion);
+      case 'change-connection-answers': 
+        let connectionsNextKnockOnQuestion = this.connectionsKnockOnQuestion();
+        return FieldValidations.IsNotNullOrWhitespace(connectionsNextKnockOnQuestion);
+    }
+    return false;
+  }
+
+  buildingSummaryNextKnockOnQuestion() {
+    const buildingSummaryNavigation = GetInjector().get(BuildingSummaryNavigation);
+    return buildingSummaryNavigation.getNextKnockOnQuestion(this.applicationService.currentSection);
+  }
+
+  kbiNextKnockOnQuestion() {
+    const kbiNavigation = GetInjector().get(KbiNavigation);
+    return kbiNavigation.getNextKnockOnQuestion(this.applicationService._currentKbiSectionIndex);
+  }
+
+  connectionsKnockOnQuestion() {
+    const kbiNavigation = GetInjector().get(KbiNavigation);
+    return kbiNavigation.getNextConnectionKnockOnQuestion();
   }
 
   async saveAndComeBack(): Promise<void> {
