@@ -39,6 +39,7 @@ import { RaCheckAnswersKbiComponent } from './ra-check-answers/ra-check-answers-
 import { ChangeConnectionsComponent } from './change-connections/change-connections/change-connections.component';
 import { RaCheckAnswersConnectionsComponent } from './ra-check-answers/ra-check-answers-connections.component';
 import { SamePapComponent } from './change-accountable-persons/same-pap/same-pap.component';
+import { RaCheckAnswersAccountablePersonsComponent } from './ra-check-answers/ra-check-answers-accountable-persons.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ChangeTaskListComponent.route, ChangeTaskListComponent, ChangeTaskListComponent.title),
@@ -98,6 +99,7 @@ const routes = new HseRoutes([
     RaSummaryChangeBuildingSummaryComponent,
     RaCheckAnswersKbiComponent,
     RaCheckAnswersConnectionsComponent,
+    RaCheckAnswersAccountablePersonsComponent,
     ChangeConnectionsComponent,
     SamePapComponent
   ],

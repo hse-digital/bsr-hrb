@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService } from 'src/app/services/application.service';
+import { ApplicationService, ChangeAccountablePerson } from 'src/app/services/application.service';
 import { RaDeclarationComponent } from '../ra-declaration/ra-declaration.component';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { RaCheckAnswersUsersHelper } from './ra-check-answers-users.component';
 import { ChangeKbiHelper } from 'src/app/helpers/registration-amendments/change-kbi-helper';
 import { ChangeConnectionsHelper } from 'src/app/helpers/registration-amendments/change-connections-helper';
+import { ChangeAccountablePersonsHelper } from 'src/app/helpers/registration-amendments/change-accountable-persons-helper';
 
 @Component({
   selector: 'hse-ra-check-answers',
@@ -35,7 +36,7 @@ export class RaCheckAnswersComponent extends PageComponent<void> {
   }
 
   get numberOfChanges() {
-    return this.numberOfBuildingChanges + this.numberOfUserChanges + this.numberOfKbiChanges + this.numberOfConnectionsChanges;
+    return this.numberOfBuildingChanges + this.numberOfUserChanges + this.numberOfKbiChanges + this.numberOfConnectionsChanges + this.numberOfPAPChanges;
   }
 
   get numberOfBuildingChanges() {
@@ -52,6 +53,11 @@ export class RaCheckAnswersComponent extends PageComponent<void> {
 
   get numberOfConnectionsChanges() {
     return new ChangeConnectionsHelper(this.applicationService).getChanges().length;
+  }
+
+  get numberOfPAPChanges() {
+    let apHelper = new ChangeAccountablePersonsHelper(this.applicationService)
+    return apHelper.getPAPChanges().length + apHelper.getAreasAccountabilityChanges().length; 
   }
 
 }
