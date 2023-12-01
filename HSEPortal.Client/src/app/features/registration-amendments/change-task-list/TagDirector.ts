@@ -1,6 +1,7 @@
 import { TaskListSteps, TagStatus } from "./change-task-list.component";
 import { ApplicationService, SectionModel, Status } from "src/app/services/application.service";
 import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
+import { ApplicationStageHelper } from "../../application/application-completed/application-completed.component";
 
 export class TagDirector {
     private Tag?: ChangeTaskListTag;
@@ -128,14 +129,17 @@ export class SubmitTag extends ChangeTaskListTag {
     getTag(): TagStatus {
         let changeUserTagStatus = new ChangesTag(this.applicationService).getTag();
         let changeBuildingSummaryTagStatus = new BuildingSummaryTag(this.applicationService).getTag();
-        let kbiTagStatus = new KbiTag(this.applicationService).getTag();
+        let kbiTagStatus = this.getKbiTags();
         let connectionsTagStatus = new ConnectionsTag(this.applicationService).getTag();
  
-        let canSubmit = !this.areAllNoChangesMade([changeUserTagStatus, changeBuildingSummaryTagStatus, kbiTagStatus, connectionsTagStatus]) 
+        let canSubmit = !this.areAllNoChangesMade([changeUserTagStatus, changeBuildingSummaryTagStatus, ...kbiTagStatus, connectionsTagStatus]) 
             && this.isNotSubmittedOrNoChangesMade(changeUserTagStatus) 
             && this.isNotSubmittedOrNoChangesMade(changeBuildingSummaryTagStatus)
-            && this.isNotSubmittedOrNoChangesMade(kbiTagStatus)
             && this.isNotSubmittedOrNoChangesMade(connectionsTagStatus);
+            
+        if (ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus)) {
+            canSubmit &&= kbiTagStatus.every(x => this.isNotSubmittedOrNoChangesMade(x));
+        }
 
         if(canSubmit) {
             return TagStatus.NotStarted
@@ -149,6 +153,16 @@ export class SubmitTag extends ChangeTaskListTag {
 
     areAllNoChangesMade(tagStatus: TagStatus[]) {
         return tagStatus.every(x => x == TagStatus.NoChangesMade);
+    }
+
+    getKbiTags() {
+        let tags = [];
+        let kbiTag: KbiTag = new KbiTag(this.applicationService);
+        for (let index = 0; index < this.applicationService.currentVersion.Kbi!.KbiSections.length; index++) {
+            kbiTag.setIndex(index);
+            tags.push(kbiTag.getTag());
+        }
+        return tags;
     }
 
 }

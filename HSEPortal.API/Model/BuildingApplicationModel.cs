@@ -240,6 +240,7 @@ public record RegistrationAmendmentsModel
     public ChangeUser ChangeUser { get; set; }
     public long Date { get; set; }
     public Deregister Deregister { get; set; }
+    public bool KbiChangeTaskList { get; set; }
     public ChangeAccountablePerson AccountablePersonStatus { get; set; }
 }
 

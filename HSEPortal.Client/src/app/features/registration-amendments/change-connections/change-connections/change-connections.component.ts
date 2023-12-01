@@ -25,7 +25,10 @@ export class ChangeConnectionsComponent extends PageComponent<void> {
   }
 
   private updateConnectionStatus() {
-    if(new ChangeConnectionsHelper(this.applicationService)?.getChanges().length! > 0) {
+    let missingAnswer = !this.applicationService.currentVersion.Kbi!.Connections.StructureConnections || this.applicationService.currentVersion.Kbi!.Connections.StructureConnections.length == 0;
+    if (this.applicationService.model.NumberOfSections != "one" && missingAnswer) {
+      this.applicationService.currentVersion.Kbi!.Connections.Status = Status.ChangesInProgress;
+    } else if(new ChangeConnectionsHelper(this.applicationService)?.getChanges().length! > 0) {
       this.applicationService.currentVersion.Kbi!.Connections.Status = this.isValid() 
         ? Status.ChangesComplete 
         : Status.ChangesInProgress;

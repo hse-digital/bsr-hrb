@@ -84,16 +84,16 @@ export class ChangesSinceCompletionAnswers extends BuildingInformationCheckAnswe
   }
 
   changeInNumberOfFloors() {
-    return this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.some(x => x == 'floors_added')
+    return this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'floors_added');
   }
 
   notChangeInNumberOfFloors() {
-    return this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length > 1 
+    return (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges?.length ?? 0) > 1 
        && !this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'none' || x == 'unknown')
   }
 
   onlyOneOptionSelected() {
-    let onlyOneMaterialChange = (this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges!.length == 1);
+    let onlyOneMaterialChange = ((this.applicationService.currentKbiSection!.BuildingUse.UndergoneBuildingMaterialChanges?.length ?? 0) == 1);
     let mostRecentChangeIsKnown = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange) && this.applicationService.currentKbiSection?.BuildingUse.MostRecentMaterialChange != "unknown";
     let isNoneOrUnknown = this.applicationService.currentKbiSection?.BuildingUse.UndergoneBuildingMaterialChanges?.some(x => x == 'none' || x == 'unknown')
     

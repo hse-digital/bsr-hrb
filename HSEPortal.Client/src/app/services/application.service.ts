@@ -152,25 +152,14 @@ export class ApplicationService {
 
   initKbi() {
     let filteredSections = this.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
-    if (!this.currentVersion.Kbi) {
+    if (!this.currentVersion.Kbi || !this.currentVersion.Kbi.KbiSections || this.currentVersion.Kbi.KbiSections.length == 0) {
       this.initKbiModel(filteredSections);
-    } else if (this.currentVersion.Kbi.KbiSections.length != filteredSections.length) {
+    } else if (this.currentVersion.Kbi.KbiSections.length != filteredSections.length || !this.areKbiSectionsValid(filteredSections)) {
       this.updateKbiModel(filteredSections);
-    }
-
-    if (!this.currentVersion.Kbi?.SectionStatus || this.currentVersion.Kbi?.SectionStatus.length == 0) {
-      this.currentVersion.Kbi!.SectionStatus = [];
-      filteredSections.map(x => this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false}));
-    }
-
-    let missingStatuses = this.currentVersion.Kbi!.KbiSections.length - this.currentVersion.Kbi!.SectionStatus.length
-    if (missingStatuses != 0 && missingStatuses > 0) {
-      for (let index = 0; index < missingStatuses; index++) {
-        this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false});
-      }
-    }
-
+    } 
     this.removeUnnecessaryKbiSections();
+    this.updateKbiSectionStatus(filteredSections);
+    this.updateApplication();
   }
 
   private initKbiModel(filteredSections: SectionModel[]) {
@@ -188,16 +177,23 @@ export class ApplicationService {
   }
 
   private updateKbiModel(filteredSections: SectionModel[]) {
+    let sectionHasKbi = (section: SectionModel) => this.currentVersion.Kbi?.KbiSections.some(kbiSection => kbiSection.StructureName == section.Name && this.arePostcodesEqual(kbiSection.Postcode, section.Addresses[0].Postcode))
+
     filteredSections.forEach(section => {
-      if (!this.currentVersion.Kbi?.KbiSections.some(kbiSection => kbiSection.StructureName == section.Name && this.arePostcodesEqual(kbiSection.Postcode, section.Addresses[0].Postcode))) {
+      if (!sectionHasKbi(section)) {
         var newKbiSection = new KbiSectionModel();
         newKbiSection.StructureName = section.Name;
         newKbiSection.Postcode = FieldValidations.IsNotNullOrEmpty(section.Addresses) ? section.Addresses[0].Postcode : undefined;
+        newKbiSection.Status = Status.ChangesInProgress;
 
         this.currentVersion.Kbi!.KbiSections.push(newKbiSection);
         this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false});
       }
     });
+  }
+
+  private areKbiSectionsValid(filteredSections: SectionModel[]) {
+    return filteredSections.every(x => (this.currentVersion.Kbi?.KbiSections.findIndex(kbi => kbi?.StructureName == x.Name && this.arePostcodesEqual(kbi?.Postcode, x.Addresses[0].Postcode)) ?? -1) > -1)
   }
 
   private removeUnnecessaryKbiSections() {
@@ -209,6 +205,20 @@ export class ApplicationService {
         this.currentVersion.Kbi!.SectionStatus!.splice(index!, 1);
       }
     });
+  }
+
+  private updateKbiSectionStatus(filteredSections: SectionModel[]) {
+    if (!this.currentVersion.Kbi?.SectionStatus || this.currentVersion.Kbi?.SectionStatus.length == 0) {
+      this.currentVersion.Kbi!.SectionStatus = [];
+      filteredSections.map(x => this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false}));
+    }
+
+    let missingStatuses = this.currentVersion.Kbi!.KbiSections.length - this.currentVersion.Kbi!.SectionStatus.length
+    if (missingStatuses != 0 && missingStatuses > 0) {
+      for (let index = 0; index < missingStatuses; index++) {
+        this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false});
+      }
+    }
   }
 
   private arePostcodesEqual(a?: string, b?: string) {
@@ -658,6 +668,7 @@ export class RegistrationAmendmentsModel {
   Deregister?: Deregister;
   ChangeUser?: ChangeUser;
   Date?: number;
+  KbiChangeTaskList?: boolean;
 }
 
 export class ChangeAccountablePerson {

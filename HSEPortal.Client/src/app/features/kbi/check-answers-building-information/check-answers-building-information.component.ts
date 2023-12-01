@@ -14,6 +14,8 @@ import { KbiService } from 'src/app/services/kbi.service';
 import { KbiValidator } from 'src/app/helpers/kbi-validator'
 import { KbiFireModule } from '../1-fire/kbi.fire.module';
 import { EvacuationStrategyComponent } from '../1-fire/evacuation-strategy/evacuation-strategy.component';
+import { ChangeBuildingInformationCheckAnswersComponent } from '../../registration-amendments/change-kbi/check-answers-building-information/check-answers-building-information.component';
+import { KbiChangeCheckAnswersModule } from '../../registration-amendments/change-kbi/check-answers-building-information/kbi.check-answers-building-information.module';
 
 @Component({
   templateUrl: './check-answers-building-information.component.html',
@@ -32,6 +34,12 @@ export class BuildingInformationCheckAnswersComponent extends BaseComponent impl
   }
 
   ngOnInit(): void {
+    if (this.applicationService.model.RegistrationAmendmentsModel?.KbiChangeTaskList) {
+      this.applicationService.model.RegistrationAmendmentsModel.KbiChangeTaskList = false;
+      this.navigationService.navigateRelative(`../../../registration-amendments/${KbiChangeCheckAnswersModule.baseRoute}/${ChangeBuildingInformationCheckAnswersComponent.route}`, this.activatedRoute, {
+        index: this.applicationService._currentKbiSectionIndex
+      });
+    }
     this.kbiSection = this.applicationService.currentKbiSection!;
   }
 

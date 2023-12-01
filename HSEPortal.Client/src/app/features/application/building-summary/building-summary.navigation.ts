@@ -66,7 +66,7 @@ export class BuildingSummaryNavigation extends BaseNavigation {
 
   getNextKnockOnQuestion(section: SectionModel) {
     let route = this.getNextRouteIn(section);
-    if (route === void 0 || route == SectionCheckAnswersComponent.route || route == AddMoreSectionsComponent.route) return undefined;
+    if (route === void 0 || route == SectionCheckAnswersComponent.route || route == AddMoreSectionsComponent.route || route == AlreadyRegisteredMultiComponent.route) return undefined;
     else return route;
   }
 }

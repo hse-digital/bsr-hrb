@@ -28,6 +28,7 @@ export class TaskListComponent implements CanActivate, OnInit {
 
   async ngOnInit() {
     this.applicationService.initKbi();
+    if (!!this.applicationService.model.RegistrationAmendmentsModel) this.applicationService.model.RegistrationAmendmentsModel.KbiChangeTaskList = false;
     this.InScopeSections = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && !!x.Addresses && x.Addresses.length > 0 && x.Status != Status.Removed);
     await this.applicationService.updateApplication();
   }

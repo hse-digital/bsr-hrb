@@ -11,6 +11,7 @@ import { AddressModel } from 'src/app/services/address.service';
 import { ChangedAnswersModel } from 'src/app/helpers/registration-amendments/change-helper';
 import { ChangeKbiHelper } from 'src/app/helpers/registration-amendments/change-kbi-helper';
 import { ChangeConnectionsHelper } from 'src/app/helpers/registration-amendments/change-connections-helper';
+import { KbiService } from 'src/app/services/kbi.service';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -26,7 +27,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
 
   loading = false;
 
-  constructor(activatedRoute: ActivatedRoute, registrationAmendmentsService: RegistrationAmendmentsService) {
+  constructor(activatedRoute: ActivatedRoute, registrationAmendmentsService: RegistrationAmendmentsService, private kbiService: KbiService) {
     super(activatedRoute);
     this.changeApplicantHelper = new ChangeApplicantHelper(this.applicationService);
     this.syncChangeApplicantHelper = new SyncChangeApplicantHelper(this.applicationService, registrationAmendmentsService);
@@ -37,7 +38,6 @@ export class RaDeclarationComponent extends PageComponent<void> {
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): Promise<void> {
     await this.submit();
-    await this.applicationService.syncBuildingStructures();
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -88,6 +88,10 @@ export class RaDeclarationComponent extends PageComponent<void> {
     await this.syncChangeBuildingSummaryHelper.syncDeregister();
 
     this.updateKbiStatus();
+    
+    await this.applicationService.syncBuildingStructures();
+
+    this.updateAllKbiSections();
   }
 
   deactivateSingleStructure() {
@@ -105,6 +109,15 @@ export class RaDeclarationComponent extends PageComponent<void> {
     }
 
     this.applicationService.updateApplication();
+  }
+
+  updateAllKbiSections() {
+    this.applicationService.currentVersion.Kbi?.KbiSections.filter(x => x.Status != Status.Removed).forEach(kbiSection => {
+      this.kbiService.startKbi(kbiSection);
+      this.kbiService.syncFireEnergy(kbiSection);
+      this.kbiService.syncStructureRoofStaircasesAndWalls(kbiSection);
+      this.kbiService.syncBuilding(kbiSection);
+    });
   }
   
   createDeregisterChangeRequest() {

@@ -22,7 +22,7 @@ export class SectionNameComponent extends PageComponent<string> {
   override onInit(applicationService: ApplicationService): void {
     this.activatedRoute.queryParams.subscribe(params => {
       let index = params['index'];
-      this.newStructureIndex = index == this.applicationService.currentVersion.Sections.length - 1 ? index : undefined;
+      this.newStructureIndex = (index == (this.applicationService.currentVersion.Sections.length - 1) ? index : undefined);
     });
 
     this.model = applicationService.currentSection?.Name;
@@ -31,6 +31,18 @@ export class SectionNameComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     applicationService.currentSection.Name = this.model;
+    
+    if (this.kbiExists() && this.kbiSectionExists()) {
+      this.applicationService.currentVersion.Kbi!.KbiSections.at(this.applicationService._currentSectionIndex)!.StructureName = this.model;
+    }
+  }
+
+  private kbiSectionExists() {
+    return !!this.applicationService.currentVersion.Kbi?.KbiSections.at(this.applicationService._currentSectionIndex);
+  }
+
+  private kbiExists() {
+    return !!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.KbiSections && this.applicationService.currentVersion.Kbi.KbiSections.length > 0;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

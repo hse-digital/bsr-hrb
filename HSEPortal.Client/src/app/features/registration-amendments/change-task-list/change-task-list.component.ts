@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, BuildingApplicationStage, KbiSectionModel, SectionModel, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, SectionModel, Status } from 'src/app/services/application.service';
 import { TagDirector } from './TagDirector';
 import { KbiChangeCheckAnswersModule } from '../change-kbi/check-answers-building-information/kbi.check-answers-building-information.module';
 import { ChangeBuildingInformationCheckAnswersComponent } from '../change-kbi/check-answers-building-information/check-answers-building-information.component';
+import { KbiNavigation } from '../../kbi/kbi.navigation.ts.service';
+import { KbiConnectionsModule } from '../../kbi/8-connections/kbi.connections.module';
+import { KbiSubmitModule } from '../../kbi/9-submit/kbi.submit.module';
+import { KbiValidator } from 'src/app/helpers/kbi-validator';
+import { ChangeKbiHelper } from 'src/app/helpers/registration-amendments/change-kbi-helper';
 
 @Component({
   selector: 'hse-change-task-list',
@@ -18,18 +23,20 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   InScopeKbiSections!: SectionModel[];
   tagDirector?: TagDirector;
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, private kbiNavigation: KbiNavigation) {
     super(activatedRoute);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
     this.applicationService.validateCurrentVersion();
-    this.tagDirector  = new TagDirector(this.applicationService);
+    this.applicationService.initKbi();
+    this.validateKbiSections();
+    this.tagDirector = new TagDirector(this.applicationService);
 
     this.InScopeKbiSections = this.applicationService.currentVersion.Sections
       .filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
 
-    if(!this.applicationService.model.RegistrationAmendmentsModel) {
+    if (!this.applicationService.model.RegistrationAmendmentsModel) {
       this.applicationService.model.RegistrationAmendmentsModel = {};
     }
   }
@@ -73,10 +80,37 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     return this.TagToCssClass[this.tagDirector?.getTag() ?? TagStatus.NotYetAvailable];
   }
 
-  async navigateToKbi(index: number) {
-    return this.navigationService.navigateRelative(`${KbiChangeCheckAnswersModule.baseRoute}/${ChangeBuildingInformationCheckAnswersComponent.route}`, this.activatedRoute, {
-      index: index
+  validateKbiSections() {
+    this.applicationService.currentVersion.Kbi?.KbiSections.forEach((kbiSection, index) => {
+      if (!!kbiSection) {
+        let hasChanged = (new ChangeKbiHelper(this.applicationService).getChangesOf(kbiSection, index) ?? []).length > 0;
+        if (hasChanged) {
+          this.applicationService.currentVersion.Kbi!.KbiSections.at(index)!.Status = KbiValidator.isKbiSectionValid(kbiSection)
+            ? Status.ChangesComplete 
+            : Status.ChangesInProgress;
+        }
+      }
     });
+  }
+
+  async navigateToKbi(index: number) {
+    let route = this.kbiNavigation.getNextRoute(index);
+
+    if (route.startsWith(KbiConnectionsModule.baseRoute) || route.startsWith(KbiSubmitModule.baseRoute) || route.startsWith("check-answers")) {
+      return this.navigationService.navigateRelative(`${KbiChangeCheckAnswersModule.baseRoute}/${ChangeBuildingInformationCheckAnswersComponent.route}`, this.activatedRoute, {
+        index: index
+      });
+    } else {
+      let query = route.split('?');
+      let params: any = {};
+      if (query.length > 1) {
+        let queryParam = query[1].split('=');
+        params[queryParam[0]] = queryParam[1];
+      }
+
+      this.applicationService.model.RegistrationAmendmentsModel!.KbiChangeTaskList = true;
+      return this.navigationService.navigateAppend(`../../kbi/${(index + 1)}/${query[0]}`, this.activatedRoute, params);
+    }
   }
 
   get submitSectionNumber() {

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, Status } from 'src/app/services/application.service';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { BuildingChangeCheckAnswersComponent } from 'src/app/features/registration-amendments/change-building-summary/building-change-check-answers/building-change-check-answers.component';
@@ -86,6 +86,8 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
       return this.navigationService.navigateRelative(`/${RegistrationAmendmentsModule.baseRoute}/${BuildingChangeCheckAnswersComponent.route}`, this.activatedRoute);
     } else {
       let section = this.applicationService.startNewSection();
+      this.updateConnectionsStatus();
+      this.updateAPStatus();
       await this.applicationService.updateApplication();
       if (!FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentVersion.Sections[0].Name)) {
         return this.navigationService.navigateRelative(`sections/section-1/${SectionNameComponent.route}`, this.activatedRoute, {
@@ -94,6 +96,17 @@ export class NumberOfSectionsComponment extends PageComponent<string> {
       }
       return this.navigationService.navigateRelative(`sections/${section}/${SectionNameComponent.route}`, this.activatedRoute);
     }
+  }
+
+  
+  private updateConnectionsStatus() {
+    if (!!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.Connections) {
+      this.applicationService.currentVersion.Kbi.Connections.Status = Status.ChangesInProgress;
+    }
+  }
+
+  private updateAPStatus() {
+    this.applicationService.currentVersion.ApChangesStatus = Status.ChangesInProgress;
   }
 
   private returnToCheckAnswers: boolean = false;

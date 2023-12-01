@@ -13,7 +13,7 @@ export class ChangeKbiHelper extends ChangeHelper {
         let previousVersion = this.applicationService.previousVersion;
         let changes: ChangedAnswersModel[] = this.applicationService.currentVersion.Kbi?.KbiSections?.flatMap((section, index) => {
             if (section.Status == Status.Removed) return undefined;
-            let originalSection = previousVersion!.Kbi!.KbiSections.length <= index ? new KbiSectionModel() : previousVersion!.Kbi!.KbiSections[index];
+            let originalSection = (previousVersion?.Kbi?.KbiSections?.length ?? 0) <= index ? new KbiSectionModel() : previousVersion!.Kbi!.KbiSections[index];
             return this.getKbiChanges(originalSection, section, index);
         }).filter(x => !!x).map(x => x!) ?? [];
         return changes;
@@ -21,8 +21,8 @@ export class ChangeKbiHelper extends ChangeHelper {
 
     getChangesOf(section: KbiSectionModel, index: number) {
         let previousVersion = this.applicationService.previousVersion;
-        if (section.Status == Status.Removed) return undefined;
-        let originalSection = previousVersion!.Kbi!.KbiSections.length <= index ? new KbiSectionModel() : previousVersion!.Kbi!.KbiSections[index];
+        if (section?.Status == Status.Removed) return undefined;
+        let originalSection = (previousVersion?.Kbi?.KbiSections?.length ?? 0) <= index ? new KbiSectionModel() : previousVersion!.Kbi!.KbiSections[index];
         return this.getKbiChanges(originalSection, section, index).filter(x => !!x).map(x => x!);
     }
 
@@ -67,25 +67,27 @@ export class ChangeKbiHelper extends ChangeHelper {
         let originalAnswer = [];
         let currentAnswer = [];
 
+        let formatAnswer = (answer?: any, text?: string) => { return answer != undefined ? `${answer} ${text}` : undefined };
+
         if (this.hasChanged(originalDoors?.HundredTwentyMinsFireResistance, currentDoors?.HundredTwentyMinsFireResistance)) {
-            originalAnswer.push(originalDoors?.HundredTwentyMinsFireResistance + " doors with 120-minute fire resistance");
-            currentAnswer.push(currentDoors?.HundredTwentyMinsFireResistance + " doors with 120-minute fire resistance");
+            originalAnswer.push(formatAnswer(originalDoors?.HundredTwentyMinsFireResistance, "doors with 120-minute fire resistance"));
+            currentAnswer.push(formatAnswer(currentDoors?.HundredTwentyMinsFireResistance, "doors with 120-minute fire resistance"));
         }
         if (this.hasChanged(originalDoors?.SixtyMinsFireResistance, currentDoors?.SixtyMinsFireResistance)) {
-            originalAnswer.push(originalDoors?.SixtyMinsFireResistance + " doors with 60-minute fire resistance");
-            currentAnswer.push(currentDoors?.SixtyMinsFireResistance + " doors with 60-minute fire resistance");
+            originalAnswer.push(formatAnswer(originalDoors?.SixtyMinsFireResistance, "doors with 60-minute fire resistance"));
+            currentAnswer.push(formatAnswer(currentDoors?.SixtyMinsFireResistance, "doors with 60-minute fire resistance"));
         }
         if (this.hasChanged(originalDoors?.ThirtyMinsFireResistance, currentDoors?.ThirtyMinsFireResistance)) {
-            originalAnswer.push(originalDoors?.ThirtyMinsFireResistance + " doors with 30-minute fire resistance");
-            currentAnswer.push(currentDoors?.ThirtyMinsFireResistance + " doors with 30-minute fire resistance");
+            originalAnswer.push(formatAnswer(originalDoors?.ThirtyMinsFireResistance, "doors with 30-minute fire resistance"));
+            currentAnswer.push(formatAnswer(currentDoors?.ThirtyMinsFireResistance, "doors with 30-minute fire resistance"));
         }
         if (this.hasChanged(originalDoors?.NoFireResistance, currentDoors?.NoFireResistance)) {
-            originalAnswer.push(originalDoors?.NoFireResistance + " doors with no fire resistance");
-            currentAnswer.push(currentDoors?.NoFireResistance + " doors with no fire resistance");
+            originalAnswer.push(formatAnswer(originalDoors?.NoFireResistance, "doors with no fire resistance"));
+            currentAnswer.push(formatAnswer(currentDoors?.NoFireResistance, "doors with no fire resistance"));
         }
         if (this.hasChanged(originalDoors?.NotKnownFireResistance, currentDoors?.NotKnownFireResistance)) {
-            originalAnswer.push(originalDoors?.NotKnownFireResistance + " doors that fire resistance is not known");
-            currentAnswer.push(currentDoors?.NotKnownFireResistance + " doors that fire resistance is not known");
+            originalAnswer.push(formatAnswer(originalDoors?.NotKnownFireResistance, "doors that fire resistance is not known"));
+            currentAnswer.push(formatAnswer(currentDoors?.NotKnownFireResistance, "doors that fire resistance is not known"));
         }
         return originalAnswer.length > 0 ? this.getFieldChange(originalAnswer, currentAnswer, "Residential front doors", "Residential front doors", "fire/residential-unit-front-doors-fire-resistance", sectionName, index) : undefined;
     }
@@ -96,31 +98,34 @@ export class ChangeKbiHelper extends ChangeHelper {
         let originalAnswer = [];
         let currentAnswer = [];
 
+        let formatAnswer = (answer?: any, text?: string) => { return answer != undefined ? `${answer} ${text}` : undefined };
+
         if (this.hasChanged(originalDoors?.FireDoorHundredTwentyMinute, currentDoors?.FireDoorHundredTwentyMinute)) {
-            originalAnswer.push(originalDoors?.FireDoorHundredTwentyMinute + " doors with 120-minute fire resistance");
-            currentAnswer.push(currentDoors?.FireDoorHundredTwentyMinute + " doors with 120-minute fire resistance");
+            originalAnswer.push(formatAnswer(originalDoors?.FireDoorHundredTwentyMinute, "doors with 120-minute fire resistance"));
+            currentAnswer.push(formatAnswer(currentDoors?.FireDoorHundredTwentyMinute, "doors with 120-minute fire resistance"));
         }
         if (this.hasChanged(originalDoors?.FireDoorSixtyMinute, currentDoors?.FireDoorSixtyMinute)) {
-            originalAnswer.push(originalDoors?.FireDoorSixtyMinute + " doors with 60-minute fire resistance");
-            currentAnswer.push(currentDoors?.FireDoorSixtyMinute + " doors with 60-minute fire resistance");
+            originalAnswer.push(formatAnswer(originalDoors?.FireDoorSixtyMinute, "doors with 60-minute fire resistance"));
+            currentAnswer.push(formatAnswer(currentDoors?.FireDoorSixtyMinute, "doors with 60-minute fire resistance"));
         }
         if (this.hasChanged(originalDoors?.FireDoorThirtyMinute, currentDoors?.FireDoorThirtyMinute)) {
-            originalAnswer.push(originalDoors?.FireDoorThirtyMinute + " doors with 30-minute fire resistance");
-            currentAnswer.push(currentDoors?.FireDoorThirtyMinute + " doors with 30-minute fire resistance");
+            originalAnswer.push(formatAnswer(originalDoors?.FireDoorThirtyMinute, "doors with 30-minute fire resistance"));
+            currentAnswer.push(formatAnswer(currentDoors?.FireDoorThirtyMinute, "doors with 30-minute fire resistance"));
         }
         if (this.hasChanged(originalDoors?.FireDoorUnknown, currentDoors?.FireDoorUnknown)) {
-            originalAnswer.push(originalDoors?.FireDoorUnknown + " doors that fire resistance is not known");
-            currentAnswer.push(currentDoors?.FireDoorUnknown + " doors that fire resistance is not known");
+            originalAnswer.push(formatAnswer(originalDoors?.FireDoorUnknown, "doors that fire resistance is not known"));
+            currentAnswer.push(formatAnswer(currentDoors?.FireDoorUnknown, "doors that fire resistance is not known"));
         }
         return originalAnswer.length > 0 ? this.getFieldChange(originalAnswer, currentAnswer, "Fire doors in common parts", "Fire doors in common parts", "fire/doors-common", sectionName, index) : undefined;
     }
 
     private getSmokeAndFireDeviceLocationsChanges(original: KbiSectionModel, current: KbiSectionModel, index: number, sectionName: string) {
         let changes: (ChangedAnswersModel | undefined)[] = [];
-        for (let device of Object.keys(current.Fire.FireSmokeProvisionLocations!)) {
+        if (!current?.Fire?.FireSmokeProvisionLocations || !original.Fire.FireSmokeProvisionLocations) return [];
+        for (let device of Object.keys(current.Fire.FireSmokeProvisionLocations)) {
             let deviceName = this.mapper.getEquipmentName([device])[0];
-            let originalAnswer = this.mapper.getSmokeAndFireDeviceLocations(device, original.Fire.FireSmokeProvisionLocations!);
-            let currentAnswer = this.mapper.getSmokeAndFireDeviceLocations(device, current.Fire.FireSmokeProvisionLocations!);
+            let originalAnswer = this.mapper.getSmokeAndFireDeviceLocations(device, original.Fire.FireSmokeProvisionLocations);
+            let currentAnswer = this.mapper.getSmokeAndFireDeviceLocations(device, current.Fire.FireSmokeProvisionLocations);
             if (this.hasChanged(originalAnswer, currentAnswer)) {
                 changes.push(this.getFieldChange(originalAnswer, currentAnswer, "Smoke and Fire device locations - " + deviceName, deviceName, "fire/smoke-provision-locations", sectionName, index));
             }
