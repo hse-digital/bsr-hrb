@@ -17,7 +17,7 @@ import { ChangeConnectionsHelper } from 'src/app/helpers/registration-amendments
 })
 export class ChangeConnectionsComponent extends PageComponent<void> {
   static route: string = 'change-connection-answers';
-  static title: string = "Check your answers about connections - Register a high-rise building - GOV.UK";
+  static title: string = "Check your answers about connections in and around the building - Register a high-rise building - GOV.UK";
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
