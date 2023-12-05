@@ -58,7 +58,7 @@ export class SamePapComponent extends PageComponent<boolean> {
     if (isPapSelf) {
       papName = `${this.applicationService.model.ContactFirstName} ${this.applicationService.model.ContactLastName}`;
     } else {
-      papName = `${pap.FirstName} ${pap.LastName}`;
+      papName = pap.Type == "organisation" ? `${pap.OrganisationName}` : `${pap.FirstName} ${pap.LastName}`;
     }
 
     return papName;
