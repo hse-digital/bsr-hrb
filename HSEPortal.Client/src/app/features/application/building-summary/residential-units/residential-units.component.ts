@@ -85,7 +85,7 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
         this.returnUrl = undefined;
       }
       this.applicationService.currentSection.Status = this.applicationService.currentSection.Status == Status.NoChanges ? Status.NoChanges : Status.ChangesInProgress;
-      if (this.applicationService.currentSection.CancellationReason) this.applicationService.currentSection.CancellationReason = undefined;
+      this.applicationService.currentSection.CancellationReason = undefined;
       this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
     }
   }
