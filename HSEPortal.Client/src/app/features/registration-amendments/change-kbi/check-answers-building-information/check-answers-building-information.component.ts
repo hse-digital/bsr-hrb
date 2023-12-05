@@ -14,7 +14,7 @@ import { ChangeKbiHelper } from 'src/app/helpers/registration-amendments/change-
 })
 export class ChangeBuildingInformationCheckAnswersComponent extends PageComponent<void> {
   static route: string = 'change-check-answers';
-  static title: string = "Check your building information answers - Register a high-rise building - GOV.UK";
+  static title: string = "Check structure and fire safety information - Register a high-rise building - GOV.UK";
 
   kbiSection: KbiSectionModel = new KbiSectionModel;
   shouldRender: boolean = false;
