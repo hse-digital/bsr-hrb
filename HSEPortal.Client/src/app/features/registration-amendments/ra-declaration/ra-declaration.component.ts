@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService, BuildingApplicationStatuscode, Status } from 'src/app/services/application.service';
 import { RaConfirmationComponent } from '../ra-confirmation/ra-confirmation.component';
-import { ChangeApplicantModelBuilder, ChangeBuildingSummaryModelBuilder, RemovedBuildingModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
+import { ChangeAccountablePersonModelBuilder, ChangeApplicantModelBuilder, ChangeBuildingSummaryModelBuilder, RemovedBuildingModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
 import { ChangeApplicantHelper } from 'src/app/helpers/registration-amendments/change-applicant-helper';
 import { Change, ChangeCategory, ChangeRequest, RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
@@ -12,6 +12,7 @@ import { ChangedAnswersModel } from 'src/app/helpers/registration-amendments/cha
 import { ChangeKbiHelper } from 'src/app/helpers/registration-amendments/change-kbi-helper';
 import { ChangeConnectionsHelper } from 'src/app/helpers/registration-amendments/change-connections-helper';
 import { KbiService } from 'src/app/services/kbi.service';
+import { ChangeAccountablePersonsHelper } from 'src/app/helpers/registration-amendments/change-accountable-persons-helper';
 
 @Component({
   selector: 'hse-ra-declaration',
@@ -24,6 +25,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
   private changeApplicantHelper: ChangeApplicantHelper;
   private syncChangeApplicantHelper: SyncChangeApplicantHelper;
   private syncChangeBuildingSummaryHelper: SyncChangeBuildingSummaryHelper;
+  private syncChangeAccountablePersonHelper: SyncChangeAccountablePersonHelper;
 
   loading = false;
 
@@ -32,6 +34,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.changeApplicantHelper = new ChangeApplicantHelper(this.applicationService);
     this.syncChangeApplicantHelper = new SyncChangeApplicantHelper(this.applicationService, registrationAmendmentsService);
     this.syncChangeBuildingSummaryHelper = new SyncChangeBuildingSummaryHelper(this.applicationService, registrationAmendmentsService);
+    this.syncChangeAccountablePersonHelper = new SyncChangeAccountablePersonHelper(this.applicationService, registrationAmendmentsService);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> { }
@@ -68,6 +71,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.createBuildingSummaryChangeRequest();
     this.createRemovedStructureChangeRequest();
     this.createDeregisterChangeRequest();
+    this.createAccountablePersonChangeRequest();
 
     if (this.applicationService.previousVersion.Sections.length == 1 && this.applicationService.currentVersion.Sections.length > 1) {
       this.deactivateSingleStructure();
@@ -88,6 +92,8 @@ export class RaDeclarationComponent extends PageComponent<void> {
     await this.syncChangeBuildingSummaryHelper.syncDeregister();
 
     this.updateKbiStatus();
+
+    this.applicationService.currentVersion.ApChangesStatus = Status.ChangesComplete;
     
     await this.applicationService.syncBuildingStructures();
 
@@ -163,6 +169,16 @@ export class RaDeclarationComponent extends PageComponent<void> {
     let changeRequest: ChangeRequest[] = this.syncChangeBuildingSummaryHelper.createChangeRequestForRemovedStructures() ?? [];
     if (!!changeRequest && changeRequest.length > 0) {
       changeRequest.forEach(x => this.addChangeRequestToModel(x));
+      this.newChanges = true;
+    }
+  }
+
+  private createAccountablePersonChangeRequest() {
+    let changeRequest = this.syncChangeAccountablePersonHelper.createChangeRequest();
+    let changes = this.syncChangeAccountablePersonHelper.createChanges();
+    if (!!changes && changes.length > 0) {
+      changeRequest.Change?.push(...changes);
+      this.addChangeRequestToModel(changeRequest);
       this.newChanges = true;
     }
   }
@@ -358,4 +374,44 @@ export class SyncChangeBuildingSummaryHelper {
   }
 
 
+}
+
+export class SyncChangeAccountablePersonHelper {
+  private applicationService: ApplicationService;
+  private registrationAmendmentsService: RegistrationAmendmentsService;
+  private changeAccountablePersonModelBuilder: ChangeAccountablePersonModelBuilder;
+
+  constructor(applicationService: ApplicationService, registrationAmendmentsService: RegistrationAmendmentsService) {
+    this.applicationService = applicationService;
+    this.registrationAmendmentsService = registrationAmendmentsService;
+    this.changeAccountablePersonModelBuilder = new ChangeAccountablePersonModelBuilder()
+      .SetApplicationId(this.applicationService.model.id!)
+      .SetBuildingName(this.applicationService.model.BuildingName!);    
+  }
+
+  createChangeRequest() {
+    return this.changeAccountablePersonModelBuilder!.CreateChangeRequest();
+  }
+
+  createChanges(): Change[] {
+    let helper = new ChangeAccountablePersonsHelper(this.applicationService);
+    let buildingSummaryChanges: ChangedAnswersModel[] = [];
+
+    buildingSummaryChanges.push(...helper.getPAPChanges());
+    buildingSummaryChanges.push(...helper.getAreasAccountabilityChanges());
+
+    let changes: any = [];
+
+    buildingSummaryChanges.forEach((x, index) => {
+      x.OldValue = x.OldValue instanceof Array ? x.OldValue.join(', ') : x.OldValue;
+      x.NewValue = x.NewValue instanceof Array ? x.NewValue.join(', ') : x.NewValue;
+
+      let change: Change = this.changeAccountablePersonModelBuilder.SetField(x?.Title!).Change(x?.OldValue!, x?.NewValue!).CreateChange();
+
+      changes.push(change);
+    });
+
+
+    return changes;
+  }
 }

@@ -131,10 +131,12 @@ export class SubmitTag extends ChangeTaskListTag {
         let changeBuildingSummaryTagStatus = new BuildingSummaryTag(this.applicationService).getTag();
         let kbiTagStatus = this.getKbiTags();
         let connectionsTagStatus = new ConnectionsTag(this.applicationService).getTag();
+        let accountablePersonTag = new AccountablePersonTag(this.applicationService).getTag();
  
-        let canSubmit = !this.areAllNoChangesMade([changeUserTagStatus, changeBuildingSummaryTagStatus, ...kbiTagStatus, connectionsTagStatus]) 
+        let canSubmit = !this.areAllNoChangesMade([changeUserTagStatus, changeBuildingSummaryTagStatus, ...kbiTagStatus, connectionsTagStatus, accountablePersonTag]) 
             && this.isNotSubmittedOrNoChangesMade(changeUserTagStatus) 
             && this.isNotSubmittedOrNoChangesMade(changeBuildingSummaryTagStatus)
+            && this.isNotSubmittedOrNoChangesMade(accountablePersonTag)
             && this.isNotSubmittedOrNoChangesMade(connectionsTagStatus);
             
         if (ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus)) {

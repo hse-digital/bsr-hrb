@@ -92,3 +92,10 @@ export class RemovedBuildingModelBuilder extends ChangesDirector {
     protected override ReviewRequired: boolean = true;
     protected override Declaration: boolean = true;
 }
+
+export class ChangeAccountablePersonModelBuilder extends ChangesDirector {
+    protected override Category: ChangeCategory = ChangeCategory.ChangePAPOrLeadContact;
+    protected override Table: string = "Accountable person";
+    protected override ReviewRequired: boolean = true;
+    protected override Declaration: boolean = true;
+}
