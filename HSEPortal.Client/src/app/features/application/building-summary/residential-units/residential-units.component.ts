@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
-import { ApplicationService, OutOfScopeReason } from "src/app/services/application.service";
+import { ApplicationService, OutOfScopeReason, Status } from "src/app/services/application.service";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
@@ -84,7 +84,7 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
       if (wasOutOfScope) {
         this.returnUrl = undefined;
       }
-
+      this.applicationService.currentSection.Status = Status.ChangesInProgress;
       this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
     }
   }
