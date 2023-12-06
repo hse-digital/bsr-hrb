@@ -3,41 +3,81 @@
 <div class="govuk-main-wrapper">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        Building summary for {{ applicationService.model.BuildingName }}
+      </h1>
 
-      <h1 class="govuk-heading-l">Building summary for {{applicationService.model.BuildingName}}</h1>
-
-      <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
-        <govuk-error-link anchorId="input-floors-above" message="Answer all questions" />
+      <govuk-error-summary
+        *ngIf="hasIncompleteData"
+        title="There is a problem"
+        #summaryError
+      >
+        <govuk-error-link
+          anchorId="input-floors-above"
+          message="Answer all questions"
+        />
       </govuk-error-summary>
 
-      <govuk-summary-list classes="govuk-summary-list--no-border answers-heading-border {{activeSections.length == 1 ? 'no-margin-bottom' : ''}}">
-        <govuk-summary-list-row (onClick)="navigateToMultipleSections()" (onKeyupEnter)="navigateToMultipleSections()" key="Is this a single high-rise residential structure?" [showAction]=canChangeNumberOfSections>
-          {{applicationService.model.NumberOfSections == 'one' ? 'Yes' : 'No'}}
+      <govuk-summary-list
+        classes="govuk-summary-list--no-border answers-heading-border {{
+          activeSections.length == 1 ? 'no-margin-bottom' : ''
+        }}"
+      >
+        <govuk-summary-list-row
+          (onClick)="navigateToMultipleSections()"
+          (onKeyupEnter)="navigateToMultipleSections()"
+          key="Is this a single high-rise residential structure?"
+          [showAction]="canChangeNumberOfSections"
+        >
+          {{
+            applicationService.model.NumberOfSections == "one" ? "Yes" : "No"
+          }}
         </govuk-summary-list-row>
       </govuk-summary-list>
 
-      <building-change-section-answers *ngIf="activeSections.length == 1 " [section]="activeSections[0]" [sectionIndex]="0" />
+      <building-change-section-answers
+        *ngIf="activeSections.length == 1"
+        [section]="activeSections[0]"
+        [sectionIndex]="0"
+      />
 
-      <div *ngIf="activeSections.length > 1 ">
+      <div *ngIf="activeSections.length > 1">
         <ng-container *ngFor="let section of activeSections; let i = index">
           <div class="section-wrapper" *ngIf="!isSectionRemoved(i)">
             <div class="section-header">
               {{ getSectionName(i) }}
-              <a class="govuk-link remove-link" (click)="removeStructure(i)">Remove</a>
+              <a class="govuk-link remove-link" (click)="removeStructure(i)"
+                >Remove</a
+              >
             </div>
             <div class="section-content">
-              <building-change-section-answers [section]="section" [sectionIndex]="i" [hasMoreSections]="i < activeSections.length" />
+              <building-change-section-answers
+                [section]="section"
+                [sectionIndex]="i"
+                [hasMoreSections]="i < activeSections.length"
+              />
             </div>
           </div>
-          
-          <building-change-removed-section-answers [section]="section" [sectionIndex]="i" *ngIf="isSectionRemoved(i)"/>
+
+          <building-change-removed-section-answers
+            [section]="section"
+            [sectionIndex]="i"
+            *ngIf="isSectionRemoved(i)"
+          />
         </ng-container>
-        
       </div>
 
-      <govuk-button *ngIf="applicationService.model.NumberOfSections != 'one'" (onClick)="addAnotherStructure()" [isLoading]="processing" classes="govuk-button--secondary" [ngStyle]="{'margin-right': '15px'}">Add another structure</govuk-button>
-      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>
-
+      <govuk-button
+        *ngIf="applicationService.model.NumberOfSections != 'one'"
+        (onClick)="addAnotherStructure()"
+        [isLoading]="processing"
+        classes="govuk-button--secondary"
+        [ngStyle]="{ 'margin-right': '15px' }"
+        >Add another structure</govuk-button
+      >
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing"
+        >Continue</govuk-button
+      >
     </div>
   </div>
 </div>
