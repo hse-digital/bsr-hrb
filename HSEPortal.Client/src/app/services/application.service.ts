@@ -58,6 +58,7 @@ export class ApplicationService {
 
   validateCurrentVersion() {
     var currentVersion = this.model.Versions.findIndex(x => (x.Submitted == null || x.Submitted == false) && x.Name != 'original');
+    console.log(currentVersion);
     if (currentVersion == -1) {
       this.setVersionIndex(this.getVersionIndex());
 
@@ -393,7 +394,7 @@ export class BuildingRegistrationVersion {
   Submitted?: boolean;
 
   BuildingStatus: Status = Status.NoChanges;
-  ApChangesStatus: Status = Status.NoChanges;
+  ApChangesStatus: Status = Status.NoChanges; //TODO change if we have changes
 
   Sections: SectionModel[] = [];
   AccountablePersons: AccountablePersonModel[] = [];

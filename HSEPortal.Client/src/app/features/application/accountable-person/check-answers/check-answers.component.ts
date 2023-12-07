@@ -7,6 +7,7 @@ import { AccountablePersonModel, ApplicationService, BuildingApplicationStage, S
 import { AccountabilityArea } from 'src/app/components/pap-accountability/pap-accountability.component';
 import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper';
 import { PageComponent } from 'src/app/helpers/page.component';
+import { ChangeCompareHelper } from 'src/app/helpers/registration-amendments/change-compare-helper';
 
 @Component({
   templateUrl: './check-answers.component.html',
@@ -30,6 +31,17 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   override onInit(applicationService: ApplicationService): void {
     this.aps = this.applicationService.currentVersion.AccountablePersons;
     this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
+
+
+    // let testFrom: AccountablePersonModel | undefined = new AccountablePersonModel();
+    // testFrom.FirstName = 'Tristan';    
+
+    // let testTo: AccountablePersonModel | undefined = new AccountablePersonModel();
+    // testTo.FirstName = 'Tristan';  
+
+    // const areEqual = ChangeCompareHelper.deepEqual(testFrom, testTo);
+
+    // console.log("areEqual", areEqual);
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -37,13 +49,23 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   }
 
   override isValid(): boolean {
+    
     var canContinue = true;
     for (let index = 0; index < this.aps.length; index++) {
       var ap = this.aps[index];
+
+      const previouAp = this.applicationService.previousVersion.AccountablePersons[index];
+
       if (ap.Type == "organisation") {
+        
         canContinue &&= (ap.PapAddress ?? ap.Address) != null;
+
+        // hasChanged ||= previouAp.PapAddress !== ap.PapAddress;
+        // hasChanged ||= previouAp.Address !== ap.Address;
+
         canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.OrganisationType);
         canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.OrganisationName);
+
 
         if (index == 0) {
           canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.Role);
@@ -92,13 +114,44 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
       if (index > 0) {
         canContinue &&= (ap.SectionsAccountability?.length ?? 0) > 0;
         canContinue &&= (ap.SectionsAccountability?.findIndex(x => (x.Accountability?.length ?? 0) > 0) ?? -1) > -1;
-      }
+      }      
     }
 
     canContinue &&= this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, section).length == 0);
 
     this.hasIncompleteData = !canContinue;
+
+    this.hasChanged();
+    
     return canContinue;
+  }
+
+  // if change set curentVersion  flag to ChangesNotYetSubmitted otherwise noChanges
+  private hasChanged() {
+    let hasChanged = false;
+    try {
+      const previouAps = this.applicationService.previousVersion.AccountablePersons;
+      
+      previouAps.every((apFrom, index) => {
+        hasChanged = !ChangeCompareHelper.deepEqual(apFrom, this.aps[index]);
+        if (hasChanged) {
+          console.log(hasChanged, apFrom, this.aps[index]);
+          return false; // equivalent to break
+        }
+        return true; ; // equivalent to continue
+      });
+      console.log(hasChanged, previouAps, this.aps);
+    }
+    catch (err) {
+      console.log(err);
+    }
+
+    if (hasChanged && this.applicationService.isChangeAmendmentInProgress) {
+      this.applicationService.currentVersion.ApChangesStatus = Status.ChangesInProgress;
+    }
+    else {
+      this.applicationService.currentVersion.ApChangesStatus = Status.NoChanges;
+    }
   }
 
   override navigateNext(): Promise<boolean | void> {

@@ -39,6 +39,9 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     if (!this.applicationService.model.RegistrationAmendmentsModel) {
       this.applicationService.model.RegistrationAmendmentsModel = {};
     }
+
+    console.log(this.applicationService.model);
+    console.log(this.applicationService);
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {

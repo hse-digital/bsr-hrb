@@ -56,6 +56,10 @@ export class ApAddressComponent implements OnInit, CanActivate {
     }
 
     async updateAddress(address: AddressModel) {
+
+        // check changes from current version to prev
+
+
         if (this.pap) {
             this.applicationService.currentAccountablePerson.PapAddress = address;
         } else {
