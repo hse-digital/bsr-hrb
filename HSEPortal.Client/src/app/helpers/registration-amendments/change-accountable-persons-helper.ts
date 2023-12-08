@@ -17,7 +17,9 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
     private getPrincipalAccoutablePersonChanges(original: AccountablePersonModel, current: AccountablePersonModel, index: number, sectionName: string) {
         let changes: (ChangedAnswersModel | undefined)[] = [];
 
-        changes.push(this.getFieldChange(this.getPAPName(original), this.getPAPName(current), "Principal accountable person", "Principal accountable person", "", sectionName, index));
+        changes.push(
+            this.getFieldChange(this.getPAPName(original), this.getPAPName(current), "Principal accountable person", "Principal accountable person", "", sectionName, index)
+            );
         changes.push(this.getFieldChange(this.getNamedContact(original), this.getNamedContact(current), "Principal accountable person named contact", "Principal accountable person named contact", "", sectionName, index));
         changes.push(this.getFieldChange(original?.NamedContactEmail, current?.NamedContactEmail, "Principal accountable person named contact details", "Principal accountable person named contact details", "", sectionName, index));
 

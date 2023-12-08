@@ -30,18 +30,15 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
 
   override onInit(applicationService: ApplicationService): void {
     this.aps = this.applicationService.currentVersion.AccountablePersons;
+
+    // On click yes form previous screen Are you still the PAP, NewPap = true and Status = no changes
+    const test = this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus;
+    console.log('newPap', test);
+
+
     this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
 
-
-    // let testFrom: AccountablePersonModel | undefined = new AccountablePersonModel();
-    // testFrom.FirstName = 'Tristan';    
-
-    // let testTo: AccountablePersonModel | undefined = new AccountablePersonModel();
-    // testTo.FirstName = 'Tristan';  
-
-    // const areEqual = ChangeCompareHelper.deepEqual(testFrom, testTo);
-
-    // console.log("areEqual", areEqual);
+    console.log(this.aps);
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
