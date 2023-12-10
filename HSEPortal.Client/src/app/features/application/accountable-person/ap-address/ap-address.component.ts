@@ -35,8 +35,10 @@ export class ApAddressComponent implements OnInit, CanActivate {
 
     private returnUrl?: string;
     address?: AddressModel;
-    ngOnInit(): void {
-        this.address = this.pap ? this.applicationService.currentAccountablePerson.PapAddress : this.applicationService.currentAccountablePerson.Address;
+  ngOnInit(): void {
+      //pap check added
+      this.pap = this.applicationService.currentAccountablePerson.IsPrincipal == "yes" ? true : false;
+      this.address = this.pap ? this.applicationService.currentAccountablePerson.PapAddress : this.applicationService.currentAccountablePerson.Address;
         this.activatedRoute.queryParams.subscribe(params => {
             this.returnUrl = params['return'];
         });

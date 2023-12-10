@@ -19,14 +19,20 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
 
         changes.push(this.getFieldChange(this.getPAPName(original), this.getPAPName(current), "Principal accountable person", "Principal accountable person", "", sectionName, index));
         changes.push(this.getFieldChange(this.getNamedContact(original), this.getNamedContact(current), "Principal accountable person named contact", "Principal accountable person named contact", "", sectionName, index));
-        changes.push(this.getFieldChange(original?.NamedContactEmail, current?.NamedContactEmail, "Principal accountable person named contact details", "Principal accountable person named contact details", "", sectionName, index));
-
+      changes.push(this.getFieldChange(original?.NamedContactEmail, current?.NamedContactEmail, "Principal accountable person named contact details", "Principal accountable person named contact details", "", sectionName, index));
+        //displaying pap address changes
+        changes.push(this.getFieldChange(this.getPAPAddress(original), this.getPAPAddress(current), "Principal accountable address details", "Principal accountable person address details", "", sectionName, index));
         return changes;
     }
 
     private getPAPName(pap: AccountablePersonModel) {
         let individualName = pap.IsPrincipal == 'yes' && !FieldValidations.IsNotNullOrWhitespace(pap.FirstName) ? `${this.applicationService.model.ContactFirstName} ${this.applicationService.model.ContactLastName}` : `${pap.FirstName} ${pap.LastName}`;
         return pap.Type == 'organisation' ? pap.OrganisationName : individualName;
+    }
+
+    //added get pap address method
+    private getPAPAddress(pap: AccountablePersonModel) {
+      return pap.PapAddress?.Address ?? pap.Address?.Address;
     }
 
     private getNamedContact(pap: AccountablePersonModel) {

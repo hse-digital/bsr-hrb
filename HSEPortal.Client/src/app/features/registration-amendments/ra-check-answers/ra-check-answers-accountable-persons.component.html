@@ -1,6 +1,7 @@
-<ng-container *ngIf="changes.length > 0">
-    <h2 class="govuk-heading-m">Accountable persons</h2>
-    <dl class="govuk-summary-list">
+<!-- changes of accountability check added -->
+<ng-container *ngIf="changes.length > 0 || changesAccountability.length > 0">
+    <h2 *ngIf="changes.length > 0" class="govuk-heading-m">Accountable persons</h2>
+    <dl *ngIf="changes.length > 0" class="govuk-summary-list">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
                 What's changing
@@ -37,8 +38,8 @@
         </div>
     </dl>
 
-    <h2 class="govuk-heading-m">Areas accountability</h2>
-    <dl class="govuk-summary-list">
+    <h2 *ngIf="changesAccountability.length > 0" class="govuk-heading-m">Areas accountability</h2>
+    <dl *ngIf="changesAccountability.length > 0" class="govuk-summary-list">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
                 What's changing

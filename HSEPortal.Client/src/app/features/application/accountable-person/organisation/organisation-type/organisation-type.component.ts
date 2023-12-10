@@ -49,6 +49,8 @@ export class OrganisationTypeComponent extends PageComponent<string> implements 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentAccountablePerson.OrganisationType = this.model;
     this.applicationService.currentAccountablePerson.OrganisationTypeDescription = this.otherOptionModel;
+    //pap check added
+    this.applicationService.currentAccountablePerson.IsPrincipal = this.isPrincipal() ? "yes" : "no";
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
