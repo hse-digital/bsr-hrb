@@ -15,7 +15,7 @@ export class ConfirmRemoveComponent {
   constructor(private applicationService: ApplicationService) { }
 
   getApNameDescription(): string {
-    return `Are you sture you want to remove ${this.getApName()}?`;
+    return `Are you sure you want to remove ${this.getApName()}?`;
   }
 
   getApName() {

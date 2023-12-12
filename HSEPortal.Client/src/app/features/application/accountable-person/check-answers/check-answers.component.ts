@@ -131,6 +131,14 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
     });
   }
 
+  navigateToSamePAPscreen() {
+    return this.navigationService.navigateRelative("../registration-amendments/same-pap", this.activatedRoute);
+  }
+
+  addAnotherAP() {
+    return this.navigationService.navigateRelative('add-more', this.activatedRoute);
+  }
+
   removeAp(ap: AccountablePersonModel, index: number) {
     if (this.applicationService.isChangeAmendmentInProgress) {
       this.apToRemove = ap;
@@ -154,5 +162,30 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
       aps.slice(0, aps.length - 2).map(x => x.AddAnother = 'yes');
       if (!!aps.at(-1)) aps.at(-1)!.AddAnother = 'no';
     }
+  }
+
+  isRAinProgress(): any {
+    return this.applicationService.isChangeAmendmentInProgress;
+  }
+
+  get previousPAPName() {
+    return this.getPAPName(this.applicationService.previousVersion.AccountablePersons[0]);
+  }
+
+  private getPAPName(pap: AccountablePersonModel) {
+    let individualName = pap.IsPrincipal == 'yes' && !FieldValidations.IsNotNullOrWhitespace(pap.FirstName) ? `${this.applicationService.model.ContactFirstName} ${this.applicationService.model.ContactLastName}` : `${pap.FirstName} ${pap.LastName}`;
+    return pap.Type == 'organisation' ? pap.OrganisationName : individualName;
+  }
+
+  get isStillPapSentence() {
+    return `Is ${this.previousPAPName} still the principal accountable person?`;
+  }
+
+  get nolongerAccountableSentence() {
+    return `${this.previousPAPName} areas of accountability`;
+  }
+
+  get newPap() {
+    return this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.NewPap;
   }
 }

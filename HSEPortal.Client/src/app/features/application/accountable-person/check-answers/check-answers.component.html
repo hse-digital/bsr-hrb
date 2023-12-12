@@ -5,13 +5,20 @@
     <ng-container *ngIf="!apToRemove">
       <div class="govuk-grid-column-two-thirds">
         <div class="govuk-form-group">
-          <h1 class="govuk-heading-l">Check your accountable persons answers for {{applicationService.model.BuildingName}}</h1>
+          <h1 class="govuk-heading-l" *ngIf="!isRAinProgress()">Check your accountable persons answers for {{applicationService.model.BuildingName}}</h1>
+          <h1 class="govuk-heading-l" *ngIf="isRAinProgress()">Accountable persons for {{applicationService.model.BuildingName}}</h1>
 
           <govuk-error-summary *ngIf="hasIncompleteData" title="There is a problem" #summaryError>
             <govuk-error-link anchorId="input-floors-above" message="Answer all questions" />
           </govuk-error-summary>
 
           <ng-container *ngFor="let ap of aps; let i = index">
+            
+            <govuk-summary-list *ngIf="i == 0 && isRAinProgress()">
+              <govuk-summary-list-row [key]="isStillPapSentence" (onKeyupEnter)="navigateToSamePAPscreen()" (onClick)="navigateToSamePAPscreen()" [showAction]=true>{{this.newPap ? "Yes" : "No"}}</govuk-summary-list-row>
+              <govuk-summary-list-row *ngIf="!this.newPap" [key]="nolongerAccountableSentence" [showAction]=false>No longer accountable for any areas</govuk-summary-list-row>
+            </govuk-summary-list>
+            
             <div [class.section-wrapper]="aps.length > 1">
 
               <h2 class="govuk-heading-m" [class.section-header]="aps.length > 1" *ngIf="i == 0">Principal accountable person</h2>
@@ -30,12 +37,20 @@
               </div>
             </div>
 
-            <pap-accountability *ngIf="i == 0" [pap]="ap" [area]="checkAnswersArea" />
+            <pap-accountability *ngIf="i == 0 && !isRAinProgress()" [pap]="ap" [area]="checkAnswersArea" />
           </ng-container>
         </div>
 
-        <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
-        <save-and-come-back (onClick)="saveAndComeBack()" />
+        <ng-container *ngIf="!isRAinProgress()">
+          <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+          <save-and-come-back (onClick)="saveAndComeBack()" />
+        </ng-container>
+
+        <ng-container *ngIf="isRAinProgress()">
+          <govuk-button (onKeyupEnter)="addAnotherAP()" (onClick)="addAnotherAP()" [isLoading]="processing" classes="govuk-button--secondary" [ngStyle]="{ 'margin-right': '15px' }">Add another accountable person</govuk-button>
+          <govuk-button (onKeyupEnter)="saveAndContinue()" (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>
+        </ng-container>
+
       </div>
     </ng-container>
 
