@@ -29,7 +29,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         let changes: (ChangedAnswersModel | undefined)[] = [];
 
         changes.push(this.getFieldChange(this.getPAPName(original), this.getPAPName(current), "Principal accountable person", "Principal accountable person", "", sectionName, index));
-        changes.push(this.getFieldChange(this.getNamedContact(original), this.getNamedContact(current), "Principal accountable person named contact", "Principal accountable person named contact", "", sectionName, index));
+        changes.push(this.getFieldChange(this.getNamedContact(original, true), this.getNamedContact(current, true), "Principal accountable person named contact", "Principal accountable person named contact", "", sectionName, index));
         changes.push(this.getFieldChange(original?.NamedContactEmail, current?.NamedContactEmail, "Principal accountable person named contact details", "Principal accountable person named contact details", "", sectionName, index));
 
         return changes;
@@ -68,7 +68,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
             changes.push(this.getFieldChange(originalAP?.Type, currentAP?.Type, `${currentAPName} AP type`, `${currentAPName} AP type`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.OrganisationName, currentAP?.OrganisationName, `${currentAPName} organisation name`, `${currentAPName} organisation name`, "", "sectionName", 0));
             changes.push(this.getAddressChanges([originalAP?.Address!], [currentAP?.Address!], `${currentAPName} address`, `${currentAPName} address`, "", "sectionName", 0));
-            changes.push(this.getFieldChange(this.getNamedContact(originalAP), this.getNamedContact(currentAP), `${currentAPName} named contact`, `${currentAPName} named contact`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(this.getNamedContact(originalAP, false), this.getNamedContact(currentAP, false), `${currentAPName} named contact`, `${currentAPName} named contact`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.NamedContactPhoneNumber, currentAP?.NamedContactPhoneNumber, `${currentAPName} named contact telephone number`, `${currentAPName} named contact telephone number`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.NamedContactEmail, currentAP?.NamedContactEmail, `${currentAPName} named contact email`, `${currentAPName} named contact email`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.LeadEmail, currentAP?.LeadEmail, `${currentAPName} lead contact email`, `${currentAPName} lead contact email`, "", "sectionName", 0));
@@ -84,9 +84,16 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         return pap.Type == 'organisation' ? pap.OrganisationName : individualName;
     }
 
-    private getNamedContact(pap: AccountablePersonModel) {
-        if (!FieldValidations.IsNotNullOrWhitespace(pap.NamedContactFirstName)) return undefined;
-        return `${pap.NamedContactFirstName} ${pap.NamedContactLastName}`
+    private getNamedContact(ap: AccountablePersonModel, isPAP: boolean) {
+        if (ap.Type != "organisation") return undefined;
+
+        if ((ap.Role == 'registering_for' || ap.Role == 'employee') && FieldValidations.IsNotNullOrWhitespace(ap.LeadFirstName)) {
+            return `${ap.LeadFirstName} ${ap.LeadLastName}`;
+        } else if (!isPAP && FieldValidations.IsNotNullOrWhitespace(ap.NamedContactFirstName)) {
+            return `${ap.NamedContactFirstName} ${ap.NamedContactLastName}`;
+        }
+        
+        return undefined;        
     }
 
     getAreasAccountabilityChanges() {
