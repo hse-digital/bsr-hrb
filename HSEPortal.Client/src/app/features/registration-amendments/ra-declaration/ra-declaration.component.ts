@@ -201,7 +201,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   get areasAccountability() {
-    return false;
+    return new ChangeAccountablePersonsHelper(this.applicationService).getAreasAccountabilityChanges().length > 0;
   }
 
   get deregistering() {
