@@ -29,7 +29,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         let changes: (ChangedAnswersModel | undefined)[] = [];
 
         changes.push(this.getFieldChange(this.getPAPName(original), this.getPAPName(current), "Principal accountable person", "Principal accountable person", "", sectionName, index));
-        changes.push(this.getFieldChange(this.getNamedContact(original), this.getNamedContact(current), "Principal accountable person named contact", "Principal accountable person named contact", "", sectionName, index));
+        changes.push(this.getFieldChange(this.getNamedContact(original, true), this.getNamedContact(current, true), "Principal accountable person named contact", "Principal accountable person named contact", "", sectionName, index));
         changes.push(this.getFieldChange(original?.NamedContactEmail, current?.NamedContactEmail, "Principal accountable person named contact details", "Principal accountable person named contact details", "", sectionName, index));
 
         return changes;
@@ -55,7 +55,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         let original = this.applicationService.previousVersion?.AccountablePersons.slice(1);
         let current = this.applicationService.currentVersion?.AccountablePersons.slice(1);
 
-        if (current.length > 0) return [];
+        if (current.length == 0) return [];
 
         let changes: (ChangedAnswersModel | undefined)[] = [];
 
@@ -66,9 +66,10 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
             let currentAPName = this.getPAPName(currentAP);
 
             changes.push(this.getFieldChange(originalAP?.Type, currentAP?.Type, `${currentAPName} AP type`, `${currentAPName} AP type`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(this.getOrgType(originalAP?.OrganisationType), this.getOrgType(currentAP?.OrganisationType), `${currentAPName} organisation type`, `${currentAPName} organisation type`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.OrganisationName, currentAP?.OrganisationName, `${currentAPName} organisation name`, `${currentAPName} organisation name`, "", "sectionName", 0));
             changes.push(this.getAddressChanges([originalAP?.Address!], [currentAP?.Address!], `${currentAPName} address`, `${currentAPName} address`, "", "sectionName", 0));
-            changes.push(this.getFieldChange(this.getNamedContact(originalAP), this.getNamedContact(currentAP), `${currentAPName} named contact`, `${currentAPName} named contact`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(this.getNamedContact(originalAP, false), this.getNamedContact(currentAP, false), `${currentAPName} named contact`, `${currentAPName} named contact`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.NamedContactPhoneNumber, currentAP?.NamedContactPhoneNumber, `${currentAPName} named contact telephone number`, `${currentAPName} named contact telephone number`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.NamedContactEmail, currentAP?.NamedContactEmail, `${currentAPName} named contact email`, `${currentAPName} named contact email`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.LeadEmail, currentAP?.LeadEmail, `${currentAPName} lead contact email`, `${currentAPName} lead contact email`, "", "sectionName", 0));
@@ -84,9 +85,30 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         return pap.Type == 'organisation' ? pap.OrganisationName : individualName;
     }
 
-    private getNamedContact(pap: AccountablePersonModel) {
-        if (!FieldValidations.IsNotNullOrWhitespace(pap.NamedContactFirstName)) return undefined;
-        return `${pap.NamedContactFirstName} ${pap.NamedContactLastName}`
+    private getNamedContact(ap: AccountablePersonModel, isPAP: boolean) {
+        if (ap.Type != "organisation") return undefined;
+
+        if ((ap.Role == 'registering_for' || ap.Role == 'employee') && FieldValidations.IsNotNullOrWhitespace(ap.LeadFirstName)) {
+            return `${ap.LeadFirstName} ${ap.LeadLastName}`;
+        } else if (!isPAP && FieldValidations.IsNotNullOrWhitespace(ap.NamedContactFirstName)) {
+            return `${ap.NamedContactFirstName} ${ap.NamedContactLastName}`;
+        }
+        
+        return undefined;        
+    }
+
+    private getOrgType(value?: string) {
+        if (!FieldValidations.IsNotNullOrWhitespace(value)) return "";
+        return this.organisationTypeDescription[value!] ?? "";
+    }
+
+    private organisationTypeDescription: Record<string, string> = {
+        "commonhold-association": "Commonhold association",
+        "housing-association": "Registered provider of social housing",
+        "local-authority": "Local authority",
+        "management-company": "Private registered provider of social housing",
+        "rmc-or-organisation": "Resident management company (RMC) or organisation",
+        "rtm-or-organisation": "Right to manage (RTM) company or organisation"
     }
 
     getAreasAccountabilityChanges() {

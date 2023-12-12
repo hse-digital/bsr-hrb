@@ -17,7 +17,11 @@ export class RaCheckAnswersAccountablePersonsComponent {
         let helper = new ChangeAccountablePersonsHelper(this.applicationService);
         this._changes = helper.getPAPChanges();
         this._changesAccountability = helper.getAreasAccountabilityChanges();
+        this._changesAPDetails = helper.getAPDetailChanges();
+        this.newChanges = (this._changes.length + this._changesAccountability.length + this.changesAPDetails.length) > 0; 
     }
+
+    newChanges: boolean = false;
 
     private _changes: ChangedAnswersModel[];
     get changes(): ChangedAnswersModel[] {
@@ -27,6 +31,11 @@ export class RaCheckAnswersAccountablePersonsComponent {
     private _changesAccountability: ChangedAnswersModel[];
     get changesAccountability(): ChangedAnswersModel[] {
         return this._changesAccountability;
+    }
+
+    private _changesAPDetails: ChangedAnswersModel[];
+    get changesAPDetails(): ChangedAnswersModel[] {
+        return this._changesAPDetails;
     }
 
     navigateToBuildingCheckAnswersPage() {

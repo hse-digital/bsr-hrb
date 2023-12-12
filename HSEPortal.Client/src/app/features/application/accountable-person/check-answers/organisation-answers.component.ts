@@ -2,7 +2,7 @@ import { Component, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { SummaryComponent } from "src/app/helpers/summary-helper";
 import { NavigationService } from "src/app/services/navigation.service";
-import { AccountablePersonModel } from "src/app/services/application.service";
+import { AccountablePersonModel, ApplicationService } from "src/app/services/application.service";
 
 @Component({
   selector: 'organisation-answers',
@@ -14,7 +14,7 @@ export class OrganisationAnswersComponent extends SummaryComponent {
   @Input() override apIndex!: number;
   @Input() override hasMoreAp = false;
 
-  constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+  constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private applicationService: ApplicationService) {
     super();
   }
 
@@ -46,5 +46,9 @@ export class OrganisationAnswersComponent extends SummaryComponent {
     } else{
       this.navigateTo('accountable-for');
     }
+  }
+
+  isRAinProgress(): any {
+    return this.applicationService.isChangeAmendmentInProgress;
   }
 }

@@ -39,5 +39,5 @@
     <div>{{ap.NamedContactPhoneNumber}}</div>
   </govuk-summary-list-row>
 
-  <govuk-summary-list-row (onClick)="addMore()" (onKeyupEnter)="addMore()" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="!isRAinProgress()" (onClick)="addMore()" (onKeyupEnter)="addMore()" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
 </govuk-summary-list>
