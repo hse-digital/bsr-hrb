@@ -55,7 +55,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         let original = this.applicationService.previousVersion?.AccountablePersons.slice(1);
         let current = this.applicationService.currentVersion?.AccountablePersons.slice(1);
 
-        if (current.length > 0) return [];
+        if (current.length == 0) return [];
 
         let changes: (ChangedAnswersModel | undefined)[] = [];
 

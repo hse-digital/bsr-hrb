@@ -57,7 +57,7 @@ export class RaCheckAnswersComponent extends PageComponent<void> {
 
   get numberOfPAPChanges() {
     let apHelper = new ChangeAccountablePersonsHelper(this.applicationService)
-    return apHelper.getPAPChanges().length + apHelper.getAreasAccountabilityChanges().length; 
+    return apHelper.getAllAPChanges().length; 
   }
 
 }
