@@ -66,6 +66,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
             let currentAPName = this.getPAPName(currentAP);
 
             changes.push(this.getFieldChange(originalAP?.Type, currentAP?.Type, `${currentAPName} AP type`, `${currentAPName} AP type`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(this.getOrgType(originalAP?.OrganisationType), this.getOrgType(currentAP?.OrganisationType), `${currentAPName} organisation type`, `${currentAPName} organisation type`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.OrganisationName, currentAP?.OrganisationName, `${currentAPName} organisation name`, `${currentAPName} organisation name`, "", "sectionName", 0));
             changes.push(this.getAddressChanges([originalAP?.Address!], [currentAP?.Address!], `${currentAPName} address`, `${currentAPName} address`, "", "sectionName", 0));
             changes.push(this.getFieldChange(this.getNamedContact(originalAP, false), this.getNamedContact(currentAP, false), `${currentAPName} named contact`, `${currentAPName} named contact`, "", "sectionName", 0));
@@ -94,6 +95,20 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         }
         
         return undefined;        
+    }
+
+    private getOrgType(value?: string) {
+        if (!FieldValidations.IsNotNullOrWhitespace(value)) return "";
+        return this.organisationTypeDescription[value!] ?? "";
+    }
+
+    private organisationTypeDescription: Record<string, string> = {
+        "commonhold-association": "Commonhold association",
+        "housing-association": "Registered provider of social housing",
+        "local-authority": "Local authority",
+        "management-company": "Private registered provider of social housing",
+        "rmc-or-organisation": "Resident management company (RMC) or organisation",
+        "rtm-or-organisation": "Right to manage (RTM) company or organisation"
     }
 
     getAreasAccountabilityChanges() {
