@@ -80,6 +80,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.applicationService.previousVersion.ReplacedBy = this.applicationService.currentVersion.Name;
     this.applicationService.currentVersion.Submitted = true;
     this.applicationService.currentVersion.BuildingStatus = Status.NoChanges;
+    this.applicationService.currentVersion.ApChangesStatus = Status.NoChanges;
     this.applicationService.updateApplication();
 
     await this.registrationAmendmentsService.syncChangeRequest();
@@ -395,14 +396,16 @@ export class SyncChangeAccountablePersonHelper {
 
   createChanges(): Change[] {
     let helper = new ChangeAccountablePersonsHelper(this.applicationService);
-    let buildingSummaryChanges: ChangedAnswersModel[] = [];
+    let accoutablePersonChanges: ChangedAnswersModel[] = [];
 
-    buildingSummaryChanges.push(...helper.getPAPChanges());
-    buildingSummaryChanges.push(...helper.getAreasAccountabilityChanges());
+    accoutablePersonChanges.push(...helper.getPAPChanges());
+    accoutablePersonChanges.push(...helper.getAreasAccountabilityChanges());
+    accoutablePersonChanges.push(...helper.getPAPDetailChanges());
+    accoutablePersonChanges.push(...helper.getAPDetailChanges());
 
     let changes: any = [];
 
-    buildingSummaryChanges.forEach((x, index) => {
+    accoutablePersonChanges.forEach((x, index) => {
       x.OldValue = x.OldValue instanceof Array ? x.OldValue.join(', ') : x.OldValue;
       x.NewValue = x.NewValue instanceof Array ? x.NewValue.join(', ') : x.NewValue;
 

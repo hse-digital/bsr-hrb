@@ -10,6 +10,10 @@ import { KbiConnectionsModule } from '../../kbi/8-connections/kbi.connections.mo
 import { KbiSubmitModule } from '../../kbi/9-submit/kbi.submit.module';
 import { KbiValidator } from 'src/app/helpers/kbi-validator';
 import { ChangeKbiHelper } from 'src/app/helpers/registration-amendments/change-kbi-helper';
+import { ChangeAccountablePersonsHelper } from 'src/app/helpers/registration-amendments/change-accountable-persons-helper';
+import { ApHelper } from 'src/app/helpers/ap-helper';
+import { SelectPrimaryUserComponent } from '../change-applicant/select-primary-user/select-primary-user.component';
+import { UserListComponent } from '../change-applicant/user-list/user-list.component';
 
 @Component({
   selector: 'hse-change-task-list',
@@ -31,6 +35,7 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     this.applicationService.validateCurrentVersion();
     this.applicationService.initKbi();
     this.validateKbiSections();
+    this.validateAccountablePersons();
     this.tagDirector = new TagDirector(this.applicationService);
 
     this.InScopeKbiSections = this.applicationService.currentVersion.Sections
@@ -93,6 +98,18 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     });
   }
 
+  validateAccountablePersons() {
+    let isValid =  ApHelper.isAPValid(this.applicationService);
+    let hasChanged = (new ChangeAccountablePersonsHelper(this.applicationService).getAllAPChanges() ?? []).length > 0;
+    if (hasChanged) {
+      this.applicationService.currentVersion.ApChangesStatus = isValid
+        ? Status.ChangesComplete 
+        : Status.ChangesInProgress;
+    } else {
+      this.applicationService.currentVersion.ApChangesStatus = Status.NoChanges;
+    }
+  }
+
   async navigateToKbi(index: number) {
     let route = this.kbiNavigation.getNextRoute(index);
 
@@ -111,6 +128,17 @@ export class ChangeTaskListComponent extends PageComponent<void> {
       this.applicationService.model.RegistrationAmendmentsModel!.KbiChangeTaskList = true;
       return this.navigationService.navigateAppend(`../../kbi/${(index + 1)}/${query[0]}`, this.activatedRoute, params);
     }
+  }
+
+  async navigateToChangeUser() {
+    if (this.hasPAPChanged) {
+      return this.navigationService.navigateRelative(SelectPrimaryUserComponent.route, this.activatedRoute);
+    } 
+    return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
+  }
+
+  get hasPAPChanged() {
+    return new ChangeAccountablePersonsHelper(this.applicationService).getPAPChanges().length > 0;
   }
 
   get submitSectionNumber() {

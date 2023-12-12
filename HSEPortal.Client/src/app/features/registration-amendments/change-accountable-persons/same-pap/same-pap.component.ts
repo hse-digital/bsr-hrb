@@ -19,6 +19,7 @@ export class SamePapComponent extends PageComponent<boolean> {
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
     this.applicationService.currentVersion.ApChangesStatus = this.model == false ? Status.ChangesInProgress : Status.NoChanges;
+    if (!this.model) this.updatePrimaryUserStatus();
     if (!this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus) {
       this.applicationService.model.RegistrationAmendmentsModel!.AccountablePersonStatus = {
         Status: Status.NoChanges,
@@ -26,6 +27,21 @@ export class SamePapComponent extends PageComponent<boolean> {
     }
 
     this.applicationService.model.RegistrationAmendmentsModel!.AccountablePersonStatus!.NewPap = this.model;
+  }
+
+  private updatePrimaryUserStatus() {
+    if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser = {
+        PrimaryUser: {
+          Status: Status.ChangesInProgress
+        }
+      };
+    } else if (!this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser.PrimaryUser) {
+      this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser.PrimaryUser = {
+        Status: Status.ChangesInProgress
+      };
+    }
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesInProgress;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

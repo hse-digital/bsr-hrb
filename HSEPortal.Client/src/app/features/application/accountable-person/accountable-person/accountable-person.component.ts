@@ -68,7 +68,6 @@ export class AccountablePersonComponent extends PageComponent<string> {
 
       this.applicationService.currentVersion.AccountablePersons[0] = replaceAp;
       this.applicationService._currentAccountablePersonIndex = 0;
-      this.applicationService.model.ApplicationStatus &= ~BuildingApplicationStage.AccountablePersonsComplete;
     } else if (!this.previousAnswer) {
       await this.applicationService.startAccountablePersonEdit();
     }

@@ -8,6 +8,17 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         super();
     }
 
+    getAllAPChanges() {
+        let buildingSummaryChanges: ChangedAnswersModel[] = [];
+
+        buildingSummaryChanges.push(...this.getPAPChanges());
+        buildingSummaryChanges.push(...this.getAreasAccountabilityChanges());
+        buildingSummaryChanges.push(...this.getPAPDetailChanges());
+        buildingSummaryChanges.push(...this.getAPDetailChanges());
+    
+        return buildingSummaryChanges.filter(x => !!x).map(x => x!);
+    }
+
     getPAPChanges(): ChangedAnswersModel[] {
         let original = this.applicationService.previousVersion?.AccountablePersons.at(0) ?? {};
         let current = this.applicationService.currentVersion?.AccountablePersons.at(0) ?? {};
@@ -24,6 +35,50 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         return changes;
     }
 
+    getPAPDetailChanges() {
+        let original = this.applicationService.previousVersion?.AccountablePersons.at(0) ?? {};
+        let current = this.applicationService.currentVersion?.AccountablePersons.at(0) ?? {};
+
+        let changes: (ChangedAnswersModel | undefined)[] = [];
+
+        changes.push(this.getFieldChange(original?.OrganisationName, current?.OrganisationName, "PAP organisation name", "PAP organisation name", "", "sectionName", 0));
+        changes.push(this.getFieldChange(original?.Type, current?.Type, "PAP type", "PAP type", "", "sectionName", 0));
+        changes.push(this.getFieldChange(original?.Email, current?.Email, "PAP Individual email", "PAP Individual email", "", "sectionName", 0));
+        changes.push(this.getFieldChange(original?.PhoneNumber, current?.PhoneNumber, "PAP Individual telephone number", "PAP Individual telephone number", "", "sectionName", 0));
+        changes.push(this.getAddressChanges([original.PapAddress!], [current.PapAddress!], "PAP Individual address", "PAP Individual address", "", "sectionName", 0));
+
+        return changes.filter(x => !!x).map(x => x!);;
+    }
+
+    getAPDetailChanges() {
+        
+        let original = this.applicationService.previousVersion?.AccountablePersons.slice(1);
+        let current = this.applicationService.currentVersion?.AccountablePersons.slice(1);
+
+        if (current.length > 0) return [];
+
+        let changes: (ChangedAnswersModel | undefined)[] = [];
+
+        for (let index = 0; index < current.length; index++) {
+            const originalAP = original.at(index) ?? {};
+            const currentAP = current[index];
+
+            let currentAPName = this.getPAPName(currentAP);
+
+            changes.push(this.getFieldChange(originalAP?.Type, currentAP?.Type, `${currentAPName} AP type`, `${currentAPName} AP type`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(originalAP?.OrganisationName, currentAP?.OrganisationName, `${currentAPName} organisation name`, `${currentAPName} organisation name`, "", "sectionName", 0));
+            changes.push(this.getAddressChanges([originalAP?.Address!], [currentAP?.Address!], `${currentAPName} address`, `${currentAPName} address`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(this.getNamedContact(originalAP), this.getNamedContact(currentAP), `${currentAPName} named contact`, `${currentAPName} named contact`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(originalAP?.NamedContactPhoneNumber, currentAP?.NamedContactPhoneNumber, `${currentAPName} named contact telephone number`, `${currentAPName} named contact telephone number`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(originalAP?.NamedContactEmail, currentAP?.NamedContactEmail, `${currentAPName} named contact email`, `${currentAPName} named contact email`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(originalAP?.LeadEmail, currentAP?.LeadEmail, `${currentAPName} lead contact email`, `${currentAPName} lead contact email`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(originalAP?.LeadPhoneNumber, currentAP?.LeadPhoneNumber, `${currentAPName} lead contact telephone number`, `${currentAPName} lead contact telephone number`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(`${originalAP?.LeadFirstName} ${originalAP?.LeadLastName}`, `${currentAP?.LeadFirstName} ${currentAP?.LeadLastName}`, `${currentAPName} lead contact telephone number`, `${currentAPName} lead contact telephone number`, "", "sectionName", 0));
+        }
+
+        return changes.filter(x => !!x).map(x => x!);
+    }
+
     private getPAPName(pap: AccountablePersonModel) {
         let individualName = pap.IsPrincipal == 'yes' && !FieldValidations.IsNotNullOrWhitespace(pap.FirstName) ? `${this.applicationService.model.ContactFirstName} ${this.applicationService.model.ContactLastName}` : `${pap.FirstName} ${pap.LastName}`;
         return pap.Type == 'organisation' ? pap.OrganisationName : individualName;
@@ -37,8 +92,6 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
     getAreasAccountabilityChanges() {
         let changes: (ChangedAnswersModel | undefined)[] = [];
         let route = "";
-
-        this.applicationService.currentVersion?.AccountablePersons
 
         let originalAP = this.applicationService.previousVersion?.AccountablePersons.at(0) ?? {};
         let currentAP = this.applicationService.currentVersion?.AccountablePersons.at(0) ?? {};
