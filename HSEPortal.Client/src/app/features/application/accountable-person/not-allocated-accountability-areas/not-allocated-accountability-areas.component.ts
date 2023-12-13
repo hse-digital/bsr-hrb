@@ -1,6 +1,6 @@
 import { Component, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { AccountablePersonModel, ApplicationService, SectionModel } from 'src/app/services/application.service';
+import { AccountablePersonModel, ApplicationService, SectionModel, Status } from 'src/app/services/application.service';
 import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper'
 import { NotAllocatedAccountabilityComponent } from 'src/app/components/not-allocated-accountability/not-allocated-accountability.component';
 import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
@@ -37,7 +37,7 @@ export class NotAllocatedAccountabilityAreasComponent extends PageComponent<Acco
 
   override onInit(applicationService: ApplicationService): void {
     this.model = CloneHelper.DeepCopy(this.applicationService.currentVersion.AccountablePersons);
-    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
     this.InScopeStructures.forEach(section => {
       this.notAllocatedAreas.push(AccountabilityAreasHelper.getNotAllocatedAreasOf(this.model!, this.applicationService.model.BuildingName!, section))
     });
@@ -48,7 +48,7 @@ export class NotAllocatedAccountabilityAreasComponent extends PageComponent<Acco
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope)!.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
+    return this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed)!.some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
   }
 
   override isValid(): boolean {

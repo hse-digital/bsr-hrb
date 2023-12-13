@@ -4,7 +4,7 @@ import { OutgoingAccountabilityComponent } from "src/app/components/outgoing-acc
 import { AccountabilityAreasHelper } from "src/app/helpers/accountability-areas-helper";
 import { CloneHelper } from "src/app/helpers/array-helper";
 import { PageComponent } from "src/app/helpers/page.component";
-import { ApplicationService, SectionAccountability, SectionModel } from "src/app/services/application.service";
+import { ApplicationService, SectionAccountability, SectionModel, Status } from "src/app/services/application.service";
 import { AreasAccountabilityComponent } from "../areas-accountability/areas-accountability.component";
 
 @Component({
@@ -21,7 +21,7 @@ export class OutgoingAccountabilityPageComponent extends PageComponent<SectionAc
   InScopeStructures?: SectionModel[];
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
-    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
     if (!this.applicationService.currentVersion.AccountablePersons[0].SectionsAccountability) {
       this.applicationService.currentVersion.AccountablePersons[0].SectionsAccountability = [];
     }

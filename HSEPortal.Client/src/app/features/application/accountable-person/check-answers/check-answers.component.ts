@@ -96,7 +96,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
       }
     }
 
-    canContinue &&= this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, section).length == 0);
+    canContinue &&= this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, section).length == 0);
 
     this.hasIncompleteData = !canContinue;
     return canContinue;
@@ -116,6 +116,22 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
     }
 
     return this.navigationService.navigateRelative(`../${PaymentModule.baseRoute}/${PaymentDeclarationComponent.route}`, this.activatedRoute);
+  }
+
+  saveAndContinueOrKnockOnQuestions() {
+    var canContinue = true;
+    for (let index = 0; index < this.aps.length; index++) {
+      var ap = this.aps[index];
+      if (index > 0) {
+        canContinue &&= (ap.SectionsAccountability?.length ?? 0) > 0;
+        canContinue &&= (ap.SectionsAccountability?.findIndex(x => (x.Accountability?.length ?? 0) > 0) ?? -1) > -1;
+      }
+    }
+
+    canContinue &&= this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, section).length == 0);
+
+    if (!canContinue) this.navigationService.navigateRelative("areas-accountability", this.activatedRoute);
+    else this.saveAndContinue();
   }
 
   override async onSave(): Promise<void> {

@@ -1,4 +1,4 @@
-import { AccountablePersonModel, ApplicationService, SectionAccountability } from "src/app/services/application.service";
+import { AccountablePersonModel, ApplicationService, BuildingRegistrationVersion, SectionAccountability, Status } from "src/app/services/application.service";
 import { ChangeHelper, ChangedAnswersModel } from "./change-helper";
 import { FieldValidations } from "../validators/fieldvalidations";
 
@@ -17,6 +17,17 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         buildingSummaryChanges.push(...this.getAPDetailChanges());
     
         return buildingSummaryChanges.filter(x => !!x).map(x => x!);
+    }
+
+    getAccountablePersonListChanges() {
+        let changes: (ChangedAnswersModel | undefined)[] = [];
+
+        let original = this.applicationService.previousVersion?.AccountablePersons.map(x => this.getPAPName(x)) ?? [];
+        let current = this.applicationService.currentVersion?.AccountablePersons.map(x => this.getPAPName(x)) ?? [];
+
+        changes.push(this.getFieldChange(original, current, "Accountable persons", "Accountable persons", "", "", 0));
+
+        return changes.filter(x => !!x).map(x => x!);
     }
 
     getPAPChanges(): ChangedAnswersModel[] {
@@ -45,9 +56,10 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         changes.push(this.getFieldChange(original?.Type, current?.Type, "PAP type", "PAP type", "", "sectionName", 0));
         changes.push(this.getFieldChange(original?.Email, current?.Email, "PAP Individual email", "PAP Individual email", "", "sectionName", 0));
         changes.push(this.getFieldChange(original?.PhoneNumber, current?.PhoneNumber, "PAP Individual telephone number", "PAP Individual telephone number", "", "sectionName", 0));
-        changes.push(this.getAddressChanges([original.PapAddress!], [current.PapAddress!], "PAP Individual address", "PAP Individual address", "", "sectionName", 0));
+        changes.push(this.getAddressChanges([original.PapAddress!], [current.PapAddress!], "PAP address", "PAP address", "", "sectionName", 0));
+        changes.push(this.getAddressChanges([original.Address!], [current.Address!], "PAP address", "PAP address", "", "sectionName", 0));
 
-        return changes.filter(x => !!x).map(x => x!);;
+        return changes.filter(x => !!x).map(x => x!);
     }
 
     getAPDetailChanges() {
@@ -59,12 +71,15 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
 
         let changes: (ChangedAnswersModel | undefined)[] = [];
 
+        changes.push(...this.getAccountablePersonListChanges());
+
         for (let index = 0; index < current.length; index++) {
-            const originalAP = original.at(index) ?? {};
             const currentAP = current[index];
-
+            const originalAP = original.find(x => this.getPAPName(x) == this.getPAPName(currentAP)) ?? undefined;
+            if (originalAP == undefined) continue;
+            
             let currentAPName = this.getPAPName(currentAP);
-
+            
             changes.push(this.getFieldChange(originalAP?.Type, currentAP?.Type, `${currentAPName} AP type`, `${currentAPName} AP type`, "", "sectionName", 0));
             changes.push(this.getFieldChange(this.getOrgType(originalAP?.OrganisationType), this.getOrgType(currentAP?.OrganisationType), `${currentAPName} organisation type`, `${currentAPName} organisation type`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.OrganisationName, currentAP?.OrganisationName, `${currentAPName} organisation name`, `${currentAPName} organisation name`, "", "sectionName", 0));
@@ -74,7 +89,10 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
             changes.push(this.getFieldChange(originalAP?.NamedContactEmail, currentAP?.NamedContactEmail, `${currentAPName} named contact email`, `${currentAPName} named contact email`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.LeadEmail, currentAP?.LeadEmail, `${currentAPName} lead contact email`, `${currentAPName} lead contact email`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.LeadPhoneNumber, currentAP?.LeadPhoneNumber, `${currentAPName} lead contact telephone number`, `${currentAPName} lead contact telephone number`, "", "sectionName", 0));
-            changes.push(this.getFieldChange(`${originalAP?.LeadFirstName} ${originalAP?.LeadLastName}`, `${currentAP?.LeadFirstName} ${currentAP?.LeadLastName}`, `${currentAPName} lead contact telephone number`, `${currentAPName} lead contact telephone number`, "", "sectionName", 0));
+            changes.push(this.getFieldChange(`${originalAP?.LeadFirstName} ${currentAP?.LeadLastName}`, `${currentAP?.LeadFirstName} ${currentAP?.LeadLastName}`, `${currentAPName} lead contact telephone number`, `${currentAPName} lead contact telephone number`, "", "sectionName", 0));
+            changes.push(this.getAddressChanges([originalAP.PapAddress!], [currentAP.PapAddress!], `${currentAPName} address`, `${currentAPName} address`, "", "sectionName", 0));
+            changes.push(this.getAddressChanges([originalAP.Address!], [currentAP.Address!], `${currentAPName} address`, `${currentAPName} address`, "", "sectionName", 0));
+            
         }
 
         return changes.filter(x => !!x).map(x => x!);
@@ -114,12 +132,9 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
     getAreasAccountabilityChanges() {
         let changes: (ChangedAnswersModel | undefined)[] = [];
         let route = "";
-
-        let originalAP = this.applicationService.previousVersion?.AccountablePersons.at(0) ?? {};
-        let currentAP = this.applicationService.currentVersion?.AccountablePersons.at(0) ?? {};
-
-        let originalAreasAccountability = this.getAreasAccountability(originalAP.SectionsAccountability, this.getPAPName(originalAP));
-        let currentAreasAccountability = this.getAreasAccountability(currentAP.SectionsAccountability, this.getPAPName(currentAP));
+        
+        let originalAreasAccountability = this.getAreasAccountability(this.applicationService.previousVersion);
+        let currentAreasAccountability = this.getAreasAccountability(this.applicationService.currentVersion);
 
         currentAreasAccountability.forEach((current, index) => {
             let original = originalAreasAccountability.find(x => x?.title == current?.title);
@@ -129,10 +144,34 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         return changes.filter(x => !!x).map(x => x!);
     }
 
-    private getAreasAccountability(SectionsAccountability?: SectionAccountability[], ap?: string) {
-        return SectionsAccountability?.flatMap(x => x.Accountability?.map(area => { 
-            return { title: `${this.areasAccountability[area]} in ${x.SectionName}`, ap: ap , sectionName: x.SectionName} 
-        })) ?? [];
+    private getAreasAccountability(version: BuildingRegistrationVersion) {
+        let areas = ["routes", "maintenance", "facilities"];
+        let accountability = [];
+        let sections = version.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
+        for (let index = 0; index < sections.length; index++) {
+            const section = sections[index];
+            for (let index = 0; index < areas.length; index++) {
+                const area = areas[index];
+                let aps = [];
+                for (let index = 0; index < version.AccountablePersons.length; index++) { 
+                    const accountability = version.AccountablePersons[index].SectionsAccountability;
+                    let sectionName = FieldValidations.IsNotNullOrWhitespace(section.Name) ? section.Name : this.applicationService.model.BuildingName;
+                    if (!!accountability && accountability.find(x => x.SectionName == sectionName && (x.Accountability?.indexOf(area) ?? -1) > -1)) {
+                        aps.push(this.getPAPName(version.AccountablePersons[index]));
+                    }
+                }
+                accountability.push( { title: `${this.areasAccountability[area]} in ${this.transformSectionName(section.Name)}`, ap: aps , sectionName: section.Name} );
+            }
+        }
+        
+        return accountability;
+    }
+
+    private transformSectionName(sectionName?: string) {
+        if ((!FieldValidations.IsNotNullOrWhitespace(sectionName) || this.applicationService.model.BuildingName == sectionName) && this.applicationService.currentVersion.Sections.length > 1) {
+            return this.applicationService.currentVersion.Sections.at(0)?.Name ?? "";
+        }
+        return sectionName ?? this.applicationService.model.BuildingName;
     }
 
     private areasAccountability: Record<string, string> = {

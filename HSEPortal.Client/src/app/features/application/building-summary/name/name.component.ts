@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { ApplicationService, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, SectionModel, Status } from 'src/app/services/application.service';
 import { SectionFloorsAboveComponent } from '../floors-above/floors-above.component';
 import { SectionHelper } from 'src/app/helpers/section-helper';
 import { PageComponent } from 'src/app/helpers/page.component';
@@ -13,6 +13,7 @@ export class SectionNameComponent extends PageComponent<string> {
   static title: string = "High-rise residential structure name - Register a high-rise building - GOV.UK";
 
   blockNameHasErrors = false;
+  reset: boolean = false;
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
@@ -22,6 +23,7 @@ export class SectionNameComponent extends PageComponent<string> {
   override onInit(applicationService: ApplicationService): void {
     this.activatedRoute.queryParams.subscribe(params => {
       let index = params['index'];
+      this.reset = params['reset'];
       this.newStructureIndex = (index == (this.applicationService.currentVersion.Sections.length - 1) ? index : undefined);
     });
 
@@ -31,9 +33,28 @@ export class SectionNameComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     applicationService.currentSection.Name = this.model;
+
+    if (this.applicationService.isChangeAmendmentInProgress && this.reset) {
+      this.resetAreasAccountability();
+    }
     
     if (this.kbiExists() && this.kbiSectionExists()) {
       this.applicationService.currentVersion.Kbi!.KbiSections.at(this.applicationService._currentSectionIndex)!.StructureName = this.model;
+    }
+  }
+
+  private resetAreasAccountability() {
+    let InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
+    
+    for (let index = 0; index < this.applicationService.currentVersion.AccountablePersons.length; index++) {
+      this.applicationService.currentVersion.AccountablePersons[index].SectionsAccountability = [];
+        
+      for (let i = 0; i < InScopeStructures.length; i++) {
+        var section = InScopeStructures[i];
+        if (!this.applicationService.currentVersion.AccountablePersons[index].SectionsAccountability![i]) {
+          this.applicationService.currentVersion.AccountablePersons[index].SectionsAccountability![i] = { SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: [] };
+        }
+      } 
     }
   }
 
@@ -58,7 +79,7 @@ export class SectionNameComponent extends PageComponent<string> {
     if(!!this.newStructureIndex && this.newStructureIndex > 0) {
       let sectionIndex = Number(this.newStructureIndex) + 1;
       this.model = "";
-      return this.navigationService.navigateRelative(`../section-${sectionIndex}/name`, this.activatedRoute);
+      return this.navigationService.navigateRelative(`../section-${sectionIndex}/name`, this.activatedRoute, { reset: true });
     } 
     return this.navigationService.navigateRelative(SectionFloorsAboveComponent.route, this.activatedRoute);
   }

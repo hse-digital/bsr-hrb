@@ -1,5 +1,5 @@
 import { ActivatedRouteSnapshot } from "@angular/router";
-import { ApplicationService } from "../services/application.service";
+import { ApplicationService, Status } from "../services/application.service";
 import { FieldValidations } from "./validators/fieldvalidations";
 import { AccountabilityAreasHelper } from "./accountability-areas-helper";
 
@@ -85,7 +85,7 @@ export class ApHelper {
       }
     }
 
-    canContinue &&= applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(applicationService.currentVersion.AccountablePersons, applicationService.model.BuildingName!, section).length == 0);
+    canContinue &&= applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed).every(section => AccountabilityAreasHelper.getNotAllocatedAreasOf(applicationService.currentVersion.AccountablePersons, applicationService.model.BuildingName!, section).length == 0);
 
     return canContinue;
   }
