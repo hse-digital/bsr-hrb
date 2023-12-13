@@ -130,6 +130,16 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     }
   }
 
+  async navigateToConnections() {
+    if ((!this.applicationService.currentKbiModel!.Connections.StructureConnections || this.applicationService.currentKbiModel!.Connections.StructureConnections?.length == 0)
+      && this.applicationService.currentKbiModel?.Connections.Status == Status.ChangesInProgress) {
+      let route = this.kbiNavigation.getNextConnectionRoute();
+      this.navigationService.navigateAppend(`../../kbi/${route}`, this.activatedRoute, { return: "change-connection-answers" });
+    } else {
+      this.navigationService.navigateAppend("../change-connection-answers", this.activatedRoute);
+    }   
+  }
+
   async navigateToChangeUser() {
     if (this.hasPAPChanged) {
       return this.navigationService.navigateRelative(SelectPrimaryUserComponent.route, this.activatedRoute);

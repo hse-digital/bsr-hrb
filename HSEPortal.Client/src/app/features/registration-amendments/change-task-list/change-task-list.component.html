@@ -43,7 +43,7 @@
               <li class="app-task-list__item firstItem">
                 <span class="app-task-list__task-name">
                   <span task *ngIf="!isLinkEnable(taskListSteps.Connections)">Connections</span>
-                  <a class="govuk-link" *ngIf="isLinkEnable(taskListSteps.Connections)" tabindex="0" role="link" [routerLink]="['../change-connection-answers']">Connections</a>
+                  <a class="govuk-link" *ngIf="isLinkEnable(taskListSteps.Connections)" tabindex="0" role="link" (onKeyupEnter)="navigateToConnections()" (click)="navigateToConnections()">Connections</a>
                 </span>
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.Connections)}}">{{getTagFor(taskListSteps.Connections)}}</govuk-tag>
               </li>
