@@ -1,6 +1,6 @@
 import { Component, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { ApplicationService, SectionAccountability, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, SectionAccountability, SectionModel, Status } from 'src/app/services/application.service';
 import { AccountabilityComponent } from 'src/app/components/accountability/accountability.component';
 import { AccountabilityAreasHelper } from 'src/app/helpers/accountability-areas-helper';
 import { AccountablePersonCheckAnswersComponent } from '../check-answers/check-answers.component';
@@ -27,7 +27,7 @@ export class AreasAccountabilityComponent extends PageComponent<SectionAccountab
   } 
 
   override onInit(applicationService: ApplicationService): void {
-    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
     if (!this.applicationService.currentVersion.AccountablePersons[0].SectionsAccountability) {
       this.applicationService.currentVersion.AccountablePersons[0].SectionsAccountability = [];
     }

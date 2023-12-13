@@ -9,6 +9,7 @@ import { RemoveStructureComponent } from '../remove-structure/remove-structure.c
 import { ChangeTaskListComponent } from '../../change-task-list/change-task-list.component';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
 import { SectionNameComponent } from 'src/app/features/application/building-summary/name/name.component';
+import { CloneHelper } from 'src/app/helpers/array-helper';
 
 @Component({
   selector: 'hse-building-change-check-answers',
@@ -149,10 +150,10 @@ export class BuildingChangeCheckAnswersComponent  extends PageComponent<void> {
       this.updateConnectionsStatus();
       this.updateAPStatus();
       return this.navigationService.navigateRelative(`../sections/section-1/${SectionNameComponent.route}`, this.activatedRoute, {
-        index: this.applicationService._currentSectionIndex
+        index: this.applicationService._currentSectionIndex, reset: true
       });
     }
-    return this.navigationService.navigateRelative(`../sections/${section}/${SectionNameComponent.route}`, this.activatedRoute);
+    return this.navigationService.navigateRelative(`../sections/${section}/${SectionNameComponent.route}`, this.activatedRoute, { reset: true });
   }
 
   private updateConnectionsStatus() {

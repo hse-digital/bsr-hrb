@@ -15,17 +15,18 @@ export class RaCheckAnswersAccountablePersonsComponent {
 
     constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute, protected applicationService: ApplicationService, private registrationAmendmentsService: RegistrationAmendmentsService) {
         let helper = new ChangeAccountablePersonsHelper(this.applicationService);
-        this._changes = helper.getPAPChanges();
+        this._changesPap = [...helper.getPAPChanges(), ...helper.getPAPDetailChanges()];
         this._changesAccountability = helper.getAreasAccountabilityChanges();
         this._changesAPDetails = helper.getAPDetailChanges();
-        this.newChanges = (this._changes.length + this._changesAccountability.length + this.changesAPDetails.length) > 0; 
+
+        this.newChanges = (this._changesPap.length + this._changesAccountability.length + this.changesAPDetails.length) > 0; 
     }
 
     newChanges: boolean = false;
 
-    private _changes: ChangedAnswersModel[];
-    get changes(): ChangedAnswersModel[] {
-        return this._changes;
+    private _changesPap: ChangedAnswersModel[];
+    get changesPap(): ChangedAnswersModel[] {
+        return this._changesPap;
     }
 
     private _changesAccountability: ChangedAnswersModel[];

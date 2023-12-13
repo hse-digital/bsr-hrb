@@ -48,7 +48,7 @@
 
         <ng-container *ngIf="isRAinProgress()">
           <govuk-button (onKeyupEnter)="addAnotherAP()" (onClick)="addAnotherAP()" [isLoading]="processing" classes="govuk-button--secondary" [ngStyle]="{ 'margin-right': '15px' }">Add another accountable person</govuk-button>
-          <govuk-button (onKeyupEnter)="saveAndContinue()" (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>
+          <govuk-button (onKeyupEnter)="saveAndContinueOrKnockOnQuestions()" (onClick)="saveAndContinueOrKnockOnQuestions()" [isLoading]="processing">Continue</govuk-button>
         </ng-container>
 
       </div>
