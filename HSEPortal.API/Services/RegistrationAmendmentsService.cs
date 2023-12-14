@@ -52,6 +52,14 @@ public class RegistrationAmendmentsService
             statuscode = 760_810_001 //submitted         
         };
 
+        if (changeRequest.Category == ChangeCategory.ChangePAPOrLeadContact && changeRequest.Change.Any(x => x.FieldName.ToLower().Contains("principal") || x.FieldName.ToLower().Contains("pap")))
+        {
+            dynamicsChangeRequest = dynamicsChangeRequest with
+            {
+                bsr_papchangecategory = GetPAPChangeCategory(changeRequest)
+            };
+        }
+
         if (dynamicsStructure != null && dynamicsStructure.bsr_blockid != null) {
             dynamicsChangeRequest = dynamicsChangeRequest with { structure = $"/bsr_blocks({dynamicsStructure.bsr_blockid})" };
         }
@@ -122,5 +130,37 @@ public class RegistrationAmendmentsService
     {
         var application = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
         return await dynamicsService.FindExistingStructureAsync(structureName, postcode, application.bsr_buildingapplicationid);
+    }
+
+    private int? GetPAPChangeCategory(ChangeRequest changeRequest)
+    {
+        var papTypeChange = changeRequest.Change.FirstOrDefault(x => x.FieldName == "PAP type"); 
+        if (papTypeChange?.NewAnswer == "organization")
+        {
+            return 760_810_001; // PAP Individual to Organisation
+        }
+        if (papTypeChange?.NewAnswer == "individual")
+        {
+            return 760_810_003; // PAP organisation to individual
+        }
+        
+        var papChange = changeRequest.Change.FirstOrDefault(x => x.FieldName == "Principal accountable person");
+        if (papChange != null)
+        {
+            if (papTypeChange?.NewAnswer == "organization")
+            {
+                return 760_810_004; // PAP Organisation Change
+            }
+            
+            return 760_810_000; // PAP Individual Change
+        }
+        
+        var papNamedContactChange = changeRequest.Change.FirstOrDefault(x => x.FieldName == "Principal accountable person named contact");
+        if (papNamedContactChange != null)
+        {
+            return 760_810_002; // PAP Org - Internal lead contact
+        }
+
+        return null;
     }
 }
