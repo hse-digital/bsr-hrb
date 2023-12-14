@@ -224,12 +224,13 @@ public class RegistrationAmendmentsFunctions
 
     private async Task UpdateBuildingApplicationPreviousPap(DynamicsBuildingApplication dynamicsBuildingApplication, ChangeRequest[] changeRequests)
     {
+        var application = new DynamicsBuildingApplication();
         var allChanges = changeRequests.SelectMany(x => x.Change).ToList();
 
         var previousPapType = allChanges.FirstOrDefault(x => x.FieldName == "PAP type")?.OriginalAnswer;
         if (previousPapType != null)
         {
-            dynamicsBuildingApplication = dynamicsBuildingApplication with
+            application = application with
             {
                 bsr_previouspaptype = previousPapType == "individual" ? 760_810_000 : 760_810_001
             };
@@ -238,7 +239,7 @@ public class RegistrationAmendmentsFunctions
         var previousPap = allChanges.FirstOrDefault(x => x.FieldName == "Principal accountable person")?.OriginalAnswer;
         if (previousPap != null)
         {
-            dynamicsBuildingApplication = dynamicsBuildingApplication with
+            application = application with
             {
                 bsr_previouspap = dynamicsBuildingApplication.bsrPapReferenceId,
             };
@@ -247,12 +248,12 @@ public class RegistrationAmendmentsFunctions
         var previousPapOrgLeadContactId = allChanges.FirstOrDefault(x => x.FieldName == "Principal accountable person named contact")?.OriginalAnswer;
         if (previousPapOrgLeadContactId != null)
         {
-            dynamicsBuildingApplication = dynamicsBuildingApplication with
+            application = application with
             {
                 bsr_previouspaporgleadcontactid = dynamicsBuildingApplication.papLeadContactReferenceId,
             };
         } 
 
-        await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", dynamicsBuildingApplication);
+        await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", application);
     }
 }
