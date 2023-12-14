@@ -17,7 +17,8 @@ public record DynamicsChangeRequest(
     bool? bsr_reviewrequired = null,
     [property: JsonPropertyName("bsr_submittedbyid@odata.bind")]
     string applicantReferenceId = null,
-    int? statuscode = null);
+    int? statuscode = null,
+    int? bsr_papchangecategory = null);
 
 public record DynamicsChange(
     [property: JsonPropertyName("bsr_changerequestid@odata.bind")]
