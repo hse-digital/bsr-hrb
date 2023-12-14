@@ -14,6 +14,7 @@ import { ChangeAccountablePersonsHelper } from 'src/app/helpers/registration-ame
 import { ApHelper } from 'src/app/helpers/ap-helper';
 import { SelectPrimaryUserComponent } from '../change-applicant/select-primary-user/select-primary-user.component';
 import { UserListComponent } from '../change-applicant/user-list/user-list.component';
+import { ChangeConnectionsComponent } from '../change-connections/change-connections/change-connections.component';
 
 @Component({
   selector: 'hse-change-task-list',
@@ -134,9 +135,9 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     if ((!this.applicationService.currentKbiModel!.Connections.StructureConnections || this.applicationService.currentKbiModel!.Connections.StructureConnections?.length == 0)
       && this.applicationService.currentKbiModel?.Connections.Status == Status.ChangesInProgress) {
       let route = this.kbiNavigation.getNextConnectionRoute();
-      this.navigationService.navigateAppend(`../../kbi/${route}`, this.activatedRoute, { return: "change-connection-answers" });
+      this.navigationService.navigateAppend(`../../kbi/${route}`, this.activatedRoute, { return: `${ChangeConnectionsComponent.route}` });
     } else {
-      this.navigationService.navigateAppend("../change-connection-answers", this.activatedRoute);
+      this.navigationService.navigateAppend(`../${ChangeConnectionsComponent.route}`, this.activatedRoute);
     }   
   }
 
