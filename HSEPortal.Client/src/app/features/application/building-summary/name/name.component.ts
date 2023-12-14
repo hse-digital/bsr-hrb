@@ -79,9 +79,16 @@ export class SectionNameComponent extends PageComponent<string> {
     if(!!this.newStructureIndex && this.newStructureIndex > 0) {
       let sectionIndex = Number(this.newStructureIndex) + 1;
       this.model = "";
+      this.updateConnectionsStatus();
       return this.navigationService.navigateRelative(`../section-${sectionIndex}/name`, this.activatedRoute, { reset: true });
     } 
     return this.navigationService.navigateRelative(SectionFloorsAboveComponent.route, this.activatedRoute);
+  }
+
+  private updateConnectionsStatus() {
+    if (!!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.Connections) {
+      this.applicationService.currentVersion.Kbi.Connections.Status = Status.ChangesInProgress;
+    }
   }
 
   sections: SectionModel[] = [];

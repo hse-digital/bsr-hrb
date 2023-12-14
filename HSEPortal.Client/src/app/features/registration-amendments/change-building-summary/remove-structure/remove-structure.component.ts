@@ -36,9 +36,35 @@ export class RemoveStructureComponent extends PageComponent<string> {
   override async onSave(applicationService: ApplicationService): Promise<void> {
     this.applicationService.currentVersion.Sections[this.index!].RemoveStructureAreYouSure = this.model;
     this.applicationService.currentVersion.Sections[this.index!].Status = this.model == 'yes' ? Status.Removed : Status.NoChanges;
-    if (this.model == 'no') this.applicationService.currentVersion.Sections[this.index!].CancellationReason = CancellationReason.NoCancellationReason;
+    if (this.model == 'no') {
+      this.applicationService.currentVersion.Sections[this.index!].CancellationReason = CancellationReason.NoCancellationReason;
+    } else {
+      this.updateConnectionsStatus();
+      this.resetAreasAccountability();
+    }
     
     this.changeNumberOfSections();
+  }
+
+  private updateConnectionsStatus() {
+    if (!!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.Connections) {
+      this.applicationService.currentVersion.Kbi.Connections.Status = Status.ChangesInProgress;
+    }
+  }
+
+  private resetAreasAccountability() {
+    let InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
+    
+    for (let index = 0; index < this.applicationService.currentVersion.AccountablePersons.length; index++) {
+      this.applicationService.currentVersion.AccountablePersons[index].SectionsAccountability = [];
+        
+      for (let i = 0; i < InScopeStructures.length; i++) {
+        var section = InScopeStructures[i];
+        if (!this.applicationService.currentVersion.AccountablePersons[index].SectionsAccountability![i]) {
+          this.applicationService.currentVersion.AccountablePersons[index].SectionsAccountability![i] = { SectionName: section.Name ?? this.applicationService.model.BuildingName!, Accountability: [] };
+        }
+      } 
+    }
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
