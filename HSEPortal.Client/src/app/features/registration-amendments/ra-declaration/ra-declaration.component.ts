@@ -82,6 +82,8 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.applicationService.currentVersion.BuildingStatus = Status.NoChanges;
     this.applicationService.currentVersion.ApChangesStatus = Status.NoChanges;
     this.applicationService.updateApplication();
+
+    await this.registrationAmendmentsService.syncChangeRequest();
     
     this.updateChangeRequestStatus();
     await this.applicationService.updateApplication();
@@ -97,8 +99,6 @@ export class RaDeclarationComponent extends PageComponent<void> {
     await this.applicationService.syncBuildingStructures();
 
     this.updateAllKbiSections();
-
-    await this.registrationAmendmentsService.syncChangeRequest();
   }
 
   deactivateSingleStructure() {
