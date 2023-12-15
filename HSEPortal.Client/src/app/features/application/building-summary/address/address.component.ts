@@ -76,6 +76,22 @@ export class SectionAddressComponent implements OnInit, CanActivate {
 
       this.applicationService.currentSection.Addresses.push(address);
     }
+    
+    this.updateKbi(this.applicationService.currentSection.Addresses.at(0)!.Postcode!);
+  }
+
+  private updateKbi(postcode: string) {
+    if (this.kbiExists() && this.kbiSectionExists()) {
+      this.applicationService.currentVersion.Kbi!.KbiSections.at(this.applicationService._currentSectionIndex)!.Postcode = postcode;
+    }
+  }
+
+  private kbiSectionExists() {
+    return !!this.applicationService.currentVersion.Kbi?.KbiSections.at(this.applicationService._currentSectionIndex);
+  }
+
+  private kbiExists() {
+    return !!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.KbiSections && this.applicationService.currentVersion.Kbi.KbiSections.length > 0;
   }
 
   private navigateToNextChange() {
