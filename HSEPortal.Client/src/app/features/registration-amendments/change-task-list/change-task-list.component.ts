@@ -15,6 +15,12 @@ import { ApHelper } from 'src/app/helpers/ap-helper';
 import { SelectPrimaryUserComponent } from '../change-applicant/select-primary-user/select-primary-user.component';
 import { UserListComponent } from '../change-applicant/user-list/user-list.component';
 import { ChangeConnectionsComponent } from '../change-connections/change-connections/change-connections.component';
+import { SamePapComponent } from '../change-accountable-persons/same-pap/same-pap.component';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { OrganisationNameComponent } from '../../application/accountable-person/organisation/organisation-name/organisation-name.component';
+import { PapNameComponent } from '../../application/accountable-person/ap-name/pap-name.component';
+import { PrincipleAccountableSelection } from '../../application/accountable-person/principal/principal.component';
+import { OrganisationTypeComponent } from '../../application/accountable-person/organisation/organisation-type/organisation-type.component';
 
 @Component({
   selector: 'hse-change-task-list',
@@ -48,7 +54,7 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    
+
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -61,7 +67,7 @@ export class ChangeTaskListComponent extends PageComponent<void> {
 
   override async navigateNext(): Promise<boolean | void> {
     return true;
-  }  
+  }
 
   async navigateToSections() {
   }
@@ -92,7 +98,7 @@ export class ChangeTaskListComponent extends PageComponent<void> {
         let hasChanged = (new ChangeKbiHelper(this.applicationService).getChangesOf(kbiSection, index) ?? []).length > 0;
         if (hasChanged) {
           this.applicationService.currentVersion.Kbi!.KbiSections.at(index)!.Status = KbiValidator.isKbiSectionValid(kbiSection)
-            ? Status.ChangesComplete 
+            ? Status.ChangesComplete
             : Status.ChangesInProgress;
         }
       }
@@ -100,11 +106,11 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }
 
   validateAccountablePersons() {
-    let isValid =  ApHelper.isAPValid(this.applicationService);
+    let isValid = ApHelper.isAPValid(this.applicationService);
     let hasChanged = (new ChangeAccountablePersonsHelper(this.applicationService).getAllAPChanges() ?? []).length > 0;
     if (hasChanged) {
       this.applicationService.currentVersion.ApChangesStatus = isValid
-        ? Status.ChangesComplete 
+        ? Status.ChangesComplete
         : Status.ChangesInProgress;
     } else {
       this.applicationService.currentVersion.ApChangesStatus = Status.NoChanges;
@@ -138,13 +144,26 @@ export class ChangeTaskListComponent extends PageComponent<void> {
       this.navigationService.navigateAppend(`../../kbi/${route}`, this.activatedRoute, { return: `${ChangeConnectionsComponent.route}` });
     } else {
       this.navigationService.navigateAppend(`../${ChangeConnectionsComponent.route}`, this.activatedRoute);
-    }   
+    }
+  }
+
+  navigateToAp() {
+    let pap = this.applicationService.currentVersion.AccountablePersons[0];
+    if (pap.Type == "organisation" && !FieldValidations.IsNotNullOrWhitespace(pap.OrganisationName)) {
+      let route = !FieldValidations.IsNotNullOrWhitespace(pap.OrganisationType) ? OrganisationTypeComponent.route : OrganisationNameComponent.route; 
+      return this.navigationService.navigateRelative(`../accountable-person/accountable-person-1/${route}`, this.activatedRoute);
+    } else if (pap.Type != "organisation" && !FieldValidations.IsNotNullOrWhitespace(pap.IsPrincipal)) {
+      return this.navigationService.navigateRelative(`../accountable-person/accountable-person-1/${PrincipleAccountableSelection.route}`, this.activatedRoute);
+    } else if (pap.Type != "organisation" && !FieldValidations.IsNotNullOrWhitespace(pap.FirstName)) {
+      return this.navigationService.navigateRelative(`../accountable-person/accountable-person-1/${PapNameComponent.route}`, this.activatedRoute);
+    }
+    return this.navigationService.navigateRelative(SamePapComponent.route, this.activatedRoute);
   }
 
   async navigateToChangeUser() {
     if (this.hasPAPChanged) {
       return this.navigationService.navigateRelative(SelectPrimaryUserComponent.route, this.activatedRoute);
-    } 
+    }
     return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
   }
 
