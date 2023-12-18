@@ -23,7 +23,8 @@ public class RegistrationAmendmentsFunctions
 
     [Function(nameof(UpdatePrimaryApplicant))]
     public async Task<HttpResponseData> UpdatePrimaryApplicant(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(UpdatePrimaryApplicant)}/{{applicationId}}")] HttpRequestData request, string applicationId)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(UpdatePrimaryApplicant)}/{{applicationId}}")]
+        HttpRequestData request, string applicationId)
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
@@ -42,7 +43,8 @@ public class RegistrationAmendmentsFunctions
 
     [Function(nameof(CreateSecondaryApplicant))]
     public async Task<HttpResponseData> CreateSecondaryApplicant(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(CreateSecondaryApplicant)}/{{applicationId}}")] HttpRequestData request, string applicationId)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(CreateSecondaryApplicant)}/{{applicationId}}")]
+        HttpRequestData request, string applicationId)
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var secondaryBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
@@ -61,7 +63,8 @@ public class RegistrationAmendmentsFunctions
 
     [Function(nameof(DeleteSecondaryUserLookup))]
     public async Task<HttpResponseData> DeleteSecondaryUserLookup(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(DeleteSecondaryUserLookup)}/{{applicationId}}")] HttpRequestData request, string applicationId)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(DeleteSecondaryUserLookup)}/{{applicationId}}")]
+        HttpRequestData request, string applicationId)
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var secondaryBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
@@ -150,18 +153,20 @@ public class RegistrationAmendmentsFunctions
 
     [Function(nameof(UpdateRemovedStructures))]
     public async Task<HttpResponseData> UpdateRemovedStructures(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(UpdateRemovedStructures)}/{{applicationId}}/{{versionName}}")] HttpRequestData request, string applicationId,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(UpdateRemovedStructures)}/{{applicationId}}/{{versionName}}")]
+        HttpRequestData request, string applicationId,
         string versionName)
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
 
         var removedStructures = buildingApplicationModel.Versions.Find(x => x.Name.Equals(versionName)).Sections
             .Where(x => x.CancellationReason != CancellationReason.NoCancellationReason && x.Addresses is { Length: > 0 } && x.Status != Status.Removed).ToArray();
-        
+
         foreach (var section in removedStructures)
         {
             var dynamicsStructure = await RaService.GetDynamicsStructure(section.Name, section.Addresses[0].Postcode, applicationId);
-            var updatedStructure = new DynamicsStructure { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[section.CancellationReason]})", statuscode = 760_810_007 }; // statuscode -> cancelled
+            var updatedStructure = new DynamicsStructure
+                { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[section.CancellationReason]})", statuscode = 760_810_007 }; // statuscode -> cancelled
             await dynamicsApi.Update($"bsr_blocks({dynamicsStructure.bsr_blockid})", updatedStructure);
         }
 
@@ -170,7 +175,8 @@ public class RegistrationAmendmentsFunctions
 
     [Function(nameof(WithdrawApplicationOrBuilding))]
     public async Task<HttpResponseData> WithdrawApplicationOrBuilding(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(WithdrawApplicationOrBuilding)}/{{applicationId}}")] HttpRequestData request, string applicationId)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(WithdrawApplicationOrBuilding)}/{{applicationId}}")]
+        HttpRequestData request, string applicationId)
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
@@ -194,7 +200,8 @@ public class RegistrationAmendmentsFunctions
 
     [Function(nameof(DeactivateSingleStructure))]
     public async Task<HttpResponseData> DeactivateSingleStructure(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(DeactivateSingleStructure)}/{{applicationId}}/{{buildingName}}/{{postcode}}")] HttpRequestData request,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(DeactivateSingleStructure)}/{{applicationId}}/{{buildingName}}/{{postcode}}")]
+        HttpRequestData request,
         string applicationId, string buildingName, string postcode)
     {
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
@@ -223,17 +230,8 @@ public class RegistrationAmendmentsFunctions
 
     private async Task UpdateBuildingApplicationPreviousPap(DynamicsBuildingApplication dynamicsBuildingApplication, ChangeRequest[] changeRequests)
     {
-        var application = new DynamicsBuildingApplication();
+        var application = new DynamicsBuildingApplication { bsr_previouspaptype = dynamicsBuildingApplication.bsr_paptype };
         var allChanges = changeRequests.SelectMany(x => x.Change).ToList();
-
-        var previousPapType = allChanges.FirstOrDefault(x => x.FieldName == "PAP type")?.OriginalAnswer;
-        if (previousPapType != null)
-        {
-            application = application with
-            {
-                bsr_previouspaptype = previousPapType == "individual" ? 760_810_000 : 760_810_001
-            };
-        }
 
         var previousPap = allChanges.FirstOrDefault(x => x.FieldName == "Principal accountable person")?.OriginalAnswer;
         if (previousPap != null)
@@ -254,7 +252,7 @@ public class RegistrationAmendmentsFunctions
                 };
             }
         }
-        
+
         var previousPapOrgLeadContactId = allChanges.FirstOrDefault(x => x.FieldName == "Principal accountable person named contact")?.OriginalAnswer;
         if (previousPapOrgLeadContactId != null)
         {
@@ -262,7 +260,7 @@ public class RegistrationAmendmentsFunctions
             {
                 bsr_previouspaporgleadcontactid = dynamicsBuildingApplication.papLeadContactReferenceId,
             };
-        } 
+        }
 
         await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", application);
     }
