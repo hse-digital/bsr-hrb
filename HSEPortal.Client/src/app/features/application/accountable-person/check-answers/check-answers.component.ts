@@ -46,7 +46,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
         canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.OrganisationType);
         canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.OrganisationName);
 
-        if (index == 0) {
+        if (index == 0 && !this.applicationService.isChangeAmendmentInProgress) {
           canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.Role);
         }
 

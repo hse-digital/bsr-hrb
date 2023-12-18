@@ -7,6 +7,7 @@ import { PhoneNumberValidator } from "src/app/helpers/validators/phone-number-va
 import { ApplicationService } from "src/app/services/application.service";
 import { AddAccountablePersonComponent } from "../../add-accountable-person/add-accountable-person.component";
 import { PageComponent } from "src/app/helpers/page.component";
+import { ActingForSameAddressComponent } from "../acting-for-same-address/acting-for-same-address.component";
 
 export type AccountableLeadPersonJob = { LeadEmail?: string, LeadPhoneNumber?: string, LeadJobRole?: string }
 
@@ -65,6 +66,10 @@ export class LeadDetailsComponent extends PageComponent<AccountableLeadPersonJob
   }
 
   override navigateNext(): Promise<boolean | void> {
+    if (this.applicationService.isChangeAmendmentInProgress) {
+      return this.navigationService.navigateRelative(ActingForSameAddressComponent.route, this.activatedRoute);
+    }
+
     return this.navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, this.activatedRoute);
   }
 

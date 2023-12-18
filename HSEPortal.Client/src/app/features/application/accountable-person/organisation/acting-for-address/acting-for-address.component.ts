@@ -8,6 +8,7 @@ import { NavigationService } from "src/app/services/navigation.service";
 import { TitleService } from "src/app/services/title.service";
 import { LeadNameComponent } from "../lead-name/lead-name.component";
 import { ApplicationSubmittedHelper } from "src/app/helpers/app-submitted-helper";
+import { OutgoingAccountabilityPageComponent } from "../../outgoing-accountability/outgoing-accountability.component";
 
 @Component({
     templateUrl: './acting-for-address.component.html'
@@ -42,7 +43,11 @@ export class ActingForAddressComponent implements OnInit, CanActivate {
             route = `../${this.returnUrl}`;
         }
 
-        this.navigationService.navigateRelative(route, this.activatedRoute);
+        if (this.applicationService.isChangeAmendmentInProgress) {
+            this.navigationService.navigateRelative(`../${OutgoingAccountabilityPageComponent.route}`, this.activatedRoute);
+        } else {
+            this.navigationService.navigateRelative(route, this.activatedRoute);
+        }
     }
 
     changeStep(event: any) {
@@ -56,6 +61,7 @@ export class ActingForAddressComponent implements OnInit, CanActivate {
     }
 
     canActivate(routeSnapshot: ActivatedRouteSnapshot) {
+        if (this.applicationService.isChangeAmendmentInProgress) return true;
 
         ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
 
@@ -64,4 +70,15 @@ export class ActingForAddressComponent implements OnInit, CanActivate {
             && this.applicationService.currentAccountablePerson.Role == "registering_for"
             && this.applicationService.currentAccountablePerson.ActingForSameAddress == "no";
     }
+
+    getAddressName() {
+        if (this.applicationService.isChangeAmendmentInProgress) {
+            var ap = this.applicationService.currentAccountablePerson;
+            return `${ap.LeadFirstName} ${ap.LeadLastName}`
+        }
+
+        return "Your address";
+    }
+
+    get isChangeInProgress(): boolean { return  this.applicationService.isChangeAmendmentInProgress };
 }

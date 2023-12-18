@@ -9,9 +9,9 @@
           <govuk-error-link anchorId="acting_for_same_address-yes-input" [message]="getErrorMessage()" />
         </govuk-error-summary>
 
-        <h1 class="govuk-heading-l">Your address</h1>
+        <h1 class="govuk-heading-l">{{getAddressTitle()}}</h1>
 
-        <govuk-radio-group title="Should we use the same address to contact you?" 
+        <govuk-radio-group [title]="getAddressDescription()" 
           [(model)]="model" #field [govukRequired]="field"
           [errorText]="getErrorDescription(sameAddressHasErrors, getErrorMessage())">
           <govuk-body>You have told us that the address of {{applicationService.currentAccountablePerson.OrganisationName}} is <b>{{getOrganisationAddress()}}</b>.</govuk-body>

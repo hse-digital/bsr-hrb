@@ -35,10 +35,6 @@ export class ApHelper {
         canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.OrganisationType);
         canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.OrganisationName);
 
-        if (index == 0) {
-          canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.Role);
-        }
-
         if (ap.Role == "employee" || ap.Role == "registering_for") {
           canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.LeadFirstName);
           canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.LeadLastName);

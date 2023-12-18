@@ -161,6 +161,6 @@ public class RegistrationAmendmentsService
             return 760_810_002; // PAP Org - Internal lead contact
         }
 
-        return null;
+        return 760_810_000;
     }
 }
