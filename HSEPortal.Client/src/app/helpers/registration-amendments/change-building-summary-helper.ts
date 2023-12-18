@@ -41,7 +41,7 @@ class BuildingSummaryChanges extends ChangeHelper {
             changes.push(this.getFieldChange(previousSectionNames, currentSectionNames, "Structures", "Structures", "building-change-check-answers", "", -1)!);
         }
 
-        return changes;
+        return changes.filter(x => !!x).map(x => x!);
     }
 
     getSectionChanges(originalSection: SectionModel, currentSection: SectionModel, sectionIndex: number): ChangedAnswersModel[] {

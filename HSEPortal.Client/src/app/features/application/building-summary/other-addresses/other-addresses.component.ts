@@ -47,7 +47,7 @@ export class SectionOtherAddressesComponent extends PageComponent<string> {
   override async onSave(applicationService: ApplicationService): Promise<void> { }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && this.applicationService.currentSection.Addresses?.length <= 5;
+    return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && (this.applicationService.currentSection.Addresses?.length ?? 0) <= 5;
   }
 
   override isValid(): boolean {
