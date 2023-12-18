@@ -62,7 +62,7 @@ export class AccountablePersonComponent extends PageComponent<string> {
   override async onSave(): Promise<void> {
     this.applicationService.model.PrincipalAccountableType = this.model;
     let newAnswer = this.applicationService.model.PrincipalAccountableType;
-    if (this.previousAnswer && this.previousAnswer != newAnswer) {
+    if ((this.previousAnswer && this.previousAnswer != newAnswer) || this.isNewPap()) {
       var replaceAp = new AccountablePersonModel();
       replaceAp.Type = newAnswer;
 
@@ -71,6 +71,10 @@ export class AccountablePersonComponent extends PageComponent<string> {
     } else if (!this.previousAnswer) {
       await this.applicationService.startAccountablePersonEdit();
     }
+  }
+
+  private isNewPap() {
+    return this.applicationService.isChangeAmendmentInProgress && !this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.NewPap;
   }
 
 }
