@@ -33,10 +33,14 @@ public record DynamicsBuildingApplication(string bsr_buildingapplicationid = nul
     [property: JsonPropertyName("bsr_cancellationreason@odata.bind")] 
     string bsr_cancellationreason = null,
     int? bsr_previouspaptype = null,
-    [property: JsonPropertyName("bsr_previouspap@odata.bind")]
-    string? bsr_previouspap = null,
+    [property: JsonPropertyName("bsr_previouspap_contact@odata.bind")]
+    string? bsr_previouspap_contact = null,
+    [property: JsonPropertyName("bsr_previouspap_account@odata.bind")]
+    string? bsr_previouspap_account = null,
     [property: JsonPropertyName("bsr_previouspaporgleadcontactid@odata.bind")]
-    string? bsr_previouspaporgleadcontactid = null) : DynamicsEntity<BuildingApplication>;
+    string? bsr_previouspaporgleadcontactid = null,
+    string? _bsr_papid_value = null,
+    int? bsr_paptype = null) : DynamicsEntity<BuildingApplication>;
 
 public enum BuildingApplicationStage
 {
