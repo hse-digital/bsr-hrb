@@ -1,5 +1,5 @@
-<hse-address addressName="Your address"
-             [selfAddress]=true
+<hse-address [addressName]="getAddressName()"
+             [selfAddress]="!isChangeInProgress"
              [address]="address"
              [searchMode]="searchMode"
              (onAddressConfirmed)="updateActingForAddress($event)"

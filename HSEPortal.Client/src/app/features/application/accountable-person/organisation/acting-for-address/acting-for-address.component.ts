@@ -70,4 +70,15 @@ export class ActingForAddressComponent implements OnInit, CanActivate {
             && this.applicationService.currentAccountablePerson.Role == "registering_for"
             && this.applicationService.currentAccountablePerson.ActingForSameAddress == "no";
     }
+
+    getAddressName() {
+        if (this.applicationService.isChangeAmendmentInProgress) {
+            var ap = this.applicationService.currentAccountablePerson;
+            return `${ap.LeadFirstName} ${ap.LeadLastName}`
+        }
+
+        return "Your address";
+    }
+
+    get isChangeInProgress(): boolean { return  this.applicationService.isChangeAmendmentInProgress };
 }
