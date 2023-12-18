@@ -64,18 +64,14 @@ export class ApHelper {
         }
 
       } else if (ap.Type == "individual") {
-        if (ap.IsPrincipal == "yes") {
-          canContinue &&= (ap.PapAddress ?? ap.Address) != null;
-        } else {
-          canContinue &&= ap.Address != null;
-          canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.FirstName);
-          canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.LastName);
-          canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.PhoneNumber);
-          canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.Email);
+        canContinue &&= (ap.PapAddress ?? ap.Address) != null;
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.FirstName);
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.LastName);
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.PhoneNumber);
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.Email);
 
-          if (index == 0) {
-            canContinue &&= ap.PapAddress != null;
-          }
+        if (index == 0) {
+          canContinue &&= ap.PapAddress != null;
         }
       }
 
