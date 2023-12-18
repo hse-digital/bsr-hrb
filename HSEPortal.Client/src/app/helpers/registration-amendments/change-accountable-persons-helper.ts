@@ -15,7 +15,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         buildingSummaryChanges.push(...this.getAreasAccountabilityChanges());
         buildingSummaryChanges.push(...this.getPAPDetailChanges());
         buildingSummaryChanges.push(...this.getAPDetailChanges());
-    
+
         return buildingSummaryChanges.filter(x => !!x).map(x => x!);
     }
 
@@ -56,14 +56,13 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         changes.push(this.getFieldChange(original?.Type, current?.Type, "PAP type", "PAP type", "", "sectionName", 0));
         changes.push(this.getFieldChange(original?.Email, current?.Email, "PAP Individual email", "PAP Individual email", "", "sectionName", 0));
         changes.push(this.getFieldChange(original?.PhoneNumber, current?.PhoneNumber, "PAP Individual telephone number", "PAP Individual telephone number", "", "sectionName", 0));
-        changes.push(this.getAddressChanges([original.PapAddress!], [current.PapAddress!], "PAP address", "PAP address", "", "sectionName", 0));
-        changes.push(this.getAddressChanges([original.Address!], [current.Address!], "PAP address", "PAP address", "", "sectionName", 0));
+        changes.push(this.getAddressChanges([original.PapAddress ?? original.Address!], [current.PapAddress ?? current.Address!], "PAP address", "PAP address", "", "sectionName", 0));
 
         return changes.filter(x => !!x).map(x => x!);
     }
 
     getAPDetailChanges() {
-        
+
         let original = this.applicationService.previousVersion?.AccountablePersons.slice(1);
         let current = this.applicationService.currentVersion?.AccountablePersons.slice(1);
 
@@ -77,9 +76,9 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
             const currentAP = current[index];
             const originalAP = original.find(x => this.getPAPName(x) == this.getPAPName(currentAP)) ?? undefined;
             if (originalAP == undefined) continue;
-            
+
             let currentAPName = this.getPAPName(currentAP);
-            
+
             changes.push(this.getFieldChange(originalAP?.Type, currentAP?.Type, `${currentAPName} AP type`, `${currentAPName} AP type`, "", "sectionName", 0));
             changes.push(this.getFieldChange(this.getOrgType(originalAP?.OrganisationType), this.getOrgType(currentAP?.OrganisationType), `${currentAPName} organisation type`, `${currentAPName} organisation type`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.OrganisationName, currentAP?.OrganisationName, `${currentAPName} organisation name`, `${currentAPName} organisation name`, "", "sectionName", 0));
@@ -90,9 +89,9 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
             changes.push(this.getFieldChange(originalAP?.LeadEmail, currentAP?.LeadEmail, `${currentAPName} lead contact email`, `${currentAPName} lead contact email`, "", "sectionName", 0));
             changes.push(this.getFieldChange(originalAP?.LeadPhoneNumber, currentAP?.LeadPhoneNumber, `${currentAPName} lead contact telephone number`, `${currentAPName} lead contact telephone number`, "", "sectionName", 0));
             changes.push(this.getFieldChange(`${originalAP?.LeadFirstName} ${currentAP?.LeadLastName}`, `${currentAP?.LeadFirstName} ${currentAP?.LeadLastName}`, `${currentAPName} lead contact telephone number`, `${currentAPName} lead contact telephone number`, "", "sectionName", 0));
-            changes.push(this.getAddressChanges([originalAP.PapAddress!], [currentAP.PapAddress!], `${currentAPName} address`, `${currentAPName} address`, "", "sectionName", 0));
-            changes.push(this.getAddressChanges([originalAP.Address!], [currentAP.Address!], `${currentAPName} address`, `${currentAPName} address`, "", "sectionName", 0));
-            
+            changes.push(this.getAddressChanges([originalAP.PapAddress ?? originalAP.Address!], [currentAP.PapAddress ?? currentAP.Address!], `${currentAPName} address`, `${currentAPName} address`, "", "sectionName", 0));
+            // changes.push(this.getAddressChanges([originalAP.Address!], [currentAP.Address!], `${currentAPName} address`, `${currentAPName} address`, "", "sectionName", 0));
+
         }
 
         return changes.filter(x => !!x).map(x => x!);
@@ -111,8 +110,8 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         } else if (!isPAP && FieldValidations.IsNotNullOrWhitespace(ap.NamedContactFirstName)) {
             return `${ap.NamedContactFirstName} ${ap.NamedContactLastName}`;
         }
-        
-        return undefined;        
+
+        return undefined;
     }
 
     private getOrgType(value?: string) {
@@ -132,7 +131,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
     getAreasAccountabilityChanges() {
         let changes: (ChangedAnswersModel | undefined)[] = [];
         let route = "";
-        
+
         let originalAreasAccountability = this.getAreasAccountability(this.applicationService.previousVersion);
         let currentAreasAccountability = this.getAreasAccountability(this.applicationService.currentVersion);
 
@@ -153,7 +152,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
             for (let index = 0; index < areas.length; index++) {
                 const area = areas[index];
                 let aps = [];
-                for (let index = 0; index < version.AccountablePersons.length; index++) { 
+                for (let index = 0; index < version.AccountablePersons.length; index++) {
                     const accountability = version.AccountablePersons[index].SectionsAccountability;
                     let sectionName = FieldValidations.IsNotNullOrWhitespace(section.Name) ? section.Name : this.applicationService.model.BuildingName;
                     if (!!accountability && accountability.find(x => x.SectionName == sectionName && (x.Accountability?.indexOf(area) ?? -1) > -1)) {
@@ -163,7 +162,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
                 accountability.push( { title: `${this.areasAccountability[area]} in ${this.transformSectionName(section.Name)}`, ap: aps , sectionName: section.Name} );
             }
         }
-        
+
         return accountability;
     }
 

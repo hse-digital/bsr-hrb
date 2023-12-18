@@ -75,18 +75,14 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
         }
 
       } else if (ap.Type == "individual") {
-        if (ap.IsPrincipal == "yes") {
-          canContinue &&= (ap.PapAddress ?? ap.Address) != null;
-        } else {
-          canContinue &&= ap.Address != null;
-          canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.FirstName);
-          canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.LastName);
-          canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.PhoneNumber);
-          canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.Email);
+        canContinue &&= (ap.PapAddress ?? ap.Address) != null;
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.FirstName);
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.LastName);
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.PhoneNumber);
+        canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.Email);
 
-          if (index == 0) {
-            canContinue &&= ap.PapAddress != null;
-          }
+        if (index == 0) {
+          canContinue &&= ap.PapAddress != null;
         }
       }
 
@@ -170,7 +166,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
       this.applicationService.removeAp(this.applicationService.currentVersion.AccountablePersons.indexOf(this.apToRemove!));
       this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
     }
-    
+
     this.apToRemove = undefined;
   }
 
