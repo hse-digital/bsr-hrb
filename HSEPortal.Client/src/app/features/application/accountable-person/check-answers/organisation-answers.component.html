@@ -9,10 +9,10 @@
   </govuk-summary-list-row>
 
   <ng-container *ngIf="apIndex == 0">
-    <govuk-summary-list-row (onClick)="navigateTo('who-are-you')" (onKeyupEnter)="navigateTo('who-are-you')" key="Are you the named contact?" [showAction]=true>{{ap.Role | whoAreYouDescription }}</govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="!isRAinProgress()" (onClick)="navigateTo('who-are-you')" (onKeyupEnter)="navigateTo('who-are-you')" key="Are you the named contact?" [showAction]=true>{{ap.Role | whoAreYouDescription }}</govuk-summary-list-row>
     <govuk-summary-list-row *ngIf="isNamedContact()" (onClick)="navigateTo('pap-named-role')" (onKeyupEnter)="navigateTo('pap-named-role')" key="Job role" [showAction]=true>{{ap.LeadJobRole | leadJobRoleDescription}}</govuk-summary-list-row>
-    <govuk-summary-list-row *ngIf="isRegisteringFor()" (onClick)="navigateTo('same-address')" (onKeyupEnter)="navigateTo('same-address')" key="Should we use the same address to contact you?" [showAction]=true>{{ap.ActingForSameAddress | useSameAddressDescription}}</govuk-summary-list-row>
-    <govuk-summary-list-row *ngIf="isRegisteringFor() && ap.ActingForSameAddress == 'no'" (onClick)="navigateTo('acting-for-address')" (onKeyupEnter)="navigateTo('acting-for-address')" key="Your address" [showAction]=true>
+    <govuk-summary-list-row *ngIf="isRegisteringFor() || isRAinProgress()" (onClick)="navigateTo('same-address')" (onKeyupEnter)="navigateTo('same-address')" key="Should we use the same address to contact you?" [showAction]=true>{{ap.ActingForSameAddress | useSameAddressDescription}}</govuk-summary-list-row>
+    <govuk-summary-list-row *ngIf="isRegisteringFor() && ap.ActingForSameAddress == 'no' || isRAinProgress()" (onClick)="navigateTo('acting-for-address')" (onKeyupEnter)="navigateTo('acting-for-address')" key="Your address" [showAction]=true>
       <address-description [address]="ap.ActingForAddress" />
     </govuk-summary-list-row>
   </ng-container>
