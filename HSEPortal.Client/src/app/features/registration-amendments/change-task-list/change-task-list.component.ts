@@ -152,7 +152,7 @@ export class ChangeTaskListComponent extends PageComponent<void> {
     if (pap.Type == "organisation" && !FieldValidations.IsNotNullOrWhitespace(pap.OrganisationName)) {
       let route = !FieldValidations.IsNotNullOrWhitespace(pap.OrganisationType) ? OrganisationTypeComponent.route : OrganisationNameComponent.route; 
       return this.navigationService.navigateRelative(`../accountable-person/accountable-person-1/${route}`, this.activatedRoute);
-    } else if (pap.Type != "organisation" && !FieldValidations.IsNotNullOrWhitespace(pap.IsPrincipal)) {
+    } else if (pap.Type != "organisation" && !FieldValidations.IsNotNullOrWhitespace(pap.IsPrincipal) && !FieldValidations.IsNotNullOrWhitespace(pap.FirstName)) {
       return this.navigationService.navigateRelative(`../accountable-person/accountable-person-1/${PrincipleAccountableSelection.route}`, this.activatedRoute);
     } else if (pap.Type != "organisation" && FieldValidations.IsNotNullOrWhitespace(pap.IsPrincipal) && pap.IsPrincipal != "yes" && !FieldValidations.IsNotNullOrWhitespace(pap.FirstName)) {
       return this.navigationService.navigateRelative(`../accountable-person/accountable-person-1/${PapNameComponent.route}`, this.activatedRoute);
