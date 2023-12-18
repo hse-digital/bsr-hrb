@@ -238,10 +238,21 @@ public class RegistrationAmendmentsFunctions
         var previousPap = allChanges.FirstOrDefault(x => x.FieldName == "Principal accountable person")?.OriginalAnswer;
         if (previousPap != null)
         {
-            application = application with
+            var previousPapId = dynamicsBuildingApplication._bsr_papid_value;
+            if (dynamicsBuildingApplication.bsr_paptype == 760_810_000)
             {
-                bsr_previouspap = dynamicsBuildingApplication.bsrPapReferenceId,
-            };
+                application = application with
+                {
+                    bsr_previouspap_contact = $"/contacts({previousPapId})"
+                };
+            }
+            else
+            {
+                application = application with
+                {
+                    bsr_previouspap_account = $"/accounts({previousPapId})"
+                };
+            }
         }
         
         var previousPapOrgLeadContactId = allChanges.FirstOrDefault(x => x.FieldName == "Principal accountable person named contact")?.OriginalAnswer;
