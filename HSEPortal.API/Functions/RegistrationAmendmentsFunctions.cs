@@ -145,6 +145,7 @@ public class RegistrationAmendmentsFunctions
         List<DynamicsChangeRequestResponse> dynamicsResponse = new List<DynamicsChangeRequestResponse>
         {
             changeRequests.value.Find(x => RaService.IsCategoryValueEqualsTo(ChangeCategory.ApplicationBuildingAmendments, x._bsr_changecategoryid_value)),
+            changeRequests.value.Find(x => RaService.IsCategoryValueEqualsTo(ChangeCategory.ChangePAPOrLeadContact, x._bsr_changecategoryid_value)),
             changeRequests.value.Find(x => RaService.IsCategoryValueEqualsTo(ChangeCategory.ChangeApplicantUser, x._bsr_changecategoryid_value))
         };
 

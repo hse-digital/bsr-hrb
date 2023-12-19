@@ -8,8 +8,8 @@
 
         <h1 class="govuk-heading-l">You told us about these changes to {{applicationService.model.BuildingName}} on
           {{applicationService.model.RegistrationAmendmentsModel?.Date | date: 'dd MMMM yyyy'}}</h1>
-
-        <ra-summary-change-applicant [changes]="applicantChanges" *ngIf="applicantChanges.length > 0"/>
+ 
+        <ra-summary-change-applicant [applicantChanges]="applicantChanges" [papChanges]="accountablePersonChanges" *ngIf="applicantChanges.length > 0 || accountablePersonChanges.length > 0"/>
         <ra-summary-change-building-summary [changes]="structureChanges"  *ngIf="structureChanges.length > 0"/>
 
       </div>
