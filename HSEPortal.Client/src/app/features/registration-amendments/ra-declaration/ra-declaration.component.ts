@@ -84,7 +84,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.applicationService.updateApplication();
 
     await this.registrationAmendmentsService.syncChangeRequest();
-    
+
     this.updateChangeRequestStatus();
     await this.applicationService.updateApplication();
 
@@ -95,8 +95,9 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.updateKbiStatus();
 
     this.applicationService.currentVersion.ApChangesStatus = Status.ChangesComplete;
-    
+
     await this.applicationService.syncBuildingStructures();
+    await this.applicationService.syncAccountablePersons();
 
     this.updateAllKbiSections();
   }
@@ -110,7 +111,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     if (!!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.Connections) {
       this.applicationService.currentVersion.Kbi!.Connections.Status = Status.NoChanges;
     }
-    
+
     if (!!this.applicationService.currentVersion.Kbi && !!this.applicationService.currentVersion.Kbi.KbiSections && this.applicationService.currentVersion.Kbi.KbiSections.length > 0) {
       this.applicationService.currentVersion.Kbi!.KbiSections.map(x => x.Status = Status.NoChanges);
     }
@@ -126,7 +127,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
       this.kbiService.syncBuilding(kbiSection);
     });
   }
-  
+
   async createDeregisterChangeRequest() {
     let areYouSure = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure;
 
@@ -146,14 +147,14 @@ export class RaDeclarationComponent extends PageComponent<void> {
         let change = this.syncChangeApplicantHelper.createChangeForSecondaryUser();
         changeRequest.Change.push(change);
       }
-  
+
       if (this.changeApplicantHelper.newPrimaryUserExists()) {
         let change = this.syncChangeApplicantHelper.createChangeForPrimaryUser();
         changeRequest.Change.push(change);
       }
-  
+
       this.addChangeRequestToModel(changeRequest);
-    }    
+    }
 
   }
 
@@ -228,12 +229,12 @@ export class SyncChangeApplicantHelper {
   }
 
   async syncChangeApplicant() {
-   
+
     if (this.changeApplicantHelper.newPrimaryUserExists()) {
       this.changeApplicantHelper.changePrimaryUserStatusToSubmitted();
       this.changeApplicantHelper.setNewPrimaryUserEmail();
     }
-    
+
     if (this.changeApplicantHelper.isSecondaryUserRemoved()) {
       await this.registrationAmendmentsService.deleteSecondaryUserLookup();
       this.changeApplicantHelper.deleteSecondaryUser();
@@ -242,7 +243,7 @@ export class SyncChangeApplicantHelper {
       this.changeApplicantHelper.setSecondaryUser();
       this.changeApplicantHelper.updateSecondaryUser();
       await this.registrationAmendmentsService.syncSecondaryUser();
-      
+
       this.changeApplicantHelper.deleteNewSecondaryUser();
     }
   }
@@ -250,7 +251,7 @@ export class SyncChangeApplicantHelper {
   public createChangeForPrimaryUser() {
     let originalAnswer = this.changeApplicantHelper.getOriginalPrimaryAnswer();
     let newAnswer = this.changeApplicantHelper.getNewPrimaryAnswer();
-  
+
     return this.changeApplicantModelBuilder.SetField("Primary Applicant")
       .Change(originalAnswer, newAnswer).CreateChange();
   }
@@ -258,7 +259,7 @@ export class SyncChangeApplicantHelper {
   public createChangeForSecondaryUser() {
     let originalAnswer = this.changeApplicantHelper.getOriginalSecondaryAnswer();
     let newAnswer = this.changeApplicantHelper.getNewSecondaryAnswer();
-  
+
     return this.changeApplicantModelBuilder.SetField("Secondary Applicant")
       .Change(originalAnswer, newAnswer).CreateChange();
   }
@@ -281,15 +282,15 @@ export class SyncChangeBuildingSummaryHelper {
     this.changeBuildingSummaryModelBuilder = new ChangeBuildingSummaryModelBuilder()
       .SetApplicationId(this.applicationService.model.id!)
       .SetBuildingName(this.applicationService.model.BuildingName!);
-    
+
     this.removedBuildingModelBuilder = new RemovedBuildingModelBuilder()
       .SetApplicationId(this.applicationService.model.id!)
       .SetBuildingName(this.applicationService.model.BuildingName!);
-    
+
     this.deregisterBuildingApplicationModelBuilder = new DeregisterBuildingApplicationModelBuilder()
       .SetApplicationId(this.applicationService.model.id!)
       .SetBuildingName(this.applicationService.model.BuildingName!);
-    
+
   }
 
   createChangeRequest() {
@@ -306,7 +307,7 @@ export class SyncChangeBuildingSummaryHelper {
       let change = (x?.IsAddress ?? false)
         ? this.changeBuildingSummaryModelBuilder.SetField(x?.Title!).Change(joinAddresses(x?.OldAddresses!), joinAddresses(x?.NewAddresses!)).CreateChange()
         : this.changeBuildingSummaryModelBuilder.SetField(x?.Title!).Change(x?.OldValue!, x?.NewValue!).CreateChange();
-  
+
       changes.push(change);
     });
 
@@ -362,7 +363,7 @@ export class SyncChangeBuildingSummaryHelper {
     let isAppDeregister = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure == "yes";
 
     if (!isAppDeregister || await this.isApplicationCanceled()) return undefined;
-    
+
     let statuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
     let appStatus = this.statuscodeText[statuscode];
     let changeRequest = this.deregisterBuildingApplicationModelBuilder.CreateChangeRequest();
@@ -391,23 +392,23 @@ export class SyncChangeBuildingSummaryHelper {
   }
 
   private statuscodeText: Record<number, string> = {
-    760_810_001: "New", 
-    760_810_002: "In progress", 
-    760_810_003: "Submitted awaiting allocation", 
-    760_810_004: "Allocated review", 
-    760_810_005: "Under review", 
-    760_810_006: "Registered pending QA", 
-    760_810_007: "Rejected pending QA", 
-    760_810_012: "Allocated rework", 
-    760_810_008: "Ready for QA", 
-    760_810_015: "Registered", 
-    760_810_009: "QA in progress", 
-    760_810_016: "Registered pendingCchange", 
-    760_810_017: "Registered Kbi validated", 
-    760_810_011: "Rejected", 
-    760_810_013: "Withdrawn", 
-    760_810_014: "On hold", 
-    760_810_018: "Cancelled", 
+    760_810_001: "New",
+    760_810_002: "In progress",
+    760_810_003: "Submitted awaiting allocation",
+    760_810_004: "Allocated review",
+    760_810_005: "Under review",
+    760_810_006: "Registered pending QA",
+    760_810_007: "Rejected pending QA",
+    760_810_012: "Allocated rework",
+    760_810_008: "Ready for QA",
+    760_810_015: "Registered",
+    760_810_009: "QA in progress",
+    760_810_016: "Registered pendingCchange",
+    760_810_017: "Registered Kbi validated",
+    760_810_011: "Rejected",
+    760_810_013: "Withdrawn",
+    760_810_014: "On hold",
+    760_810_018: "Cancelled",
   }
 }
 
@@ -421,7 +422,7 @@ export class SyncChangeAccountablePersonHelper {
     this.registrationAmendmentsService = registrationAmendmentsService;
     this.changeAccountablePersonModelBuilder = new ChangeAccountablePersonModelBuilder()
       .SetApplicationId(this.applicationService.model.id!)
-      .SetBuildingName(this.applicationService.model.BuildingName!);    
+      .SetBuildingName(this.applicationService.model.BuildingName!);
   }
 
   createChangeRequest() {

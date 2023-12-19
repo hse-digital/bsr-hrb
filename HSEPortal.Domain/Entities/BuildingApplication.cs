@@ -40,6 +40,7 @@ public record DynamicsBuildingApplication(string bsr_buildingapplicationid = nul
     [property: JsonPropertyName("bsr_previouspaporgleadcontactid@odata.bind")]
     string? bsr_previouspaporgleadcontactid = null,
     string? _bsr_papid_value = null,
+    string? _bsr_paporgleadcontactid_value = null,
     int? bsr_paptype = null) : DynamicsEntity<BuildingApplication>;
 
 public enum BuildingApplicationStage
