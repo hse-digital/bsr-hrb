@@ -93,6 +93,13 @@ export class RemovedBuildingModelBuilder extends ChangesDirector {
     protected override Declaration: boolean = true;
 }
 
+export class DeregisterBuildingApplicationModelBuilder extends ChangesDirector {
+    protected override Category: ChangeCategory = ChangeCategory.DeRegistration;
+    protected override Table: string = "Application";
+    protected override ReviewRequired: boolean = true;
+    protected override Declaration: boolean = true;
+}
+
 export class ChangeAccountablePersonModelBuilder extends ChangesDirector {
     protected override Category: ChangeCategory = ChangeCategory.ChangePAPOrLeadContact;
     protected override Table: string = "Accountable person";
