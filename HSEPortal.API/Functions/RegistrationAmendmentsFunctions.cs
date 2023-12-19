@@ -115,7 +115,7 @@ public class RegistrationAmendmentsFunctions
             }
         }
 
-        await UpdateBuildingApplicationPreviousPap(dynamicsBuildingApplication, ChangeRequests);
+        await UpdateBuildingApplicationPreviousPap(dynamicsBuildingApplication);
 
         return request.CreateResponse(HttpStatusCode.OK);
     }
@@ -190,8 +190,7 @@ public class RegistrationAmendmentsFunctions
         }
         else
         {
-            var updatedApplication = new DynamicsBuildingApplication
-                { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[cancellationReason]})", statuscode = BuildingApplicationStatuscode.Cancelled };
+            var updatedApplication = new DynamicsBuildingApplication { bsr_cancellationreason = $"/bsr_cancellationreasons({DynamicsCancellationReason[cancellationReason]})", statuscode = BuildingApplicationStatuscode.Cancelled };
             await dynamicsApi.Update($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})", updatedApplication);
         }
 
@@ -206,8 +205,7 @@ public class RegistrationAmendmentsFunctions
     {
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
 
-        var existingStructure = await this.dynamicsService.FindExistingStructureAsync(buildingName.EscapeSingleQuote(), postcode.EscapeSingleQuote(),
-            dynamicsBuildingApplication.bsr_buildingapplicationid.EscapeSingleQuote());
+        var existingStructure = await this.dynamicsService.FindExistingStructureAsync(buildingName.EscapeSingleQuote(), postcode.EscapeSingleQuote(), dynamicsBuildingApplication.bsr_buildingapplicationid.EscapeSingleQuote());
         if (existingStructure != null)
         {
             var dynamicsStructure = new DynamicsStructure { statecode = 1 };
@@ -218,7 +216,7 @@ public class RegistrationAmendmentsFunctions
         return request.CreateResponse(HttpStatusCode.BadRequest);
     }
 
-    private Dictionary<CancellationReason, string> DynamicsCancellationReason = new Dictionary<CancellationReason, string>()
+    private Dictionary<CancellationReason, string> DynamicsCancellationReason = new()
     {
         { CancellationReason.NoCancellationReason, "" },
         { CancellationReason.NoConnected, "9107fc3d-8671-ee11-8178-6045bd0c1726" },
@@ -228,37 +226,27 @@ public class RegistrationAmendmentsFunctions
         { CancellationReason.ResidentialUnits, "f7e45d02-d277-ee11-8179-6045bd0c1726" },
     };
 
-    private async Task UpdateBuildingApplicationPreviousPap(DynamicsBuildingApplication dynamicsBuildingApplication, ChangeRequest[] changeRequests)
+    private async Task UpdateBuildingApplicationPreviousPap(DynamicsBuildingApplication dynamicsBuildingApplication)
     {
-        var application = new DynamicsBuildingApplication { bsr_previouspaptype = dynamicsBuildingApplication.bsr_paptype };
-        var allChanges = changeRequests.SelectMany(x => x.Change).ToList();
-
-        var previousPap = allChanges.FirstOrDefault(x => x.FieldName == "Principal accountable person")?.OriginalAnswer;
-        if (previousPap != null)
+        var application = new DynamicsBuildingApplication
         {
-            var previousPapId = dynamicsBuildingApplication._bsr_papid_value;
-            if (dynamicsBuildingApplication.bsr_paptype == 760_810_000)
-            {
-                application = application with
-                {
-                    bsr_previouspap_contact = $"/contacts({previousPapId})"
-                };
-            }
-            else
-            {
-                application = application with
-                {
-                    bsr_previouspap_account = $"/accounts({previousPapId})"
-                };
-            }
-        }
-
-        var previousPapOrgLeadContactId = allChanges.FirstOrDefault(x => x.FieldName == "Principal accountable person named contact")?.OriginalAnswer;
-        if (previousPapOrgLeadContactId != null)
+            bsr_previouspaptype = dynamicsBuildingApplication.bsr_paptype,
+            bsr_previouspaporgleadcontactid = $"/contacts({dynamicsBuildingApplication._bsr_paporgleadcontactid_value})",
+        };
+        
+        var previousPapId = dynamicsBuildingApplication._bsr_papid_value;
+        if (dynamicsBuildingApplication.bsr_paptype == 760_810_000)
         {
             application = application with
             {
-                bsr_previouspaporgleadcontactid = dynamicsBuildingApplication.papLeadContactReferenceId,
+                bsr_previouspap_contact = $"/contacts({previousPapId})"
+            };
+        }
+        else
+        {
+            application = application with
+            {
+                bsr_previouspap_account = $"/accounts({previousPapId})"
             };
         }
 
