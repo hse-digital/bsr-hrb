@@ -53,6 +53,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
         let changes: (ChangedAnswersModel | undefined)[] = [];
 
         changes.push(this.getFieldChange(original?.OrganisationName, current?.OrganisationName, "PAP organisation name", "PAP organisation name", "", "sectionName", 0));
+        changes.push(this.getFieldChange(this.getOrgType(original?.OrganisationType), this.getOrgType(current?.OrganisationType), "PAP organisation type", "PAP organisation type", "", "sectionName", 0));
         changes.push(this.getFieldChange(original?.Type, current?.Type, "PAP type", "PAP type", "", "sectionName", 0));
         changes.push(this.getFieldChange(original?.Email, current?.Email, "PAP Individual email", "PAP Individual email", "", "sectionName", 0));
         changes.push(this.getFieldChange(original?.PhoneNumber, current?.PhoneNumber, "PAP Individual telephone number", "PAP Individual telephone number", "", "sectionName", 0));

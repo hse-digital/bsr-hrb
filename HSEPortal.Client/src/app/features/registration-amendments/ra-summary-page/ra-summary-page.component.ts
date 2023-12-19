@@ -33,7 +33,6 @@ export class RaSummaryPageComponent  extends PageComponent<void> {
     }
 
     this.changeRequest = await this.registrationAmendmentsService.getChangeRequest();
-
     this.shouldRender = true;
   }
   
@@ -74,6 +73,12 @@ export class RaSummaryPageComponent  extends PageComponent<void> {
   get structureChanges() {
     if (!this.changeRequest || this.changeRequest!.length == 0) return [];
     let changes = this.changeRequest!.find(x => x.Category == ChangeCategory.ApplicationBuildingAmendments)?.Change?.filter(x => x.Table == "Structure") ?? [];
+    return changes;
+  }
+
+  get accountablePersonChanges() {
+    if (!this.changeRequest || this.changeRequest!.length == 0) return [];
+    let changes = this.changeRequest!.find(x => (x.Name?.indexOf("PAP/Lead Contact") ?? -1) > -1)?.Change ?? [];
     return changes;
   }
 

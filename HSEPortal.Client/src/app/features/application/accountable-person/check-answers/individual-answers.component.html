@@ -7,7 +7,7 @@
 
   <ng-container *ngIf="apIndex > 0 || (isRAinProgress() && ap.IsPrincipal == 'no')">
     <govuk-summary-list-row (onKeyupEnter)="navigateTo('name')" (onClick)="navigateTo('name')" key="Name" [showAction]=true>{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
-    <govuk-summary-list-row (onKeyupEnter)="navigateTo('details')" (onClick)="navigateTo('details')" key="Contact Details" [showAction]=true>
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('details')" (onClick)="navigateTo('details')" key="Contact details" [showAction]=true>
       <div>{{ap.Email}}</div>
       <div>{{ap.PhoneNumber}}</div>
     </govuk-summary-list-row>
