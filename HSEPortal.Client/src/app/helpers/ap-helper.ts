@@ -67,9 +67,6 @@ export class ApHelper {
           canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.PhoneNumber);
           canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.Email);
   
-          if (index == 0) {
-            canContinue &&= ap.PapAddress != null;
-          }
         }
       }
 

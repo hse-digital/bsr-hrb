@@ -5,7 +5,7 @@
     <govuk-summary-list-row (onKeyupEnter)="navigateTo('principal')" (onClick)="navigateTo('principal')" key="Are you the principal accountable person?" [showAction]=true>{{ap.IsPrincipal == 'yes' ? 'Yes' : 'No'}}</govuk-summary-list-row>
   </ng-container>
 
-  <ng-container *ngIf="apIndex > 0 || (isRAinProgress() && ap.IsPrincipal == 'no')">
+  <ng-container *ngIf="apIndex > 0 || (isRAinProgress() && (!ap.IsPrincipal || ap.IsPrincipal == 'no'))">
     <govuk-summary-list-row (onKeyupEnter)="navigateTo('name')" (onClick)="navigateTo('name')" key="Name" [showAction]=true>{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
     <govuk-summary-list-row (onKeyupEnter)="navigateTo('details')" (onClick)="navigateTo('details')" key="Contact details" [showAction]=true>
       <div>{{ap.Email}}</div>
@@ -17,7 +17,7 @@
     <address-description [address]="ap.PapAddress ?? ap.Address" />
   </govuk-summary-list-row>
 
-  <ng-container *ngIf="ap.IsPrincipal == 'no'">
+  <ng-container *ngIf="ap.IsPrincipal == 'no' && !isRAinProgress()">
     <govuk-summary-list-row (onKeyupEnter)="navigateTo('pap-name')" (onClick)="navigateTo('pap-name')" key="Principal accountable person's name" [showAction]=true>{{ap.FirstName}} {{ap.LastName}}</govuk-summary-list-row>
     <govuk-summary-list-row (onKeyupEnter)="navigateTo('pap-details')" (onClick)="navigateTo('pap-details')" key="Principal accountable person's contact details" [showAction]=true>
       <div>{{ap.Email}}</div>

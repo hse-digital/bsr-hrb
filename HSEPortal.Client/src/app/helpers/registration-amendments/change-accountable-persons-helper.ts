@@ -106,7 +106,7 @@ export class ChangeAccountablePersonsHelper extends ChangeHelper {
     private getNamedContact(ap: AccountablePersonModel, isPAP: boolean) {
         if (ap.Type != "organisation") return undefined;
 
-        if ((ap.Role == 'registering_for' || ap.Role == 'employee') && FieldValidations.IsNotNullOrWhitespace(ap.LeadFirstName)) {
+        if ((ap.Role == 'registering_for' || ap.Role == 'employee' || (!FieldValidations.IsNotNullOrWhitespace(ap.NamedContactFirstName) && FieldValidations.IsNotNullOrWhitespace(ap.LeadFirstName)))) {
             return `${ap.LeadFirstName} ${ap.LeadLastName}`;
         } else if (!isPAP && FieldValidations.IsNotNullOrWhitespace(ap.NamedContactFirstName)) {
             return `${ap.NamedContactFirstName} ${ap.NamedContactLastName}`;

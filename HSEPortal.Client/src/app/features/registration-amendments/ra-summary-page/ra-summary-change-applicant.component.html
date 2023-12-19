@@ -1,4 +1,4 @@
-<ng-container *ngIf="!!principalAccountablePerson">
+<ng-container *ngIf="principalAccountablePerson?.FieldName || papDetails.length > 0">
     <h2 class="govuk-heading-m">Accountable person</h2>
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
@@ -12,7 +12,7 @@
                 <strong style="white-space: nowrap;">What you're changing it to</strong>
             </dd>
         </div>
-        <div class="govuk-summary-list__row">
+        <div class="govuk-summary-list__row" *ngIf="principalAccountablePerson?.FieldName">
             <dt class="govuk-summary-list__key">
                 {{principalAccountablePerson!.FieldName}}
             </dt>
@@ -21,6 +21,17 @@
             </dd>
             <dd class="govuk-summary-list__value">
                 {{principalAccountablePerson!.NewAnswer}}
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row" *ngFor="let change of papDetails">
+            <dt class="govuk-summary-list__key">
+                {{change!.FieldName}}
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {{change!.OriginalAnswer}}
+            </dd>
+            <dd class="govuk-summary-list__value">
+                {{change!.NewAnswer}}   
             </dd>
         </div>
     </dl>
