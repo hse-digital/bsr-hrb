@@ -231,8 +231,15 @@ public class RegistrationAmendmentsFunctions
         var application = new DynamicsBuildingApplication
         {
             bsr_previouspaptype = dynamicsBuildingApplication.bsr_paptype,
-            bsr_previouspaporgleadcontactid = $"/contacts({dynamicsBuildingApplication._bsr_paporgleadcontactid_value})",
         };
+
+        if (!string.IsNullOrWhiteSpace(dynamicsBuildingApplication._bsr_paporgleadcontactid_value))
+        {
+            application = application with
+            {
+                bsr_previouspaporgleadcontactid = $"/contacts({dynamicsBuildingApplication._bsr_paporgleadcontactid_value})"
+            };
+        }
         
         var previousPapId = dynamicsBuildingApplication._bsr_papid_value;
         if (dynamicsBuildingApplication.bsr_paptype == 760_810_000)
