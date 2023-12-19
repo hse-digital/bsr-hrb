@@ -68,7 +68,7 @@ export class KbiNavigation extends BaseNavigation {
   private kbiDeclarationNavigationNode = new KbiDeclarationNavigationNode(this.applicationService, this.kbiConfirmNavigationNode);
 
   public getNextSubmitRoute() {
-    return this.kbiDeclarationNavigationNode.getNextRoute(this.applicationService.model.Kbi!, 0)
+    return this.kbiDeclarationNavigationNode.getNextRoute(this.applicationService.currentVersion.Kbi!, 0)
   }
 
   private connectionsCheckAnswerNavigationNode = new ConnectionsCheckAnswerNavigationNode(this.applicationService);
@@ -79,7 +79,7 @@ export class KbiNavigation extends BaseNavigation {
   private structureConnectionsNavigationNode = new StructureConnectionsNavigationNode(this.otherHighRiseBuildingConnectionsNavigationNode);
 
   public getNextConnectionRoute() {
-    return this.structureConnectionsNavigationNode.getNextRoute(this.applicationService.model.Kbi!, 0);
+    return this.structureConnectionsNavigationNode.getNextRoute(this.applicationService.currentVersion.Kbi!, 0);
   }
 
   private buildingInformationCheckAnswersNavigationNode = new BuildingInformationCheckAnswersNavigationNode();
@@ -120,11 +120,11 @@ export class KbiNavigation extends BaseNavigation {
   private checkBeforeStartNavigationNode = new CheckBeforeStartNavigationNode(this.applicationService, this.evacuationStrategyNavigationNode);
 
   override getNextRoute(sectionIndex?: number): string {
-    if (this.applicationService.model.Kbi?.KbiSections == null || this.applicationService.model.Kbi!.KbiSections.length == 0) {
+    if (this.applicationService.currentVersion.Kbi?.KbiSections == null || this.applicationService.currentVersion.Kbi!.KbiSections.length == 0) {
       return CheckBeforeStartComponent.route;
     }
 
-    let kbiSection = this.applicationService.model.Kbi!.KbiSections[sectionIndex!];
+    let kbiSection = this.applicationService.currentVersion.Kbi!.KbiSections[sectionIndex!];
     let sectionRoute = this.checkBeforeStartNavigationNode.getNextRoute(kbiSection, sectionIndex!);
     return `${sectionRoute}`;
   }

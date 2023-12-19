@@ -3,15 +3,15 @@ import { ApplicationService } from "../services/application.service";
 export class ScopeAndDuplicateHelper {
 
     public static AreAllSectionsOutOfScope(applicationService: ApplicationService): boolean {
-        return applicationService.model.Sections.every(x => x.Scope?.IsOutOfScope);
+        return applicationService.currentVersion.Sections.every(x => x.Scope?.IsOutOfScope);
     }
 
     public static AreAllSectionsDuplicated(applicationService: ApplicationService): boolean {
-        return applicationService.model.Sections.every(x => x.Duplicate?.IsDuplicated);
+        return applicationService.currentVersion.Sections.every(x => x.Duplicate?.IsDuplicated);
     }
 
     public static AreAllSectionsRemoved(applicationService: ApplicationService): boolean {
-        return applicationService.model.Sections.every(x => !!x.Duplicate?.IncludeStructure && x.Duplicate?.IncludeStructure == 'no');
+        return applicationService.currentVersion.Sections.every(x => !!x.Duplicate?.IncludeStructure && x.Duplicate?.IncludeStructure == 'no');
     }
 
     public static ClearOutOfScopeSection(applicationService: ApplicationService, fromHeight: boolean = false, fromUnits: boolean = false) {

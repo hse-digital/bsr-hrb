@@ -10,6 +10,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot, Router, RouterStateSnapshot, Ur
 import { ApplicationSubmittedHelper } from "./app-submitted-helper";
 import { GetInjector } from "./injector.helper";
 import { RegistrationAmendmentsService } from "../services/registration-amendments.service";
+import { FieldValidations } from "./validators/fieldvalidations";
 
 @Component({ template: '' })
 export abstract class PageComponent<T> implements OnInit {
@@ -17,8 +18,9 @@ export abstract class PageComponent<T> implements OnInit {
   processing: boolean = false;
   hasErrors: boolean = false;
   updateOnSave: boolean = true;
+  changing: boolean = false;
   returnUrl?: string;
-  
+
   private injector: Injector = GetInjector();
   protected applicationService: ApplicationService = this.injector.get(ApplicationService);
   protected registrationAmendmentsService: RegistrationAmendmentsService = this.injector.get(RegistrationAmendmentsService);
@@ -36,13 +38,18 @@ export abstract class PageComponent<T> implements OnInit {
   abstract isValid(): boolean;
   abstract navigateNext(): Promise<boolean | void>;
 
-
   constructor(activatedRoute?: ActivatedRoute) {
-    if(activatedRoute) this.activatedRoute = activatedRoute;
+    if (activatedRoute) this.activatedRoute = activatedRoute;
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.returnUrl = params['return'];
+    });
+
     this.triggerScreenReaderNotification("");
   }
 
   async ngOnInit() {
+    this.changing = this.applicationService.model?.Versions?.length > 1 ?? false;
     await this.onInit(this.applicationService);
   }
 
@@ -53,13 +60,13 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.hasErrors) {
       this.triggerScreenReaderNotification();
       this.applicationService.updateLocalStorage();
+
       if (this.updateOnSave) {
         await this.saveAndUpdate(true);
       }
 
-      if (this.returnUrl) {
-        let returnUri = this.returnUrl == 'check-answers' ? `../${this.returnUrl}` : this.returnUrl;
-        this.navigationService.navigateRelative(returnUri, this.activatedRoute);
+      if (this.returnUrl && !this.KnockOnQuestions()) {
+        this.navigateToReturnUrl(this.returnUrl);
         return;
       }
 
@@ -72,6 +79,26 @@ export abstract class PageComponent<T> implements OnInit {
     }
 
     this.processing = false;
+  }
+
+  private async navigateToReturnUrl(returnUrl: string) {
+    let returnUri = this.getCheckAnswersPageRoute(returnUrl);
+    this.navigationService.navigateRelative(returnUri.url, this.activatedRoute, returnUri.params);
+  }
+
+  private getCheckAnswersPageRoute(returnUrl: string): { url: string, params?: any } {
+    switch (returnUrl) {
+      case 'check-answers': return { url: `../${this.returnUrl}` };
+      case 'building-change-check-answers': return { url: `../../registration-amendments/${this.returnUrl}` };
+      case 'change-check-answers': return { url: `../../../registration-amendments/change-kbi/${this.returnUrl}`, params: { index: this.applicationService._currentKbiSectionIndex } };
+      case 'change-connection-answers': return { url: `../../registration-amendments/${this.returnUrl}` };
+    }
+    return { url: returnUrl };
+  }
+
+  private KnockOnQuestions() {
+    let nextKnockOnQuestion = this.applicationService.nextKnockOnQuestion();
+    return FieldValidations.IsNotNullOrWhitespace(nextKnockOnQuestion);
   }
 
   async saveAndComeBack(): Promise<void> {
@@ -96,34 +123,28 @@ export abstract class PageComponent<T> implements OnInit {
     if (!this.canAccess(this.applicationService, route)) {
       this.navigationService.navigate(NotFoundComponent.route);
       return false;
-    } else if (!this.isSummaryPage() && !this.isKbiPage() && !this.isReturningApplicationPage() && !this.isRegistrationAmendments() && !this.isApplicationCompletedPage() && ApplicationSubmittedHelper.isPaymentCompleted(this.applicationService)) {
+    } else if (this.isApplicationSubmitted() && this.isRegisterBuildingTaskList()) {
       this.navigationService.navigate(ApplicationSubmittedHelper.getApplicationCompletedRoute(this.applicationService));
       return false;
     }
-
     return true;
   }
 
-  private isSummaryPage() {
-    return location.href.endsWith(`/${this.applicationService.model.id}/summary`);
+  private isApplicationSubmitted() {
+    return this.isPaymentComplete();
   }
 
-  private isKbiPage() {
-    return location.href.includes(`/${this.applicationService.model.id}/kbi`);
+  private isPaymentComplete() {
+    var applicationStatus = this.applicationService.model.ApplicationStatus;
+    let isPaymentComplete = (applicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete;
+    let isInvoice = this.applicationService.model.PaymentType == 'invoice' && (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed')
+
+    return isPaymentComplete || isInvoice;
   }
 
-  private isRegistrationAmendments() {
-    return location.href.includes(`/${this.applicationService.model.id}/registration-amendments`);
+  private isRegisterBuildingTaskList() {
+    return location.href.endsWith(`/${this.applicationService.model.id}`) || location.href.endsWith(`/${this.applicationService.model.id}/`);
   }
-
-  private isReturningApplicationPage() {
-    return location.href.includes(`returning-application`);
-  }
-
-  private isApplicationCompletedPage() {
-    return location.href.includes(`application-completed`);
-  }
-
 
   getErrorDescription(showError: boolean, errorMessage: string): string | undefined {
     return this.hasErrors && showError ? errorMessage : undefined;
@@ -147,10 +168,13 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   private navigateBack(): void {
-    let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete
-      ? `application/${this.applicationService.model.id}/kbi`
-      : `application/${this.applicationService.model.id}`;
-    this.navigationService.navigate(route);
+    if (this.changing) this.navigationService.navigate(`application/${this.applicationService.model.id}/application-completed`);
+    else {
+      let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete
+        ? `application/${this.applicationService.model.id}/kbi`
+        : `application/${this.applicationService.model.id}`;
+      this.navigationService.navigate(route);
+    }
   }
 
   protected async saveAndUpdate(isSaveAndContinue: boolean): Promise<void> {
@@ -161,5 +185,10 @@ export abstract class PageComponent<T> implements OnInit {
   protected focusAndUpdateErrors() {
     this.summaryError?.first?.focus();
     this.titleService.setTitleError();
+  }
+
+  get buildingOrSectionName() {
+    let sectionName = FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentSection.Name) ? this.applicationService.currentSection.Name : this.applicationService.model.BuildingName;
+    return this.applicationService.model.NumberOfSections == "one" ? this.applicationService.model.BuildingName : sectionName;
   }
 }

@@ -5,6 +5,10 @@ namespace HSEPortal.Domain.Entities;
 public record DynamicsChangeRequest(
     [property: JsonPropertyName("bsr_buildingapplicationid@odata.bind")]
     string buildingApplicationId = null,
+    [property: JsonPropertyName("bsr_building@odata.bind")]
+    string building = null,
+    [property: JsonPropertyName("bsr_structureid@odata.bind")]
+    string structure = null,
     [property: JsonPropertyName("bsr_changecategoryid@odata.bind")]
     string changeCategory = null,
     string bsr_changedescription = null,
@@ -13,7 +17,8 @@ public record DynamicsChangeRequest(
     bool? bsr_reviewrequired = null,
     [property: JsonPropertyName("bsr_submittedbyid@odata.bind")]
     string applicantReferenceId = null,
-    int? statuscode = null);
+    int? statuscode = null,
+    int? bsr_papchangecategory = null);
 
 public record DynamicsChange(
     [property: JsonPropertyName("bsr_changerequestid@odata.bind")]
@@ -29,7 +34,8 @@ public record DynamicsChangeRequestResponse(
     DynamicsChangeResponse[] bsr_change_changerequestid = null,
     string bsr_name = null,
     bool bsr_reviewrequired = false,
-    bool bsr_declaration = false
+    bool bsr_declaration = false,
+    string _bsr_changecategoryid_value = null
 );
 
 public record DynamicsChangeResponse(

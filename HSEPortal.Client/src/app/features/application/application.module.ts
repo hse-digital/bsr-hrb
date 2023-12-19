@@ -18,7 +18,6 @@ import { IndividualComponent } from "./summary-page/accountable-person-summary/i
 import { OrganisationComponent } from "./summary-page/accountable-person-summary/organisation.component";
 import { SectionSummaryComponent } from "./summary-page/section-summary.component";
 import { ApplicationTaskListComponent } from "./task-list/task-list.component";
-import { BuildingSummaryNavigation } from "src/app/features/application/building-summary/building-summary.navigation";
 import { AccountablePersonNavigation } from "src/app/features/application/accountable-person/accountable-person.navigation";
 import { KbiModule } from "../kbi/kbi.module";
 import { KbiNavigation } from "src/app/features/kbi/kbi.navigation.ts.service";
@@ -61,7 +60,6 @@ const routes = new HseRoutes([
   ],
   providers: [
     HttpClient,
-    BuildingSummaryNavigation,
     AccountablePersonNavigation,
     KbiNavigation,
     ...routes.getProviders()

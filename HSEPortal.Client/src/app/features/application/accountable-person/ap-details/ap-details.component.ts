@@ -8,7 +8,7 @@ import { ApplicationService } from "src/app/services/application.service";
 import { ApAddressComponent } from "../ap-address/ap-address.component";
 import { PageComponent } from "src/app/helpers/page.component";
 
-type AccountablePersonDetails = { Email?: string, PhoneNumber?: string}
+type AccountablePersonDetails = { Email?: string, PhoneNumber?: string }
 
 @Component({
   selector: 'ap-details',
@@ -21,11 +21,9 @@ export class ApDetailsComponent extends PageComponent<AccountablePersonDetails> 
   @Input() nextRoute?: string;
   @Input() pap: boolean = false;
 
-
-
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
-  } 
+  }
 
   papName?: string;
 
@@ -39,7 +37,7 @@ export class ApDetailsComponent extends PageComponent<AccountablePersonDetails> 
     this.model = {};
     this.model.Email = this.applicationService.currentAccountablePerson.Email;
     this.model.PhoneNumber = this.applicationService.currentAccountablePerson.PhoneNumber;
-    
+
     this.papName = `${this.applicationService.currentAccountablePerson.FirstName} ${this.applicationService.currentAccountablePerson.LastName}`;
   }
 

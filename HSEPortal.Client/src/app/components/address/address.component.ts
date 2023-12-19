@@ -16,6 +16,7 @@ export class AddressComponent implements OnInit {
   @Input() isStructureAddress: boolean = false;
   @Output() onAddressConfirmed = new EventEmitter();
   @Output() onChangeStep = new EventEmitter();
+  @Output() onSearchAgain = new EventEmitter();
 
   searchModel: { postcode?: string } = {};
   addressResponse?: AddressResponseModel;
@@ -63,6 +64,7 @@ export class AddressComponent implements OnInit {
   }
 
   searchAgain() {
+    this.onSearchAgain.emit();
     this.changeStepTo('find');
   }
 

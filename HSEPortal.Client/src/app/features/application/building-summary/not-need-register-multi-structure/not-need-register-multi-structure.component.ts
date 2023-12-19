@@ -30,18 +30,13 @@ export class NotNeedRegisterMultiStructureComponent extends PageComponent<void> 
   }
 
   override async navigateNext(): Promise<boolean> {
-    if (this.applicationService.model.Sections.length == 1) {
+    if (this.applicationService.currentVersion.Sections.length == 1) {
       let section = this.applicationService.startNewSection();
       let nextPage = `../${section}/${SectionNameComponent.route}`;
       await this.applicationService.updateApplication();
       return this.navigationService.navigateRelative(nextPage, this.activatedRoute);
     }
     return this.navigationService.navigateRelative(`../${AddMoreSectionsComponent.route}`, this.activatedRoute);
-  }
-
-  sectionBuildingName() : string {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName! :
-      this.applicationService.currentSection.Name!;
   }
 
   private OutOfScopeClarification: Record<OutOfScopeReason, string> = {

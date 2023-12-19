@@ -13,15 +13,15 @@
             <ul class="app-task-list__items">
               <li class="app-task-list__item firstItem">
                 <span class="app-task-list__task-name">
-                    <span task *ngIf="true">Building summary</span>
-                    <a task *ngIf="false" class="govuk-link" (keyup.enter)="navigateToSections()" (click)="navigateToSections()" tabindex="0" role="link">Building summary</a>
+                    <span task *ngIf="false">Building summary</span>
+                    <a class="govuk-link" tabindex="0" role="link" [routerLink]="['../building-change-check-answers']">Building summary</a>
                 </span>
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.BuildingSummary)}}">{{getTagFor(taskListSteps.BuildingSummary)}}</govuk-tag>
               </li>
               <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
-                  <span task *ngIf="true">Accountable persons</span>
-                  <a task *ngIf="false" class="govuk-link" (keyup.enter)="navigateToPap()" (click)="navigateToPap()" role="link" tabindex="0">Accountable persons</a>
+                  <span task *ngIf="false">Accountable persons</span>
+                  <a task class="govuk-link" tabindex="0" role="link" (onKeyupEnter)="navigateToAp()" (click)="navigateToAp()">Accountable persons</a>
                 </span>
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.AccountablePerson)}}">{{getTagFor(taskListSteps.AccountablePerson)}}</govuk-tag>
               </li>
@@ -33,15 +33,17 @@
               Structure and fire safety information
             </h2>
             <ul class="app-task-list__items">
-              <li class="app-task-list__item firstItem" *ngFor="let section of InScopeSections; let i = index">
+              <li class="app-task-list__item firstItem" *ngFor="let kbi of InScopeKbiSections; let i = index">
                 <span class="app-task-list__task-name">
-                    {{section.Name ?? applicationService.model.BuildingName}} information
+                  <a *ngIf="isLinkEnable(taskListSteps.Kbi)" class="govuk-link" tabindex="0" role="link" (onKeyupEnter)="navigateToKbi(i)" (click)="navigateToKbi(i)">{{ kbi.Name ?? applicationService.model.BuildingName}} information</a>
+                  <ng-container *ngIf="!isLinkEnable(taskListSteps.Kbi)">{{ kbi.Name ?? applicationService.model.BuildingName}} information</ng-container>
                 </span>
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.Kbi, i)}}">{{getTagFor(taskListSteps.Kbi, i)}}</govuk-tag>
               </li>
               <li class="app-task-list__item firstItem">
                 <span class="app-task-list__task-name">
-                    Connections
+                  <span task *ngIf="!isLinkEnable(taskListSteps.Connections)">Connections</span>
+                  <a class="govuk-link" *ngIf="isLinkEnable(taskListSteps.Connections)" tabindex="0" role="link" (onKeyupEnter)="navigateToConnections()" (click)="navigateToConnections()">Connections</a>
                 </span>
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.Connections)}}">{{getTagFor(taskListSteps.Connections)}}</govuk-tag>
               </li>
@@ -55,7 +57,8 @@
             <ul class="app-task-list__items">
               <li class="app-task-list__item firstItem">
                 <span class="app-task-list__task-name">
-                    <a class="govuk-link" tabindex="0" role="link" [routerLink]="['../user-list']">Manage who can access this application</a>
+                    <a class="govuk-link" tabindex="0" role="link" (onKeyupEnter)="navigateToChangeUser()" (click)="navigateToChangeUser()">Manage who can access this application</a>
+                    
                 </span>    
                 <govuk-tag tag class="{{getCssClassFor(taskListSteps.Changes)}}">{{getTagFor(taskListSteps.Changes)}}</govuk-tag>            
               </li>

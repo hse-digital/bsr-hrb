@@ -1,0 +1,28 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+
+        <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+          <govuk-error-link *ngFor="let error of errors" anchorId="{{error.anchorId}}" [message]="error.message"/>
+        </govuk-error-summary>
+
+        <h1 class="govuk-heading-l">Review {{applicationService.model.BuildingName}}'s areas of accountability</h1>
+        <govuk-body>You've told us {{getApName()}} will no longer be the principal accountable person. If they're staying as an accountable pereson, tell us which areas they are still  accountable for.</govuk-body>
+
+        <div class="govuk-!-margin-bottom-6" *ngFor="let section of InScopeStructures; let i = index">
+          <outgoing-accountability [title]="getCheckboxTitle(i)" [id]="createSectionId(i)" [errorText]="getSectionError(i)"
+            [(model)]="model![i].Accountability!"
+            (onKeyupEnter)="saveAndContinue()">
+          </outgoing-accountability>
+        </div>
+
+      </div>
+
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Save and continue</govuk-button>
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

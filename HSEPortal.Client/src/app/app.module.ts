@@ -28,6 +28,7 @@ import { CommonModule } from '@angular/common';
 import { RegistrationAmendmentsService } from './services/registration-amendments.service';
 import { FileUploadService } from './services/file-upload.service';
 import { HttpInterceptorService } from './services/http-interceptor';
+import { BuildingSummaryNavigation } from './features/application/building-summary/building-summary.navigation';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(WhatWantToDoComponent.route, WhatWantToDoComponent, undefined, WhatWantToDoComponent.title),
@@ -68,7 +69,14 @@ const routes = new HseRoutes([
     FormsModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true }, HttpClient, ApplicationService, KbiService, RegistrationAmendmentsService, FileUploadService],
+    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true }, 
+    HttpClient, 
+    ApplicationService, 
+    BuildingSummaryNavigation, 
+    KbiService, 
+    RegistrationAmendmentsService, 
+    FileUploadService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

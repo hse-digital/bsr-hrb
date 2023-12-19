@@ -1,0 +1,15 @@
+<govuk-formpage saveAndContinueText="Save and continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+   
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="yes-input" [message]="errorMessage" />
+      </govuk-error-summary>
+    
+    <govuk-radio-group title="Are you sure you want to remove {{sectionName}} from this application?"
+        hintText="You will lose access to all information you have told us about this structure. {{ isKbiComplete() ? 'This includes structure and fire safety information' : ''}}"
+        [isPageHeading]=true [errorText]="getErrorDescription(hasErrors, errorMessage)" 
+        [(model)]="model" #field [govukRequired]="field">
+
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="remove-group" id="yes" value="yes" label="Yes" />
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="remove-group" id="no" value="no" label="No" />
+    </govuk-radio-group>
+</govuk-formpage>

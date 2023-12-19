@@ -6,7 +6,7 @@ import { ApplicationService, BuildingApplicationStage, Status, User } from 'src/
 import { SelectPrimaryUserComponent } from '../select-primary-user/select-primary-user.component';
 import { SelectSecondaryUserComponent } from '../select-secondary-user/select-secondary-user.component';
 import { RemoveSecondaryUserComponent } from '../remove-secondary-user/remove-secondary-user.component';
-import { ChangeTaskListComponent } from '../change-task-list/change-task-list.component';
+import { ChangeTaskListComponent } from '../../change-task-list/change-task-list.component';
 
 @Component({
   selector: 'hse-user-list',
@@ -107,7 +107,7 @@ export class UserListComponent extends PageComponent<string> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete;
+    return true;
   }
 
   override isValid(): boolean {

@@ -97,6 +97,9 @@ public record DynamicsStructure : DynamicsEntity<Structure>
 
     [property: JsonPropertyName("bsr_blockid@odata.bind")]
     public string bsr_duplicatestructures { get; set; }
+    
+    [property: JsonPropertyName("bsr_cancellationreason@odata.bind")]
+    public string bsr_cancellationreason { get; set; }
 
 }
 

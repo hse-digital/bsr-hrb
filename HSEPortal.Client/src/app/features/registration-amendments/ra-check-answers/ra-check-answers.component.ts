@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, Status, User } from 'src/app/services/application.service';
-import { UserListComponent } from '../user-list/user-list.component';
-import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { ApplicationService, ChangeAccountablePerson } from 'src/app/services/application.service';
 import { RaDeclarationComponent } from '../ra-declaration/ra-declaration.component';
+import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
+import { RaCheckAnswersUsersHelper } from './ra-check-answers-users.component';
+import { ChangeKbiHelper } from 'src/app/helpers/registration-amendments/change-kbi-helper';
+import { ChangeConnectionsHelper } from 'src/app/helpers/registration-amendments/change-connections-helper';
+import { ChangeAccountablePersonsHelper } from 'src/app/helpers/registration-amendments/change-accountable-persons-helper';
 
 @Component({
   selector: 'hse-ra-check-answers',
@@ -15,13 +18,8 @@ export class RaCheckAnswersComponent extends PageComponent<void> {
   static route: string = 'check-answers';
   static title: string = "Changes you're making - Register a high-rise building - GOV.UK";
 
-  primaryUser?: User;
-  secondaryUser?: User;
-
-  override onInit(applicationService: ApplicationService): void | Promise<void> {
-    this.primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
-    this.secondaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser;
-  }
+  override onInit(applicationService: ApplicationService): void | Promise<void> { 
+  } 
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> { }
 
@@ -37,39 +35,29 @@ export class RaCheckAnswersComponent extends PageComponent<void> {
     return this.navigationService.navigateRelative(RaDeclarationComponent.route, this.activatedRoute);
   }
 
-  changePrimaryUser() {
-    this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
-  }
-
-  changeSecondaryUser() {
-    this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
-  }
-
-  isThereNewPrimaryUser() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser?.Status == Status.ChangesComplete
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser?.Email)
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser?.Firstname);
-  }
-
-  isThereNewSecondaryUser() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Status == Status.ChangesComplete
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Email)
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Firstname);
-  }
-
-  isTherePreviousSecondaryUser() {
-    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.SecondaryEmailAddress)
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.SecondaryFirstName);
-  }
-
-  secondaryUserRemoved() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.Removed;
-  }
-
   get numberOfChanges() {
-    let numChanges = this.isThereNewPrimaryUser() ? 1 : 0;
-    numChanges += (this.isThereNewSecondaryUser() || this.secondaryUserRemoved()) ? 1 : 0;
-    return numChanges;
+    return this.numberOfBuildingChanges + this.numberOfUserChanges + this.numberOfKbiChanges + this.numberOfConnectionsChanges + this.numberOfPAPChanges;
+  }
+
+  get numberOfBuildingChanges() {
+    return new ChangeBuildingSummaryHelper(this.applicationService).getChanges().length;
+  }
+
+  get numberOfUserChanges() {
+    return new RaCheckAnswersUsersHelper(this.applicationService).numberOfUserChanges;
+  }
+
+  get numberOfKbiChanges() {
+    return new ChangeKbiHelper(this.applicationService).getChanges().length;
+  }
+
+  get numberOfConnectionsChanges() {
+    return new ChangeConnectionsHelper(this.applicationService).getChanges().length;
+  }
+
+  get numberOfPAPChanges() {
+    let apHelper = new ChangeAccountablePersonsHelper(this.applicationService)
+    return apHelper.getAllAPChanges().length; 
   }
 
 }

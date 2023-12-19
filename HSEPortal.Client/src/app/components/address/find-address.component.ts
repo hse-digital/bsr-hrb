@@ -15,6 +15,7 @@ export class FindAddressComponent {
   @Input() searchModel!: { postcode?: string, buildingNumberName?: string };
   @Input() addressName!: string;
   @Input() selfAddress = false;
+  @Input() isStructureAddress: boolean = false;
   @Output() public onSearchPerformed = new EventEmitter<AddressResponseModel>();
 
   postcodeHasErrors: boolean = false;
@@ -69,7 +70,7 @@ export class FindAddressComponent {
   }
 
   pap() {
-    return this.applicationService._currentAccountablePersonIndex == 0;
+    return this.applicationService._currentAccountablePersonIndex == 0 && !this.isStructureAddress;
   }
 
   addressTypeDescription() {

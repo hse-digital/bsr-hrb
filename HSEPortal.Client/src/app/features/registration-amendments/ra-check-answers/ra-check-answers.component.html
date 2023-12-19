@@ -6,70 +6,15 @@
       <div class="govuk-form-group">
 
         <h1 class="govuk-heading-l">You're making {{numberOfChanges == 1 ? "one change" : numberOfChanges + " changes"}}</h1>
-        <h2 class="govuk-heading-m">Who can access this application</h2>
-
-        <dl class="govuk-summary-list">
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              What's changing
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <strong>What it was</strong>
-            </dd>
-            <dd class="govuk-summary-list__value">
-              <strong style="white-space: nowrap;">What you're changing it to</strong>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-
-            </dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngIf="isThereNewPrimaryUser()">
-            <dt class="govuk-summary-list__key">
-              Primary user
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <div>{{applicationService.model.ContactFirstName}} {{applicationService.model.ContactLastName}}</div>
-              <div>{{applicationService.model.ContactEmailAddress}}</div>
-              <div>{{applicationService.model.ContactPhoneNumber}}</div>
-            </dd>
-            <dd class="govuk-summary-list__value">
-              <div>{{primaryUser?.Firstname}} {{primaryUser?.Lastname}}</div>
-              <div>{{primaryUser?.Email}}</div>
-              <div>{{primaryUser?.PhoneNumber}}</div>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" role="link" (click)="changePrimaryUser()" (keyup.enter)="changePrimaryUser()"
-                tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
-            </dd>
-          </div>
-          <div class="govuk-summary-list__row" *ngIf="isThereNewSecondaryUser() || secondaryUserRemoved()">
-            <dt class="govuk-summary-list__key">
-              Secondary user
-            </dt>
-            <dd class="govuk-summary-list__value" *ngIf="isTherePreviousSecondaryUser()">
-              <div>{{applicationService.model.SecondaryFirstName}} {{applicationService.model.SecondaryLastName}}</div>
-              <div>{{applicationService.model.SecondaryEmailAddress}}</div>
-              <div>{{applicationService.model.SecondaryPhoneNumber}}</div>
-            </dd>
-            <dd class="govuk-summary-list__value" *ngIf="!isTherePreviousSecondaryUser()">
-              <div>None</div>
-            </dd>
-            <dd class="govuk-summary-list__value" *ngIf="!secondaryUserRemoved()">
-              <div>{{secondaryUser?.Firstname}} {{secondaryUser?.Lastname}}</div>
-              <div>{{secondaryUser?.Email}}</div>
-              <div>{{secondaryUser?.PhoneNumber}}</div>
-            </dd>
-            <dd class="govuk-summary-list__value" *ngIf="secondaryUserRemoved()">
-              <div>None</div>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-              <a class="govuk-link" role="link" (click)="changeSecondaryUser()" (keyup.enter)="changeSecondaryUser()"
-                tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
-            </dd>
-          </div>
-        </dl>
+        
+        <ra-check-answers-users />
+        <ra-check-answers-building-summary />
+        <ra-check-answers-accountable-persons />
+        <ra-check-answers-kbi />
+        <ra-check-answers-connections />
 
         <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing">Continue</govuk-button>
       </div>
     </div>
   </div>
+</div>

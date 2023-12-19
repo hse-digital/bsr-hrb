@@ -26,18 +26,18 @@ export class AddMoreSectionsComponent extends PageComponent<void> {
   addAnotherSectionLink?: string;
 
   get blockNames(): string | undefined {
-    let blockNames = this.applicationService.model.Sections!.map(x => x.Name);
+    let blockNames = this.applicationService.currentVersion.Sections!.map(x => x.Name);
     return blockNames.join(', ');
   }
 
   override onInit(applicationService: ApplicationService): void {
-    this.sections = this.applicationService.model.Sections;
+    this.sections = this.applicationService.currentVersion.Sections;
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> { }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return this.applicationService.model.Sections?.length >= 1;
+    return this.applicationService.currentVersion.Sections?.length >= 1;
   }
 
   override isValid(): boolean {

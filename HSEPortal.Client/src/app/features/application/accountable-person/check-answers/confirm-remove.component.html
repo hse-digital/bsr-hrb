@@ -1,0 +1,10 @@
+<div class="govuk-grid-column-two-thirds">
+  <div class="govuk-form-group">
+    <govuk-radio-group [title]="getApNameDescription()" [isPageHeading]=true [(model)]="model" id="radios-same-pap" class="govuk-!-margin-bottom-6" [errorText]="getErrorDescription()">
+      <govuk-radio (onKeyupEnter)="emit()" name="same-pap-group" id="same-pap-yes" [value]=true label="Yes" />
+      <govuk-radio (onKeyupEnter)="emit()" name="same-pap-group" id="same-pap-no" [value]=false label="No" />
+    </govuk-radio-group>
+
+    <govuk-button (onClick)="emit()">Save and continue</govuk-button>
+  </div>
+</div>

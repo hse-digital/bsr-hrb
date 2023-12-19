@@ -25,6 +25,7 @@ export class StructureConnectionsComponent extends PageComponent<string[]> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.model = [];
     if (!this.applicationService.currentKbiModel?.Connections) {
       this.applicationService.currentKbiModel!.Connections = {};
     }
@@ -66,7 +67,7 @@ export class StructureConnectionsComponent extends PageComponent<string[]> {
   }
 
   private getAllSectionNames(): string {
-    let InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    let InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
     let sections = InScopeStructures;
     if (sections.length > 2) {
       return sections.slice(0, sections.length - 1)

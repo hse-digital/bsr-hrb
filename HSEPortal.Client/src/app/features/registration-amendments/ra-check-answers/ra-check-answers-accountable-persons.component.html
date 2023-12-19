@@ -1,0 +1,134 @@
+<ng-container *ngIf="newChanges">
+    <h2 class="govuk-heading-m">Accountable persons</h2>
+    <ng-container *ngIf="changesPap.length > 0 || changesAPDetails.length > 0">
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    What's changing
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <strong>What it was</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    <strong style="white-space: nowrap;">What you're changing it to</strong>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row" *ngFor="let change of changesPap">
+                <dt class="govuk-summary-list__key">
+                    {{change!.Title}}
+                </dt>
+                <dd class="govuk-summary-list__value" *ngIf="!change.IsAddress; else oldAddresses">
+                    <ng-container *ngIf="isArray(change!.OldValue)">
+                        <div *ngFor="let name of change!.OldValue">{{name}}</div>
+                    </ng-container>
+                    <ng-container *ngIf="!isArray(change!.OldValue)">{{change!.OldValue}}</ng-container>
+                </dd>
+                <dd class="govuk-summary-list__value" *ngIf="!change.IsAddress; else newAddresses">
+                    <ng-container *ngIf="isArray(change!.NewValue)">
+                        <div *ngFor="let name of change!.NewValue">{{name}}</div>
+                    </ng-container>
+                    <ng-container *ngIf="!isArray(change!.NewValue)">{{change!.NewValue}}</ng-container>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" role="link" (click)="navigateTo(change!.Route!)" (keyup.enter)="navigateTo(change!.Route!)" tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
+                </dd>
+
+                <ng-template #oldAddresses>
+                    <dd class="govuk-summary-list__value">
+                        <div class="govuk-!-margin-bottom-5" *ngFor="let address of change!.OldAddresses!">
+                            <address-description  [address]="address" />
+                        </div>
+                    </dd>
+                </ng-template>
+    
+                <ng-template #newAddresses>
+                    <dd class="govuk-summary-list__value">
+                        <div class="govuk-!-margin-bottom-5" *ngFor="let address of change!.NewAddresses!">
+                            <address-description  [address]="address" />
+                        </div>
+                    </dd>
+                </ng-template>
+            </div>
+
+            <div class="govuk-summary-list__row" *ngFor="let change of changesAPDetails">
+                <dt class="govuk-summary-list__key">
+                    {{change!.Title}}
+                </dt>
+                <dd class="govuk-summary-list__value" *ngIf="!change.IsAddress; else oldAddresses">
+                    <ng-container *ngIf="isArray(change!.OldValue)">
+                        <div *ngFor="let name of change!.OldValue">{{name}}</div>
+                    </ng-container>
+                    <ng-container *ngIf="!isArray(change!.OldValue)">{{change!.OldValue}}</ng-container>
+                </dd>
+                <dd class="govuk-summary-list__value" *ngIf="!change.IsAddress; else newAddresses">
+                    <ng-container *ngIf="isArray(change!.NewValue)">
+                        <div *ngFor="let name of change!.NewValue">{{name}}</div>
+                    </ng-container>
+                    <ng-container *ngIf="!isArray(change!.NewValue)">{{change!.NewValue}}</ng-container>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" role="link" (click)="navigateTo(change!.Route!)" (keyup.enter)="navigateTo(change!.Route!)" tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
+                </dd>
+
+                <ng-template #oldAddresses>
+                    <dd class="govuk-summary-list__value">
+                        <div class="govuk-!-margin-bottom-5" *ngFor="let address of change!.OldAddresses!">
+                            <address-description  [address]="address" />
+                        </div>
+                    </dd>
+                </ng-template>
+    
+                <ng-template #newAddresses>
+                    <dd class="govuk-summary-list__value">
+                        <div class="govuk-!-margin-bottom-5" *ngFor="let address of change!.NewAddresses!">
+                            <address-description  [address]="address" />
+                        </div>
+                    </dd>
+                </ng-template>
+            </div>
+        </dl>
+    </ng-container>
+    
+    <ng-container *ngIf="changesAccountability.length > 0">
+        <h2 class="govuk-heading-m">Areas accountability</h2>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    What's changing
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <strong>What it was</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    <strong style="white-space: nowrap;">What you're changing it to</strong>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row" *ngFor="let change of changesAccountability">
+                <dt class="govuk-summary-list__key">
+                    {{change!.Title}}
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <ng-container *ngIf="isArray(change!.OldValue)">
+                        <div *ngFor="let name of change!.OldValue">{{name}}</div>
+                    </ng-container>
+                    <ng-container *ngIf="!isArray(change!.OldValue)">{{change!.OldValue}}</ng-container>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    <ng-container *ngIf="isArray(change!.NewValue)">
+                        <div *ngFor="let name of change!.NewValue">{{name}}</div>
+                    </ng-container>
+                    <ng-container *ngIf="!isArray(change!.NewValue)">{{change!.NewValue}}</ng-container>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" role="link" (click)="navigateTo(change!.Route!)" (keyup.enter)="navigateTo(change!.Route!)" tabindex="0">Change<span class="govuk-visually-hidden">Change</span></a>
+                </dd>
+            </div>
+        </dl>
+    </ng-container>
+</ng-container>

@@ -8,7 +8,7 @@
     <address-description [address]="apAddress" />
   </govuk-summary-list-row>
 
-  <ng-container *ngIf="apIndex == 0">
+  <ng-container *ngIf="apIndex == 0 && !isRAinProgress()">
     <govuk-summary-list-row (onClick)="navigateTo('who-are-you')" (onKeyupEnter)="navigateTo('who-are-you')" key="Are you the named contact?" [showAction]=true>{{ap.Role | whoAreYouDescription }}</govuk-summary-list-row>
     <govuk-summary-list-row *ngIf="isNamedContact()" (onClick)="navigateTo('pap-named-role')" (onKeyupEnter)="navigateTo('pap-named-role')" key="Job role" [showAction]=true>{{ap.LeadJobRole | leadJobRoleDescription}}</govuk-summary-list-row>
     <govuk-summary-list-row *ngIf="isRegisteringFor()" (onClick)="navigateTo('same-address')" (onKeyupEnter)="navigateTo('same-address')" key="Should we use the same address to contact you?" [showAction]=true>{{ap.ActingForSameAddress | useSameAddressDescription}}</govuk-summary-list-row>
@@ -26,11 +26,15 @@
     </govuk-summary-list-row>
   </ng-container>
 
-  <govuk-summary-list-row *ngIf="isRegisteringFor() || isEmployee()" (onKeyupEnter)="navigateTo('lead-name')" (onClick)="navigateTo('lead-name')" key="Named contact" [showAction]=true>{{ap.LeadFirstName}} {{ap.LeadLastName}}</govuk-summary-list-row>
-  <govuk-summary-list-row *ngIf="isRegisteringFor() || isEmployee()" (onKeyupEnter)="navigateTo('lead-details')" (onClick)="navigateTo('lead-details')" key="Named contact's details" [showAction]=true>
+  <govuk-summary-list-row *ngIf="isRegisteringFor() || isEmployee() || (isRAinProgress() && apIndex == 0)" (onKeyupEnter)="navigateTo('lead-name')" (onClick)="navigateTo('lead-name')" key="Named contact" [showAction]=true>{{ap.LeadFirstName}} {{ap.LeadLastName}}</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="isRegisteringFor() || isEmployee() || (isRAinProgress() && apIndex == 0)" (onKeyupEnter)="navigateTo('lead-details')" (onClick)="navigateTo('lead-details')" key="Named contact's details" [showAction]=true>
     <div>{{ap.LeadJobRole | leadJobRoleDescription}}</div>
     <div>{{ap.LeadEmail}}</div>
     <div>{{ap.LeadPhoneNumber}}</div>
+  </govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="(isRAinProgress() && apIndex == 0)" (onClick)="navigateTo('same-address')" (onKeyupEnter)="navigateTo('same-address')" key="Should we use the same address to contact the named contact?" [showAction]=true>{{ap.ActingForSameAddress | useSameAddressDescription}}</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="(isRAinProgress() && apIndex == 0) && ap.ActingForSameAddress == 'no'" (onClick)="navigateTo('acting-for-address')" (onKeyupEnter)="navigateTo('acting-for-address')" key="Named contact's address" [showAction]=true>
+    <address-description [address]="ap.ActingForAddress" />
   </govuk-summary-list-row>
 
   <govuk-summary-list-row *ngIf="apIndex > 0" (onKeyupEnter)="navigateTo('named-contact')" (onClick)="navigateTo('named-contact')" key="Named contact" [showAction]=true>{{ap.NamedContactFirstName}} {{ap.NamedContactLastName}}</govuk-summary-list-row>
@@ -39,5 +43,5 @@
     <div>{{ap.NamedContactPhoneNumber}}</div>
   </govuk-summary-list-row>
 
-  <govuk-summary-list-row (onClick)="addMore()" (onKeyupEnter)="addMore()" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
+  <govuk-summary-list-row *ngIf="!isRAinProgress()" (onClick)="addMore()" (onKeyupEnter)="addMore()" key="Add another accountable person?" [showAction]=true>{{hasMoreAp ? 'Yes' : 'No'}}</govuk-summary-list-row>
 </govuk-summary-list>

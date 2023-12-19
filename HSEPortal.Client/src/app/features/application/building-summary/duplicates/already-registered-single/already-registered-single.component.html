@@ -25,7 +25,7 @@
         </govuk-table-row>
         <govuk-table-row header="Address">
             <govuk-table-cell><address-description [address]="registeredStructure?.StructureAddress"/></govuk-table-cell>
-            <govuk-table-cell><address-description [address]="applicationService.currentSectionAddress"/></govuk-table-cell>
+            <govuk-table-cell><address-description [address]="currentSectionAddress"/></govuk-table-cell>
         </govuk-table-row>
         <govuk-table-row header="Principal accountable person">
             <govuk-table-cell>{{registeredStructure?.PapIsOrganisation 

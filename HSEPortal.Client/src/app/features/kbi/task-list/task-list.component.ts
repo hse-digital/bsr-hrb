@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { NavigationService } from 'src/app/services/navigation.service';
-import { ApplicationService, BuildingApplicationStage, SectionModel } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, SectionModel, Status } from 'src/app/services/application.service';
 import { CheckBeforeStartComponent } from '../check-before-start/check-before-start.component';
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component';
 import { KbiNavigation } from 'src/app/features/kbi/kbi.navigation.ts.service';
@@ -28,16 +28,17 @@ export class TaskListComponent implements CanActivate, OnInit {
 
   async ngOnInit() {
     this.applicationService.initKbi();
-    this.InScopeSections = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    if (!!this.applicationService.model.RegistrationAmendmentsModel) this.applicationService.model.RegistrationAmendmentsModel.KbiChangeTaskList = false;
+    this.InScopeSections = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && !!x.Addresses && x.Addresses.length > 0 && x.Status != Status.Removed);
     await this.applicationService.updateApplication();
   }
 
   isSectionInProgress(index: number) {
-    return this.applicationService.model.Kbi?.SectionStatus?.at(index)?.InProgress;
+    return this.applicationService.currentVersion.Kbi?.SectionStatus?.at(index)?.InProgress;
   }
 
   isSectionComplete(index: number) {
-    return index < 0 || this.applicationService.model.Kbi?.SectionStatus?.at(index)?.Complete;
+    return index < 0 || this.applicationService.currentVersion.Kbi?.SectionStatus?.at(index)?.Complete;
   }
 
   getNumberOfCompletedSteps() {
@@ -45,14 +46,14 @@ export class TaskListComponent implements CanActivate, OnInit {
     if (this.containsFlag(BuildingApplicationStage.KbiCheckBeforeComplete)) numberCompletedSteps++;
     if (this.containsFlag(BuildingApplicationStage.KbiConnectionsComplete)) numberCompletedSteps++;
     if (this.containsFlag(BuildingApplicationStage.KbiSubmitComplete)) numberCompletedSteps++;
-    numberCompletedSteps += this.applicationService.model.Kbi?.SectionStatus?.filter(x => x.Complete).length ?? 0;
+    numberCompletedSteps += this.applicationService.currentVersion.Kbi?.SectionStatus?.filter(x => x.Complete).length ?? 0;
     return numberCompletedSteps;
   }
 
   getSectionName(index: number) {
     return this.InScopeSections.length == 1
       ? this.applicationService.model.BuildingName
-      : this.applicationService.model.Kbi?.KbiSections[index].StructureName;
+      : this.applicationService.currentVersion.Kbi?.KbiSections[index].StructureName;
   }
 
   navigateToCheckBeforeStart() {
@@ -61,7 +62,7 @@ export class TaskListComponent implements CanActivate, OnInit {
 
   async navigateToSection(index: number, sectionName: string) {
     let route = this.kbiNavigation.getNextRoute(index);
-    await this.kbiService.startKbi(this.applicationService.model.Kbi!.KbiSections[index]);
+    await this.kbiService.startKbi(this.applicationService.currentVersion.Kbi!.KbiSections[index]);
 
     let sectionId = `${index + 1}`;
     if (sectionName !== void 0) {

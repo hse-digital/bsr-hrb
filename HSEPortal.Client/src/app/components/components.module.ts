@@ -24,6 +24,7 @@ import { GovukTableRowComponent } from './govuk-table/govuk-table-row.component'
 import { GovukTableCellComponent } from './govuk-table/govuk-table-cell.component';
 import { GovukTableColComponent } from './govuk-table/govuk-table-col.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
+import { OutgoingAccountabilityComponent } from "./outgoing-accountability/outgoing-accountability.component";
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { UserDetailsComponent } from './user-details/user-details.component';
     PapAccountabilityComponent,
     GovukRequiredDirective,
     AccountabilityComponent,
+    OutgoingAccountabilityComponent,
     NotAllocatedAccountabilityComponent,
     GovukCheckboxNoneComponent,
     CheckboxOptionComponent,
@@ -59,6 +61,7 @@ import { UserDetailsComponent } from './user-details/user-details.component';
     PapAccountabilityComponent,
     GovukRequiredDirective,
     AccountabilityComponent,
+    OutgoingAccountabilityComponent,
     NotAllocatedAccountabilityComponent,
     GovukCheckboxNoneComponent,
     CheckboxOptionComponent,

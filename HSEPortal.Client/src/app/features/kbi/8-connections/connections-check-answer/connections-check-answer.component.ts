@@ -32,13 +32,13 @@ export class ConnectionsCheckAnswerComponent  extends BaseComponent implements I
   InScopeStructures?: SectionModel[];
 
   async ngOnInit() {
-    this.InScopeStructures = this.applicationService.model.Sections.filter( x=> !x.Scope?.IsOutOfScope);
+    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter( x=> !x.Scope?.IsOutOfScope);
   }
 
   hasIncompleteData = false;
   canContinue(): boolean {
     let canContinue = true;
-    let InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    let InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope);
     if (InScopeStructures.length > 1) canContinue &&= !!this.applicationService.currentKbiModel?.Connections?.StructureConnections && this.applicationService.currentKbiModel?.Connections?.StructureConnections.length > 0;
     
     canContinue &&= FieldValidations.IsNotNullOrWhitespace(this.applicationService.currentKbiModel?.Connections?.OtherHighRiseBuildingConnections); 

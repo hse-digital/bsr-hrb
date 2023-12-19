@@ -1,5 +1,7 @@
 import { TaskListSteps, TagStatus } from "./change-task-list.component";
-import { ApplicationService, Status } from "src/app/services/application.service";
+import { ApplicationService, SectionModel, Status } from "src/app/services/application.service";
+import { ChangeBuildingSummaryHelper } from "src/app/helpers/registration-amendments/change-building-summary-helper";
+import { ApplicationStageHelper } from "../../application/application-completed/application-completed.component";
 
 export class TagDirector {
     private Tag?: ChangeTaskListTag;
@@ -43,31 +45,59 @@ export abstract class ChangeTaskListTag {
 
 export class BuildingSummaryTag extends ChangeTaskListTag {
     getTag(): TagStatus {
-        return TagStatus.NotYetAvailable;
+        if (this.applicationService.currentVersion.BuildingStatus == Status.ChangesInProgress) {
+            return TagStatus.MoreInformationNeeded;
+        } else if (this.applicationService.currentVersion.BuildingStatus == Status.ChangesComplete || this.areThereAnySectionsRemoved(this.applicationService.currentVersion.Sections)) {
+            return TagStatus.ChangesNotYetSubmitted;
+        }
+        return TagStatus.NoChangesMade;
+    }
+
+    areThereAnySectionsRemoved(changeModel: SectionModel[] ) {
+        return new ChangeBuildingSummaryHelper(this.applicationService).getRemovedStructures().length > 0;
     }
 }
 
 export class AccountablePersonTag extends ChangeTaskListTag {
     getTag(): TagStatus {
-        return TagStatus.NotYetAvailable;
+        if (this.applicationService.currentVersion.ApChangesStatus == Status.ChangesInProgress) {
+            return TagStatus.MoreInformationNeeded;
+        } else if (this.applicationService.currentVersion.ApChangesStatus == Status.ChangesComplete) {
+            return TagStatus.ChangesNotYetSubmitted;
+        }
+        return TagStatus.NoChangesMade;
     }
 }
 
 export class KbiTag extends ChangeTaskListTag {
-    private index?: number;
+    private index: number = 0;
 
     setIndex(index: number): void {
         this.index = index;
     }
 
     getTag(): TagStatus {
-        return TagStatus.NotYetAvailable;
+        let kbiSection = this.applicationService.currentVersion.Kbi?.KbiSections.at(this.index);
+
+        if (kbiSection?.Status == Status.ChangesInProgress) {
+            return TagStatus.MoreInformationNeeded;
+        } else if (kbiSection?.Status == Status.ChangesComplete) {
+            return TagStatus.ChangesNotYetSubmitted;
+        }
+        return TagStatus.NoChangesMade;
     }
 }
 
 export class ConnectionsTag extends ChangeTaskListTag {
     getTag(): TagStatus {
-        return TagStatus.NotYetAvailable;
+        let connections = this.applicationService.currentVersion.Kbi?.Connections;
+
+        if (connections?.Status == Status.ChangesInProgress) {
+            return TagStatus.MoreInformationNeeded;
+        } else if (connections?.Status == Status.ChangesComplete) {
+            return TagStatus.ChangesNotYetSubmitted;
+        }
+        return TagStatus.NoChangesMade;
     }
 }
 
@@ -98,10 +128,43 @@ export class ChangesTag extends ChangeTaskListTag {
 export class SubmitTag extends ChangeTaskListTag {
     getTag(): TagStatus {
         let changeUserTagStatus = new ChangesTag(this.applicationService).getTag();
-        if(changeUserTagStatus == TagStatus.ChangesNotYetSubmitted) {
+        let changeBuildingSummaryTagStatus = new BuildingSummaryTag(this.applicationService).getTag();
+        let kbiTagStatus = this.getKbiTags();
+        let connectionsTagStatus = new ConnectionsTag(this.applicationService).getTag();
+        let accountablePersonTag = new AccountablePersonTag(this.applicationService).getTag();
+ 
+        let canSubmit = !this.areAllNoChangesMade([changeUserTagStatus, changeBuildingSummaryTagStatus, ...kbiTagStatus, connectionsTagStatus, accountablePersonTag]) 
+            && this.isNotSubmittedOrNoChangesMade(changeUserTagStatus) 
+            && this.isNotSubmittedOrNoChangesMade(changeBuildingSummaryTagStatus)
+            && this.isNotSubmittedOrNoChangesMade(accountablePersonTag);
+            
+        if (ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus)) {
+            canSubmit &&= kbiTagStatus.every(x => this.isNotSubmittedOrNoChangesMade(x));
+            canSubmit &&= this.isNotSubmittedOrNoChangesMade(connectionsTagStatus);
+        }
+
+        if(canSubmit) {
             return TagStatus.NotStarted
         }
         return TagStatus.CannotStartYet;
+    }
+
+    isNotSubmittedOrNoChangesMade(tagStatus: TagStatus) {
+        return tagStatus == TagStatus.ChangesNotYetSubmitted || tagStatus == TagStatus.NoChangesMade;
+    }
+
+    areAllNoChangesMade(tagStatus: TagStatus[]) {
+        return tagStatus.every(x => x == TagStatus.NoChangesMade);
+    }
+
+    getKbiTags() {
+        let tags = [];
+        let kbiTag: KbiTag = new KbiTag(this.applicationService);
+        for (let index = 0; index < this.applicationService.currentVersion.Kbi!.KbiSections.length; index++) {
+            kbiTag.setIndex(index);
+            tags.push(kbiTag.getTag());
+        }
+        return tags;
     }
 
 }

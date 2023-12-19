@@ -1,8 +1,26 @@
 import { Component } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService, BuildingApplicationStage, SectionModel, Status } from 'src/app/services/application.service';
 import { TagDirector } from './TagDirector';
+import { KbiChangeCheckAnswersModule } from '../change-kbi/check-answers-building-information/kbi.check-answers-building-information.module';
+import { ChangeBuildingInformationCheckAnswersComponent } from '../change-kbi/check-answers-building-information/check-answers-building-information.component';
+import { KbiNavigation } from '../../kbi/kbi.navigation.ts.service';
+import { KbiConnectionsModule } from '../../kbi/8-connections/kbi.connections.module';
+import { KbiSubmitModule } from '../../kbi/9-submit/kbi.submit.module';
+import { KbiValidator } from 'src/app/helpers/kbi-validator';
+import { ChangeKbiHelper } from 'src/app/helpers/registration-amendments/change-kbi-helper';
+import { ChangeAccountablePersonsHelper } from 'src/app/helpers/registration-amendments/change-accountable-persons-helper';
+import { ApHelper } from 'src/app/helpers/ap-helper';
+import { SelectPrimaryUserComponent } from '../change-applicant/select-primary-user/select-primary-user.component';
+import { UserListComponent } from '../change-applicant/user-list/user-list.component';
+import { ChangeConnectionsComponent } from '../change-connections/change-connections/change-connections.component';
+import { SamePapComponent } from '../change-accountable-persons/same-pap/same-pap.component';
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { OrganisationNameComponent } from '../../application/accountable-person/organisation/organisation-name/organisation-name.component';
+import { PapNameComponent } from '../../application/accountable-person/ap-name/pap-name.component';
+import { PrincipleAccountableSelection } from '../../application/accountable-person/principal/principal.component';
+import { OrganisationTypeComponent } from '../../application/accountable-person/organisation/organisation-type/organisation-type.component';
 
 @Component({
   selector: 'hse-change-task-list',
@@ -13,27 +31,30 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   static title: string = "Tell the Building Safety Regulator about changes to this building - Register a high-rise building - GOV.UK";
 
   taskListSteps = TaskListSteps;
-  InScopeSections!: SectionModel[];
-  tagDirector: TagDirector;
+  InScopeKbiSections!: SectionModel[];
+  tagDirector?: TagDirector;
 
-  constructor() {
-    super();
-    this.tagDirector  = new TagDirector(this.applicationService);
+  constructor(activatedRoute: ActivatedRoute, private kbiNavigation: KbiNavigation) {
+    super(activatedRoute);
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
-    this.InScopeSections = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
-    if(!this.applicationService.model.RegistrationAmendmentsModel) {
-      this.applicationService.model.RegistrationAmendmentsModel = {
-        BuildingSummaryStatus: Status.NoChanges,
-        ConnectionStatus: Status.NoChanges,
-        SubmitStatus: Status.NoChanges,
-      };
+    this.applicationService.validateCurrentVersion();
+    this.applicationService.initKbi();
+    this.validateKbiSections();
+    this.validateAccountablePersons();
+    this.tagDirector = new TagDirector(this.applicationService);
+
+    this.InScopeKbiSections = this.applicationService.currentVersion.Sections
+      .filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
+
+    if (!this.applicationService.model.RegistrationAmendmentsModel) {
+      this.applicationService.model.RegistrationAmendmentsModel = {};
     }
   }
 
   override onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): void | Promise<void> {
-    
+
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -46,12 +67,9 @@ export class ChangeTaskListComponent extends PageComponent<void> {
 
   override async navigateNext(): Promise<boolean | void> {
     return true;
-  }  
-
-  async navigateToSections() {
   }
 
-  async navigateToPap() {
+  async navigateToSections() {
   }
 
   isKbiSubmitted() {
@@ -59,19 +77,98 @@ export class ChangeTaskListComponent extends PageComponent<void> {
   }
 
   isLinkEnable(step: TaskListSteps, index?: number): boolean {
-    this.tagDirector.setStep(step, index);
+    this.tagDirector?.setStep(step, index);
     let tag = this.tagDirector?.getTag()
     return tag != TagStatus.CannotStartYet && tag != TagStatus.NotYetAvailable;
   }
 
   getTagFor(step: TaskListSteps, index?: number): string {
-    this.tagDirector.setStep(step, index);
-    return this.TagToText[this.tagDirector?.getTag()];
+    this.tagDirector?.setStep(step, index);
+    return this.TagToText[this.tagDirector?.getTag() ?? TagStatus.NotYetAvailable];
   }
 
   getCssClassFor(step: TaskListSteps, index?: number): string {
-    this.tagDirector.setStep(step, index);
-    return this.TagToCssClass[this.tagDirector?.getTag()];
+    this.tagDirector?.setStep(step, index);
+    return this.TagToCssClass[this.tagDirector?.getTag() ?? TagStatus.NotYetAvailable];
+  }
+
+  validateKbiSections() {
+    this.applicationService.currentVersion.Kbi?.KbiSections.forEach((kbiSection, index) => {
+      if (!!kbiSection) {
+        let hasChanged = (new ChangeKbiHelper(this.applicationService).getChangesOf(kbiSection, index) ?? []).length > 0;
+        if (hasChanged) {
+          this.applicationService.currentVersion.Kbi!.KbiSections.at(index)!.Status = KbiValidator.isKbiSectionValid(kbiSection)
+            ? Status.ChangesComplete
+            : Status.ChangesInProgress;
+        }
+      }
+    });
+  }
+
+  validateAccountablePersons() {
+    let isValid = ApHelper.isAPValid(this.applicationService);
+    let hasChanged = (new ChangeAccountablePersonsHelper(this.applicationService).getAllAPChanges() ?? []).length > 0;
+    if (hasChanged) {
+      this.applicationService.currentVersion.ApChangesStatus = isValid
+        ? Status.ChangesComplete
+        : Status.ChangesInProgress;
+    } else {
+      this.applicationService.currentVersion.ApChangesStatus = Status.NoChanges;
+    }
+  }
+
+  async navigateToKbi(index: number) {
+    let route = this.kbiNavigation.getNextRoute(index);
+
+    if (route.startsWith(KbiConnectionsModule.baseRoute) || route.startsWith(KbiSubmitModule.baseRoute) || route.startsWith("check-answers")) {
+      return this.navigationService.navigateRelative(`${KbiChangeCheckAnswersModule.baseRoute}/${ChangeBuildingInformationCheckAnswersComponent.route}`, this.activatedRoute, {
+        index: index
+      });
+    } else {
+      let query = route.split('?');
+      let params: any = {};
+      if (query.length > 1) {
+        let queryParam = query[1].split('=');
+        params[queryParam[0]] = queryParam[1];
+      }
+
+      this.applicationService.model.RegistrationAmendmentsModel!.KbiChangeTaskList = true;
+      return this.navigationService.navigateAppend(`../../kbi/${(index + 1)}/${query[0]}`, this.activatedRoute, params);
+    }
+  }
+
+  async navigateToConnections() {
+    if ((!this.applicationService.currentKbiModel!.Connections.StructureConnections || this.applicationService.currentKbiModel!.Connections.StructureConnections?.length == 0)
+      && this.applicationService.currentKbiModel?.Connections.Status == Status.ChangesInProgress) {
+      let route = this.kbiNavigation.getNextConnectionRoute();
+      this.navigationService.navigateAppend(`../../kbi/${route}`, this.activatedRoute, { return: `${ChangeConnectionsComponent.route}` });
+    } else {
+      this.navigationService.navigateAppend(`../${ChangeConnectionsComponent.route}`, this.activatedRoute);
+    }
+  }
+
+  navigateToAp() {
+    let pap = this.applicationService.currentVersion.AccountablePersons[0];
+    if (pap.Type == "organisation" && !FieldValidations.IsNotNullOrWhitespace(pap.OrganisationName)) {
+      let route = !FieldValidations.IsNotNullOrWhitespace(pap.OrganisationType) ? OrganisationTypeComponent.route : OrganisationNameComponent.route; 
+      return this.navigationService.navigateRelative(`../accountable-person/accountable-person-1/${route}`, this.activatedRoute);
+    } else if (pap.Type != "organisation" && !FieldValidations.IsNotNullOrWhitespace(pap.IsPrincipal) && !FieldValidations.IsNotNullOrWhitespace(pap.FirstName)) {
+      return this.navigationService.navigateRelative(`../accountable-person/accountable-person-1/${PrincipleAccountableSelection.route}`, this.activatedRoute);
+    } else if (pap.Type != "organisation" && FieldValidations.IsNotNullOrWhitespace(pap.IsPrincipal) && pap.IsPrincipal != "yes" && !FieldValidations.IsNotNullOrWhitespace(pap.FirstName)) {
+      return this.navigationService.navigateRelative(`../accountable-person/accountable-person-1/${PapNameComponent.route}`, this.activatedRoute);
+    }
+    return this.navigationService.navigateRelative(SamePapComponent.route, this.activatedRoute);
+  }
+
+  async navigateToChangeUser() {
+    if (this.hasPAPChanged) {
+      return this.navigationService.navigateRelative(SelectPrimaryUserComponent.route, this.activatedRoute);
+    }
+    return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
+  }
+
+  get hasPAPChanged() {
+    return new ChangeAccountablePersonsHelper(this.applicationService).getPAPChanges().length > 0;
   }
 
   get submitSectionNumber() {

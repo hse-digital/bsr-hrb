@@ -1,0 +1,18 @@
+<govuk-formpage saveAndContinueText="Save and continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+   
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link anchorId="floors_height-input" [message]="errorMessage" />
+      </govuk-error-summary>
+    
+    <govuk-radio-group title="Why do you want to remove {{sectionName}}?"
+        [isPageHeading]=true [errorText]="getErrorDescription(hasErrors, errorMessage)" 
+        [(model)]="model" #field [govukRequired]="field">
+
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="remove-group" id="floors_height" value="floors_height" label="It now has less than 7 floors and is less than 18 metres in height" />
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="remove-group" id="residential_units" value="residential_units" label="It now has less than 2 residential units" />
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="remove-group" id="everyone_moved_out" value="everyone_moved_out" label="Everyone has moved out" />
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="remove-group" id="incorrectly_registered" value="incorrectly_registered" label="It was incorrectly registered as part of this building" />
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="remove-group" id="no_connected" value="no_connected" label="It is no longer connected to the other structures" />
+        
+    </govuk-radio-group>
+</govuk-formpage>

@@ -1,12 +1,13 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
-import { ApplicationService, OutOfScopeReason } from "src/app/services/application.service";
+import { ApplicationService, OutOfScopeReason, Status } from "src/app/services/application.service";
 import { SectionHelper } from "src/app/helpers/section-helper";
 import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-single-structure/not-need-register-single-structure.component";
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
 import { SectionYearOfCompletionComponent } from "../year-of-completion/year-of-completion.component";
+import { NeedRemoveWithdrawComponent } from "src/app/features/registration-amendments/change-building-summary/need-remove-withdraw/need-remove-withdraw.component";
 
 @Component({
   templateUrl: './residential-units.component.html'
@@ -30,6 +31,12 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
     this.applicationService.currentSection.ResidentialUnits = this.model;
   }
   
+  private initScope() {
+    if (!this.applicationService.currentSection.Scope) {
+      this.applicationService.currentSection.Scope = {};
+    }
+  }
+
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
   }
@@ -54,6 +61,9 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
   override navigateNext(): Promise<boolean> {
     let route: string = SectionYearOfCompletionComponent.route;
     if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
+
+      if (this.changing) return this.navigationService.navigateRelative(`../../registration-amendments/${NeedRemoveWithdrawComponent.route}`, this.activatedRoute);
+
       route = this.applicationService.model.NumberOfSections == 'one' 
         ? NotNeedRegisterSingleStructureComponent.route
         : NotNeedRegisterMultiStructureComponent.route;
@@ -65,19 +75,19 @@ export class SectionResidentialUnitsComponent extends PageComponent<number> {
     let wasOutOfScope = this.applicationService.currentSection.Scope?.IsOutOfScope;
 
     if (residentialUnits < 2) {
-      this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.NumberResidentialUnits };
-      ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService, false, true);
+      this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.NumberResidentialUnits };      
+      
+      if(!this.changing) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService, false, true);
+      else this.returnUrl = undefined;
+
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;
       }
-
+      this.applicationService.currentSection.Status = this.applicationService.currentSection.Status == Status.NoChanges ? Status.NoChanges : Status.ChangesInProgress;
+      this.applicationService.currentSection.CancellationReason = undefined;
       this.applicationService.currentSection.Scope = { IsOutOfScope: false, OutOfScopeReason: undefined };
     }
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
 }

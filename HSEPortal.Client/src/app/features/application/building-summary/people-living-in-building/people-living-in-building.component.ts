@@ -7,6 +7,7 @@ import { NotNeedRegisterSingleStructureComponent } from "../not-need-register-si
 import { NotNeedRegisterMultiStructureComponent } from "../not-need-register-multi-structure/not-need-register-multi-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
 import { PageComponent } from "src/app/helpers/page.component";
+import { NeedRemoveWithdrawComponent } from "src/app/features/registration-amendments/change-building-summary/need-remove-withdraw/need-remove-withdraw.component";
 
 @Component({
   templateUrl: './people-living-in-building.component.html'
@@ -44,6 +45,9 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
 
   override navigateNext(): Promise<boolean> {
     if (this.applicationService.currentSection.Scope?.IsOutOfScope) {
+      
+      if (this.changing) return this.navigationService.navigateRelative(`../../registration-amendments/${NeedRemoveWithdrawComponent.route}`, this.activatedRoute);
+
       return this.applicationService.model.NumberOfSections == 'one' 
         ? this.navigationService.navigateRelative(NotNeedRegisterSingleStructureComponent.route, this.activatedRoute)
         : this.navigationService.navigateRelative(NotNeedRegisterMultiStructureComponent.route, this.activatedRoute);
@@ -56,7 +60,10 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
 
     if (!this.peopleLivingHasErrors && peopleLivingInBuilding == 'no_wont_move') {
       this.applicationService.currentSection.Scope = { IsOutOfScope: true, OutOfScopeReason: OutOfScopeReason.PeopleLivingInBuilding };
-      ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService);
+      
+      if(!this.changing) ScopeAndDuplicateHelper.ClearOutOfScopeSection(this.applicationService);
+      else this.returnUrl = undefined;
+
     } else {
       if (wasOutOfScope) {
         this.returnUrl = undefined;
@@ -66,12 +73,7 @@ export class SectionPeopleLivingInBuildingComponent extends PageComponent<string
     }
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
-
   getErrorMessage() {
-    return `Select if people are living in ${this.sectionBuildingName()}`;
+    return `Select if people are living in ${this.buildingOrSectionName}`;
   }
 }

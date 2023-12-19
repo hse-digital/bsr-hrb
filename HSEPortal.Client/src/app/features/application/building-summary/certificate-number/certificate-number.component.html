@@ -9,7 +9,7 @@
           <govuk-error-link *ngIf="certificateHasErrors" anchorId="input-certificate-reference" [message]="errorMessage" />
         </govuk-error-summary>
 
-        <h1 class="govuk-heading-l">Completion certificate reference for {{sectionBuildingName()}}{{ isOptional ? ' (optional)' : ''}}</h1>
+        <h1 class="govuk-heading-l">Completion certificate reference for {{buildingOrSectionName}}{{ isOptional ? ' (optional)' : ''}}</h1>
 
         <govuk-input hint="This should be on the completion certificate."
                      id="certificate-reference" [(model)]="model"
