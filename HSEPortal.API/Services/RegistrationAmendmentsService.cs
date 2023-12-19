@@ -1,4 +1,3 @@
-
 using HSEPortal.API.Model;
 using HSEPortal.Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -14,7 +13,8 @@ public class RegistrationAmendmentsService
     private readonly DynamicsOptions dynamicsOptions;
     private readonly DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory;
 
-    public RegistrationAmendmentsService(DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory, DynamicsService dynamicsService, DynamicsApi dynamicsApi, IOptions<DynamicsOptions> dynamicsOptions)
+    public RegistrationAmendmentsService(DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory, DynamicsService dynamicsService, DynamicsApi dynamicsApi,
+        IOptions<DynamicsOptions> dynamicsOptions)
     {
         this.dynamicsService = dynamicsService;
         this.dynamicsApi = dynamicsApi;
@@ -41,9 +41,12 @@ public class RegistrationAmendmentsService
         return contact with { Id = existingContact.contactid };
     }
 
-    public async Task<IFlurlResponse> CreateChangeRequest(ChangeRequest changeRequest, string bsr_buildingapplicationid, string applicantReferenceId, string _bsr_building_value, DynamicsStructure dynamicsStructure = null)
+    public async Task<IFlurlResponse> CreateChangeRequest(ChangeRequest changeRequest, string bsr_buildingapplicationid, string applicantReferenceId, string _bsr_building_value,
+        DynamicsBuildingApplication dynamicsBuildingApplication,
+        DynamicsStructure dynamicsStructure = null)
     {
-        DynamicsChangeRequest dynamicsChangeRequest = new DynamicsChangeRequest {
+        DynamicsChangeRequest dynamicsChangeRequest = new DynamicsChangeRequest
+        {
             bsr_declaration = changeRequest.Declaration,
             bsr_reviewrequired = changeRequest.ReviewRequired,
             buildingApplicationId = $"/bsr_buildingapplications({bsr_buildingapplicationid})",
@@ -56,15 +59,17 @@ public class RegistrationAmendmentsService
         {
             dynamicsChangeRequest = dynamicsChangeRequest with
             {
-                bsr_papchangecategory = GetPAPChangeCategory(changeRequest)
+                bsr_papchangecategory = GetPAPChangeCategory(changeRequest, dynamicsBuildingApplication)
             };
         }
 
-        if (dynamicsStructure != null && dynamicsStructure.bsr_blockid != null) {
+        if (dynamicsStructure != null && dynamicsStructure.bsr_blockid != null)
+        {
             dynamicsChangeRequest = dynamicsChangeRequest with { structure = $"/bsr_blocks({dynamicsStructure.bsr_blockid})" };
         }
 
-        if(applicantReferenceId != null && !applicantReferenceId.Equals(string.Empty)) {
+        if (applicantReferenceId != null && !applicantReferenceId.Equals(string.Empty))
+        {
             dynamicsChangeRequest = dynamicsChangeRequest with { applicantReferenceId = $"/contacts({applicantReferenceId})" };
         }
 
@@ -73,7 +78,8 @@ public class RegistrationAmendmentsService
 
     public async Task<IFlurlResponse> CreateChange(Change change, string changeRequestId)
     {
-        DynamicsChange dynamicsChange = new DynamicsChange {
+        DynamicsChange dynamicsChange = new DynamicsChange
+        {
             changeRequestId = $"/bsr_changerequests({changeRequestId})",
             bsr_fieldname = change.FieldName,
             bsr_newanswer = change.NewAnswer,
@@ -83,15 +89,18 @@ public class RegistrationAmendmentsService
         return await dynamicsApi.Create("bsr_changes", dynamicsChange);
     }
 
-    public ChangeRequest[] BuildChangeRequestResponse(List<DynamicsChangeRequestResponse> dynamicsChangeRequests) {
+    public ChangeRequest[] BuildChangeRequestResponse(List<DynamicsChangeRequestResponse> dynamicsChangeRequests)
+    {
         List<ChangeRequest> changeRequests = new List<ChangeRequest>();
 
         foreach (DynamicsChangeRequestResponse dynamicsCR in dynamicsChangeRequests)
         {
             Change[] changes = new Change[dynamicsCR.bsr_change_changerequestid.Length];
-            for (int i = 0; i < dynamicsCR.bsr_change_changerequestid.Length; i++) {
+            for (int i = 0; i < dynamicsCR.bsr_change_changerequestid.Length; i++)
+            {
                 DynamicsChangeResponse change = dynamicsCR.bsr_change_changerequestid[i];
-                changes[i] = new Change {
+                changes[i] = new Change
+                {
                     FieldName = change.bsr_fieldname,
                     Name = change.bsr_name,
                     NewAnswer = change.bsr_newanswer,
@@ -100,30 +109,35 @@ public class RegistrationAmendmentsService
                 };
             }
 
-            changeRequests.Add(new ChangeRequest {
+            changeRequests.Add(new ChangeRequest
+            {
                 Name = dynamicsCR.bsr_name,
                 Declaration = dynamicsCR.bsr_declaration,
                 ReviewRequired = dynamicsCR.bsr_reviewrequired,
                 Change = changes
             });
         }
+
         return changeRequests.ToArray();
     }
-    
-    public bool IsApplicationAccepted(DynamicsBuildingApplication dynamicsBuildingApplication) {
+
+    public bool IsApplicationAccepted(DynamicsBuildingApplication dynamicsBuildingApplication)
+    {
         BuildingApplicationStatuscode statuscode = (BuildingApplicationStatuscode)dynamicsBuildingApplication.statuscode;
         return statuscode == BuildingApplicationStatuscode.Registered || statuscode == BuildingApplicationStatuscode.Registered;
     }
 
-    public bool IsCategoryValueEqualsTo(ChangeCategory category, string categoryIdValue) {
+    public bool IsCategoryValueEqualsTo(ChangeCategory category, string categoryIdValue)
+    {
         return DynamicsChangeCategory[category] == categoryIdValue;
     }
 
-    private Dictionary<ChangeCategory, string> DynamicsChangeCategory = new Dictionary<ChangeCategory, string>() {
-        {ChangeCategory.ApplicationBuildingAmendments, "c3d77a4f-6051-ee11-be6f-002248c725da"},
-        {ChangeCategory.ChangeApplicantUser, "2bd56b5b-6051-ee11-be6f-002248c725da"},
-        {ChangeCategory.DeRegistration, "71e16861-6051-ee11-be6f-002248c725da"},
-        {ChangeCategory.ChangePAPOrLeadContact, "54b32c53-0b7f-ee11-8179-6045bd0c14e5"},
+    private Dictionary<ChangeCategory, string> DynamicsChangeCategory = new Dictionary<ChangeCategory, string>()
+    {
+        { ChangeCategory.ApplicationBuildingAmendments, "c3d77a4f-6051-ee11-be6f-002248c725da" },
+        { ChangeCategory.ChangeApplicantUser, "2bd56b5b-6051-ee11-be6f-002248c725da" },
+        { ChangeCategory.DeRegistration, "71e16861-6051-ee11-be6f-002248c725da" },
+        { ChangeCategory.ChangePAPOrLeadContact, "54b32c53-0b7f-ee11-8179-6045bd0c14e5" },
     };
 
     public async Task<DynamicsStructure> GetDynamicsStructure(string structureName, string postcode, string applicationId)
@@ -132,29 +146,30 @@ public class RegistrationAmendmentsService
         return await dynamicsService.FindExistingStructureAsync(structureName, postcode, application.bsr_buildingapplicationid);
     }
 
-    private int? GetPAPChangeCategory(ChangeRequest changeRequest)
+    private int? GetPAPChangeCategory(ChangeRequest changeRequest, DynamicsBuildingApplication dynamicsBuildingApplication)
     {
-        var papTypeChange = changeRequest.Change.FirstOrDefault(x => x.FieldName == "PAP type"); 
-        if (papTypeChange?.NewAnswer == "organization")
+        var papTypeChange = changeRequest.Change.FirstOrDefault(x => x.FieldName == "PAP type");
+        if (papTypeChange?.NewAnswer == "organisation")
         {
             return 760_810_001; // PAP Individual to Organisation
         }
+
         if (papTypeChange?.NewAnswer == "individual")
         {
             return 760_810_003; // PAP organisation to individual
         }
-        
+
         var papChange = changeRequest.Change.FirstOrDefault(x => x.FieldName == "Principal accountable person");
         if (papChange != null)
         {
-            if (papTypeChange?.NewAnswer == "organization")
+            if (dynamicsBuildingApplication.bsr_paptype == 760_810_000)
             {
-                return 760_810_004; // PAP Organisation Change
+                return 760_810_000; // PAP Individual Change
             }
-            
-            return 760_810_000; // PAP Individual Change
+
+            return 760_810_004; // PAP Organisation Change
         }
-        
+
         var papNamedContactChange = changeRequest.Change.FirstOrDefault(x => x.FieldName == "Principal accountable person named contact");
         if (papNamedContactChange != null)
         {

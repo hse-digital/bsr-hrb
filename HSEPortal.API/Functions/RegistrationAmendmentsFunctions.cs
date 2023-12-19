@@ -103,8 +103,7 @@ public class RegistrationAmendmentsFunctions
         foreach (ChangeRequest changeRequest in ChangeRequests)
         {
             var dynamicsStructure = await GetDynamicsStructure(changeRequest, applicationId);
-            var changeRequestResponse = await RaService.CreateChangeRequest(changeRequest, dynamicsBuildingApplication.bsr_buildingapplicationid, applicantReferenceId,
-                dynamicsBuildingApplication._bsr_building_value, dynamicsStructure);
+            var changeRequestResponse = await RaService.CreateChangeRequest(changeRequest, dynamicsBuildingApplication.bsr_buildingapplicationid, applicantReferenceId, dynamicsBuildingApplication._bsr_building_value, dynamicsBuildingApplication, dynamicsStructure);
             if (changeRequest.Change != null && changeRequest.Change.Length > 0)
             {
                 string changeRequestId = dynamicsService.ExtractEntityIdFromHeader(changeRequestResponse.Headers);
