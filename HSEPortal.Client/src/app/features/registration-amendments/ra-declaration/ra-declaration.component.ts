@@ -45,7 +45,9 @@ export class RaDeclarationComponent extends PageComponent<void> {
     let helper = new ChangeBuildingSummaryHelper(this.applicationService);
     this._onlyRegistrationInformation = helper.getChanges().length > 0 || helper.getRemovedStructures().length > 0;
     this._areasAccountability = new ChangeAccountablePersonsHelper(this.applicationService).getAreasAccountabilityChanges().length > 0;
-    this._deregistering = this.applicationService.currentVersion.ChangeRequest?.find(x => x.Category == ChangeCategory.DeRegistration);
+        
+    let areYouSure = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure;
+    this._deregistering = !!areYouSure && areYouSure == "yes";
   }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): Promise<void> {
