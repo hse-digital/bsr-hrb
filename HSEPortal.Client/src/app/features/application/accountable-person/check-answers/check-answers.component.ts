@@ -82,7 +82,7 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
           canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.PhoneNumber);
           canContinue &&= FieldValidations.IsNotNullOrWhitespace(ap.Email);
 
-          if (index == 0) {
+          if (index == 0 && !this.isRAinProgress()) {
             canContinue &&= ap.PapAddress != null;
           }
         }
