@@ -26,11 +26,11 @@ export class RaSummaryChangeApplicantComponent {
     }
 
     get principalAccountablePerson() {
-      return this.papChanges.find(x => x.FieldName?.startsWith("Principal accountable person"));
+      return this.papChanges.find(x => x.FieldName == "Principal accountable person");
     }
 
     get papDetails() {
-      return this.papChanges.filter(x => !x.FieldName?.startsWith("Principal accountable person") && x.FieldName?.startsWith("Principal"));
+      return this.papChanges.filter(x => x.FieldName != "Principal accountable person" && x.FieldName?.startsWith("Principal"));
     }
 
     get areasOfAccountability() {
