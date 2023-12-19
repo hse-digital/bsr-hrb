@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService, BuildingApplicationStatuscode, Status } from 'src/app/services/application.service';
 import { RaConfirmationComponent } from '../ra-confirmation/ra-confirmation.component';
-import { ChangeAccountablePersonModelBuilder, ChangeApplicantModelBuilder, ChangeBuildingSummaryModelBuilder, RemovedBuildingModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
+import { ChangeAccountablePersonModelBuilder, ChangeApplicantModelBuilder, ChangeBuildingSummaryModelBuilder, DeregisterBuildingApplicationModelBuilder, RemovedBuildingModelBuilder } from 'src/app/helpers/registration-amendments/registration-amendments-helper';
 import { ChangeApplicantHelper } from 'src/app/helpers/registration-amendments/change-applicant-helper';
 import { Change, ChangeCategory, ChangeRequest, RegistrationAmendmentsService } from 'src/app/services/registration-amendments.service';
 import { ChangeBuildingSummaryHelper } from 'src/app/helpers/registration-amendments/change-building-summary-helper';
@@ -70,7 +70,7 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.createUserChangeRequest();
     this.createBuildingSummaryChangeRequest();
     this.createRemovedStructureChangeRequest();
-    this.createDeregisterChangeRequest();
+    await this.createDeregisterChangeRequest();
     this.createAccountablePersonChangeRequest();
 
     if (this.applicationService.previousVersion.Sections.length == 1 && this.applicationService.currentVersion.Sections.length > 1) {
@@ -127,10 +127,11 @@ export class RaDeclarationComponent extends PageComponent<void> {
     });
   }
   
-  createDeregisterChangeRequest() {
+  async createDeregisterChangeRequest() {
     let areYouSure = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure;
+
     if (!!areYouSure && areYouSure == "yes") {
-      let changeRequest = this.syncChangeBuildingSummaryHelper.createChangeRequestWhenDeregister();
+      let changeRequest = await this.syncChangeBuildingSummaryHelper.createChangeRequestWhenDeregister();
       if (changeRequest) this.addChangeRequestToModel(changeRequest);
       this.newChanges = true;
     }
@@ -272,6 +273,7 @@ export class SyncChangeBuildingSummaryHelper {
   private registrationAmendmentsService: RegistrationAmendmentsService;
   private changeBuildingSummaryModelBuilder: ChangeBuildingSummaryModelBuilder;
   private removedBuildingModelBuilder: RemovedBuildingModelBuilder;
+  private deregisterBuildingApplicationModelBuilder: DeregisterBuildingApplicationModelBuilder;
 
   constructor(applicationService: ApplicationService, registrationAmendmentsService: RegistrationAmendmentsService) {
     this.applicationService = applicationService;
@@ -281,6 +283,10 @@ export class SyncChangeBuildingSummaryHelper {
       .SetBuildingName(this.applicationService.model.BuildingName!);
     
     this.removedBuildingModelBuilder = new RemovedBuildingModelBuilder()
+      .SetApplicationId(this.applicationService.model.id!)
+      .SetBuildingName(this.applicationService.model.BuildingName!);
+    
+    this.deregisterBuildingApplicationModelBuilder = new DeregisterBuildingApplicationModelBuilder()
       .SetApplicationId(this.applicationService.model.id!)
       .SetBuildingName(this.applicationService.model.BuildingName!);
     
@@ -352,12 +358,17 @@ export class SyncChangeBuildingSummaryHelper {
     return removedStructures.map( x => this.removedBuildingModelBuilder.SetStructure(x.Name ?? "", x.Addresses[0].Postcode!).CreateChangeRequest());
   }
 
-  createChangeRequestWhenDeregister(): ChangeRequest | undefined {
+  async createChangeRequestWhenDeregister() {
     let isAppDeregister = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure == "yes";
 
-    if (!isAppDeregister) return undefined;
+    if (!isAppDeregister || await this.isApplicationCanceled()) return undefined;
     
-    return this.removedBuildingModelBuilder.CreateChangeRequest();
+    let statuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
+    let appStatus = this.statuscodeText[statuscode];
+    let changeRequest = this.deregisterBuildingApplicationModelBuilder.CreateChangeRequest();
+    let change = this.deregisterBuildingApplicationModelBuilder.SetField("Application status").Change(appStatus, "Canceled").CreateChange();
+    changeRequest.Change = [change];
+    return changeRequest;
   }
 
   async syncRemovedStructures() {
@@ -374,7 +385,30 @@ export class SyncChangeBuildingSummaryHelper {
     return statuscode == BuildingApplicationStatuscode.Registered || statuscode == BuildingApplicationStatuscode.RegisteredKbiValidated;
   }
 
+  async isApplicationCanceled() {
+    let statuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
+    return statuscode == BuildingApplicationStatuscode.Cancelled;
+  }
 
+  private statuscodeText: Record<number, string> = {
+    760_810_001: "New", 
+    760_810_002: "In progress", 
+    760_810_003: "Submitted awaiting allocation", 
+    760_810_004: "Allocated review", 
+    760_810_005: "Under review", 
+    760_810_006: "Registered pending QA", 
+    760_810_007: "Rejected pending QA", 
+    760_810_012: "Allocated rework", 
+    760_810_008: "Ready for QA", 
+    760_810_015: "Registered", 
+    760_810_009: "QA in progress", 
+    760_810_016: "Registered pendingCchange", 
+    760_810_017: "Registered Kbi validated", 
+    760_810_011: "Rejected", 
+    760_810_013: "Withdrawn", 
+    760_810_014: "On hold", 
+    760_810_018: "Cancelled", 
+  }
 }
 
 export class SyncChangeAccountablePersonHelper {
