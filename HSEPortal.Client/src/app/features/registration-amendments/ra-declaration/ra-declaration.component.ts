@@ -27,6 +27,10 @@ export class RaDeclarationComponent extends PageComponent<void> {
   private syncChangeBuildingSummaryHelper: SyncChangeBuildingSummaryHelper;
   private syncChangeAccountablePersonHelper: SyncChangeAccountablePersonHelper;
 
+  private _onlyRegistrationInformation?: boolean;
+  private _areasAccountability?: boolean;
+  private _deregistering?: any;
+
   loading = false;
 
   constructor(activatedRoute: ActivatedRoute, registrationAmendmentsService: RegistrationAmendmentsService, private kbiService: KbiService) {
@@ -37,7 +41,12 @@ export class RaDeclarationComponent extends PageComponent<void> {
     this.syncChangeAccountablePersonHelper = new SyncChangeAccountablePersonHelper(this.applicationService, registrationAmendmentsService);
   }
 
-  override onInit(applicationService: ApplicationService): void | Promise<void> { }
+  override onInit(applicationService: ApplicationService): void | Promise<void> { 
+    let helper = new ChangeBuildingSummaryHelper(this.applicationService);
+    this._onlyRegistrationInformation = helper.getChanges().length > 0 || helper.getRemovedStructures().length > 0;
+    this._areasAccountability = new ChangeAccountablePersonsHelper(this.applicationService).getAreasAccountabilityChanges().length > 0;
+    this._deregistering = this.applicationService.currentVersion.ChangeRequest?.find(x => x.Category == ChangeCategory.DeRegistration);
+  }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): Promise<void> {
     await this.submit();
@@ -198,16 +207,15 @@ export class RaDeclarationComponent extends PageComponent<void> {
   }
 
   get onlyRegistrationInformation() {
-    let helper = new ChangeBuildingSummaryHelper(this.applicationService);
-    return helper.getChanges().length > 0 || helper.getRemovedStructures().length > 0;
+    return this._onlyRegistrationInformation;
   }
 
   get areasAccountability() {
-    return new ChangeAccountablePersonsHelper(this.applicationService).getAreasAccountabilityChanges().length > 0;
+    return this._areasAccountability;
   }
 
   get deregistering() {
-    return this.applicationService.currentVersion.ChangeRequest?.find(x => x.Category == ChangeCategory.DeRegistration);
+    return this._deregistering;
   }
 
 }
@@ -321,7 +329,7 @@ export class SyncChangeBuildingSummaryHelper {
     let changes: Change[] = [];
     let helper = new ChangeKbiHelper(this.applicationService);
     let kbiSections = this.applicationService.currentVersion.Kbi?.KbiSections ?? [];
-    for(let i = 0; i < kbiSections.length; i++) {
+    for (let i = 0; i < kbiSections.length; i++) {
       let kbiChanges: ChangedAnswersModel[] = helper.getChangesOf(kbiSections[i], i) ?? [];
       kbiChanges.forEach(x => {
         let name = this.applicationService.currentVersion?.Sections[i]?.Name ?? this.applicationService.model.BuildingName;
@@ -356,7 +364,7 @@ export class SyncChangeBuildingSummaryHelper {
     let helper = new ChangeBuildingSummaryHelper(this.applicationService);
     let removedStructures = helper.getRemovedStructures();
     if (!removedStructures || removedStructures.length == 0) return []
-    return removedStructures.map( x => this.removedBuildingModelBuilder.SetStructure(x.Name ?? "", x.Addresses[0].Postcode!).CreateChangeRequest());
+    return removedStructures.map(x => this.removedBuildingModelBuilder.SetStructure(x.Name ?? "", x.Addresses[0].Postcode!).CreateChangeRequest());
   }
 
   async createChangeRequestWhenDeregister() {
