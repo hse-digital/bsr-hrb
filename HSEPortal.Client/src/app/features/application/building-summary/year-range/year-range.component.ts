@@ -15,14 +15,8 @@ export class SectionYearRangeComponent extends PageComponent<string> {
     static title: string = "Range of years it was completed in - Register a high-rise building - GOV.UK";
     yearRangeHasErrors = false;
 
-
     constructor(activatedRoute: ActivatedRoute) {
         super(activatedRoute);
-    }
-
-    sectionBuildingName() {
-        return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-            this.applicationService.currentSection.Name;
     }
 
     override onInit(applicationService: ApplicationService): void {
@@ -34,8 +28,7 @@ export class SectionYearRangeComponent extends PageComponent<string> {
     }
 
     override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-        return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService) && 
-            this.applicationService.currentSection.YearOfCompletionOption == "year-not-exact";
+        return SectionHelper.isSectionAvailable(routeSnapshot, this.applicationService);
     }
 
     override isValid(): boolean {
@@ -56,7 +49,7 @@ export class SectionYearRangeComponent extends PageComponent<string> {
     }
 
     get errorMessage() {
-        return `Select what range of years ${this.sectionBuildingName()} was completed in`;
+        return `Select what range of years ${this.buildingOrSectionName} was completed in`;
     }
 
 }

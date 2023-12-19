@@ -13,6 +13,8 @@ import { PapNameComponent } from "../ap-name/pap-name.component";
 import { PapWhoAreYouComponent } from "../organisation/pap-who-are-you/pap-who-are-you.component";
 import { PapAddressComponent } from "./pap-address.component";
 import { ApplicationSubmittedHelper } from "src/app/helpers/app-submitted-helper";
+import { LeadNameComponent } from "../organisation/lead-name/lead-name.component";
+import { OutgoingAccountabilityPageComponent } from "../outgoing-accountability/outgoing-accountability.component";
 
 @Component({
     selector: 'ap-address',
@@ -72,11 +74,20 @@ export class ApAddressComponent implements OnInit, CanActivate {
     }
 
     private navigateFirstAccountablePerson() {
+        var isChangeAmendmentInProgress = this.applicationService.isChangeAmendmentInProgress;
         if (this.pap || this.applicationService.currentAccountablePerson.IsPrincipal == 'yes') {
             if (this.applicationService.currentAccountablePerson.Type == 'organisation') {
-                this.navigationService.navigateRelative(PapWhoAreYouComponent.route, this.activatedRoute);
+                if (isChangeAmendmentInProgress) {
+                    this.navigationService.navigateRelative(LeadNameComponent.route, this.activatedRoute);
+                } else {
+                    this.navigationService.navigateRelative(PapWhoAreYouComponent.route, this.activatedRoute);
+                }
             } else {
-                this.navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, this.activatedRoute);
+                if (isChangeAmendmentInProgress) { 
+                    this.navigationService.navigateRelative(`../${OutgoingAccountabilityPageComponent.route}`, this.activatedRoute);
+                } else {
+                    this.navigationService.navigateRelative(`../${AddAccountablePersonComponent.route}`, this.activatedRoute);
+                }
             }
         } else {
             this.navigationService.navigateRelative(PapNameComponent.route, this.activatedRoute);
@@ -99,7 +110,6 @@ export class ApAddressComponent implements OnInit, CanActivate {
     }
 
     canActivate(routeSnapshot: ActivatedRouteSnapshot) {
-
         ApplicationSubmittedHelper.navigateToPaymentConfirmationIfAppSubmitted(this.applicationService, this.navigationService);
 
         if (!ApHelper.isApAvailable(routeSnapshot, this.applicationService)) {

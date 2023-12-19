@@ -34,7 +34,7 @@ export class CertificatesYearChangeComponent extends PageComponent<number> {
   }
 
   override isValid(): boolean {
-    var currentSection = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope)[this.applicationService._currentKbiSectionIndex];
+    var currentSection = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope)[this.applicationService._currentKbiSectionIndex];
 
     this.certificatesYearChangesHasErrors = true;
     if (!this.model || this.model.toString().trim().length == 0) {

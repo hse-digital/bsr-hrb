@@ -34,9 +34,14 @@ export class AccountabilityAreasHelper {
     private static areasOfAccountability: string[] = ["routes", "maintenance", "facilities"];
     static getNotAllocatedAreasOf(AccountablePersons: AccountablePersonModel[], BuildingName: string, section: SectionModel) {
         let accountabilityAreasOfSection = AccountablePersons
-            .flatMap(x => x.SectionsAccountability)
-            .filter(x => x?.SectionName == (section.Name ?? BuildingName!))
-            .flatMap(x => x?.Accountability);
+        .flatMap(person => person.SectionsAccountability)
+        .filter(accountability => {
+            const sectionName = section.Name ?? BuildingName!;
+            const buildingSectionName = BuildingName ?? section.Name;
+            return (accountability?.SectionName === sectionName || accountability?.SectionName === buildingSectionName);
+        })
+        .flatMap(accountability => accountability?.Accountability);
+    
 
         return this.areasOfAccountability.filter(x => !accountabilityAreasOfSection.includes(x));
     }

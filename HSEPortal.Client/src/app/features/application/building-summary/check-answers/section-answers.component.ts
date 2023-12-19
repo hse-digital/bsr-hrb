@@ -61,4 +61,8 @@ export class SectionAnswersComponent implements OnInit {
         return FieldValidations.IsNotNullOrWhitespace(value);
     }
 
+    areEqual(a?: string, b?: string) {
+        return FieldValidations.AreEqual(a?.replaceAll(' ', ''), b?.replaceAll(' ', ''));
+    }
+
 }

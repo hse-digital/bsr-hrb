@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { ApHelper } from "src/app/helpers/ap-helper";
-import { ApplicationService, SectionAccountability, SectionModel } from "src/app/services/application.service";
+import { ApplicationService, SectionAccountability, SectionModel, Status } from "src/app/services/application.service";
 import { AddAccountablePersonComponent } from "../add-accountable-person/add-accountable-person.component";
 import { OrganisationNamedContactComponent } from "../organisation/named-contact/named-contact.component";
 import { PageComponent } from "src/app/helpers/page.component";
@@ -25,7 +25,7 @@ export class ApAccountableForComponent extends PageComponent<SectionAccountabili
   }  
 
   override onInit(applicationService: ApplicationService): void {
-    this.InScopeStructures = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope);
+    this.InScopeStructures = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope && x.Status != Status.Removed);
     this.multi = this.applicationService.model.NumberOfSections != 'one';
     this.errorMessage = `Select what ${this.getApName()} is accountable for`;
 

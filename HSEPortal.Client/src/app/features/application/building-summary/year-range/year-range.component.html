@@ -8,7 +8,7 @@
           <govuk-error-link anchorId="before-1900-input" [message]="errorMessage" />
         </govuk-error-summary>
 
-        <govuk-radio-group title="Range of years {{sectionBuildingName()}} was completed in" [isPageHeading]=true [errorText]="getErrorDescription(yearRangeHasErrors, errorMessage)" 
+        <govuk-radio-group title="Range of years {{buildingOrSectionName}} was completed in" [isPageHeading]=true [errorText]="getErrorDescription(yearRangeHasErrors, errorMessage)" 
           [(model)]="model" #field [govukRequired]="field">
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="before-1900" value="Before-1900" label="Before 1900" />
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="1901-to-1955" value="1901-to-1955" label="1901 to 1955" />

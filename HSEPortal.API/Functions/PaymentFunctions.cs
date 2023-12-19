@@ -186,7 +186,7 @@ public class PaymentFunctions
 
     private static PaymentRequestModel BuildPaymentRequestModel(BuildingApplicationModel applicationModel)
     {
-        var address = applicationModel.AccountablePersons[0].PapAddress ?? applicationModel.AccountablePersons[0].Address;
+        var address = applicationModel.CurrentVersion.AccountablePersons[0].PapAddress ?? applicationModel.CurrentVersion.AccountablePersons[0].Address;
         var paymentModel = new PaymentRequestModel
         {
             Reference = Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray())[..22], @"\W", "0"),

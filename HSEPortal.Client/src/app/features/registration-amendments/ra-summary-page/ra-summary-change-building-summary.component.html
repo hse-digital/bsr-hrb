@@ -1,0 +1,109 @@
+<ng-container *ngIf="summaryChanges.length > 0">
+    <h2 class="govuk-heading-m">Building summary</h2>
+
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                What changed
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <strong>What it was</strong>
+            </dd>
+            <dd class="govuk-summary-list__value">
+                <strong style="white-space: nowrap;">What you changed it to</strong>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row" *ngFor="let change of summaryChanges; let i = index">
+            <ng-container *ngIf="change!.FieldName != 'Structures'; else Structures">
+                <dt class="govuk-summary-list__key">
+                    {{change!.FieldName}} 
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {{change!.OriginalAnswer}}
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    {{change!.NewAnswer}}
+                </dd>
+            </ng-container>
+    
+            <ng-template #Structures>
+                <dt class="govuk-summary-list__key">
+                    {{change!.FieldName}} 
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <div class="govuk-!-margin-bottom-5">
+                        <div *ngFor="let name of split(change!.OriginalAnswer ?? '')">{{name}}</div>
+                    </div>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    <div class="govuk-!-margin-bottom-5">
+                        <div *ngFor="let name of split(change!.NewAnswer ?? '')">{{name}}</div>
+                    </div>
+                </dd>
+            </ng-template>    
+        </div>        
+    </dl>
+</ng-container> 
+
+<ng-container *ngIf="kbiChanges.length > 0">
+    <h2 class="govuk-heading-m">Structure and fire information</h2>
+
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                What changed
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <strong>What it was</strong>
+            </dd>
+            <dd class="govuk-summary-list__value">
+                <strong style="white-space: nowrap;">What you changed it to</strong>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row" *ngFor="let change of kbiChanges">
+            <ng-container>
+                <dt class="govuk-summary-list__key">
+                    {{change!.FieldName}} 
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {{change!.OriginalAnswer}}
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    {{change!.NewAnswer}}
+                </dd>
+            </ng-container>    
+        </div>        
+    </dl>
+</ng-container>
+
+<ng-container *ngIf="connectionChanges.length > 0">
+    <h2 class="govuk-heading-m">Connections</h2>
+
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                What changed
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <strong>What it was</strong>
+            </dd>
+            <dd class="govuk-summary-list__value">
+                <strong style="white-space: nowrap;">What you changed it to</strong>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row" *ngFor="let change of connectionChanges">
+            <ng-container>
+                <dt class="govuk-summary-list__key">
+                    {{change!.FieldName}} 
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {{change!.OriginalAnswer}}
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    {{change!.NewAnswer}}
+                </dd>
+            </ng-container>    
+        </div>        
+    </dl>
+</ng-container>
+

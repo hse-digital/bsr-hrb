@@ -6,6 +6,7 @@ import { SectionAddressComponent } from '../address/address.component';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { BlockBlobClient } from '@azure/storage-blob';
 import { TransferProgressEvent } from "@azure/core-http";
+import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 
 type error = { hasError: boolean, message?: string }
 
@@ -24,7 +25,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
 
   errorMessage?: string;
   errors = {
-    empty: { hasError: false, message: `Upload the completion certificate for ${this.sectionBuildingName()}` } as error,
+    empty: { hasError: false, message: `Upload the completion certificate for ${this.buildingOrSectionName}` } as error,
     extension: { hasError: false, message: "The selected file must be ODS, PDF, JPG, TIF, BMP or PNG" } as error,
     size: { hasError: false, message: "The selected file must be smaller than 25mb" } as error,
     issue: { hasError: false, message: "The selected file could not be uploaded - try again" } as error
@@ -32,11 +33,6 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
 
   constructor(activatedRoute: ActivatedRoute, private fileUploadService: FileUploadService) {
     super(activatedRoute);
-  }
-
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -49,9 +45,7 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
       this.selectedFileUpload = { status: 'uploaded', file: new File([], this.model.Filename), alreadyUploaded: this.model.Uploaded };
     }
 
-    let date = new Date(Number(this.applicationService.currentSection.CompletionCertificateDate));
-    let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
-    this.isOptional = date < FirstOctober2023;
+    this.isPageOptional(this.applicationService.currentSection.CompletionCertificateDate);
   }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
@@ -63,11 +57,19 @@ export class UploadCompletionCertificateComponent extends PageComponent<{ Filena
     }
   }
 
+  isPageOptional(completionCertificateDate?: string) {
+    if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) {
+      let date =  new Date(Number(completionCertificateDate));
+      let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
+      this.isOptional = date < FirstOctober2023;
+    }
+  }
+
   override isValid(): boolean {
     this.errorMessage = undefined;
 
     if (!this.selectedFileUpload && !this.isOptional) {
-      this.errorMessage = `Upload the completion certificate for ${this.sectionBuildingName()}`;
+      this.errorMessage = `Upload the completion certificate for ${this.buildingOrSectionName}`;
     } else if (this.selectedFileUpload) {
       if (this.selectedFileUpload.status == 'toolarge') {
         this.errorMessage = this.errors.size.message;

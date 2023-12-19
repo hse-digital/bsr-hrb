@@ -30,7 +30,7 @@ export class CheckBeforeStartComponent implements CanActivate, OnInit {
     this.applicationService.model.ApplicationStatus |= BuildingApplicationStage.KbiCheckBeforeComplete;
     await this.applicationService.updateApplication();
 
-    let section = this.applicationService.model.Sections.filter(x => !x.Scope?.IsOutOfScope)[0];
+    let section = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope)[0];
     let sectionRoute = `1`;
     if (section.Name !== void 0) {
       sectionRoute = `${sectionRoute}-${section.Name}`;

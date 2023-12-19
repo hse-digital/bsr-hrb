@@ -68,7 +68,7 @@ export class KeepStructureDeclarationComponent extends PageComponent<void> {
 
   papName?: string;
   getPapName(): void {
-    let pap = this.applicationService.model.AccountablePersons[0];
+    let pap = this.applicationService.currentVersion.AccountablePersons?.at(0);
     this.papName = "the principal accountable person"
     if (!!pap && pap.Type == 'organisation' && FieldValidations.IsNotNullOrWhitespace(pap.OrganisationName)) {
       this.papName = pap.OrganisationName;

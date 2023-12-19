@@ -3,7 +3,7 @@
 <div class="govuk-main-wrapper">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <find-address *ngIf="step == 'find'" [addressName]="addressName" [selfAddress]="selfAddress" [searchMode]="searchMode" [searchModel]="searchModel" (onSearchPerformed)="searchPerformed($event)" />
+      <find-address *ngIf="step == 'find'" [isStructureAddress]="isStructureAddress" [addressName]="addressName" [selfAddress]="selfAddress" [searchMode]="searchMode" [searchModel]="searchModel" (onSearchPerformed)="searchPerformed($event)" />
       <select-address *ngIf="step == 'select'" [addressName]="addressName" [selfAddress]="selfAddress" [addressResponse]="addressResponse" [searchModel]="searchModel" (onAddressSelected)="addressSelected($event)" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()" />
       <not-found-address *ngIf="step == 'not-found'" [addressName]="addressName" [selfAddress]="selfAddress" [searchModel]="searchModel" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()" />
       <too-many-address *ngIf="step == 'too-many'" [addressName]="addressName" [selfAddress]="selfAddress" [searchModel]="searchModel" (onSearchAgain)="searchAgain()" (onEnterManualAddress)="enterManualAddress()" />

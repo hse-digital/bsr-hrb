@@ -1,19 +1,18 @@
 import { NumberOfSectionsComponment } from "./number-of-sections/number-of-sections.component";
 import { ApplicationService, SectionModel } from "../../../services/application.service";
+import { Injectable } from "@angular/core";
 import { BaseNavigation, BuildingNavigationNode } from "../../../services/navigation";
 import { SectionsIntroComponent } from "./intro/intro.component";
 import { SectionNameComponent } from "./name/name.component";
 import { SectionFloorsAboveComponent } from "./floors-above/floors-above.component";
 import { SectionHeightComponent } from "./height/height.component";
 import { SectionResidentialUnitsComponent } from "./residential-units/residential-units.component";
-import { SectionPeopleLivingInBuildingComponent } from "./people-living-in-building/people-living-in-building.component";
 import { SectionYearOfCompletionComponent } from "./year-of-completion/year-of-completion.component";
 import { SectionYearRangeComponent } from "./year-range/year-range.component";
 import { CertificateIssuerComponent } from "./certificate-issuer/certificate-issuer.component";
 import { CertificateNumberComponent } from "./certificate-number/certificate-number.component";
 import { SectionAddressComponent } from "./address/address.component";
 import { SectionCheckAnswersComponent } from "./check-answers/check-answers.component";
-import { Injectable } from "@angular/core";
 import { AddMoreSectionsComponent } from "./add-more-sections/add-more-sections.component";
 import { NotNeedRegisterSingleStructureComponent } from "./not-need-register-single-structure/not-need-register-single-structure.component";
 import { ScopeAndDuplicateHelper } from "src/app/helpers/scope-duplicate-helper";
@@ -39,12 +38,12 @@ export class BuildingSummaryNavigation extends BaseNavigation {
   private numberOfSectionsNavigationNode = new NumberOfSectionsNavigationNode(this.applicationService, this.sectionsIntroNavigationNode, this.addAnotherSectionNavigationTree);
 
   override getNextRoute(): string {
-    if (this.applicationService.model.Sections == null || this.applicationService.model.Sections.length == 0) {
+    if (this.applicationService.currentVersion.Sections == null || this.applicationService.currentVersion.Sections.length == 0) {
       return NumberOfSectionsComponment.route;
     }
 
-    for (let sectionIndex = 0; sectionIndex < this.applicationService.model.Sections.length; sectionIndex++) {
-      let section = this.applicationService.model.Sections[sectionIndex];
+    for (let sectionIndex = 0; sectionIndex < this.applicationService.currentVersion.Sections.length; sectionIndex++) {
+      let section = this.applicationService.currentVersion.Sections[sectionIndex];
       let sectionRoute = this.numberOfSectionsNavigationNode.getNextRoute(section, sectionIndex);
 
       if (sectionRoute === void 0 || sectionRoute == SectionCheckAnswersComponent.route) {
@@ -59,6 +58,16 @@ export class BuildingSummaryNavigation extends BaseNavigation {
     }
 
     return `sections/${SectionCheckAnswersComponent.route}`;
+  }
+
+  getNextRouteIn(section: SectionModel) {
+    return this.numberOfSectionsNavigationNode.getNextRoute(section, 0);
+  }
+
+  getNextKnockOnQuestion(section: SectionModel) {
+    let route = this.getNextRouteIn(section);
+    if (route === void 0 || route == SectionCheckAnswersComponent.route || route == AddMoreSectionsComponent.route || route == AlreadyRegisteredMultiComponent.route) return undefined;
+    else return route;
   }
 }
 
@@ -311,10 +320,20 @@ class CompletionCertificateFileNavigationNode extends BuildingNavigationNode {
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {    
-    if (!section.CompletionCertificateFile || !section.CompletionCertificateFile.Uploaded) {
+    let isOptional = this.isPageOptional(section.CompletionCertificateDate);
+    if ((!section.CompletionCertificateFile || !section.CompletionCertificateFile.Uploaded) && !isOptional) {
       return UploadCompletionCertificateComponent.route;
     }
     return this.sectionAddressNavigationNode.getNextRoute(section, sectionIndex);
+  }
+
+  isPageOptional(completionCertificateDate?: string) {
+    if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) {
+      let date =  new Date(Number(completionCertificateDate));
+      let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
+      return date < FirstOctober2023;
+    }
+    return true;
   }
 }
 
@@ -324,9 +343,7 @@ class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNod
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
-    let date =  new Date(Number(section.CompletionCertificateDate));
-    let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
-    let isOptional = date < FirstOctober2023;
+    let isOptional = this.isPageOptional(section.CompletionCertificateDate);
 
     if (!section.CompletionCertificateReference && !isOptional) {      
       return CertificateNumberComponent.route;
@@ -335,6 +352,15 @@ class CompletionCertificateReferenceNavigationNode extends BuildingNavigationNod
     }
 
     return this.completionCertificateFileNavigationNode.getNextRoute(section, sectionIndex);
+  }
+
+  isPageOptional(completionCertificateDate?: string) {
+    if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) {
+      let date =  new Date(Number(completionCertificateDate));
+      let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
+      return date < FirstOctober2023;
+    }
+    return true;
   }
 }
 
@@ -347,11 +373,12 @@ class SectionAddressNavigationNode extends BuildingNavigationNode {
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
+
     if ((section.Addresses?.length ?? 0) == 0 || section.Addresses.filter(x => !x.Postcode).length > 0) {
       return SectionAddressComponent.route;
     }
-    
-    if (!!section.Duplicate?.RegisteredStructureModel || (!!section.Duplicate?.DuplicationDetected && section.Duplicate?.DuplicationDetected?.length > 0) ) {
+
+    if (!!section.Duplicate?.RegisteredStructureModel || section.Duplicate?.DuplicateFound) {
       return this.applicationService.model.NumberOfSections == 'one' 
         ? this.alreadyRegisteredSingleNavigationNode.getNextRoute(section, sectionIndex)
         : this.alreadyRegisteredMultiNavigationNode.getNextRoute(section, sectionIndex); 
@@ -443,7 +470,7 @@ class AddAnotherSectionNavigationNode extends BuildingNavigationNode {
   }
 
   override getNextRoute(section: SectionModel, sectionIndex: number): string {
-    if (sectionIndex == this.applicationService.model.Sections.length - 1 && this.applicationService.model.NumberOfSections == 'two_or_more') {
+    if (sectionIndex == this.applicationService.currentVersion.Sections.length - 1 && this.applicationService.model.NumberOfSections == 'two_or_more') {
       return AddMoreSectionsComponent.route;
     } else if (ScopeAndDuplicateHelper.AreAllSectionsOutOfScope(this.applicationService)) {
       // goes to 6802 all structures are out of scope.

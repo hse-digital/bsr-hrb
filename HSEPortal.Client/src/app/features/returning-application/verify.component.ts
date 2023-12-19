@@ -68,7 +68,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
   private async doesSecurityCodeMatch(): Promise<boolean> {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
-      
+
       this.applicationService.model.IsSecondary = this.emailAddress.trim().toLowerCase() == this.applicationService.model.SecondaryEmailAddress?.trim().toLowerCase();
       this.applicationService.updateApplication();
 
@@ -77,9 +77,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
       let isNewPrimaryUser = this.areEqual(this.applicationService.model.NewPrimaryUserEmail, this.emailAddress);
       if(isNewPrimaryUser) await this.integratePrimaryUser();
 
-      
-      
-      if (!this.isBlocksInBuildingComplete() || !this.isAccountablePersonsComplete() || !this.isPaymentComplete()) {
+      if (!this.isPaymentComplete()) {
         this.navigationService.navigate(`application/${this.applicationNumber}`);
       } else {
         this.navigationService.navigate(`application/${this.applicationNumber}/application-completed`);
@@ -106,7 +104,7 @@ export class ReturningApplicationVerifyComponent implements OnInit {
       this.applicationService.updateApplication();
     }
   }
-  
+
   private updatePrimaryUser() {
     let newPrimaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewPrimaryUser;
     if(!!newPrimaryUser) {

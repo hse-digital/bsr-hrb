@@ -29,10 +29,10 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
     let previousSelection = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary;
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.WhoBecomePrimary = this.model;
 
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesInProgress; 
-    
-    switch(this.model) {
-      case "named-contact": 
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.ChangesInProgress;
+
+    switch (this.model) {
+      case "named-contact":
         this.setNamedContactAsPrimary(); break;
       case "secondary-user":
         this.setSecondaryUserAsPrimary(); break;
@@ -42,15 +42,14 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
         this.setApplicantAsPrimary(previousSelection);
         break;
       case "new-user":
-        if(previousSelectionIsNotNewUser) { this.clearNewPrimaryUser(); }
+        if (previousSelectionIsNotNewUser) { this.clearNewPrimaryUser(); }
         break;
     }
 
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return ((this.applicationService.model.ApplicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete) 
-      && !this.applicationService.model.IsSecondary;
+    return true;
   }
 
   override isValid(): boolean {
@@ -58,7 +57,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    if(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "new-user") {
+    if (this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "new-user") {
       return this.navigationService.navigateRelative(PrimaryUserDetailsComponent.route, this.activatedRoute);
     } else if (this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.WhoBecomePrimary == "keep-me") {
       return this.navigationService.navigateRelative(UserListComponent.route, this.activatedRoute);
@@ -67,12 +66,12 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   isNamedContactAnExistingUser() {
-    return this.areNamedContactAndPrimaryUserTheSame() ||  this.areNamedContactAndSecondaryUserTheSame();
+    return this.areNamedContactAndPrimaryUserTheSame() || this.areNamedContactAndSecondaryUserTheSame();
   }
 
   areNamedContactAndPrimaryUserTheSame() {
-    let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
-    let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
+    let namedContactEmail = this.applicationService.currentVersion.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
+    let namedContactFirstName = this.applicationService.currentVersion.AccountablePersons[0].LeadFirstName;
 
     let primaryUser = this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.PrimaryUser;
 
@@ -83,8 +82,8 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   areNamedContactAndSecondaryUserTheSame() {
-    let namedContactEmail = this.applicationService.model.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
-    let namedContactFirstName = this.applicationService.model.AccountablePersons[0].LeadFirstName;
+    let namedContactEmail = this.applicationService.currentVersion.AccountablePersons[0].LeadEmail?.trim().toLowerCase();
+    let namedContactFirstName = this.applicationService.currentVersion.AccountablePersons[0].LeadFirstName;
 
     let secondaryUser = FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser?.Email)
       ? this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.NewSecondaryUser
@@ -92,7 +91,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
 
     let currentSecondaryUserEmail = secondaryUser?.Email?.trim().toLowerCase();
     let currentSecondaryUserFirstName = secondaryUser?.Firstname;
-    
+
     return namedContactEmail == currentSecondaryUserEmail && namedContactFirstName == currentSecondaryUserFirstName;
   }
 
@@ -103,26 +102,30 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   newNamedContact() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.Status != Status.NoChanges &&
-      this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.NewNamedContact
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.NewNamedContactFirstName) 
-      && FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.NewNamedContactLastName); 
+    let previousPap = this.applicationService.previousVersion.AccountablePersons[0];
+    let pap = this.applicationService.currentVersion.AccountablePersons[0];
+
+    return this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.Status != Status.NoChanges
+    
+      && FieldValidations.IsNotNullOrWhitespace(pap.NamedContactFirstName) && FieldValidations.IsNotNullOrWhitespace(pap.NamedContactFirstName) && previousPap.NamedContactFirstName != pap.NamedContactFirstName
+      && FieldValidations.IsNotNullOrWhitespace(pap.NamedContactLastName) && FieldValidations.IsNotNullOrWhitespace(pap.NamedContactLastName) && previousPap.NamedContactLastName != pap.NamedContactLastName;
   }
 
   get NamedContact() {
-    return `${this.applicationService.model.AccountablePersons[0].LeadFirstName} ${this.applicationService.model.AccountablePersons[0].LeadLastName}`;
+    return `${this.applicationService.currentVersion.AccountablePersons[0].LeadFirstName} ${this.applicationService.currentVersion.AccountablePersons[0].LeadLastName}`;
   }
 
   get NamedContactEmail() {
-    return this.applicationService.model.AccountablePersons[0].LeadEmail;
+    return this.applicationService.currentVersion.AccountablePersons[0].LeadEmail;
   }
 
   get NewNamedContact() {
-    return `${this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.NewNamedContactFirstName} ${this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.NewNamedContactLastName}`;
+    let pap = this.applicationService.currentVersion.AccountablePersons[0];
+    return `${this.applicationService.currentVersion.AccountablePersons[0].NamedContactFirstName} ${pap.NamedContactLastName}`;
   }
 
   get NewNamedContactEmail() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus?.NewNamedContactEmail;
+    return this.applicationService.currentVersion.AccountablePersons[0]?.NamedContactEmail;
   }
 
   get SecondaryUserName() {
@@ -134,7 +137,7 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   setNamedContactAsPrimary() {
-    let pap = this.applicationService.model.AccountablePersons[0];
+    let pap = this.applicationService.currentVersion.AccountablePersons[0];
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
       Status: Status.ChangesInProgress,
       Email: pap.LeadEmail,
@@ -145,13 +148,13 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
   }
 
   setNewNamedContactAsPrimary() {
-    let apChanges = this.applicationService.model.RegistrationAmendmentsModel?.AccountablePersonStatus;
+    let apChanges = this.applicationService.currentVersion.AccountablePersons[0];
     this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser = {
       Status: Status.ChangesInProgress,
-      Email: apChanges?.NewNamedContactEmail,
-      Firstname: apChanges?.NewNamedContactFirstName,
-      Lastname: apChanges?.NewNamedContactLastName,
-      PhoneNumber: apChanges?.NewNamedContactPhonenumber
+      Email: apChanges?.NamedContactEmail,
+      Firstname: apChanges?.NamedContactFirstName,
+      Lastname: apChanges?.NamedContactLastName,
+      PhoneNumber: apChanges?.NamedContactPhoneNumber
     }
   }
 
@@ -168,10 +171,10 @@ export class SelectPrimaryUserComponent extends PageComponent<string> {
 
   setApplicantAsPrimary(previousSelection?: string) {
     let secondaryUser = this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser;
-    if(previousSelection?.trim() == "secondary-user" && !!secondaryUser && FieldValidations.IsNotNullOrWhitespace(secondaryUser?.Email) && secondaryUser.Status == Status.Removed) {
+    if (previousSelection?.trim() == "secondary-user" && !!secondaryUser && FieldValidations.IsNotNullOrWhitespace(secondaryUser?.Email) && secondaryUser.Status == Status.Removed) {
       this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.SecondaryUser!.Status = Status.NoChanges;
     }
-    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.NoChanges; 
+    this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.PrimaryUser!.Status = Status.NoChanges;
     delete this.applicationService.model.RegistrationAmendmentsModel!.ChangeUser!.NewPrimaryUser;
   }
 

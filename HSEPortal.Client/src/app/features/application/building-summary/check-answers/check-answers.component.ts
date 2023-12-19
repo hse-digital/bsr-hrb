@@ -28,11 +28,11 @@ export class SectionCheckAnswersComponent extends PageComponent<void> {
   }
 
   private initStatecode() {
-    this.applicationService.model.Sections.filter(x => x.Statecode != "1").map(x => x.Statecode = "0");
+    this.applicationService.currentVersion.Sections.filter(x => x.Statecode != "1").map(x => x.Statecode = "0");
   }
 
   private getActiveSections() {
-    return this.applicationService.model.Sections.filter(x => x.Statecode != "1");
+    return this.applicationService.currentVersion.Sections.filter(x => x.Statecode != "1");
   }
 
   hasIncompleteData = false;
@@ -106,16 +106,16 @@ export class SectionCheckAnswersComponent extends PageComponent<void> {
     this.applicationService.model.ApplicationStatus = this.applicationService.model.ApplicationStatus | BuildingApplicationStage.BlocksInBuildingComplete;
     await this.applicationService.syncBuildingStructures();
 
-    this.applicationService.model.Sections =  this.getActiveSections();
+    this.applicationService.currentVersion.Sections =  this.getActiveSections();
   }
 
   private getOutOfScopeSections() {
-    return this.applicationService.model.Sections.filter(section => SectionHelper.isOutOfScope(section));
+    return this.applicationService.currentVersion.Sections.filter(section => SectionHelper.isOutOfScope(section));
   }
 
   removeStructure(index: number) {
     this.applicationService.removeStructure(index);
-    if (this.applicationService.model.Sections.filter(x => x.Statecode != "1").length == 1) {
+    if (this.applicationService.currentVersion.Sections.filter(x => x.Statecode != "1").length == 1) {
       this.changeNumberOfSectionsToOne();
     }
     this.activeSections = this.getActiveSections();

@@ -8,7 +8,8 @@ import { Change } from "src/app/services/registration-amendments.service";
 })
 export class RaSummaryChangeApplicantComponent {
 
-    @Input() public changes!: Change[];
+    @Input() public applicantChanges!: Change[];
+    @Input() public papChanges!: Change[];
 
     constructor(){ }
 
@@ -23,4 +24,17 @@ export class RaSummaryChangeApplicantComponent {
     getPhoneNumber(answer: string) {
       return answer.split('-')[2].trim();
     }
+
+    get principalAccountablePerson() {
+      return this.papChanges.find(x => x.FieldName == "Principal accountable person");
+    }
+
+    get papDetails() {
+      return this.papChanges.filter(x => x.FieldName != "Principal accountable person" && x.FieldName?.startsWith("Principal"));
+    }
+
+    get areasOfAccountability() {
+      return this.papChanges.filter(x => x.FieldName?.startsWith("Routes") || x.FieldName?.startsWith("Maintaining") || x.FieldName?.startsWith("Facilities"));
+    }
+
 }

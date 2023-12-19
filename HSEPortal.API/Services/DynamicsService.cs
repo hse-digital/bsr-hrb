@@ -24,7 +24,8 @@ public class DynamicsService
     private readonly DynamicsOptions dynamicsOptions;
     private readonly IntegrationsOptions integrationsOptions;
 
-    public DynamicsService(DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory, IOptions<DynamicsOptions> dynamicsOptions, IOptions<SwaOptions> swaOptions, IOptions<IntegrationsOptions> integrationOptions,
+    public DynamicsService(DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory, IOptions<DynamicsOptions> dynamicsOptions, IOptions<SwaOptions> swaOptions,
+        IOptions<IntegrationsOptions> integrationOptions,
         DynamicsApi dynamicsApi)
     {
         this.dynamicsModelDefinitionFactory = dynamicsModelDefinitionFactory;
@@ -72,7 +73,7 @@ public class DynamicsService
         return response.value.FirstOrDefault();
     }
 
-    
+
     public async Task<DynamicsBuildingApplicationStatuscodeModel> GetBuildingApplicationStatuscodeBy(string applicationId)
     {
         var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplicationStatuscodeModel>>("bsr_buildingapplications",
@@ -99,17 +100,19 @@ public class DynamicsService
             await CreateStructureCompletionCertificate(section, dynamicsStructure);
             await CreateStructureOptionalAddresses(section, dynamicsStructure);
 
-            if (section.Duplicate?.IsDuplicated ?? false) {
-                await CreateAssociatedDuplicatedStructures(section, dynamicsStructure);  
+            if (section.Duplicate?.IsDuplicated ?? false)
+            {
+                await CreateAssociatedDuplicatedStructures(section, dynamicsStructure);
             }
         }
     }
 
     private async Task CreateAssociatedDuplicatedStructures(SectionModel section, DynamicsStructure dynamicsStructure)
     {
-        if(section.Duplicate != null && section.Duplicate.BlockIds != null && section.Duplicate.BlockIds.Length > 0)
+        if (section.Duplicate != null && section.Duplicate.BlockIds != null && section.Duplicate.BlockIds.Length > 0)
         {
-            foreach(var blockId in section.Duplicate.BlockIds) {
+            foreach (var blockId in section.Duplicate.BlockIds)
+            {
                 await dynamicsApi.Put($"bsr_blocks({dynamicsStructure.bsr_blockid})/bsr_duplicatestructures/$ref", new DynamicsDuplicatedStructure
                 {
                     relationshipId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_blocks({blockId})"
@@ -120,8 +123,11 @@ public class DynamicsService
 
     public async Task CreateAssociatedDuplicatedBuildingApplications(BuildingApplicationModel buildingApplicationModel, DynamicsBuildingApplication dynamicsBuildingApplication)
     {
-        if(buildingApplicationModel.DuplicateDetected != null && (bool)buildingApplicationModel.DuplicateDetected && buildingApplicationModel.DuplicateBuildingApplicationIds != null && buildingApplicationModel.DuplicateBuildingApplicationIds.Length > 0) {
-            foreach(var buildingApplicationId in buildingApplicationModel.DuplicateBuildingApplicationIds) {
+        if (buildingApplicationModel.DuplicateDetected != null && (bool)buildingApplicationModel.DuplicateDetected && buildingApplicationModel.DuplicateBuildingApplicationIds != null &&
+            buildingApplicationModel.DuplicateBuildingApplicationIds.Length > 0)
+        {
+            foreach (var buildingApplicationId in buildingApplicationModel.DuplicateBuildingApplicationIds)
+            {
                 await dynamicsApi.Put($"bsr_buildingapplications({dynamicsBuildingApplication.bsr_buildingapplicationid})/bsr_duplicatebuildingapplications/$ref", new DynamicsDuplicatedStructure
                 {
                     relationshipId = $"{dynamicsOptions.EnvironmentUrl}/api/data/v9.2/bsr_buildingapplications({buildingApplicationId})"
@@ -132,13 +138,14 @@ public class DynamicsService
 
     public async Task CreateAccountablePersons(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication)
     {
-        var pap = model.AccountablePersons[0];
-        var papId = await CreateAccountablePerson(pap, dynamicsBuildingApplication, pap: true);
+        var pap = model.CurrentVersion.AccountablePersons[0];
+        var isChange = model.Versions.Count > 1;
+        var papId = await CreateAccountablePerson(pap, dynamicsBuildingApplication, pap: true, isChange: isChange);
         await UpdateBuildingApplicationPap(papId, pap.Type == "organisation", dynamicsBuildingApplication, pap.IsPrincipal == "yes", pap.Role);
 
-        foreach (var ap in model.AccountablePersons.Skip(1))
+        foreach (var ap in model.CurrentVersion.AccountablePersons.Skip(1))
         {
-            await CreateAccountablePerson(ap, dynamicsBuildingApplication);
+            await CreateAccountablePerson(ap, dynamicsBuildingApplication, isChange: isChange);
         }
     }
 
@@ -154,7 +161,7 @@ public class DynamicsService
         return payments.value;
     }
 
-    private async Task<string> CreateAccountablePerson(AccountablePerson accountablePerson, DynamicsBuildingApplication dynamicsBuildingApplication, bool pap = false)
+    private async Task<string> CreateAccountablePerson(AccountablePerson accountablePerson, DynamicsBuildingApplication dynamicsBuildingApplication, bool pap = false, bool isChange = false)
     {
         var apAddress = accountablePerson.PapAddress ?? accountablePerson.Address;
         if (accountablePerson.Type == "organisation")
@@ -165,7 +172,7 @@ public class DynamicsService
                 #region PAP
 
                 string leadContactId;
-                if (accountablePerson.Role is "employee" or "registering_for")
+                if (accountablePerson.Role is "employee" or "registering_for" || isChange)
                 {
                     var existingLeadContact = await FindExistingContactAsync(accountablePerson.LeadFirstName, accountablePerson.LeadLastName, accountablePerson.LeadEmail,
                         accountablePerson.LeadPhoneNumber);
@@ -464,7 +471,8 @@ public class DynamicsService
     public async Task CreateCardPayment(BuildingApplicationPayment buildingApplicationPayment)
     {
         var payment = buildingApplicationPayment.Payment;
-        var existingPayment = await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_service eq 'HRB Registration' and bsr_transactionid eq '{payment.Reference}'"));
+        var existingPayment =
+            await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_service eq 'HRB Registration' and bsr_transactionid eq '{payment.Reference}'"));
         if (!existingPayment.value.Any())
         {
             await dynamicsApi.Create("bsr_payments", new DynamicsPayment
@@ -476,7 +484,8 @@ public class DynamicsService
                 bsr_paymenttypecode = 760_810_000, // Card
                 bsr_service = "HRB Registration",
                 bsr_cardexpirydate = payment.CardExpiryDate,
-                bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                bsr_billingaddress = string.Join(", ",
+                    new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
                 bsr_cardbrandegvisa = payment.CardBrand,
                 bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
                 bsr_amountpaid = Math.Round((float)payment.Amount / 100, 2),
@@ -493,7 +502,8 @@ public class DynamicsService
                     bsr_timeanddateoftransaction = payment.CreatedDate,
                     bsr_govukpaystatus = payment.Status,
                     bsr_cardexpirydate = payment.CardExpiryDate,
-                    bsr_billingaddress = string.Join(", ", new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                    bsr_billingaddress = string.Join(", ",
+                        new[] { payment.AddressLineOne, payment.AddressLineTwo, payment.Postcode, payment.City, payment.Country }.Where(x => !string.IsNullOrWhiteSpace(x))),
                     bsr_cardbrandegvisa = payment.CardBrand,
                     bsr_cardtypecreditdebit = payment.CardType == "debit" ? DynamicsPaymentCardType.Debit : DynamicsPaymentCardType.Credit,
                     bsr_lastfourdigitsofcardnumber = payment.LastFourDigitsCardNumber,
@@ -514,7 +524,8 @@ public class DynamicsService
         await UpdateInvoicePayment(dynamicsPayment.bsr_paymentid, invoicePaymentResponse);
     }
 
-    private async Task<InvoiceData> SendCreateInvoiceRequest(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, DynamicsPayment dynamicsPayment, DynamicsContact invoiceContact)
+    private async Task<InvoiceData> SendCreateInvoiceRequest(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, DynamicsPayment dynamicsPayment,
+        DynamicsContact invoiceContact)
     {
         return await integrationsOptions.CommonAPIEndpoint.AppendPathSegments("api", "CreateInvoice")
             .WithHeader("x-functions-key", integrationsOptions.CommonAPIKey)
@@ -678,17 +689,24 @@ public class DynamicsService
                     $"bsr_certificatereferencenumber eq '{section.CompletionCertificateReference.EscapeSingleQuote()}' and bsr_issuingorganisation eq '{section.CompletionCertificateIssuer.EscapeSingleQuote()}'"));
             if (!existingCertificate.value.Any())
             {
-                var formatedDate = UnixTimeToDateTime(section.CompletionCertificateDate).AddHours(1).ToString("d", CultureInfo.InvariantCulture);
-                var response = await dynamicsApi.Create("bsr_completioncertificates",
-                    new DynamicsCompletionCertificate
+                var dynamicsValue = new DynamicsCompletionCertificate
+                {
+                    bsr_name = string.Join(" - ", new[] { section.CompletionCertificateReference, section.CompletionCertificateIssuer }.Where(x => !string.IsNullOrWhiteSpace(x))),
+                    bsr_certificatereferencenumber = section.CompletionCertificateReference,
+                    bsr_issuingorganisation = section.CompletionCertificateIssuer,
+                    structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})"
+                };
+
+                if (section.CompletionCertificateDate != null && section.CompletionCertificateDate.Length > 0)
+                {
+                    var formatedDate = UnixTimeToDateTime(section.CompletionCertificateDate).AddHours(1).ToString("d", CultureInfo.InvariantCulture);
+                    dynamicsValue = dynamicsValue with
                     {
-                        bsr_name =
-                            string.Join(" - ", new[] { section.CompletionCertificateReference, section.CompletionCertificateIssuer }.Where(x => !string.IsNullOrWhiteSpace(x))),
-                        bsr_certificatereferencenumber = section.CompletionCertificateReference,
-                        bsr_issuingorganisation = section.CompletionCertificateIssuer,
-                        structureReferenceId = $"/bsr_blocks({dynamicsStructure.bsr_blockid})",
                         bsr_certificatecompletiondate = formatedDate
-                    }, returnObjectResponse: true);
+                    };
+                }
+
+                var response = await dynamicsApi.Create("bsr_completioncertificates", dynamicsValue, returnObjectResponse: true);
 
                 var certificate = await response.GetJsonAsync<DynamicsCompletionCertificate>();
                 await dynamicsApi.Update($"/bsr_blocks({dynamicsStructure.bsr_blockid})",
@@ -728,9 +746,9 @@ public class DynamicsService
                 continue;
             }
 
-            var isMatch = string.Join(", ", portalAddress.Address.Split(',').Take(3)) == dynamicsAddress.bsr_line1 
-                && portalAddress.Postcode == dynamicsAddress.bsr_postcode 
-                && NormalisePostcode(portalAddress.PostcodeEntered) == NormalisePostcode(dynamicsAddress.bsr_postcodeentered);
+            var isMatch = string.Join(", ", portalAddress.Address.Split(',').Take(3)) == dynamicsAddress.bsr_line1
+                          && portalAddress.Postcode == dynamicsAddress.bsr_postcode
+                          && NormalisePostcode(portalAddress.PostcodeEntered) == NormalisePostcode(dynamicsAddress.bsr_postcodeentered);
             if (!isMatch) // exists, update
             {
                 await dynamicsApi.Update($"bsr_addresses({dynamicsAddress.bsr_addressId})",
@@ -760,7 +778,8 @@ public class DynamicsService
         }
     }
 
-    private string NormalisePostcode(string postcode) {
+    private string NormalisePostcode(string postcode)
+    {
         return postcode.ToLower().Replace(" ", "");
     }
 
@@ -867,10 +886,12 @@ public class DynamicsService
 
     public async Task<DynamicsResponse<IndependentSection>> FindExistingStructureWithAccountablePersonAsync(string postcode)
     {
-        return await dynamicsApi.Get<DynamicsResponse<IndependentSection>>("bsr_blocks", new (string, string)[]{
+        return await dynamicsApi.Get<DynamicsResponse<IndependentSection>>("bsr_blocks", new (string, string)[]
+        {
             ("$select", "bsr_name,bsr_blockid,bsr_sectionheightinmetres,bsr_nooffloorsabovegroundlevel,bsr_numberofresidentialunits,bsr_postcode,bsr_addressline1,bsr_addressline2,bsr_city"),
             ("$filter", $"bsr_postcode eq '{postcode}'"),
-            ("$expand", $"bsr_BuildingId($select=bsr_name),bsr_BuildingApplicationID($select=bsr_paptype,bsr_applicationstage;$filter=bsr_applicationstage eq 760810003;$expand=bsr_papid_account($select=name,address1_line1,address1_postalcode,address1_city,address1_line2))")
+            ("$expand",
+                $"bsr_BuildingId($select=bsr_name),bsr_BuildingApplicationID($select=bsr_paptype,bsr_applicationstage;$filter=bsr_applicationstage eq 760810003;$expand=bsr_papid_account($select=name,address1_line1,address1_postalcode,address1_city,address1_line2))")
         });
     }
 
@@ -946,7 +967,8 @@ public class DynamicsService
     internal async Task<string> GetAuthenticationTokenAsync()
     {
         var response = await $"https://login.microsoftonline.com/{dynamicsOptions.TenantId}/oauth2/token"
-            .PostUrlEncodedAsync(new { grant_type = "client_credentials", client_id = dynamicsOptions.ClientId, client_secret = dynamicsOptions.ClientSecret, resource = dynamicsOptions.EnvironmentUrl })
+            .PostUrlEncodedAsync(new
+                { grant_type = "client_credentials", client_id = dynamicsOptions.ClientId, client_secret = dynamicsOptions.ClientSecret, resource = dynamicsOptions.EnvironmentUrl })
             .ReceiveJson<DynamicsAuthenticationModel>();
 
         return response.AccessToken;

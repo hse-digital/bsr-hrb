@@ -37,7 +37,7 @@ export class SummaryPageComponent extends PageComponent<void> {
       this.shouldRender = true;
     }
     
-    this.sections = this.applicationService.model.Sections;
+    this.sections = this.applicationService.currentVersion.Sections;
 
     var payments = await this.applicationService.getApplicationPayments()
     this.payment = payments.find(x => x.bsr_govukpaystatus == "success" || x.bsr_govukpaystatus == "paid");

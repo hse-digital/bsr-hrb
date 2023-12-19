@@ -20,9 +20,14 @@ export class RaConfirmationComponent  extends PageComponent<void> {
   kbiSubmittionDate?: string;
   payment?: any;
   openPayment?: any;
+  newChanges: boolean = false;
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
     
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.newChanges = params['newChanges'] == "true";
+    });
+
     this.sendApplicationDataToBroadcastChannel();
 
     this.submittionDate = await this.applicationService.getSubmissionDate();
@@ -71,7 +76,11 @@ export class RaConfirmationComponent  extends PageComponent<void> {
   }
 
   newSecondaryUser() {
-    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.ChangesSubmitted
+    return this.applicationService.model.RegistrationAmendmentsModel?.ChangeUser?.SecondaryUser?.Status == Status.ChangesSubmitted;
+  }
+
+  buildingSummaryApKbiConnectionChanges() {
+    return this.newChanges;
   }
 
   isKbiSubmitted() {

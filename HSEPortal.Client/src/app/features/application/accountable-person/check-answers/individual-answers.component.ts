@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { SummaryComponent } from "src/app/helpers/summary-helper";
-import { AccountablePersonModel } from "src/app/services/application.service";
+import { AccountablePersonModel, ApplicationService } from "src/app/services/application.service";
 import { NavigationService } from "src/app/services/navigation.service";
 
 @Component({
@@ -14,7 +14,7 @@ export class IndividualAnswersComponent extends SummaryComponent {
   @Input() override apIndex!: number;
   @Input() override hasMoreAp = false;
 
-  constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+  constructor(private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private applicationService: ApplicationService) {
     super();
   }
 
@@ -48,4 +48,7 @@ export class IndividualAnswersComponent extends SummaryComponent {
     }
   }
 
+  isRAinProgress(): any {
+    return this.applicationService.isChangeAmendmentInProgress;
+  }
 }

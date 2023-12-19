@@ -5,6 +5,7 @@ import { ApplicationService } from "src/app/services/application.service";
 import { SectionAddressComponent } from "../address/address.component";
 import { PageComponent } from "src/app/helpers/page.component";
 import { UploadCompletionCertificateComponent } from "../upload-completion-certificate/upload-completion-certificate.component";
+import { FieldValidations } from "src/app/helpers/validators/fieldvalidations";
 
 @Component({
   templateUrl: './certificate-number.component.html'
@@ -23,13 +24,19 @@ export class CertificateNumberComponent extends PageComponent<string> {
 
   override onInit(applicationService: ApplicationService): void {
     this.model = this.applicationService.currentSection.CompletionCertificateReference;
-    let date =  new Date(Number(this.applicationService.currentSection.CompletionCertificateDate));
-    let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
-    this.isOptional = date < FirstOctober2023;
+    this.isPageOptional(this.applicationService.currentSection.CompletionCertificateDate)
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
     applicationService.currentSection.CompletionCertificateReference = this.model;
+  }
+
+  private isPageOptional(completionCertificateDate?: string) {
+    if(FieldValidations.IsNotNullOrWhitespace(completionCertificateDate)) {
+      let date =  new Date(Number(completionCertificateDate));
+      let FirstOctober2023 = new Date(2023, 9, 1); // Month is October, but index is 9 -> "The month as a number between 0 and 11 (January to December)."
+      this.isOptional = date < FirstOctober2023;
+    }
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -48,13 +55,8 @@ export class CertificateNumberComponent extends PageComponent<string> {
     return this.navigationService.navigateRelative(SectionAddressComponent.route,  this.activatedRoute);
   }
 
-  sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
-  }
-
   get errorMessage() {
-    return `Enter the completion certificate number for ${this.sectionBuildingName()}`;
+    return `Enter the completion certificate number for ${this.buildingOrSectionName}`;
   }
 
 }

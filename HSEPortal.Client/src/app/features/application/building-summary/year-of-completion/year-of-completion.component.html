@@ -9,7 +9,7 @@
           <govuk-error-link anchorId="year-exact-input" [message]="errorMessage" />
         </govuk-error-summary>
 
-        <govuk-radio-group title="Do you know what year {{sectionBuildingName()}} was completed?" [isPageHeading]=true (onRadioSelected)="radioChange()" 
+        <govuk-radio-group title="Do you know what year {{buildingOrSectionName}} was completed?" [isPageHeading]=true (onRadioSelected)="radioChange()" 
           [errorText]="getErrorDescription(yearOfCompletionHasErrors && !exactYearHasErrors, errorMessage)" 
           [(model)]="model!.YearOfCompletionOption" #field [govukRequired]="field" hintText="This is the year when it was ready for residents to occupy it.">
           <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model!.YearOfCompletionOption" name="application-group" id="year-exact" value="year-exact" label="I know the exact year">

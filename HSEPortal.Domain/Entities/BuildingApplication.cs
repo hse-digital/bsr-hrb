@@ -4,8 +4,10 @@ namespace HSEPortal.Domain.Entities;
 
 public record BuildingApplication(string ContactId, string BuildingId, string Id = null) : Entity(Id);
 
-public record DynamicsBuildingApplication(string bsr_buildingapplicationid = null,
-    string _bsr_registreeid_value = null, string _bsr_building_value = null,
+public record DynamicsBuildingApplication(
+    string bsr_buildingapplicationid = null,
+    string _bsr_registreeid_value = null,
+    string _bsr_building_value = null,
     [property: JsonPropertyName("bsr_RegistreeId@odata.bind")]
     string contactReferenceId = null,
     [property: JsonPropertyName("bsr_secondaryapplicantid@odata.bind")]
@@ -29,7 +31,19 @@ public record DynamicsBuildingApplication(string bsr_buildingapplicationid = nul
     string bsr_submittedon = null,
     string bsr_numberofmanuallyenteredaddresses = null,
     bool? bsr_sharedetailsdeclared = null,
-    bool? bsr_duplicatedetected = null) : DynamicsEntity<BuildingApplication>;
+    bool? bsr_duplicatedetected = null,
+    [property: JsonPropertyName("bsr_cancellationreason@odata.bind")]
+    string bsr_cancellationreason = null,
+    int? bsr_previouspaptype = null,
+    [property: JsonPropertyName("bsr_previouspap_contact@odata.bind")]
+    string? bsr_previouspap_contact = null,
+    [property: JsonPropertyName("bsr_previouspap_account@odata.bind")]
+    string? bsr_previouspap_account = null,
+    [property: JsonPropertyName("bsr_previouspaporgleadcontactid@odata.bind")]
+    string? bsr_previouspaporgleadcontactid = null,
+    string? _bsr_papid_value = null,
+    string? _bsr_paporgleadcontactid_value = null,
+    int? bsr_paptype = null) : DynamicsEntity<BuildingApplication>;
 
 public enum BuildingApplicationStage
 {
@@ -71,4 +85,5 @@ public enum BuildingApplicationStatuscode
     Rejected = 760_810_011,
     Withdrawn = 760_810_013,
     OnHold = 760_810_014,
+    Cancelled = 760_810_018
 }
