@@ -30,7 +30,16 @@ export class AccountablePersonCheckAnswersComponent extends PageComponent<void> 
   override onInit(applicationService: ApplicationService): void {
     this.aps = this.applicationService.currentVersion.AccountablePersons;
     this.updateAddAnotherVariable(this.applicationService.currentVersion.AccountablePersons);
-    if (this.isRAinProgress()) this.titleService.setTitle("Check your answers about accountable persons - Register a high-rise building - GOV.UK");
+    if (this.isRAinProgress()) {
+      this.titleService.setTitle("Check your answers about accountable persons - Register a high-rise building - GOV.UK");
+      this.applicationService.model.RegistrationAmendmentsModel!.AccountablePersonStatus!.NewPap = !this.isPapNew();
+    }
+  }
+
+  private isPapNew() {
+    let previousPap = this.applicationService.previousVersion.AccountablePersons[0];
+    let currentPap = this.applicationService.currentVersion.AccountablePersons[0];
+    return this.getPAPName(previousPap) != this.getPAPName(currentPap);
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
