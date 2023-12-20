@@ -451,15 +451,23 @@ export class SyncChangeAccountablePersonHelper {
     let changes: any = [];
 
     accoutablePersonChanges.forEach((x, index) => {
-      x.OldValue = x.OldValue instanceof Array ? x.OldValue.join(', ') : x.OldValue;
-      x.NewValue = x.NewValue instanceof Array ? x.NewValue.join(', ') : x.NewValue;
-
-      let change: Change = this.changeAccountablePersonModelBuilder.SetField(x?.Title!).Change(x?.OldValue!, x?.NewValue!).CreateChange();
+      let value = this.transformValuesToString(x);
+      let change: Change = this.changeAccountablePersonModelBuilder.SetField(value?.Title!).Change(value?.OldValue!, value?.NewValue!).CreateChange();
 
       changes.push(change);
     });
 
 
     return changes;
+  }
+
+  private transformValuesToString(value: ChangedAnswersModel) {
+    if (value.IsAddress) {
+      value.OldValue = value.OldAddresses?.map(x => x.Postcode);
+      value.NewValue = value.NewAddresses?.map(x => x.Postcode);
+    } 
+    value.OldValue = value.OldValue instanceof Array ? value.OldValue.join(', ') : value.OldValue;
+    value.NewValue = value.NewValue instanceof Array ? value.NewValue.join(', ') : value.NewValue;
+    return value;
   }
 }
