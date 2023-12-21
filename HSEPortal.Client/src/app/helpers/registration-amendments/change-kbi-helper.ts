@@ -493,7 +493,8 @@ export class KbiTextMappers {
     private hplFireTestsMapper: Record<string, string> = {
         "fire-classification": "Meets the fire classification A2-s1, d0 or better",
         "large-scale-fire-test": "Has passed a large-scale fire test to BS8414",
-        "none": "Does not meet A2-s1, d0 and has not passed BS8414"
+        "none": "Does not meet A2-s1, d0 and has not passed BS8414",
+        "neither-these": "Does not meet A2-s1, d0 and has not passed BS8414"
 
     }
     getHPLFireTests(name: string) {
@@ -508,7 +509,8 @@ export class KbiTextMappers {
         "eps_xps": "Polystyrene insulation - expanded polystyrene (EPS) or extruded polystyrene (XPS)",
         "pur_pir_iso": "Polyurethane (PUR) or polyisocyanurate (PIR or ISO)",
         "other": "Other",
-        "none": "None"
+        "none": "None",
+        "neither-these": "Neither of these"
     }
     getInsulationName(ExternalWallInsulation: { CheckBoxSelection?: string[], OtherValue?: string }) {
         return ExternalWallInsulation?.CheckBoxSelection?.map(x => x === 'other' ? `${this.insulationTypeMapper[x]} - ${ExternalWallInsulation?.OtherValue ?? ""}` : this.insulationTypeMapper[x]) ?? [];
