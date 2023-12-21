@@ -509,8 +509,7 @@ export class KbiTextMappers {
         "eps_xps": "Polystyrene insulation - expanded polystyrene (EPS) or extruded polystyrene (XPS)",
         "pur_pir_iso": "Polyurethane (PUR) or polyisocyanurate (PIR or ISO)",
         "other": "Other",
-        "none": "None",
-        "neither-these": "Neither of these"
+        "none": "None"
     }
     getInsulationName(ExternalWallInsulation: { CheckBoxSelection?: string[], OtherValue?: string }) {
         return ExternalWallInsulation?.CheckBoxSelection?.map(x => x === 'other' ? `${this.insulationTypeMapper[x]} - ${ExternalWallInsulation?.OtherValue ?? ""}` : this.insulationTypeMapper[x]) ?? [];
