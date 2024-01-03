@@ -29,6 +29,8 @@ import { RegistrationAmendmentsService } from './services/registration-amendment
 import { FileUploadService } from './services/file-upload.service';
 import { HttpInterceptorService } from './services/http-interceptor';
 import { BuildingSummaryNavigation } from './features/application/building-summary/building-summary.navigation';
+import { SearchPublicRegisterComponent } from './features/public-register/search-register/search-register.component';
+import { NgxCaptchaModule } from 'ngx-captcha';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
@@ -37,6 +39,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(NotFoundComponent.route, NotFoundComponent, undefined, NotFoundComponent.title),
   HseRoute.unsafe(WhatWantToDoComponent.route, WhatWantToDoComponent, undefined, WhatWantToDoComponent.title),
   HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent, undefined, ReturningApplicationComponent.title),
+  HseRoute.unsafe(SearchPublicRegisterComponent.route, SearchPublicRegisterComponent, undefined, SearchPublicRegisterComponent.title),
   HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forLoadChildren(HelpPagesModule.baseRoute, () => import('./components/footer/help-pages.module').then(m => m.HelpPagesModule)),
   HseRoute.forLoadChildren(ApplicationModule.baseRoute, () => import('./features/application/application.module').then(m => m.ApplicationModule)),
@@ -53,6 +56,7 @@ const routes = new HseRoutes([
     ReturningApplicationEnterDataComponent,
     ReturningApplicationResendCodeComponent,
     ReturningApplicationVerifyComponent,
+    SearchPublicRegisterComponent,
     TimeoutModalComponent,
     NotFoundComponent,
     WhatWantToDoComponent
@@ -64,7 +68,8 @@ const routes = new HseRoutes([
     CommonModule,
     HttpClientModule,
     ComponentsModule,
-    FormsModule
+    FormsModule,
+    NgxCaptchaModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true }, 
