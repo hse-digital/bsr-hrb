@@ -31,6 +31,7 @@ import { HttpInterceptorService } from './services/http-interceptor';
 import { BuildingSummaryNavigation } from './features/application/building-summary/building-summary.navigation';
 import { SearchPublicRegisterComponent } from './features/public-register/search-register/search-register.component';
 import { NgxCaptchaModule } from 'ngx-captcha';
+import { PublicRegisterModule } from './features/public-register/public-register.module';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(WhatWantToDoComponent.route, WhatWantToDoComponent, undefined, WhatWantToDoComponent.title),
@@ -41,10 +42,10 @@ const routes = new HseRoutes([
   HseRoute.unsafe(NotFoundComponent.route, NotFoundComponent, undefined, NotFoundComponent.title),
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title), 
   HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent, undefined, ReturningApplicationComponent.title),
-  HseRoute.unsafe(SearchPublicRegisterComponent.route, SearchPublicRegisterComponent, undefined, SearchPublicRegisterComponent.title),
   HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forLoadChildren(HelpPagesModule.baseRoute, () => import('./components/footer/help-pages.module').then(m => m.HelpPagesModule)),
   HseRoute.forLoadChildren(ApplicationModule.baseRoute, () => import('./features/application/application.module').then(m => m.ApplicationModule)),
+  HseRoute.forLoadChildren(PublicRegisterModule.baseRoute, () => import('./features/public-register/public-register.module').then(m => m.PublicRegisterModule)),
   HseRoute.unsafe('**', undefined, NotFoundComponent.route)
 ]);
 
@@ -58,7 +59,6 @@ const routes = new HseRoutes([
     ReturningApplicationEnterDataComponent,
     ReturningApplicationResendCodeComponent,
     ReturningApplicationVerifyComponent,
-    SearchPublicRegisterComponent,
     TimeoutModalComponent,
     NotFoundComponent,
     WhatWantToDoComponent
@@ -70,6 +70,7 @@ const routes = new HseRoutes([
     CommonModule,
     HttpClientModule,
     ComponentsModule,
+    PublicRegisterModule,
     FormsModule,
     NgxCaptchaModule
   ],
