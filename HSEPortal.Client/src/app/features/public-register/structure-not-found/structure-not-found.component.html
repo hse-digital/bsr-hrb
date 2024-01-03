@@ -1,0 +1,18 @@
+<govuk-formpage [hideSaveAndContinue]=true [hideSaveAndComeBack]=true>
+
+  <h1 class="govuk-heading-l">We cannot find that postcode in our building register</h1>
+
+  <govuk-body>No matches found for {{postcode}}.</govuk-body>
+  <govuk-body>This could be because:</govuk-body>
+
+  <govuk-list classes='govuk-list--bullet'>
+    <govuk-list-item text="the postcode is not associated with a building that has been registered" />
+    <govuk-list-item text="the building is not a high-rise residential building" />
+    <govuk-list-item text="the building is not in England" />
+    <govuk-list-item text="you have not entered the postcode correctly" />
+  </govuk-list>
+
+  <govuk-body>Check the details you have entered are correct and <a class="govuk-link">search again</a>.</govuk-body>
+  <govuk-body>If you live in a high-rise residential building and it is not on this register, <a class="govuk-link">contact the Building Safety Regulator</a>.</govuk-body>
+
+</govuk-formpage>

@@ -13,7 +13,11 @@ export class HseRoute implements Route {
   }
 
   static unsafe(path: string, component?: Type<any>, redirectTo?: string, title?: string): HseRoute {
-    return new HseRoute(path, component, redirectTo, undefined, title);
+    var hseRoute = new HseRoute(path, component, redirectTo, undefined, title);
+    (<Route>hseRoute).pathMatch = 'full';
+    
+    return hseRoute;
+
   }
 
   static protected(path: string, component: Type<any>, title?: string): HseRoute {
