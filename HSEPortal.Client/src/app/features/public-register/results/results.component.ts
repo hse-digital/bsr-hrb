@@ -11,7 +11,7 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
   public static title: string = 'Select structure - Register a high-rise building - GOV.UK';
   public static route: string = 'results';
 
-  results?: any[];
+  results?: any[] = [];
   postcode?: string;
 
   constructor(router: Router, activatedRoute?: ActivatedRoute) {
@@ -20,7 +20,17 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
     let routerState = this.router.getCurrentNavigation()?.extras.state;
 
     this.postcode = routerState?.["postcode"];
-    this.results = routerState?.["public-register-results"];
+
+    let results = routerState?.["public-register-results"];
+    for (let result of results) {
+      for (let section of result.Sections) {
+        this.results?.push({
+          result: result,
+          section: section
+        });
+      }
+    }
+
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
@@ -40,7 +50,7 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
   }
 
   override  navigateNext(): Promise<boolean | void> {
-    return this.navigationService.navigateRelative(StructureDetailsComponent.route, this.activatedRoute, undefined, { postcode: this.model, result: this.model });
+    return this.navigationService.navigateRelative(StructureDetailsComponent.route, this.activatedRoute, undefined, { postcode: this.model, result: this.model.result });
   }
 
   getRadioLabel(section: any, resultItem: any) {

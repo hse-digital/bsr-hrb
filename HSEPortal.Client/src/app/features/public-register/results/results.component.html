@@ -1,16 +1,14 @@
 <govuk-formpage (saveAndContinue)="saveAndContinue()" saveAndContinueText="Continue" [hideSaveAndComeBack]=true>
 
   <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-    <govuk-error-link anchorId="structure-0-0-input" message="Select a building" />
+    <govuk-error-link anchorId="structure-0-input" message="Select a building" />
   </govuk-error-summary>
 
   <govuk-radio-group title="Select a building" [isPageHeading]=true id="radios-structures" [(model)]="model" id="radios-structures" [errorText]="getErrorDescription(hasErrors, 'Select a building.')">
     <govuk-body>{{results?.length}} buildings found for {{postcode}}.</govuk-body>
 
     <ng-container *ngFor="let item of results; let i = index">
-      <ng-container *ngFor="let section of item.Sections; let j = index">
-        <govuk-radio *ngIf="section.Addresses[0].Postcode == postcode" (onKeyupEnter)="saveAndContinue()" name="structure-group" id="structure-{{i}}-{{j}}" [value]="item" [label]="getRadioLabel(section, item)" [hint]="getStructureAddress(section)" />
-      </ng-container>
+      <govuk-radio *ngIf="item.section.Addresses[0].Postcode == postcode" (onKeyupEnter)="saveAndContinue()" name="structure-group" id="structure-{{i}}" [value]="item" [label]="getRadioLabel(item.section, item.result)" [hint]="getStructureAddress(item.section)" />
     </ng-container>
   </govuk-radio-group>
 
