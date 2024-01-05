@@ -1,4 +1,4 @@
-<govuk-formpage (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]=true saveAndContinueText="Search">
+<govuk-formpage (saveAndContinue)="search()" [hideSaveAndComeBack]=true saveAndContinueText="Search" [processing]="searching">
 
   <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
     <govuk-error-link anchorId="input-postcode" message="{{errorText}}" />

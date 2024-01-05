@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot } from "@angular/router";
 import { PageComponent } from "src/app/helpers/page.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { StructureNotFoundComponent } from "../structure-not-found/structure-not-found.component";
+import { PublicRegisterResultsComponent } from "../results/results.component";
 
 @Component({
   templateUrl: './search-register.component.html'
@@ -12,6 +13,7 @@ export class SearchPublicRegisterComponent extends PageComponent<string> {
   public static route: string = 'search';
 
   errorText: string = '';
+  searching: boolean = false;
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
     this.updateOnSave = false;
@@ -22,6 +24,22 @@ export class SearchPublicRegisterComponent extends PageComponent<string> {
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
     return true;
+  }
+
+  async search() {
+    this.hasErrors = !this.isValid();
+    if (!this.hasErrors) {
+      this.searching = true;
+
+      var results = await this.applicationService.searchPublicRegister(this.model!);
+      console.log(results);
+      
+      if (results.length > 0) {
+        await this.navigationService.navigateRelative(PublicRegisterResultsComponent.route, this.activatedRoute, undefined, { postcode: this.model, "public-register-results": results });
+      } else {
+        await this.navigationService.navigateRelative(StructureNotFoundComponent.route, this.activatedRoute, undefined, { postcode: this.model });
+      }
+    }
   }
 
   override isValid(): boolean {
@@ -40,7 +58,6 @@ export class SearchPublicRegisterComponent extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return this.navigationService.navigateRelative(StructureNotFoundComponent.route, this.activatedRoute, undefined, { postcode: this.model });
   }
 
 }
