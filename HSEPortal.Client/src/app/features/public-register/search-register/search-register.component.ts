@@ -4,6 +4,7 @@ import { PageComponent } from "src/app/helpers/page.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { StructureNotFoundComponent } from "../structure-not-found/structure-not-found.component";
 import { PublicRegisterResultsComponent } from "../results/results.component";
+import { StructureDetailsComponent } from "../structure-details/structure-details.component";
 
 @Component({
   templateUrl: './search-register.component.html'
@@ -33,9 +34,13 @@ export class SearchPublicRegisterComponent extends PageComponent<string> {
 
       var results = await this.applicationService.searchPublicRegister(this.model!);
       console.log(results);
-      
+
       if (results.length > 0) {
-        await this.navigationService.navigateRelative(PublicRegisterResultsComponent.route, this.activatedRoute, undefined, { postcode: this.model, "public-register-results": results });
+        if (results.length == 1) {
+          await this.navigationService.navigateRelative(StructureDetailsComponent.route, this.activatedRoute, undefined, { postcode: this.model, result: results[0] });
+        } else {
+          await this.navigationService.navigateRelative(PublicRegisterResultsComponent.route, this.activatedRoute, undefined, { postcode: this.model, "public-register-results": results });
+        }
       } else {
         await this.navigationService.navigateRelative(StructureNotFoundComponent.route, this.activatedRoute, undefined, { postcode: this.model });
       }

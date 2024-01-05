@@ -8,18 +8,21 @@ import { ComponentsModule } from "src/app/components/components.module";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { RouterModule } from "@angular/router";
 import { PublicRegisterResultsComponent } from "./results/results.component";
+import { StructureDetailsComponent } from "./structure-details/structure-details.component";
 
 const routes = new HseRoutes([
   HseRoute.unsafe(SearchPublicRegisterComponent.route, SearchPublicRegisterComponent, undefined, SearchPublicRegisterComponent.title),
   HseRoute.unsafe(StructureNotFoundComponent.route, StructureNotFoundComponent, undefined, StructureNotFoundComponent.title),
   HseRoute.unsafe(PublicRegisterResultsComponent.route, PublicRegisterResultsComponent, undefined, PublicRegisterResultsComponent.title),
+  HseRoute.unsafe(StructureDetailsComponent.route, StructureDetailsComponent, undefined, StructureDetailsComponent.title),
 ]);
 
 @NgModule({
   declarations: [
     SearchPublicRegisterComponent,
     StructureNotFoundComponent,
-    PublicRegisterResultsComponent
+    PublicRegisterResultsComponent,
+    StructureDetailsComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
