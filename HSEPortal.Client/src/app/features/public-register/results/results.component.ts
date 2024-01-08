@@ -94,4 +94,9 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
       (value !== '') &&
       !isNaN(Number(value.toString())));
   }
+
+  postcodeMatches(item: any) {
+    let addressPostcode = item.section.Addresses[0]?.Postcode?.replace(' ', '');
+    return addressPostcode == this.postcode?.replace(' ', '');
+  }
 }
