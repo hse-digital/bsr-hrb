@@ -8,7 +8,7 @@
     <govuk-body>{{results?.length}} buildings found for {{postcode}}.</govuk-body>
 
     <ng-container *ngFor="let item of results; let i = index">
-      <govuk-radio *ngIf="item.section.Addresses[0].Postcode == postcode" (onKeyupEnter)="saveAndContinue()" name="structure-group" id="structure-{{i}}" [value]="item" [label]="getRadioLabel(item.section, item.result)" [hint]="getStructureAddress(item.section)" />
+      <govuk-radio *ngIf="postcodeMatches(item)" (onKeyupEnter)="saveAndContinue()" name="structure-group" id="structure-{{i}}" [value]="item" [label]="getRadioLabel(item.section, item.result)" [hint]="getStructureAddress(item.section)" />
     </ng-container>
   </govuk-radio-group>
 
