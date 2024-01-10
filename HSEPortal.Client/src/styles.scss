@@ -266,3 +266,25 @@ a.govuk-back-link {
     gap: 10px;
   }
 }
+
+.govuk-table__header {
+  .govuk-body {
+    margin: 0 !important;
+  }
+}
+
+.structure-details {
+  .fs-24 {
+    font-size: 24px;
+  }
+  
+  .fs-36 {
+    font-size: 36px;
+  }
+
+  h1,
+  .govuk-hint {
+    margin: 0 !important;
+  }
+}
+
