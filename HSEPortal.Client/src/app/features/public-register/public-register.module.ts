@@ -9,6 +9,7 @@ import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { RouterModule } from "@angular/router";
 import { PublicRegisterResultsComponent } from "./results/results.component";
 import { StructureDetailsComponent } from "./structure-details/structure-details.component";
+import { PipesModule } from "../../pipes/pipes.module";
 
 const routes = new HseRoutes([
   HseRoute.unsafe(SearchPublicRegisterComponent.route, SearchPublicRegisterComponent, undefined, SearchPublicRegisterComponent.title),
@@ -18,26 +19,27 @@ const routes = new HseRoutes([
 ]);
 
 @NgModule({
-  declarations: [
-    SearchPublicRegisterComponent,
-    StructureNotFoundComponent,
-    PublicRegisterResultsComponent,
-    StructureDetailsComponent
-  ],
-  imports: [
-    RouterModule.forChild(routes.getRoutes()),
-    HseAngularModule,
-    CommonModule,
-    HttpClientModule,
-    ComponentsModule
-  ],
-  exports: [
-    SearchPublicRegisterComponent,
-    StructureNotFoundComponent
-  ],
-  providers: [
-    ...routes.getProviders()
-  ]
+    declarations: [
+        SearchPublicRegisterComponent,
+        StructureNotFoundComponent,
+        PublicRegisterResultsComponent,
+        StructureDetailsComponent
+    ],
+    exports: [
+        SearchPublicRegisterComponent,
+        StructureNotFoundComponent
+    ],
+    providers: [
+        ...routes.getProviders()
+    ],
+    imports: [
+        RouterModule.forChild(routes.getRoutes()),
+        HseAngularModule,
+        CommonModule,
+        HttpClientModule,
+        ComponentsModule,
+        PipesModule
+    ]
 })
 export class PublicRegisterModule {
   static baseRoute: string = 'public-register';
