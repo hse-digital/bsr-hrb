@@ -11,7 +11,7 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
   public static title: string = 'Select structure - Register a high-rise building - GOV.UK';
   public static route: string = 'results';
 
-  results?: any[];
+  results?: any[] = [];
   postcode?: string;
 
   constructor(router: Router, activatedRoute?: ActivatedRoute) {
@@ -21,6 +21,7 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
 
     this.postcode = routerState?.["postcode"];
     this.results = routerState?.["public-register-results"];
+    this.results = this.results?.filter(x => this.postcodeMatches(x));
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
@@ -40,10 +41,11 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
   }
 
   override  navigateNext(): Promise<boolean | void> {
-    return this.navigationService.navigateRelative(StructureDetailsComponent.route, this.activatedRoute, undefined, { postcode: this.model, result: this.model });
+    return this.navigationService.navigateRelative(StructureDetailsComponent.route, this.activatedRoute, undefined, { postcode: this.postcode, result: this.model });
   }
 
-  getRadioLabel(section: any, resultItem: any) {
+  getRadioLabel(resultItem: any) {
+    let section = resultItem.Structure;
     let buildingName = resultItem.BuildingName;
     if (section.Name) {
       return `${section.Name} (part of ${buildingName})`;
@@ -52,8 +54,12 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
     return buildingName;
   }
 
-  getStructureAddress(section: any) {
-    let address = section.Addresses[0];
+  getStructureAddress(result: any) {
+    let normalizedModel = this.postcode?.replace(' ', '');
+
+    let section = result.Structure;
+    let address = section.Addresses.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered?.replace(' ', '') == normalizedModel);
+
     let splitAddress = address.Address.split(',');
     if (splitAddress.length == 1) {
       return splitAddress[0];
@@ -83,5 +89,10 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
     return ((value != null) &&
       (value !== '') &&
       !isNaN(Number(value.toString())));
+  }
+
+  postcodeMatches(item: any) {
+    let normalizedModel = this.postcode?.replace(' ', '');
+    return item.Structure.Addresses?.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered?.replace(' ', '') == normalizedModel);
   }
 }
