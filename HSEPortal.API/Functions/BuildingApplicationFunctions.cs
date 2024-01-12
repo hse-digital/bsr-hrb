@@ -52,16 +52,12 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(ValidateApplicationNumber))]
-    public async Task<HttpResponseData> ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", Connection = "CosmosConnection")]
-        List<BuildingApplicationModel> buildingApplications)
+    public async Task<HttpResponseData> ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request)
     {
         var validateApplicationRequest = await request.ReadAsJsonAsync<ValidateApplicationRequest>();
-        var matchingApplication = buildingApplications.Any(x => x.ContactEmailAddress?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.SecondaryEmailAddress?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.NewPrimaryUserEmail?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true);
+        var exists = await dynamicsService.ValidateExistingApplication(validateApplicationRequest.ApplicationNumber, validateApplicationRequest.EmailAddress);
 
-        return request.CreateResponse(matchingApplication ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
+        return request.CreateResponse(exists ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 
     [Function(nameof(GetSubmissionDate))]
@@ -88,9 +84,8 @@ public class BuildingApplicationFunctions
         List<BuildingApplicationModel> buildingApplications)
     {
         var requestContent = await request.ReadAsJsonAsync<GetApplicationRequest>();
-        var matchingApplication = buildingApplications.Any(x => x.ContactEmailAddress?.Equals(requestContent.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.SecondaryEmailAddress?.Equals(requestContent.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.NewPrimaryUserEmail?.Equals(requestContent.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true);
+        var matchingApplication = await dynamicsService.ValidateExistingApplication(requestContent.ApplicationNumber, requestContent.EmailAddress);
+        
         if (matchingApplication)
         {
             var application = buildingApplications[0];
