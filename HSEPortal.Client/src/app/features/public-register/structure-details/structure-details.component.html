@@ -2,7 +2,7 @@
 
   <div class="structure-details">
     <div class="govuk-hint fs-24">{{result.ApplicationId}}</div>
-    <h1 class="fs-36">{{result.BuildingName}}</h1>
+    <h1 class="fs-36">{{result.Structure.Name ?? result.BuildingName}}</h1>
 
     <govuk-body class="govuk-!-margin-top-6 fs-24">{{getStructureAddress()}}</govuk-body>
 
@@ -53,19 +53,19 @@
       <govuk-body>We cannot publish their contact details.</govuk-body>
 
       <div class="govuk-!-margin-bottom-8">
-        <h3 class="govuk-heading-s">{{getApName(getPap())}}</h3>
+        <h3 class="govuk-heading-s">{{getApName(pap)}}</h3>
 
-        <govuk-body>{{getApName(getPap())}} is responsible for:</govuk-body>
+        <govuk-body>{{getApName(pap)}} is responsible for:</govuk-body>
         <govuk-list-item>the external walls and roof</govuk-list-item>
         <govuk-list classes='govuk-list--bullet'>
-          <ng-container *ngFor="let section of sectionsWithAccountability(getPap())">
-            <govuk-list-item *ngFor="let acc of section.Accountability" text="{{acc | prAccountabilityDescription}}" />
+          <ng-container *ngFor="let section of sectionsWithAccountability(pap)">
+            <govuk-list-item *ngFor="let acc of removeDuplicates(section.Accountability)" text="{{acc | prAccountabilityDescription}} - {{section.SectionName}}" />
           </ng-container>
         </govuk-list>
 
-        <govuk-body>{{getApName(getPap())}} is the principal accountable person. They're responsible for registering the building and making sure the information we hold is updated.</govuk-body>
+        <govuk-body>{{getApName(pap)}} is the principal accountable person. They're responsible for registering the building and making sure the information we hold is updated.</govuk-body>
         <govuk-body>They're also responsible for telling residents how to contact them, make complaints or ask questions. This is part of their residents engagement strategy.</govuk-body>
-        <govuk-body>They are based at {{normalizeAddress(getPap().Address)}}</govuk-body>
+        <govuk-body>They are based at {{normalizeAddress(pap.PapAddress ?? pap.Address)}}</govuk-body>
       </div>
 
       <div *ngFor="let ap of getOtherAps()" class="govuk-!-margin-bottom-8">
@@ -74,7 +74,7 @@
         <govuk-body>{{getApName(ap)}} is responsible for:</govuk-body>
         <govuk-list classes='govuk-list--bullet'>
           <ng-container *ngFor="let section of sectionsWithAccountability(ap)">
-            <govuk-list-item *ngFor="let acc of section.Accountability" text="{{acc | prAccountabilityDescription}}" />
+            <govuk-list-item *ngFor="let acc of removeDuplicates(section.Accountability)" text="{{acc | prAccountabilityDescription}} - {{section.SectionName}}" />
           </ng-container>
         </govuk-list>
 
@@ -84,6 +84,20 @@
     </div>
   </div>
 
+  <!-- connections -->
+  <div class="govuk-!-margin-bottom-8" *ngIf="otherStructures">
+    <h2 class="govuk-heading-m">Connections to other buildings</h2>
+
+    <govuk-body>{{result.Structure.Name}} is part of {{result.BuildingName}}.</govuk-body>
+    <govuk-body>There are {{otherStructures!.length}} structures in {{result.BuildingName}}:</govuk-body>
+    <ul class="govuk-list govuk-list--bullet">
+      <li *ngFor="let structure of otherStructures">
+        <span *ngIf="structure.Structure.Name == result.Structure.Name">{{structure.Structure.Name}}</span>
+        <a *ngIf="structure.Structure.Name != result.Structure.Name" (click)="navigateToOtherStructure(structure)" href="javascript:void(0)">{{structure.Structure.Name}}</a>
+      </li>
+    </ul>
+  </div>
+
   <!-- info -->
   <div class="govuk-!-margin-bottom-8">
     <h2 class="govuk-heading-m">If you think any of this information is wrong</h2>
@@ -91,15 +105,15 @@
     <div class="govuk-!-margin-bottom-8">
       <h3 class="govuk-heading-s">If you are a resident</h3>
 
-      <govuk-body>If you live in {{result.Structure.Name ?? result.BuildingName}} and think any of this information has changed, contact {{getApName(getPap())}}. Tell them what you think has changed and ask them to change it. They should have shared their engagement strategy with all residents of this building. The engagement strategy should tell you how to complain or ask them questions.</govuk-body>
-      <govuk-details summaryText="I have tried and failed to contact {{getApName(getPap())}}" id="details_accountable_person">
-        <p>If you have contacted {{getApName(getPap())}}, but not had a response, <a class="govuk-link" href="#">contact the Building Safety Regulator.</a> If they have not already told us about the change, we will contact them about it.</p>
+      <govuk-body>If you live in {{result.Structure.Name ?? result.BuildingName}} and think any of this information has changed, contact {{getApName(pap)}}. Tell them what you think has changed and ask them to change it. They should have shared their engagement strategy with all residents of this building. The engagement strategy should tell you how to complain or ask them questions.</govuk-body>
+      <govuk-details summaryText="I have tried and failed to contact {{getApName(pap)}}" id="details_accountable_person">
+        <p>If you have contacted {{getApName(pap)}}, but not had a response, <a class="govuk-link" href="#">contact the Building Safety Regulator.</a> If they have not already told us about the change, we will contact them about it.</p>
         <p>We cannot give any other information about {{result.Structure.Name ?? result.BuildingName}} than what is displayed on this page - even if you contact us.</p>
       </govuk-details>
     </div>
 
     <div class="govuk-!-margin-bottom-8">
-      <h3 class="govuk-heading-s">If you are {{getPap().Type != 'individual' ? 'part of' : ''}}{{getApName(getPap())}}</h3>
+      <h3 class="govuk-heading-s">If you are {{pap.Type != 'individual' ? 'part of' : ''}}{{getApName(pap)}}</h3>
 
       <govuk-body>As the principal accountable person, you must tell the Building Safety Regulator if any of this information has changed. <a class="govuk-link" href="https://www.gov.uk/guidance/applying-to-register-a-high-rise-residential-building#making-changes" target="_blank">Find out more about making changes to your registration.</a></govuk-body>
       <govuk-body>If you have already told us about changes, it can take up to 2 weeks to show here.</govuk-body>

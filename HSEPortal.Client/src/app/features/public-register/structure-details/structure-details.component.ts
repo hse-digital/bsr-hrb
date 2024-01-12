@@ -1,24 +1,32 @@
-import { Component } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import * as moment from 'moment';
+import { ApplicationService } from "src/app/services/application.service";
+import { NavigationService } from "src/app/services/navigation.service";
 
 @Component({
   templateUrl: './structure-details.component.html'
 })
-export class StructureDetailsComponent {
+export class StructureDetailsComponent implements OnInit {
   public static title: string = 'Structure information - Register a high-rise building - GOV.UK';
   public static route: string = 'structure-information';
 
   result?: any;
   postcode: any;
+  pap?: any;
 
-  constructor(private router: Router) {
+  otherStructures?: any[];
+
+  constructor(private router: Router, private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
     let routerState = this.router.getCurrentNavigation()?.extras.state;
 
     this.postcode = routerState?.["postcode"];
     this.result = routerState?.["result"];
+    this.pap = this.getPap();
+  }
 
-    console.log(this.result);
+  async ngOnInit() {
+    this.otherStructures = await this.applicationService.getStructuresForApplication(this.result.ApplicationId);
   }
 
   getStructureAddress() {
@@ -91,12 +99,12 @@ export class StructureDetailsComponent {
     return undefined;
   }
 
-  getPap() {
-    return this.result.AccountablePersons.find((person: any) => person.IsPrincipal == 'yes');
+  private getPap() {
+    return this.result.AccountablePersons[0];
   }
 
   getOtherAps() {
-    return this.result.AccountablePersons.filter((person: any) => person.IsPrincipal != 'yes');
+    return this.result.AccountablePersons.filter((_: any, i: number) => i > 0);
   }
   
   getApName(ap: any) {
@@ -113,5 +121,14 @@ export class StructureDetailsComponent {
 
   sectionsWithAccountability(ap: any) {
     return ap.SectionsAccountability?.filter((x: any) => x.SectionName == this.result.Structure.Name && (x.Accountability?.length ?? 0) > 0);
+  }
+
+  removeDuplicates(accountability: any[]) {
+    return accountability.filter(x => x != 'facilities');
+  }
+
+  async navigateToOtherStructure(item: any) {
+    await this.navigationService.navigateRelative(StructureDetailsComponent.route, this.activatedRoute, undefined, { postcode: this.postcode, result: item });
+    window.location.reload();
   }
 }

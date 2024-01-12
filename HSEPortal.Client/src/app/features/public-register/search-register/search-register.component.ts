@@ -33,7 +33,6 @@ export class SearchPublicRegisterComponent extends PageComponent<string> {
       this.searching = true;
 
       var results = await this.applicationService.searchPublicRegister(this.model!);
-      console.log(results);
 
       if (results.length > 0) {
         if (results.length == 1) {

@@ -355,6 +355,10 @@ export class ApplicationService {
   async searchPublicRegister(postcode: string): Promise<any[]> {
     return await firstValueFrom(this.httpClient.get<any[]>(`api/SearchPublicRegister?postcode=${postcode}`));
   }
+
+  async getStructuresForApplication(applicationId: string): Promise<any[]> {
+    return await firstValueFrom(this.httpClient.get<any[]>(`api/GetStructuresForApplication?applicationId=${applicationId}`));
+  }
 }
 
 export class BuildingRegistrationModel {

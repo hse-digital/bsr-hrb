@@ -58,8 +58,8 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
     let normalizedModel = this.postcode?.replace(' ', '');
 
     let section = result.Structure;
-    let address = section.Addresses.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered.replace(' ', '') == normalizedModel);
-    
+    let address = section.Addresses.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered?.replace(' ', '') == normalizedModel);
+
     let splitAddress = address.Address.split(',');
     if (splitAddress.length == 1) {
       return splitAddress[0];
@@ -93,6 +93,6 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
 
   postcodeMatches(item: any) {
     let normalizedModel = this.postcode?.replace(' ', '');
-    return item.Structure.Addresses?.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered.replace(' ', '') == normalizedModel);
+    return item.Structure.Addresses?.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered?.replace(' ', '') == normalizedModel);
   }
 }
