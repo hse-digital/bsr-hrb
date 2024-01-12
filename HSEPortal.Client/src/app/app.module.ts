@@ -64,7 +64,7 @@ const routes = new HseRoutes([
     WhatWantToDoComponent
   ],
   imports: [
-    RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking', scrollPositionRestoration: 'enabled' }),
+    RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload' }),
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     HseAngularModule,
     CommonModule,
