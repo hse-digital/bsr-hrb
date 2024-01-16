@@ -273,7 +273,6 @@ export class ApplicationService {
 
 
   async continueApplication(applicationNumber: string, emailAddress: string, otpToken: string): Promise<void> {
-
     let request = {
       ApplicationNumber: applicationNumber,
       EmailAddress: Sanitizer.sanitizeField(emailAddress),
@@ -353,11 +352,11 @@ export class ApplicationService {
   }
 
   async searchPublicRegister(postcode: string): Promise<any[]> {
-    return await firstValueFrom(this.httpClient.get<any[]>(`api/SearchPublicRegister?postcode=${postcode}`));
+    return await firstValueFrom(this.httpClient.get<any[]>(`api/SearchPublicRegister?postcode=${postcode}`, { headers: {'PublicRegisterPassword': LocalStorage.getJSON('PublicRegister')?.Password }}));
   }
 
   async getStructuresForApplication(applicationId: string): Promise<any[]> {
-    return await firstValueFrom(this.httpClient.get<any[]>(`api/GetStructuresForApplication?applicationId=${applicationId}`));
+    return await firstValueFrom(this.httpClient.get<any[]>(`api/GetStructuresForApplication?applicationId=${applicationId}`, { headers: {'PublicRegisterPassword': LocalStorage.getJSON('PublicRegister')?.Password }}));
   }
 }
 
