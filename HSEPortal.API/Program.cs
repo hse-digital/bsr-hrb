@@ -35,6 +35,7 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.Configure<DynamicsOptions>(builderContext.Configuration.GetSection(DynamicsOptions.Dynamics));
     serviceCollection.Configure<IntegrationsOptions>(builderContext.Configuration.GetSection(IntegrationsOptions.Integrations));
     serviceCollection.Configure<FeatureOptions>(builderContext.Configuration.GetSection(FeatureOptions.Feature));
+    serviceCollection.Configure<PublicRegisterOptions>(builderContext.Configuration.GetSection(PublicRegisterOptions.PublicRegister));
     serviceCollection.Configure<SwaOptions>(builderContext.Configuration.GetSection(SwaOptions.Swa));
     serviceCollection.Configure<SharepointOptions>(builderContext.Configuration.GetSection(SharepointOptions.SectionName));
     serviceCollection.Configure<BlobOptions>(builderContext.Configuration.GetSection(BlobOptions.SectionName));
