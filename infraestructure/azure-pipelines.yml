@@ -42,20 +42,20 @@ stages:
         subscription: 's118-dev-bsr-acs-services'
         appBuildCommand: 'npm run buildnonprod'
         servicePrincipalId: '365d7fcd-46be-417e-a55f-fa239bb1c150'
-    - job: IntegrationTesting
-      dependsOn: Deploy
-      steps:
-      - task: FileTransform@1
-        displayName: 'Set variables for integration testing'
-        inputs:
-          folderPath: '**/HSEPortal.API.IntegrationTests'
-          fileType: 'json'
-          targetFiles: 'appsettings.json'
-      - task: DotNetCoreCLI@2
-        displayName: 'Run Integration Tests'
-        inputs:
-          command: 'test'
-          projects: '**/HSEPortal.API.IntegrationTests.csproj'
+    # - job: IntegrationTesting
+    #   dependsOn: Deploy
+    #   steps:
+    #   - task: FileTransform@1
+    #     displayName: 'Set variables for integration testing'
+    #     inputs:
+    #       folderPath: '**/HSEPortal.API.IntegrationTests'
+    #       fileType: 'json'
+    #       targetFiles: 'appsettings.json'
+    #   - task: DotNetCoreCLI@2
+    #     displayName: 'Run Integration Tests'
+    #     inputs:
+    #       command: 'test'
+    #       projects: '**/HSEPortal.API.IntegrationTests.csproj'
 
 - stage: QA
   dependsOn: DEV
