@@ -55,9 +55,9 @@ public class BuildingApplicationFunctions
     public async Task<HttpResponseData> ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request)
     {
         var validateApplicationRequest = await request.ReadAsJsonAsync<ValidateApplicationRequest>();
-        var exists = await dynamicsService.ValidateExistingApplication(validateApplicationRequest.ApplicationNumber, validateApplicationRequest.EmailAddress);
+        var matchingApplication = await dynamicsService.ValidateExistingApplication(validateApplicationRequest.ApplicationNumber, validateApplicationRequest.EmailAddress);
 
-        return request.CreateResponse(exists ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
+        return request.CreateResponse(matchingApplication != null ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 
     [Function(nameof(GetSubmissionDate))]
@@ -84,14 +84,15 @@ public class BuildingApplicationFunctions
         List<BuildingApplicationModel> buildingApplications)
     {
         var requestContent = await request.ReadAsJsonAsync<GetApplicationRequest>();
+
         var matchingApplication = await dynamicsService.ValidateExistingApplication(requestContent.ApplicationNumber, requestContent.EmailAddress);
-        
-        if (matchingApplication)
+        if (matchingApplication != null)
         {
             var application = buildingApplications[0];
             var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress)
                                || await otpService.ValidateToken(requestContent.OtpToken, application.SecondaryEmailAddress)
-                               || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail);
+                               || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail)
+                               || await otpService.ValidateToken(requestContent.OtpToken, requestContent.EmailAddress);
 
             if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
@@ -109,6 +110,7 @@ public class BuildingApplicationFunctions
                     };
                 }
 
+                application = application with { BuildingName = matchingApplication.bsr_Building.bsr_name };
                 return await request.CreateObjectResponseAsync(application);
             }
         }

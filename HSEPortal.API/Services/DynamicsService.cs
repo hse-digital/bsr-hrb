@@ -1017,14 +1017,14 @@ public class DynamicsService
         return $"{newFileNameOnly}{fileExtension}";
     }
 
-    public async Task<bool> ValidateExistingApplication(string applicationNumber, string emailAddress)
+    public async Task<DynamicsBuildingApplication> ValidateExistingApplication(string applicationNumber, string emailAddress)
     {
         var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplication>>("bsr_buildingapplications", 
  ("$filter", $"bsr_applicationid eq '{applicationNumber}' and (bsr_RegistreeId/emailaddress1 eq '{emailAddress}' or bsr_secondaryapplicantid/emailaddress1 eq '{emailAddress}')"),
-            ("$expand", "bsr_RegistreeId($select=emailaddress1),bsr_secondaryapplicantid($select=emailaddress1)"),
+            ("$expand", "bsr_RegistreeId($select=emailaddress1),bsr_secondaryapplicantid($select=emailaddress1),bsr_Building($select=bsr_name)"),
             ("$select", "bsr_applicationid,bsr_buildingapplicationid")
         );
         
-        return response.value.Any();
+        return response.value.FirstOrDefault();
     }
 }
