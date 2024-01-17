@@ -29,8 +29,6 @@ import { RegistrationAmendmentsService } from './services/registration-amendment
 import { FileUploadService } from './services/file-upload.service';
 import { HttpInterceptorService } from './services/http-interceptor';
 import { BuildingSummaryNavigation } from './features/application/building-summary/building-summary.navigation';
-import { SearchPublicRegisterComponent } from './features/public-register/search-register/search-register.component';
-import { NgxCaptchaModule } from 'ngx-captcha';
 import { PublicRegisterModule } from './features/public-register/public-register.module';
 
 const routes = new HseRoutes([
@@ -71,8 +69,7 @@ const routes = new HseRoutes([
     HttpClientModule,
     ComponentsModule,
     PublicRegisterModule,
-    FormsModule,
-    NgxCaptchaModule
+    FormsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true }, 

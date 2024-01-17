@@ -58,7 +58,7 @@ export class StructureDetailsComponent implements OnInit {
   }
 
   normalizeAddress(address: any) {
-    let splitAddress = address.Address.split(',');
+    let splitAddress = address?.Address.split(',');
     if (splitAddress.length == 1) {
       return splitAddress[0];
     }
