@@ -52,16 +52,12 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(ValidateApplicationNumber))]
-    public async Task<HttpResponseData> ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", Connection = "CosmosConnection")]
-        List<BuildingApplicationModel> buildingApplications)
+    public async Task<HttpResponseData> ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request)
     {
         var validateApplicationRequest = await request.ReadAsJsonAsync<ValidateApplicationRequest>();
-        var matchingApplication = buildingApplications.Any(x => x.ContactEmailAddress?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.SecondaryEmailAddress?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.NewPrimaryUserEmail?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true);
+        var matchingApplication = await dynamicsService.ValidateExistingApplication(validateApplicationRequest.ApplicationNumber, validateApplicationRequest.EmailAddress);
 
-        return request.CreateResponse(matchingApplication ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
+        return request.CreateResponse(matchingApplication != null ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 
     [Function(nameof(GetSubmissionDate))]
@@ -88,15 +84,15 @@ public class BuildingApplicationFunctions
         List<BuildingApplicationModel> buildingApplications)
     {
         var requestContent = await request.ReadAsJsonAsync<GetApplicationRequest>();
-        var matchingApplication = buildingApplications.Any(x => x.ContactEmailAddress?.Equals(requestContent.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.SecondaryEmailAddress?.Equals(requestContent.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.NewPrimaryUserEmail?.Equals(requestContent.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true);
-        if (matchingApplication)
+
+        var matchingApplication = await dynamicsService.ValidateExistingApplication(requestContent.ApplicationNumber, requestContent.EmailAddress);
+        if (matchingApplication != null)
         {
             var application = buildingApplications[0];
             var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress)
                                || await otpService.ValidateToken(requestContent.OtpToken, application.SecondaryEmailAddress)
-                               || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail);
+                               || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail)
+                               || await otpService.ValidateToken(requestContent.OtpToken, requestContent.EmailAddress);
 
             if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
@@ -114,6 +110,7 @@ public class BuildingApplicationFunctions
                     };
                 }
 
+                application = application with { BuildingName = matchingApplication.bsr_Building.bsr_name };
                 return await request.CreateObjectResponseAsync(application);
             }
         }
