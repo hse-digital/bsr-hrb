@@ -267,7 +267,7 @@ public class BuildingApplicationFunctions
             return request.CreateResponse(HttpStatusCode.BadRequest);
 
         var statuscodeModel = await dynamicsService.GetBuildingApplicationStatuscodeBy(applicationid);
-        return await request.CreateObjectResponseAsync(statuscodeModel.statuscode);
+        return await request.CreateObjectResponseAsync(statuscodeModel?.statuscode);
     }
 }
 
