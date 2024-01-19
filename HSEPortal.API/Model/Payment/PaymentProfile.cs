@@ -39,5 +39,16 @@ public class PaymentProfile : Profile
             .ForPath(x => x.prefilled_cardholder_details.billing_address.line2, x => x.MapFrom(y => y.CardHolderDetails.Address.Line2))
             .ForPath(x => x.prefilled_cardholder_details.billing_address.postcode, x => x.MapFrom(y => y.CardHolderDetails.Address.Postcode))
             .ForPath(x => x.prefilled_cardholder_details.billing_address.city, x => x.MapFrom(y => y.CardHolderDetails.Address.City));
+
+        CreateMap<InvoiceData, PaymentResponseModel>()
+            .ForMember(x => x.Amount, x => x.MapFrom(y => y.AmountPaid))
+            .ForMember(x => x.CreatedDate, x => x.MapFrom(y => y.CreatedDate))
+            .ForMember(x => x.Status, x => x.MapFrom(y => y.Status))
+            .ForMember(x => x.Finished, x => x.MapFrom(y => y.Paid))
+            .ForMember(x => x.Reference, x => x.MapFrom(y => y.InvoiceId))
+            .ForMember(x => x.Description, x => x.MapFrom(y => y.Description))
+            .ForMember(x => x.PaymentId, x => x.MapFrom(y => y.InvoiceMetadata.PaymentId))
+            .ForMember(x => x.ProviderId, x => x.MapFrom(y => "invoice"))
+            ;
     }
 }

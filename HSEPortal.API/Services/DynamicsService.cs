@@ -985,13 +985,13 @@ public class DynamicsService
     public async Task<string> GetSubmissionDate(string applicationNumber)
     {
         var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
-        return buildingApplication.bsr_submittedon;
+        return buildingApplication?.bsr_submittedon;
     }
 
     public async Task<string> GetKbiSubmissionDate(string applicationNumber)
     {
         var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
-        return buildingApplication.bsr_Building.bsr_kbicompletiondate;
+        return buildingApplication?.bsr_Building.bsr_kbicompletiondate;
     }
 
     public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
