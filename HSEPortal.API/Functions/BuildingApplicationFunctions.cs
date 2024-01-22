@@ -46,7 +46,7 @@ public class BuildingApplicationFunctions
                 new("original")
             }
         };
-        
+
         var response = await request.CreateObjectResponseAsync(buildingApplicationModel);
         return new CustomHttpResponseData { Application = buildingApplicationModel, HttpResponse = response };
     }
@@ -269,6 +269,41 @@ public class BuildingApplicationFunctions
         var statuscodeModel = await dynamicsService.GetBuildingApplicationStatuscodeBy(applicationid);
         return await request.CreateObjectResponseAsync(statuscodeModel?.statuscode);
     }
+
+    [Function(nameof(UpdateApplicant))]
+    public async Task<CustomHttpResponseData> UpdateApplicant([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", PartitionKey = "{ApplicationNumber}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications)
+    {
+        var requestContent = await request.ReadAsJsonAsync<UpdateApplicantRequest>();
+        var application = buildingApplications.FirstOrDefault();
+
+        if (application == null)
+        {
+            return new CustomHttpResponseData
+            {
+                HttpResponse = request.CreateResponse(HttpStatusCode.BadRequest)
+            };
+        }
+
+        application = application with
+        {
+            ContactFirstName = requestContent.ApplicantFirstName,
+            ContactLastName = requestContent.ApplicantLastName,
+            ContactPhoneNumber = requestContent.ApplicantPhoneNumber,
+            ContactEmailAddress = requestContent.ApplicantEmailAddress,
+            SecondaryFirstName = requestContent.SecondaryApplicantFirstName,
+            SecondaryLastName = requestContent.SecondaryApplicantLastName,
+            SecondaryPhoneNumber = requestContent.SecondaryApplicantPhoneNumber,
+            SecondaryEmailAddress = requestContent.SecondaryApplicantEmailAddress
+        };
+
+        return new CustomHttpResponseData
+        {
+            Application = application,
+            HttpResponse = request.CreateResponse(HttpStatusCode.OK)
+        };
+    }
 }
 
 public class CustomHttpResponseData
@@ -314,3 +349,14 @@ public class ApplicationNumberAndEmail
 }
 
 public record ValidateApplicationRequest(string ApplicationNumber, string EmailAddress);
+
+public record UpdateApplicantRequest(
+    string ApplicationNumber,
+    string ApplicantFirstName,
+    string ApplicantLastName,
+    string ApplicantPhoneNumber,
+    string ApplicantEmailAddress,
+    string SecondaryApplicantFirstName,
+    string SecondaryApplicantLastName,
+    string SecondaryApplicantPhoneNumber,
+    string SecondaryApplicantEmailAddress);
