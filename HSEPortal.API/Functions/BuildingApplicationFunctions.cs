@@ -295,7 +295,8 @@ public class BuildingApplicationFunctions
             SecondaryFirstName = requestContent.SecondaryApplicantFirstName,
             SecondaryLastName = requestContent.SecondaryApplicantLastName,
             SecondaryPhoneNumber = requestContent.SecondaryApplicantPhoneNumber,
-            SecondaryEmailAddress = requestContent.SecondaryApplicantEmailAddress
+            SecondaryEmailAddress = requestContent.SecondaryApplicantEmailAddress,
+            BuildingName = requestContent.BuildingName
         };
 
         return new CustomHttpResponseData
@@ -359,4 +360,5 @@ public record UpdateApplicantRequest(
     string SecondaryApplicantFirstName,
     string SecondaryApplicantLastName,
     string SecondaryApplicantPhoneNumber,
-    string SecondaryApplicantEmailAddress);
+    string SecondaryApplicantEmailAddress,
+    string BuildingName);
