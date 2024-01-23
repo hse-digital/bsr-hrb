@@ -2,7 +2,7 @@
 
   <div class="structure-details">
     <div class="govuk-hint fs-24">{{result.ApplicationId}}</div>
-    <h1 class="fs-36">{{result.Structure.Name ?? result.BuildingName}}</h1>
+    <h1 class="govuk-heading-m fs-36">{{result.Structure.Name ?? result.BuildingName}}</h1>
 
     <govuk-body class="govuk-!-margin-top-6 fs-24">{{getStructureAddress()}}</govuk-body>
 
@@ -37,6 +37,8 @@
       <govuk-list classes='govuk-list--bullet'>
         <govuk-list-item *ngFor="let address of getSecondaryAddresses()" [text]="normalizeAddress(address)" />
       </govuk-list>
+
+      <govuk-body *ngIf="anyResidentialAddresses()">There are other postcodes for this building, like residential postcodes. But we do not display them all here.</govuk-body>
     </div>
 
     <!-- building completion -->
@@ -65,7 +67,7 @@
 
         <govuk-body>{{getApName(pap)}} is the principal accountable person. They're responsible for registering the building and making sure the information we hold is updated.</govuk-body>
         <govuk-body>They're also responsible for telling residents how to contact them, make complaints or ask questions. This is part of their residents engagement strategy.</govuk-body>
-        <govuk-body>They are based at {{normalizeAddress(pap.PapAddress ?? pap.Address)}}</govuk-body>
+        <govuk-body *ngIf="pap.Type == 'organisation'">They are based at {{normalizeAddress(pap.PapAddress ?? pap.Address)}}</govuk-body>
       </div>
 
       <div *ngFor="let ap of getOtherAps()" class="govuk-!-margin-bottom-8">
@@ -85,7 +87,7 @@
   </div>
 
   <!-- connections -->
-  <div class="govuk-!-margin-bottom-8" *ngIf="otherStructures">
+  <div class="govuk-!-margin-bottom-8" *ngIf="otherStructures.length > 1">
     <h2 class="govuk-heading-m">Connections to other buildings</h2>
 
     <govuk-body>{{result.Structure.Name}} is part of {{result.BuildingName}}.</govuk-body>
@@ -113,7 +115,7 @@
     </div>
 
     <div class="govuk-!-margin-bottom-8">
-      <h3 class="govuk-heading-s">If you are {{pap.Type != 'individual' ? 'part of' : ''}}{{getApName(pap)}}</h3>
+      <h3 class="govuk-heading-s">If you are {{pap.Type != 'individual' ? 'part of ' : ''}}{{getApName(pap)}}</h3>
 
       <govuk-body>As the principal accountable person, you must tell the Building Safety Regulator if any of this information has changed. <a class="govuk-link" href="https://www.gov.uk/guidance/applying-to-register-a-high-rise-residential-building#making-changes" target="_blank">Find out more about making changes to your registration.</a></govuk-body>
       <govuk-body>If you have already told us about changes, it can take up to 2 weeks to show here.</govuk-body>

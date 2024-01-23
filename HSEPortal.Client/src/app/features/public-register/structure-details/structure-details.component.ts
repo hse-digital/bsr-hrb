@@ -15,7 +15,7 @@ export class StructureDetailsComponent implements OnInit {
   postcode: any;
   pap?: any;
 
-  otherStructures?: any[];
+  otherStructures: any[] = [];
 
   constructor(private router: Router, private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
     let routerState = this.router.getCurrentNavigation()?.extras.state;
@@ -32,6 +32,10 @@ export class StructureDetailsComponent implements OnInit {
   getStructureAddress() {
     let address = this.result.Structure.Addresses[0];
     return this.normalizeAddress(address);
+  }
+
+  anyResidentialAddresses(): boolean {
+    return this.result.Structure.Addresses.find((x: any) => x.Postcode != x.PostcodeEntered) != undefined;
   }
 
   private toCamelCase(str: string) {
@@ -58,6 +62,10 @@ export class StructureDetailsComponent implements OnInit {
   }
 
   normalizeAddress(address: any) {
+    if (address.IsManual) {
+      return [address.Address, address.AddressLineTwo, address.Town, address.Postcode].filter(x => x).join(', ');
+    }
+
     let splitAddress = address.Address.split(',');
     if (splitAddress.length == 1) {
       return splitAddress[0];
@@ -86,7 +94,7 @@ export class StructureDetailsComponent implements OnInit {
       let content = `A completion certifcate was issued`;
 
       if (structure.CompletionCertificateIssuer) {
-        content = `${content} by ${structure.CompletionCertificateIssuer}`;
+        content = `${content} by ${structure.CompletionCertificateIssuer}.`;
       }
 
       if (structure.CompletionCertificateDate) {
@@ -106,7 +114,7 @@ export class StructureDetailsComponent implements OnInit {
   getOtherAps() {
     return this.result.AccountablePersons.filter((_: any, i: number) => i > 0);
   }
-  
+
   getApName(ap: any) {
     if (ap.IsPrincipal == 'yes') {
       return `${this.result.ContactFirstName} ${this.result.ContactLastName}`;
@@ -120,7 +128,10 @@ export class StructureDetailsComponent implements OnInit {
   }
 
   sectionsWithAccountability(ap: any) {
-    return ap.SectionsAccountability?.filter((x: any) => x.SectionName == this.result.Structure.Name && (x.Accountability?.length ?? 0) > 0);
+    return ap.SectionsAccountability?.filter((x: any) => {
+      let structureName = this.result.Structure?.Name ?? this.result.BuildingName;
+      return x.SectionName == structureName && (x.Accountability?.length ?? 0) > 0;
+    });
   }
 
   removeDuplicates(accountability: any[]) {

@@ -47,6 +47,7 @@ export class SearchPublicRegisterComponent extends PageComponent<string> {
   }
 
   override isValid(): boolean {
+    this.model = this.model?.toUpperCase();
     let postcode = this.model?.replace(' ', '');
     this.hasErrors = true;
 
