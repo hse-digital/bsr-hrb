@@ -107,9 +107,17 @@
     <div class="govuk-!-margin-bottom-8">
       <h3 class="govuk-heading-s">If you are a resident</h3>
 
-      <govuk-body>If you live in {{result.Structure.Name ?? result.BuildingName}} and think any of this information has changed, contact {{getApName(pap)}}. Tell them what you think has changed and ask them to change it. They should have shared their engagement strategy with all residents of this building. The engagement strategy should tell you how to complain or ask them questions.</govuk-body>
+      <govuk-body>If you live in {{result.Structure.Name ?? result.BuildingName}} and think any of this information is wrong, contact {{getApName(pap)}}. Tell them what you think is wrong and ask them to change it.</govuk-body>
+      <govuk-body>They should have told you:</govuk-body>
+      <govuk-list classes='govuk-list--bullet'>
+        <govuk-list-item text="how to complain" />
+        <govuk-list-item text="other information about the building" />
+        <govuk-list-item text="how the building safety risks are being managed to keep you safe" />
+      </govuk-list>
+
+
       <govuk-details summaryText="I have tried and failed to contact {{getApName(pap)}}" id="details_accountable_person">
-        <p>If you have contacted {{getApName(pap)}}, but not had a response, <a class="govuk-link" href="#">contact the Building Safety Regulator.</a> If they have not already told us about the change, we will contact them about it.</p>
+        <p>If you have contacted {{getApName(pap)}}, but not had a response, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator</a> If they have not already told us about the change, we will contact them about it.</p>
         <p>We cannot give any other information about {{result.Structure.Name ?? result.BuildingName}} than what is displayed on this page - even if you contact us.</p>
       </govuk-details>
     </div>
@@ -120,6 +128,26 @@
       <govuk-body>As the principal accountable person, you must tell the Building Safety Regulator if any of this information has changed. <a class="govuk-link" href="https://www.gov.uk/guidance/applying-to-register-a-high-rise-residential-building#making-changes" target="_blank">Find out more about making changes to your registration.</a></govuk-body>
       <govuk-body>If you have already told us about changes, it can take up to 2 weeks to show here.</govuk-body>
     </div>
+
+    <div class="govuk-!-margin-bottom-8">
+      <h3 class="govuk-heading-s">If you are another accountable person</h3>
+
+      <govuk-body>If you think any of this information is wrong, you should contact {{getApName(pap)}}. If you have contacted them but not had a response, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator</a></govuk-body>
+    </div>
+
+    <div class="govuk-!-margin-bottom-8">
+      <h3 class="govuk-heading-s">If you are anybody else</h3>
+
+      <govuk-body>If you think any of this information is wrong, you can <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator</a></govuk-body>
+    </div>
+
+    <div class="govuk-!-margin-bottom-8">
+      <h2 class="govuk-heading-m">If you think this building should not be on the register</h2>
+
+      <govuk-body>The register only holds information about high-rise residential buildings in England.</govuk-body>
+      <govuk-body>If you think {{result.Structure.Name ?? result.BuildingName}} should not be on the register, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator</a></govuk-body>
+    </div>
+    
 
     <govuk-body>To find another building, <a class="govuk-link" [routerLink]="['/public-register/search']">search again.</a></govuk-body>
 
