@@ -5,6 +5,7 @@ import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { KbiService } from 'src/app/services/kbi.service';
 import { ReturningApplicationComponent } from '../../returning-application/returning-application.component';
+import { YesButNoReferenceComponent } from '../yes-but-no-reference/yes-but-no-reference';
 
 @Component({
   selector: 'hse-what-want-to-do',
@@ -37,7 +38,10 @@ export class WhatWantToDoComponent extends PageComponent<string> {
 
   override async navigateNext(): Promise<boolean | void> {
     if (this.model == 'register-building') {
-      return this.navigationService.navigateRelative('/select', this.activatedRoute);
+      return this.navigationService.navigateRelative('/new-application/building-name', this.activatedRoute);
+    }
+    else if (this.model == 'yes-but-no-reference') {
+      return this.navigationService.navigateRelative(YesButNoReferenceComponent.route, this.activatedRoute);
     }
     
     return this.navigationService.navigateRelative(ReturningApplicationComponent.route, this.activatedRoute);

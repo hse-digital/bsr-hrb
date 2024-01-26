@@ -1,0 +1,7 @@
+<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link *ngIf="hasErrors" anchorId="register-building-input" message="Select what you want to do" />
+    </govuk-error-summary>
+
+    Holding page
+</govuk-formpage>
