@@ -1,7 +1,12 @@
-<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
-    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-        <govuk-error-link *ngIf="hasErrors" anchorId="register-building-input" message="Select what you want to do" />
-    </govuk-error-summary>
-
-    Holding page
+<govuk-formpage [hideSaveAndContinue]="true" [hideSaveAndComeBack]="true">
+    <h1 class="govuk-heading-l">I do not know the building's registration application reference</h1>
+    <govuk-body>
+        The application reference is in the email we sent to the person who began the application to register the building.
+    </govuk-body>
+    <govuk-body>
+        If the application was accepted, you can find the application reference on <a class="govuk-link" href="/public-register/search">the register of high-rise residential buildings</a>.
+    </govuk-body>
+    <govuk-body>
+        If you still cannot find the application reference, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator</a>.
+    </govuk-body>
 </govuk-formpage>
