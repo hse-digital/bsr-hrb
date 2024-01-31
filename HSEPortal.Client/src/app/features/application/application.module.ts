@@ -23,6 +23,7 @@ import { KbiModule } from "../kbi/kbi.module";
 import { KbiNavigation } from "src/app/features/kbi/kbi.navigation.ts.service";
 import { RegistrationAmendmentsModule } from "../registration-amendments/registration-amendments.module";
 import { FormsModule } from "@angular/forms";
+import { SafetyCaseReportModule } from './safety-case-report/safety-case-report.module';
 
 const routes = new HseRoutes([
   HseRoute.protected(ApplicationTaskListComponent.route, ApplicationTaskListComponent, ApplicationTaskListComponent.title),
@@ -34,6 +35,7 @@ const routes = new HseRoutes([
   HseRoute.forLoadChildren(PaymentModule.baseRoute, () => import('./payment/payment.module').then(m => m.PaymentModule)),
   HseRoute.forLoadChildren(KbiModule.baseRoute, () => import('../kbi/kbi.module').then(m => m.KbiModule)),
   HseRoute.forLoadChildren(RegistrationAmendmentsModule.baseRoute, () => import('../registration-amendments/registration-amendments.module').then(m => m.RegistrationAmendmentsModule)),
+  HseRoute.forLoadChildren(SafetyCaseReportModule.baseRoute, () => import('./safety-case-report/safety-case-report.module').then(m => m.SafetyCaseReportModule)),
   HseRoute.protected(ApplicationCompletedComponent.route, ApplicationCompletedComponent, ApplicationCompletedComponent.title),
 ]);
 

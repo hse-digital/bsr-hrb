@@ -1,0 +1,16 @@
+<govuk-formpage (saveAndContinue)="saveAndContinue()" saveAndContinueText="Save and continue" [hideSaveAndComeBack]=true>    
+
+    <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+        <govuk-error-link [anchorId]="errorAnchorId" [message]="errorMessage" />
+      </govuk-error-summary>
+    
+      <h1 class="govuk-heading-l">When was the safety case report for {{buildingName}} last updated?</h1>
+    
+      <govuk-date-input 
+        id="safety-case-report-date"
+        [model]="model"
+        [isPageHeading]="false" 
+        hintText="For example, 23 09 2023" 
+        #field />
+
+</govuk-formpage>

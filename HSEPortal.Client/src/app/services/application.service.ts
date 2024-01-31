@@ -384,8 +384,14 @@ export class BuildingRegistrationModel {
   RegistrationAmendmentsModel?: RegistrationAmendmentsModel;
   FilesUploaded: any;
 
+  safetyCaseReport?: SafetyCaseReport;
+
   // versioning
   Versions: BuildingRegistrationVersion[] = [];
+}
+
+export class SafetyCaseReport {
+  date?: string; 
 }
 
 export class BuildingRegistrationVersion {
