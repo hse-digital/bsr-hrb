@@ -10,7 +10,7 @@ import { KbiService } from 'src/app/services/kbi.service';
 })
 export class YesButNoReferenceComponent extends PageComponent<string> {
   static route: string = 'yes-but-no-reference';
-  static title: string = "I do not know the building's registration application reference - Register a high-rise building - GOV.UK";
+  static title: string = "Find your application reference – Register a high-rise building – GOV.UK";
 
   constructor(activatedRoute: ActivatedRoute, private kbiService: KbiService) {
     super(activatedRoute);
