@@ -994,6 +994,17 @@ public class DynamicsService
         return buildingApplication?.bsr_Building.bsr_kbicompletiondate;
     }
 
+    public async Task UpdateSafetyCaseReportSubmissionDate(string applicationNumber, DateTime date)
+    {
+        var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
+
+        await dynamicsApi.Update($"bsr_buildingapplications({buildingApplication.bsr_buildingapplicationid})",
+            new DynamicsBuildingApplication { 
+                bsr_safetycasereportdate = date,
+                bsr_safetycasedeclaration = true
+            });
+    }
+
     public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
     {
         // Unix timestamp is seconds past epoch

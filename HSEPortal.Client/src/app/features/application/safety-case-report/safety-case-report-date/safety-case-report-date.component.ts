@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService, SafetyCaseReport } from 'src/app/services/application.service';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { DateModel, IsDateInPast, isDayValid, isMonthValid, isYearLengthValid, isYearValid } from 'src/app/helpers/validators/date-validators';
+import { SafetyCaseReportDeclarationComponent } from '../safety-case-report-declaration/safety-case-report-declaration.component';
 
 @Component({
   templateUrl: './safety-case-report-date.component.html'
@@ -12,7 +13,7 @@ export class SafetyCaseReportDateComponent extends PageComponent<DateModel> {
   static title: string = "When was the safety case report last updated? – Register a high-rise building – GOV.UK";
   buildingName?: string;
   errorAnchorId: string = 'safety-case-report-date-day';
-  errorMessage: string = '';
+  errorMessage: string = ''; 
   modelValid: boolean = true;
 
   constructor(activatedRoute: ActivatedRoute) {
@@ -21,15 +22,21 @@ export class SafetyCaseReportDateComponent extends PageComponent<DateModel> {
 
   override onInit(applicationService: ApplicationService): void {
     this.buildingName = this.applicationService.model.BuildingName;
-    if (!this.applicationService.model.safetyCaseReport) {
-      this.applicationService.model.safetyCaseReport = new SafetyCaseReport();
+    if (!this.applicationService.model.SafetyCaseReport) {
+      this.applicationService.model.SafetyCaseReport = new SafetyCaseReport();
     }
-    this.model = new DateModel(this.applicationService.model.safetyCaseReport.date);
+    this.model = new DateModel(this.applicationService.model.SafetyCaseReport.date);
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.model.safetyCaseReport!.date = this.model!.toDateString();
-    console.log(this.applicationService.model.safetyCaseReport!.date);
+
+    const safetyCaseRportDate = this.model!.toDateString();
+    console.log(safetyCaseRportDate);
+
+    if (this.applicationService.model.SafetyCaseReport!.date !== safetyCaseRportDate) {
+      this.applicationService.model.SafetyCaseReport!.declaration = false;
+    }
+    this.applicationService.model.SafetyCaseReport!.date = safetyCaseRportDate;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -87,6 +94,6 @@ export class SafetyCaseReportDateComponent extends PageComponent<DateModel> {
   }
 
   override navigateNext(): Promise<boolean> {
-    return Promise.resolve(true); // go to safety case declaration
+    return this.navigationService.navigateRelative(SafetyCaseReportDeclarationComponent.route, this.activatedRoute);
   }
 }

@@ -311,7 +311,7 @@ export class ApplicationService {
 
   async syncDeclaration(): Promise<void> {
     await firstValueFrom(this.httpClient.post(`api/SyncDeclaration`, this.model));
-  }
+  } 
 
   async syncPayment(): Promise<void> {
     await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
@@ -358,6 +358,13 @@ export class ApplicationService {
   async getStructuresForApplication(applicationId: string): Promise<any[]> {
     return await firstValueFrom(this.httpClient.get<any[]>(`api/GetStructuresForApplication?applicationId=${applicationId}`, { headers: {'PublicRegisterPassword': LocalStorage.getJSON('PublicRegister')?.Password }}));
   }
+
+  async updateSafetyCaseReportDeclaration(applicationNumber: string, date: string): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/UpdateSafetyCaseDeclaration`, { 
+      "ApplicationNumber" : applicationNumber, 
+      "Date": date 
+    }));
+  }
 }
 
 export class BuildingRegistrationModel {
@@ -384,14 +391,15 @@ export class BuildingRegistrationModel {
   RegistrationAmendmentsModel?: RegistrationAmendmentsModel;
   FilesUploaded: any;
 
-  safetyCaseReport?: SafetyCaseReport;
+  SafetyCaseReport?: SafetyCaseReport;
 
   // versioning
   Versions: BuildingRegistrationVersion[] = [];
 }
 
 export class SafetyCaseReport {
-  date?: string; 
+  date?: string;
+  declaration?: boolean;
 }
 
 export class BuildingRegistrationVersion {

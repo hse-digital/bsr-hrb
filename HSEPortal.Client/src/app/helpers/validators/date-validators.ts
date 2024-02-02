@@ -23,7 +23,7 @@ export class DateModel {
   }
 
   toDateString(): string {
-    return this.toDate().toString();
+    return this.toDate().toISOString();
   }
 }
 

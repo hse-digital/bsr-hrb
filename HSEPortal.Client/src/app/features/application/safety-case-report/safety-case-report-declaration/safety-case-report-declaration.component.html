@@ -1,0 +1,16 @@
+<govuk-formpage saveAndContinueText="Declare and submit" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true" [processing]="processing">
+
+    <h1 class="govuk-heading-l">Declaration</h1>
+  
+    <govuk-body>By submitting this information, you are confirming that to the best of your knowledge, the details within your submission are correct.</govuk-body>
+
+    <h2 class="govuk-heading-m">If you are authorised to act for the principal accountable person</h2>
+
+    <govuk-body>By submitting this information, you are also confirming that:</govuk-body>
+    <govuk-list classes='govuk-list--bullet'>
+        <govuk-list-item text="the principal accountable person instructed you in writing to submit this information" />
+        <govuk-list-item text="the details were either provided to you by the principal accountable person or resulted from your own investigations" />
+    </govuk-list>  
+    <govuk-body>We may ask you for written evidence that the principal accountable person has instructed you to submit this information for them.</govuk-body>
+
+</govuk-formpage>

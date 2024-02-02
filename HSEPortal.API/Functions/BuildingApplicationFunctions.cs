@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Net;
+using Azure.Core;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
@@ -132,6 +133,27 @@ public class BuildingApplicationFunctions
         return responseModel != null
             ? await request.CreateObjectResponseAsync(responseModel)
             : request.CreateResponse(HttpStatusCode.ExpectationFailed);
+    }
+
+    [Function(nameof(UpdateSafetyCaseDeclaration))]
+    public async Task<HttpResponseData> UpdateSafetyCaseDeclaration([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "UpdateSafetyCaseDeclaration")] HttpRequestData request)
+    {
+        var requestData = await request.ReadAsJsonAsync<SafetyCaseReportRequestModel>();
+
+        var isValid = IsSafetyCaseReportRequestDataValid(requestData);
+
+        if (!isValid) return request.CreateResponse(HttpStatusCode.BadRequest);
+
+        await dynamicsService.UpdateSafetyCaseReportSubmissionDate(requestData.ApplicationNumber, requestData.Date);
+
+        return request.CreateResponse(HttpStatusCode.OK);
+    }
+
+    private static bool IsSafetyCaseReportRequestDataValid(SafetyCaseReportRequestModel requestData)
+    {
+        return requestData != null
+               && requestData.ApplicationNumber != null
+               && requestData.Date <= DateTime.Now;
     }
 
     private bool IsRequestDataValid(RegisteredStructureRequestModel requestData)
@@ -341,6 +363,12 @@ public class RegisteredStructureRequestModel
 {
     public string Postcode { get; set; }
     public string AddressLineOne { get; set; }
+}
+
+public class SafetyCaseReportRequestModel
+{
+    public string ApplicationNumber { get; set; }
+    public DateTime Date { get; set; }
 }
 
 public class ApplicationNumberAndEmail
