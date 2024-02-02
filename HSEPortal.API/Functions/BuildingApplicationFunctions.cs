@@ -321,6 +321,46 @@ public class BuildingApplicationFunctions
             BuildingName = requestContent.BuildingName
         };
 
+        if (application.RegistrationAmendmentsModel?.ChangeUser is { PrimaryUser: not null })
+        {
+            application = application with
+            {
+                RegistrationAmendmentsModel = application.RegistrationAmendmentsModel with
+                {
+                    ChangeUser = application.RegistrationAmendmentsModel.ChangeUser with
+                    {
+                        PrimaryUser = application.RegistrationAmendmentsModel.ChangeUser.PrimaryUser with
+                        {
+                            Firstname = requestContent.ApplicantFirstName,
+                            Lastname = requestContent.ApplicantLastName,
+                            Email = requestContent.ApplicantEmailAddress,
+                            PhoneNumber = requestContent.ApplicantPhoneNumber
+                        }
+                    }
+                }
+            };
+        }
+
+        if (application.RegistrationAmendmentsModel?.ChangeUser is { SecondaryUser: not null })
+        {
+            application = application with
+            {
+                RegistrationAmendmentsModel = application.RegistrationAmendmentsModel with
+                {
+                    ChangeUser = application.RegistrationAmendmentsModel.ChangeUser with
+                    {
+                        SecondaryUser = application.RegistrationAmendmentsModel.ChangeUser.SecondaryUser with
+                        {
+                            Firstname = requestContent.SecondaryApplicantFirstName,
+                            Lastname = requestContent.SecondaryApplicantLastName,
+                            Email = requestContent.SecondaryApplicantPhoneNumber,
+                            PhoneNumber = requestContent.SecondaryApplicantEmailAddress
+                        },
+                    }
+                }
+            };
+        }
+
         return new CustomHttpResponseData
         {
             Application = application,
