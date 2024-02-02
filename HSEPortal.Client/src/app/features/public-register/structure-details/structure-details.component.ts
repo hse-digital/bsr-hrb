@@ -27,6 +27,7 @@ export class StructureDetailsComponent implements OnInit {
 
   async ngOnInit() {
     this.otherStructures = await this.applicationService.getStructuresForApplication(this.result.ApplicationId);
+    StructureDetailsComponent.title = `Structure information - ${this.result.Structure.Name ?? this.result.BuildingName} - Register a high-rise building - GOV.UK`;
   }
 
   getStructureAddress() {
