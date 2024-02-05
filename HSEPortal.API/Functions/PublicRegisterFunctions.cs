@@ -55,20 +55,20 @@ public class PublicRegisterFunctions
             .DistinctBy(x => x.id).Where(x => x.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentComplete))
             .Select(x => x.Sections.Select(section => new PublicRegisterStructureModel
             {
-                ApplicationId = x.id,
-                ContactLastName = x.ContactLastName,
-                ContactFirstName = x.ContactFirstName,
-                BuildingName = x.BuildingName,
-                Structure = section,
-                AccountablePersons = x.AccountablePersons.Select(ap =>
+                code = x.id,
+                userLastName = x.ContactLastName,
+                userFirstName = x.ContactFirstName,
+                structureName = x.BuildingName,
+                structure = section,
+                aps = x.AccountablePersons.Select(ap =>
                 {
                     var publicRegisterAccountablePerson = new PublicRegisterAccountablePerson(ap.Type, ap.IsPrincipal, ap.OrganisationName, ap.SectionsAccountability);
-                    if (publicRegisterAccountablePerson.Type == "organisation" || publicRegisterAccountablePerson.IsPrincipal == "yes")
+                    if (publicRegisterAccountablePerson.type == "organisation" || publicRegisterAccountablePerson.isMain == "yes")
                     {
                         publicRegisterAccountablePerson = publicRegisterAccountablePerson with
                         {
-                            Address = ap.Address,
-                            PapAddress = ap.PapAddress
+                            address = ap.Address,
+                            mainAddress = ap.PapAddress
                         };
                     }
 
@@ -94,20 +94,20 @@ public class PublicRegisterFunctions
         var acceptedApplications = await GetAcceptedVersionFromDynamics(new List<BuildingApplicationModel> { buildingApplication });
         var toReturn = acceptedApplications[0].Sections.Select(structure => new PublicRegisterStructureModel
         {
-            ApplicationId = buildingApplication.Id,
-            ContactLastName = buildingApplication.ContactLastName,
-            ContactFirstName = buildingApplication.ContactFirstName,
-            BuildingName = buildingApplication.BuildingName,
-            Structure = structure,
-            AccountablePersons = acceptedApplications[0].AccountablePersons.Select(ap =>
+            code = buildingApplication.Id,
+            userLastName = buildingApplication.ContactLastName,
+            userFirstName = buildingApplication.ContactFirstName,
+            structureName = buildingApplication.BuildingName,
+            structure = structure,
+            aps = acceptedApplications[0].AccountablePersons.Select(ap =>
             {
                 var publicRegisterAccountablePerson = new PublicRegisterAccountablePerson(ap.Type, ap.IsPrincipal, ap.OrganisationName, ap.SectionsAccountability);
-                if (publicRegisterAccountablePerson.Type == "organisation" || publicRegisterAccountablePerson.IsPrincipal == "yes")
+                if (publicRegisterAccountablePerson.type == "organisation" || publicRegisterAccountablePerson.isMain == "yes")
                 {
                     publicRegisterAccountablePerson = publicRegisterAccountablePerson with
                     {
-                        Address = ap.Address,
-                        PapAddress = ap.PapAddress
+                        address = ap.Address,
+                        mainAddress = ap.PapAddress
                     };
                 }
 
@@ -198,20 +198,20 @@ public record PublicRegisterApplicationModel
 
 public class PublicRegisterStructureModel
 {
-    public string ApplicationId { get; set; }
-    public string ContactFirstName { get; set; }
-    public string ContactLastName { get; set; }
-    public string BuildingName { get; set; }
-    public SectionModel Structure { get; set; }
-    public List<PublicRegisterAccountablePerson> AccountablePersons { get; set; }
+    public string code { get; set; }
+    public string userFirstName { get; set; }
+    public string userLastName { get; set; }
+    public string structureName { get; set; }
+    public SectionModel structure { get; set; }
+    public List<PublicRegisterAccountablePerson> aps { get; set; }
 }
 
 public record PublicRegisterAccountablePerson(
-    string Type,
-    string IsPrincipal,
-    string OrganisationName,
-    SectionAccountability[] SectionsAccountability)
+    string type,
+    string isMain,
+    string orgName,
+    SectionAccountability[] accountability)
 {
-    public BuildingAddress Address { get; set; }
-    public BuildingAddress PapAddress { get; set; }
+    public BuildingAddress address { get; set; }
+    public BuildingAddress mainAddress { get; set; }
 };

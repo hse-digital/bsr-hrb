@@ -45,8 +45,8 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
   }
 
   getRadioLabel(resultItem: any) {
-    let section = resultItem.Structure;
-    let buildingName = resultItem.BuildingName;
+    let section = resultItem.structure;
+    let buildingName = resultItem.structureName;
     if (section.Name) {
       return `${section.Name} (part of ${buildingName})`;
     }
@@ -57,7 +57,7 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
   getStructureAddress(result: any) {
     let normalizedModel = this.postcode?.replace(' ', '');
 
-    let section = result.Structure;
+    let section = result.structure;
     let address = section.Addresses.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered?.replace(' ', '') == normalizedModel);
 
     let splitAddress = address.Address.split(',');
@@ -93,6 +93,6 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
 
   postcodeMatches(item: any) {
     let normalizedModel = this.postcode?.replace(' ', '');
-    return item.Structure.Addresses?.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered?.replace(' ', '') == normalizedModel);
+    return item.structure.Addresses?.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered?.replace(' ', '') == normalizedModel);
   }
 }
