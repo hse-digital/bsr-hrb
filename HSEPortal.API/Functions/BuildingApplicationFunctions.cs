@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Net;
+using Azure.Core;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
@@ -46,7 +47,7 @@ public class BuildingApplicationFunctions
                 new("original")
             }
         };
-        
+
         var response = await request.CreateObjectResponseAsync(buildingApplicationModel);
         return new CustomHttpResponseData
         {
@@ -56,16 +57,12 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(ValidateApplicationNumber))]
-    public async Task<HttpResponseData> ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", Connection = "CosmosConnection")]
-        List<BuildingApplicationModel> buildingApplications)
+    public async Task<HttpResponseData> ValidateApplicationNumber([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ValidateApplicationNumber")] HttpRequestData request)
     {
         var validateApplicationRequest = await request.ReadAsJsonAsync<ValidateApplicationRequest>();
-        var matchingApplication = buildingApplications.Any(x => x.ContactEmailAddress?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.SecondaryEmailAddress?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.NewPrimaryUserEmail?.Equals(validateApplicationRequest.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true);
+        var matchingApplication = await dynamicsService.ValidateExistingApplication(validateApplicationRequest.ApplicationNumber, validateApplicationRequest.EmailAddress);
 
-        return request.CreateResponse(matchingApplication ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
+        return request.CreateResponse(matchingApplication != null ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 
     [Function(nameof(GetSubmissionDate))]
@@ -92,15 +89,15 @@ public class BuildingApplicationFunctions
         List<BuildingApplicationModel> buildingApplications)
     {
         var requestContent = await request.ReadAsJsonAsync<GetApplicationRequest>();
-        var matchingApplication = buildingApplications.Any(x => x.ContactEmailAddress?.Equals(requestContent.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.SecondaryEmailAddress?.Equals(requestContent.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true ||
-                                                                x.NewPrimaryUserEmail?.Equals(requestContent.EmailAddress, StringComparison.InvariantCultureIgnoreCase) == true);
-        if (matchingApplication)
+
+        var matchingApplication = await dynamicsService.ValidateExistingApplication(requestContent.ApplicationNumber, requestContent.EmailAddress);
+        if (matchingApplication != null)
         {
             var application = buildingApplications[0];
             var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress)
                                || await otpService.ValidateToken(requestContent.OtpToken, application.SecondaryEmailAddress)
-                               || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail);
+                               || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail)
+                               || await otpService.ValidateToken(requestContent.OtpToken, requestContent.EmailAddress);
 
             if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
@@ -118,6 +115,7 @@ public class BuildingApplicationFunctions
                     };
                 }
 
+                application = application with { BuildingName = matchingApplication.bsr_Building.bsr_name };
                 return await request.CreateObjectResponseAsync(application);
             }
         }
@@ -139,6 +137,27 @@ public class BuildingApplicationFunctions
         return responseModel != null
             ? await request.CreateObjectResponseAsync(responseModel)
             : request.CreateResponse(HttpStatusCode.ExpectationFailed);
+    }
+
+    [Function(nameof(UpdateSafetyCaseDeclaration))]
+    public async Task<HttpResponseData> UpdateSafetyCaseDeclaration([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "UpdateSafetyCaseDeclaration")] HttpRequestData request)
+    {
+        var requestData = await request.ReadAsJsonAsync<SafetyCaseReportRequestModel>();
+
+        var isValid = IsSafetyCaseReportRequestDataValid(requestData);
+
+        if (!isValid) return request.CreateResponse(HttpStatusCode.BadRequest);
+
+        await dynamicsService.UpdateSafetyCaseReportSubmissionDate(requestData.ApplicationNumber, requestData.Date);
+
+        return request.CreateResponse(HttpStatusCode.OK);
+    }
+
+    private static bool IsSafetyCaseReportRequestDataValid(SafetyCaseReportRequestModel requestData)
+    {
+        return requestData != null
+               && requestData.ApplicationNumber != null
+               && requestData.Date <= DateTime.Now;
     }
 
     private bool IsRequestDataValid(RegisteredStructureRequestModel requestData)
@@ -274,7 +293,83 @@ public class BuildingApplicationFunctions
             return request.CreateResponse(HttpStatusCode.BadRequest);
 
         var statuscodeModel = await dynamicsService.GetBuildingApplicationStatuscodeBy(applicationid);
-        return await request.CreateObjectResponseAsync(statuscodeModel.statuscode);
+        return await request.CreateObjectResponseAsync(statuscodeModel?.statuscode);
+    }
+
+    [Function(nameof(UpdateApplicant))]
+    public async Task<CustomHttpResponseData> UpdateApplicant([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", PartitionKey = "{ApplicationNumber}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications)
+    {
+        var requestContent = await request.ReadAsJsonAsync<UpdateApplicantRequest>();
+        var application = buildingApplications.FirstOrDefault();
+
+        if (application == null)
+        {
+            return new CustomHttpResponseData
+            {
+                HttpResponse = request.CreateResponse(HttpStatusCode.BadRequest)
+            };
+        }
+
+        application = application with
+        {
+            ContactFirstName = requestContent.ApplicantFirstName,
+            ContactLastName = requestContent.ApplicantLastName,
+            ContactPhoneNumber = requestContent.ApplicantPhoneNumber,
+            ContactEmailAddress = requestContent.ApplicantEmailAddress,
+            SecondaryFirstName = requestContent.SecondaryApplicantFirstName,
+            SecondaryLastName = requestContent.SecondaryApplicantLastName,
+            SecondaryPhoneNumber = requestContent.SecondaryApplicantPhoneNumber,
+            SecondaryEmailAddress = requestContent.SecondaryApplicantEmailAddress,
+            BuildingName = requestContent.BuildingName
+        };
+
+        if (application.RegistrationAmendmentsModel?.ChangeUser is { PrimaryUser: not null })
+        {
+            application = application with
+            {
+                RegistrationAmendmentsModel = application.RegistrationAmendmentsModel with
+                {
+                    ChangeUser = application.RegistrationAmendmentsModel.ChangeUser with
+                    {
+                        PrimaryUser = application.RegistrationAmendmentsModel.ChangeUser.PrimaryUser with
+                        {
+                            Firstname = requestContent.ApplicantFirstName,
+                            Lastname = requestContent.ApplicantLastName,
+                            Email = requestContent.ApplicantEmailAddress,
+                            PhoneNumber = requestContent.ApplicantPhoneNumber
+                        }
+                    }
+                }
+            };
+        }
+
+        if (application.RegistrationAmendmentsModel?.ChangeUser is { SecondaryUser: not null })
+        {
+            application = application with
+            {
+                RegistrationAmendmentsModel = application.RegistrationAmendmentsModel with
+                {
+                    ChangeUser = application.RegistrationAmendmentsModel.ChangeUser with
+                    {
+                        SecondaryUser = application.RegistrationAmendmentsModel.ChangeUser.SecondaryUser with
+                        {
+                            Firstname = requestContent.SecondaryApplicantFirstName,
+                            Lastname = requestContent.SecondaryApplicantLastName,
+                            Email = requestContent.SecondaryApplicantPhoneNumber,
+                            PhoneNumber = requestContent.SecondaryApplicantEmailAddress
+                        },
+                    }
+                }
+            };
+        }
+
+        return new CustomHttpResponseData
+        {
+            Application = application,
+            HttpResponse = request.CreateResponse(HttpStatusCode.OK)
+        };
     }
 }
 
@@ -314,6 +409,12 @@ public class RegisteredStructureRequestModel
     public string AddressLineOne { get; set; }
 }
 
+public class SafetyCaseReportRequestModel
+{
+    public string ApplicationNumber { get; set; }
+    public DateTime Date { get; set; }
+}
+
 public class ApplicationNumberAndEmail
 {
     public string ApplicationNumber { get; set; }
@@ -321,3 +422,15 @@ public class ApplicationNumberAndEmail
 }
 
 public record ValidateApplicationRequest(string ApplicationNumber, string EmailAddress);
+
+public record UpdateApplicantRequest(
+    string ApplicationNumber,
+    string ApplicantFirstName,
+    string ApplicantLastName,
+    string ApplicantPhoneNumber,
+    string ApplicantEmailAddress,
+    string SecondaryApplicantFirstName,
+    string SecondaryApplicantLastName,
+    string SecondaryApplicantPhoneNumber,
+    string SecondaryApplicantEmailAddress,
+    string BuildingName);

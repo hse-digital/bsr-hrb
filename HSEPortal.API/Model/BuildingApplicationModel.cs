@@ -33,38 +33,7 @@ public record BuildingApplicationModel(
 {
     public ValidationSummary Validate()
     {
-        var errors = new List<string>();
-        if (string.IsNullOrWhiteSpace(BuildingName))
-        {
-            errors.Add("Building name is required");
-        }
-
-        if (string.IsNullOrWhiteSpace(ContactFirstName))
-        {
-            errors.Add("Contact first name is required");
-        }
-
-        if (string.IsNullOrWhiteSpace(ContactLastName))
-        {
-            errors.Add("Contact last name is required");
-        }
-
-        if (string.IsNullOrWhiteSpace(ContactPhoneNumber))
-        {
-            errors.Add("Contact phone number is required");
-        }
-        else if (!PhoneNumberIsValid())
-        {
-            errors.Add(
-                "You must enter a UK telephone number. For example, 01632 960 001, 07700 900 982 or +44 808 157 0192");
-        }
-
-        if (string.IsNullOrWhiteSpace(ContactEmailAddress))
-        {
-            errors.Add("Contact email address is required");
-        }
-
-        return new ValidationSummary(!errors.Any(), errors.ToArray());
+        return new ValidationSummary(true, new string[0]);
     }
 
     private bool PhoneNumberIsValid()

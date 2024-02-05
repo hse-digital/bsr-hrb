@@ -68,8 +68,8 @@ export class ReturningApplicationVerifyComponent implements OnInit {
   private async doesSecurityCodeMatch(): Promise<boolean> {
     try {
       await this.applicationService.continueApplication(this.applicationNumber, this.emailAddress, this.securityCode!);
-
-      this.applicationService.model.IsSecondary = this.emailAddress.trim().toLowerCase() == this.applicationService.model.SecondaryEmailAddress?.trim().toLowerCase();
+      
+      this.applicationService.model.IsSecondary = this.isSecondary();
       this.applicationService.updateApplication();
 
       await this.applicationService.verifyPaymentStatus();
@@ -134,5 +134,11 @@ export class ReturningApplicationVerifyComponent implements OnInit {
     let isPaymentComplete = (applicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete;
     let isInvoice = this.applicationService.model.PaymentType == 'invoice' && (this.applicationService.model.PaymentInvoiceDetails?.Status == 'awaiting' || this.applicationService.model.PaymentInvoiceDetails?.Status == 'completed')
     return isPaymentComplete || isInvoice;
+  }
+
+  private isSecondary() {
+    let email = this.emailAddress.trim().toLowerCase();
+    return email == this.applicationService.model.SecondaryEmailAddress?.trim().toLowerCase() &&
+           email != this.applicationService.model.ContactEmailAddress?.trim().toLowerCase();
   }
 }

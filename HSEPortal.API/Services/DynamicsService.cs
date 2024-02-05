@@ -985,13 +985,24 @@ public class DynamicsService
     public async Task<string> GetSubmissionDate(string applicationNumber)
     {
         var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
-        return buildingApplication.bsr_submittedon;
+        return buildingApplication?.bsr_submittedon;
     }
 
     public async Task<string> GetKbiSubmissionDate(string applicationNumber)
     {
         var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
-        return buildingApplication.bsr_Building.bsr_kbicompletiondate;
+        return buildingApplication?.bsr_Building.bsr_kbicompletiondate;
+    }
+
+    public async Task UpdateSafetyCaseReportSubmissionDate(string applicationNumber, DateTime date)
+    {
+        var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
+
+        await dynamicsApi.Update($"bsr_buildingapplications({buildingApplication.bsr_buildingapplicationid})",
+            new DynamicsBuildingApplication { 
+                bsr_safetycasereportdate = date,
+                bsr_safetycasedeclaration = true
+            });
     }
 
     public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
@@ -1015,5 +1026,16 @@ public class DynamicsService
         var newFileNameOnly = $"{fileNameOnly}_{DateTime.UtcNow:s}".Replace(':', '-');
 
         return $"{newFileNameOnly}{fileExtension}";
+    }
+
+    public async Task<DynamicsBuildingApplication> ValidateExistingApplication(string applicationNumber, string emailAddress)
+    {
+        var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplication>>("bsr_buildingapplications", 
+ ("$filter", $"bsr_applicationid eq '{applicationNumber}' and (bsr_RegistreeId/emailaddress1 eq '{emailAddress}' or bsr_secondaryapplicantid/emailaddress1 eq '{emailAddress}')"),
+            ("$expand", "bsr_RegistreeId($select=emailaddress1),bsr_secondaryapplicantid($select=emailaddress1),bsr_Building($select=bsr_name)"),
+            ("$select", "bsr_applicationid,bsr_buildingapplicationid")
+        );
+        
+        return response.value.FirstOrDefault();
     }
 }

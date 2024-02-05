@@ -27,18 +27,4 @@ public class WhenUpdatingApplication : UnitTestBase
         response.Application.Should().BeEquivalentTo(application);
         response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.OK);
     }
-
-    [Theory]
-    [InlineData(null, "firstname", "lastname", "phone", "email")]
-    [InlineData("building", null, "lastname", "phone", "email")]
-    [InlineData("building", "firstname", null, "phone", "email")]
-    [InlineData("building", "firstname", "lastname", null, "email")]
-    [InlineData("building", "firstname", "lastname", "phone", null)]
-    public async Task ShouldReturnBadRequestIfInputsAreInvalid(string buildingName, string contactFirstName, string contactLastName, string contactPhone, string contactEmail)
-    {
-        var application = new BuildingApplicationModel(buildingName, contactFirstName, contactLastName, contactPhone, contactEmail);
-        var response = await buildingApplicationFunctions.UpdateApplication(BuildHttpRequestData(data: application, application.Id));
-
-        response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
 }

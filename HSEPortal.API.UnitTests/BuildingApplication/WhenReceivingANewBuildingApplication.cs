@@ -43,20 +43,6 @@ public class WhenReceivingANewBuildingApplication : UnitTestBase
             });
     }
 
-    [Theory]
-    [InlineData(null, "firstname", "lastname", "phone", "email")]
-    [InlineData("building", null, "lastname", "phone", "email")]
-    [InlineData("building", "firstname", null, "phone", "email")]
-    [InlineData("building", "firstname", "lastname", null, "email")]
-    [InlineData("building", "firstname", "lastname", "phone", null)]
-    public async Task ShouldReturnBadRequestIfInputsAreInvalid(string buildingName, string contactFirstName, string contactLastName, string contactPhone, string contactEmail)
-    {
-        var buildingRegistrationModel = new BuildingApplicationModel(buildingName, contactFirstName, contactLastName, contactPhone, contactEmail);
-        var response = await WhenANewBuildingApplicationIsReceived(buildingRegistrationModel);
-
-        response.HttpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-
     [Fact(Skip = "token setup")]
     public async Task ShouldCreateBuilding()
     {

@@ -23,6 +23,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { KbiService } from './services/kbi.service';
 import { GetInjector } from './helpers/injector.helper';
 import { WhatWantToDoComponent } from './features/registration-amendments/what-want-to-do/what-want-to-do.component';
+import { YesButNoReferenceComponent } from './features/registration-amendments/yes-but-no-reference/yes-but-no-reference';
 import { ComponentsModule } from './components/components.module';
 import { CommonModule } from '@angular/common';
 import { RegistrationAmendmentsService } from './services/registration-amendments.service';
@@ -38,7 +39,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(HomeComponent.route, HomeComponent, undefined, HomeComponent.title),
   HseRoute.unsafe(TimeoutComponent.route, TimeoutComponent, undefined, TimeoutComponent.title),
   HseRoute.unsafe(NotFoundComponent.route, NotFoundComponent, undefined, NotFoundComponent.title),
-  HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title), 
+  HseRoute.unsafe(YesButNoReferenceComponent.route, YesButNoReferenceComponent, undefined, YesButNoReferenceComponent.title),
   HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent, undefined, ReturningApplicationComponent.title),
   HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),
   HseRoute.forLoadChildren(HelpPagesModule.baseRoute, () => import('./components/footer/help-pages.module').then(m => m.HelpPagesModule)),
@@ -59,7 +60,8 @@ const routes = new HseRoutes([
     ReturningApplicationVerifyComponent,
     TimeoutModalComponent,
     NotFoundComponent,
-    WhatWantToDoComponent
+    WhatWantToDoComponent,
+    YesButNoReferenceComponent,
   ],
   imports: [
     RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload' }),

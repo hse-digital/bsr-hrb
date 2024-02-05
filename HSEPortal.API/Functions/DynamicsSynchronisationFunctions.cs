@@ -5,6 +5,7 @@ using Flurl.Http;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Model.DynamicsSynchronisation;
+using HSEPortal.API.Model.Payment;
 using HSEPortal.API.Model.Payment.Response;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
@@ -140,7 +141,7 @@ public class DynamicsSynchronisationFunctions
             var payments = await orchestrationContext.CallActivityAsync<List<DynamicsPayment>>(nameof(GetDynamicsPayments), buildingApplicationModel.Id);
             var paymentSyncTasks = payments.Select(async payment =>
             {
-                var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), payment.bsr_govukpaymentid);
+                var paymentResponse = await orchestrationContext.CallActivityAsync<PaymentResponseModel>(nameof(GetPaymentStatus), payment);
                 if (paymentResponse != null)
                 {
                     await orchestrationContext.CallActivityAsync(nameof(CreateOrUpdatePayment), new BuildingApplicationPayment(dynamicsBuildingApplication.bsr_buildingapplicationid, paymentResponse));
@@ -195,7 +196,7 @@ public class DynamicsSynchronisationFunctions
     [Function(nameof(UpdateDuplicateBuildingApplicationAssociations))]
     public Task UpdateDuplicateBuildingApplicationAssociations([ActivityTrigger] BuildingApplicationWrapper buildingApplicationWrapper)
     {
-        return dynamicsService.CreateAssociatedDuplicatedBuildingApplications(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);        
+        return dynamicsService.CreateAssociatedDuplicatedBuildingApplications(buildingApplicationWrapper.Model, buildingApplicationWrapper.DynamicsBuildingApplication);
     }
 
     [Function(nameof(UpdateBuildingToSubmitted))]
@@ -240,19 +241,47 @@ public class DynamicsSynchronisationFunctions
     [Function(nameof(CreateOrUpdatePayment))]
     public async Task CreateOrUpdatePayment([ActivityTrigger] BuildingApplicationPayment buildingApplicationPayment)
     {
-        await dynamicsService.CreateCardPayment(buildingApplicationPayment);
+        if (buildingApplicationPayment.Payment.ProviderId == "invoice")
+        {
+            await dynamicsService.UpdateInvoicePayment(new InvoicePaidEventData
+            {
+                Data = new InvoiceObjectData
+                {
+                    InvoiceData = new InvoiceData
+                    {
+                        InvoiceMetadata = new InvoiceMetadata { PaymentId = buildingApplicationPayment.Payment.PaymentId },
+                        Status = buildingApplicationPayment.Payment.Status
+                    }
+                }
+            });
+        }
+        else
+        {
+            await dynamicsService.CreateCardPayment(buildingApplicationPayment);
+        }
     }
 
     [Function(nameof(GetPaymentStatus))]
-    public async Task<PaymentResponseModel> GetPaymentStatus([ActivityTrigger] string paymentId)
+    public async Task<PaymentResponseModel> GetPaymentStatus([ActivityTrigger] DynamicsPayment dynamicsPayment)
     {
         PaymentApiResponseModel response;
         var retryCount = 0;
 
+        if (string.IsNullOrWhiteSpace(dynamicsPayment.bsr_govukpaymentid)) // invoice payment
+        {
+            var invoiceResponse = await integrationOptions.CommonAPIEndpoint
+                .AppendPathSegments("api", "GetInvoiceStatus", dynamicsPayment.bsr_transactionid)
+                .WithHeader("x-functions-key", integrationOptions.CommonAPIKey)
+                .GetJsonAsync<InvoiceData>();
+
+            return mapper.Map<PaymentResponseModel>(invoiceResponse);
+        }
+
+        // govuk payment
         do
         {
             response = await integrationOptions.PaymentEndpoint
-                .AppendPathSegments("v1", "payments", paymentId)
+                .AppendPathSegments("v1", "payments", dynamicsPayment.bsr_govukpaymentid)
                 .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
                 .GetJsonAsync<PaymentApiResponseModel>();
 

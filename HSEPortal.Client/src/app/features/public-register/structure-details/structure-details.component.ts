@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import * as moment from 'moment';
 import { ApplicationService } from "src/app/services/application.service";
@@ -15,9 +16,9 @@ export class StructureDetailsComponent implements OnInit {
   postcode: any;
   pap?: any;
 
-  otherStructures?: any[];
+  otherStructures: any[] = [];
 
-  constructor(private router: Router, private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+  constructor(private router: Router, private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private title: Title) {
     let routerState = this.router.getCurrentNavigation()?.extras.state;
 
     this.postcode = routerState?.["postcode"];
@@ -26,12 +27,17 @@ export class StructureDetailsComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.otherStructures = await this.applicationService.getStructuresForApplication(this.result.ApplicationId);
+    this.otherStructures = await this.applicationService.getStructuresForApplication(this.result.code);
+    this.title.setTitle(`Structure information - ${this.result.structure.Name ?? this.result.structureName} - Register a high-rise building - GOV.UK`);
   }
 
   getStructureAddress() {
-    let address = this.result.Structure.Addresses[0];
+    let address = this.result.structure.Addresses[0];
     return this.normalizeAddress(address);
+  }
+
+  anyResidentialAddresses(): boolean {
+    return this.result.structure.Addresses.find((x: any) => x.Postcode != x.PostcodeEntered) != undefined;
   }
 
   private toCamelCase(str: string) {
@@ -54,11 +60,17 @@ export class StructureDetailsComponent implements OnInit {
 
   getSecondaryAddresses() {
     let normalizedModel = this.postcode?.replace(' ', '');
-    return this.result.Structure.Addresses.filter((address: any) => address.Postcode?.replace(' ', '') != normalizedModel || address.PostcodeEntered.replace(' ', '') != normalizedModel)
+    return this.result.structure.Addresses.filter((address: any) => address.Postcode?.replace(' ', '') != normalizedModel || address.PostcodeEntered.replace(' ', '') != normalizedModel)
   }
 
   normalizeAddress(address: any) {
-    let splitAddress = address?.Address.split(',');
+    if (!address) return '';
+
+    if (address?.IsManual) {
+      return [address.Address, address.AddressLineTwo, address.Town, address.Postcode].filter(x => x).join(', ');
+    }
+
+    let splitAddress = address.Address.split(',');
     if (splitAddress.length == 1) {
       return splitAddress[0];
     }
@@ -72,21 +84,21 @@ export class StructureDetailsComponent implements OnInit {
   }
 
   getYearOfCompletion() {
-    if (this.result.Structure.YearOfCompletionOption == 'year-exact') {
-      return `in ${this.result.Structure.YearOfCompletion}`;
+    if (this.result.structure.YearOfCompletionOption == 'year-exact') {
+      return `in ${this.result.structure.YearOfCompletion}`;
     }
 
-    return `between ${this.result.Structure.YearOfCompletionRange?.replace('-to', '')}`;
+    return `between ${this.result.structure.YearOfCompletionRange?.replace('-to', '')}`;
   }
 
   getCompletionCertificateDetails() {
-    let structure = this.result.Structure;
+    let structure = this.result.structure;
 
     if (structure.CompletionCertificateReference) {
       let content = `A completion certifcate was issued`;
 
       if (structure.CompletionCertificateIssuer) {
-        content = `${content} by ${structure.CompletionCertificateIssuer}`;
+        content = `${content} by ${structure.CompletionCertificateIssuer}.`;
       }
 
       if (structure.CompletionCertificateDate) {
@@ -100,27 +112,30 @@ export class StructureDetailsComponent implements OnInit {
   }
 
   private getPap() {
-    return this.result.AccountablePersons[0];
+    return this.result.aps[0];
   }
 
   getOtherAps() {
-    return this.result.AccountablePersons.filter((_: any, i: number) => i > 0);
+    return this.result.aps.filter((_: any, i: number) => i > 0);
   }
-  
+
   getApName(ap: any) {
-    if (ap.IsPrincipal == 'yes') {
-      return `${this.result.ContactFirstName} ${this.result.ContactLastName}`;
+    if (ap.isMain == 'yes') {
+      return `${this.result.userFirstName} ${this.result.userLastName}`;
     }
 
-    if (ap.Type == 'individual') {
+    if (ap.type == 'individual') {
       return 'An individual';
     }
 
-    return ap.OrganisationName;
+    return ap.orgName;
   }
 
   sectionsWithAccountability(ap: any) {
-    return ap.SectionsAccountability?.filter((x: any) => x.SectionName == this.result.Structure.Name && (x.Accountability?.length ?? 0) > 0);
+    return ap.accountability?.filter((x: any) => {
+      let structureName = this.result.structure?.Name ?? this.result.structureName;
+      return x.SectionName == structureName && (x.Accountability?.length ?? 0) > 0;
+    });
   }
 
   removeDuplicates(accountability: any[]) {

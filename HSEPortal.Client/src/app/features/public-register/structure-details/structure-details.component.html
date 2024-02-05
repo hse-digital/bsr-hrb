@@ -1,8 +1,8 @@
 <govuk-formpage [hideSaveAndComeBack]=true [hideSaveAndContinue]=true>
 
   <div class="structure-details">
-    <div class="govuk-hint fs-24">{{result.ApplicationId}}</div>
-    <h1 class="fs-36">{{result.Structure.Name ?? result.BuildingName}}</h1>
+    <div class="govuk-hint fs-24">{{result.code}}</div>
+    <h1 class="govuk-heading-m fs-36">{{result.structure.Name ?? result.structureName}}</h1>
 
     <govuk-body class="govuk-!-margin-top-6 fs-24">{{getStructureAddress()}}</govuk-body>
 
@@ -10,39 +10,41 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
           <td class="govuk-table__header">Number of floors above ground</td>
-          <td class="govuk-table__cell">{{result.Structure.FloorsAbove}}</td>
+          <td class="govuk-table__cell">{{result.structure.FloorsAbove}}</td>
         </tr>
         <tr class="govuk-table__row">
           <td class="govuk-table__header">
             Height
             <govuk-body>This is measured from ground level to the top floor, not the roof.</govuk-body>
           </td>
-          <td class="govuk-table__cell">{{result.Structure.Height}} metres</td>
+          <td class="govuk-table__cell">{{result.structure.Height}} metres</td>
         </tr>
         <tr class="govuk-table__row">
           <td class="govuk-table__header">
             Number of residential units
             <govuk-body>These could be flats, maisonettes or any other places that residents could live.</govuk-body>
           </td>
-          <td class="govuk-table__cell">{{result.Structure.ResidentialUnits}}</td>
+          <td class="govuk-table__cell">{{result.structure.ResidentialUnits}}</td>
         </tr>
       </tbody>
     </table>
 
     <!-- secondary addresses -->
-    <div *ngIf="result.Structure.Addresses?.length > 1" class="govuk-!-margin-bottom-8">
+    <div *ngIf="result.structure.Addresses?.length > 1" class="govuk-!-margin-bottom-8">
       <h2 class="govuk-heading-m">Other addresses</h2>
       <govuk-body>The principal accountable person told us other addresses for this building:</govuk-body>
 
       <govuk-list classes='govuk-list--bullet'>
         <govuk-list-item *ngFor="let address of getSecondaryAddresses()" [text]="normalizeAddress(address)" />
       </govuk-list>
+
+      <govuk-body *ngIf="anyResidentialAddresses()">There are other postcodes for this building, like residential postcodes. But we do not display them all here.</govuk-body>
     </div>
 
     <!-- building completion -->
     <div class="govuk-!-margin-bottom-8">
       <h2 class="govuk-heading-m">When was the building completed</h2>
-      <govuk-body>{{result.Structure.Name ?? result.BuildingName}} was completed {{getYearOfCompletion()}}.</govuk-body>
+      <govuk-body>{{result.structure.Name ?? result.structureName}} was completed {{getYearOfCompletion()}}.</govuk-body>
       <govuk-body>{{getCompletionCertificateDetails()}}</govuk-body>
     </div>
 
@@ -65,7 +67,7 @@
 
         <govuk-body>{{getApName(pap)}} is the principal accountable person. They're responsible for registering the building and making sure the information we hold is updated.</govuk-body>
         <govuk-body>They're also responsible for telling residents how to contact them, make complaints or ask questions. This is part of their residents engagement strategy.</govuk-body>
-        <govuk-body>They are based at {{normalizeAddress(pap.PapAddress ?? pap.Address)}}</govuk-body>
+        <govuk-body *ngIf="pap.Type == 'organisation'">They are based at {{normalizeAddress(pap.PapAddress ?? pap.Address)}}</govuk-body>
       </div>
 
       <div *ngFor="let ap of getOtherAps()" class="govuk-!-margin-bottom-8">
@@ -85,15 +87,15 @@
   </div>
 
   <!-- connections -->
-  <div class="govuk-!-margin-bottom-8" *ngIf="otherStructures">
+  <div class="govuk-!-margin-bottom-8" *ngIf="otherStructures.length > 1">
     <h2 class="govuk-heading-m">Connections to other buildings</h2>
 
-    <govuk-body>{{result.Structure.Name}} is part of {{result.BuildingName}}.</govuk-body>
-    <govuk-body>There are {{otherStructures!.length}} structures in {{result.BuildingName}}:</govuk-body>
+    <govuk-body>{{result.structure.Name}} is part of {{result.strucutreName}}.</govuk-body>
+    <govuk-body>There are {{otherStructures!.length}} structures in {{result.structureName}}:</govuk-body>
     <ul class="govuk-list govuk-list--bullet">
       <li *ngFor="let structure of otherStructures">
-        <span *ngIf="structure.Structure.Name == result.Structure.Name">{{structure.Structure.Name}}</span>
-        <a *ngIf="structure.Structure.Name != result.Structure.Name" (click)="navigateToOtherStructure(structure)" href="javascript:void(0)">{{structure.Structure.Name}}</a>
+        <span *ngIf="structure.structure.Name == result.structure.Name">{{structure.structure.Name}}</span>
+        <a *ngIf="structure.structure.Name != result.structure.Name" (click)="navigateToOtherStructure(structure)" href="javascript:void(0)">{{structure.structure.Name}}</a>
       </li>
     </ul>
   </div>
@@ -105,19 +107,47 @@
     <div class="govuk-!-margin-bottom-8">
       <h3 class="govuk-heading-s">If you are a resident</h3>
 
-      <govuk-body>If you live in {{result.Structure.Name ?? result.BuildingName}} and think any of this information has changed, contact {{getApName(pap)}}. Tell them what you think has changed and ask them to change it. They should have shared their engagement strategy with all residents of this building. The engagement strategy should tell you how to complain or ask them questions.</govuk-body>
+      <govuk-body>If you live in {{result.structure.Name ?? result.structureName}} and think any of this information is wrong, contact {{getApName(pap)}}. Tell them what you think is wrong and ask them to change it.</govuk-body>
+      <govuk-body>They should have told you:</govuk-body>
+      <govuk-list classes='govuk-list--bullet'>
+        <govuk-list-item text="how to complain" />
+        <govuk-list-item text="other information about the building" />
+        <govuk-list-item text="how the building safety risks are being managed to keep you safe" />
+      </govuk-list>
+
+
       <govuk-details summaryText="I have tried and failed to contact {{getApName(pap)}}" id="details_accountable_person">
-        <p>If you have contacted {{getApName(pap)}}, but not had a response, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator" target="_blank">contact the Building Safety Regulator.</a> If they have not already told us about the change, we will contact them about it.</p>
-        <p>We cannot give any other information about {{result.Structure.Name ?? result.BuildingName}} than what is displayed on this page - even if you contact us.</p>
+        <p>If you have contacted {{getApName(pap)}}, but not had a response, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator.</a> If they have not already told us about the change, we will contact them about it.</p>
+        <p>We cannot give any other information about {{result.structure.Name ?? result.structureName}} than what is displayed on this page - even if you contact us.</p>
       </govuk-details>
     </div>
 
     <div class="govuk-!-margin-bottom-8">
-      <h3 class="govuk-heading-s">If you are {{pap.Type != 'individual' ? 'part of' : ''}}{{getApName(pap)}}</h3>
+      <h3 class="govuk-heading-s">If you are {{pap.Type != 'individual' ? 'part of ' : ''}}{{getApName(pap)}}</h3>
 
       <govuk-body>As the principal accountable person, you must tell the Building Safety Regulator if any of this information has changed. <a class="govuk-link" href="https://www.gov.uk/guidance/applying-to-register-a-high-rise-residential-building#making-changes" target="_blank">Find out more about making changes to your registration.</a></govuk-body>
       <govuk-body>If you have already told us about changes, it can take up to 2 weeks to show here.</govuk-body>
     </div>
+
+    <div class="govuk-!-margin-bottom-8">
+      <h3 class="govuk-heading-s">If you are another accountable person</h3>
+
+      <govuk-body>If you think any of this information is wrong, you should contact {{getApName(pap)}}. If you have contacted them but not had a response, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator</a></govuk-body>
+    </div>
+
+    <div class="govuk-!-margin-bottom-8">
+      <h3 class="govuk-heading-s">If you are anybody else</h3>
+
+      <govuk-body>If you think any of this information is wrong, you can <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator</a></govuk-body>
+    </div>
+
+    <div class="govuk-!-margin-bottom-8">
+      <h2 class="govuk-heading-m">If you think this building should not be on the register</h2>
+
+      <govuk-body>The register only holds information about high-rise residential buildings in England.</govuk-body>
+      <govuk-body>If you think {{result.structure.Name ?? result.structureName}} should not be on the register, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator</a></govuk-body>
+    </div>
+    
 
     <govuk-body>To find another building, <a class="govuk-link" [routerLink]="['/public-register/search']">search again.</a></govuk-body>
 

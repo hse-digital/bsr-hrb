@@ -27,7 +27,8 @@ public record DynamicsChange(
     string bsr_name = null,
     string bsr_newanswer = null,
     string bsr_originalanswer = null,
-    string bsr_table = null
+    string bsr_table = null,
+    DynamicsChangeRequest bsr_changerequestid = null
 );
 
 public record DynamicsChangeRequestResponse(

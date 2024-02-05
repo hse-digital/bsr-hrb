@@ -1,12 +1,11 @@
 <govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true" [hideBackButton]="production">
     <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
-        <govuk-error-link *ngIf="hasErrors" anchorId="register-building-input" message="Select what you want to do" />
+        <govuk-error-link *ngIf="hasErrors" anchorId="register-building-input" message="Select if the building has a registration application reference" />
     </govuk-error-summary>
 
-    <govuk-radio-group title="Select what you want to do" [isPageHeading]="true" [(model)]="model" id="radios-what-want-do" [errorText]="getErrorDescription(hasErrors, 'Select what you want to do')">
-        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="register-building" value="register-building" label="Register a building" />
-        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="provide-information" value="provide-information" label="Provide structure and safety information" />
-        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="tell-bsr-changes" value="tell-bsr-changes" label="Tell BSR about changes to a submitted application or a registered building" />
-        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="view-information" value="view-information" label="View the information already submitted" />
+    <govuk-radio-group title="Does the building have a registration application reference?" [isPageHeading]="true" [(model)]="model" id="radios-what-want-do" [errorText]="getErrorDescription(hasErrors, 'Select if the building has a registration application reference')">     
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="yes-have-reference" value="yes-have-reference" label="Yes - and I know it" />
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="yes-but-no-reference" value="yes-but-no-reference" label="Yes - but I do not know it" />    
+        <govuk-radio (onKeyupEnter)="saveAndContinue()" [model]="model" name="application-group" id="register-building" value="register-building" label="No - I need to start a new registration application" />
     </govuk-radio-group>
 </govuk-formpage>

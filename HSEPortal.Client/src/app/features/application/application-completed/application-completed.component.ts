@@ -32,6 +32,9 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   async ngOnInit(): Promise<void> {
     this.shouldRender = false;
 
+    await this.applicationService.syncPayment();
+    await new Promise<void>((resolve) => setTimeout(() => resolve(), 4000));
+
     this.sendApplicationDataToBroadcastChannel();
 
     this.submittionDate = await this.applicationService.getSubmissionDate();
@@ -42,7 +45,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
     var payments: any = await this.applicationService.getApplicationPayments();
 
-    if(payments != undefined && payments.some((x: { bsr_govukpaystatus: string; }) => x.bsr_govukpaystatus == "success" || x.bsr_govukpaystatus == "open")) {
+    if (payments != undefined && payments.some((x: { bsr_govukpaystatus: string; }) => x.bsr_govukpaystatus == "success" || x.bsr_govukpaystatus == "open")) {
       this.initPayment(payments);
       this.shouldRender = true;
     } else {
@@ -146,8 +149,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   isViewSeven() {
     return ApplicationStageHelper.isApplicationSubmittedOrRaisedAnInvoice(this.applicationService.model.ApplicationStatus, this.applicationService.model.PaymentType, this.applicationService.model.PaymentInvoiceDetails?.Status) &&
-    ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions) &&
-    !StatuscodeHelper.isRejected(this.applicationStatuscode);
+      ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions) &&
+      !StatuscodeHelper.isRejected(this.applicationStatuscode);
   }
 
   isViewThirteen() {
@@ -173,7 +176,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   get title(): string {
     let buildingName = this.applicationService.model.BuildingName;
-    if(this.isViewOne()) {
+    if (this.isViewOne()) {
       return `Registration application for ${buildingName} has been submitted`;
     } else if (this.isViewOneA()) {
       return `Registration application for ${buildingName} is awaiting payment`;
@@ -185,7 +188,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
       return `Registration application for ${buildingName} has been submitted`;
     } else if (this.isViewFourA()) {
       return `Registration application for ${buildingName} is awaiting payment`;
-    }  else if (this.isViewFive()) {
+    } else if (this.isViewFive()) {
       return `Registration application for ${buildingName} is being processed`;
     } else if (this.isViewSix()) {
       return `Registration application for ${buildingName} has been accepted`;

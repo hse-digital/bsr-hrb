@@ -1,13 +1,13 @@
-import {HttpClient} from "@angular/common/http";
-import {Injectable} from "@angular/core";
-import {firstValueFrom} from "rxjs";
-import {LocalStorage} from "src/app/helpers/local-storage";
-import {AddressModel} from "./address.service";
-import {FieldValidations} from "../helpers/validators/fieldvalidations";
-import {CancellationReason, ChangeRequest} from "./registration-amendments.service";
-import {Sanitizer} from "./http-interceptor";
-import {GetInjector} from "../helpers/injector.helper";
-import {BuildingSummaryNavigation} from "../features/application/building-summary/building-summary.navigation";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { firstValueFrom } from "rxjs";
+import { LocalStorage } from "src/app/helpers/local-storage";
+import { AddressModel } from "./address.service";
+import { FieldValidations } from "../helpers/validators/fieldvalidations";
+import { CancellationReason, ChangeRequest } from "./registration-amendments.service";
+import { Sanitizer } from "./http-interceptor";
+import { GetInjector } from "../helpers/injector.helper";
+import { BuildingSummaryNavigation } from "../features/application/building-summary/building-summary.navigation";
 
 @Injectable()
 export class ApplicationService {
@@ -156,7 +156,7 @@ export class ApplicationService {
       this.initKbiModel(filteredSections);
     } else if (this.currentVersion.Kbi.KbiSections.length != filteredSections.length || !this.areKbiSectionsValid(filteredSections)) {
       this.updateKbiModel(filteredSections);
-    } 
+    }
     this.removeUnnecessaryKbiSections();
     this.updateKbiSectionStatus(filteredSections);
     this.updateApplication();
@@ -187,7 +187,7 @@ export class ApplicationService {
         newKbiSection.Status = Status.ChangesInProgress;
 
         this.currentVersion.Kbi!.KbiSections.push(newKbiSection);
-        this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false});
+        this.currentVersion.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false });
       }
     });
   }
@@ -210,13 +210,13 @@ export class ApplicationService {
   private updateKbiSectionStatus(filteredSections: SectionModel[]) {
     if (!this.currentVersion.Kbi?.SectionStatus || this.currentVersion.Kbi?.SectionStatus.length == 0) {
       this.currentVersion.Kbi!.SectionStatus = [];
-      filteredSections.map(x => this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false}));
+      filteredSections.map(x => this.currentVersion.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false }));
     }
 
     let missingStatuses = this.currentVersion.Kbi!.KbiSections.length - this.currentVersion.Kbi!.SectionStatus.length
     if (missingStatuses != 0 && missingStatuses > 0) {
       for (let index = 0; index < missingStatuses; index++) {
-        this.currentVersion.Kbi!.SectionStatus!.push({InProgress: false, Complete: false});
+        this.currentVersion.Kbi!.SectionStatus!.push({ InProgress: false, Complete: false });
       }
     }
   }
@@ -263,7 +263,7 @@ export class ApplicationService {
 
   async isApplicationNumberValid(emailAddress: string, applicationNumber: string): Promise<boolean> {
     try {
-      let request = {ApplicationNumber: applicationNumber, EmailAddress: Sanitizer.sanitizeField(emailAddress)};
+      let request = { ApplicationNumber: applicationNumber, EmailAddress: Sanitizer.sanitizeField(emailAddress) };
       await firstValueFrom(this.httpClient.post('api/ValidateApplicationNumber', request));
       return true;
     } catch {
@@ -289,8 +289,10 @@ export class ApplicationService {
   }
 
   async updateApplication(): Promise<void> {
-    this.updateLocalStorage();
-    await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
+    if (this.model.id) {
+      this.updateLocalStorage();
+      await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
+    }
   }
 
   async updateDynamicsBuildingSummaryStage(): Promise<void> {
@@ -352,11 +354,18 @@ export class ApplicationService {
   }
 
   async searchPublicRegister(postcode: string): Promise<any[]> {
-    return await firstValueFrom(this.httpClient.get<any[]>(`api/SearchPublicRegister?postcode=${postcode}`, { headers: {'PublicRegisterPassword': LocalStorage.getJSON('PublicRegister')?.Password }}));
+    return await firstValueFrom(this.httpClient.get<any[]>(`api/SearchPublicRegister?postcode=${postcode}`, { headers: { 'PublicRegisterPassword': LocalStorage.getJSON('PublicRegister')?.Password } }));
   }
 
   async getStructuresForApplication(applicationId: string): Promise<any[]> {
-    return await firstValueFrom(this.httpClient.get<any[]>(`api/GetStructuresForApplication?applicationId=${applicationId}`, { headers: {'PublicRegisterPassword': LocalStorage.getJSON('PublicRegister')?.Password }}));
+    return await firstValueFrom(this.httpClient.get<any[]>(`api/GetStructuresForApplication?applicationId=${applicationId}`, { headers: { 'PublicRegisterPassword': LocalStorage.getJSON('PublicRegister')?.Password } }));
+  }
+
+  async updateSafetyCaseReportDeclaration(applicationNumber: string, date: string): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/UpdateSafetyCaseDeclaration`, {
+      "ApplicationNumber": applicationNumber,
+      "Date": date
+    }));
   }
 }
 
@@ -384,8 +393,15 @@ export class BuildingRegistrationModel {
   RegistrationAmendmentsModel?: RegistrationAmendmentsModel;
   FilesUploaded: any;
 
+  SafetyCaseReport?: SafetyCaseReport;
+
   // versioning
   Versions: BuildingRegistrationVersion[] = [];
+}
+
+export class SafetyCaseReport {
+  date?: string;
+  declaration?: boolean;
 }
 
 export class BuildingRegistrationVersion {

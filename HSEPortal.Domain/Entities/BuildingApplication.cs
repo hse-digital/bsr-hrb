@@ -43,7 +43,9 @@ public record DynamicsBuildingApplication(
     string? bsr_previouspaporgleadcontactid = null,
     string? _bsr_papid_value = null,
     string? _bsr_paporgleadcontactid_value = null,
-    int? bsr_paptype = null) : DynamicsEntity<BuildingApplication>;
+    int? bsr_paptype = null,
+    DateTime? bsr_safetycasereportdate = null,
+    bool? bsr_safetycasedeclaration = null) : DynamicsEntity<BuildingApplication>;
 
 public enum BuildingApplicationStage
 {

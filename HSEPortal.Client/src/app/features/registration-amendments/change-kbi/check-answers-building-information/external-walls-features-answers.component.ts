@@ -53,8 +53,8 @@ export class ChangeExternalWallsAnswersComponent extends ChangeBuildingInformati
   private hplFireTestsMapper: Record<string, string> = {
     "fire-classification": "Meets the fire classification A2-s1, d0 or better",
     "large-scale-fire-test": "Has passed a large-scale fire test to BS8414",
-    "none": "Does not meet A2-s1, d0 and has not passed BS8414"
-
+    "none": "Does not meet A2-s1, d0 and has not passed BS8414",
+    "neither-these": "Does not meet A2-s1, d0 and has not passed BS8414"
   }
   getHPLFireTests(name: string) {
     return this.hplFireTestsMapper[name];

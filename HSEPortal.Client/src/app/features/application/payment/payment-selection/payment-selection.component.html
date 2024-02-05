@@ -7,7 +7,7 @@
   <govuk-radio-group title="How do you want to pay the application fee?" [isPageHeading]=true class="govuk-!-margin-bottom-4" [(model)]="model" #field [govukRequired]="field"
     [errorText]="getErrorDescription(hasErrors, 'Choose how you want to pay for your application')" id="payment-selection">
     <govuk-radio name="payment-selection" id="selection-card" value="card" label="Debit or credit card" hint="Pay now by card and your application will be submitted immediately." (onKeyupEnter)="saveAndContinue()" [model]="model" />
-    <govuk-radio name="payment-selection" id="selection-invoice" value="invoice" label="Invoice and bank transfer" hint="We'll send you an invoice that you can pay by BACS. Your application will not be submitted until we get your payment." (onKeyupEnter)="saveAndContinue()" [model]="model" />
+    <govuk-radio name="payment-selection" id="selection-invoice" value="invoice" label="Invoice and bank transfer" hint="We'll send you an invoice that you can pay through your bank. Your application will not be submitted until we get your payment." (onKeyupEnter)="saveAndContinue()" [model]="model" />
   </govuk-radio-group>
 
 </govuk-formpage>
