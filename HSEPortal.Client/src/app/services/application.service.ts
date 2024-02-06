@@ -289,8 +289,10 @@ export class ApplicationService {
   }
 
   async updateApplication(): Promise<void> {
-    this.updateLocalStorage();
-    await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
+    if (this.model.id) {
+      this.updateLocalStorage();
+      await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
+    }
   }
 
   async updateDynamicsBuildingSummaryStage(): Promise<void> {
