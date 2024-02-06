@@ -273,7 +273,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                 }
                 {
                     name: 'Feature__EnablePublicRegisterPasswordProtection'
-                    value: 'true'
+                    value: 'false'
                 }
                 {
                     name: 'PublicRegister__Password'
