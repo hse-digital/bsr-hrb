@@ -15,12 +15,12 @@ namespace HSEPortal.API.Functions;
 
 public class BuildingApplicationFunctions
 {
-    private readonly DynamicsService dynamicsService;
+    private readonly IDynamicsService dynamicsService;
     private readonly OTPService otpService;
     private readonly FeatureOptions featureOptions;
     private readonly IntegrationsOptions integrationOptions;
 
-    public BuildingApplicationFunctions(DynamicsService dynamicsService, OTPService otpService, IOptions<FeatureOptions> featureOptions,
+    public BuildingApplicationFunctions(IDynamicsService dynamicsService, OTPService otpService, IOptions<FeatureOptions> featureOptions,
         IOptions<IntegrationsOptions> integrationOptions)
     {
         this.dynamicsService = dynamicsService;

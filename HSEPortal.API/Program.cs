@@ -40,6 +40,7 @@ static void ConfigureServices(HostBuilderContext builderContext, IServiceCollect
     serviceCollection.Configure<BlobOptions>(builderContext.Configuration.GetSection(BlobOptions.SectionName));
 
     serviceCollection.AddTransient<DynamicsService>();
+    serviceCollection.AddTransient<IDynamicsService, DynamicsService>();
     serviceCollection.AddTransient<KbiService>();
     serviceCollection.AddTransient<DynamicsApi>();
     serviceCollection.AddTransient<OTPService>();

@@ -16,7 +16,37 @@ using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Services;
 
-public class DynamicsService
+public interface IDynamicsService
+{
+    Task AssignContactType(string contactId, string contactTypeId);
+    Task CreateAccountablePersons(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication);
+    Task CreateAssociatedDuplicatedBuildingApplications(BuildingApplicationModel buildingApplicationModel, DynamicsBuildingApplication dynamicsBuildingApplication);
+    Task CreateBuildingStructures(Structures structures);
+    Task CreateCardPayment(BuildingApplicationPayment buildingApplicationPayment);
+    string ExtractEntityIdFromHeader(IReadOnlyNameValueList<string> headers);
+    Task<DynamicsContact> FindExistingContactAsync(string firstName, string lastName, string email, string phoneNumber);
+    Task<DynamicsStructure> FindExistingStructureAsync(string name, string postcode, string buildingApplicationId = null);
+    Task<DynamicsResponse<IndependentSection>> FindExistingStructureWithAccountablePersonAsync(string postcode);
+    Task<DynamicsBuildingApplicationStatuscodeModel> GetBuildingApplicationStatuscodeBy(string applicationId);
+    Task<DynamicsBuildingApplication> GetBuildingApplicationUsingId(string applicationId);
+    Task<string> GetKbiSubmissionDate(string applicationNumber);
+    Task<DynamicsPayment> GetPaymentByReference(string reference);
+    Task<List<DynamicsPayment>> GetPayments(string applicationNumber);
+    Task<string> GetSubmissionDate(string applicationNumber);
+    Task NewInvoicePayment(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest);
+    Task NewPayment(string applicationId, PaymentResponseModel payment);
+    Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel);
+    Task<DynamicsOrganisationsSearchResponse> SearchLocalAuthorities(string authorityName);
+    Task<DynamicsOrganisationsSearchResponse> SearchSocialHousingOrganisations(string authorityName);
+    Task SendVerificationEmail(string emailAddress, string buildingName, string otpToken);
+    Task UpdateBuildingApplication(DynamicsBuildingApplication dynamicsBuildingApplication, DynamicsBuildingApplication buildingApplication);
+    Task UpdateInvoicePayment(InvoicePaidEventData invoicePaidEventData);
+    Task UpdateSafetyCaseReportSubmissionDate(string applicationNumber, DateTime date);
+    Task UploadFileToSharepoint(SharepointUploadRequestModel requestModel);
+    Task<DynamicsBuildingApplication> ValidateExistingApplication(string applicationNumber, string emailAddress);
+}
+
+public class DynamicsService : IDynamicsService
 {
     private readonly DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory;
     private readonly SwaOptions swaOptions;
@@ -968,7 +998,7 @@ public class DynamicsService
     {
         var response = await $"https://login.microsoftonline.com/{dynamicsOptions.TenantId}/oauth2/token"
             .PostUrlEncodedAsync(new
-                { grant_type = "client_credentials", client_id = dynamicsOptions.ClientId, client_secret = dynamicsOptions.ClientSecret, resource = dynamicsOptions.EnvironmentUrl })
+            { grant_type = "client_credentials", client_id = dynamicsOptions.ClientId, client_secret = dynamicsOptions.ClientSecret, resource = dynamicsOptions.EnvironmentUrl })
             .ReceiveJson<DynamicsAuthenticationModel>();
 
         return response.AccessToken;
@@ -999,7 +1029,8 @@ public class DynamicsService
         var buildingApplication = await GetBuildingApplicationUsingId(applicationNumber);
 
         await dynamicsApi.Update($"bsr_buildingapplications({buildingApplication.bsr_buildingapplicationid})",
-            new DynamicsBuildingApplication { 
+            new DynamicsBuildingApplication
+            {
                 bsr_safetycasereportdate = date,
                 bsr_safetycasedeclaration = true
             });
@@ -1030,12 +1061,12 @@ public class DynamicsService
 
     public async Task<DynamicsBuildingApplication> ValidateExistingApplication(string applicationNumber, string emailAddress)
     {
-        var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplication>>("bsr_buildingapplications", 
+        var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplication>>("bsr_buildingapplications",
  ("$filter", $"bsr_applicationid eq '{applicationNumber}' and (bsr_RegistreeId/emailaddress1 eq '{emailAddress}' or bsr_secondaryapplicantid/emailaddress1 eq '{emailAddress}')"),
             ("$expand", "bsr_RegistreeId($select=emailaddress1),bsr_secondaryapplicantid($select=emailaddress1),bsr_Building($select=bsr_name)"),
             ("$select", "bsr_applicationid,bsr_buildingapplicationid")
         );
-        
+
         return response.value.FirstOrDefault();
     }
 }
