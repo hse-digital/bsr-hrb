@@ -10,8 +10,6 @@ import { Route, RouterModule } from "@angular/router";
 import { PublicRegisterResultsComponent } from "./results/results.component";
 import { StructureDetailsComponent } from "./structure-details/structure-details.component";
 import { PipesModule } from "../../pipes/pipes.module";
-import { PublicRegisterService } from "src/app/services/public-register.service";
-import { PasswordAccessComponent } from "./password-access/password-access.component";
 
 const routes = new HseRoutes([
     HseRoute.protected(SearchPublicRegisterComponent.route, SearchPublicRegisterComponent, SearchPublicRegisterComponent.title),
@@ -32,15 +30,11 @@ const angRoutes: Route[] = [
         SearchPublicRegisterComponent,
         StructureNotFoundComponent,
         PublicRegisterResultsComponent,
-        StructureDetailsComponent,
-        PasswordAccessComponent
+        StructureDetailsComponent
     ],
     exports: [
         SearchPublicRegisterComponent,
         StructureNotFoundComponent
-    ],
-    providers: [
-        PublicRegisterService
     ],
     imports: [
         RouterModule.forChild(angRoutes),
