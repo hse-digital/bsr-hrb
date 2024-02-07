@@ -354,11 +354,11 @@ export class ApplicationService {
   }
 
   async searchPublicRegister(postcode: string): Promise<any[]> {
-    return await firstValueFrom(this.httpClient.get<any[]>(`api/SearchPublicRegister?postcode=${postcode}`, { headers: { 'PublicRegisterPassword': LocalStorage.getJSON('PublicRegister')?.Password } }));
+    return await firstValueFrom(this.httpClient.get<any[]>(`api/SearchPublicRegister?postcode=${postcode}`));
   }
 
   async getStructuresForApplication(applicationId: string): Promise<any[]> {
-    return await firstValueFrom(this.httpClient.get<any[]>(`api/GetStructuresForApplication?applicationId=${applicationId}`, { headers: { 'PublicRegisterPassword': LocalStorage.getJSON('PublicRegister')?.Password } }));
+    return await firstValueFrom(this.httpClient.get<any[]>(`api/GetStructuresForApplication?applicationId=${applicationId}`));
   }
 
   async updateSafetyCaseReportDeclaration(applicationNumber: string, date: string): Promise<void> {
