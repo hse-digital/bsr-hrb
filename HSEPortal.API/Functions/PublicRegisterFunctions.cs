@@ -12,29 +12,10 @@ namespace HSEPortal.API.Functions;
 public class PublicRegisterFunctions
 {
     private readonly DynamicsApi dynamicsApi;
-    private readonly FeatureOptions featureOptions;
-    private readonly PublicRegisterOptions publicRegisterOptions;
 
-    public PublicRegisterFunctions(IOptions<FeatureOptions> featureOptions, IOptions<PublicRegisterOptions> publicRegisterOptions, DynamicsApi dynamicsApi)
+    public PublicRegisterFunctions(DynamicsApi dynamicsApi)
     {
         this.dynamicsApi = dynamicsApi;
-        this.featureOptions = featureOptions.Value;
-        this.publicRegisterOptions = publicRegisterOptions.Value;
-    }
-
-    [Function(nameof(IsPublicRegisterProtectionEnabled))]
-    public Task<HttpResponseData> IsPublicRegisterProtectionEnabled([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
-    {
-        return request.CreateObjectResponseAsync(featureOptions.EnablePublicRegisterPasswordProtection);
-    }
-
-    [Function(nameof(ValidatePublicRegisterPassword))]
-    public HttpResponseData ValidatePublicRegisterPassword([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
-    {
-        request.Headers.TryGetValues("PublicRegisterPassword", out var headerValues);
-        var password = headerValues?.FirstOrDefault();
-
-        return request.CreateResponse(password == publicRegisterOptions.Password ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
     }
 
     [Function(nameof(SearchPublicRegister))]
@@ -45,11 +26,6 @@ public class PublicRegisterFunctions
             Connection = "CosmosConnection")]
         List<PublicRegisterApplicationModel> nonVersionedApplications)
     {
-        if (featureOptions.EnablePublicRegisterPasswordProtection && (!request.Headers.TryGetValues("PublicRegisterPassword", out var headerValues) || headerValues.FirstOrDefault() != publicRegisterOptions.Password))
-        {
-            return request.CreateResponse(HttpStatusCode.BadRequest);
-        }
-
         var versionedApplications = await GetAcceptedVersionFromDynamics(buildingApplications);
         var registeredApplications = versionedApplications.Concat(nonVersionedApplications)
             .DistinctBy(x => x.id).Where(x => x.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentComplete))
@@ -84,11 +60,6 @@ public class PublicRegisterFunctions
         [CosmosDBInput("hseportal", "building-registrations", Id = "{applicationId}", PartitionKey = "{applicationId}", Connection = "CosmosConnection")]
         BuildingApplicationModel buildingApplication)
     {
-        if (featureOptions.EnablePublicRegisterPasswordProtection && (!request.Headers.TryGetValues("PublicRegisterPassword", out var headerValues) || headerValues.FirstOrDefault() != publicRegisterOptions.Password))
-        {
-            return request.CreateResponse(HttpStatusCode.BadRequest);
-        }
-
         if (!buildingApplication.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentComplete)) return request.CreateResponse();
 
         var acceptedApplications = await GetAcceptedVersionFromDynamics(new List<BuildingApplicationModel> { buildingApplication });

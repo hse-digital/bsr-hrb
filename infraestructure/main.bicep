@@ -271,14 +271,6 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                     name: 'Feature__DisableOtpValidation'
                     value: 'false'
                 }
-                {
-                    name: 'Feature__EnablePublicRegisterPasswordProtection'
-                    value: 'false'
-                }
-                {
-                    name: 'PublicRegister__Password'
-                    value: 'Squad12024'
-                }
             ]
         }
         httpsOnly: true

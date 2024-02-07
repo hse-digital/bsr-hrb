@@ -62,6 +62,8 @@ export class StructureDetailsComponent implements OnInit {
   }
 
   normalizeAddress(address: any) {
+    if (!address) return '';
+
     if (address.IsManual) {
       return [address.Address, address.AddressLineTwo, address.Town, address.Postcode].filter(x => x).join(', ');
     }

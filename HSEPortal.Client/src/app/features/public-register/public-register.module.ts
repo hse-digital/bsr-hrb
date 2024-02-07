@@ -1,4 +1,4 @@
-import { NgModule, inject } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { SearchPublicRegisterComponent } from "./search-register/search-register.component";
 import { StructureNotFoundComponent } from "./structure-not-found/structure-not-found.component";
 import { HttpClientModule } from "@angular/common/http";
@@ -6,7 +6,7 @@ import { CommonModule } from "@angular/common";
 import { HseAngularModule } from "hse-angular";
 import { ComponentsModule } from "src/app/components/components.module";
 import { HseRoute, HseRoutes } from "src/app/services/hse.route";
-import { ActivatedRouteSnapshot, Route, Router, RouterModule, RouterStateSnapshot } from "@angular/router";
+import { Route, RouterModule } from "@angular/router";
 import { PublicRegisterResultsComponent } from "./results/results.component";
 import { StructureDetailsComponent } from "./structure-details/structure-details.component";
 import { PipesModule } from "../../pipes/pipes.module";
@@ -20,24 +20,11 @@ const routes = new HseRoutes([
     HseRoute.protected(StructureDetailsComponent.route, StructureDetailsComponent, StructureDetailsComponent.title),
 ]);
 
-const publicRegisterGuard = async (_: ActivatedRouteSnapshot, __: RouterStateSnapshot) => {
-    var service = inject(PublicRegisterService);
-    var router = inject(Router);
-
-    var canAccess = await service.canAccessPublicRegister();
-    if (!canAccess) {
-        router.navigate(['/public-register/password']);
-    }
-
-    return canAccess;
-};
-
 const angRoutes: Route[] = [
-    { path: SearchPublicRegisterComponent.route, component: SearchPublicRegisterComponent, canActivate: [publicRegisterGuard]},
-    { path: StructureNotFoundComponent.route, component: StructureNotFoundComponent, canActivate: [publicRegisterGuard]},
-    { path: PublicRegisterResultsComponent.route, component: PublicRegisterResultsComponent, canActivate: [publicRegisterGuard]},
-    { path: StructureDetailsComponent.route, component: StructureDetailsComponent, canActivate: [publicRegisterGuard]},
-    { path: PasswordAccessComponent.route, component: PasswordAccessComponent },
+    { path: SearchPublicRegisterComponent.route, component: SearchPublicRegisterComponent},
+    { path: StructureNotFoundComponent.route, component: StructureNotFoundComponent},
+    { path: PublicRegisterResultsComponent.route, component: PublicRegisterResultsComponent},
+    { path: StructureDetailsComponent.route, component: StructureDetailsComponent}
 ];
 
 @NgModule({
