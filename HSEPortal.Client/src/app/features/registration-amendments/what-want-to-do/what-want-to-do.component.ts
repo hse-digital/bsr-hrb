@@ -13,7 +13,7 @@ import { YesButNoReferenceComponent } from '../yes-but-no-reference/yes-but-no-r
 })
 export class WhatWantToDoComponent extends PageComponent<string> {
   static route: string = 'what-you-want-to-do';
-  static title: string = "Select what you want to do - Register a high-rise building - GOV.UK";
+  static title: string = "Application reference - Register a high-rise building - GOV.UK";
 
   constructor(activatedRoute: ActivatedRoute, private kbiService: KbiService) {
     super(activatedRoute);
