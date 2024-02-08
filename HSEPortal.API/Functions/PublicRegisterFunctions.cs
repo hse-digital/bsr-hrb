@@ -52,6 +52,7 @@ public class PublicRegisterFunctions
                 }).ToList()
             })).SelectMany(x => x).ToList();
 
+        registeredApplications = await FilterRegisteredApplications(registeredApplications);
         return await request.CreateObjectResponseAsync(registeredApplications);
     }
 
@@ -153,36 +154,62 @@ public class PublicRegisterFunctions
 
         return applicationsToReturn;
     }
-}
 
-public record PublicRegisterApplicationModel
-{
-    public string id { get; set; }
-    public string ContactFirstName { get; set; }
-    public string ContactLastName { get; set; }
-    public BuildingApplicationStatus ApplicationStatus { get; set; }
-    public string BuildingName { get; set; }
-    public List<SectionModel> Sections { get; set; }
-    public List<AccountablePerson> AccountablePersons { get; set; }
-    public BuildingApplicationVersion CurrentVersion { get; set; }
-}
+    private async Task<List<PublicRegisterStructureModel>> FilterRegisteredApplications(List<PublicRegisterStructureModel> registeredApplications)
+    {
+        var applicationsToReturn = new List<PublicRegisterStructureModel>();
 
-public class PublicRegisterStructureModel
-{
-    public string code { get; set; }
-    public string userFirstName { get; set; }
-    public string userLastName { get; set; }
-    public string structureName { get; set; }
-    public SectionModel structure { get; set; }
-    public List<PublicRegisterAccountablePerson> aps { get; set; }
-}
+        foreach (var application in registeredApplications)
+        {
+            // registrationstatus:
+            //      registered - 760810000
+            // application status:
+            //      registered - pending qa: 760810006
+            //      registered - pending change: 760810016
+            //      registered - kbi validated: 760810017
 
-public record PublicRegisterAccountablePerson(
-    string type,
-    string isMain,
-    string orgName,
-    SectionAccountability[] accountability)
-{
-    public BuildingAddress address { get; set; }
-    public BuildingAddress mainAddress { get; set; }
-};
+            var applications = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplication>>("bsr_buildingapplications",
+                new[]
+                {
+                    ("$filter", $"bsr_applicationid eq '{application.code}' and (statuscode eq 760810006 or statuscode eq 760810015 or statuscode eq 760810016 or statuscode eq 760810017) and bsr_Building/bsr_registrationstatus eq 760810000")
+                });
+
+            if (applications.value.Count > 0)
+                applicationsToReturn.Add(application);
+        }
+
+        return applicationsToReturn;
+    }
+
+    public record PublicRegisterApplicationModel
+    {
+        public string id { get; set; }
+        public string ContactFirstName { get; set; }
+        public string ContactLastName { get; set; }
+        public BuildingApplicationStatus ApplicationStatus { get; set; }
+        public string BuildingName { get; set; }
+        public List<SectionModel> Sections { get; set; }
+        public List<AccountablePerson> AccountablePersons { get; set; }
+        public BuildingApplicationVersion CurrentVersion { get; set; }
+    }
+
+    public class PublicRegisterStructureModel
+    {
+        public string code { get; set; }
+        public string userFirstName { get; set; }
+        public string userLastName { get; set; }
+        public string structureName { get; set; }
+        public SectionModel structure { get; set; }
+        public List<PublicRegisterAccountablePerson> aps { get; set; }
+    }
+
+    public record PublicRegisterAccountablePerson(
+        string type,
+        string isMain,
+        string orgName,
+        SectionAccountability[] accountability)
+    {
+        public BuildingAddress address { get; set; }
+        public BuildingAddress mainAddress { get; set; }
+    }
+}
