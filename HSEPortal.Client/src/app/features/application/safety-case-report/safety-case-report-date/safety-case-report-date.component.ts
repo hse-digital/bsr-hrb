@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService, SafetyCaseReport } from 'src/app/services/application.service';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { DateModel, IsDateInPast, isDayValid, isMonthValid, isYearLengthValid, isYearValid } from 'src/app/helpers/validators/date-validators';
+import { DateModel, IsDateInPast, isRealDate, isDayValid, isEmpty, isMonthValid, isYearLengthValid, isYearValid, isFull } from 'src/app/helpers/validators/date-validators';
 import { SafetyCaseReportDeclarationComponent } from '../safety-case-report-declaration/safety-case-report-declaration.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { SafetyCaseReportDeclarationComponent } from '../safety-case-report-decl
 })
 export class SafetyCaseReportDateComponent extends PageComponent<DateModel> {
   static route: string = "date";
-  static title: string = "When was the safety case report last updated? – Register a high-rise building – GOV.UK";
+  static title: string = "When was the safety case report last updated? - Register a high-rise building - GOV.UK";
   buildingName?: string;
   errorAnchorId: string = 'safety-case-report-date-day';
   errorMessage: string = ''; 
@@ -30,8 +30,7 @@ export class SafetyCaseReportDateComponent extends PageComponent<DateModel> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
 
-    const safetyCaseRportDate = this.model!.toDateString();
-    console.log(safetyCaseRportDate);
+    const safetyCaseRportDate = this.model!.toAnsiDateString();
 
     if (this.applicationService.model.SafetyCaseReport!.date !== safetyCaseRportDate) {
       this.applicationService.model.SafetyCaseReport!.declaration = false;
@@ -45,48 +44,58 @@ export class SafetyCaseReportDateComponent extends PageComponent<DateModel> {
 
   override isValid(): boolean {
     this.modelValid = false;
-    const dayValid = isDayValid(this.model?.day, this.model?.month || 0, this.model?.year || 2000);
-    const monthValid = isMonthValid(this.model?.month);
-    const yearValid = isYearValid(this.model?.year, true);
-    const yearLengthValid = isYearLengthValid(this.model?.year);
-    const noneSelected = !dayValid && !monthValid && !yearValid;    
 
-    if (noneSelected) {
-      this.errorMessage = 'Enter the date your safety case report was last updated. For example, 27 10 2023';
+    const nothingEntered = isEmpty(this.model?.day, this.model?.month, this.model?.year);  
+    if (nothingEntered) {
+      this.errorMessage = 'Enter the date your safety case report was last updated. For example, 27 10 2023.';
       this.errorAnchorId = 'safety-case-report-date-day';
       return this.modelValid;
     }
 
-    if (!dayValid) {
-      this.errorMessage = 'The date your safety case report was last updated must be today or in the past. For example, 27 10 2023.';
+    const allEntered = isFull(this.model?.day, this.model?.month, this.model?.year);
+    if (!allEntered) {
+      const dayValid = isDayValid(this.model?.day);
+      if (!dayValid) {
+        this.errorMessage = 'The date your safety case report was last updated must be today or in the past. For example, 27 10 2023.';
+        this.errorAnchorId = 'safety-case-report-date-day';
+        return this.modelValid;
+      }
+
+      const monthValid = isMonthValid(this.model?.month);
+      if (!monthValid) {
+        this.errorMessage = 'The date your safety case report was last updated must contain a month and a year. For example, 27 10 2023.';
+        this.errorAnchorId = 'safety-case-report-date-month';
+        return this.modelValid;
+      }
+
+      const yearValid = isYearValid(this.model?.year);
+      if (!yearValid) {
+        this.errorMessage = 'The date your safety case report was last updated must contain a year. For example, 27 10 2023.';
+        this.errorAnchorId = 'safety-case-report-date-year';
+        return this.modelValid;
+      }
+
+      const yearLengthValid = isYearLengthValid(this.model?.year);
+      if (!yearLengthValid) {
+        this.errorMessage = 'The date your safety case report was last updated must contain a year. Year must include 4 numbers.';
+        this.errorAnchorId = 'safety-case-report-date-year';
+        return this.modelValid;
+      }
+    }
+
+    const realDate = isRealDate(this.model?.year, this.model?.month, this.model?.day);
+    if (!realDate) {
+      this.errorMessage = 'The date your safety case report was last updated must be a real date. For example, 27 10 2023.';
       this.errorAnchorId = 'safety-case-report-date-day';
       return this.modelValid;
-    }
-
-    if (!monthValid) {
-      this.errorMessage = 'The date your safety case report was last updated must contain a month and a year. For example, 27 10 2023..';
-      this.errorAnchorId = 'safety-case-report-date-month';
-      return this.modelValid;
-    }
-
-    if (!yearValid) {
-      this.errorMessage = 'The date your safety case report was last updated must contain a year. For example, 27 10 2023.';
-      this.errorAnchorId = 'safety-case-report-date-year';
-      return this.modelValid;
-    }
-
-    if (!yearLengthValid) {
-      this.errorMessage = 'The date your safety case report was last updated must contain a year. Year must include 4 numbers.';
-      this.errorAnchorId = 'safety-case-report-date-year';
-      return this.modelValid;
-    }
+    } 
     
-    let todayOrInPast = IsDateInPast(this.model!);
+    const todayOrInPast = IsDateInPast(this.model!);
     if (!todayOrInPast) {
       this.errorMessage = 'The date your safety case report was last updated must be today or in the past. For example, 27 10 2023.';
       this.errorAnchorId = 'safety-case-report-date-day';
       return this.modelValid;
-    }   
+    }
 
     this.modelValid = true;
 

@@ -22,61 +22,83 @@ export class DateModel {
     );
   }
 
-  toDateString(): string {
-    return this.toDate().toISOString();
+  toAnsiDateString(): string {
+
+    this.year = this.toDate().getFullYear().toString();
+
+    if (this.month.length < 2) 
+        this.month = '0' + this.month;
+
+    if (this.day.length < 2) 
+        this.day = '0' + this.day;
+
+    return `${this.year}-${this.month}-${this.day}`;
   }
 }
 
-export function isDateValid(
-  year: string | number | undefined,
-  month: string | number | undefined,
+export function isEmpty(
   day: string | number | undefined,
-) {
-
-  if (IsDateUndefinedOrEmpty(year, month, day)) {
-    return false
-  }
-
-   var Year  = Number(year);
-   var Month = Number(month);
-   var Day = Number(day);
-
-  if (Day > 31 || Day < 1) {
-    return false;
-  }
-  if (Month > 12 || Month < 1) {
-    return false;
-  }
-  if (year?.toString().length !== 4) {
-    return false;
-  }
-  if (Year < new Date().getFullYear()) {
-    return false;
-  }
-  if (new Date(Year, Month) < new Date()) {
-    return false;
-  }
-
-  return true;
-
+  month: string | number | undefined, 
+  year: string | number | undefined)  {
+    return !FieldValidations.IsNotNullOrWhitespace(day?.toString())
+      && !FieldValidations.IsNotNullOrWhitespace(month?.toString())
+      && !FieldValidations.IsNotNullOrWhitespace(year?.toString());
 }
 
-export function isDayValid(day: string | number | undefined,
-  month: string | number | undefined, year: string | number | undefined) {
-  var Day = Number(day);
-  var Month = Number(month);
-  var Year = Number(year);
-  var Maxdays = 31
-  var date = new Date(Year, Month-1, Day)
+export function isFull(
+  day: string | number | undefined,
+  month: string | number | undefined, 
+  year: string | number | undefined)  {
+    return FieldValidations.IsNotNullOrWhitespace(day?.toString())
+      && FieldValidations.IsNotNullOrWhitespace(month?.toString())
+      && FieldValidations.IsNotNullOrWhitespace(year?.toString());
+}
 
+export function isDayValid(day: string | number | undefined) {
+  const dayNumber = Number(day);
 
-  if (!FieldValidations.IsNotNullOrWhitespace(day?.toString()) || isNaN(Day))
+  if (!FieldValidations.IsNotNullOrWhitespace(day?.toString()) || isNaN(dayNumber))
   {
     return false;
   }
 
+  if (dayNumber > 31 || dayNumber < 1) {
+    return false;
+  }
 
-  if (Day > Maxdays || Day < 1 || date.getDate() !== Day) {
+  return true;
+}
+
+export function isMonthValid(month: string | number | undefined) {
+  const monthNumber = Number(month);
+
+  if (!FieldValidations.IsNotNullOrWhitespace(month?.toString()) || isNaN(monthNumber)) {
+    return false;
+  }
+
+  if (monthNumber > 12 || monthNumber < 1) {
+    return false;
+  }
+
+  return true;
+}
+
+export function isYearValid(year: string | number | undefined) {
+  let yearNumber = Number(year);
+
+  if (!FieldValidations.IsNotNullOrWhitespace(year?.toString()) || isNaN(yearNumber)) {
+    return false;
+  }
+
+  // Allow for 2 digit years. Use isYearValid in combo with isYearLengthValid
+  if (year?.toString().length === 2) {
+    year = '20' + year;
+    yearNumber = Number(year);
+  }
+
+  const todayYear =new Date().getFullYear();
+
+  if (yearNumber < (todayYear - 200) || yearNumber > (todayYear + 200)) {
     return false;
   }
 
@@ -84,53 +106,47 @@ export function isDayValid(day: string | number | undefined,
 }
 
 export function isYearLengthValid(year: string | number | undefined) {
-  var Year = Number(year);
-  if (!FieldValidations.IsNotNullOrWhitespace(year?.toString()) || isNaN(Year)) {
+  const yearNumber = Number(year);
+  if (!FieldValidations.IsNotNullOrWhitespace(year?.toString()) || isNaN(yearNumber)) {
     return false;
   }
-  return Year.toString().length === 4;
+  return yearNumber.toString().length === 4;
 }
 
-export function isYearValid(year: string | number | undefined, allowPastYears: boolean = false) {
-  var Year = Number(year);
-  if (!FieldValidations.IsNotNullOrWhitespace(year?.toString()) || isNaN(Year)) {
-    return false;
-  }
-
-  if (!allowPastYears) {
-    if (Year < new Date().getFullYear()) {
-      return false;
-    }
-  }  
-
-  return true;
-}
-
-export function isMonthValid(month: string | number | undefined,
-) {
-  var Month = Number(month);
-
-  if (!FieldValidations.IsNotNullOrWhitespace(month?.toString()) || isNaN(Month)) {
-    return false;
-  }
-
-  if (Month > 12 || Month < 1) {
-    return false;
-  }
-
-  return true;
-}
-
-export function IsDateUndefinedOrEmpty(
+export function isRealDate(
   year: string | number | undefined,
   month: string | number | undefined,
-  day: string | number | undefined,){
-  if (!FieldValidations.IsNotNullOrWhitespace(day?.toString())
-    || !FieldValidations.IsNotNullOrWhitespace(month?.toString())
-    || !FieldValidations.IsNotNullOrWhitespace(year?.toString())) {
-    return true;
+  day: string | number | undefined,
+) {
+
+  if (isEmpty(year, month, day)) {
+    return false
   }
-  return false
+
+   const yearNumber  = Number(year);
+   const monthNumber = Number(month);
+   const dayNumber = Number(day);   
+
+  if (dayNumber > 31 || dayNumber < 1) {
+    return false;
+  }
+
+  if (monthNumber > 12 || monthNumber < 1) {
+    return false;
+  }
+
+  if (year?.toString().length !== 4) {
+    return false;
+  }
+
+  if (isNaN(yearNumber) || isNaN(monthNumber) || isNaN(dayNumber)) {
+    return false
+  }
+
+  const realDate = new Date(yearNumber, monthNumber - 1, dayNumber);
+  const monthChanged = realDate.getMonth() + 1;
+
+  return monthNumber === monthChanged;
 }
 
 export function IsDateInPast(dateModel: DateModel) {
