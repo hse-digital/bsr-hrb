@@ -16,7 +16,6 @@ export class SafetyCaseConfirmationComponent extends PageComponent<void>  {
   userEmail?: string;
   pncEmail?: string;
   showPncEmail: boolean = false;
-  shouldRender = false;
 
   constructor(activatedRoute: ActivatedRoute) {
     super(activatedRoute);
@@ -26,14 +25,24 @@ export class SafetyCaseConfirmationComponent extends PageComponent<void>  {
     this.applicationReference = applicationService.model.id;
     this.buildingName = applicationService.model.BuildingName;
     this.userEmail = applicationService.model.ContactEmailAddress;
-    this.pncEmail = applicationService.currentVersion.AccountablePersons[0]?.Email;
-    
-    this.showPncEmail = 
-      (applicationService.currentVersion.AccountablePersons[0]?.IsPrincipal === "yes" ?? false)
-      && FieldValidations.IsNotNullOrWhitespace(applicationService.currentVersion.AccountablePersons[0]?.Email)
-      && applicationService.currentVersion.AccountablePersons[0]?.Email !== this.userEmail;
 
-    this.shouldRender = true;
+    this.pncEmail = this.getPncEmail();
+    this.showPncEmail = this.pncEmail != undefined;
+  }
+
+  private getPncEmail(): string | undefined {
+    var pap = this.applicationService.currentVersion.AccountablePersons[0];
+
+    if (pap.IsPrincipal == "yes") {
+      return undefined;
+    }
+
+    if (pap.Type == "individual") {
+      return pap.Email;
+    }
+
+    console.log('here');
+    return pap.NamedContactEmail ?? pap.LeadEmail;  
   }
 
   override onSave(): void {
