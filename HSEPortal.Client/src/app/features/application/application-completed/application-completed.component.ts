@@ -13,7 +13,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   static route: string = 'application-completed';
   static title: string = "Application history - Register a high-rise building - GOV.UK";
-  
+
   shouldRender: boolean = false;
   submittionDate?: string;
   kbiSubmittionDate?: string;
@@ -29,6 +29,21 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete;
   }
 
+  applicationStatus = {
+    paid: false,
+    kbiSubmitted: false,
+    changesSubmitted: false,
+    changesAccepted: false,
+    withdrawalSubmitted: false,
+    withdrawalAccepted: false,
+    registrationSubmitted: false,
+    registrationAccepted: false,
+    removalSubmitted: false,
+    removalAccepted: false,
+    showLinks: true,
+    showKbi: true
+  };
+
   async ngOnInit(): Promise<void> {
     this.shouldRender = false;
 
@@ -38,7 +53,6 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     this.sendApplicationDataToBroadcastChannel();
 
     this.submittionDate = await this.applicationService.getSubmissionDate();
-
     this.kbiSubmittionDate = await this.applicationService.getKbiSubmissionDate();
 
     this.applicationStatuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
