@@ -107,6 +107,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     this.applicationStatus.removalAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Withdrawn;
 
     this.applicationStatus.showLinks = (!this.applicationStatus.withdrawalSubmitted && !this.applicationStatus.withdrawalAccepted && !this.applicationStatus.registrationAccepted);
+
+    console.table(this.applicationStatus);
   }
 
   async newApplication() {
@@ -295,11 +297,11 @@ export class ApplicationStageHelper {
   }
 
   static isChangeRequestSubmitted(versions?: BuildingRegistrationVersion[]) {
-    return !!versions && versions.length > 1 && FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy);
+    return !!versions && versions.length > 1 && FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy) && versions[0].Submitted == true;
   }
 
   static isChangeRequestAccepted(versions?: BuildingRegistrationVersion[]) {
-    return !!versions && versions.length > 1 && !FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy);
+    return !!versions && versions.length > 1 && !FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy) && versions[0].Submitted == true;
   }
 
   static containsFlag(currentApplicationStage: BuildingApplicationStage, flag: BuildingApplicationStage) {
