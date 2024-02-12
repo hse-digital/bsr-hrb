@@ -109,6 +109,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     this.applicationStatus.showLinks = (!this.applicationStatus.withdrawalSubmitted && !this.applicationStatus.withdrawalAccepted && !this.applicationStatus.registrationAccepted);
 
     console.table(this.applicationStatus);
+    console.log(this.applicationService.model.Versions);
   }
 
   async newApplication() {
@@ -297,7 +298,7 @@ export class ApplicationStageHelper {
   }
 
   static isChangeRequestSubmitted(versions?: BuildingRegistrationVersion[]) {
-    return !!versions && versions.length > 1 && FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy) && versions[0].Submitted == true;
+    return !!versions && versions.length > 1 && FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy);
   }
 
   static isChangeRequestAccepted(versions?: BuildingRegistrationVersion[]) {
