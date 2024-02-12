@@ -95,17 +95,17 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   }
 
   private async updateApplicationStatus() {
-    var changesAccepted = await this.applicationService.isChangeRequestAccepted();
+    var latestCrAccepted = await this.applicationService.isChangeRequestAccepted();
 
     this.applicationStatus.paid = this.payment != undefined;
     this.applicationStatus.kbiSubmitted = ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus);
     this.applicationStatus.changesSubmitted = ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
-    this.applicationStatus.changesAccepted = changesAccepted == 'complete';
+    this.applicationStatus.changesAccepted = latestCrAccepted == 'complete';
     this.applicationStatus.withdrawalSubmitted = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure != undefined;
-    this.applicationStatus.withdrawalAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Withdrawn;
+    this.applicationStatus.withdrawalAccepted = this.applicationStatus.changesAccepted;
     this.applicationStatus.registrationAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Registered || this.applicationStatuscode == BuildingApplicationStatuscode.RegisteredKbiValidated;
     this.applicationStatus.removalSubmitted = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure != undefined;
-    this.applicationStatus.removalAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Withdrawn;
+    this.applicationStatus.removalAccepted = this.applicationStatus.changesAccepted;
 
     this.applicationStatus.showLinks = (!this.applicationStatus.withdrawalSubmitted && !this.applicationStatus.withdrawalAccepted && !this.applicationStatus.registrationAccepted);
     this.shouldRender = true;
