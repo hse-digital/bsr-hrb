@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { firstValueFrom } from "rxjs";
+import { first, firstValueFrom } from "rxjs";
 import { LocalStorage } from "src/app/helpers/local-storage";
 import { AddressModel } from "./address.service";
 import { FieldValidations } from "../helpers/validators/fieldvalidations";
@@ -269,6 +269,10 @@ export class ApplicationService {
     } catch {
       return false;
     }
+  }
+
+  async isChangeRequestAccepted(): Promise<string> {
+    return await firstValueFrom(this.httpClient.get<string>(`api/IsChangeRequestAccepted/${this.model.id}`));
   }
 
 
