@@ -41,7 +41,6 @@ export class SafetyCaseConfirmationComponent extends PageComponent<void>  {
       return pap.Email;
     }
 
-    console.log('here');
     return pap.NamedContactEmail ?? pap.LeadEmail;  
   }
 

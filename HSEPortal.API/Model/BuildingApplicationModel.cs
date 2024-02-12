@@ -29,7 +29,8 @@ public record BuildingApplicationModel(
     bool? ShareDetailsDeclared = null,
     string[] DuplicateBuildingApplicationIds = null,
     RegistrationAmendmentsModel RegistrationAmendmentsModel = null,
-    List<BuildingApplicationVersion> Versions = null) : IValidatableModel
+    List<BuildingApplicationVersion> Versions = null,
+    SafetyCaseReport SafetyCaseReport = null) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
@@ -55,6 +56,12 @@ public record BuildingApplicationModel(
             return version;
         }
     }
+}
+
+public record SafetyCaseReport
+{
+    public string date { get; set; }
+    public bool? declaration { get; set; }
 }
 
 public record BuildingApplicationVersion(string Name, string ReplacedBy = null, string CreatedBy = null, bool? Submitted = null, SectionModel[] Sections = null,
