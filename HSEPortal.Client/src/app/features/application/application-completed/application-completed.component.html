@@ -197,7 +197,7 @@
       <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
       <strong class="govuk-warning-text__text">
         <span class="govuk-warning-text__assistive">Warning</span>
-        You must give us structure and fire safety information for {{applicationService.model.BuildingName}} by {{get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.
+        You must give us structure and fire safety information for {{applicationService.model.BuildingName}}<span *ngIf="submittionDate"> by {{get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}</span>.
       </strong>
     </div>
     <govuk-button classes="govuk-!-margin-bottom-6" [routerLink]="['../kbi']">
