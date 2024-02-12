@@ -13,7 +13,7 @@
     <!-- not paid -->
     <ng-container *ngIf="!applicationStatus.paid">
       <!-- no changes made -->
-      <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted && !applicationStatus.withdrawalSubmitted">
+      <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted && !(applicationStatus.withdrawalSubmitted || applicationStatus.removalSubmitted)">
         <ng-container *ngTemplateOutlet="InvoiceSent" />
         <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
         <ng-container *ngTemplateOutlet="MustPay" />
@@ -21,7 +21,7 @@
       </ng-container>
 
       <!-- changes submitted but not accepted yet -->
-      <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted && !applicationStatus.withdrawalSubmitted">
+      <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted  && !(applicationStatus.withdrawalSubmitted || applicationStatus.removalSubmitted)">
         <ng-container *ngTemplateOutlet="InvoiceSent" />
         <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
         <ng-container *ngTemplateOutlet="MustPay" />
@@ -60,18 +60,18 @@
     <!-- paid -->
     <ng-container *ngIf="applicationStatus.paid">
       <!-- no changes made -->
-      <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
+      <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted && !(applicationStatus.withdrawalSubmitted || applicationStatus.removalSubmitted)">
         <ng-container *ngTemplateOutlet="AssessingApplication" />
       </ng-container>
 
       <!-- changes submitted but not accepted yet -->
-      <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
+      <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted && !(applicationStatus.withdrawalSubmitted || applicationStatus.removalSubmitted)">
         <ng-container *ngTemplateOutlet="AssessingApplication" />
         <ng-container *ngTemplateOutlet="AssessingLatestChanges" />
       </ng-container>
 
       <!-- changes accepted -->
-      <ng-container *ngIf="applicationStatus.changesAccepted">
+      <ng-container *ngIf="applicationStatus.changesAccepted && !(applicationStatus.withdrawalSubmitted || applicationStatus.removalSubmitted)">
         <ng-container *ngTemplateOutlet="AssessingApplication" />
         <ng-container *ngTemplateOutlet="ApprovedLatestChanges" />
       </ng-container>
@@ -92,17 +92,17 @@
   <!-- accepted -->
   <ng-container *ngIf="applicationStatus.registrationAccepted">
     <!-- no changes made -->
-    <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
+    <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted && !(applicationStatus.withdrawalSubmitted || applicationStatus.removalSubmitted)">
       <ng-container *ngTemplateOutlet="ApplicationApproved" />
     </ng-container>
 
     <!-- changes submitted but not accepted yet -->
-    <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
+    <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted && !(applicationStatus.withdrawalSubmitted || applicationStatus.removalSubmitted)">
       <ng-container *ngTemplateOutlet="AssessingLatestChanges" />
     </ng-container>
 
     <!-- changes accepted -->
-    <ng-container *ngIf="applicationStatus.changesAccepted">
+    <ng-container *ngIf="applicationStatus.changesAccepted && !applicationStatus.withdrawalSubmitted">
       <ng-container *ngTemplateOutlet="ApprovedLatestChanges" />
     </ng-container>
 
