@@ -13,7 +13,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
   static route: string = 'application-completed';
   static title: string = "Application history - Register a high-rise building - GOV.UK";
-  
+
   shouldRender: boolean = false;
   submittionDate?: string;
   kbiSubmittionDate?: string;
@@ -29,6 +29,19 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     return (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.AccountablePersonsComplete) == BuildingApplicationStage.AccountablePersonsComplete;
   }
 
+  applicationStatus = {
+    paid: false,
+    kbiSubmitted: false,
+    changesSubmitted: false,
+    changesAccepted: false,
+    withdrawalSubmitted: false,
+    withdrawalAccepted: false,
+    registrationAccepted: false,
+    removalSubmitted: false,
+    removalAccepted: false,
+    showLinks: false
+  };
+
   async ngOnInit(): Promise<void> {
     this.shouldRender = false;
 
@@ -38,13 +51,11 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     this.sendApplicationDataToBroadcastChannel();
 
     this.submittionDate = await this.applicationService.getSubmissionDate();
-
     this.kbiSubmittionDate = await this.applicationService.getKbiSubmissionDate();
 
     this.applicationStatuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
 
     var payments: any = await this.applicationService.getApplicationPayments();
-
     if (payments != undefined && payments.some((x: { bsr_govukpaystatus: string; }) => x.bsr_govukpaystatus == "success" || x.bsr_govukpaystatus == "open")) {
       this.initPayment(payments);
       this.shouldRender = true;
@@ -55,6 +66,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
         this.shouldRender = true;
       });
     }
+
+    this.updateApplicationStatus();
   }
 
   private initPayment(payments: any) {
@@ -82,13 +95,22 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
       .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
   }
 
-  async newApplication() {
-    await this.navigationService.navigate('/select');
+  private updateApplicationStatus() {
+    this.applicationStatus.paid = this.payment != undefined;
+    this.applicationStatus.kbiSubmitted = ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus);
+    this.applicationStatus.changesSubmitted = ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
+    this.applicationStatus.changesAccepted = ApplicationStageHelper.isChangeRequestAccepted(this.applicationService.model.Versions);
+    this.applicationStatus.withdrawalSubmitted = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure != undefined;
+    this.applicationStatus.withdrawalAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Withdrawn;
+    this.applicationStatus.registrationAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Registered || this.applicationStatuscode == BuildingApplicationStatuscode.RegisteredKbiValidated;
+    this.applicationStatus.removalSubmitted = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure != undefined;
+    this.applicationStatus.removalAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Withdrawn;
+
+    this.applicationStatus.showLinks = (!this.applicationStatus.withdrawalSubmitted && !this.applicationStatus.withdrawalAccepted && !this.applicationStatus.registrationAccepted);
   }
 
-  private sectionBuildingName() {
-    return this.applicationService.model.NumberOfSections == 'one' ? this.applicationService.model.BuildingName :
-      this.applicationService.currentSection.Name;
+  async newApplication() {
+    await this.navigationService.navigate('/select');
   }
 
   isViewOne(): boolean {
@@ -274,6 +296,10 @@ export class ApplicationStageHelper {
 
   static isChangeRequestSubmitted(versions?: BuildingRegistrationVersion[]) {
     return !!versions && versions.length > 1 && FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy);
+  }
+
+  static isChangeRequestAccepted(versions?: BuildingRegistrationVersion[]) {
+    return !!versions && versions.length > 1 && !FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy);
   }
 
   static containsFlag(currentApplicationStage: BuildingApplicationStage, flag: BuildingApplicationStage) {
