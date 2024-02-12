@@ -69,7 +69,9 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(GetApplication))]
-    public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request, [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", PartitionKey = "{ApplicationNumber}", Connection = "CosmosConnection")] List<BuildingApplicationModel> buildingApplications)
+    public async Task<HttpResponseData> GetApplication([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GetApplication")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", PartitionKey = "{ApplicationNumber}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications)
     {
         var requestContent = await request.ReadAsJsonAsync<GetApplicationRequest>();
 
@@ -77,7 +79,8 @@ public class BuildingApplicationFunctions
         if (matchingApplication != null)
         {
             var application = buildingApplications[0];
-            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress) || await otpService.ValidateToken(requestContent.OtpToken, application.SecondaryEmailAddress) || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail) || await otpService.ValidateToken(requestContent.OtpToken, requestContent.EmailAddress);
+            var tokenIsValid = await otpService.ValidateToken(requestContent.OtpToken, application.ContactEmailAddress) || await otpService.ValidateToken(requestContent.OtpToken, application.SecondaryEmailAddress) || await otpService.ValidateToken(requestContent.OtpToken, application.NewPrimaryUserEmail) ||
+                               await otpService.ValidateToken(requestContent.OtpToken, requestContent.EmailAddress);
 
             if (tokenIsValid || featureOptions.DisableOtpValidation)
             {
@@ -153,7 +156,14 @@ public class BuildingApplicationFunctions
             bool PapIsOrganisation = section.bsr_BuildingApplicationID.bsr_paptype == 760810001;
             if (PapIsOrganisation)
             {
-                response = response with { PapAddress = new BuildingAddress { Postcode = section.bsr_BuildingApplicationID.bsr_papid_account.address1_postalcode, Address = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line1, AddressLineTwo = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line2, Town = section.bsr_BuildingApplicationID.bsr_papid_account.address1_city }, PapName = section.bsr_BuildingApplicationID.bsr_papid_account.name, PapIsOrganisation = PapIsOrganisation };
+                response = response with
+                {
+                    PapAddress = new BuildingAddress
+                    {
+                        Postcode = section.bsr_BuildingApplicationID.bsr_papid_account.address1_postalcode, Address = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line1, AddressLineTwo = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line2, Town = section.bsr_BuildingApplicationID.bsr_papid_account.address1_city
+                    },
+                    PapName = section.bsr_BuildingApplicationID.bsr_papid_account.name, PapIsOrganisation = PapIsOrganisation
+                };
             }
 
             return response;
@@ -164,7 +174,8 @@ public class BuildingApplicationFunctions
 
     private bool IsSectionComplete(IndependentSection section, string addressLineOne)
     {
-        bool isComplete = section != null && section.bsr_BuildingId != null && IsNotNullOrWhitespace(section.bsr_BuildingId.bsr_name) && section.bsr_BuildingApplicationID != null && section.bsr_BuildingApplicationID.bsr_paptype != null && ((section.bsr_BuildingApplicationID.bsr_paptype == 760810001 && section.bsr_BuildingApplicationID.bsr_papid_account != null) || section.bsr_BuildingApplicationID.bsr_paptype == 760810000) && NormaliseAddress(addressLineOne).Contains(NormaliseAddress(section.bsr_addressline1));
+        bool isComplete = section != null && section.bsr_BuildingId != null && IsNotNullOrWhitespace(section.bsr_BuildingId.bsr_name) && section.bsr_BuildingApplicationID != null && section.bsr_BuildingApplicationID.bsr_paptype != null &&
+                          ((section.bsr_BuildingApplicationID.bsr_paptype == 760810001 && section.bsr_BuildingApplicationID.bsr_papid_account != null) || section.bsr_BuildingApplicationID.bsr_paptype == 760810000) && NormaliseAddress(addressLineOne).Contains(NormaliseAddress(section.bsr_addressline1));
         return isComplete;
     }
 
@@ -218,30 +229,41 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(IsChangeRequestAccepted))]
-    public async Task<HttpResponseData> IsChangeRequestAccepted([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(IsChangeRequestAccepted)}/{{ApplicationNumber}}")] HttpRequestData request, 
+    public async Task<HttpResponseData> IsChangeRequestAccepted([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(IsChangeRequestAccepted)}/{{ApplicationNumber}}")] HttpRequestData request,
         [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", PartitionKey = "{ApplicationNumber}", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications)
     {
         var application = buildingApplications.First();
-        
+        var dynamicsApplication = await dynamicsService.GetBuildingApplicationUsingId(application.Id);
+
         var versions = application.Versions.ToList();
         versions.Reverse();
 
-        var validVersion = application.Versions.First();
         foreach (var version in versions)
         {
-            var change = version.ChangeRequest?.FirstOrDefault()?.Change?.FirstOrDefault();
-            if (change == null) continue;
-
-            var dynamicsChanges = await dynamicsService.GetChange(change.FieldName, change.OriginalAnswer, change.NewAnswer);
-
-            var dynamicsChange = dynamicsChanges.value.FirstOrDefault();
-            if (dynamicsChange?.bsr_changerequestid.statuscode is 760_810_007 or 2)
+            var deRegistrationChange = version.ChangeRequest?.FirstOrDefault(x => x.Category == ChangeCategory.DeRegistration)?.Change?.FirstOrDefault();
+            var change = version.ChangeRequest?.FirstOrDefault(x => x.Category != ChangeCategory.DeRegistration)?.Change?.FirstOrDefault();
+            if (deRegistrationChange != null)
             {
-                return await request.CreateObjectResponseAsync("complete");
+                var dynamicsChanges = await dynamicsService.GetChange(dynamicsApplication.bsr_buildingapplicationid, deRegistrationChange.FieldName, deRegistrationChange.OriginalAnswer, deRegistrationChange.NewAnswer);
+                var dynamicsChange = dynamicsChanges.value.FirstOrDefault();
+                if (dynamicsChange?.bsr_changerequestid.statuscode is 760_810_007 or 2)
+                {
+                    return await request.CreateObjectResponseAsync("withdrawn");
+                }
+            }
+            else if (change != null)
+            {
+                var dynamicsChanges = await dynamicsService.GetChange(dynamicsApplication.bsr_buildingapplicationid, change.FieldName, change.OriginalAnswer, change.NewAnswer);
+
+                var dynamicsChange = dynamicsChanges.value.FirstOrDefault();
+                if (dynamicsChange?.bsr_changerequestid.statuscode is 760_810_007 or 2)
+                {
+                    return await request.CreateObjectResponseAsync("complete");
+                }
             }
         }
-        
+
         return await request.CreateObjectResponseAsync("not found");
     }
 

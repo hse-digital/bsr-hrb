@@ -102,10 +102,10 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     this.applicationStatus.changesSubmitted = ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
     this.applicationStatus.changesAccepted = latestCrAccepted == 'complete';
     this.applicationStatus.withdrawalSubmitted = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure != undefined;
-    this.applicationStatus.withdrawalAccepted = this.applicationStatus.withdrawalSubmitted && this.applicationStatus.changesAccepted;
+    this.applicationStatus.withdrawalAccepted = this.applicationStatus.withdrawalSubmitted && latestCrAccepted == 'withdrawn';
     this.applicationStatus.registrationAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Registered || this.applicationStatuscode == BuildingApplicationStatuscode.RegisteredKbiValidated;
     this.applicationStatus.removalSubmitted = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure != undefined;
-    this.applicationStatus.removalAccepted = this.applicationStatus.removalSubmitted && this.applicationStatus.changesAccepted;
+    this.applicationStatus.removalAccepted = this.applicationStatus.removalSubmitted && latestCrAccepted == 'withdrawn';
 
     this.applicationStatus.showLinks = (!this.applicationStatus.withdrawalSubmitted && !this.applicationStatus.withdrawalAccepted && !this.applicationStatus.registrationAccepted);
     this.shouldRender = true;

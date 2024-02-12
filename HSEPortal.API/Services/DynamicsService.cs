@@ -44,7 +44,7 @@ public interface IDynamicsService
     Task UpdateSafetyCaseReportSubmissionDate(string applicationNumber, DateTime date);
     Task UploadFileToSharepoint(SharepointUploadRequestModel requestModel);
     Task<DynamicsBuildingApplication> ValidateExistingApplication(string applicationNumber, string emailAddress);
-    Task<DynamicsResponse<DynamicsChange>> GetChange(string fieldName, string originalAnswer, string newAnswer);
+    Task<DynamicsResponse<DynamicsChange>> GetChange(string applicationId, string fieldName, string originalAnswer, string newAnswer);
 }
 
 public class DynamicsService : IDynamicsService
@@ -1071,10 +1071,10 @@ public class DynamicsService : IDynamicsService
         return response.value.FirstOrDefault();
     }
 
-    public Task<DynamicsResponse<DynamicsChange>> GetChange(string fieldName, string originalAnswer, string newAnswer)
+    public Task<DynamicsResponse<DynamicsChange>> GetChange(string applicationId, string fieldName, string originalAnswer, string newAnswer)
     {
         return dynamicsApi.Get<DynamicsResponse<DynamicsChange>>("bsr_changes",
-            ("$filter", $"bsr_fieldname eq '{fieldName}' and bsr_originalanswer eq '{originalAnswer}' and bsr_newanswer eq '{newAnswer}'"),
+            ("$filter", $"bsr_fieldname eq '{fieldName}' and bsr_originalanswer eq '{originalAnswer}' and bsr_newanswer eq '{newAnswer}' and bsr_changerequestid/_bsr_buildingapplicationid_value eq {applicationId}"),
             ("$expand", "bsr_changerequestid")
         );
     }
