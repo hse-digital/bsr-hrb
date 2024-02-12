@@ -8,62 +8,118 @@
 
   <h2 class="govuk-heading-m">Registration</h2>
 
-  <!-- not paid -->
-  <ng-container *ngIf="!applicationStatus.paid">
+  <!-- submitted -->
+  <ng-container *ngIf="!applicationStatus.registrationAccepted">
+    <!-- not paid -->
+    <ng-container *ngIf="!applicationStatus.paid">
+      <!-- no changes made -->
+      <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
+        <ng-container *ngTemplateOutlet="InvoiceSent" />
+        <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
+        <ng-container *ngTemplateOutlet="MustPay" />
+        <ng-container *ngTemplateOutlet="TakeTooLongToPay" />
+      </ng-container>
+
+      <!-- changes submitted but not accepted yet -->
+      <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
+        <ng-container *ngTemplateOutlet="InvoiceSent" />
+        <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
+        <ng-container *ngTemplateOutlet="MustPay" />
+        <ng-container *ngTemplateOutlet="TakeTooLongToPay" />
+        <ng-container *ngTemplateOutlet="AssessingLatestChanges" />
+      </ng-container>
+
+      <!-- changes accepted -->
+      <ng-container *ngIf="applicationStatus.changesAccepted">
+        <ng-container *ngTemplateOutlet="InvoiceSent" />
+        <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
+        <ng-container *ngTemplateOutlet="MustPay" />
+        <ng-container *ngTemplateOutlet="TakeTooLongToPay" />
+        <ng-container *ngTemplateOutlet="ApprovedLatestChanges" />
+      </ng-container>
+
+      <!-- withdrawal submitted -->
+      <ng-container *ngIf="applicationStatus.withdrawalSubmitted && !applicationStatus.withdrawalAccepted">
+        <ng-container *ngTemplateOutlet="WithdrawalRequestSubmitted" />
+        <ng-container *ngTemplateOutlet="SendEmailWhenRequestIsReviewed" />
+        <ng-container *ngTemplateOutlet="StillMustPay" />
+        <ng-container *ngTemplateOutlet="InvoiceSent" />
+        <ng-container *ngTemplateOutlet="TakeTooLongToPay" />
+      </ng-container>
+
+      <!-- withdrawal accepted -->
+      <ng-container *ngIf="applicationStatus.withdrawalAccepted">
+        <ng-container *ngTemplateOutlet="WithdrawalRequestAccepted" />
+        <ng-container *ngTemplateOutlet="SendEmailWhenRequestIsReviewed" />
+        <ng-container *ngTemplateOutlet="StillMustPay" />
+        <ng-container *ngTemplateOutlet="InvoiceSent" />
+        <ng-container *ngTemplateOutlet="TakeTooLongToPay" />
+      </ng-container>
+    </ng-container>
+
+    <!-- paid -->
+    <ng-container *ngIf="applicationStatus.paid">
+      <!-- no changes made -->
+      <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
+        <ng-container *ngTemplateOutlet="AssessingApplication" />
+      </ng-container>
+
+      <!-- changes submitted but not accepted yet -->
+      <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
+        <ng-container *ngTemplateOutlet="AssessingApplication" />
+        <ng-container *ngTemplateOutlet="AssessingLatestChanges" />
+      </ng-container>
+
+      <!-- changes accepted -->
+      <ng-container *ngIf="applicationStatus.changesAccepted">
+        <ng-container *ngTemplateOutlet="AssessingApplication" />
+        <ng-container *ngTemplateOutlet="ApprovedLatestChanges" />
+      </ng-container>
+
+      <!-- withdrawal submitted -->
+      <ng-container *ngIf="applicationStatus.withdrawalSubmitted && !applicationStatus.withdrawalAccepted">
+        <ng-container *ngTemplateOutlet="WithdrawalRequestSubmitted" />
+        <ng-container *ngTemplateOutlet="SendEmailWhenRequestIsReviewed" />
+      </ng-container>
+
+      <!-- withdrawal accepted -->
+      <ng-container *ngIf="applicationStatus.withdrawalAccepted">
+        <ng-container *ngTemplateOutlet="WithdrawalRequestAccepted" />
+      </ng-container>
+    </ng-container>
+  </ng-container>
+
+  <!-- accepted -->
+  <ng-container *ngIf="applicationStatus.registrationAccepted">
     <!-- no changes made -->
     <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
-      <ng-container *ngTemplateOutlet="InvoiceSent" />
-      <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
-      <ng-container *ngTemplateOutlet="MustPay" />
-      <ng-container *ngTemplateOutlet="TakeTooLongToPay" />
+      <ng-container *ngTemplateOutlet="ApplicationApproved" />
     </ng-container>
 
     <!-- changes submitted but not accepted yet -->
     <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
-      <ng-container *ngTemplateOutlet="InvoiceSent" />
-      <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
-      <ng-container *ngTemplateOutlet="MustPay" />
-      <ng-container *ngTemplateOutlet="TakeTooLongToPay" />
       <ng-container *ngTemplateOutlet="AssessingLatestChanges" />
     </ng-container>
 
     <!-- changes accepted -->
     <ng-container *ngIf="applicationStatus.changesAccepted">
-      <ng-container *ngTemplateOutlet="InvoiceSent" />
-      <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
-      <ng-container *ngTemplateOutlet="MustPay" />
-      <ng-container *ngTemplateOutlet="TakeTooLongToPay" />
       <ng-container *ngTemplateOutlet="ApprovedLatestChanges" />
     </ng-container>
 
     <!-- withdrawal submitted -->
     <ng-container *ngIf="applicationStatus.withdrawalSubmitted && !applicationStatus.withdrawalAccepted">
-      <ng-container *ngTemplateOutlet="WithdrawalRequestSubmitted" />
+      <ng-container *ngTemplateOutlet="RemovalSubmitted" />
       <ng-container *ngTemplateOutlet="SendEmailWhenRequestIsReviewed" />
-      <ng-container *ngTemplateOutlet="StillMustPay" />
-      <ng-container *ngTemplateOutlet="InvoiceSent" />
-      <ng-container *ngTemplateOutlet="TakeTooLongToPay" />
     </ng-container>
 
     <!-- withdrawal accepted -->
     <ng-container *ngIf="applicationStatus.withdrawalAccepted">
-      <ng-container *ngTemplateOutlet="WithdrawalRequestAccepted" />
-      <ng-container *ngTemplateOutlet="SendEmailWhenRequestIsReviewed" />
-      <ng-container *ngTemplateOutlet="StillMustPay" />
-      <ng-container *ngTemplateOutlet="InvoiceSent" />
-      <ng-container *ngTemplateOutlet="TakeTooLongToPay" />
+      <ng-container *ngTemplateOutlet="RemovalAccepted" />
     </ng-container>
-
-  </ng-container>
-
-  <!-- paid -->
-  <ng-container *ngIf="applicationStatus.paid">
-
   </ng-container>
 
   <!-- application history -->
-  <h2 class="govuk-heading-m">Application history</h2>
-  <govuk-details summaryText="Show application history" id="application_history">
+  <govuk-details summaryText="Show application history" id="application_history" class="govuk-!-margin-bottom-6">
     <table class="govuk-table">
       <tbody class="govuk-table__body">
         <ng-container *ngIf="isViewOne()">
@@ -119,16 +175,23 @@
   </govuk-details>
 
   <!-- links -->
-  <div *ngIf="applicationStatus.showLinks" class="govuk-!-margin-bottom-8">
+  <div *ngIf="applicationStatus.showLinks" class="govuk-!-margin-bottom-6">
     <govuk-body>If you need to, you can:</govuk-body>
     <ul class='govuk-list govuk-list--bullet'>
-      <li><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration information, or manage who can use this service</a></li>
-      <li><a href="javascript:void(0);" [routerLink]="['../registration-amendments/deregister-are-you-sure']" class="govuk-link">ask to withdraw this application</a></li>
+      <li *ngIf="!applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration information, or manage who can use this service</a>.</li>
+      <li *ngIf="!applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration or structure and fire safety information, or manage who can use this service</a>.</li>
+      <li><a href="javascript:void(0);" [routerLink]="['../registration-amendments/deregister-are-you-sure']" class="govuk-link">ask to withdraw this application</a>.</li>
     </ul>
   </div>
 
+  <!-- registration accepted links -->
+  <div *ngIf="applicationStatus.registrationAccepted && !applicationStatus.removalSubmitted && !applicationStatus.removalAccepted" class="govuk-!-margin-bottom-6">
+    <govuk-body>You can <a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration information, or manage who can use this service</a>.</govuk-body>
+    <govuk-body>If it is no longer a high-rise residential building, you can <a href="javascript:void(0);" [routerLink]="['../registration-amendments/deregister-are-you-sure']" class="govuk-link">ask to remove this building from the register</a>.</govuk-body>
+  </div>
+
   <!-- kbi link -->
-  <div *ngIf="applicationStatus.showKbi" class="govuk-!-margin-bottom-6">
+  <div *ngIf="!applicationStatus.kbiSubmitted">
     <h2 class="govuk-heading-m">Structure and fire safety information</h2>
     <div class="govuk-warning-text govuk-!-margin-bottom-2">
       <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -150,6 +213,12 @@
 
 </govuk-formpage>
 
+
+
+
+
+
+<!-- templates -->
 <ng-template #ApplicationHistoryChangesSubmitted>
   <tr class="govuk-table__row">
     <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../registration-amendments/summary']" target="_blank" role="link" tabindex="0">Changes submitted</a></td>
@@ -208,5 +277,21 @@
 </ng-template>
 
 <ng-template #WithdrawalRequestAccepted>
-  <govuk-body>We have accepted your request to withdraw the application for {{applicationService.model.BuildingName}}</govuk-body>
+  <govuk-body>We have accepted your request to withdraw the application for {{applicationService.model.BuildingName}}.</govuk-body>
+</ng-template>
+
+<ng-template #AssessingApplication>
+  <govuk-body>We are assessing the application to register {{applicationService.model.BuildingName}}.</govuk-body>
+</ng-template>
+
+<ng-template #ApplicationApproved>
+  <govuk-body>We have approved the application to register  {{applicationService.model.BuildingName}}.</govuk-body>
+</ng-template>
+
+<ng-template #RemovalSubmitted>
+  <govuk-body>You have submitted a request to remove {{applicationService.model.BuildingName}} from the register.</govuk-body>
+</ng-template>
+
+<ng-template #RemovalAccepted>
+  <govuk-body>We have accepted your request to remove {{applicationService.model.BuildingName}} from the register.</govuk-body>
 </ng-template>
