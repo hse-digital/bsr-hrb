@@ -13,7 +13,7 @@
     <!-- not paid -->
     <ng-container *ngIf="!applicationStatus.paid">
       <!-- no changes made -->
-      <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
+      <ng-container *ngIf="!applicationStatus.changesSubmitted && !applicationStatus.changesAccepted && !applicationStatus.withdrawalSubmitted">
         <ng-container *ngTemplateOutlet="InvoiceSent" />
         <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
         <ng-container *ngTemplateOutlet="MustPay" />
@@ -21,7 +21,7 @@
       </ng-container>
 
       <!-- changes submitted but not accepted yet -->
-      <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted">
+      <ng-container *ngIf="applicationStatus.changesSubmitted && !applicationStatus.changesAccepted && !applicationStatus.withdrawalSubmitted">
         <ng-container *ngTemplateOutlet="InvoiceSent" />
         <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
         <ng-container *ngTemplateOutlet="MustPay" />
@@ -30,7 +30,7 @@
       </ng-container>
 
       <!-- changes accepted -->
-      <ng-container *ngIf="applicationStatus.changesAccepted">
+      <ng-container *ngIf="applicationStatus.changesAccepted && !applicationStatus.withdrawalSubmitted">
         <ng-container *ngTemplateOutlet="InvoiceSent" />
         <ng-container *ngTemplateOutlet="AppWillBeSubmitted" />
         <ng-container *ngTemplateOutlet="MustPay" />
@@ -191,7 +191,7 @@
   </div>
 
   <!-- kbi link -->
-  <div *ngIf="!applicationStatus.kbiSubmitted">
+  <div *ngIf="!applicationStatus.kbiSubmitted && !applicationStatus.withdrawalSubmitted">
     <h2 class="govuk-heading-m">Structure and fire safety information</h2>
     <div class="govuk-warning-text govuk-!-margin-bottom-2">
       <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -206,7 +206,7 @@
   </div>
 
   <!-- safety case report -->
-  <div class="safety-case-report">
+  <div class="safety-case-report" *ngIf="!applicationStatus.withdrawalSubmitted">
     <h2 class="govuk-heading-m">Safety case report</h2>
     <govuk-body *ngIf="!applicationService.model.SafetyCaseReport?.declaration">You must <a href="javascript:void(0);" [routerLink]="['../safety-case-report/date']" class="govuk-link">tell us when you have prepared a safety case report.</a></govuk-body>
     <govuk-body *ngIf="applicationService.model.SafetyCaseReport?.declaration">You must <a href="javascript:void(0);" [routerLink]="['../safety-case-report/date']" class="govuk-link">tell us each time you update your safety case report.</a></govuk-body>
@@ -250,7 +250,7 @@
 </ng-template>
 
 <ng-template #MustPay>
-  <govuk-body>You must pay the carge before we can assess your application.</govuk-body>
+  <govuk-body>You must pay the charge before we can assess your application.</govuk-body>
 </ng-template>
 
 <ng-template #TakeTooLongToPay>
