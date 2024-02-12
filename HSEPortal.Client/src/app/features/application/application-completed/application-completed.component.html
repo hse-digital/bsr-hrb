@@ -178,9 +178,9 @@
   <div *ngIf="applicationStatus.showLinks" class="govuk-!-margin-bottom-6">
     <govuk-body>If you need to, you can:</govuk-body>
     <ul class='govuk-list govuk-list--bullet'>
-      <li *ngIf="!applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration information, or manage who can use this service</a>.</li>
-      <li *ngIf="applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration or structure and fire safety information, or manage who can use this service</a>.</li>
-      <li><a href="javascript:void(0);" [routerLink]="['../registration-amendments/deregister-are-you-sure']" class="govuk-link">ask to withdraw this application</a>.</li>
+      <li *ngIf="!applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration information, or manage who can use this service</a></li>
+      <li *ngIf="applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration or structure and fire safety information, or manage who can use this service</a></li>
+      <li><a href="javascript:void(0);" [routerLink]="['../registration-amendments/deregister-are-you-sure']" class="govuk-link">ask to withdraw this application</a></li>
     </ul>
   </div>
 

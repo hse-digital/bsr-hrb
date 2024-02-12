@@ -58,7 +58,6 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     var payments: any = await this.applicationService.getApplicationPayments();
     if (payments != undefined && payments.some((x: { bsr_govukpaystatus: string; }) => x.bsr_govukpaystatus == "success" || x.bsr_govukpaystatus == "open")) {
       this.initPayment(payments);
-      this.shouldRender = true;
     } else {
       this.getPaymentInformation().then((result: any) => {
         payments = result;
@@ -67,7 +66,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
       });
     }
 
-    this.updateApplicationStatus();
+    await this.updateApplicationStatus();
   }
 
   private initPayment(payments: any) {
@@ -95,20 +94,24 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
       .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
   }
 
-  private updateApplicationStatus() {
+  private async updateApplicationStatus() {
+    var latestCrAccepted = await this.applicationService.isChangeRequestAccepted();
+
     this.applicationStatus.paid = this.payment != undefined;
     this.applicationStatus.kbiSubmitted = ApplicationStageHelper.isKbiSubmitted(this.applicationService.model.ApplicationStatus);
     this.applicationStatus.changesSubmitted = ApplicationStageHelper.isChangeRequestSubmitted(this.applicationService.model.Versions);
-    this.applicationStatus.changesAccepted = ApplicationStageHelper.isChangeRequestAccepted(this.applicationService.model.Versions);
+    this.applicationStatus.changesAccepted = latestCrAccepted == 'complete';
     this.applicationStatus.withdrawalSubmitted = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure != undefined;
-    this.applicationStatus.withdrawalAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Withdrawn;
+    this.applicationStatus.withdrawalAccepted = this.applicationStatus.changesAccepted;
     this.applicationStatus.registrationAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Registered || this.applicationStatuscode == BuildingApplicationStatuscode.RegisteredKbiValidated;
     this.applicationStatus.removalSubmitted = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure != undefined;
-    this.applicationStatus.removalAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Withdrawn;
+    this.applicationStatus.removalAccepted = this.applicationStatus.changesAccepted;
 
     this.applicationStatus.showLinks = (!this.applicationStatus.withdrawalSubmitted && !this.applicationStatus.withdrawalAccepted && !this.applicationStatus.registrationAccepted);
+    this.shouldRender = true;
 
     console.table(this.applicationStatus);
+    console.log(this.applicationService.model.Versions);
   }
 
   async newApplication() {
@@ -297,7 +300,7 @@ export class ApplicationStageHelper {
   }
 
   static isChangeRequestSubmitted(versions?: BuildingRegistrationVersion[]) {
-    return !!versions && versions.length > 1 && FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy) && versions[0].Submitted == true;
+    return !!versions && versions.length > 1 && FieldValidations.IsNotNullOrWhitespace(versions[0].ReplacedBy);
   }
 
   static isChangeRequestAccepted(versions?: BuildingRegistrationVersion[]) {
