@@ -179,7 +179,7 @@
     <govuk-body>If you need to, you can:</govuk-body>
     <ul class='govuk-list govuk-list--bullet'>
       <li *ngIf="!applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration information, or manage who can use this service</a>.</li>
-      <li *ngIf="!applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration or structure and fire safety information, or manage who can use this service</a>.</li>
+      <li *ngIf="applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration or structure and fire safety information, or manage who can use this service</a>.</li>
       <li><a href="javascript:void(0);" [routerLink]="['../registration-amendments/deregister-are-you-sure']" class="govuk-link">ask to withdraw this application</a>.</li>
     </ul>
   </div>
@@ -208,7 +208,8 @@
   <!-- safety case report -->
   <div class="safety-case-report">
     <h2 class="govuk-heading-m">Safety case report</h2>
-    <govuk-body>You must <a href="javascript:void(0);" [routerLink]="['../safety-case-report/date']" class="govuk-link">tell us when you have prepared a safety case report.</a></govuk-body>
+    <govuk-body *ngIf="!applicationService.model.SafetyCaseReport?.declaration">You must <a href="javascript:void(0);" [routerLink]="['../safety-case-report/date']" class="govuk-link">tell us when you have prepared a safety case report.</a></govuk-body>
+    <govuk-body *ngIf="!applicationService.model.SafetyCaseReport?.declaration">You must <a href="javascript:void(0);" [routerLink]="['../safety-case-report/date']" class="govuk-link">tell us each time you update your safety case report.</a></govuk-body>
   </div>
 
 </govuk-formpage>
