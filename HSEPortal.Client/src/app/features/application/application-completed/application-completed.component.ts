@@ -109,9 +109,6 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
     this.applicationStatus.showLinks = (!this.applicationStatus.withdrawalSubmitted && !this.applicationStatus.withdrawalAccepted && !this.applicationStatus.registrationAccepted);
     this.shouldRender = true;
-
-    console.table(this.applicationStatus);
-    console.log(this.applicationService.model.Versions);
   }
 
   async newApplication() {
