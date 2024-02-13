@@ -27,8 +27,9 @@ export class ApplicationService {
   }
 
   get previousVersion(): BuildingRegistrationVersion {
-    let versionIndex = this.model.Versions.findIndex(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy) && x.Submitted == true && x.Name != 'original');
-    return versionIndex != -1 ? this.model.Versions[versionIndex] : this.model.Versions[0];
+    var currentVersionName = this.currentVersion.Name;
+    var previousVersionIndex = this.model.Versions.findIndex(x => x.ReplacedBy == currentVersionName);
+    return previousVersionIndex != -1 ? this.model.Versions[previousVersionIndex] : this.model.Versions[0];
   }
 
   get currentSectionAddress(): AddressModel {
@@ -293,6 +294,7 @@ export class ApplicationService {
   }
 
   async updateApplication(): Promise<void> {
+    console.log(this.model);
     if (this.model.id) {
       this.updateLocalStorage();
       await firstValueFrom(this.httpClient.put(`api/UpdateApplication/${this.model.id}`, this.model));
