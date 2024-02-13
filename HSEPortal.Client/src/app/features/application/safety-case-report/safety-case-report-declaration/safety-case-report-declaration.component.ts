@@ -29,7 +29,7 @@ export class SafetyCaseReportDeclarationComponent extends PageComponent<void> {
   }
 
   override canAccess(applicationService: ApplicationService, __: ActivatedRouteSnapshot): boolean {
-    return true;
+    return !this.applicationService.model.SafetyCaseReport?.declaration;
   }
 
   override isValid(): boolean {

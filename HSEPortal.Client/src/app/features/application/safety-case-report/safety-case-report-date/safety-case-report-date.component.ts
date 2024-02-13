@@ -39,7 +39,7 @@ export class SafetyCaseReportDateComponent extends PageComponent<DateModel> {
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
-    return true;
+    return !this.applicationService.model.SafetyCaseReport?.declaration;
   }
 
   override isValid(): boolean {
