@@ -206,10 +206,9 @@
   </div>
 
   <!-- safety case report -->
-  <div class="safety-case-report" *ngIf="!applicationStatus.withdrawalSubmitted">
+  <div class="safety-case-report" *ngIf="!applicationService.model.SafetyCaseReport?.declaration">
     <h2 class="govuk-heading-m">Safety case report</h2>
-    <govuk-body *ngIf="!applicationService.model.SafetyCaseReport?.declaration">You must <a href="javascript:void(0);" [routerLink]="['../safety-case-report/date']" class="govuk-link">tell us when you have prepared a safety case report.</a></govuk-body>
-    <govuk-body *ngIf="applicationService.model.SafetyCaseReport?.declaration">You must <a href="javascript:void(0);" [routerLink]="['../safety-case-report/date']" class="govuk-link">tell us each time you update your safety case report.</a></govuk-body>
+    <govuk-body>You must <a href="javascript:void(0);" [routerLink]="['../safety-case-report/date']" class="govuk-link">tell us when you have prepared a safety case report.</a></govuk-body>
   </div>
 
 </govuk-formpage>
