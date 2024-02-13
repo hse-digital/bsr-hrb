@@ -27,7 +27,8 @@ export class ApplicationService {
   }
 
   get previousVersion(): BuildingRegistrationVersion {
-    return this._currentVersion > 0 ? this.model.Versions[this._currentVersion - 1] : this.model.Versions[0];
+    let versionIndex = this.model.Versions.findIndex(x => !FieldValidations.IsNotNullOrWhitespace(x.ReplacedBy) && x.Submitted == true && x.Name != 'original');
+    return versionIndex != -1 ? this.model.Versions[versionIndex] : this.model.Versions[0];
   }
 
   get currentSectionAddress(): AddressModel {
