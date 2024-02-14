@@ -5,6 +5,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { CommonModule } from "@angular/common";
 import { HseAngularModule } from "hse-angular";
 import { ComponentsModule } from "src/app/components/components.module";
+import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { Route, RouterModule } from "@angular/router";
 import { PublicRegisterResultsComponent } from "./results/results.component";
 import { StructureDetailsComponent } from "./structure-details/structure-details.component";

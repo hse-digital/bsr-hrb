@@ -15,13 +15,12 @@ namespace HSEPortal.API.Functions;
 
 public class BuildingApplicationFunctions
 {
-    private readonly DynamicsService dynamicsService;
+    private readonly IDynamicsService dynamicsService;
     private readonly OTPService otpService;
     private readonly FeatureOptions featureOptions;
     private readonly IntegrationsOptions integrationOptions;
 
-    public BuildingApplicationFunctions(DynamicsService dynamicsService, OTPService otpService, IOptions<FeatureOptions> featureOptions,
-        IOptions<IntegrationsOptions> integrationOptions)
+    public BuildingApplicationFunctions(IDynamicsService dynamicsService, OTPService otpService, IOptions<FeatureOptions> featureOptions, IOptions<IntegrationsOptions> integrationOptions)
     {
         this.dynamicsService = dynamicsService;
         this.otpService = otpService;
@@ -40,13 +39,7 @@ public class BuildingApplicationFunctions
         }
 
         buildingApplicationModel = await dynamicsService.RegisterNewBuildingApplicationAsync(buildingApplicationModel);
-        buildingApplicationModel = buildingApplicationModel with
-        {
-            Versions = new List<BuildingApplicationVersion>
-            {
-                new("original")
-            }
-        };
+        buildingApplicationModel = buildingApplicationModel with { Versions = new List<BuildingApplicationVersion> { new("original") } };
 
         var response = await request.CreateObjectResponseAsync(buildingApplicationModel);
         return new CustomHttpResponseData
@@ -66,18 +59,14 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(GetSubmissionDate))]
-    public async Task<HttpResponseData> GetSubmissionDate(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetSubmissionDate/{applicationNumber}")]
-        HttpRequestData request, string applicationNumber)
+    public async Task<HttpResponseData> GetSubmissionDate([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetSubmissionDate/{applicationNumber}")] HttpRequestData request, string applicationNumber)
     {
         string submissionDate = await dynamicsService.GetSubmissionDate(applicationNumber);
         return await request.CreateObjectResponseAsync(submissionDate);
     }
 
     [Function(nameof(GetKbiSubmissionDate))]
-    public async Task<HttpResponseData> GetKbiSubmissionDate(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetKbiSubmissionDate/{applicationNumber}")]
-        HttpRequestData request, string applicationNumber)
+    public async Task<HttpResponseData> GetKbiSubmissionDate([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetKbiSubmissionDate/{applicationNumber}")] HttpRequestData request, string applicationNumber)
     {
         string submissionDate = await dynamicsService.GetKbiSubmissionDate(applicationNumber);
         return await request.CreateObjectResponseAsync(submissionDate);
@@ -103,16 +92,7 @@ public class BuildingApplicationFunctions
             {
                 if (application.Versions == null || application.Versions.Count == 0)
                 {
-                    application = application with
-                    {
-                        Versions = new List<BuildingApplicationVersion>
-                        {
-                            new("original", Sections: application.Sections, AccountablePersons: application.AccountablePersons, Kbi: application.Kbi)
-                        },
-                        Sections = null,
-                        AccountablePersons = null,
-                        Kbi = null
-                    };
+                    application = application with { Versions = new List<BuildingApplicationVersion> { new("original", Sections: application.Sections, AccountablePersons: application.AccountablePersons, Kbi: application.Kbi) }, Sections = null, AccountablePersons = null, Kbi = null };
                 }
 
                 application = application with { BuildingName = matchingApplication.bsr_Building.bsr_name };
@@ -134,9 +114,7 @@ public class BuildingApplicationFunctions
 
         RegisteredStructureModel responseModel = BuildAlreadyRegisteredStructureResponseModel(dynamicsResponse, requestData.AddressLineOne);
 
-        return responseModel != null
-            ? await request.CreateObjectResponseAsync(responseModel)
-            : request.CreateResponse(HttpStatusCode.ExpectationFailed);
+        return responseModel != null ? await request.CreateObjectResponseAsync(responseModel) : request.CreateResponse(HttpStatusCode.ExpectationFailed);
     }
 
     [Function(nameof(UpdateSafetyCaseDeclaration))]
@@ -155,18 +133,12 @@ public class BuildingApplicationFunctions
 
     private static bool IsSafetyCaseReportRequestDataValid(SafetyCaseReportRequestModel requestData)
     {
-        return requestData != null
-               && requestData.ApplicationNumber != null
-               && requestData.Date <= DateTime.Now;
+        return requestData != null && requestData.ApplicationNumber != null && requestData.Date <= DateTime.Now;
     }
 
     private bool IsRequestDataValid(RegisteredStructureRequestModel requestData)
     {
-        return requestData != null
-               && requestData.Postcode != null
-               && !requestData.Postcode.Equals(string.Empty)
-               && requestData.AddressLineOne != null
-               && !requestData.AddressLineOne.Equals(string.Empty);
+        return requestData != null && requestData.Postcode != null && !requestData.Postcode.Equals(string.Empty) && requestData.AddressLineOne != null && !requestData.AddressLineOne.Equals(string.Empty);
     }
 
     private RegisteredStructureModel BuildAlreadyRegisteredStructureResponseModel(DynamicsResponse<IndependentSection> dynamicsResponse, string addressLineOne)
@@ -184,13 +156,7 @@ public class BuildingApplicationFunctions
                 Height = section.bsr_sectionheightinmetres.ToString(),
                 NumFloors = section.bsr_nooffloorsabovegroundlevel.ToString(),
                 ResidentialUnits = section.bsr_numberofresidentialunits.ToString(),
-                StructureAddress = new BuildingAddress
-                {
-                    Postcode = section.bsr_postcode,
-                    Address = section.bsr_addressline1,
-                    AddressLineTwo = section.bsr_addressline2,
-                    Town = section.bsr_city
-                }
+                StructureAddress = new BuildingAddress { Postcode = section.bsr_postcode, Address = section.bsr_addressline1, AddressLineTwo = section.bsr_addressline2, Town = section.bsr_city }
             };
 
             bool PapIsOrganisation = section.bsr_BuildingApplicationID.bsr_paptype == 760810001;
@@ -200,13 +166,9 @@ public class BuildingApplicationFunctions
                 {
                     PapAddress = new BuildingAddress
                     {
-                        Postcode = section.bsr_BuildingApplicationID.bsr_papid_account.address1_postalcode,
-                        Address = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line1,
-                        AddressLineTwo = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line2,
-                        Town = section.bsr_BuildingApplicationID.bsr_papid_account.address1_city
+                        Postcode = section.bsr_BuildingApplicationID.bsr_papid_account.address1_postalcode, Address = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line1, AddressLineTwo = section.bsr_BuildingApplicationID.bsr_papid_account.address1_line2, Town = section.bsr_BuildingApplicationID.bsr_papid_account.address1_city
                     },
-                    PapName = section.bsr_BuildingApplicationID.bsr_papid_account.name,
-                    PapIsOrganisation = PapIsOrganisation
+                    PapName = section.bsr_BuildingApplicationID.bsr_papid_account.name, PapIsOrganisation = PapIsOrganisation
                 };
             }
 
@@ -218,14 +180,8 @@ public class BuildingApplicationFunctions
 
     private bool IsSectionComplete(IndependentSection section, string addressLineOne)
     {
-        bool isComplete = section != null
-                          && section.bsr_BuildingId != null
-                          && IsNotNullOrWhitespace(section.bsr_BuildingId.bsr_name)
-                          && section.bsr_BuildingApplicationID != null
-                          && section.bsr_BuildingApplicationID.bsr_paptype != null
-                          && ((section.bsr_BuildingApplicationID.bsr_paptype == 760810001 && section.bsr_BuildingApplicationID.bsr_papid_account != null) ||
-                              section.bsr_BuildingApplicationID.bsr_paptype == 760810000)
-                          && NormaliseAddress(addressLineOne).Contains(NormaliseAddress(section.bsr_addressline1));
+        bool isComplete = section != null && section.bsr_BuildingId != null && IsNotNullOrWhitespace(section.bsr_BuildingId.bsr_name) && section.bsr_BuildingApplicationID != null && section.bsr_BuildingApplicationID.bsr_paptype != null &&
+                          ((section.bsr_BuildingApplicationID.bsr_paptype == 760810001 && section.bsr_BuildingApplicationID.bsr_papid_account != null) || section.bsr_BuildingApplicationID.bsr_paptype == 760810000) && NormaliseAddress(addressLineOne).Contains(NormaliseAddress(section.bsr_addressline1));
         return isComplete;
     }
 
@@ -241,9 +197,7 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(UpdateApplication))]
-    public async Task<CustomHttpResponseData> UpdateApplication(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "UpdateApplication/{applicationNumber}")]
-        HttpRequestData request)
+    public async Task<CustomHttpResponseData> UpdateApplication([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "UpdateApplication/{applicationNumber}")] HttpRequestData request)
     {
         var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
         var validation = buildingApplicationModel.Validate();
@@ -256,10 +210,7 @@ public class BuildingApplicationFunctions
     }
 
     [Function(nameof(GetApplicationPaymentStatus))]
-    public async Task<HttpResponseData> GetApplicationPaymentStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get",
-            Route = $"{nameof(GetApplicationPaymentStatus)}/{{applicationNumber}}")]
-        HttpRequestData request,
-        string applicationNumber)
+    public async Task<HttpResponseData> GetApplicationPaymentStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetApplicationPaymentStatus)}/{{applicationNumber}}")] HttpRequestData request, string applicationNumber)
     {
         var dynamicsPayments = await dynamicsService.GetPayments(applicationNumber);
         var payments = dynamicsPayments.Select(payment => new
@@ -281,6 +232,45 @@ public class BuildingApplicationFunctions
     {
         var applicationCost = new { applicationCost = integrationOptions.PaymentAmount / 100 };
         return await request.CreateObjectResponseAsync(applicationCost);
+    }
+
+    [Function(nameof(IsChangeRequestAccepted))]
+    public async Task<HttpResponseData> IsChangeRequestAccepted([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(IsChangeRequestAccepted)}/{{ApplicationNumber}}")] HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT * FROM c WHERE c.id = {ApplicationNumber}", PartitionKey = "{ApplicationNumber}", Connection = "CosmosConnection")]
+        List<BuildingApplicationModel> buildingApplications)
+    {
+        var application = buildingApplications.First();
+        var dynamicsApplication = await dynamicsService.GetBuildingApplicationUsingId(application.Id);
+
+        var versions = application.Versions.ToList();
+        versions.Reverse();
+
+        foreach (var version in versions)
+        {
+            var deRegistrationChange = version.ChangeRequest?.FirstOrDefault(x => x.Category == ChangeCategory.DeRegistration)?.Change?.FirstOrDefault();
+            var change = version.ChangeRequest?.FirstOrDefault(x => x.Category != ChangeCategory.DeRegistration)?.Change?.FirstOrDefault();
+            if (deRegistrationChange != null)
+            {
+                var dynamicsChanges = await dynamicsService.GetChange(dynamicsApplication.bsr_buildingapplicationid, deRegistrationChange.FieldName, deRegistrationChange.OriginalAnswer, deRegistrationChange.NewAnswer);
+                var dynamicsChange = dynamicsChanges.value.FirstOrDefault();
+                if (dynamicsChange?.bsr_changerequestid.statuscode is 760_810_007 or 2)
+                {
+                    return await request.CreateObjectResponseAsync("withdrawn");
+                }
+            }
+            else if (change != null)
+            {
+                var dynamicsChanges = await dynamicsService.GetChange(dynamicsApplication.bsr_buildingapplicationid, change.FieldName, change.OriginalAnswer, change.NewAnswer);
+
+                var dynamicsChange = dynamicsChanges.value.FirstOrDefault();
+                if (dynamicsChange?.bsr_changerequestid.statuscode is 760_810_007 or 2)
+                {
+                    return await request.CreateObjectResponseAsync("complete");
+                }
+            }
+        }
+
+        return await request.CreateObjectResponseAsync("not found");
     }
 
     [Function(nameof(GetBuildingApplicationStatuscode))]

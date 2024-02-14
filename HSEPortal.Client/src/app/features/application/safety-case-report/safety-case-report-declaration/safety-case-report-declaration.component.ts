@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService, RegisteredStructureModel } from 'src/app/services/application.service';
-import { ApplicationCompletedComponent } from '../../application-completed/application-completed.component';
+import { SafetyCaseConfirmationComponent } from '../safety-case-confirmation/safety-case-confirmation.component';
 
 @Component({
   selector: 'hse-safety-case-report-declaration',
@@ -29,7 +29,7 @@ export class SafetyCaseReportDeclarationComponent extends PageComponent<void> {
   }
 
   override canAccess(applicationService: ApplicationService, __: ActivatedRouteSnapshot): boolean {
-    return true;
+    return !this.applicationService.model.SafetyCaseReport?.declaration;
   }
 
   override isValid(): boolean {
@@ -37,6 +37,6 @@ export class SafetyCaseReportDeclarationComponent extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return this.navigationService.navigateRelative(`../${ApplicationCompletedComponent.route}`, this.activatedRoute);
+    return this.navigationService.navigateRelative(SafetyCaseConfirmationComponent.route, this.activatedRoute);
   }
 }

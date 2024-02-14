@@ -19,7 +19,13 @@ export class DeclarationComponent extends PageComponent<void> {
 
   override async onSave(): Promise<void> {
     if (this.applicationService.model.Versions.length > 1 && this.applicationService.currentVersion.Name != "original") {
-      this.applicationService.previousVersion.ReplacedBy = this.applicationService.currentVersion.Name;
+      
+      let currentVersionName = this.applicationService.currentVersion.Name;
+      let previousVersionName = this.applicationService.previousVersion.Name;
+      if (currentVersionName != previousVersionName) {
+        this.applicationService.previousVersion.ReplacedBy = currentVersionName;
+      }
+
       this.applicationService.currentVersion.Submitted = true;
     } 
     await this.kbiService.syncConnectionsAndDeclaration(this.applicationService.currentVersion.Kbi!);

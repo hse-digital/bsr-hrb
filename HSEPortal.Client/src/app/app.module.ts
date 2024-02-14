@@ -39,6 +39,7 @@ const routes = new HseRoutes([
   HseRoute.unsafe(HomeComponent.route, HomeComponent, undefined, HomeComponent.title),
   HseRoute.unsafe(TimeoutComponent.route, TimeoutComponent, undefined, TimeoutComponent.title),
   HseRoute.unsafe(NotFoundComponent.route, NotFoundComponent, undefined, NotFoundComponent.title),
+  HseRoute.unsafe(WhatWantToDoComponent.route, WhatWantToDoComponent, undefined, WhatWantToDoComponent.title),
   HseRoute.unsafe(YesButNoReferenceComponent.route, YesButNoReferenceComponent, undefined, YesButNoReferenceComponent.title),
   HseRoute.unsafe(ReturningApplicationComponent.route, ReturningApplicationComponent, undefined, ReturningApplicationComponent.title),
   HseRoute.forLoadChildren(NewApplicationModule.baseRoute, () => import('./features/new-application/new-application.module').then(m => m.NewApplicationModule)),

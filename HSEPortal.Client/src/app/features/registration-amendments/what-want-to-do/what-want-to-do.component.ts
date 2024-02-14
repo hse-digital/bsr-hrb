@@ -4,8 +4,8 @@ import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationService } from 'src/app/services/application.service';
 import { KbiService } from 'src/app/services/kbi.service';
-import { ReturningApplicationComponent } from '../../returning-application/returning-application.component';
 import { environment } from 'src/environments/environment';
+import { ReturningApplicationComponent } from '../../returning-application/returning-application.component';
 import { YesButNoReferenceComponent } from '../yes-but-no-reference/yes-but-no-reference';
 
 @Component({
@@ -14,7 +14,7 @@ import { YesButNoReferenceComponent } from '../yes-but-no-reference/yes-but-no-r
 })
 export class WhatWantToDoComponent extends PageComponent<string> {
   static route: string = environment.production ? "" : 'what-you-want-to-do';
-  static title: string = "Select what you want to do - Register a high-rise building - GOV.UK";
+  static title: string = "Application reference - Register a high-rise building - GOV.UK";
 
   production = environment.production;
 
