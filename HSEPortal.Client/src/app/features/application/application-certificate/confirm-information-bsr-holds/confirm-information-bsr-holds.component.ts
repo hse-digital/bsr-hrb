@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { AddressModel } from 'src/app/services/address.service';
 import { ApplicationCertificateModel, ApplicationService, SectionModel } from 'src/app/services/application.service';
 
 @Component({
