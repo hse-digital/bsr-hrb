@@ -412,6 +412,7 @@ export class SafetyCaseReport {
 
 export class ApplicationCertificateModel {
   BsrInformationConfirmed?: boolean;
+  ComplianceNoticeNumbers?: string;
 }
 
 export class BuildingRegistrationVersion {

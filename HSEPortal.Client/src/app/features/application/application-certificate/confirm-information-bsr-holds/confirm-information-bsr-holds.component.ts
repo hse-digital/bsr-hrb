@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationCertificateModel, ApplicationService, SectionModel } from 'src/app/services/application.service';
+import { ComplianceNoticeNumbersComponent } from '../compliance-notice-numbers/compliance-notice-numbers.component';
 
 @Component({
   selector: 'hse-confirm-information-bsr-holds',
@@ -60,6 +61,6 @@ export class ConfirmInformationBsrHoldsComponent extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return Promise.resolve(true);
+    return this.navigationService.navigateRelative(ComplianceNoticeNumbersComponent.route, this.activatedRoute);
   }
 }

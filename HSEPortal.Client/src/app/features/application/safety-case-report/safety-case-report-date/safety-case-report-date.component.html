@@ -1,7 +1,8 @@
 <govuk-formpage (saveAndContinue)="saveAndContinue()"
   saveAndContinueText="Save and continue"
   [processing]="processing"
-  [hideSaveAndComeBack]=true>
+  [hideSaveAndComeBack]=true
+  [processing]="processing">
 
   <govuk-error-summary *ngIf="hasErrors"
     title="There is a problem"
