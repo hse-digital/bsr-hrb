@@ -400,6 +400,8 @@ export class BuildingRegistrationModel {
 
   SafetyCaseReport?: SafetyCaseReport;
 
+  ApplicationCertificate?: ApplicationCertificateModel
+
   // versioning
   Versions: BuildingRegistrationVersion[] = [];
 }
@@ -407,6 +409,10 @@ export class BuildingRegistrationModel {
 export class SafetyCaseReport {
   date?: string;
   declaration?: boolean;
+}
+
+export class ApplicationCertificateModel {
+  BsrInformationConfirmed?: boolean;
 }
 
 export class BuildingRegistrationVersion {

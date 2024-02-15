@@ -1,0 +1,32 @@
+<govuk-formpage saveAndContinueText="Agree and confirm" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+
+  <h1 class="govuk-heading-l">Confirm the information the Building Safety Regulator (BSR) holds about {{ buildingName }} is correct</h1>  
+
+  <govuk-inset-text>
+    <div class="govuk-!-margin-bottom-5">{{ buildingId }}</div>
+
+    <div *ngFor="let section of sections; let i = index" [ngClass]="sections!.length > (i + 1) ? 'govuk-!-margin-bottom-5' : ''">
+      <div class="govuk-!-margin-bottom-5">{{ section.Name ?? buildingName }}</div>
+      <div *ngFor="let address of section.Addresses; let j = index" [ngClass]="section.Addresses!.length > (j + 1) ? 'govuk-!-margin-bottom-5' : ''">
+        <address-description [address]="address" />
+      </div>  
+    </div>
+  </govuk-inset-text>
+
+  <govuk-body>The latest changes to the information BSR hold about {{ buildingName }} were submitted on {{ lastSubmissionDate | date: 'dd MMMM yyyy'}}</govuk-body>
+
+  <govuk-body>
+    You can 
+    <a href="javascript:void(0);" [routerLink]="['../../registration-amendments/change-task-list']" class="govuk-link">check the information BSR has and update it</a> if you need to. 
+    You must tell BSR about any changes before you apply for your building assessment certificate. 
+    When you submit the updated information, you can continue this application.
+  </govuk-body>
+
+  <govuk-body>By continuing you are confirming that:</govuk-body>
+  <govuk-list classes='govuk-list--bullet'>
+    <govuk-list-item>{{ pap }} is the principal accountable person for {{ buildingName }}</govuk-list-item>
+    <govuk-list-item>all the information BSR holds about {{ buildingName }} is up to date</govuk-list-item>
+    <govuk-list-item>{{ pap }} understands their obligation to notify BSR of any changes to the information provided within 28 days or becoming aware of the change</govuk-list-item>
+  </govuk-list>
+  
+</govuk-formpage>

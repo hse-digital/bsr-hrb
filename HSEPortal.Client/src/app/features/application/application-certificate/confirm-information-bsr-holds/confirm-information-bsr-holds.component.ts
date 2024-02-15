@@ -1,0 +1,66 @@
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { PageComponent } from 'src/app/helpers/page.component';
+import { AddressModel } from 'src/app/services/address.service';
+import { ApplicationCertificateModel, ApplicationService, SectionModel } from 'src/app/services/application.service';
+
+@Component({
+  selector: 'hse-confirm-information-bsr-holds',
+  templateUrl: './confirm-information-bsr-holds.component.html',
+})
+export class ConfirmInformationBsrHoldsComponent extends PageComponent<void> {
+  static route: string = 'confirm-information-bsr-holds';
+  static title: string =
+    'Confirm new primary user - Register a high-rise building - GOV.UK';
+
+  buildingName?: string;
+  buildingId?: string;
+  sections?: SectionModel[];
+  lastSubmissionDate?: string;
+  pap?: string;
+
+  constructor(activatedRoute: ActivatedRoute) {
+    super(activatedRoute);
+  }
+
+  override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.buildingName = applicationService.model.BuildingName;
+    this.buildingId = applicationService.model.id;
+    this.pap = this.getPapName();
+    this.sections = applicationService.currentVersion.Sections;
+    this.lastSubmissionDate = await this.applicationService.getSubmissionDate();
+  }
+
+  private getPapName(): string | undefined {
+    var pap = this.applicationService.currentVersion.AccountablePersons[0];
+
+    if (pap.IsPrincipal == "yes") {
+      return `${this.applicationService.model.ContactFirstName} ${this.applicationService.model.ContactLastName}`;
+    }
+
+    if (pap.Type == "individual") {
+      return `${pap.FirstName} ${pap.LastName}`;
+    }
+
+    return pap.OrganisationName;  
+  }
+
+  override onSave(applicationService: ApplicationService): void | Promise<void> {
+    if (!applicationService.model.ApplicationCertificate) {
+      applicationService.model.ApplicationCertificate = new ApplicationCertificateModel();
+    }
+    applicationService.model.ApplicationCertificate!.BsrInformationConfirmed = true;
+  }
+
+  override canAccess(): boolean {
+    return true;
+  }
+
+  override isValid(): boolean {
+    return true;
+  }
+
+  override async navigateNext(): Promise<boolean | void> {
+    return Promise.resolve(true);
+  }
+}
