@@ -1,0 +1,34 @@
+<govuk-formpage saveAndContinueText="Agree and confirm" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true">
+
+  <h1 class="govuk-heading-l">Confirm the relevant people are being provided with information</h1>
+
+  <govuk-body>
+    The accountable person (AP) for a higher-risk building must create and maintain documents for the building, or part of the building, that they are responsible for. If the AP is also the principal accountable person (PAP), there are additional documents they must keep.
+  </govuk-body>
+
+  <govuk-body>
+    As part of your building assessment certificate application for {{ buildingName }}, you are required as the PAP to confirm that all APs for {{ buildingName }} have met the following duties. You will need to liaise with all APs to ensure that they are aware of what they need to do and have complied.
+  </govuk-body>
+
+  <govuk-body>You and any other APs for {{ buildingName }} are required to give information to:</govuk-body>
+  <govuk-list classes='govuk-list--bullet'>
+    <govuk-list-item>the Building Safety Regulator</govuk-list-item>
+    <govuk-list-item>any other APs for the building</govuk-list-item>
+    <govuk-list-item>residents of the building</govuk-list-item>
+    <govuk-list-item>owners of the residential units in the building</govuk-list-item>
+    <govuk-list-item>any other persons including a relevant landlord, client, relevant responsible person, fire and rescue authority, on change of AP, resident engagement: requests for further information</govuk-list-item>
+  </govuk-list>
+
+  <govuk-body>As the PAP you are required as part of the building assessment certificate application to make a statement confirming that you and any other APs for {{ buildingName }} have given the required information to all persons as listed above.</govuk-body>
+
+  <govuk-inset-text>
+    <div class="govuk-!-margin-bottom-5">
+      {{ pap }} confirms that each accountable person has complied with their obligations to provide the information listed in the Higher-Risk Buildings (Keeping and Provision of Information etc.) (England) Regulations 2024 and The Higher-Risk Buildings (Management of Safety Risks etc.) Regulations 2023 to the persons listed above in accordance with section 89 of the Building Safety Act 2022.
+    </div>
+
+    <div class="govuk-!-margin-bottom-5">
+      {{ pap }} also confirms that {{ pap }} {{ papIsIndividual ? 'has': 'have' }} notified the Building Safety Regulator of any change to Key Building Information within 28 days of {{ pap }} becoming aware of the change, in accordance with regulation 21 of the Higher-Risk Buildings (Key Building Information etc) (England) Regulations 2023.
+    </div>
+  </govuk-inset-text>
+  
+</govuk-formpage>

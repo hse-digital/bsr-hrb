@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationCertificateModel, ApplicationService } from 'src/app/services/application.service';
+import { Section89DeclarationComponent } from '../section-89-declaration/section-89-declaration.component';
 
 @Component({
   selector: 'hse-compliance-notice-numbers',
@@ -44,7 +45,7 @@ export class  ComplianceNoticeNumbersComponent extends PageComponent<string> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return Promise.resolve(true);
+    return this.navigationService.navigateRelative(Section89DeclarationComponent.route, this.activatedRoute);
   }
 
   checkError() {
