@@ -1,11 +1,9 @@
-using System.Net;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions;
 
@@ -20,9 +18,9 @@ public class PublicRegisterFunctions
 
     [Function(nameof(SearchPublicRegister))]
     public async Task<HttpResponseData> SearchPublicRegister([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT c.id, c.ContactFirstName, c.ContactLastName, c.ApplicationStatus, c.BuildingName, c.Versions FROM c JOIN v in c.Versions JOIN s IN v.Sections JOIN a IN s.Addresses WHERE REPLACE(a.Postcode, ' ', '') = REPLACE({postcode}, ' ', '') OR REPLACE(a.PostcodeEntered, ' ', '') = REPLACE({postcode}, ' ', '')", Connection = "CosmosConnection")]
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT c.id, c.ContactFirstName, c.ContactLastName, c.ApplicationStatus, c.BuildingName, c.Versions FROM c JOIN v in c.Versions JOIN s IN v.Sections JOIN a IN s.Addresses WHERE REPLACE(a.Postcode, ' ', '') = REPLACE({postcode}, ' ', '') OR REPLACE(a.PostcodeEntered, ' ', '') = REPLACE({postcode}, ' ', '') OR a.UPRN = {uprn}", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT c.id, c.ContactFirstName, c.ContactLastName, c.ApplicationStatus, c.BuildingName, c.Sections, c.AccountablePersons as AccountablePersons FROM c JOIN s IN c.Sections JOIN a IN s.Addresses WHERE REPLACE(a.Postcode, ' ', '') = REPLACE({postcode}, ' ', '') OR REPLACE(a.PostcodeEntered, ' ', '') = REPLACE({postcode}, ' ', '')",
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT c.id, c.ContactFirstName, c.ContactLastName, c.ApplicationStatus, c.BuildingName, c.Sections, c.AccountablePersons as AccountablePersons FROM c JOIN s IN c.Sections JOIN a IN s.Addresses WHERE REPLACE(a.Postcode, ' ', '') = REPLACE({postcode}, ' ', '') OR REPLACE(a.PostcodeEntered, ' ', '') = REPLACE({postcode}, ' ', '') OR a.UPRN = {uprn}",
             Connection = "CosmosConnection")]
         List<PublicRegisterApplicationModel> nonVersionedApplications)
     {

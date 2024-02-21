@@ -21,7 +21,6 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
 
     this.postcode = routerState?.["postcode"];
     this.results = routerState?.["public-register-results"];
-    this.results = this.results?.filter(x => this.postcodeMatches(x));
   }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
@@ -58,7 +57,7 @@ export class PublicRegisterResultsComponent extends PageComponent<any> {
     let normalizedModel = this.postcode?.replace(' ', '');
 
     let section = result.structure;
-    let address = section.Addresses.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered?.replace(' ', '') == normalizedModel);
+    let address = section.Addresses.find((address: any) => address.Postcode?.replace(' ', '') == normalizedModel || address.PostcodeEntered?.replace(' ', '') == normalizedModel) ?? section.Addresses[0];
 
     let splitAddress = address.Address.split(',');
     if (splitAddress.length == 1) {

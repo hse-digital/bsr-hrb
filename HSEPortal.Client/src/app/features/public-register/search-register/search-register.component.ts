@@ -5,6 +5,7 @@ import { ApplicationService } from "src/app/services/application.service";
 import { StructureNotFoundComponent } from "../structure-not-found/structure-not-found.component";
 import { PublicRegisterResultsComponent } from "../results/results.component";
 import { StructureDetailsComponent } from "../structure-details/structure-details.component";
+import { AddressService } from "src/app/services/address.service";
 
 @Component({
   templateUrl: './search-register.component.html'
@@ -15,6 +16,10 @@ export class SearchPublicRegisterComponent extends PageComponent<string> {
 
   errorText: string = '';
   searching: boolean = false;
+
+  constructor(private addressService: AddressService) {
+    super();
+  }
 
   override onInit(applicationService: ApplicationService): void | Promise<void> {
     this.updateOnSave = false;
@@ -32,7 +37,14 @@ export class SearchPublicRegisterComponent extends PageComponent<string> {
     if (!this.hasErrors) {
       this.searching = true;
 
-      var results = await this.applicationService.searchPublicRegister(this.model!);
+      var results = [];
+      var postcodeSearchResponse = await this.addressService.SearchBuildingByPostcode(this.model!);
+      if (postcodeSearchResponse.TotalResults > 0) {
+        var match = postcodeSearchResponse.Results[0];
+        results = await this.applicationService.searchPublicRegister(match.Postcode!, match.UPRN);
+      } else {
+        results = await this.applicationService.searchPublicRegister(this.model!);
+      }
 
       if (results.length > 0) {
         if (results.length == 1) {
