@@ -11,6 +11,7 @@ import { ApplicationSubmittedHelper } from "./app-submitted-helper";
 import { GetInjector } from "./injector.helper";
 import { RegistrationAmendmentsService } from "../services/registration-amendments.service";
 import { FieldValidations } from "./validators/fieldvalidations";
+import { ApplicationCertificateModule } from '../features/application/application-certificate/application-certificate.module';
 
 @Component({ template: '' })
 export abstract class PageComponent<T> implements OnInit {
@@ -168,7 +169,8 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   private navigateBack(): void {
-    if (this.changing) this.navigationService.navigate(`application/${this.applicationService.model.id}/application-completed`);
+    var isCertificate = window.location.pathname.indexOf(`/certificate/`);
+    if (this.changing || isCertificate) this.navigationService.navigate(`application/${this.applicationService.model.id}/application-completed`);
     else {
       let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete
         ? `application/${this.applicationService.model.id}/kbi`

@@ -24,7 +24,7 @@ export class  ComplianceNoticeNumbersComponent extends PageComponent<string> {
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
     this.buildingName = applicationService.model.BuildingName;
-    this.model = applicationService.model.ApplicationCertificate?.ComplianceNoticeNumbers;
+    this.model = applicationService.model.ApplicationCertificate?.ComplianceNoticeNumbers ?? '';
   }
 
   override onSave(applicationService: ApplicationService): void | Promise<void> {
