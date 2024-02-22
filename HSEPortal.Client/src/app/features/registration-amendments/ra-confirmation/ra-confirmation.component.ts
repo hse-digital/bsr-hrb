@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot } from '@angular/router';
 import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStage, Status, User } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode, Status, User } from 'src/app/services/application.service';
 
 @Component({
   selector: 'hse-ra-confirmation',
@@ -21,11 +21,16 @@ export class RaConfirmationComponent  extends PageComponent<void> {
   payment?: any;
   openPayment?: any;
   newChanges: boolean = false;
+  newChangesWithdrawal: boolean = false;
+  appIsRegistered: boolean = false;
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.appIsRegistered = await this.getApplicationIsRegistered();
     
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.subscribe(async params => {
       this.newChanges = params['newChanges'] == "true";
+      this.newChangesWithdrawal = 
+        this.newChanges && this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure == 'yes';
     });
 
     this.sendApplicationDataToBroadcastChannel();
@@ -45,7 +50,12 @@ export class RaConfirmationComponent  extends PageComponent<void> {
       Lastname: this.applicationService.model.SecondaryLastName,
       PhoneNumber: this.applicationService.model.SecondaryPhoneNumber
     }
+  }
 
+  private async getApplicationIsRegistered(): Promise<boolean> {
+      const applicationStatuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
+      return applicationStatuscode == BuildingApplicationStatuscode.Registered 
+        || applicationStatuscode == BuildingApplicationStatuscode.RegisteredKbiValidated;
   }
 
   private sendApplicationDataToBroadcastChannel() {
