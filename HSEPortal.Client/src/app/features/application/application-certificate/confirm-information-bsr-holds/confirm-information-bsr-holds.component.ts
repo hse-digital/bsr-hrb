@@ -11,12 +11,13 @@ import { ComplianceNoticeNumbersComponent } from '../compliance-notice-numbers/c
 export class ConfirmInformationBsrHoldsComponent extends PageComponent<void> {
   static route: string = 'confirm-information-bsr-holds';
   static title: string =
-    'Confirm new primary user - Register a high-rise building - GOV.UK';
+    'Confirm the information BSR holds is correct - Register a high-rise building - GOV.UK';
 
   buildingName?: string;
   buildingId?: string;
   sections?: SectionModel[];
   lastSubmissionDate?: string;
+  hasChangesSubmitted?: boolean = false;
   pap?: string;
 
   constructor(activatedRoute: ActivatedRoute) {
@@ -29,6 +30,10 @@ export class ConfirmInformationBsrHoldsComponent extends PageComponent<void> {
     this.pap = this.getPapName();
     this.sections = applicationService.currentVersion.Sections;
     this.lastSubmissionDate = await this.applicationService.getSubmissionDate();
+    this.hasChangesSubmitted = applicationService.model.RegistrationAmendmentsModel !== undefined
+      && applicationService.model.RegistrationAmendmentsModel !== null;
+
+    console.log(applicationService.model); 
   }
 
   private getPapName(): string | undefined {

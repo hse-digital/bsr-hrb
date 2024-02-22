@@ -13,7 +13,7 @@
     </div>
   </govuk-inset-text>
 
-  <govuk-body>The latest changes to the information BSR hold about {{ buildingName }} were submitted on {{ lastSubmissionDate | date: 'dd MMMM yyyy'}}</govuk-body>
+  <govuk-body *ngIf="hasChangesSubmitted">The latest changes to the information BSR hold about {{ buildingName }} were submitted on {{ lastSubmissionDate | date: 'dd MMMM yyyy'}}</govuk-body>
 
   <govuk-body>
     You can 
