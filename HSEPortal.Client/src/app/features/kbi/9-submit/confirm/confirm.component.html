@@ -1,13 +1,13 @@
-<govuk-back-link>Back</govuk-back-link>
+<a [routerLink]="['../../../application-completed']" class="govuk-back-link" href="javascript:void(0)" tabindex="0" role="link">Go back to {{applicationService.model.BuildingName}}</a>
 
 <div class="govuk-main-wrapper" id="main-content">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
       <div class="govuk-panel govuk-panel--confirmation">
-        <h1 class="govuk-panel__title">Structure and safety information submitted for {{applicationService.model.BuildingName}}</h1>
+        <h1 class="govuk-panel__title">Structure and fire safety information submitted for {{applicationService.model.BuildingName}}</h1>
         <div class="govuk-panel__body">
-          Your application number<br><strong>{{applicationService.model.id}}</strong>
+          Application reference<br><strong>{{applicationService.model.id}}</strong>
         </div>
       </div>
 

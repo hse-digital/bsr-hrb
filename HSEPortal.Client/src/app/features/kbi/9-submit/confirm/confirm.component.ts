@@ -52,5 +52,4 @@ export class ConfirmComponent extends PageComponent<void> {
   async newApplication() {
     await this.navigationService.navigate('/select');
   }
-
 }
