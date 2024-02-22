@@ -16,6 +16,8 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   payment?: PaymentModel;
   shouldRender = false;
   submittionDate?: number;
+  paymentType?: string;
+  papIsIndividual: boolean = false;
 
   constructor(public applicationService: ApplicationService, public paymentService: PaymentService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
   }
@@ -24,7 +26,9 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
     this.submittionDate = Date.now();
     this.sendApplicationDataToBroadcastChannel();
 
-    if (this.applicationService.model.PaymentType == 'card') {
+    this.paymentType = this.applicationService.model.PaymentType;  
+
+    if (this.paymentType == 'card') {
       this.activatedRoute.queryParams.subscribe(async query => {
         var paymentReference = query['reference'] ?? await this.getApplicationPaymentReference();
 
@@ -70,7 +74,10 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
   }
 
   notPap() {
-    var pap = this.applicationService.currentVersion.AccountablePersons[0];
+    var pap = this.applicationService.currentVersion.AccountablePersons[0]; 
+
+    this.papIsIndividual = pap.IsPrincipal == "no" && pap.Type == "individual";
+
     return (pap.IsPrincipal == 'no' && pap.Type == 'individual') ||
       (pap.Type == 'organisation' && pap.Role == 'registering_for');
   }
