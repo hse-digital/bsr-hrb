@@ -66,7 +66,7 @@ export class SearchPublicRegisterComponent extends PageComponent<string> {
     if (!postcode) {
       this.errorText = 'Enter a postcode';
     } else if (postcode.length < 5 || postcode.length > 7) {
-      this.errorText = "Enter a full postcode. For example, 'L20 7HS";
+      this.errorText = "Enter a full postcode. For example, 'L20 7HS'";
     } else {
       this.hasErrors = false;
     }
