@@ -169,7 +169,7 @@ export abstract class PageComponent<T> implements OnInit {
   }
 
   private navigateBack(): void {
-    var isCertificate = window.location.pathname.indexOf(`/certificate/`);
+    var isCertificate = window.location.pathname.indexOf(`/certificate/`) > -1;
     if (this.changing || isCertificate) this.navigationService.navigate(`application/${this.applicationService.model.id}/application-completed`);
     else {
       let route = (this.applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentComplete) == BuildingApplicationStage.PaymentComplete
