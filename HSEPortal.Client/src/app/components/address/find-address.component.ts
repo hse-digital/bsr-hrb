@@ -61,11 +61,12 @@ export class FindAddressComponent {
   }
 
   private searchAddress(): Promise<AddressResponseModel> {
+    let postcode = this.searchModel.postcode?.replace(' ', '');
     switch (this.searchMode) {
       case AddressSearchMode.Building:
-        return this.addressService.SearchBuildingByPostcode(this.searchModel.postcode!);
+        return this.addressService.SearchBuildingByPostcode(postcode!);
       case AddressSearchMode.PostalAddress:
-        return this.addressService.SearchPostalAddressByPostcode(this.searchModel.postcode!);
+        return this.addressService.SearchPostalAddressByPostcode(postcode!);
     }
   }
 
