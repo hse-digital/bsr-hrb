@@ -24,10 +24,14 @@ public class PublicRegisterFunctions
             Connection = "CosmosConnection")]
         List<PublicRegisterApplicationModel> nonVersionedApplications)
     {
+        var queryParameters = request.GetQueryParameters();
+        var postcode = queryParameters["postcode"];
+        var uprn = queryParameters["uprn"];
+        
         var versionedApplications = await GetAcceptedVersionFromDynamics(buildingApplications);
         var registeredApplications = versionedApplications.Concat(nonVersionedApplications)
             .DistinctBy(x => x.id).Where(x => x.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentComplete))
-            .Select(x => x.Sections.Select(section => new PublicRegisterStructureModel
+            .Select(x => x.Sections.Where(section => SectionMatchesSearchAddress(section, postcode, uprn)).Select(section => new PublicRegisterStructureModel
             {
                 code = x.id,
                 userLastName = x.ContactLastName,
@@ -52,6 +56,12 @@ public class PublicRegisterFunctions
 
         registeredApplications = await FilterRegisteredApplications(registeredApplications);
         return await request.CreateObjectResponseAsync(registeredApplications);
+    }
+
+    private bool SectionMatchesSearchAddress(SectionModel section, string postcode, string uprn)
+    {
+        var trimPostcode = postcode.Replace(" ", string.Empty);
+        return section.Addresses.Any(address => string.Equals(address.Postcode.Replace(" ", string.Empty), trimPostcode, StringComparison.InvariantCultureIgnoreCase) || string.Equals(address.PostcodeEntered.Replace(" ", string.Empty), trimPostcode, StringComparison.InvariantCultureIgnoreCase) || string.Equals(address.UPRN, uprn, StringComparison.InvariantCultureIgnoreCase));
     }
 
     [Function(nameof(GetStructuresForApplication))]
@@ -136,7 +146,7 @@ public class PublicRegisterFunctions
                     );
 
                     var dynamicsChange = dynamicsChanges.value.FirstOrDefault();
-                    if (dynamicsChange?.bsr_changerequestid.statuscode is 760_810_007 or 2)
+                    if (dynamicsChange?.bsr_changerequestid?.statuscode is 760_810_007 or 2)
                     {
                         applicationsToReturn.Add(app with
                         {

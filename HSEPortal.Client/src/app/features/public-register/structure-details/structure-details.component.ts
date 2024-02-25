@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import * as moment from 'moment';
 import { ApplicationService } from "src/app/services/application.service";
@@ -17,7 +18,7 @@ export class StructureDetailsComponent implements OnInit {
 
   otherStructures: any[] = [];
 
-  constructor(private router: Router, private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
+  constructor(private router: Router, private applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute, private title: Title) {
     let routerState = this.router.getCurrentNavigation()?.extras.state;
 
     this.postcode = routerState?.["postcode"];
@@ -27,6 +28,7 @@ export class StructureDetailsComponent implements OnInit {
 
   async ngOnInit() {
     this.otherStructures = await this.applicationService.getStructuresForApplication(this.result.code);
+    this.title.setTitle(`Structure information - ${this.result.structure.Name ?? this.result.structureName} - Register a high-rise building - GOV.UK`);
   }
 
   getStructureAddress() {
@@ -96,11 +98,13 @@ export class StructureDetailsComponent implements OnInit {
       let content = `A completion certifcate was issued`;
 
       if (structure.CompletionCertificateIssuer) {
-        content = `${content} by ${structure.CompletionCertificateIssuer}.`;
+        content = `${content} by ${structure.CompletionCertificateIssuer}`;
       }
 
       if (structure.CompletionCertificateDate) {
-        content = `${content} on ${moment(Number(structure.CompletionCertificateDate)).format('LL')}.`;
+        content = `${content} on ${moment(Number(structure.CompletionCertificateDate)).format('d MMMM yyyy')}.`;
+      } else {
+        content = `${content}.`;
       }
 
       return `${content} Completion certificates are issued by the building control body who certified the construction of the building.`;
@@ -137,7 +141,7 @@ export class StructureDetailsComponent implements OnInit {
   }
 
   removeDuplicates(accountability: any[]) {
-    return accountability.filter(x => x != 'facilities');
+    return accountability;
   }
 
   async navigateToOtherStructure(item: any) {

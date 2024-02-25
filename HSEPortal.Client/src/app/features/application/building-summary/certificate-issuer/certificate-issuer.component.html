@@ -1,4 +1,4 @@
-<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()" [processing]="processing">
 
         <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
           <govuk-error-link *ngIf="certificateHasErrors" anchorId="input-certificate-issuer" message="Enter who issued the completion certificate" />
