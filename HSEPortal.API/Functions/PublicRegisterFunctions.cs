@@ -136,7 +136,7 @@ public class PublicRegisterFunctions
                     );
 
                     var dynamicsChange = dynamicsChanges.value.FirstOrDefault();
-                    if (dynamicsChange?.bsr_changerequestid.statuscode is 760_810_007 or 2)
+                    if (dynamicsChange?.bsr_changerequestid?.statuscode is 760_810_007 or 2)
                     {
                         applicationsToReturn.Add(app with
                         {

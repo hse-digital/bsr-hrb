@@ -5,7 +5,7 @@
   </govuk-error-summary>
 
   <govuk-radio-group title="Select a building" [isPageHeading]=true id="radios-structures" [(model)]="model" id="radios-structures" [errorText]="getErrorDescription(hasErrors, 'Select a building.')">
-    <govuk-body>{{results?.length}} buildings found for {{postcode}}.</govuk-body>
+    <govuk-body>{{results?.length}} buildings found for <b>{{postcode}}.</b></govuk-body>
 
     <ng-container *ngFor="let item of results; let i = index">
       <govuk-radio (onKeyupEnter)="saveAndContinue()" name="structure-group" id="structure-{{i}}" [value]="item" [label]="getRadioLabel(item)" [hint]="getStructureAddress(item)" />
