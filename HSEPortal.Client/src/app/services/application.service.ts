@@ -414,6 +414,7 @@ export class ApplicationCertificateModel {
   BsrInformationConfirmed?: boolean;
   ComplianceNoticeNumbers?: string;
   Section89DeclarationConfirmed?: boolean;
+  Files?: any[];
 }
 
 export class BuildingRegistrationVersion {

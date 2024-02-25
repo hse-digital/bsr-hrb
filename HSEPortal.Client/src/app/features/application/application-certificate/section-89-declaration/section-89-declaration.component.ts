@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationCertificateModel, ApplicationService, SectionModel } from 'src/app/services/application.service';
+import { UploadDocumentsComponent } from '../upload-documents/upload-documents.component';
 
 @Component({
   selector: 'hse-section-89-declaration',
@@ -56,6 +57,6 @@ export class Section89DeclarationComponent extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return Promise.resolve(true);
+    return this.navigationService.navigateRelative(UploadDocumentsComponent.route, this.activatedRoute);
   }
 }
