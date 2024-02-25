@@ -95,7 +95,7 @@
     <ul class="govuk-list govuk-list--bullet">
       <li *ngFor="let structure of otherStructures">
         <span *ngIf="structure.structure.Name == result.structure.Name">{{structure.structure.Name}}</span>
-        <a *ngIf="structure.structure.Name != result.structure.Name" (click)="navigateToOtherStructure(structure)" href="javascript:void(0)">{{structure.structure.Name}}</a>
+        <a *ngIf="structure.structure.Name != result.structure.Name" (click)="navigateToOtherStructure(structure)" href="javascript:void(0)" class="govuk-link">{{structure.structure.Name}}</a>
       </li>
     </ul>
   </div>
