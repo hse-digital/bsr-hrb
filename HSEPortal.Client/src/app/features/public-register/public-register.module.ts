@@ -5,24 +5,16 @@ import { HttpClientModule } from "@angular/common/http";
 import { CommonModule } from "@angular/common";
 import { HseAngularModule } from "hse-angular";
 import { ComponentsModule } from "src/app/components/components.module";
-import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { Route, RouterModule } from "@angular/router";
 import { PublicRegisterResultsComponent } from "./results/results.component";
 import { StructureDetailsComponent } from "./structure-details/structure-details.component";
 import { PipesModule } from "../../pipes/pipes.module";
 
-const routes = new HseRoutes([
-    HseRoute.protected(SearchPublicRegisterComponent.route, SearchPublicRegisterComponent, SearchPublicRegisterComponent.title),
-    HseRoute.protected(StructureNotFoundComponent.route, StructureNotFoundComponent, StructureNotFoundComponent.title),
-    HseRoute.protected(PublicRegisterResultsComponent.route, PublicRegisterResultsComponent, PublicRegisterResultsComponent.title),
-    HseRoute.protected(StructureDetailsComponent.route, StructureDetailsComponent, StructureDetailsComponent.title),
-]);
-
 const angRoutes: Route[] = [
-    { path: SearchPublicRegisterComponent.route, component: SearchPublicRegisterComponent},
-    { path: StructureNotFoundComponent.route, component: StructureNotFoundComponent},
-    { path: PublicRegisterResultsComponent.route, component: PublicRegisterResultsComponent},
-    { path: StructureDetailsComponent.route, component: StructureDetailsComponent}
+    { path: SearchPublicRegisterComponent.route, component: SearchPublicRegisterComponent, title: SearchPublicRegisterComponent.title },
+    { path: StructureNotFoundComponent.route, component: StructureNotFoundComponent, title: StructureNotFoundComponent.title },
+    { path: PublicRegisterResultsComponent.route, component: PublicRegisterResultsComponent, title: PublicRegisterResultsComponent.title },
+    { path: StructureDetailsComponent.route, component: StructureDetailsComponent, title: StructureDetailsComponent.title }
 ];
 
 @NgModule({
