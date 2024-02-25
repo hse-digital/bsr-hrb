@@ -98,11 +98,13 @@ export class StructureDetailsComponent implements OnInit {
       let content = `A completion certifcate was issued`;
 
       if (structure.CompletionCertificateIssuer) {
-        content = `${content} by ${structure.CompletionCertificateIssuer}.`;
+        content = `${content} by ${structure.CompletionCertificateIssuer}`;
       }
 
       if (structure.CompletionCertificateDate) {
-        content = `${content} on ${moment(Number(structure.CompletionCertificateDate)).format('LL')}.`;
+        content = `${content} on ${moment(Number(structure.CompletionCertificateDate)).format('d MMMM yyyy')}.`;
+      } else {
+        content = `${content}.`;
       }
 
       return `${content} Completion certificates are issued by the building control body who certified the construction of the building.`;
