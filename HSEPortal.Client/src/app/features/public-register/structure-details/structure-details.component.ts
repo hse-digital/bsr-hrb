@@ -141,7 +141,7 @@ export class StructureDetailsComponent implements OnInit {
   }
 
   removeDuplicates(accountability: any[]) {
-    return accountability.filter(x => x != 'facilities');
+    return accountability;
   }
 
   async navigateToOtherStructure(item: any) {

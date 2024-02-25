@@ -61,7 +61,7 @@
         <govuk-list-item>the external walls and roof</govuk-list-item>
         <govuk-list classes='govuk-list--bullet'>
           <ng-container *ngFor="let section of sectionsWithAccountability(pap)">
-            <govuk-list-item *ngFor="let acc of removeDuplicates(section.Accountability)" text="{{acc | prAccountabilityDescription}} - {{section.SectionName}}" />
+            <govuk-list-item *ngFor="let acc of removeDuplicates(section.Accountability)" text="{{acc | prAccountabilityDescription}}" />
           </ng-container>
         </govuk-list>
 
@@ -76,7 +76,7 @@
         <govuk-body>{{getApName(ap)}} is responsible for:</govuk-body>
         <govuk-list classes='govuk-list--bullet'>
           <ng-container *ngFor="let section of sectionsWithAccountability(ap)">
-            <govuk-list-item *ngFor="let acc of removeDuplicates(section.Accountability)" text="{{acc | prAccountabilityDescription}} - {{section.SectionName}}" />
+            <govuk-list-item *ngFor="let acc of removeDuplicates(section.Accountability)" text="{{acc | prAccountabilityDescription}}" />
           </ng-container>
         </govuk-list>
 
@@ -90,7 +90,7 @@
   <div class="govuk-!-margin-bottom-8" *ngIf="otherStructures.length > 1">
     <h2 class="govuk-heading-m">Connections to other buildings</h2>
 
-    <govuk-body>{{result.structure.Name}} is part of {{result.strucutreName}}.</govuk-body>
+    <govuk-body>{{result.structure.Name}} is part of {{result.structureName}}.</govuk-body>
     <govuk-body>There are {{otherStructures!.length}} structures in {{result.structureName}}:</govuk-body>
     <ul class="govuk-list govuk-list--bullet">
       <li *ngFor="let structure of otherStructures">
