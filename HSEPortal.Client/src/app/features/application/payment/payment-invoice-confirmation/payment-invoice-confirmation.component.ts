@@ -13,12 +13,15 @@ import { KbiModule } from 'src/app/features/kbi/kbi.module';
 export class PaymentInvoiceConfirmationComponent extends PageComponent<string> {
   static route: string = "invoice-confirmation";
   static title: string = "Awaiting payment for registration application - Register a high-rise building - GOV.UK";
+  papIsIndividual: boolean = false;
+  submittionDate?: number;
 
   constructor(public paymentService: PaymentService, activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
+    this.submittionDate = Date.now();
     this.model = applicationService.model.PaymentType;
     applicationService.model.PaymentInvoiceDetails!.Status = 'awaiting';
     await this.applicationService.updateApplication();
@@ -61,5 +64,19 @@ export class PaymentInvoiceConfirmationComponent extends PageComponent<string> {
     new BroadcastChannelPrimaryHelper()
       .OpenChannel(this.applicationService.model.id!)
       .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
+  }
+
+  notPap() {
+    var pap = this.applicationService.currentVersion.AccountablePersons[0]; 
+
+    this.papIsIndividual = pap.IsPrincipal == "no" && pap.Type == "individual";
+
+    return (pap.IsPrincipal == 'no' && pap.Type == 'individual') ||
+      (pap.Type == 'organisation' && (pap.Role == 'registering_for' || pap.Role == 'employee'));
+  }
+
+  get28DaysAfterSubmittionDate() {
+    let date = new Date(this.submittionDate!);
+    return date!.setDate(date!.getDate() + 28);
   }
 }

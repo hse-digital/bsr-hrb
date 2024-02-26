@@ -1,14 +1,40 @@
-<govuk-formpage [hideSaveAndComeBack]=true [hideSaveAndContinue]=true>
+<govuk-formpage [hideSaveAndComeBack]=true
+  [hideSaveAndContinue]=true>
 
-  <h1 class="govuk-heading-l">Awaiting payment for application to register {{applicationService.model.BuildingName}}</h1>
+  <h1 class="govuk-heading-l">Registration application submitted for {{applicationService.model.BuildingName}}</h1>
+  <govuk-body>Your application reference is <b>{{applicationService.model.id}}</b>.</govuk-body>
   <govuk-body>We have sent an invoice to <b>{{applicationService.model.PaymentInvoiceDetails?.Email}}</b>. If you cannot find the email, check your junk or spam folders.</govuk-body>
   <govuk-body>Your application will be submitted when we receive your payment.</govuk-body>
-  
+  <govuk-body>You must pay the fee before we can assess your application.</govuk-body>
+  <govuk-body>If you take too long to pay, we could prosecute you under ubilding safety law.</govuk-body>
+  <govuk-body *ngIf="notPap()">
+    <ng-container *ngIf="!papIsIndividual">We have also sent an email to the named contact at the principal accountable person that outlines their duties at this stage.</ng-container>
+    <ng-container *ngIf="papIsIndividual">We have also sent an email to the principal accountable person that outlines their duties at this stage.</ng-container>
+  </govuk-body>
+  <govuk-body><a class="govuk-link"
+      [routerLink]="['../../summary']"
+      href=""
+      target="_blank"
+      role="link"
+      tabindex="0">Get a copy of the information you submitted (opens in a new tab)</a>.</govuk-body>
+
   <h2 class="govuk-heading-m">What happens next</h2>
-  <govuk-body>You must pay the invoice before we can assess your application.</govuk-body>
-  <govuk-body>You can <a class="govuk-link" [routerLink]="['../../summary']" href="" target="_blank" role="link" tabindex="0">view your application (opens in a new tab)</a>.</govuk-body>
-  <govuk-body>You can continue to give us structure and afire safety information about {{applicationService.model.BuildingName}}</govuk-body>
-  <govuk-button (onClick)="continueToKbi()">Continue to structure and safety information</govuk-button>
-  <govuk-body><a class="govuk-link" href="https://forms.office.com/e/dRsZyPur6S" role="link" tabindex="0">What did you think of this service?</a> (takes 30 seconds)</govuk-body>
+  <govuk-body>We'll look at your application to register this building.</govuk-body>
+  <govuk-body>We'll contact you when we have decided if your building should be registered. We'll also contact you if we need more information.</govuk-body>
+  <govuk-body>You need to give us some information about {{applicationService.model.BuildingName}}'s structure and fire safety. <a class="govuk-link"
+      href="https://www.gov.uk/government/publications/giving-bsr-structure-and-fire-safety-information-key-building-information"
+      role="link"
+      tabindex="0">Find out more about the information we need</a>.</govuk-body>
+
+  <div class="govuk-warning-text">
+    <span class="govuk-warning-text__icon"
+      aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+      <span class="govuk-warning-text__assistive">Warning</span>
+      You must give us structure and fire safety information for {{applicationService.model.BuildingName}} by {{get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.
+    </strong>
+  </div>
+
+  <govuk-button (onClick)="continueToKbi()">Give structure and fire safety information</govuk-button>
 
 </govuk-formpage>
