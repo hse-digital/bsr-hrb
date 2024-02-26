@@ -22,7 +22,7 @@
                     <govuk-body *ngIf="newChangesWithdrawal">We will send you an email when your request has been reviewed.</govuk-body>                    
                 </ng-container>
 
-                <ng-container *ngIf="!isKbiSubmitted()">
+                <ng-container *ngIf="!isKbiSubmitted() && !newChangesWithdrawal">
                     <h2 class="govuk-heading-m">What's next</h2>
                     <govuk-body>You must <a href="" [routerLink]="['../../kbi']" class="govuk-link" tabindex="0" role="link">give structure and fire safety information</a> by {{isSubmittionBefore3Sep2023() ? '30 september 2023' : get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.</govuk-body>
                 </ng-container>
