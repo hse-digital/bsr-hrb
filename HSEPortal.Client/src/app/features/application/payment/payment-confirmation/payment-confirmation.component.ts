@@ -79,7 +79,7 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
     this.papIsIndividual = pap.IsPrincipal == "no" && pap.Type == "individual";
 
     return (pap.IsPrincipal == 'no' && pap.Type == 'individual') ||
-      (pap.Type == 'organisation' && pap.Role == 'registering_for');
+      (pap.Type == 'organisation' && (pap.Role == 'registering_for' || pap.Role == 'employee'));
   }
 
   registerAnotherBuilding() {
