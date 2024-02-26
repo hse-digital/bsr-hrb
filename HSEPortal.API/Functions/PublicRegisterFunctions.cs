@@ -61,7 +61,9 @@ public class PublicRegisterFunctions
     private bool SectionMatchesSearchAddress(SectionModel section, string postcode, string uprn)
     {
         var trimPostcode = postcode.Replace(" ", string.Empty);
-        return section.Addresses.Any(address => string.Equals(address.Postcode.Replace(" ", string.Empty), trimPostcode, StringComparison.InvariantCultureIgnoreCase) || string.Equals(address.PostcodeEntered.Replace(" ", string.Empty), trimPostcode, StringComparison.InvariantCultureIgnoreCase) || string.Equals(address.UPRN, uprn, StringComparison.InvariantCultureIgnoreCase));
+        return section.Addresses.Any(address => string.Equals(address.Postcode?.Replace(" ", string.Empty), trimPostcode, StringComparison.InvariantCultureIgnoreCase) || 
+                                                string.Equals(address.PostcodeEntered?.Replace(" ", string.Empty), trimPostcode, StringComparison.InvariantCultureIgnoreCase) || 
+                                                string.Equals(address.UPRN, uprn, StringComparison.InvariantCultureIgnoreCase));
     }
 
     [Function(nameof(GetStructuresForApplication))]
