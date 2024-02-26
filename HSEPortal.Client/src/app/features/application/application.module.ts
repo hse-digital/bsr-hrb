@@ -37,7 +37,7 @@ const routes = new HseRoutes([
   HseRoute.forLoadChildren(KbiModule.baseRoute, () => import('../kbi/kbi.module').then(m => m.KbiModule)),
   HseRoute.forLoadChildren(RegistrationAmendmentsModule.baseRoute, () => import('../registration-amendments/registration-amendments.module').then(m => m.RegistrationAmendmentsModule)),
   HseRoute.forLoadChildren(SafetyCaseReportModule.baseRoute, () => import('./safety-case-report/safety-case-report.module').then(m => m.SafetyCaseReportModule)),
-  HseRoute.forLoadChildren(ApplicationCertificateModule.baseRoute, () => import('./application-certificate/application-certificate.module').then(m => m.ApplicationCertificateModule)),
+  // HseRoute.forLoadChildren(ApplicationCertificateModule.baseRoute, () => import('./application-certificate/application-certificate.module').then(m => m.ApplicationCertificateModule)),
   HseRoute.protected(ApplicationCompletedComponent.route, ApplicationCompletedComponent, ApplicationCompletedComponent.title),
 ]);
 
