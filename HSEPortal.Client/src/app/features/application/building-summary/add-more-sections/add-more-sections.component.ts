@@ -49,26 +49,21 @@ export class AddMoreSectionsComponent extends PageComponent<void> {
     let nextPage = 'more-information';
 
     if (this.addAnotherSectionLink === 'yes') {
-      console.log("yes");
       let section = this.applicationService.startNewSection();
       nextPage = `${section}/${SectionNameComponent.route}`;
       await this.applicationService.updateApplication();
       return this.navigationService.navigateRelative(nextPage, this.activatedRoute);
     } else {
-      console.log("no");
       if (this.areAllSectionsOutOfScope()) {
-        console.log("6802");
         // User navigates to 6802 'you do not need to register - all structure info entered'
         return this.navigationService.navigateRelative(`../${BuildingOutOfScopeComponent.route}`, this.activatedRoute);
       } else if (!this.areAllSectionsOutOfScope() && this.areAllSectionsRemoved()) {
         return this.navigationService.navigateRelative(NotNeedRegisterMultiDuplicatedStructuresComponent.route, this.activatedRoute);
       } else if (!this.areAllSectionsOutOfScope() && (!this.areAllSectionsDuplicated() || !this.areAllSectionsRemoved())) {
-        console.log("no - check answers");
         return this.navigationService.navigateRelative(SectionCheckAnswersComponent.route, this.activatedRoute);
       }
     }
 
-    console.log("check answers")
     return this.navigationService.navigateRelative(SectionCheckAnswersComponent.route, this.activatedRoute);
   }
 

@@ -1,11 +1,9 @@
-using System.Net;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions;
 
@@ -20,16 +18,20 @@ public class PublicRegisterFunctions
 
     [Function(nameof(SearchPublicRegister))]
     public async Task<HttpResponseData> SearchPublicRegister([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT c.id, c.ContactFirstName, c.ContactLastName, c.ApplicationStatus, c.BuildingName, c.Versions FROM c JOIN v in c.Versions JOIN s IN v.Sections JOIN a IN s.Addresses WHERE REPLACE(a.Postcode, ' ', '') = REPLACE({postcode}, ' ', '') OR REPLACE(a.PostcodeEntered, ' ', '') = REPLACE({postcode}, ' ', '')", Connection = "CosmosConnection")]
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT c.id, c.ContactFirstName, c.ContactLastName, c.ApplicationStatus, c.BuildingName, c.Versions FROM c JOIN v in c.Versions JOIN s IN v.Sections JOIN a IN s.Addresses WHERE REPLACE(a.Postcode, ' ', '') = REPLACE({postcode}, ' ', '') OR REPLACE(a.PostcodeEntered, ' ', '') = REPLACE({postcode}, ' ', '') OR a.UPRN = {uprn}", Connection = "CosmosConnection")]
         List<BuildingApplicationModel> buildingApplications,
-        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT c.id, c.ContactFirstName, c.ContactLastName, c.ApplicationStatus, c.BuildingName, c.Sections, c.AccountablePersons as AccountablePersons FROM c JOIN s IN c.Sections JOIN a IN s.Addresses WHERE REPLACE(a.Postcode, ' ', '') = REPLACE({postcode}, ' ', '') OR REPLACE(a.PostcodeEntered, ' ', '') = REPLACE({postcode}, ' ', '')",
+        [CosmosDBInput("hseportal", "building-registrations", SqlQuery = "SELECT c.id, c.ContactFirstName, c.ContactLastName, c.ApplicationStatus, c.BuildingName, c.Sections, c.AccountablePersons as AccountablePersons FROM c JOIN s IN c.Sections JOIN a IN s.Addresses WHERE REPLACE(a.Postcode, ' ', '') = REPLACE({postcode}, ' ', '') OR REPLACE(a.PostcodeEntered, ' ', '') = REPLACE({postcode}, ' ', '') OR a.UPRN = {uprn}",
             Connection = "CosmosConnection")]
         List<PublicRegisterApplicationModel> nonVersionedApplications)
     {
+        var queryParameters = request.GetQueryParameters();
+        var postcode = queryParameters["postcode"];
+        var uprn = queryParameters["uprn"];
+        
         var versionedApplications = await GetAcceptedVersionFromDynamics(buildingApplications);
         var registeredApplications = versionedApplications.Concat(nonVersionedApplications)
             .DistinctBy(x => x.id).Where(x => x.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentComplete))
-            .Select(x => x.Sections.Select(section => new PublicRegisterStructureModel
+            .Select(x => x.Sections.Where(section => SectionMatchesSearchAddress(section, postcode, uprn)).Select(section => new PublicRegisterStructureModel
             {
                 code = x.id,
                 userLastName = x.ContactLastName,
@@ -54,6 +56,14 @@ public class PublicRegisterFunctions
 
         registeredApplications = await FilterRegisteredApplications(registeredApplications);
         return await request.CreateObjectResponseAsync(registeredApplications);
+    }
+
+    private bool SectionMatchesSearchAddress(SectionModel section, string postcode, string uprn)
+    {
+        var trimPostcode = postcode.Replace(" ", string.Empty);
+        return section.Addresses.Any(address => string.Equals(address.Postcode?.Replace(" ", string.Empty), trimPostcode, StringComparison.InvariantCultureIgnoreCase) || 
+                                                string.Equals(address.PostcodeEntered?.Replace(" ", string.Empty), trimPostcode, StringComparison.InvariantCultureIgnoreCase) || 
+                                                string.Equals(address.UPRN, uprn, StringComparison.InvariantCultureIgnoreCase));
     }
 
     [Function(nameof(GetStructuresForApplication))]
@@ -138,7 +148,7 @@ public class PublicRegisterFunctions
                     );
 
                     var dynamicsChange = dynamicsChanges.value.FirstOrDefault();
-                    if (dynamicsChange?.bsr_changerequestid.statuscode is 760_810_007 or 2)
+                    if (dynamicsChange?.bsr_changerequestid?.statuscode is 760_810_007 or 2)
                     {
                         applicationsToReturn.Add(app with
                         {

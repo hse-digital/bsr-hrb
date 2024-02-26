@@ -30,7 +30,8 @@ public record BuildingApplicationModel(
     string[] DuplicateBuildingApplicationIds = null,
     RegistrationAmendmentsModel RegistrationAmendmentsModel = null,
     List<BuildingApplicationVersion> Versions = null,
-    SafetyCaseReport SafetyCaseReport = null) : IValidatableModel
+    SafetyCaseReport SafetyCaseReport = null,
+    ApplicationCertificate ApplicationCertificate = null) : IValidatableModel
 {
     public ValidationSummary Validate()
     {
@@ -64,13 +65,44 @@ public record SafetyCaseReport
     public bool? declaration { get; set; }
 }
 
-public record BuildingApplicationVersion(string Name, string ReplacedBy = null, string CreatedBy = null, bool? Submitted = null, SectionModel[] Sections = null,
-    AccountablePerson[] AccountablePersons = null, Status BuildingStatus = Status.NoChanges, Status ApChangesStatus = Status.NoChanges, KbiModel Kbi = null, ChangeRequest[] ChangeRequest = null);
+public record ApplicationCertificate
+{
+    public bool? BsrInformationConfirmed { get; set; }
+    public string ComplianceNoticeNumbers { get; set; }
+    public bool? Section89DeclarationConfirmed { get; set; }
+    public FileUploadModel[] Files { get; set; }
+}
 
-public record SectionModel(string Name,
-    string FloorsAbove, string Height, string PeopleLivingInBuilding,
-    string ResidentialUnits, string YearOfCompletionOption, string YearOfCompletion, string YearOfCompletionRange, string WhoIssuedCertificate, string CompletionCertificateDate,
-    string CompletionCertificateIssuer, string CompletionCertificateReference, FileUploadModel CompletionCertificateFile, Scope Scope, string Statecode, CancellationReason CancellationReason = CancellationReason.NoCancellationReason, BuildingAddress[] Addresses = null,
+public record BuildingApplicationVersion(
+    string Name,
+    string ReplacedBy = null,
+    string CreatedBy = null,
+    bool? Submitted = null,
+    SectionModel[] Sections = null,
+    AccountablePerson[] AccountablePersons = null,
+    Status BuildingStatus = Status.NoChanges,
+    Status ApChangesStatus = Status.NoChanges,
+    KbiModel Kbi = null,
+    ChangeRequest[] ChangeRequest = null);
+
+public record SectionModel(
+    string Name,
+    string FloorsAbove,
+    string Height,
+    string PeopleLivingInBuilding,
+    string ResidentialUnits,
+    string YearOfCompletionOption,
+    string YearOfCompletion,
+    string YearOfCompletionRange,
+    string WhoIssuedCertificate,
+    string CompletionCertificateDate,
+    string CompletionCertificateIssuer,
+    string CompletionCertificateReference,
+    FileUploadModel CompletionCertificateFile,
+    Scope Scope,
+    string Statecode,
+    CancellationReason CancellationReason = CancellationReason.NoCancellationReason,
+    BuildingAddress[] Addresses = null,
     Duplicate Duplicate = null)
 {
     public Status Status { get; set; }
@@ -80,8 +112,13 @@ public record SectionModel(string Name,
 
 public record Scope(bool IsOutOfScope, OutOfScopeReason OutOfScopeReason);
 
-public record Duplicate(string DuplicatedAddressIndex, string WhyContinue = null, bool? IsDuplicated = null,
-    string IncludeStructure = null, string[] BlockIds = null, bool? DuplicateFound = null);
+public record Duplicate(
+    string DuplicatedAddressIndex,
+    string WhyContinue = null,
+    bool? IsDuplicated = null,
+    string IncludeStructure = null,
+    string[] BlockIds = null,
+    bool? DuplicateFound = null);
 
 public enum OutOfScopeReason
 {
@@ -90,12 +127,32 @@ public enum OutOfScopeReason
     PeopleLivingInBuilding
 }
 
-public record AccountablePerson(string Type, string IsPrincipal, BuildingAddress Address, BuildingAddress PapAddress,
-    string OrganisationName, string OrganisationType, string OrganisationTypeDescription,
-    string NamedContactFirstName, string NamedContactLastName, string NamedContactEmail, string NamedContactPhoneNumber,
-    string FirstName, string LastName, string Email, string PhoneNumber, string Role, string LeadJobRole,
-    string ActingForSameAddress, BuildingAddress ActingForAddress, string LeadFirstName, string LeadLastName,
-    string LeadEmail, string LeadPhoneNumber, SectionAccountability[] SectionsAccountability, string AddAnother);
+public record AccountablePerson(
+    string Type,
+    string IsPrincipal,
+    BuildingAddress Address,
+    BuildingAddress PapAddress,
+    string OrganisationName,
+    string OrganisationType,
+    string OrganisationTypeDescription,
+    string NamedContactFirstName,
+    string NamedContactLastName,
+    string NamedContactEmail,
+    string NamedContactPhoneNumber,
+    string FirstName,
+    string LastName,
+    string Email,
+    string PhoneNumber,
+    string Role,
+    string LeadJobRole,
+    string ActingForSameAddress,
+    BuildingAddress ActingForAddress,
+    string LeadFirstName,
+    string LeadLastName,
+    string LeadEmail,
+    string LeadPhoneNumber,
+    SectionAccountability[] SectionsAccountability,
+    string AddAnother);
 
 public record SectionAccountability(string SectionName, string[] Accountability);
 
@@ -121,7 +178,8 @@ public enum BuildingApplicationStatus
     KbiSubmitComplete = 8192
 }
 
-public record KbiModel(KbiSectionModel[] KbiSections,
+public record KbiModel(
+    KbiSectionModel[] KbiSections,
     SectionStatus[] SectionStatus,
     Connections Connections,
     Submit Submit,
@@ -129,7 +187,8 @@ public record KbiModel(KbiSectionModel[] KbiSections,
 
 public record SectionStatus(bool InProgress, bool Complete);
 
-public record KbiSectionModel(Fire Fire,
+public record KbiSectionModel(
+    Fire Fire,
     Energy Energy,
     BuildingStructure BuildingStructure,
     Roof Roof,
@@ -143,7 +202,8 @@ public record KbiSectionModel(Fire Fire,
 
 public record ExternalWallInsulation(string[] CheckBoxSelection, string OtherValue);
 
-public record Fire(string StrategyEvacuateBuilding,
+public record Fire(
+    string StrategyEvacuateBuilding,
     string[] ProvisionsEquipment,
     string[] FireSmokeProvisions,
     Dictionary<string, string[]> FireSmokeProvisionLocations,
@@ -153,23 +213,31 @@ public record Fire(string StrategyEvacuateBuilding,
 
 public record FireDoorsCommon(string FireDoorThirtyMinute, string FireDoorSixtyMinute, string FireDoorHundredTwentyMinute, string FireDoorUnknown);
 
-public record ResidentialUnitFrontDoors(string NoFireResistance, string ThirtyMinsFireResistance, string SixtyMinsFireResistance,
-    string HundredTwentyMinsFireResistance, string NotKnownFireResistance);
+public record ResidentialUnitFrontDoors(
+    string NoFireResistance,
+    string ThirtyMinsFireResistance,
+    string SixtyMinsFireResistance,
+    string HundredTwentyMinsFireResistance,
+    string NotKnownFireResistance);
 
-public record Energy(string[] EnergySupply,
+public record Energy(
+    string[] EnergySupply,
     string[] EnergyTypeStorage,
     string[] OnsiteEnergyGeneration);
 
 public record BuildingStructure(string[] BuildingStructureType);
 
-public record Roof(string RoofType,
+public record Roof(
+    string RoofType,
     string RoofInsulation,
     string RoofMaterial);
 
-public record Staircases(string InternalStaircasesAllFloors,
+public record Staircases(
+    string InternalStaircasesAllFloors,
     string TotalNumberStaircases);
 
-public record Walls(string[] ExternalWallMaterials,
+public record Walls(
+    string[] ExternalWallMaterials,
     string WallACM,
     string WallHPL,
     Dictionary<string, string> ExternalWallMaterialsPercentage,
@@ -178,7 +246,8 @@ public record Walls(string[] ExternalWallMaterials,
     string[] ExternalFeatures,
     Dictionary<string, string[]> FeatureMaterialsOutside);
 
-public record BuildingUse(string PrimaryUseOfBuilding,
+public record BuildingUse(
+    string PrimaryUseOfBuilding,
     string[] SecondaryUseBuilding,
     string FloorsBelowGroundLevel,
     string PrimaryUseBuildingBelowGroundLevel,
@@ -190,7 +259,8 @@ public record BuildingUse(string PrimaryUseOfBuilding,
     string MostRecentMaterialChange,
     string YearMostRecentMaterialChange);
 
-public record Connections(string[] StructureConnections,
+public record Connections(
+    string[] StructureConnections,
     string OtherHighRiseBuildingConnections,
     string[] HowOtherHighRiseBuildingAreConnected,
     string OtherBuildingConnections,
@@ -232,7 +302,6 @@ public record Deregister
     public string Why { get; set; }
     public CancellationReason CancellationReason { get; set; }
 }
-
 
 public record ChangeUser
 {
@@ -291,11 +360,12 @@ public enum ChangeCategory
     ChangePAPOrLeadContact
 }
 
-public enum CancellationReason {
-  FloorsHeight,
-  ResidentialUnits,
-  EveryoneMovedOut,
-  IncorrectlyRegistered,
-  NoConnected,
-  NoCancellationReason
+public enum CancellationReason
+{
+    FloorsHeight,
+    ResidentialUnits,
+    EveryoneMovedOut,
+    IncorrectlyRegistered,
+    NoConnected,
+    NoCancellationReason
 }

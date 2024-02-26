@@ -1,41 +1,33 @@
-<govuk-formpage [hideSaveAndContinue]="true" [hideSaveAndComeBack]="true">
+<a [routerLink]="['../../application-completed']" class="govuk-back-link" href="javascript:void(0)" tabindex="0" role="link">Go back to {{applicationService.model.BuildingName}}</a>
 
-    <div class="govuk-panel govuk-panel--confirmation">
-        <h1 class="govuk-panel__title">Changes to {{applicationService.model.BuildingName}} submitted</h1>
-        <div class="govuk-panel__body">
-            Application reference <br><strong>{{applicationService.model.id}}</strong>
+<div class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <div class="govuk-panel govuk-panel--confirmation">
+                    <h1 class="govuk-panel__title" *ngIf="!newChangesWithdrawal">Changes to {{applicationService.model.BuildingName}} submitted</h1>
+                    <h1 class="govuk-panel__title" *ngIf="newChangesWithdrawal && !appIsRegistered">You have submitted a request to withdraw the application for {{applicationService.model.BuildingName}}</h1>  
+                    <h1 class="govuk-panel__title" *ngIf="newChangesWithdrawal && appIsRegistered">You have submitted a request to remove {{applicationService.model.BuildingName}} from the register</h1>
+                    <div class="govuk-panel__body">
+                        Application reference <br><strong>{{applicationService.model.id}}</strong>
+                    </div>
+                </div>
+
+                <govuk-body *ngIf="newPrimaryUser()">We have sent an email to {{primaryUser?.Email}} inviting {{primaryUser?.Firstname}} {{primaryUser?.Lastname}} to access this application. Once they verify their email, you will no longer have access to this application.</govuk-body>
+                <govuk-body *ngIf="newSecondaryUser()">We have sent an email to {{secondaryUser?.Email}} inviting {{secondaryUser?.Firstname}} {{secondaryUser?.Lastname}} to access this application.</govuk-body>
+                
+                <ng-container *ngIf="buildingSummaryApKbiConnectionChanges()">
+                    <h2 class="govuk-heading-m">What happens next</h2>
+                    <govuk-body *ngIf="!newChangesWithdrawal">We will send you an email when we have reviewed your changes.</govuk-body>
+                    <govuk-body *ngIf="newChangesWithdrawal">We will send you an email when your request has been reviewed.</govuk-body>                    
+                </ng-container>
+
+                <ng-container *ngIf="!isKbiSubmitted()">
+                    <h2 class="govuk-heading-m">What's next</h2>
+                    <govuk-body>You must <a href="" [routerLink]="['../../kbi']" class="govuk-link" tabindex="0" role="link">give structure and fire safety information</a> by {{isSubmittionBefore3Sep2023() ? '30 september 2023' : get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.</govuk-body>
+                </ng-container>
+
+            </div>
         </div>
     </div>
-
-    <h2 class="govuk-heading-m" *ngIf="newPrimaryUser() || newSecondaryUser() || buildingSummaryApKbiConnectionChanges()">What happens next</h2>
-    <govuk-body *ngIf="newPrimaryUser()">We have sent an email to {{primaryUser?.Email}} inviting {{primaryUser?.Firstname}} {{primaryUser?.Lastname}} to access this application. Once they verify their email, you will no longer have access to this application.</govuk-body>
-    <govuk-body *ngIf="newSecondaryUser()">We have sent an email to {{secondaryUser?.Email}} inviting {{secondaryUser?.Firstname}} {{secondaryUser?.Lastname}} to access this application.</govuk-body>
-    <govuk-body *ngIf="buildingSummaryApKbiConnectionChanges()">We will send you an email when we have reviewed your changes</govuk-body>
-
-    <h2 class="govuk-heading-m">Application history</h2>
-    <table class="govuk-table">
-        <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Changes submitted</a></td>
-                <td class="govuk-table__cell">{{applicationService.model.RegistrationAmendmentsModel?.Date | date: 'dd MMMM yyyy'}}</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../../summary']" href="" target="_blank" role="link" tabindex="0">Registration application</a></td>
-                <td class="govuk-table__cell">{{registrationApplicationDate | date: 'dd MMMM yyyy'}}</td>
-            </tr>
-            <tr class="govuk-table__row" *ngIf="isKbiSubmitted()">
-                <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../../kbi/summary']" href="" target="_blank" role="link" tabindex="0">Structure and fire safety information</a></td>
-                <td class="govuk-table__cell">{{kbiSubmittionDate | date: 'dd MMMM yyyy'}}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <ng-container *ngIf="!isKbiSubmitted()">
-        <h2 class="govuk-heading-m">What's next</h2>
-        <govuk-body>You must <a href="" [routerLink]="['../../kbi']" class="govuk-link" tabindex="0" role="link">give structure and fire safety information</a> by {{isSubmittionBefore3Sep2023() ? '30 september 2023' : get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}.</govuk-body>
-    </ng-container>
-
-    <h2 class="govuk-heading-m">Making changes</h2>
-    <govuk-body>If you need to, you can <a href="" [routerLink]="['../change-task-list']" class="govuk-link" tabindex="0" role="link">tell the Building Safety Regulator about changes to this building</a>.</govuk-body>
-
-</govuk-formpage>
+</div>

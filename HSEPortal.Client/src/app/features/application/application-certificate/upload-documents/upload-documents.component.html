@@ -1,0 +1,43 @@
+<govuk-formpage [processing]="processing" (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()">
+
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link *ngIf="errorMessage" anchorId="upload-input" [message]="errorMessage" />
+  </govuk-error-summary>
+
+  <h1 class="govuk-heading-l">Upload documents for {{ applicationService.model.BuildingName }}</h1>  
+
+  <govuk-body>You must upload your:</govuk-body>
+  <govuk-list classes='govuk-list--bullet'>
+    <govuk-list-item>safety case report</govuk-list-item>
+    <govuk-list-item>information about your mandatory occurrence reporting system</govuk-list-item>
+    <govuk-list-item>resident engagement strategy</govuk-list-item>
+  </govuk-list>
+
+  <govuk-inset-text>
+    <p>Make sure the documents are identifiable by the file name. If you upload a file containing more than one document, the file name must reference all the documents included.</p>
+  </govuk-inset-text>
+
+  <govuk-body>You can upload multiple files in PDF or image format. Each file must be smaller than 3GB.</govuk-body>
+
+  <govuk-body>If we need more information to assist with your application, we will contact you.</govuk-body>
+
+  <div [govukErrorLine]="errorMessage">
+    <govuk-body>Upload files</govuk-body>
+    <govuk-error id="error-uploads" *ngIf="hasErrors" [text]="errorMessage" />
+    <input class="govuk-file-upload govuk-!-margin-bottom-5" aria-label="Upload files" aria-describedby="hint-upload-file-hint" id="upload-input" [attr.aria-describedby]="getUploadError()" type="file" multiple="true" (change)="fileSelected($event)" accept=".pdf,.jpg,.tif,.bmp,.png,.doc,.docx,.jpeg'">
+  </div>
+
+  <div class="govuk-!-margin-bottom-8 file-list" *ngIf="fileUploads.length > 0">
+    <div *ngFor="let upload of fileUploads; let i = index" class="file-list-item" id="upload-tag-{{i}}">
+      <govuk-body class="file-list-key">{{upload.file.name}}</govuk-body>
+      <div class="file-list-value">
+        <govuk-tag class="govuk-tag--yellow upload-progress" *ngIf="upload.status == 'uploading'" [style]="getFileProgress(upload)">UPLOADING</govuk-tag>
+        <govuk-tag class="govuk-tag--yellow" *ngIf="upload.status == 'scanning' || upload.status == 'processing'">{{upload.status}}</govuk-tag>
+        <govuk-tag class="govuk-tag--red" *ngIf="upload.status == 'malware'">ERROR</govuk-tag>
+        <govuk-tag class="govuk-tag--green" *ngIf="upload.status == 'uploaded'">UPLOADED</govuk-tag>
+        <govuk-tag class="govuk-tag--red" *ngIf="upload.status == 'invalid'">INVALID FILE TYPE</govuk-tag>
+        <govuk-tag class="govuk-tag--red" *ngIf="upload.status == 'toolarge'">FILE TOO LARGE</govuk-tag>
+      </div>
+    </div>
+  </div>
+</govuk-formpage>

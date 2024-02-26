@@ -7,6 +7,7 @@ import { HseRoute, HseRoutes } from "src/app/services/hse.route";
 import { SafetyCaseReportDateComponent } from './safety-case-report-date/safety-case-report-date.component';
 import { SafetyCaseReportDeclarationComponent } from './safety-case-report-declaration/safety-case-report-declaration.component';
 import { SafetyCaseConfirmationComponent } from './safety-case-confirmation/safety-case-confirmation.component';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 
 const routes = new HseRoutes([
@@ -20,13 +21,14 @@ const routes = new HseRoutes([
   declarations: [
     SafetyCaseReportDateComponent,
     SafetyCaseReportDeclarationComponent,
-    SafetyCaseConfirmationComponent,
+    SafetyCaseConfirmationComponent
   ],
   imports: [
     RouterModule.forChild(routes.getRoutes()),
     HseAngularModule,
     CommonModule,
-    HttpClientModule
+    HttpClientModule,
+    ComponentsModule,
   ],
   providers: [HttpClient, ...routes.getProviders()]
 })

@@ -1,0 +1,35 @@
+<govuk-formpage 
+  saveAndContinueText="Save and continue" 
+  (saveAndContinue)="saveAndContinue()" 
+  [hideSaveAndComeBack]="false"
+  (saveAndComeBack)="saveAndComeBack()"
+  [processing]="processing">
+
+  <govuk-error-summary *ngIf="!modelValid"
+    title="There is a problem"
+    #summaryError>
+    <govuk-error-link anchorId="textarea-compliance-notice-numbers"
+      [message]="errorText" />
+  </govuk-error-summary>
+
+  <h1 class="govuk-heading-l">Enter the unique identification numbers of compliance notices you or any other accountable person has been given in relation to {{ buildingName }}</h1>  
+
+  <govuk-body>
+    <govuk-textarea
+      [enableCharacterCount]="true"
+      [maxCharacterRemaining]="maxLength"
+      [errorText]="errorText"
+      id="compliance-notice-numbers"
+      type="text"
+      label="Only include notices served by the Building Safety Regulator under section 99 of the Building Safety Act 2022 that are currently in force. If no notices have been served, leave this blank."
+      [isPageHeading]="false"
+      [(model)]="model"
+      class="govuk-input--width-50"
+      #field
+      [govukRequired]="field"
+      (modelChange)="checkError()"
+    >
+    </govuk-textarea>
+  </govuk-body>
+  
+</govuk-formpage>

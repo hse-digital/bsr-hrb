@@ -2,17 +2,34 @@
 
 <ng-container *ngIf="shouldRender">
 
+  <a [routerLink]="['../../application-completed']" class="govuk-back-link" href="javascript:void(0)" tabindex="0" role="link">Go back to {{applicationService.model.BuildingName}}</a>
+
   <div class="govuk-main-wrapper">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
 
         <h1 class="govuk-heading-l">Registration application submitted for {{applicationService.model.BuildingName}}</h1>
 
-        <govuk-body>Your application number is <b>{{applicationService.model.id}}</b>.</govuk-body>
+        <govuk-body>Your application reference is <b>{{applicationService.model.id}}</b>.</govuk-body>
 
-        <govuk-body>We confirmed your payment by email to {{payment?.Email}}. If you cannot find that email, check your junk or spam folders. If you did not get the email, <a href="https://www.gov.uk/guidance/contact-the-building-safety-regulator" target="_blank" class="govuk-link">contact us</a>.</govuk-body>
+        <!-- Card -->
+        <govuk-body *ngIf="paymentType == 'card'">
+          We confirmed your payment by email to {{payment?.Email}}. If you cannot find that email, check your junk or spam folders. If you did not get the email, 
+          <a href="https://www.gov.uk/guidance/contact-the-building-safety-regulator" target="_blank" class="govuk-link">contact us</a>.
+        </govuk-body>
 
-        <govuk-body *ngIf="notPap()">We have also sent an email to the principal accountable person that outlines their duties at this stage.</govuk-body>
+        <!-- Invoice -->
+        <ng-container *ngIf="paymentType != 'card'">
+          <govuk-body>We have sent an invoice to {{payment?.Email}}. If you cannot find the email, check your junk or spm folders.</govuk-body>
+          <govuk-body>Your application will be submitted when we receive your payment.</govuk-body>
+          <govuk-body>You must pay the fee before we can assess your application.</govuk-body>
+          <govuk-body>If you take too long to pay, we could prosecute you under building safety law.</govuk-body>
+        </ng-container>
+
+        <govuk-body *ngIf="notPap()">
+          <ng-container *ngIf="!papIsIndividual">We have also sent an email to the named contact at the principal accountable person that outlines their duties at this stage.</ng-container>
+          <ng-container *ngIf="papIsIndividual">We have also sent an email to the principal accountable person that outlines their duties at this stage.</ng-container>
+        </govuk-body>
 
         <govuk-body><a class="govuk-link" [routerLink]="['../../summary']" href="" target="_blank" role="link" tabindex="0">Get a copy of the information you submitted (opens in a new tab)</a>.</govuk-body>
 
@@ -30,7 +47,7 @@
           </strong>
         </div>
 
-        <govuk-button (onClick)="continueToKbi()">Continue</govuk-button>
+        <govuk-button (onClick)="continueToKbi()">Give structure and fire safety information</govuk-button>
 
         <govuk-body>Or you can <a href="#" class="govuk-link" (click)="registerAnotherBuilding()">register another building</a>.</govuk-body>
       </div> 

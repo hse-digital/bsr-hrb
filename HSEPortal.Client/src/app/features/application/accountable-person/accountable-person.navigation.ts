@@ -51,14 +51,10 @@ export class AccountablePersonNavigation extends BaseNavigation {
       let ap = this.applicationService.currentVersion.AccountablePersons[apIndex];
       let apRoute: string;
       if (apIndex == 0) {
-        console.log('0');
         apRoute = this.PapNavigationTree.getNextRoute(ap, apIndex);
       } else {
-        console.log('0.1');
         apRoute = this.OtherApNavigationTree.getNextRoute(ap, apIndex);
       }
-
-      console.log({ apRoute, apIndex, ap });
 
       if (apRoute === void 0 || apRoute == AccountablePersonCheckAnswersComponent.route) {
         continue;
@@ -83,18 +79,14 @@ class WhoIsPapNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('1');
     if (!this.applicationService.model.PrincipalAccountableType) {
-      console.log('1.1');
       return AccountablePersonComponent.route;
     }
 
     if (ap.Type == 'organisation') {
-      console.log('1.2');
       return this.OrganisationTypeNavigationNode.getNextRoute(ap, apIndex);
     }
 
-    console.log('1.3');
     return this.AreYouThePapNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -105,13 +97,10 @@ class OrganisationTypeNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('2');
     if (!ap.OrganisationType) {
-      console.log('2.1');
       return OrganisationTypeComponent.route;
     }
 
-    console.log('2.2');
     return this.OrganisationNameNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -123,18 +112,14 @@ class OrganisationNameNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('3');
     if (!ap.OrganisationName) {
-      console.log('3.1');
       return OrganisationNameComponent.route;
     }
 
     if (apIndex == 0) {
-      console.log('3.2');
       return this.PapAddressNavigationNode!.getNextRoute(ap, apIndex);
     }
 
-    console.log('3.3');
     return this.ApAddressNavigationNode!.getNextRoute(ap, apIndex);
   }
 }
@@ -145,13 +130,10 @@ class AreYouThePapNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('4');
     if (!ap.IsPrincipal) {
-      console.log('4.1');
       return PrincipleAccountableSelection.route;
     }
 
-    console.log('4.2');
     return this.YourAddressNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -163,18 +145,14 @@ class YourAddressNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('5');
     if (apIndex == 0 && !ap.PapAddress && !ap.Address) {
-      console.log('5.1');
       return ApAddressComponent.route;
     }
 
     if (ap.IsPrincipal == 'yes') {
-      console.log('5.2');
       return this.AddAnotherApNavigationNode.getNextRoute(ap, apIndex);
     }
 
-    console.log('5.3');
     return this.PapNameNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -185,13 +163,10 @@ class PapNameNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('6');
     if (!ap.FirstName || !ap.LastName) {
-      console.log('6.1');
       return PapNameComponent.route;
     }
 
-    console.log('6.2');
     return this.PapDetailsNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -202,13 +177,10 @@ class PapDetailsNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('7');
     if (!ap.PhoneNumber || !ap.Email) {
-      console.log('7.1');
       return PapDetailsComponent.route;
     }
 
-    console.log('7.2');
     return this.PapAddressNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -220,18 +192,14 @@ class PapAddressNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('8');
     if (!ap.PapAddress) {
-      console.log('8.1');
       return PapAddressComponent.route;
     }
 
     if (ap.Type == 'organisation') {
-      console.log('8.2');
       return this.OrganisationPapRoleNavigationNode.getNextRoute(ap, apIndex);
     }
 
-    console.log('8.3');
     return this.AddAnotherApNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -244,23 +212,18 @@ class OrganisationPapRoleNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('9');
     if (!ap.Role) {
-      console.log('9.1');
       return PapWhoAreYouComponent.route;
     }
 
     if (ap.Role == 'named_contact') {
-      console.log('9.2');
       return this.PapLeadContactJobRoleNavigationNode.getNextRoute(ap, apIndex);
     }
 
     if (ap.Role == 'employee') {
-      console.log('9.3');
       return this.PapLeadContactNameNavigationNode.getNextRoute(ap, apIndex);
     }
 
-    console.log('9.4');
     return this.ActingForSameAddressComponentNavigation.getNextRoute(ap, apIndex);
   }
 }
@@ -272,18 +235,14 @@ class ActingForSameAddressComponentNavigation extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('10');
     if (!ap.ActingForSameAddress) {
-      console.log('10.1');
       return ActingForSameAddressComponent.route;
     }
 
     if (ap.ActingForSameAddress == 'no') {
-      console.log('10.2');
       return this.PapRegisteringForAddressNavigationNode.getNextRoute(ap, apIndex);
     }
 
-    console.log('10.3');
     return this.PapLeadContactNameNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -294,13 +253,10 @@ class PapRegisteringForAddressNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('11');
     if (!ap.ActingForAddress) {
-      console.log('11.1');
       return ActingForAddressComponent.route;
     }
 
-    console.log('11.2');
     return this.PapLeadContactNameNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -311,13 +267,10 @@ class PapLeadContactNameNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('12');
     if (!ap.LeadFirstName || !ap.LeadLastName) {
-      console.log('12.1');
       return LeadNameComponent.route;
     }
 
-    console.log('12.2');
     return this.PapLeadContactDetailsNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -328,13 +281,10 @@ class PapLeadContactDetailsNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('13');
     if (!ap.LeadPhoneNumber || !ap.LeadEmail || !ap.LeadJobRole) {
-      console.log('13.1');
       return LeadDetailsComponent.route;
     }
 
-    console.log('13.2');
     return this.AddAnotherApNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -345,13 +295,10 @@ class PapLeadContactJobRoleNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('14');
     if (!ap.LeadJobRole) {
-      console.log('14.1');
       return PapNamedRoleComponent.route;
     }
 
-    console.log('14.2');
     return this.AddAnotherApNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -363,18 +310,14 @@ class AddAnotherApNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('15');
     if (!ap.AddAnother) {
-      console.log('15.1');
       return AddAccountablePersonComponent.route;
     }
 
     if (ap.AddAnother == 'yes') {
-      console.log('15.2');
       return this.CheckAnswersNavigationNode.getNextRoute(ap, apIndex);
     }
 
-    console.log('15.3');
     return this.PapAccountabilityNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -387,20 +330,16 @@ class PapAccountabilityNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('16');
     var pap = this.applicationService.currentVersion.AccountablePersons[0];
     if (pap.SectionsAccountability == null || pap.SectionsAccountability.length == 0 || pap.SectionsAccountability.flatMap(x => x.Accountability)?.length == 0) {
-      console.log('16.1');
       return AreasAccountabilityComponent.route;
     }
 
     let thereAreNotAllocatedAreas = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope).some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
     if (thereAreNotAllocatedAreas) {
-      console.log('16.2');
       return this.AccountabilityNotAllocatedNavigationNode.getNextRoute(ap, apIndex);
     }
 
-    console.log('16.3');
     return this.CheckAnswersNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -412,14 +351,11 @@ class AccountabilityNotAllocatedNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('17');
     let thereAreNotAllocatedAreas = this.applicationService.currentVersion.Sections.filter(x => !x.Scope?.IsOutOfScope).some(x => AccountabilityAreasHelper.getNotAllocatedAreasOf(this.applicationService.currentVersion.AccountablePersons, this.applicationService.model.BuildingName!, x).length > 0);
     if (thereAreNotAllocatedAreas) {
-      console.log('17.1');
       return NotAllocatedAccountabilityAreasComponent.route;
     }
 
-    console.log('17.2');
     return this.CheckAnswersNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -431,18 +367,14 @@ class ApTypeNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('18');
     if (!ap.Type) {
-      console.log('18.1');
       return AccountablePersonTypeComponent.route;
     }
 
     if (ap.Type == 'organisation') {
-      console.log('18.2');
       return this.OrganisationTypeNavigationNode.getNextRoute(ap, apIndex);
     }
 
-    console.log('18.3');
     return this.ApNameNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -453,13 +385,10 @@ class ApNameNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('19');
     if (!ap.FirstName || !ap.LastName) {
-      console.log('19.1');
       return ApNameComponent.route;
     }
 
-    console.log('19.2');
     return this.ApDetailsNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -470,13 +399,10 @@ class ApDetailsNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('20');
     if (!ap.PhoneNumber || !ap.Email) {
-      console.log('20.1');
       return ApDetailsComponent.route;
     }
 
-    console.log('20.2');
     return this.ApAddressNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -487,13 +413,10 @@ class ApAddressNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('21');
     if (!ap.Address && !ap.PapAddress) {
-      console.log('21.1');
       return ApAddressComponent.route;
     }
 
-    console.log('21.2');
     return this.ApAccountabilityNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -505,18 +428,14 @@ class ApAccountabilityNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('22');
     if (ap.SectionsAccountability == null || ap.SectionsAccountability.length == 0 || ap.SectionsAccountability.flatMap(x => x.Accountability)?.length == 0) {
-      console.log('22.1');
       return ApAccountableForComponent.route;
     }
 
     if (ap.Type == 'individual') {
-      console.log('22.2');
       return this.AddAnotherApNavigationNode.getNextRoute(ap, apIndex);
     }
 
-    console.log('22.3');
     return this.ApNamedContactNameNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -527,13 +446,10 @@ class ApNamedContactNameNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('23');
     if (!ap.NamedContactFirstName || !ap.NamedContactLastName) {
-      console.log('23.1');
       return OrganisationNamedContactComponent.route;
     }
 
-    console.log('23.2');
     return this.ApNamedContactDetailsNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -544,13 +460,10 @@ class ApNamedContactDetailsNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('24');
     if (!ap.NamedContactPhoneNumber || !ap.NamedContactEmail) {
-      console.log('24.1');
       return OrganisationNamedContactDetailsComponent.route;
     }
 
-    console.log('24.2');
     return this.AddAnotherApNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -561,7 +474,6 @@ class CheckAnswersNavigationNode extends ApNavigationNode {
   }
 
   override getNextRoute(_: AccountablePersonModel, __: number): string {
-    console.log('25');
     return AccountablePersonCheckAnswersComponent.route;
   }
 }
@@ -582,7 +494,6 @@ class OtherApNavigationTree extends ApNavigationNode {
   private ApTypeNavigationNode = new ApTypeNavigationNode(this.OrganisationTypeNavigationNode, this.ApNameNavigationNode);
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('26');
     return this.ApTypeNavigationNode.getNextRoute(ap, apIndex);
   }
 }
@@ -610,7 +521,6 @@ class PapNavigationTree extends ApNavigationNode {
 
 
   override getNextRoute(ap: AccountablePersonModel, apIndex: number): string {
-    console.log('27');
     return this.WhoIsPapNavigationNode.getNextRoute(ap, apIndex);
   }
 } 

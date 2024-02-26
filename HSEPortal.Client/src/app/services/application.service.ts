@@ -357,8 +357,8 @@ export class ApplicationService {
     }
   }
 
-  async searchPublicRegister(postcode: string): Promise<any[]> {
-    return await firstValueFrom(this.httpClient.get<any[]>(`api/SearchPublicRegister?postcode=${postcode}`));
+  async searchPublicRegister(postcode: string, uprn?: string): Promise<any[]> {
+    return await firstValueFrom(this.httpClient.get<any[]>(`api/SearchPublicRegister?postcode=${postcode}&uprn=${uprn}`));
   }
 
   async getStructuresForApplication(applicationId: string): Promise<any[]> {
@@ -399,6 +399,8 @@ export class BuildingRegistrationModel {
 
   SafetyCaseReport?: SafetyCaseReport;
 
+  ApplicationCertificate?: ApplicationCertificateModel
+
   // versioning
   Versions: BuildingRegistrationVersion[] = [];
 }
@@ -406,6 +408,13 @@ export class BuildingRegistrationModel {
 export class SafetyCaseReport {
   date?: string;
   declaration?: boolean;
+}
+
+export class ApplicationCertificateModel {
+  BsrInformationConfirmed?: boolean;
+  ComplianceNoticeNumbers?: string;
+  Section89DeclarationConfirmed?: boolean;
+  Files?: any[];
 }
 
 export class BuildingRegistrationVersion {

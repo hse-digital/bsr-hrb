@@ -6,7 +6,7 @@ import { Router } from "@angular/router";
 })
 export class StructureNotFoundComponent {
   public static title: string = 'Structure not found - Register a high-rise building - GOV.UK';
-  public static route: string = 'not-found';
+  public static route: string = 'structure-not-found';
 
   postcode: string = '';
 
