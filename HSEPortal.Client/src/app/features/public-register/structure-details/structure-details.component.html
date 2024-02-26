@@ -67,7 +67,7 @@
 
         <govuk-body>{{getApName(pap)}} is the principal accountable person. They're responsible for registering the building and making sure the information we hold is updated.</govuk-body>
         <govuk-body>They're also responsible for telling residents how to contact them, make complaints or ask questions. This is part of their residents engagement strategy.</govuk-body>
-        <govuk-body *ngIf="pap.Type == 'organisation'">They are based at {{normalizeAddress(pap.PapAddress ?? pap.Address)}}</govuk-body>
+        <govuk-body *ngIf="pap.type == 'organisation'">They are based at {{normalizeAddress(pap.mainAddress ?? pap.address)}}.</govuk-body>
       </div>
 
       <div *ngFor="let ap of getOtherAps()" class="govuk-!-margin-bottom-8">
@@ -80,8 +80,8 @@
           </ng-container>
         </govuk-list>
 
-        <govuk-body *ngIf="ap.Type != 'individual'">They are based at {{normalizeAddress(ap.PapAddress ?? ap.Address)}}</govuk-body>
-        <govuk-body *ngIf="ap.Type == 'individual'">We cannot publish personal data, like the name, address or contact details, of accountable person individuals.</govuk-body>
+        <govuk-body *ngIf="ap.type != 'individual'">They are based at {{normalizeAddress(ap.PapAddress ?? ap.Address ?? ap.mainAddress ?? ap.address)}}</govuk-body>
+        <govuk-body *ngIf="ap.type == 'individual'">We cannot publish personal data, like the name, address or contact details, of accountable person individuals.</govuk-body>
       </div>
     </div>
   </div>
@@ -117,7 +117,7 @@
 
 
       <govuk-details summaryText="I have tried and failed to contact {{getApName(pap)}}" id="details_accountable_person">
-        <p>If you have contacted {{getApName(pap)}}, but not had a response, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator.</a> If they have not already told us about the change, we will contact them about it.</p>
+        <p>If you have contacted them but not had a response, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator.</a></p>
         <p>We cannot give any other information about {{result.structure.Name ?? result.structureName}} than what is displayed on this page - even if you contact us.</p>
       </govuk-details>
     </div>
