@@ -339,9 +339,9 @@ export class ApplicationService {
     return await firstValueFrom(this.httpClient.get<string>(`api/GetKbiSubmissionDate/${this.model.id}`));
   }
 
-  async getApplicationCost(): Promise<number> {
+  async getApplicationCost(): Promise<ApplicationCharges> {
     var response = await firstValueFrom(this.httpClient.get<any>('api/GetApplicationCost'));
-    return response.applicationCost;
+    return response;
   }
 
   async getBuildingApplicationStatuscode(applicationid: string): Promise<BuildingApplicationStatuscode> {
@@ -371,6 +371,16 @@ export class ApplicationService {
       "Date": date
     }));
   }
+}
+
+export class ApplicationCharges {
+  ApplicationCost?: number;
+  CertificateCharges?: CertificateCharges;
+}
+
+export class CertificateCharges {
+  ApplicationCharge?: number;
+  PerPersonPerHourCharge?: number;
 }
 
 export class BuildingRegistrationModel {

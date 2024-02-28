@@ -24,7 +24,9 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
   override async onInit(applicationService: ApplicationService): Promise<void> {
     this.applicationService.model.ApplicationStatus = applicationService.model.ApplicationStatus | BuildingApplicationStage.PaymentInProgress;
     this.model = applicationService.model.PaymentInvoiceDetails ?? new PaymentInvoiceDetails();
-    this.applicationCost = await applicationService.getApplicationCost();
+    
+    const appCharges = await applicationService.getApplicationCost();
+    this.applicationCost = appCharges.ApplicationCost ?? 0;
 
     await this.applicationService.updateApplication();
   }

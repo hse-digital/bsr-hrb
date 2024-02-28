@@ -4,6 +4,7 @@ import { BlockBlobClient } from "@azure/storage-blob";
 import { PageComponent } from "src/app/helpers/page.component";
 import { ApplicationService } from "src/app/services/application.service";
 import { FileUploadService } from "src/app/services/file-upload.service";
+import { ChargesOverviewComponent } from '../charges-overview/charges-overview.component';
 
 type error = { hasError: boolean, message?: string }
 
@@ -58,7 +59,7 @@ export class UploadDocumentsComponent extends PageComponent<{ Filename: string, 
 
   override async navigateNext(): Promise<boolean | void> {
     this.processing = false;
-    return new Promise(resolve => true);
+    return this.navigationService.navigateRelative(ChargesOverviewComponent.route, this.activatedRoute);
   }
 
   static allowedExtensions = ['.pdf', '.jpg', '.tif', '.bmp', '.png', '.doc', '.docx', '.jpeg'];

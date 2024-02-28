@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
-import { ApplicationService, BuildingApplicationStage } from 'src/app/services/application.service';
+import { ApplicationService } from 'src/app/services/application.service';
 import { PaymentService } from 'src/app/services/payment.service';
-import { PaymentInvoiceComponent } from '../payment-invoice/payment-invoice.component';
 
 @Component({
   templateUrl: './payment-order-number-details.component.html',
@@ -18,7 +17,8 @@ export class PaymentOrderNumberDetailsComponent extends PageComponent<string> {
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.applicationCost = await applicationService.getApplicationCost();
+    const appCharges = await applicationService.getApplicationCost();
+    this.applicationCost = appCharges.ApplicationCost ?? 0;
   }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {

@@ -1,0 +1,27 @@
+<govuk-formpage saveAndContinueText="Continue" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true" [processing]="processing">
+
+  <h1 class="govuk-heading-l">Charges for assessing your application</h1>
+
+  <govuk-body>
+    There is an application charge of {{ applicationCharge | currency:'GBP':'symbol':'1.0' }} for your building assessment certificate application. You can pay this by card or invoice.
+  </govuk-body>
+
+  <govuk-body> The assessment of your application will also incur further ongoing charges. BSR will charge you: </govuk-body>
+  <govuk-list classes='govuk-list--bullet'>
+    <govuk-list-item>{{ perPersonPerHourCharge | currency:'GBP':'symbol':'1.0' }} per person for every hour we spend assessing your application</govuk-list-item>
+    <govuk-list-item>any costs to BSR of support from relevant authorities or third parties</govuk-list-item>
+  </govuk-list>
+
+  <govuk-body>
+    We will send a monthly invoice by email for these ongoing charges.
+  </govuk-body>
+
+  <govuk-body>
+    The charges which apply are detailed in the Building Safety Regulator charging scheme.
+  </govuk-body>
+
+  <govuk-body>
+    The Building Safety Regulators other upfront charges and hourly rates, and how and when these and other charges apply, are also set out in that charging scheme.
+  </govuk-body>
+  
+</govuk-formpage>

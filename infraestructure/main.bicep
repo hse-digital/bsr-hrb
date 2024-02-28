@@ -256,6 +256,14 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                     value: environment
                 }
                 {
+                    name: 'Integrations__CertificateApplicationCharge'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CertificateApplicationCharge)'
+                }
+                {
+                    name: 'Integrations__CertificateApplicationPerPersonCharge'
+                    value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Integrations--CertificateApplicationPerPersonCharge)'
+                }
+                {
                     name: 'Swa__Url'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=Swa--Url)'
                 }

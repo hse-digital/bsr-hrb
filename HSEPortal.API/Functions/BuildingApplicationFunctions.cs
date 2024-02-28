@@ -224,8 +224,17 @@ public class BuildingApplicationFunctions
     [Function(nameof(GetApplicationCost))]
     public async Task<HttpResponseData> GetApplicationCost([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData request)
     {
-        var applicationCost = new { applicationCost = integrationOptions.PaymentAmount / 100 };
-        return await request.CreateObjectResponseAsync(applicationCost);
+        var applicationCharges = new ApplicationCharges 
+        { 
+            ApplicationCost = integrationOptions.PaymentAmount / 100,
+            CertificateCharges = new CertificateCharges
+            {
+                ApplicationCharge = integrationOptions.CertificateApplicationCharge / 100,
+                PerPersonPerHourCharge = integrationOptions.CertificateApplicationPerPersonCharge / 100,
+            }
+        };
+
+        return await request.CreateObjectResponseAsync(applicationCharges);
     }
 
     [Function(nameof(IsChangeRequestAccepted))]

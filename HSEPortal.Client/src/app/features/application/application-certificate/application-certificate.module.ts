@@ -12,12 +12,14 @@ import { ConfirmInformationBsrHoldsComponent } from './confirm-information-bsr-h
 import { ComplianceNoticeNumbersComponent } from './compliance-notice-numbers/compliance-notice-numbers.component';
 import { Section89DeclarationComponent } from './section-89-declaration/section-89-declaration.component';
 import { UploadDocumentsComponent } from './upload-documents/upload-documents.component';
+import { ChargesOverviewComponent } from './charges-overview/charges-overview.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ConfirmInformationBsrHoldsComponent.route, ConfirmInformationBsrHoldsComponent, ConfirmInformationBsrHoldsComponent.title),
   HseRoute.protected(ComplianceNoticeNumbersComponent.route, ComplianceNoticeNumbersComponent, ComplianceNoticeNumbersComponent.title),
   HseRoute.protected(Section89DeclarationComponent.route, Section89DeclarationComponent, Section89DeclarationComponent.title),
   HseRoute.protected(UploadDocumentsComponent.route, UploadDocumentsComponent, UploadDocumentsComponent.title),
+  HseRoute.protected(ChargesOverviewComponent.route, ChargesOverviewComponent, ChargesOverviewComponent.title),
 ]);
 
 @NgModule({
@@ -26,6 +28,7 @@ const routes = new HseRoutes([
     ComplianceNoticeNumbersComponent,
     Section89DeclarationComponent,
     UploadDocumentsComponent,
+    ChargesOverviewComponent,
   ],
   providers: [...routes.getProviders()],
   imports: [
