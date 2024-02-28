@@ -107,6 +107,16 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
         }
     }
 }
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+    name: 's118-${environment}-bsr-acs-workspace'
+    location: location
+    properties: {
+        sku: {
+            name: 'PerGB2018'
+        }
+        retentionInDays: 30
+    }
+}
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
     name: 's118-${environment}-bsr-acs-ai'
@@ -114,6 +124,8 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
     kind: 'web'
     properties: {
         Application_Type: 'web'
+        WorkspaceResourceId: logAnalyticsWorkspace.id
+        Request_Source: 'rest'
     }
 }
 
@@ -289,8 +301,7 @@ resource swa 'Microsoft.Web/staticSites@2022-03-01' = {
     name: 's118-${environment}-bsr-acs-portal-swa'
     location: swaLocation
     tags: null
-    properties: {
-    }
+    properties: {}
     identity: {
         type: 'UserAssigned'
         userAssignedIdentities: {
