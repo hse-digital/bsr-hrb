@@ -33,7 +33,7 @@ public interface IDynamicsService
     Task<DynamicsPayment> GetPaymentByReference(string reference);
     Task<List<DynamicsPayment>> GetPayments(string applicationNumber);
     Task<string> GetSubmissionDate(string applicationNumber);
-    Task NewInvoicePayment(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest);
+    Task NewInvoicePayment(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, double paymentAmount);
     Task NewPayment(string applicationId, PaymentResponseModel payment);
     Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel);
     Task<DynamicsOrganisationsSearchResponse> SearchLocalAuthorities(string authorityName);
@@ -543,27 +543,27 @@ public class DynamicsService : IDynamicsService
         }
     }
 
-    public async Task NewInvoicePayment(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest)
+    public async Task NewInvoicePayment(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, double paymentAmount)
     {
         var invoiceContact = await GetOrCreateInvoiceContactAsync(invoicePaymentRequest);
         var dynamicsApplication = await GetBuildingApplicationUsingId(buildingApplicationModel.Id);
 
-        var dynamicsPayment = await CreateInvoicePayment(dynamicsApplication.bsr_buildingapplicationid, invoiceContact, invoicePaymentRequest);
+        var dynamicsPayment = await CreateInvoicePayment(dynamicsApplication.bsr_buildingapplicationid, invoiceContact, invoicePaymentRequest, paymentAmount);
         await UpdateBuildingApplication(dynamicsApplication, new DynamicsBuildingApplication { bsr_applicationstage = BuildingApplicationStage.InvoiceRaised });
-        var invoicePaymentResponse = await SendCreateInvoiceRequest(buildingApplicationModel, invoicePaymentRequest, dynamicsPayment, invoiceContact);
+        var invoicePaymentResponse = await SendCreateInvoiceRequest(buildingApplicationModel, invoicePaymentRequest, dynamicsPayment, invoiceContact, paymentAmount);
 
         await UpdateInvoicePayment(dynamicsPayment.bsr_paymentid, invoicePaymentResponse);
     }
 
     private async Task<InvoiceData> SendCreateInvoiceRequest(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, DynamicsPayment dynamicsPayment,
-        DynamicsContact invoiceContact)
+        DynamicsContact invoiceContact, double paymentAmount)
     {
         return await integrationsOptions.CommonAPIEndpoint.AppendPathSegments("api", "CreateInvoice")
             .WithHeader("x-functions-key", integrationsOptions.CommonAPIKey)
             .AllowAnyHttpStatus()
             .PostJsonAsync(new CreateInvoiceRequest
             {
-                Amount = Math.Round((float)integrationsOptions.PaymentAmount / 100, 2),
+                Amount = Math.Round((float)paymentAmount / 100, 2),
                 PaymentId = dynamicsPayment.bsr_paymentid,
                 Name = invoicePaymentRequest.Name,
                 Email = invoicePaymentRequest.Email,
@@ -605,7 +605,7 @@ public class DynamicsService : IDynamicsService
         return invoiceContact;
     }
 
-    private async Task<DynamicsPayment> CreateInvoicePayment(string buildingApplicationId, DynamicsContact invoicedContact, NewInvoicePaymentRequestModel invoiceData)
+    private async Task<DynamicsPayment> CreateInvoicePayment(string buildingApplicationId, DynamicsContact invoicedContact, NewInvoicePaymentRequestModel invoiceData, double paymentAmount)
     {
         var response = await dynamicsApi.Create("bsr_payments", new DynamicsPayment
         {
@@ -614,7 +614,7 @@ public class DynamicsService : IDynamicsService
             bsr_paymenttypecode = 760_810_001, // Invoice
             bsr_service = "HRB Registration",
             bsr_billingaddress = string.Join(", ", new[] { invoiceData.AddressLine1, invoiceData.AddressLine2, invoiceData.Postcode, invoiceData.Town }.Where(x => !string.IsNullOrWhiteSpace(x))),
-            bsr_amountpaid = Math.Round(integrationsOptions.PaymentAmount / 100, 2),
+            bsr_amountpaid = Math.Round(paymentAmount / 100, 2),
             bsr_purchaseordernumberifsupplied = invoiceData.OrderNumber,
             bsr_govukpaystatus = "open",
             bsr_emailaddress = invoiceData.Email

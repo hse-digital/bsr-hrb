@@ -44,30 +44,27 @@ public class PaymentFunctions
         [CosmosDBInput("hseportal", "building-registrations", Id = "{applicationId}", PartitionKey = "{applicationId}", Connection = "CosmosConnection")]
         BuildingApplicationModel applicationModel)
     {
-        var paymentModel = BuildPaymentRequestModel(applicationModel);
-        var validation = paymentModel.Validate();
-        if (!validation.IsValid)
-        {
-            return request.CreateResponse(HttpStatusCode.BadRequest);
-        }
+        var paymentResponse = await InitialisePayment(applicationModel, $"Payment for application {applicationModel.Id}",
+            integrationOptions.PaymentAmount, paymentReference => $"/payment/confirm?reference={paymentReference}");
 
-        var paymentRequestModel = mapper.Map<PaymentApiRequestModel>(paymentModel);
-        paymentRequestModel.description = $"Payment for application {applicationModel.Id}";
-        paymentRequestModel.amount = integrationOptions.PaymentAmount;
-        paymentRequestModel.return_url = $"{swaOptions.Url}/application/{applicationModel.Id}/payment/confirm?reference={paymentModel.Reference}";
-        paymentRequestModel.metadata = new Dictionary<string, object> { ["application"] = "hrbportal", ["environment"] = integrationOptions.Environment, ["applicationid"] = applicationModel.Id };
+        if (paymentResponse is null) return request.CreateResponse(HttpStatusCode.BadRequest);
 
-        var response = await integrationOptions.PaymentEndpoint
-            .AppendPathSegments("v1", "payments")
-            .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
-            .PostJsonAsync(paymentRequestModel);
+        return await request.CreateObjectResponseAsync(paymentResponse);
+    }
 
-        if (response.StatusCode == (int)HttpStatusCode.BadRequest)
-            return request.CreateResponse(HttpStatusCode.BadRequest);
+    [Function(nameof(InitialiseApplicationCertificatePayment))]
+    public async Task<HttpResponseData> InitialiseApplicationCertificatePayment(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(InitialiseApplicationCertificatePayment)}/{{applicationId}}")]
+        HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", Id = "{applicationId}", PartitionKey = "{applicationId}", Connection = "CosmosConnection")]
+        BuildingApplicationModel applicationModel)
+    {
+        var paymentResponse = await InitialisePayment(applicationModel,
+                $"Payment for certificate application {applicationModel.Id}",
+                paymentAmount: integrationOptions.CertificateApplicationCharge,
+                paymentReference => $"/certificate/submitted?reference={paymentReference}");
 
-        var paymentApiResponse = await response.GetJsonAsync<PaymentApiResponseModel>();
-        var paymentResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
-        await dynamicsService.NewPayment(applicationModel.Id, paymentResponse);
+        if (paymentResponse is null) return request.CreateResponse(HttpStatusCode.BadRequest);
 
         return await request.CreateObjectResponseAsync(paymentResponse);
     }
@@ -80,7 +77,20 @@ public class PaymentFunctions
         BuildingApplicationModel applicationModel)
     {
         var invoiceRequest = await request.ReadAsJsonAsync<NewInvoicePaymentRequestModel>();
-        await dynamicsService.NewInvoicePayment(applicationModel, invoiceRequest);
+        await dynamicsService.NewInvoicePayment(applicationModel, invoiceRequest, integrationOptions.PaymentAmount);
+
+        return request.CreateResponse();
+    }
+
+    [Function(nameof(InitialiseCertificateInvoicePayment))]
+    public async Task<HttpResponseData> InitialiseCertificateInvoicePayment(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"{nameof(InitialiseCertificateInvoicePayment)}/{{applicationId}}")]
+        HttpRequestData request,
+        [CosmosDBInput("hseportal", "building-registrations", Id = "{applicationId}", PartitionKey = "{applicationId}", Connection = "CosmosConnection")]
+        BuildingApplicationModel applicationModel)
+    {
+        var invoiceRequest = await request.ReadAsJsonAsync<NewInvoicePaymentRequestModel>();
+        await dynamicsService.NewInvoicePayment(applicationModel, invoiceRequest, integrationOptions.CertificateApplicationCharge);
 
         return request.CreateResponse();
     }
@@ -182,6 +192,37 @@ public class PaymentFunctions
 
         var paymentFunctionResponse = mapper.Map<PaymentResponseModel>(response);
         return await request.CreateObjectResponseAsync(paymentFunctionResponse);
+    }
+
+    private async Task<PaymentResponseModel> InitialisePayment(BuildingApplicationModel applicationModel,
+        string paymentDescription, double paymentAmount, Func<string, string> returnUrl)
+    {
+        var paymentModel = BuildPaymentRequestModel(applicationModel);
+        var validation = paymentModel.Validate();
+        if (!validation.IsValid)
+        {
+            return null;
+        }
+
+        var paymentRequestModel = mapper.Map<PaymentApiRequestModel>(paymentModel);
+        paymentRequestModel.description = paymentDescription;
+        paymentRequestModel.amount = paymentAmount;
+        paymentRequestModel.return_url = $"{swaOptions.Url}/application/{applicationModel.Id}{returnUrl(paymentModel.Reference)}";
+        paymentRequestModel.metadata = new Dictionary<string, object> { ["application"] = "hrbportal", ["environment"] = integrationOptions.Environment, ["applicationid"] = applicationModel.Id };
+
+        var response = await integrationOptions.PaymentEndpoint
+            .AppendPathSegments("v1", "payments")
+            .WithOAuthBearerToken(integrationOptions.PaymentApiKey)
+            .PostJsonAsync(paymentRequestModel);
+
+        if (response.StatusCode == (int)HttpStatusCode.BadRequest)
+            return null;
+
+        var paymentApiResponse = await response.GetJsonAsync<PaymentApiResponseModel>();
+        var paymentResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
+        await dynamicsService.NewPayment(applicationModel.Id, paymentResponse);
+
+        return paymentResponse;
     }
 
     private static PaymentRequestModel BuildPaymentRequestModel(BuildingApplicationModel applicationModel)
