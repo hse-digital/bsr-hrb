@@ -426,8 +426,8 @@ export class ApplicationCertificateModel {
   Section89DeclarationConfirmed?: boolean;
   Files?: any[];
 
+  PaymentType?: string | undefined;
   OngoingChangesInvoiceDetails?: PaymentInvoiceDetails;
-
   UseSameAsOngoingInvoiceDetails?: boolean;
   ApplicationInvoiceDetails?: PaymentInvoiceDetails;
 }

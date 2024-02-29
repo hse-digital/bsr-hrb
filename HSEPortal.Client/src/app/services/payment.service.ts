@@ -18,4 +18,8 @@ export class PaymentService {
   async InitialisePayment(applicationModel: BuildingRegistrationModel): Promise<PaymentModel> {
     return await firstValueFrom(this.httpClient.post<PaymentModel>(`api/InitialisePayment/${applicationModel.id}`, null));
   }
+
+  async InitialiseApplicationCertificatePayment(applicationModel: BuildingRegistrationModel): Promise<PaymentModel> {
+    return await firstValueFrom(this.httpClient.post<PaymentModel>(`api/InitialiseApplicationCertificatePayment/${applicationModel.id}`, null));
+  }
 }

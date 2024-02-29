@@ -71,6 +71,11 @@ public record ApplicationCertificate
     public string ComplianceNoticeNumbers { get; set; }
     public bool? Section89DeclarationConfirmed { get; set; }
     public FileUploadModel[] Files { get; set; }
+
+    public string PaymentType { get; set; }
+    public PaymentInvoiceDetails OngoingChangesInvoiceDetails { get; set; }
+    public bool? UseSameAsOngoingInvoiceDetails { get; set; }
+    public PaymentInvoiceDetails ApplicationInvoiceDetails { get; set; }
 }
 
 public record BuildingApplicationVersion(

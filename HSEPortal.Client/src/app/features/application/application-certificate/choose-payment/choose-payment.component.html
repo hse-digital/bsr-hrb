@@ -1,0 +1,59 @@
+<govuk-formpage
+  (saveAndContinue)="saveAndContinue()"
+  (saveAndComeBack)="saveAndComeBack()"
+  [processing]="processing"
+>
+  <govuk-error-summary
+    *ngIf="hasErrors"
+    title="There is a problem"
+    #summaryError
+  >
+    <govuk-error-link
+      anchorId="selection-card-input"
+      message="Select how you want to pay the application charge"
+    />
+  </govuk-error-summary>
+
+  <h1 class="govuk-heading-l">Application charge</h1>
+
+  <div class="govuk-info-banner govuk-!-margin-bottom-5">
+    <h2 class="govuk-heading-m">Payment summary</h2>
+    <govuk-body>You are required to pay a charge with this application of:</govuk-body>
+    <govuk-body class="govuk-payment-amount">{{applicationCharge | currency : 'GBP' : 'symbol' : '1.0' }}</govuk-body>
+  </div>
+
+  <govuk-radio-group
+    title="How do you want to pay the application charge?"
+    class="govuk-!-margin-bottom-4"
+    [(model)]="model"
+    #field
+    [govukRequired]="field"
+    [errorText]="
+      getErrorDescription(
+        hasErrors,
+        'Select how you want to pay the application charge'
+      )
+    "
+    id="choose-payment"
+  >
+    <govuk-radio
+      name="choose-payment"
+      id="selection-card"
+      value="card"
+      label="Debit or credit card"
+      (onKeyupEnter)="saveAndContinue()"
+      (onRadioClicked)="select()"
+      [model]="model"
+    />
+    <govuk-radio
+      name="choose-payment"
+      id="selection-invoice"
+      value="invoice"
+      label="Invoice and bank transfer"
+      hint="We'll send you an invoice. You must pay it within 30 days of receiving it."
+      (onKeyupEnter)="saveAndContinue()"
+      (onRadioClicked)="select()"
+      [model]="model"
+    />
+  </govuk-radio-group>
+</govuk-formpage>
