@@ -1,0 +1,23 @@
+<govuk-formpage saveAndContinueText="Declare and submit" (saveAndContinue)="saveAndContinue()" [hideSaveAndComeBack]="true" [processing]="processing">
+  <h1 class="govuk-heading-l">Declaration</h1>
+
+  <govuk-body>
+    By submitting this application for a building assessment certificate for {{applicationService.model.BuildingName}}, 
+    you are confirming that the details you are providing are correct.
+  </govuk-body>
+
+  <govuk-body>
+    You must not give false or misleading information to the Building Safety Regulator (BSR). 
+    Knowingly or recklessly giving false or misleading information is a criminal offence under section 24 of the Building Safety Act 2022. 
+    BSR may consider taking enforcement action against you. Any enforcement action will be considered in line with our enforcement policy statement.
+  </govuk-body>
+
+  <govuk-body>
+    Once you have submitted your application, you cannot use this service to amend your answers.
+  </govuk-body>
+
+  <govuk-body>
+    If we need any further information to assist with your applicaiton, we will contact you.
+  </govuk-body>
+
+</govuk-formpage>

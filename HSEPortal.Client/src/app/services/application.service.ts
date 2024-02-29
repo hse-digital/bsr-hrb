@@ -319,6 +319,10 @@ export class ApplicationService {
     await firstValueFrom(this.httpClient.post(`api/SyncDeclaration`, this.model));
   }
 
+  async syncCertificateDeclaration(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/syncCertificateDeclaration`, this.model));
+  }
+
   async syncPayment(): Promise<void> {
     await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
   }

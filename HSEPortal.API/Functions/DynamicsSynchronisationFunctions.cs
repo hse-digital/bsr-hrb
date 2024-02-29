@@ -58,6 +58,16 @@ public class DynamicsSynchronisationFunctions
         return request.CreateResponse();
     }
 
+    [Function(nameof(syncCertificateDeclaration))]
+    public async Task<HttpResponseData> syncCertificateDeclaration([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request, [DurableClient] DurableTaskClient durableTaskClient)
+    {
+        // TODO for certificate
+        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
+        await durableTaskClient.ScheduleNewOrchestrationInstanceAsync(nameof(SynchroniseDeclaration), buildingApplicationModel);
+
+        return request.CreateResponse();
+    }
+
     [Function(nameof(SyncPayment))]
     public async Task<HttpResponseData> SyncPayment([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request, [DurableClient] DurableTaskClient durableTaskClient)
     {
