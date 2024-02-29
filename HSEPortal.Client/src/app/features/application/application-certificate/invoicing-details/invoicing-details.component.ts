@@ -3,60 +3,74 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { EmailValidator } from 'src/app/helpers/validators/email-validator';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStage, PaymentInvoiceDetails } from 'src/app/services/application.service';
+import { ApplicationCertificateStage, ApplicationService, PaymentInvoiceDetails } from 'src/app/services/application.service';
 import { PaymentService } from 'src/app/services/payment.service';
-import { PaymentOrderNumberDetailsComponent } from '../payment-order-number-details/payment-order-number-details.component';
-import { PaymentInvoiceConfirmationComponent } from '../payment-invoice-confirmation/payment-invoice-confirmation.component';
 
 @Component({
-  templateUrl: './payment-invoice.component.html',
+  templateUrl: './invoicing-details.component.html',
 })
-export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails> {
-  static route: string = "invoice";
-  static title: string = "Choose payment method - Register a high-rise building - GOV.UK";
+export class InvoicingDetailsComponent extends PageComponent<PaymentInvoiceDetails> {
+  static route: string = "invoicing-details";
+  static title: string = "Enter invoicing details for ongoing charges - building assessment certificate - Register a high-rise building - GOV.UK";
 
+  firstName?: string;
+  lastName?: string;
   errorFields: string[] = [];
-  applicationCost: number = 0;
+  applicationCharge: number = 0;
   constructor(public paymentService: PaymentService, activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-    this.applicationService.model.ApplicationStatus = applicationService.model.ApplicationStatus | BuildingApplicationStage.PaymentInProgress;
-    this.model = applicationService.model.PaymentInvoiceDetails ?? new PaymentInvoiceDetails();
+    // TODO do we need ApplicationCertificateStage?
+    // this.applicationService.model.ApplicationStatus = applicationService.model.ApplicationStatus | BuildingApplicationStage.PaymentInProgress;
+    this.applicationService.model.ApplicationCertificate!.ApplicationStatus = applicationService.model.ApplicationCertificate!.ApplicationStatus | ApplicationCertificateStage.PaymentInProgress;
+        
+    this.model = applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails ?? new PaymentInvoiceDetails();
+    
+    const names = this.model.Name?.split(' ', 2);
+    if (names && names.length > 0) {
+      this.firstName = names[0];
+      this.lastName = names[1];
+    }
     
     const appCharges = await applicationService.getApplicationCost();
-    this.applicationCost = appCharges.ApplicationCost ?? 0;
+    this.applicationCharge = appCharges.CertificateCharges?.ApplicationCharge ?? 0;
 
     await this.applicationService.updateApplication();
   }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
-    applicationService.model.PaymentInvoiceDetails = this.model;
+    this.model!.Name = `${this.firstName?.trim()} ${this.lastName?.trim()}`;
+
+    applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails = this.model;
 
     if (isSaveAndContinue) {
-      if (this.model?.OrderNumberOption != 'need') {
-        applicationService.model.PaymentInvoiceDetails!.Status = 'awaiting';
+      applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails!.Status = 'awaiting';
 
-        await this.applicationService.updateApplication();
-        await this.paymentService.createInvoicePayment(this.applicationService.model.id!, this.model!);
-      }
+      await this.applicationService.updateApplication();
+      await this.paymentService.createInitialiseCertificateInvoicePayment(this.applicationService.model.id!, this.model!);
     } else {
       await this.applicationService.updateApplication();
     }
   }
 
   override canAccess(applicationService: ApplicationService, __: ActivatedRouteSnapshot): boolean {
-    return (applicationService.model.ApplicationStatus & BuildingApplicationStage.PaymentInProgress) == BuildingApplicationStage.PaymentInProgress &&
-      applicationService.model.PaymentType == 'invoice';
+    return true;
+    // TODO
+    // return (applicationService.model.ApplicationCertificate!.ApplicationStatus & ApplicationCertificateStage.PaymentInProgress) == ApplicationCertificateStage.PaymentInProgress &&
+    //   applicationService.model.PaymentType == 'invoice';
   }
 
   emailErrorMessage: string = '';
   override isValid(): boolean {
     this.errorFields = [];
 
-    if (!FieldValidations.IsNotNullOrWhitespace(this.model!.Name))
-      this.errorFields.push('Name');
+    if (!FieldValidations.IsNotNullOrWhitespace(this.firstName))
+      this.errorFields.push('FirstName');
+
+    if (!FieldValidations.IsNotNullOrWhitespace(this.lastName))
+      this.errorFields.push('LastName');
 
     if (!FieldValidations.IsNotNullOrWhitespace(this.model?.Email)) {
       this.emailErrorMessage = 'Enter the email address that we need to send the invoice to';
@@ -85,11 +99,8 @@ export class PaymentInvoiceComponent extends PageComponent<PaymentInvoiceDetails
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    if (this.model?.OrderNumberOption == 'need') {
-      return this.navigationService.navigateRelative(PaymentOrderNumberDetailsComponent.route, this.activatedRoute);
-    }
-
-    return this.navigationService.navigateRelative(PaymentInvoiceConfirmationComponent.route, this.activatedRoute);
+    return Promise.resolve(true); // check answers page 21447
+    // return this.navigationService.navigateRelative(PaymentInvoiceConfirmationComponent.route, this.activatedRoute);
   }
 
   hasError(fieldName: string): boolean {

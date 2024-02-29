@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { ApplicationService } from 'src/app/services/application.service';
+import { InvoicingDetailsComponent } from '../invoicing-details/invoicing-details.component';
 
 @Component({
   selector: 'hse-charges-overview',
@@ -37,6 +38,6 @@ export class ChargesOverviewComponent extends PageComponent<void> {
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return Promise.resolve(true); // go to invoice details 21445
+    return this.navigationService.navigateRelative(InvoicingDetailsComponent.route, this.activatedRoute);
   }
 }

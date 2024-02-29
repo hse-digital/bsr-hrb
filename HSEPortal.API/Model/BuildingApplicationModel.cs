@@ -72,6 +72,7 @@ public record ApplicationCertificate
     public bool? Section89DeclarationConfirmed { get; set; }
     public FileUploadModel[] Files { get; set; }
 
+    public ApplicationCertificateStage ApplicationStatus { get; set; } = ApplicationCertificateStage.None;
     public string PaymentType { get; set; }
     public PaymentInvoiceDetails OngoingChangesInvoiceDetails { get; set; }
     public bool? UseSameAsOngoingInvoiceDetails { get; set; }
@@ -181,6 +182,14 @@ public enum BuildingApplicationStatus
     KbiConnectionsComplete = 2048,
     KbiSubmitInProgress = 4096,
     KbiSubmitComplete = 8192
+}
+
+[Flags]
+public enum ApplicationCertificateStage
+{
+    None = 0,
+    PaymentInProgress = 16,
+    PaymentComplete = 32
 }
 
 public record KbiModel(

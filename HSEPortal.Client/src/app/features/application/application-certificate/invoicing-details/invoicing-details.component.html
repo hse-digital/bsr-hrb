@@ -1,0 +1,64 @@
+<govuk-formpage (saveAndContinue)="saveAndContinue()" (saveAndComeBack)="saveAndComeBack()" [processing]="processing">
+
+  <govuk-error-summary *ngIf="hasErrors" title="There is a problem" #summaryError>
+    <govuk-error-link anchorId="input-invoice-first-name" [message]="getErrorDescription(hasError('FirstName'), 'Enter the first name that needs to be shown on the invoice')" />
+    <govuk-error-link anchorId="input-invoice-last-name" [message]="getErrorDescription(hasError('LastName'), 'Enter the last name that needs to be shown on the invoice')" />
+    <govuk-error-link anchorId="input-invoice-email" [message]="getErrorDescription(hasError('Email'), emailErrorMessage)" />
+    <govuk-error-link anchorId="input-invoice-addressline1" [message]="getErrorDescription(hasError('AddressLine1'), 'Enter the first line of the billing address in address line 1')" />
+    <govuk-error-link anchorId="input-invoice-town" [message]="getErrorDescription(hasError('Town'), 'Enter the town or city for the billing address')" />
+    <govuk-error-link anchorId="input-invoice-postcode" [message]="getErrorDescription(hasError('Postcode'), 'Enter the postcode for the billing address')" />
+    <govuk-error-link anchorId="group-order-have" [message]="getErrorDescription(hasError('OrderNumberOption'), 'Select if you need a purchase order number to be shown on the invoice, if you need to get a purchase order number, or if you do not need a purchase order number to be shown on the invoice')" />
+    <govuk-error-link anchorId="input-invoice-ordernumber" [message]="getErrorDescription(hasError('OrderNumber'), 'Enter your purchase order number')" />
+  </govuk-error-summary>
+
+  <h1 class="govuk-heading-l">Enter invoice details for ongoing charges</h1>
+
+  <govuk-body class="govuk-!-margin-bottom-5">BSR need your invoicing details for ongoing charges. We will ask you how you want to pay for the application charge later.</govuk-body>
+
+  <h2 class="govuk-heading-m">Contact details</h2>
+  <govuk-input id="invoice-first-name" label="First name" class="govuk-!-margin-bottom-5" [(model)]="firstName" [errorText]="getErrorDescription(hasError('FirstName'), 'Enter the first name that needs to be shown on the invoice')" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-last-name" label="Last name" class="govuk-!-margin-bottom-5" [(model)]="lastName" [errorText]="getErrorDescription(hasError('LastName'), 'Enter the last name that needs to be shown on the invoice')" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-email" label="Email address" hint="We'll only use this to send you an invoices. It will appear on your confirmation email." [(model)]="model!.Email" [errorText]="getErrorDescription(hasError('Email'), emailErrorMessage)" (onKeyupEnter)="saveAndContinue()" />
+  
+  <div  class="govuk-!-margin-bottom-8"></div>
+
+  <h2 class="govuk-heading-m">Billing address</h2>
+  <govuk-body>This is the address associated with the bank account that the charges will be paid from.</govuk-body>
+  <govuk-input id="invoice-addressline1" label="Address line 1" class="govuk-!-margin-bottom-5" [(model)]="model!.AddressLine1" [errorText]="getErrorDescription(hasError('AddressLine1'), 'Enter the first line of the billing address in address line 1')" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-addressline2" label="Address line 2 (optional)" class="govuk-!-margin-bottom-5" [(model)]="model!.AddressLine2" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-town" label="Town or city" class="govuk-input--width-20 govuk-!-margin-bottom-5" [(model)]="model!.Town" [errorText]="getErrorDescription(hasError('Town'), 'Enter the town or city for the billing address')" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-postcode" label="Postcode" class="govuk-input--width-10" [(model)]="model!.Postcode" [errorText]="getErrorDescription(hasError('Postcode'), 'Enter the postcode for the billing address')" (onKeyupEnter)="saveAndContinue()" />
+  <div  class="govuk-!-margin-bottom-8"></div>
+
+  <h2 class="govuk-heading-m">Purchase order number</h2>
+
+  <govuk-details summaryText="If you need to set HSE up as a payee" id="details_hse_payee">
+    <p>You may need the following information to get a purchase order number:</p>
+    <table class="govuk-table">
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Billing name</th>
+          <td class="govuk-table__cell">Health and Safety Executive</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Billing address</th>
+          <td class="govuk-table__cell">Redgrave Court, Merton Road, Bootle, Merseyside, L20 7HS</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Reason for payment</th>
+          <td class="govuk-table__cell">Apply for building assessment certificate for Chester House.</td>
+        </tr>
+      </tbody>
+    </table>
+  </govuk-details>
+
+  <govuk-body>Do you need a purchase order number on the invoices?</govuk-body>
+
+  <govuk-radio-group id="invoice-ordernumberoption" (modelChange)="updateOrderNumber()" class="govuk-!-margin-bottom-4" [(model)]="model!.OrderNumberOption" [errorText]="getErrorDescription(hasError('OrderNumberOption'), 'Select if you need a purchase order number to be shown on the invoice, if you need to get a purchase order number, or if you do not need a purchase order number to be shown on the invoice')" id="payment-order-number">
+    <govuk-radio name="payment-order-number" id="order-have" value="have" label="Yes" (onKeyupEnter)="saveAndContinue()" [model]="model!.OrderNumberOption">
+      <govuk-input id="invoice-ordernumber" label="Purchase order number" class="govuk-input--width-20" [(model)]="model!.OrderNumber" [errorText]="getErrorDescription(hasError('OrderNumber'), 'Enter your purchase order number')" (onKeyupEnter)="saveAndContinue()" />
+    </govuk-radio>
+    <govuk-radio name="payment-order-number" id="order-noneed" value="noneed" label="No" (onKeyupEnter)="saveAndContinue()" [model]="model!.OrderNumberOption" />
+  </govuk-radio-group>
+
+</govuk-formpage>

@@ -15,6 +15,7 @@ import { UploadDocumentsComponent } from './upload-documents/upload-documents.co
 import { ChargesOverviewComponent } from './charges-overview/charges-overview.component';
 import { SameInvoiceDetailsComponent } from './same-invoice-details/same-invoice-details.component';
 import { ChoosePaymentComponent } from './choose-payment/choose-payment.component';
+import { InvoicingDetailsComponent } from './invoicing-details/invoicing-details.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ConfirmInformationBsrHoldsComponent.route, ConfirmInformationBsrHoldsComponent, ConfirmInformationBsrHoldsComponent.title),
@@ -24,6 +25,7 @@ const routes = new HseRoutes([
   HseRoute.protected(ChargesOverviewComponent.route, ChargesOverviewComponent, ChargesOverviewComponent.title),
   HseRoute.protected(SameInvoiceDetailsComponent.route, SameInvoiceDetailsComponent, SameInvoiceDetailsComponent.title),
   HseRoute.protected(ChoosePaymentComponent.route, ChoosePaymentComponent, ChoosePaymentComponent.title),
+  HseRoute.protected(InvoicingDetailsComponent.route, InvoicingDetailsComponent, InvoicingDetailsComponent.title),
 ]);
 
 @NgModule({
@@ -35,6 +37,7 @@ const routes = new HseRoutes([
     ChargesOverviewComponent,
     SameInvoiceDetailsComponent,
     ChoosePaymentComponent,
+    InvoicingDetailsComponent,
   ],
   providers: [...routes.getProviders()],
   imports: [

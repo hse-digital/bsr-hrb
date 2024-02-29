@@ -323,10 +323,6 @@ export class ApplicationService {
     await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
   }
 
-  async createInvoicePayment(paymentDetails: PaymentInvoiceDetails): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/InitialiseInvoicePayment/${this.model.id}`, paymentDetails));
-  }
-
   async getApplicationPayments(): Promise<any[]> {
     return await firstValueFrom(this.httpClient.get<any[]>(`api/GetApplicationPaymentStatus/${this.model.id}`));
   }
@@ -426,10 +422,19 @@ export class ApplicationCertificateModel {
   Section89DeclarationConfirmed?: boolean;
   Files?: any[];
 
+  // TODO do we want this or can we use the BuildingApplicationStatus?
+  ApplicationStatus: ApplicationCertificateStage = ApplicationCertificateStage.None;
+
   PaymentType?: string | undefined;
   OngoingChangesInvoiceDetails?: PaymentInvoiceDetails;
   UseSameAsOngoingInvoiceDetails?: boolean;
   ApplicationInvoiceDetails?: PaymentInvoiceDetails;
+}
+
+export enum ApplicationCertificateStage {
+  None = 0,
+  PaymentInProgress = 16,
+  PaymentComplete = 32,
 }
 
 export class BuildingRegistrationVersion {
