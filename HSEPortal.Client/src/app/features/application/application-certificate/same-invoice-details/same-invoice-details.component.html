@@ -1,0 +1,58 @@
+<govuk-back-link>Back</govuk-back-link>
+
+<div class="govuk-main-wrapper">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <govuk-error-summary
+          *ngIf="!modelValid"
+          title="There is a problem"
+          #summaryError
+        >
+          <govuk-error-link
+            anchorId="same-invoice-details-input"
+            message="Select where to issue the application charge invoice to"
+          />
+        </govuk-error-summary>
+
+        <govuk-radio-group
+          title="Where shall we issue the application charge invoice to?"
+          [isPageHeading]="true"
+          [(model)]="model"
+          #field
+          [govukRequired]="field"
+          id="radios-same-invoice-details"
+          [errorText]="
+            getErrorDescription(
+              hasErrors,
+              'Select where to issue the application charge invoice to'
+            )">
+          <govuk-radio
+            [model]="model"
+            name="application-group"
+            id="same-invoice-details"
+            value="same-invoice-details"
+            label="Use the details I've already provided"
+            [hint]="hint"            
+            (onKeyupEnter)="saveAndContinue()"
+            (onRadioClicked)="select()"
+          />
+          <govuk-radio
+            [model]="model"
+            name="application-group"
+            id="new-details"
+            label="Provide new details"
+            value="new-details"            
+            class="govuk-radio-no-margin-bottom"
+            (onKeyupEnter)="saveAndContinue()"
+            (onRadioClicked)="select()"
+          />
+        </govuk-radio-group>
+      </div>
+      <govuk-button (onClick)="saveAndContinue()" [isLoading]="processing"
+        >Save and continue</govuk-button
+      >
+      <save-and-come-back (onClick)="saveAndComeBack()" />
+    </div>
+  </div>
+</div>

@@ -425,6 +425,11 @@ export class ApplicationCertificateModel {
   ComplianceNoticeNumbers?: string;
   Section89DeclarationConfirmed?: boolean;
   Files?: any[];
+
+  OngoingChangesInvoiceDetails?: PaymentInvoiceDetails;
+
+  UseSameAsOngoingInvoiceDetails?: boolean;
+  ApplicationInvoiceDetails?: PaymentInvoiceDetails;
 }
 
 export class BuildingRegistrationVersion {
