@@ -3,6 +3,7 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { ApplicationService, PaymentInvoiceDetails } from 'src/app/services/application.service';
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
+import { InvoicingDetailsUpfrontPaymentComponent } from '../invoicing-details-upfront-payment/invoicing-details-upfront-payment.component';
 
 @Component({
   templateUrl: './same-invoice-details.component.html'
@@ -44,7 +45,7 @@ export class SameInvoiceDetailsComponent extends PageComponent<string> {
       applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails 
         = applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails;
     } 
-    else if (applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails == undefined) {
+    else {
         applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails = new PaymentInvoiceDetails();
     }
     applicationService.model.ApplicationCertificate!.UseSameAsOngoingInvoiceDetails = useSame;
@@ -60,7 +61,7 @@ export class SameInvoiceDetailsComponent extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean | void> {
-      return Promise.resolve(true);
+    return this.navigationService.navigateRelative(InvoicingDetailsUpfrontPaymentComponent.route, this.activatedRoute);
   }
 
   select() {
