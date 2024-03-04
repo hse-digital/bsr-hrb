@@ -1,0 +1,64 @@
+<govuk-formpage (saveAndComeBack)="saveAndComeBack()"
+  (saveAndContinue)="saveAndContinue()"
+  [processing]="processing">
+
+  <h1 class="govuk-heading-l">Check your answers</h1>
+
+  <govuk-summary-list classes="no-border-top">
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('compliance-notice-numbers')"
+      (onClick)="navigateTo('compliance-notice-numbers')"
+      key="Unique reference numbers of compliance notices currently in force"
+      [showAction]=true
+      (onClick)="navigateTo('compliance-notice-numbers')">
+      {{applicationService.model.ApplicationCertificate?.ComplianceNoticeNumbers ?? 'Not provided'}}</govuk-summary-list-row>
+
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('upload-documents')"
+      (onClick)="navigateTo('upload-documents')"
+      key="Upload documents"
+      [showAction]=true
+      (onClick)="navigateTo('upload-documents')">
+      {{getFileNames()}}</govuk-summary-list-row>
+
+  </govuk-summary-list>
+
+  <h2 class="govuk-heading-m">Invoicing details for ongoing charges</h2>
+
+  <govuk-summary-list classes="no-border-top">
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('invoicing-details')"
+      (onClick)="navigateTo('invoicing-details')"
+      key="Name on the invoice"
+      [showAction]=true
+      (onClick)="navigateTo('invoicing-details')">
+      {{applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails?.Name}}</govuk-summary-list-row>
+
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('invoicing-details')"
+      (onClick)="navigateTo('invoicing-details')"
+      key="Email address"
+      [showAction]=true
+      (onClick)="navigateTo('invoicing-details')">
+      {{applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails?.Email}}</govuk-summary-list-row>
+
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('invoicing-details')"
+      (onClick)="navigateTo('invoicing-details')"
+      key="Billing address"
+      [showAction]=true
+      (onClick)="navigateTo('invoicing-details')">
+      {{getAddress()}}</govuk-summary-list-row>
+
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('invoicing-details')"
+      (onClick)="navigateTo('invoicing-details')"
+      key="Do you need a purchase order number?"
+      [showAction]=true
+      (onClick)="navigateTo('invoicing-details')">
+      {{getOrderOption()}}</govuk-summary-list-row>
+
+    <govuk-summary-list-row (onKeyupEnter)="navigateTo('invoicing-details')" *ngIf="showOrderNumber()"
+      (onClick)="navigateTo('invoicing-details')"
+      key="Purchase order number"
+      [showAction]=true
+      (onClick)="navigateTo('invoicing-details')">
+      {{applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails?.OrderNumber}}</govuk-summary-list-row>
+
+  </govuk-summary-list>
+
+</govuk-formpage>

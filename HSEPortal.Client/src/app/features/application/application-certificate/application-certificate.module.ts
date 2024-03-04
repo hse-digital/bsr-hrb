@@ -17,6 +17,7 @@ import { SameInvoiceDetailsComponent } from './same-invoice-details/same-invoice
 import { ChoosePaymentComponent } from './choose-payment/choose-payment.component';
 import { InvoicingDetailsComponent } from './invoicing-details/invoicing-details.component';
 import { DeclarationComponent } from './declaration/declaration.component';
+import { CheckAnswersComponent } from './check-answers/check-answers.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ConfirmInformationBsrHoldsComponent.route, ConfirmInformationBsrHoldsComponent, ConfirmInformationBsrHoldsComponent.title),
@@ -27,6 +28,7 @@ const routes = new HseRoutes([
   HseRoute.protected(SameInvoiceDetailsComponent.route, SameInvoiceDetailsComponent, SameInvoiceDetailsComponent.title),
   HseRoute.protected(ChoosePaymentComponent.route, ChoosePaymentComponent, ChoosePaymentComponent.title),
   HseRoute.protected(InvoicingDetailsComponent.route, InvoicingDetailsComponent, InvoicingDetailsComponent.title),
+  HseRoute.protected(CheckAnswersComponent.route, CheckAnswersComponent, CheckAnswersComponent.title),
   HseRoute.protected(DeclarationComponent.route, DeclarationComponent, DeclarationComponent.title),
 ]);
 
@@ -40,6 +42,7 @@ const routes = new HseRoutes([
     SameInvoiceDetailsComponent,
     ChoosePaymentComponent,
     InvoicingDetailsComponent,
+    CheckAnswersComponent,
     DeclarationComponent,
   ],
   providers: [...routes.getProviders()],
