@@ -23,7 +23,7 @@ export class CheckAnswersComponent extends PageComponent<void> {
   override async onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): Promise<void> {
     if (applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails!.Status == undefined) {
       applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails!.Status = 'awaiting';
-      await this.paymentService.createInitialiseCertificateInvoicePayment(this.applicationService.model.id!, this.model!);
+      await this.paymentService.createInitialiseCertificateInvoicePayment(this.applicationService.model.id!, this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails!);
     }
   }
 
@@ -41,6 +41,10 @@ export class CheckAnswersComponent extends PageComponent<void> {
 
   override navigateNext(): Promise<boolean | void> {
     return this.navigationService.navigateRelative(DeclarationComponent.route, this.activatedRoute);
+  }
+
+  getNoticeNumbers() {
+    return FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.ComplianceNoticeNumbers) ? this.applicationService.model.ApplicationCertificate?.ComplianceNoticeNumbers : 'Not provided'
   }
 
   navigateTo(url: string) {

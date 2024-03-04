@@ -10,7 +10,7 @@
       key="Unique reference numbers of compliance notices currently in force"
       [showAction]=true
       (onClick)="navigateTo('compliance-notice-numbers')">
-      {{applicationService.model.ApplicationCertificate?.ComplianceNoticeNumbers ?? 'Not provided'}}</govuk-summary-list-row>
+      {{getNoticeNumbers()}}</govuk-summary-list-row>
 
     <govuk-summary-list-row (onKeyupEnter)="navigateTo('upload-documents')"
       (onClick)="navigateTo('upload-documents')"
