@@ -90,6 +90,7 @@ export abstract class PageComponent<T> implements OnInit {
   private getCheckAnswersPageRoute(returnUrl: string): { url: string, params?: any } {
     switch (returnUrl) {
       case 'check-answers': return { url: `../${this.returnUrl}` };
+      case 'certificate-check-answers': return { url: `${this.returnUrl}` };
       case 'building-change-check-answers': return { url: `../../registration-amendments/${this.returnUrl}` };
       case 'change-check-answers': return { url: `../../../registration-amendments/change-kbi/${this.returnUrl}`, params: { index: this.applicationService._currentKbiSectionIndex } };
       case 'change-connection-answers': return { url: `../../registration-amendments/${this.returnUrl}` };

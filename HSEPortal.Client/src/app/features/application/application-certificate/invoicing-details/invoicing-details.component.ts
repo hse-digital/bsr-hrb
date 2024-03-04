@@ -5,6 +5,7 @@ import { EmailValidator } from 'src/app/helpers/validators/email-validator';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationCertificateStage, ApplicationService, PaymentInvoiceDetails } from 'src/app/services/application.service';
 import { PaymentService } from 'src/app/services/payment.service';
+import { CheckAnswersComponent } from '../check-answers/check-answers.component';
 
 @Component({
   templateUrl: './invoicing-details.component.html',
@@ -25,15 +26,15 @@ export class InvoicingDetailsComponent extends PageComponent<PaymentInvoiceDetai
     // TODO do we need ApplicationCertificateStage?
     // this.applicationService.model.ApplicationStatus = applicationService.model.ApplicationStatus | BuildingApplicationStage.PaymentInProgress;
     this.applicationService.model.ApplicationCertificate!.ApplicationStatus = applicationService.model.ApplicationCertificate!.ApplicationStatus | ApplicationCertificateStage.PaymentInProgress;
-        
+
     this.model = applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails ?? new PaymentInvoiceDetails();
-    
+
     const names = this.model.Name?.split(' ', 2);
     if (names && names.length > 0) {
       this.firstName = names[0];
       this.lastName = names[1];
     }
-    
+
     const appCharges = await applicationService.getApplicationCost();
     this.applicationCharge = appCharges.CertificateCharges?.ApplicationCharge ?? 0;
 
@@ -44,15 +45,7 @@ export class InvoicingDetailsComponent extends PageComponent<PaymentInvoiceDetai
     this.model!.Name = `${this.firstName?.trim()} ${this.lastName?.trim()}`;
 
     applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails = this.model;
-
-    if (isSaveAndContinue) {
-      applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails!.Status = 'awaiting';
-
-      await this.applicationService.updateApplication();
-      await this.paymentService.createInitialiseCertificateInvoicePayment(this.applicationService.model.id!, this.model!);
-    } else {
-      await this.applicationService.updateApplication();
-    }
+    await this.applicationService.updateApplication();
   }
 
   override canAccess(applicationService: ApplicationService, __: ActivatedRouteSnapshot): boolean {
@@ -99,8 +92,7 @@ export class InvoicingDetailsComponent extends PageComponent<PaymentInvoiceDetai
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return Promise.resolve(true); // check answers page 21447
-    // return this.navigationService.navigateRelative(PaymentInvoiceConfirmationComponent.route, this.activatedRoute);
+    return this.navigationService.navigateRelative(CheckAnswersComponent.route, this.activatedRoute);
   }
 
   hasError(fieldName: string): boolean {
