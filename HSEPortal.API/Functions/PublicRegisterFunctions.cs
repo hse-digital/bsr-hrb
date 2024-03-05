@@ -30,7 +30,8 @@ public class PublicRegisterFunctions
         
         var versionedApplications = await GetAcceptedVersionFromDynamics(buildingApplications);
         var registeredApplications = versionedApplications.Concat(nonVersionedApplications)
-            .DistinctBy(x => x.id).Where(x => x.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentComplete))
+            .DistinctBy(x => x.id)
+            .Where(x => x.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentInProgress))
             .Select(x => x.Sections.Where(section => SectionMatchesSearchAddress(section, postcode, uprn)).Select(section => new PublicRegisterStructureModel
             {
                 code = x.id,
@@ -71,7 +72,7 @@ public class PublicRegisterFunctions
         [CosmosDBInput("hseportal", "building-registrations", Id = "{applicationId}", PartitionKey = "{applicationId}", Connection = "CosmosConnection")]
         BuildingApplicationModel buildingApplication)
     {
-        if (!buildingApplication.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentComplete)) return request.CreateResponse();
+        if (!buildingApplication.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentInProgress)) return request.CreateResponse();
 
         var acceptedApplications = await GetAcceptedVersionFromDynamics(new List<BuildingApplicationModel> { buildingApplication });
         var toReturn = acceptedApplications[0].Sections.Select(structure => new PublicRegisterStructureModel
@@ -104,7 +105,7 @@ public class PublicRegisterFunctions
     {
         var applicationsToReturn = new List<PublicRegisterApplicationModel>();
 
-        foreach (var application in buildingApplications.DistinctBy(x => x.Id).Where(x => x.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentComplete)))
+        foreach (var application in buildingApplications.DistinctBy(x => x.Id).Where(x => x.ApplicationStatus.HasFlag(BuildingApplicationStatus.PaymentInProgress)))
         {
             var app = new PublicRegisterApplicationModel
             {
