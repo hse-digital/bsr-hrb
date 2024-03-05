@@ -23,9 +23,9 @@ export class InvoicingDetailsUpfrontPaymentComponent extends PageComponent<Payme
   override async onInit(applicationService: ApplicationService): Promise<void> {
 
     this.applicationService.model.ApplicationCertificate!.ApplicationStatus = applicationService.model.ApplicationCertificate!.ApplicationStatus | ApplicationCertificateStage.PaymentInProgress;
-        
+
     this.model = applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails ?? new PaymentInvoiceDetails();
-    
+
     const appCharges = await applicationService.getApplicationCost();
     this.applicationCharge = appCharges.CertificateCharges?.ApplicationCharge ?? 0;
 
@@ -33,7 +33,6 @@ export class InvoicingDetailsUpfrontPaymentComponent extends PageComponent<Payme
   }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
-
     applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails = this.model;
 
     if (isSaveAndContinue) {
@@ -48,9 +47,6 @@ export class InvoicingDetailsUpfrontPaymentComponent extends PageComponent<Payme
 
   override canAccess(applicationService: ApplicationService, __: ActivatedRouteSnapshot): boolean {
     return true;
-    // TODO
-    // return (applicationService.model.ApplicationCertificate!.ApplicationStatus & ApplicationCertificateStage.PaymentInProgress) == ApplicationCertificateStage.PaymentInProgress &&
-    //   applicationService.model.PaymentType == 'invoice';
   }
 
   emailErrorMessage: string = '';
