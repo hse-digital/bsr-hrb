@@ -16,7 +16,7 @@ export class SameInvoiceDetailsComponent extends PageComponent<string> {
 
   invoiceEmail?: string;
   orderNumber?: string;
-  hint?: string; 
+  hint?: string;
   modelValid: boolean = true;
   applicationInvoiceDetails?: PaymentInvoiceDetails;
   useSame: boolean = false;
@@ -42,26 +42,18 @@ export class SameInvoiceDetailsComponent extends PageComponent<string> {
   }
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
-
     this.useSame = this.model === 'same-invoice-details';
     if (this.useSame) {
-
-      // Bypass Invoice details and go straight to payment
-
-      applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails 
-        = applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails;
-
+      applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails = applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails;
       applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails!.Status = 'awaiting';
 
       await this.applicationService.updateApplication();
       await this.paymentService.createInitialiseCertificateInvoicePayment(this.applicationService.model.id!, applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails!);
-    } 
-    else {
-      // Go to add new invoice details
-
-        applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails = new PaymentInvoiceDetails();
     }
-    
+    else {
+      applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails = new PaymentInvoiceDetails();
+    }
+
     applicationService.model.ApplicationCertificate!.UseSameAsOngoingInvoiceDetails = this.useSame;
   }
 

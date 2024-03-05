@@ -21,10 +21,6 @@ export class CheckAnswersComponent extends PageComponent<void> {
   }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): Promise<void> {
-    if (applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails!.Status == undefined) {
-      applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails!.Status = 'awaiting';
-      await this.paymentService.createInitialiseCertificateInvoicePayment(this.applicationService.model.id!, this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails!);
-    }
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
