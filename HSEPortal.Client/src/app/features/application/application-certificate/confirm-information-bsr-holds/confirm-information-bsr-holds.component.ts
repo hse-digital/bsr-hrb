@@ -32,8 +32,6 @@ export class ConfirmInformationBsrHoldsComponent extends PageComponent<void> {
     this.lastSubmissionDate = await this.applicationService.getSubmissionDate();
     this.hasChangesSubmitted = applicationService.model.RegistrationAmendmentsModel !== undefined
       && applicationService.model.RegistrationAmendmentsModel !== null;
-
-    console.log(applicationService.model); 
   }
 
   private getPapName(): string | undefined {
@@ -47,7 +45,7 @@ export class ConfirmInformationBsrHoldsComponent extends PageComponent<void> {
       return `${pap.FirstName} ${pap.LastName}`;
     }
 
-    return pap.OrganisationName;  
+    return pap.OrganisationName;
   }
 
   override onSave(applicationService: ApplicationService): void | Promise<void> {
