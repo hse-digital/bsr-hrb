@@ -4,6 +4,8 @@ import { ApplicationService, PaymentInvoiceDetails } from 'src/app/services/appl
 import { PageComponent } from 'src/app/helpers/page.component';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { InvoicingDetailsUpfrontPaymentComponent } from '../invoicing-details-upfront-payment/invoicing-details-upfront-payment.component';
+import { SubmittedConfirmationComponent } from '../submitted-confirmation/sumitted-confirmation.component';
+import { PaymentService } from 'src/app/services/payment.service';
 
 @Component({
   templateUrl: './same-invoice-details.component.html'
@@ -17,8 +19,9 @@ export class SameInvoiceDetailsComponent extends PageComponent<string> {
   hint?: string; 
   modelValid: boolean = true;
   applicationInvoiceDetails?: PaymentInvoiceDetails;
+  useSame: boolean = false;
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(public paymentService: PaymentService, activatedRoute: ActivatedRoute) {
     super(activatedRoute);
   }
 
@@ -40,15 +43,26 @@ export class SameInvoiceDetailsComponent extends PageComponent<string> {
 
   override async onSave(applicationService: ApplicationService): Promise<void> {
 
-    const useSame = this.model === 'same-invoice-details';
-    if (useSame) {
+    this.useSame = this.model === 'same-invoice-details';
+    if (this.useSame) {
+
+      // Bypass Invoice details and go straight to payment
+
       applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails 
         = applicationService.model.ApplicationCertificate!.OngoingChangesInvoiceDetails;
+
+      applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails!.Status = 'awaiting';
+
+      await this.applicationService.updateApplication();
+      await this.paymentService.createInitialiseCertificateInvoicePayment(this.applicationService.model.id!, applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails!);
     } 
     else {
+      // Go to add new invoice details
+
         applicationService.model.ApplicationCertificate!.ApplicationInvoiceDetails = new PaymentInvoiceDetails();
     }
-    applicationService.model.ApplicationCertificate!.UseSameAsOngoingInvoiceDetails = useSame;
+    
+    applicationService.model.ApplicationCertificate!.UseSameAsOngoingInvoiceDetails = this.useSame;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {
@@ -61,6 +75,9 @@ export class SameInvoiceDetailsComponent extends PageComponent<string> {
   }
 
   override navigateNext(): Promise<boolean | void> {
+    if (this.useSame) {
+      return this.navigationService.navigateRelative(SubmittedConfirmationComponent.route, this.activatedRoute);
+    }
     return this.navigationService.navigateRelative(InvoicingDetailsUpfrontPaymentComponent.route, this.activatedRoute);
   }
 

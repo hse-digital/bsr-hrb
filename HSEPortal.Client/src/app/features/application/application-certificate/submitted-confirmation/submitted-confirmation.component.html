@@ -1,0 +1,57 @@
+<i class="fa fa-spinner fa-spin loading" *ngIf="!shouldRender"></i>
+
+<ng-container *ngIf="shouldRender">
+
+  <a [routerLink]="['../../application-completed']" class="govuk-back-link" href="javascript:void(0)" tabindex="0" role="link">Go back to {{applicationService.model.BuildingName}}</a>
+
+  <div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <div class="govuk-form-group">
+          <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">Application for building assessment certificate for {{applicationService.model.BuildingName}}</h1>
+            <div class="govuk-panel__body">
+              Application reference <strong>{{applicationService.model.id}}</strong>
+            </div>
+          </div>
+          <govuk-body>
+            We have sent you a confirmation email.
+          </govuk-body>
+        </div>
+
+        <h2 class="govuk-heading-m">What happens next</h2>
+
+        <govuk-body>If we need more information to assist with your application, we will contact you.</govuk-body>
+
+        <govuk-body>You can check the status of your application by returning to this service.</govuk-body>
+
+        <!-- Card -->
+        <govuk-body *ngIf="paymentType == 'card'">
+        </govuk-body>
+
+        <!-- Invoice -->
+        <ng-container *ngIf="paymentType != 'card'">
+          <h2 class="govuk-heading-m">You must pay your invoice within 30 days</h2>
+          <govuk-body>We have sent an invoice for the application charge to {{payment?.Email}}. You must pay this within 30 days of submitting your application.</govuk-body>
+          <govuk-body>
+            We will send an invoice to {{payment?.Email}} at the start of every month to charge you for the work undertaken to assess your application. 
+            Any charges which may apply are detailed in the <a href="https://consultations.hse.gov.uk/bsr/fees-and-charges-regs/results/consultation-response-fees-and-charges-regulations-august-2023.pdf" target="_blank" class="govuk-link">Building Safety Regulator charging scheme</a>.
+          </govuk-body>
+        </ng-container>        
+        
+        <h2 class="govuk-heading-m">Safety case report</h2>
+
+        <govuk-body>You must tell us if you change your safety case report as soon as reasonably practicable.</govuk-body>
+
+        <govuk-body>You must <a href="javascript:;" [routerLink]="['../../safety-case-report/date']" class="govuk-link">tell us if you change your safety case report</a> as soon as reasonably practicable.</govuk-body>
+
+        <govuk-body>You may need to change your safety case report if any accountable person for {{applicationService.model.BuildingName}} has:</govuk-body>        
+        <govuk-list classes='govuk-list--bullet'>
+          <govuk-list-item text="carried out any further assessment of the building safety risks" />
+          <govuk-list-item text="taken any further steps to manage building saftey risks" />
+        </govuk-list>
+      </div> 
+    </div>
+  </div>
+</ng-container>

@@ -5,6 +5,7 @@ import { EmailValidator } from 'src/app/helpers/validators/email-validator';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
 import { ApplicationCertificateStage, ApplicationService, PaymentInvoiceDetails } from 'src/app/services/application.service';
 import { PaymentService } from 'src/app/services/payment.service';
+import { SubmittedConfirmationComponent } from '../submitted-confirmation/sumitted-confirmation.component';
 
 @Component({
   templateUrl: './invoicing-details-upfront-payment.component.html',
@@ -86,8 +87,7 @@ export class InvoicingDetailsUpfrontPaymentComponent extends PageComponent<Payme
   }
 
   override async navigateNext(): Promise<boolean | void> {
-    return Promise.resolve(true); // check answers page 21458
-    // return this.navigationService.navigateRelative(PaymentInvoiceConfirmationComponent.route, this.activatedRoute);
+    return this.navigationService.navigateRelative(SubmittedConfirmationComponent.route, this.activatedRoute);
   }
 
   hasError(fieldName: string): boolean {

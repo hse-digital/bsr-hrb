@@ -19,6 +19,7 @@ import { InvoicingDetailsComponent } from './invoicing-details/invoicing-details
 import { DeclarationComponent } from './declaration/declaration.component';
 import { CheckAnswersComponent } from './check-answers/check-answers.component';
 import { InvoicingDetailsUpfrontPaymentComponent } from './invoicing-details-upfront-payment/invoicing-details-upfront-payment.component';
+import { SubmittedConfirmationComponent } from './submitted-confirmation/sumitted-confirmation.component';
 
 const routes = new HseRoutes([
   HseRoute.protected(ConfirmInformationBsrHoldsComponent.route, ConfirmInformationBsrHoldsComponent, ConfirmInformationBsrHoldsComponent.title),
@@ -32,6 +33,7 @@ const routes = new HseRoutes([
   HseRoute.protected(CheckAnswersComponent.route, CheckAnswersComponent, CheckAnswersComponent.title),
   HseRoute.protected(DeclarationComponent.route, DeclarationComponent, DeclarationComponent.title),
   HseRoute.protected(InvoicingDetailsUpfrontPaymentComponent.route, InvoicingDetailsUpfrontPaymentComponent, InvoicingDetailsUpfrontPaymentComponent.title),
+  HseRoute.protected(SubmittedConfirmationComponent.route, SubmittedConfirmationComponent, SubmittedConfirmationComponent.title),
 ]);
 
 @NgModule({
@@ -47,6 +49,7 @@ const routes = new HseRoutes([
     CheckAnswersComponent,
     DeclarationComponent,
     InvoicingDetailsUpfrontPaymentComponent,
+    SubmittedConfirmationComponent,
   ],
   providers: [...routes.getProviders()],
   imports: [
