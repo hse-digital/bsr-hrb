@@ -60,7 +60,7 @@ export class CheckAnswersComponent extends PageComponent<void> {
 
   getOrderOption() {
     if (this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails?.OrderNumberOption == 'noneed') {
-      return 'No';
+      return 'Not provided';
     }
 
     return 'Yes - I have a purchase order number';
