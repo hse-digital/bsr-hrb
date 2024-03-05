@@ -27,7 +27,7 @@ export class ChoosePaymentComponent extends PageComponent<string> {
   }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue: boolean): Promise<void> {
-    applicationService.model.ApplicationCertificate!.PaymentType = this.model;
+    this.applicationService.model.ApplicationCertificate!.PaymentType = this.model;
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

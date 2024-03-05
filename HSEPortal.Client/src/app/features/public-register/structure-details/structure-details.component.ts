@@ -121,7 +121,7 @@ export class StructureDetailsComponent implements OnInit {
     return this.result.aps.filter((_: any, i: number) => i > 0);
   }
 
-  getApName(ap: any) {
+  getApName(ap: any, pap: boolean) {
     if (ap.isMain == 'yes') {
       return `${this.result.userFirstName} ${this.result.userLastName}`;
     }

@@ -55,9 +55,9 @@
       <govuk-body>We cannot publish their contact details.</govuk-body>
 
       <div class="govuk-!-margin-bottom-8">
-        <h3 class="govuk-heading-s">{{getApName(pap)}}</h3>
+        <h3 class="govuk-heading-s">{{getApName(pap, true)}}</h3>
 
-        <govuk-body>{{getApName(pap)}} is responsible for:</govuk-body>
+        <govuk-body>{{getApName(pap, true)}} is responsible for:</govuk-body>
         <govuk-list-item>the external walls and roof</govuk-list-item>
         <govuk-list classes='govuk-list--bullet'>
           <ng-container *ngFor="let section of sectionsWithAccountability(pap)">
@@ -65,15 +65,15 @@
           </ng-container>
         </govuk-list>
 
-        <govuk-body>{{getApName(pap)}} is the principal accountable person. They're responsible for registering the building and making sure the information we hold is updated.</govuk-body>
+        <govuk-body>{{getApName(pap, true)}} is the principal accountable person. They're responsible for registering the building and making sure the information we hold is updated.</govuk-body>
         <govuk-body>They're also responsible for telling residents how to contact them, make complaints or ask questions. This is part of their residents engagement strategy.</govuk-body>
         <govuk-body *ngIf="pap.type == 'organisation'">They are based at {{normalizeAddress(pap.mainAddress ?? pap.address)}}.</govuk-body>
       </div>
 
       <div *ngFor="let ap of getOtherAps()" class="govuk-!-margin-bottom-8">
-        <h3 class="govuk-heading-s">{{getApName(ap)}}</h3>
+        <h3 class="govuk-heading-s">{{getApName(ap, false)}}</h3>
 
-        <govuk-body>{{getApName(ap)}} is responsible for:</govuk-body>
+        <govuk-body>{{getApName(ap, false)}} is responsible for:</govuk-body>
         <govuk-list classes='govuk-list--bullet'>
           <ng-container *ngFor="let section of sectionsWithAccountability(ap)">
             <govuk-list-item *ngFor="let acc of removeDuplicates(section.Accountability)" text="{{acc | prAccountabilityDescription}}" />
@@ -107,7 +107,7 @@
     <div class="govuk-!-margin-bottom-8">
       <h3 class="govuk-heading-s">If you are a resident</h3>
 
-      <govuk-body>If you live in {{result.structure.Name ?? result.structureName}} and think any of this information is wrong, contact {{getApName(pap)}}. Tell them what you think is wrong and ask them to change it.</govuk-body>
+      <govuk-body>If you live in {{result.structure.Name ?? result.structureName}} and think any of this information is wrong, contact {{getApName(pap, true)}}. Tell them what you think is wrong and ask them to change it.</govuk-body>
       <govuk-body>They should have told you:</govuk-body>
       <govuk-list classes='govuk-list--bullet'>
         <govuk-list-item text="how to complain" />
@@ -116,14 +116,14 @@
       </govuk-list>
 
 
-      <govuk-details summaryText="I have tried and failed to contact {{getApName(pap)}}" id="details_accountable_person">
+      <govuk-details summaryText="I have tried and failed to contact {{getApName(pap, true)}}" id="details_accountable_person">
         <p>If you have contacted them but not had a response, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator.</a></p>
         <p>We cannot give any other information about {{result.structure.Name ?? result.structureName}} than what is displayed on this page - even if you contact us.</p>
       </govuk-details>
     </div>
 
     <div class="govuk-!-margin-bottom-8">
-      <h3 class="govuk-heading-s">If you are {{pap.Type != 'individual' ? 'part of ' : ''}}{{getApName(pap)}}</h3>
+      <h3 class="govuk-heading-s">If you are {{pap.Type != 'individual' ? 'part of ' : ''}}{{getApName(pap, true)}}</h3>
 
       <govuk-body>As the principal accountable person, you must tell the Building Safety Regulator if any of this information has changed. <a class="govuk-link" href="https://www.gov.uk/guidance/applying-to-register-a-high-rise-residential-building#making-changes" target="_blank">Find out more about making changes to your registration.</a></govuk-body>
       <govuk-body>If you have already told us about changes, it can take up to 2 weeks to show here.</govuk-body>
@@ -132,7 +132,7 @@
     <div class="govuk-!-margin-bottom-8">
       <h3 class="govuk-heading-s">If you are another accountable person</h3>
 
-      <govuk-body>If you think any of this information is wrong, you should contact {{getApName(pap)}}. If you have contacted them but not had a response, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator</a></govuk-body>
+      <govuk-body>If you think any of this information is wrong, you should contact {{getApName(pap, true)}}. If you have contacted them but not had a response, <a class="govuk-link" href="https://www.gov.uk/guidance/contact-the-building-safety-regulator">contact the Building Safety Regulator</a></govuk-body>
     </div>
 
     <div class="govuk-!-margin-bottom-8">
