@@ -24,7 +24,7 @@ export class SubmittedConfirmationComponent implements OnInit, CanActivate {
     this.submittionDate = Date.now();
     this.sendApplicationDataToBroadcastChannel();
 
-    this.paymentType = this.applicationService.model.PaymentType;  
+    this.paymentType = this.applicationService.model.ApplicationCertificate?.PaymentType;  
 
     if (this.paymentType == 'card') {
       // TODO
