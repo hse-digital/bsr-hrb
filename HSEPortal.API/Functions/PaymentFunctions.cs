@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
 using AutoMapper;
-using DurableTask.Core;
 using Flurl;
 using Flurl.Http;
 using HSEPortal.API.Extensions;

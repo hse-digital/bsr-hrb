@@ -107,7 +107,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
         }
     }
 }
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
     name: 's118-${environment}-bsr-acs-workspace'
     location: location
     properties: {
@@ -160,6 +160,100 @@ resource filesBlobServices 'Microsoft.Storage/storageAccounts/blobServices@2023-
 resource uploadsContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
     name: 'hseuploads'
     parent: filesBlobServices
+}
+
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-01-01-preview' existing = {
+    name: 's118-${environment}-bsr-acs-bus'
+}
+
+resource syncAccountablePersonsQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-accountable-persons'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource syncBuildingStructuresQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-building-structures'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource syncCertificateDeclarationQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-certificate-declaration'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource syncDeclarationQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-declaration'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource syncKbiBuildingUseQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-kbi-building-use'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource syncKbiConnectionsQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-kbi-connections'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource syncKbiFireEnergyQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-kbi-fire-energy'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource syncKbiRoofQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-kbi-roof'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource syncKbiStartQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-kbi-start'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource syncPaymentQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-payment'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
 }
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
@@ -226,6 +320,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
                 {
                     name: 'CosmosConnection'
                     value: '@Microsoft.KeyVault(VaultName=${keyVault.name};SecretName=CosmosConnection)'
+                }
+                {
+                    name: 'ServiceBusConnection'
+                    value: 'Endpoint=sb://${serviceBusNamespace.name}.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=${listKeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', serviceBusNamespace.apiVersion).primaryKey}'
                 }
                 {
                     name: 'Integrations__OrdnanceSurveyEndpoint'
