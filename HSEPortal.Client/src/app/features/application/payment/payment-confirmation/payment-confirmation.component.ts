@@ -24,6 +24,7 @@ export class PaymentConfirmationComponent implements OnInit, CanActivate {
 
   async ngOnInit() {
     this.submittionDate = Date.now();
+    await this.applicationService.syncPayment();
     this.sendApplicationDataToBroadcastChannel();
 
     this.paymentType = this.applicationService.model.PaymentType;  
