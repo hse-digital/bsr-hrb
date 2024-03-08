@@ -1,21 +1,14 @@
-<govuk-formpage
-  (saveAndContinue)="saveAndContinue()"
+<govuk-formpage (saveAndContinue)="saveAndContinue()"
   (saveAndComeBack)="saveAndComeBack()"
-  [processing]="processing"
->
-  <govuk-error-summary
-    *ngIf="!modelValid"
+  [processing]="processing">
+  <govuk-error-summary *ngIf="!modelValid"
     title="There is a problem"
-    #summaryError
-  >
-    <govuk-error-link
-      anchorId="same-invoice-details-input"
-      message="Select where to issue the application charge invoice to"
-    />
+    #summaryError>
+    <govuk-error-link anchorId="same-invoice-details-input"
+      message="Select where to issue the application charge invoice to" />
   </govuk-error-summary>
 
-  <govuk-radio-group
-    title="Where shall we issue the application charge invoice to?"
+  <govuk-radio-group title="Where shall we issue the application charge invoice to?"
     [isPageHeading]="true"
     [(model)]="model"
     #field
@@ -26,27 +19,23 @@
         hasErrors,
         'Select where to issue the application charge invoice to'
       )
-    "
-  >
-    <govuk-radio
-      [model]="model"
+    ">
+    <govuk-radio [model]="model"
       name="application-group"
       id="same-invoice-details"
       value="same-invoice-details"
       label="Use the details I've already provided"
-      [hint]="hint"
+      [multiHint]="sameInvoiceHints"
       (onKeyupEnter)="saveAndContinue()"
-      (onRadioClicked)="select()"
-    />
-    <govuk-radio
-      [model]="model"
+      (onRadioClicked)="select()" />
+
+    <govuk-radio [model]="model"
       name="application-group"
       id="new-details"
       label="Provide new details"
       value="new-details"
       class="govuk-radio-no-margin-bottom"
       (onKeyupEnter)="saveAndContinue()"
-      (onRadioClicked)="select()"
-    />
+      (onRadioClicked)="select()" />
   </govuk-radio-group>
 </govuk-formpage>

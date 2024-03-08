@@ -16,10 +16,11 @@ export class SameInvoiceDetailsComponent extends PageComponent<string> {
 
   invoiceEmail?: string;
   orderNumber?: string;
-  hint?: string;
   modelValid: boolean = true;
   applicationInvoiceDetails?: PaymentInvoiceDetails;
   useSame: boolean = false;
+
+  sameInvoiceHints: string[] = [];
 
   constructor(public paymentService: PaymentService, activatedRoute: ActivatedRoute) {
     super(activatedRoute);
@@ -30,8 +31,12 @@ export class SameInvoiceDetailsComponent extends PageComponent<string> {
     this.invoiceEmail = applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails?.Email;
     this.orderNumber = applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails?.OrderNumber;
 
-    if (this.invoiceEmail && this.orderNumber) {
-      this.hint = `Email address: ${this.invoiceEmail} Purchase order number: ${this.orderNumber}.`;
+    if (this.invoiceEmail) {
+      this.sameInvoiceHints.push(`Email address: ${this.invoiceEmail}`);
+    }
+
+    if (this.orderNumber) {
+      this.sameInvoiceHints.push(`Purchase order number: ${this.orderNumber}`);
     }
 
     if (applicationService.model.ApplicationCertificate?.UseSameAsOngoingInvoiceDetails != undefined) {
