@@ -48,7 +48,7 @@ export class SubmittedConfirmationComponent implements OnInit, CanActivate {
     } else {
       this.shouldRender = true;
       this.payment = {
-        Email: this.applicationService.model.PaymentInvoiceDetails?.Email
+        Email: this.applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails?.Email
       }
     }
   }

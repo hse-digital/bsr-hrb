@@ -21,6 +21,8 @@
 
   <govuk-body>If we need more information to assist with your application, we will contact you.</govuk-body>
 
+  <govuk-body>{{getUploadedFiles()}} of {{getAllFiles()}} files uploaded.</govuk-body>
+
   <div [govukErrorLine]="errorMessage">
     <govuk-body>Upload files</govuk-body>
     <govuk-error id="error-uploads" *ngIf="hasErrors" [text]="errorMessage" />
@@ -29,7 +31,7 @@
 
   <div class="govuk-!-margin-bottom-8 file-list" *ngIf="fileUploads.length > 0">
     <div *ngFor="let upload of fileUploads; let i = index" class="file-list-item" id="upload-tag-{{i}}">
-      <govuk-body class="file-list-key">{{upload.file.name}}</govuk-body>
+      <govuk-body class="file-list-key">{{upload.file.name}} <a class="govuk-link" (click)="removeFile(i)">Remove</a></govuk-body>
       <div class="file-list-value">
         <govuk-tag class="govuk-tag--yellow upload-progress" *ngIf="upload.status == 'uploading'" [style]="getFileProgress(upload)">UPLOADING</govuk-tag>
         <govuk-tag class="govuk-tag--yellow" *ngIf="upload.status == 'scanning' || upload.status == 'processing'">{{upload.status}}</govuk-tag>

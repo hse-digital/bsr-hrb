@@ -136,4 +136,17 @@ export class UploadDocumentsComponent extends PageComponent<{ Filename: string, 
 
     return `hint-upload-file-hint upload-tag-${this.fileUploads.indexOf(failedUpload)}`;
   }
+
+  getUploadedFiles() {
+    return this.fileUploads.filter(x => x.status == 'uploaded').length;
+  }
+
+  getAllFiles() {
+    return this.fileUploads.length;
+  }
+
+  removeFile(index: number) {
+    this.fileUploads.splice(index, 1);
+
+  }
 }
