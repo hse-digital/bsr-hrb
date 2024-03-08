@@ -327,6 +327,11 @@ export class ApplicationService {
     await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
   }
 
+  async syncCertificatePayment(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncCertificatePayment`, this.model));
+  }
+  
+
   async getApplicationPayments(): Promise<any[]> {
     return await firstValueFrom(this.httpClient.get<any[]>(`api/GetApplicationPaymentStatus/${this.model.id}`));
   }
