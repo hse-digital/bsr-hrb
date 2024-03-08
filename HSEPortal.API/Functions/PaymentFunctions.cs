@@ -61,7 +61,7 @@ public class PaymentFunctions
         var paymentResponse = await InitialisePayment(applicationModel,
                 $"Payment for certificate application {applicationModel.Id}",
                 paymentAmount: integrationOptions.CertificateApplicationCharge,
-                paymentReference => $"/certificate/submitted?reference={paymentReference}");
+                paymentReference => $"/certificate/confirm?reference={paymentReference}");
 
         if (paymentResponse is null) return request.CreateResponse(HttpStatusCode.BadRequest);
 
