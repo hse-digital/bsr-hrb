@@ -327,8 +327,8 @@ export class ApplicationService {
     await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
   }
 
-  async syncCertificatePayment(): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/SyncCertificatePayment`, this.model));
+  async syncBAC(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/SyncBAC`, this.model));
   }
   
 
