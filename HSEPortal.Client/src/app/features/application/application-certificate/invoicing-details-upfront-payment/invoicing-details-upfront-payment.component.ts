@@ -21,7 +21,6 @@ export class InvoicingDetailsUpfrontPaymentComponent extends PageComponent<Payme
   }
 
   override async onInit(applicationService: ApplicationService): Promise<void> {
-
     this.applicationService.model.ApplicationCertificate!.ApplicationStatus = applicationService.model.ApplicationCertificate!.ApplicationStatus | ApplicationCertificateStage.PaymentInProgress;
 
     this.model = applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails ?? new PaymentInvoiceDetails();
