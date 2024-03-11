@@ -73,8 +73,8 @@ public class BlobEndpoints
     {
         var scanRequest = await requestData.ReadAsJsonAsync<ScanAndUploadRequest>();
 
-        await CreateTaskDocument(scanRequest.ApplicationId, scanRequest.BlobName);
-        return requestData.CreateResponse(HttpStatusCode.OK);
+        var uploadModel = await CreateTaskDocument(scanRequest.ApplicationId, scanRequest.BlobName, scanRequest.TargetTable);
+        return await requestData.CreateObjectResponseAsync(uploadModel);
     }
 
     private async Task DeleteBlobAsync(string blobName)
@@ -83,29 +83,39 @@ public class BlobEndpoints
         await client.DeleteBlobAsync(blobName);
     }
 
-    private async Task CreateTaskDocument(string applicationId, string blobName)
+    private async Task<SharepointUploadRequestModel> CreateTaskDocument(string applicationId, string blobName, string targetTable)
     {
         var buildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+        var targetRecordId = buildingApplication.bsr_buildingapplicationid;
 
-        await dynamicsService.UploadFileToSharepoint(new SharepointUploadRequestModel
+        if (targetTable == "bac_application")
+        {
+            var bacApplication = await dynamicsService.GetBacApplication(buildingApplication.bsr_buildingapplicationid);
+            targetRecordId = bacApplication.bsr_bacapplicationid;
+        }
+
+        var sharepointUploadRequestModel = new SharepointUploadRequestModel
         {
             fileName = blobName,
             subFolderPath = "BSR User Uploads",
             fileDescription = "Uploaded from HSE Portal",
             providerContactId = buildingApplication._bsr_registreeid_value,
-            targetRecordId = buildingApplication.bsr_buildingapplicationid,
-            targetTable = "bsr_buildingapplication",
+            targetRecordId = targetRecordId,
+            targetTable = targetTable,
             azureBlobFilePath = $"{blobOptions.ContainerName}/{blobName}"
-        });
+        };
+        await dynamicsService.UploadFileToSharepoint(sharepointUploadRequestModel);
 
         await DeleteBlobAsync(blobName);
+        return sharepointUploadRequestModel;
     }
 }
 
 public class ScanAndUploadRequest
 {
-    public string ApplicationId { get; set; } 
-    public string BlobName { get; set; } 
-} 
+    public string ApplicationId { get; set; }
+    public string BlobName { get; set; }
+    public string TargetTable { get; set; }
+}
 
 public record FileUploadStatus(string id, string ContainerName, string Application, string FileName, bool Success);
