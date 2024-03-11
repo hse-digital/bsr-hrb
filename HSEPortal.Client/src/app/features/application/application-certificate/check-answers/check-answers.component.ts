@@ -21,6 +21,7 @@ export class CheckAnswersComponent extends PageComponent<void> {
   }
 
   override async onSave(applicationService: ApplicationService, isSaveAndContinue?: boolean | undefined): Promise<void> {
+    await this.applicationService.updateBacApplication();
   }
 
   override canAccess(applicationService: ApplicationService, routeSnapshot: ActivatedRouteSnapshot): boolean {

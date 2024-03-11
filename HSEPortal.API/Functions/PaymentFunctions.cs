@@ -44,7 +44,7 @@ public class PaymentFunctions
         BuildingApplicationModel applicationModel)
     {
         var paymentResponse = await InitialisePayment(applicationModel, $"Payment for application {applicationModel.Id}",
-            integrationOptions.PaymentAmount, paymentReference => $"/payment/confirm?reference={paymentReference}");
+            integrationOptions.PaymentAmount, paymentReference => $"/payment/confirm?reference={paymentReference}", false);
 
         if (paymentResponse is null) return request.CreateResponse(HttpStatusCode.BadRequest);
 
@@ -59,9 +59,10 @@ public class PaymentFunctions
         BuildingApplicationModel applicationModel)
     {
         var paymentResponse = await InitialisePayment(applicationModel,
-                $"Payment for certificate application {applicationModel.Id}",
-                paymentAmount: integrationOptions.CertificateApplicationCharge,
-                paymentReference => $"/certificate/confirm?reference={paymentReference}");
+            $"Payment for certificate application {applicationModel.Id}",
+            paymentAmount: integrationOptions.CertificateApplicationCharge,
+            paymentReference => $"/certificate/confirm?reference={paymentReference}",
+            true);
 
         if (paymentResponse is null) return request.CreateResponse(HttpStatusCode.BadRequest);
 
@@ -89,7 +90,7 @@ public class PaymentFunctions
         BuildingApplicationModel applicationModel)
     {
         var invoiceRequest = await request.ReadAsJsonAsync<NewInvoicePaymentRequestModel>();
-        await dynamicsService.NewInvoicePayment(applicationModel, invoiceRequest, integrationOptions.CertificateApplicationCharge);
+        await dynamicsService.NewInvoicePayment(applicationModel, invoiceRequest, integrationOptions.CertificateApplicationCharge, bacPayment: true);
 
         return request.CreateResponse();
     }
@@ -194,7 +195,7 @@ public class PaymentFunctions
     }
 
     private async Task<PaymentResponseModel> InitialisePayment(BuildingApplicationModel applicationModel,
-        string paymentDescription, double paymentAmount, Func<string, string> returnUrl)
+        string paymentDescription, double paymentAmount, Func<string, string> returnUrl, bool bacPayment)
     {
         var paymentModel = BuildPaymentRequestModel(applicationModel);
         var validation = paymentModel.Validate();
@@ -219,7 +220,7 @@ public class PaymentFunctions
 
         var paymentApiResponse = await response.GetJsonAsync<PaymentApiResponseModel>();
         var paymentResponse = mapper.Map<PaymentResponseModel>(paymentApiResponse);
-        await dynamicsService.NewPayment(applicationModel.Id, paymentResponse);
+        await dynamicsService.NewPayment(applicationModel.Id, paymentResponse, bacPayment);
 
         return paymentResponse;
     }

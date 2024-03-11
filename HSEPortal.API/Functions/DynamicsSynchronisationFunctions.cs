@@ -54,15 +54,6 @@ public class DynamicsSynchronisationFunctions
         return new SyncDeclarationMessage(buildingApplicationModel);
     }
 
-    [Function(nameof(syncCertificateDeclaration))]
-    [ServiceBusOutput(SyncCertificateDeclarationMessage.QueueName, Connection = "ServiceBusConnection")]
-    public async Task<SyncMessage> syncCertificateDeclaration([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)
-    {
-        // TODO for certificate
-        var buildingApplicationModel = await request.ReadAsJsonAsync<BuildingApplicationModel>();
-        return new SyncCertificateDeclarationMessage(buildingApplicationModel);
-    }
-
     [Function(nameof(SyncPayment))]
     [ServiceBusOutput(SyncPaymentMessage.QueueName, Connection = "ServiceBusConnection")]
     public async Task<SyncMessage> SyncPayment([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData request)

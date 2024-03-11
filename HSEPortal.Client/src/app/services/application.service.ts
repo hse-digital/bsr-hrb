@@ -320,17 +320,20 @@ export class ApplicationService {
   }
 
   async syncCertificateDeclaration(): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/syncCertificateDeclaration`, this.model));
+    await firstValueFrom(this.httpClient.post(`api/SyncCertificateDeclaration`, this.model));
   }
 
   async syncPayment(): Promise<void> {
     await firstValueFrom(this.httpClient.post(`api/SyncPayment`, this.model));
   }
 
-  async syncBAC(): Promise<void> {
-    await firstValueFrom(this.httpClient.post(`api/SyncBAC`, this.model));
+  async createBacApplication(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/CreateBacApplication`, this.model));
   }
-  
+
+  async updateBacApplication(): Promise<void> {
+    await firstValueFrom(this.httpClient.post(`api/UpdateBacApplication`, this.model));
+  }
 
   async getApplicationPayments(): Promise<any[]> {
     return await firstValueFrom(this.httpClient.get<any[]>(`api/GetApplicationPaymentStatus/${this.model.id}`));
@@ -375,6 +378,14 @@ export class ApplicationService {
       "ApplicationNumber": applicationNumber,
       "Date": date
     }));
+  }
+
+  async getBacInvitation(): Promise<any> {
+    return await firstValueFrom(this.httpClient.get<any>(`api/GetBacInvitation/${this.model.id}`));
+  }
+
+  async syncBacStatus(): Promise<any> {
+    return await firstValueFrom(this.httpClient.post(`api/SyncBacStatus`, this.model));
   }
 }
 

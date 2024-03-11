@@ -256,6 +256,33 @@ resource syncPaymentQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-pre
     }
 }
 
+resource createBacQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'create-bac'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource updateBacQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'update-bac'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
+resource syncBacStatusQueue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+    parent: serviceBusNamespace
+    name: 'sync-bac-status'
+    properties: {
+        maxSizeInMegabytes: 1024
+        lockDuration: 'PT5M'
+    }
+}
+
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
     name: 's118-${environment}-bsr-acs-portal-fa'
     location: location

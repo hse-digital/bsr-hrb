@@ -20,7 +20,7 @@
 
   <h2 class="govuk-heading-m">Contact details</h2>
   <govuk-input id="invoice-name" label="Name on the invoice" class="govuk-!-margin-bottom-5" [(model)]="model!.Name" [errorText]="getErrorDescription(hasError('Name'), 'Enter the name that needs to be shown on the invoice')" (onKeyupEnter)="saveAndContinue()" />
-  <govuk-input id="invoice-email" label="Email address" hint="We'll only use this to send you an invoices. It will appear on your confirmation email." [(model)]="model!.Email" [errorText]="getErrorDescription(hasError('Email'), emailErrorMessage)" (onKeyupEnter)="saveAndContinue()" />
+  <govuk-input id="invoice-email" label="Email address" hint="We'll only use this to send you invoices. It will appear on your confirmation email." [(model)]="model!.Email" [errorText]="getErrorDescription(hasError('Email'), emailErrorMessage)" (onKeyupEnter)="saveAndContinue()" />
   
   <div  class="govuk-!-margin-bottom-8"></div>
 

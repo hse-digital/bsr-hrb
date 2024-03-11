@@ -29,7 +29,11 @@ export class FileUploadService {
   }
 
   async uploadToSharepoint(applicationId: string, fileName: string): Promise<any> {
-    return await firstValueFrom(this.httpClient.post('api/UploadToSharepoint', { ApplicationId: applicationId, BlobName: fileName }));
+    return await firstValueFrom(this.httpClient.post('api/UploadToSharepoint', { ApplicationId: applicationId, BlobName: fileName, TargetTable: "bsr_buildingapplication" }));
+  }
+
+  async uploadBacFileToSharepoint(applicationId: string, fileName: string): Promise<any> {
+    return await firstValueFrom(this.httpClient.post('api/UploadToSharepoint', { ApplicationId: applicationId, BlobName: fileName, TargetTable: "bsr_bacapplication" }));
   }
 
   deleteBlobItem(sasUrl: string) {

@@ -1,9 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { BroadcastChannelPrimaryHelper } from 'src/app/helpers/BroadcastChannelHelper';
 import { FieldValidations } from 'src/app/helpers/validators/fieldvalidations';
-import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode, BuildingRegistrationVersion, RegistrationAmendmentsModel, Status } from 'src/app/services/application.service';
+import { ApplicationService, BuildingApplicationStage, BuildingApplicationStatuscode, BuildingRegistrationVersion } from 'src/app/services/application.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { ConfirmInformationBsrHoldsComponent } from '../application-certificate/confirm-information-bsr-holds/confirm-information-bsr-holds.component';
+import { ComplianceNoticeNumbersComponent } from '../application-certificate/compliance-notice-numbers/compliance-notice-numbers.component';
+import { Section89DeclarationComponent } from '../application-certificate/section-89-declaration/section-89-declaration.component';
+import { UploadCompletionCertificateComponent } from '../building-summary/upload-completion-certificate/upload-completion-certificate.component';
+import { InvoicingDetailsComponent } from '../application-certificate/invoicing-details/invoicing-details.component';
+import { UploadDocumentsComponent } from '../application-certificate/upload-documents/upload-documents.component';
 
 @Component({
   selector: 'hse-application-completed',
@@ -21,7 +27,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
   openPayment?: any;
   applicationStatuscode: BuildingApplicationStatuscode = BuildingApplicationStatuscode.New;
 
-  constructor(public applicationService: ApplicationService, private navigationService: NavigationService) {
+  constructor(public applicationService: ApplicationService, private navigationService: NavigationService, private activatedRoute: ActivatedRoute) {
 
   }
 
@@ -39,7 +45,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     registrationAccepted: false,
     removalSubmitted: false,
     removalAccepted: false,
-    showLinks: false
+    showLinks: false,
+    bacInvitation: false
   };
 
   async ngOnInit(): Promise<void> {
@@ -50,12 +57,17 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
     this.sendApplicationDataToBroadcastChannel();
 
-    this.submittionDate = await this.applicationService.getSubmissionDate();
-    this.kbiSubmittionDate = await this.applicationService.getKbiSubmissionDate();
+    var [submittionDate, kbiSubmittionDate, applicationStatusCode, payments] = await Promise.all([
+      this.applicationService.getSubmissionDate(),
+      this.applicationService.getKbiSubmissionDate(),
+      this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!),
+      this.applicationService.getApplicationPayments()
+    ]);
 
-    this.applicationStatuscode = await this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!);
+    this.submittionDate = submittionDate;
+    this.kbiSubmittionDate = kbiSubmittionDate;
+    this.applicationStatuscode = applicationStatusCode;
 
-    var payments: any = await this.applicationService.getApplicationPayments();
     if (payments != undefined && payments.some((x: { bsr_govukpaystatus: string; }) => x.bsr_govukpaystatus == "success" || x.bsr_govukpaystatus == "open")) {
       this.initPayment(payments);
     } else {
@@ -94,6 +106,60 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
       .SendDataWhenSecondaryJoinChannel(this.applicationService.model);
   }
 
+  bacIsEmpty() {
+    return this.applicationService.model.ApplicationCertificate == null;
+  }
+
+  async navigateToBac() {
+    await this.navigationService.navigateRelative(`certificate/confirm-information-bsr-holds`, this.activatedRoute);
+  }
+
+  bacIsInProgress() {
+    return this.applicationService.model.ApplicationCertificate != null;
+  }
+
+  async continueBac() {
+    if (!this.applicationService.model.ApplicationCertificate?.BsrInformationConfirmed) {
+      await this.navigationService.navigateRelative(`certificate/confirm-information-bsr-holds`, this.activatedRoute);
+    } else if (!this.applicationService.model.ApplicationCertificate?.ComplianceNoticeNumbers) {
+      await this.navigationService.navigateRelative(`certificate/compliance-notice-numbers`, this.activatedRoute);
+    } else if (!this.applicationService.model.ApplicationCertificate?.Section89DeclarationConfirmed) {
+      await this.navigationService.navigateRelative(`certificate/section-89-declaration`, this.activatedRoute);
+    } else if (!this.applicationService.model.ApplicationCertificate?.Files || this.applicationService.model.ApplicationCertificate?.Files?.length < 1) {
+      await this.navigationService.navigateRelative(`certificate/upload-documents`, this.activatedRoute);
+    } else if (this.missingOngoingInvoiceDetails()) {
+      await this.navigationService.navigateRelative(`certificate/invoicing-details`, this.activatedRoute);
+    } else if (!this.applicationService.model.ApplicationCertificate.PaymentType) {
+      await this.navigationService.navigateRelative(`certificate/choose-payment`, this.activatedRoute);
+    } else if (this.applicationService.model.ApplicationCertificate.PaymentType == "invoice" && this.applicationService.model.ApplicationCertificate.UseSameAsOngoingInvoiceDetails == null) {
+      await this.navigationService.navigateRelative(`certificate/same-invoice-details`, this.activatedRoute);
+    } else if (this.missingNewInvoiceDetails()) {
+      await this.navigationService.navigateRelative(`certificate/invoicing-details-upfront-payment`, this.activatedRoute);
+    }
+  }
+
+  private missingOngoingInvoiceDetails(): boolean {
+    return this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails == undefined ||
+      !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails.Name) ||
+      !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails.Email) ||
+      !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails.AddressLine1) ||
+      !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails.Town) ||
+      !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails.Postcode) ||
+      (this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails.OrderNumberOption != "noneed" && !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.OngoingChangesInvoiceDetails.Postcode));
+  }
+
+  private missingNewInvoiceDetails(): boolean {
+    return this.applicationService.model.ApplicationCertificate?.UseSameAsOngoingInvoiceDetails == false && (
+      this.applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails == undefined ||
+      !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails.Name) ||
+      !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails.Email) ||
+      !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails.AddressLine1) ||
+      !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails.Town) ||
+      !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails.Postcode) ||
+      (this.applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails.OrderNumberOption != "noneed" && !FieldValidations.IsNotNullOrWhitespace(this.applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails.Postcode))
+    );
+  }
+
   private async updateApplicationStatus() {
     var latestCrAccepted = await this.applicationService.isChangeRequestAccepted();
 
@@ -106,6 +172,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     this.applicationStatus.registrationAccepted = this.applicationStatuscode == BuildingApplicationStatuscode.Registered || this.applicationStatuscode == BuildingApplicationStatuscode.RegisteredKbiValidated;
     this.applicationStatus.removalSubmitted = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure != undefined;
     this.applicationStatus.removalAccepted = this.applicationStatus.removalSubmitted && latestCrAccepted == 'withdrawn';
+    this.applicationStatus.bacInvitation = await this.applicationService.getBacInvitation();
 
     this.applicationStatus.showLinks = (!this.applicationStatus.withdrawalSubmitted && !this.applicationStatus.withdrawalAccepted && !this.applicationStatus.registrationAccepted);
     this.shouldRender = true;
