@@ -2,6 +2,7 @@ using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Model.Sync;
 using HSEPortal.API.Services;
+using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Options;
@@ -61,7 +62,7 @@ public class BacFunctions
     public async Task SyncCreateBacApplication([ServiceBusTrigger(CreateBacSyncMessage.QueueName, Connection = "ServiceBusConnection")] CreateBacSyncMessage message)
     {
         var buildingApplicationModel = message.ApplicationModel;
-        
+
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(buildingApplicationModel.Id);
         await dynamicsService.CreateBacApplication(buildingApplicationModel, dynamicsBuildingApplication);
     }
@@ -70,10 +71,11 @@ public class BacFunctions
     public async Task SyncUpdateBacApplication([ServiceBusTrigger(UpdateBacSyncMessage.QueueName, Connection = "ServiceBusConnection")] UpdateBacSyncMessage message)
     {
         var buildingApplicationModel = message.ApplicationModel;
-        
+
         var dynamicsBuildingApplication = await dynamicsService.GetBuildingApplicationUsingId(buildingApplicationModel.Id);
         await dynamicsService.UpdateBacApplication(buildingApplicationModel, dynamicsBuildingApplication.bsr_buildingapplicationid);
         await dynamicsService.UpdateBuildingBacInformation(buildingApplicationModel, dynamicsBuildingApplication.bsr_Building);
+        await dynamicsService.UpdateBacApplicationDirection(buildingApplicationModel, dynamicsBuildingApplication.bsr_buildingapplicationid);
     }
 
     [Function(nameof(SyncBacStatus))]
@@ -88,7 +90,21 @@ public class BacFunctions
     public async Task SyncBacApplicationStatus([ServiceBusTrigger(SyncBacStatusMessage.QueueName, Connection = "ServiceBusConnection")] SyncBacStatusMessage message)
     {
         var buildingApplicationModel = message.ApplicationModel;
-        
+
         await dynamicsService.UpdateBacApplicationStatus(buildingApplicationModel);
+    }
+
+    [Function(nameof(GetBacApplicationStatus))]
+    public async Task<HttpResponseData> GetBacApplicationStatus([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"{nameof(GetBacApplicationStatus)}/{{applicationId}}")] HttpRequestData request, 
+        string applicationId)
+    {
+        var buildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
+        var bacApplication = await dynamicsService.GetBacApplication(buildingApplication.bsr_buildingapplicationid);
+
+        return bacApplication != null ? await request.CreateObjectResponseAsync(new DynamicsBacApplication
+        {
+            bsr_bacstageid = bacApplication.bsr_bacstageid,
+            bsr_validationoutcomecode = bacApplication.bsr_validationoutcomecode
+        }) : null;
     }
 }

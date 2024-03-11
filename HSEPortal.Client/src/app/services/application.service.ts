@@ -384,6 +384,10 @@ export class ApplicationService {
     return await firstValueFrom(this.httpClient.get<any>(`api/GetBacInvitation/${this.model.id}`));
   }
 
+  async getBacApplicationStatus(): Promise<any> {
+    return await firstValueFrom(this.httpClient.get<any>(`api/GetBacApplicationStatus/${this.model.id}`));
+  }
+
   async syncBacStatus(): Promise<any> {
     return await firstValueFrom(this.httpClient.post(`api/SyncBacStatus`, this.model));
   }
