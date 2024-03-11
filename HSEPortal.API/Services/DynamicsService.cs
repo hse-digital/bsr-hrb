@@ -1165,6 +1165,18 @@ public class DynamicsService
         }
     }
 
+    public async Task UpdateBacApplicationDirection(BuildingApplicationModel buildingApplicationModel, string buildingApplicationId)
+    {
+        var bacApplication = await GetBacApplication(buildingApplicationId);
+        var applicationDirection = await GetBacApplicationDirection(buildingApplicationModel.Id);
+
+        await dynamicsApi.Update($"bsr_bacapplicationdirections({applicationDirection.bsr_bacapplicationdirectionid})", new DynamicsBacApplicationDirection
+        {
+            bsr_submissionrequesteddate = DateTime.UtcNow,
+            bacApplicationReferenceId = $"/bsr_bacapplications({bacApplication.bsr_bacapplicationid})"
+        });
+    }
+
     public async Task UpdateBacApplicationStatus(BuildingApplicationModel buildingApplicationModel)
     {
         var dynamicsBuildingApplication = await GetBuildingApplicationUsingId(buildingApplicationModel.Id);

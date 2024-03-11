@@ -46,7 +46,8 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     removalSubmitted: false,
     removalAccepted: false,
     showLinks: false,
-    bacInvitation: false
+    bacInvitation: false,
+    bacStatus: null
   };
 
   async ngOnInit(): Promise<void> {
@@ -57,11 +58,12 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
 
     this.sendApplicationDataToBroadcastChannel();
 
-    var [submittionDate, kbiSubmittionDate, applicationStatusCode, payments] = await Promise.all([
+    var [submittionDate, kbiSubmittionDate, applicationStatusCode, payments, _] = await Promise.all([
       this.applicationService.getSubmissionDate(),
       this.applicationService.getKbiSubmissionDate(),
       this.applicationService.getBuildingApplicationStatuscode(this.applicationService.model.id!),
-      this.applicationService.getApplicationPayments()
+      this.applicationService.getApplicationPayments(),
+      this.updateApplicationStatus()
     ]);
 
     this.submittionDate = submittionDate;
@@ -77,8 +79,6 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
         this.shouldRender = true;
       });
     }
-
-    await this.updateApplicationStatus();
   }
 
   private initPayment(payments: any) {
@@ -173,6 +173,7 @@ export class ApplicationCompletedComponent implements OnInit, CanActivate {
     this.applicationStatus.removalSubmitted = this.applicationService.model.RegistrationAmendmentsModel?.Deregister?.AreYouSure != undefined;
     this.applicationStatus.removalAccepted = this.applicationStatus.removalSubmitted && latestCrAccepted == 'withdrawn';
     this.applicationStatus.bacInvitation = await this.applicationService.getBacInvitation();
+    this.applicationStatus.bacStatus = await this.applicationService.getBacApplicationStatus();
 
     this.applicationStatus.showLinks = (!this.applicationStatus.withdrawalSubmitted && !this.applicationStatus.withdrawalAccepted && !this.applicationStatus.registrationAccepted);
     this.shouldRender = true;
