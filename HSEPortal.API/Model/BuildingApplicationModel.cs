@@ -162,7 +162,7 @@ public record AccountablePerson(
 
 public record SectionAccountability(string SectionName, string[] Accountability);
 
-public record FileUploadModel(string Filename, bool Uploaded);
+public record FileUploadModel(string Filename, bool Uploaded, SharepointUploadRequestModel SharepointModel);
 
 [Flags]
 public enum BuildingApplicationStatus

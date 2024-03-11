@@ -48,11 +48,13 @@ export class ConfirmInformationBsrHoldsComponent extends PageComponent<void> {
     return pap.OrganisationName;
   }
 
-  override onSave(applicationService: ApplicationService): void | Promise<void> {
+  override async onSave(applicationService: ApplicationService): Promise<void> {
     if (!applicationService.model.ApplicationCertificate) {
       applicationService.model.ApplicationCertificate = new ApplicationCertificateModel();
     }
     applicationService.model.ApplicationCertificate!.BsrInformationConfirmed = true;
+
+    await this.applicationService.createBacApplication();
   }
 
   override canAccess(): boolean {

@@ -16,38 +16,7 @@ using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Services;
 
-public interface IDynamicsService
-{
-    Task AssignContactType(string contactId, string contactTypeId);
-    Task CreateAccountablePersons(BuildingApplicationModel model, DynamicsBuildingApplication dynamicsBuildingApplication);
-    Task CreateAssociatedDuplicatedBuildingApplications(BuildingApplicationModel buildingApplicationModel, DynamicsBuildingApplication dynamicsBuildingApplication);
-    Task CreateBuildingStructures(Structures structures);
-    Task CreateCardPayment(BuildingApplicationPayment buildingApplicationPayment);
-    string ExtractEntityIdFromHeader(IReadOnlyNameValueList<string> headers);
-    Task<DynamicsContact> FindExistingContactAsync(string firstName, string lastName, string email, string phoneNumber);
-    Task<DynamicsStructure> FindExistingStructureAsync(string name, string postcode, string buildingApplicationId = null);
-    Task<DynamicsResponse<IndependentSection>> FindExistingStructureWithAccountablePersonAsync(string postcode);
-    Task<DynamicsBuildingApplicationStatuscodeModel> GetBuildingApplicationStatuscodeBy(string applicationId);
-    Task<DynamicsBuildingApplication> GetBuildingApplicationUsingId(string applicationId);
-    Task<string> GetKbiSubmissionDate(string applicationNumber);
-    Task<DynamicsPayment> GetPaymentByReference(string reference);
-    Task<List<DynamicsPayment>> GetPayments(string applicationNumber);
-    Task<string> GetSubmissionDate(string applicationNumber);
-    Task NewInvoicePayment(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, double paymentAmount);
-    Task NewPayment(string applicationId, PaymentResponseModel payment);
-    Task<BuildingApplicationModel> RegisterNewBuildingApplicationAsync(BuildingApplicationModel buildingApplicationModel);
-    Task<DynamicsOrganisationsSearchResponse> SearchLocalAuthorities(string authorityName);
-    Task<DynamicsOrganisationsSearchResponse> SearchSocialHousingOrganisations(string authorityName);
-    Task SendVerificationEmail(string emailAddress, string buildingName, string otpToken);
-    Task UpdateBuildingApplication(DynamicsBuildingApplication dynamicsBuildingApplication, DynamicsBuildingApplication buildingApplication);
-    Task UpdateInvoicePayment(InvoicePaidEventData invoicePaidEventData);
-    Task UpdateSafetyCaseReportSubmissionDate(string applicationNumber, DateTime date);
-    Task UploadFileToSharepoint(SharepointUploadRequestModel requestModel);
-    Task<DynamicsBuildingApplication> ValidateExistingApplication(string applicationNumber, string emailAddress);
-    Task<DynamicsResponse<DynamicsChange>> GetChange(string applicationId, string fieldName, string originalAnswer, string newAnswer);
-}
-
-public class DynamicsService : IDynamicsService
+public class DynamicsService
 {
     private readonly DynamicsModelDefinitionFactory dynamicsModelDefinitionFactory;
     private readonly SwaOptions swaOptions;
@@ -493,20 +462,20 @@ public class DynamicsService : IDynamicsService
         await dynamicsApi.Update($"bsr_buildings({dynamicsBuildingApplication._bsr_building_value})", lookup with { bsr_paptypecode = papType, bsr_whoareyou = null });
     }
 
-    public async Task NewPayment(string applicationId, PaymentResponseModel payment)
+    public async Task NewPayment(string applicationId, PaymentResponseModel payment, bool bacPayment)
     {
         var application = await GetBuildingApplicationUsingId(applicationId);
-        await CreateCardPayment(new BuildingApplicationPayment(application.bsr_buildingapplicationid, payment));
+        await CreateCardPayment(new BuildingApplicationPayment(application.bsr_buildingapplicationid, payment), bacPayment);
     }
 
-    public async Task CreateCardPayment(BuildingApplicationPayment buildingApplicationPayment)
+    public async Task CreateCardPayment(BuildingApplicationPayment buildingApplicationPayment, bool bacPayment = false)
     {
         var payment = buildingApplicationPayment.Payment;
         var existingPayment =
             await dynamicsApi.Get<DynamicsResponse<DynamicsPayment>>("bsr_payments", ("$filter", $"bsr_service eq 'HRB Registration' and bsr_transactionid eq '{payment.Reference}'"));
         if (!existingPayment.value.Any())
         {
-            await dynamicsApi.Create("bsr_payments", new DynamicsPayment
+            var dynamicsPayment = new DynamicsPayment
             {
                 buildingApplicationReferenceId = $"/bsr_buildingapplications({buildingApplicationPayment.BuildingApplicationId})",
                 bsr_lastfourdigitsofcardnumber = payment.LastFourDigitsCardNumber,
@@ -522,7 +491,14 @@ public class DynamicsService : IDynamicsService
                 bsr_amountpaid = Math.Round((float)payment.Amount / 100, 2),
                 bsr_govukpaystatus = payment.Status,
                 bsr_govukpaymentid = payment.PaymentId
-            });
+            };
+
+            if (bacPayment)
+            {
+                dynamicsPayment = await SetBacApplicationToPayment(buildingApplicationPayment.BuildingApplicationId, dynamicsPayment, 760810001);
+            }
+
+            await dynamicsApi.Create("bsr_payments", dynamicsPayment);
         }
         else
         {
@@ -543,16 +519,18 @@ public class DynamicsService : IDynamicsService
         }
     }
 
-    public async Task NewInvoicePayment(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, double paymentAmount)
+    public async Task<DynamicsPayment> NewInvoicePayment(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, double paymentAmount, bool bacPayment = false)
     {
         var invoiceContact = await GetOrCreateInvoiceContactAsync(invoicePaymentRequest);
         var dynamicsApplication = await GetBuildingApplicationUsingId(buildingApplicationModel.Id);
 
-        var dynamicsPayment = await CreateInvoicePayment(dynamicsApplication.bsr_buildingapplicationid, invoiceContact, invoicePaymentRequest, paymentAmount);
+        var dynamicsPayment = await CreateInvoicePayment(dynamicsApplication.bsr_buildingapplicationid, invoiceContact, invoicePaymentRequest, paymentAmount, bacPayment);
         await UpdateBuildingApplication(dynamicsApplication, new DynamicsBuildingApplication { bsr_applicationstage = BuildingApplicationStage.InvoiceRaised });
         var invoicePaymentResponse = await SendCreateInvoiceRequest(buildingApplicationModel, invoicePaymentRequest, dynamicsPayment, invoiceContact, paymentAmount);
 
         await UpdateInvoicePayment(dynamicsPayment.bsr_paymentid, invoicePaymentResponse);
+
+        return dynamicsPayment;
     }
 
     private async Task<InvoiceData> SendCreateInvoiceRequest(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, DynamicsPayment dynamicsPayment,
@@ -605,9 +583,9 @@ public class DynamicsService : IDynamicsService
         return invoiceContact;
     }
 
-    private async Task<DynamicsPayment> CreateInvoicePayment(string buildingApplicationId, DynamicsContact invoicedContact, NewInvoicePaymentRequestModel invoiceData, double paymentAmount)
+    private async Task<DynamicsPayment> CreateInvoicePayment(string buildingApplicationId, DynamicsContact invoicedContact, NewInvoicePaymentRequestModel invoiceData, double paymentAmount, bool bacPayment = false)
     {
-        var response = await dynamicsApi.Create("bsr_payments", new DynamicsPayment
+        var dynamicsPayment = new DynamicsPayment
         {
             bsr_invoicedcontactid = $"/contacts({invoicedContact.contactid})",
             buildingApplicationReferenceId = $"/bsr_buildingapplications({buildingApplicationId})",
@@ -618,9 +596,29 @@ public class DynamicsService : IDynamicsService
             bsr_purchaseordernumberifsupplied = invoiceData.OrderNumber,
             bsr_govukpaystatus = "open",
             bsr_emailaddress = invoiceData.Email
-        }, true);
+        };
 
+        if (bacPayment)
+        {
+            dynamicsPayment = await SetBacApplicationToPayment(buildingApplicationId, dynamicsPayment, 760810003);
+        }
+
+        var response = await dynamicsApi.Create("bsr_payments", dynamicsPayment, true);
         return await response.GetJsonAsync<DynamicsPayment>();
+    }
+
+    private async Task<DynamicsPayment> SetBacApplicationToPayment(string buildingApplicationId, DynamicsPayment dynamicsPayment, int applicationStatus)
+    {
+        var bacApplication = await GetBacApplication(buildingApplicationId);
+        await dynamicsApi.Update($"bsr_bacapplications({bacApplication.bsr_bacapplicationid})", bacApplication with
+        {
+            bsr_bacstageid = applicationStatus
+        });
+
+        return dynamicsPayment with
+        {
+            bacApplicationReferenceId = $"/bsr_bacapplications({bacApplication.bsr_bacapplicationid})"
+        };
     }
 
     private async Task UpdateInvoicePayment(string dynamicsPaymentId, InvoiceData invoiceData)
@@ -999,7 +997,7 @@ public class DynamicsService : IDynamicsService
     {
         var response = await $"https://login.microsoftonline.com/{dynamicsOptions.TenantId}/oauth2/token"
             .PostUrlEncodedAsync(new
-            { grant_type = "client_credentials", client_id = dynamicsOptions.ClientId, client_secret = dynamicsOptions.ClientSecret, resource = dynamicsOptions.EnvironmentUrl })
+                { grant_type = "client_credentials", client_id = dynamicsOptions.ClientId, client_secret = dynamicsOptions.ClientSecret, resource = dynamicsOptions.EnvironmentUrl })
             .ReceiveJson<DynamicsAuthenticationModel>();
 
         return response.AccessToken;
@@ -1063,7 +1061,7 @@ public class DynamicsService : IDynamicsService
     public async Task<DynamicsBuildingApplication> ValidateExistingApplication(string applicationNumber, string emailAddress)
     {
         var response = await dynamicsApi.Get<DynamicsResponse<DynamicsBuildingApplication>>("bsr_buildingapplications",
- ("$filter", $"bsr_applicationid eq '{applicationNumber}' and (bsr_RegistreeId/emailaddress1 eq '{emailAddress}' or bsr_secondaryapplicantid/emailaddress1 eq '{emailAddress}')"),
+            ("$filter", $"bsr_applicationid eq '{applicationNumber}' and (bsr_RegistreeId/emailaddress1 eq '{emailAddress}' or bsr_secondaryapplicantid/emailaddress1 eq '{emailAddress}')"),
             ("$expand", "bsr_RegistreeId($select=emailaddress1),bsr_secondaryapplicantid($select=emailaddress1),bsr_Building($select=bsr_name)"),
             ("$select", "bsr_applicationid,bsr_buildingapplicationid")
         );
@@ -1077,5 +1075,119 @@ public class DynamicsService : IDynamicsService
             ("$filter", $"bsr_fieldname eq '{fieldName}' and bsr_originalanswer eq '{originalAnswer}' and bsr_newanswer eq '{newAnswer}' and bsr_changerequestid/_bsr_buildingapplicationid_value eq {applicationId}"),
             ("$expand", "bsr_changerequestid")
         );
+    }
+
+    public async Task<DynamicsBacApplicationDirection> GetBacApplicationDirection(string applicationId)
+    {
+        var buildingApplication = await GetBuildingApplicationUsingId(applicationId);
+        var buildingId = buildingApplication._bsr_building_value;
+
+        var bacApplicationDirection = await dynamicsApi.Get<DynamicsResponse<DynamicsBacApplicationDirection>>("bsr_bacapplicationdirections",
+            ("$filter", $"_bsr_buildingid_value eq '{buildingId}'"));
+
+        return bacApplicationDirection.value.FirstOrDefault();
+    }
+
+    public async Task UpdateBuildingBacInformation(BuildingApplicationModel applicationModel, DynamicsBuilding bsrBuilding)
+    {
+        var dynamicsBuilding = bsrBuilding with
+        {
+            bsr_correctbuildinginformationconfirmation = applicationModel.ApplicationCertificate.BsrInformationConfirmed,
+            bsr_compliancenoticenumbers = applicationModel.ApplicationCertificate.ComplianceNoticeNumbers,
+            bsr_section89declaration = applicationModel.ApplicationCertificate.Section89DeclarationConfirmed
+        };
+        await dynamicsApi.Update($"bsr_buildings({bsrBuilding.bsr_buildingid})", dynamicsBuilding);
+    }
+
+    public async Task<DynamicsBacApplication> GetBacApplication(string applicationId)
+    {
+        var currentBacApplications = await dynamicsApi.Get<DynamicsResponse<DynamicsBacApplication>>("bsr_bacapplications",
+            ("$filter", $"_bsr_buildingapplicationid_value eq '{applicationId}' and statuscode ne 760810007"));
+        return currentBacApplications.value.FirstOrDefault();
+    }
+
+    public async Task CreateBacApplication(BuildingApplicationModel applicationModel, DynamicsBuildingApplication buildingApplication)
+    {
+        var currentBacApplications = await dynamicsApi.Get<DynamicsResponse<DynamicsBacApplication>>("bsr_bacapplications",
+            ("$filter", $"_bsr_buildingapplicationid_value eq '{buildingApplication.bsr_buildingapplicationid}' and statuscode ne 760810007"));
+        if (currentBacApplications.value.Count == 0)
+        {
+            //dutyholder is missing in dynamics
+            var bacApplication = new DynamicsBacApplication
+            {
+                bsr_bacstageid = 760_810_000,
+                buildingApplicationReference = $"/bsr_buildingapplications({buildingApplication.bsr_buildingapplicationid})",
+                buildingReference = $"/bsr_buildings({buildingApplication._bsr_building_value})"
+            };
+            await dynamicsApi.Create("bsr_bacapplications", bacApplication);
+        }
+    }
+
+    public async Task UpdateBacApplication(BuildingApplicationModel applicationModel, string buildingApplicationId)
+    {
+        var bacApplication = await GetBacApplication(buildingApplicationId);
+        var dutyholder = await GetOrCreateInvoiceContactAsync(new NewInvoicePaymentRequestModel
+        {
+            Email = applicationModel.ApplicationCertificate.OngoingChangesInvoiceDetails.Email,
+            Name = applicationModel.ApplicationCertificate.OngoingChangesInvoiceDetails.Name,
+            Postcode = applicationModel.ApplicationCertificate.OngoingChangesInvoiceDetails.Postcode,
+            Town = applicationModel.ApplicationCertificate.OngoingChangesInvoiceDetails.Town,
+            AddressLine1 = applicationModel.ApplicationCertificate.OngoingChangesInvoiceDetails.AddressLine1,
+            AddressLine2 = applicationModel.ApplicationCertificate.OngoingChangesInvoiceDetails.AddressLine2,
+            OrderNumber = applicationModel.ApplicationCertificate.OngoingChangesInvoiceDetails.OrderNumber
+        });
+
+        bacApplication = bacApplication with
+        {
+            dutyHolderReferenceId = $"/contacts({dutyholder.contactid})",
+            bsr_purchaseordernumber = applicationModel.ApplicationCertificate.OngoingChangesInvoiceDetails.OrderNumber
+        };
+
+        await dynamicsApi.Update($"bsr_bacapplications({bacApplication.bsr_bacapplicationid})", bacApplication);
+    }
+
+    public async Task UpdateBacDeclaration(BuildingApplicationModel applicationModel)
+    {
+        var buildingApplication = await GetBuildingApplicationUsingId(applicationModel.Id);
+        var currentBacApplications = await dynamicsApi.Get<DynamicsResponse<DynamicsBacApplication>>("bsr_bacapplications",
+            ("$filter", $"_bsr_buildingapplicationid_value eq '{buildingApplication.bsr_buildingapplicationid}' and statuscode ne 760810007"));
+
+        var bacApplication = currentBacApplications.value[0];
+        if (bacApplication.bsr_bacstageid == 760810000)
+        {
+            bacApplication = bacApplication with
+            {
+                bsr_declaration = true,
+                bsr_bacstageid = 760810001
+            };
+
+            await dynamicsApi.Update($"/bsr_bacapplications({bacApplication.bsr_bacapplicationid})", bacApplication);
+        }
+    }
+
+    public async Task UpdateBacApplicationStatus(BuildingApplicationModel buildingApplicationModel)
+    {
+        var dynamicsBuildingApplication = await GetBuildingApplicationUsingId(buildingApplicationModel.Id);
+        var bacApplication = await GetBacApplication(dynamicsBuildingApplication.bsr_buildingapplicationid);
+
+        if (bacApplication.bsr_bacstageid < 760810002)
+        {
+            var payments = await GetPayments(buildingApplicationModel.Id);
+            var paymentSucceed = payments.Any(x => x._bsr_bacapplicationid_value != null && x.bsr_govukpaystatus == "success");
+            if (paymentSucceed)
+            {
+                bacApplication = bacApplication with
+                {
+                    bsr_bacstageid = 760810002
+                };
+
+                var direction = await GetBacApplicationDirection(buildingApplicationModel.Id);
+                await dynamicsApi.Update($"bsr_bacapplications({bacApplication.bsr_bacapplicationid})", bacApplication);
+                await dynamicsApi.Update($"bsr_bacapplicationdirections({direction.bsr_bacapplicationdirectionid})", new DynamicsBacApplicationDirection
+                {
+                    statuscode = 760810006
+                });
+            }
+        }
     }
 }

@@ -30,7 +30,10 @@ export class SubmittedConfirmationComponent implements OnInit, CanActivate {
       Email: this.applicationService.model.ApplicationCertificate?.ApplicationInvoiceDetails?.Email
     }
 
-    await this.applicationService.syncBAC();
+    await this.applicationService.syncPayment();
+    await new Promise<void>((resolve) => setTimeout(() => resolve(), 4000));
+
+    await this.applicationService.syncBacStatus();
   }
 
   private sendApplicationDataToBroadcastChannel() {

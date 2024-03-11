@@ -31,6 +31,7 @@ const routes = new HseRoutes([
   HseRoute.protected(NumberOfSectionsComponment.route, NumberOfSectionsComponment, NumberOfSectionsComponment.title),
   HseRoute.protected(BuildingOutOfScopeComponent.route, BuildingOutOfScopeComponent, BuildingOutOfScopeComponent.title),
   HseRoute.protected(SummaryPageComponent.route, SummaryPageComponent, SummaryPageComponent.title),
+  HseRoute.protected(ApplicationCompletedComponent.route, ApplicationCompletedComponent, ApplicationCompletedComponent.title),
   HseRoute.forLoadChildren(BuildingSummaryModule.baseRoute, () => import('./building-summary/building-summary.module').then(m => m.BuildingSummaryModule)),
   HseRoute.forLoadChildren(AccountablePersonModule.baseRoute, () => import('./accountable-person/accountable-person.module').then(m => m.AccountablePersonModule)),
   HseRoute.forLoadChildren(PaymentModule.baseRoute, () => import('./payment/payment.module').then(m => m.PaymentModule)),
@@ -38,7 +39,6 @@ const routes = new HseRoutes([
   HseRoute.forLoadChildren(RegistrationAmendmentsModule.baseRoute, () => import('../registration-amendments/registration-amendments.module').then(m => m.RegistrationAmendmentsModule)),
   HseRoute.forLoadChildren(SafetyCaseReportModule.baseRoute, () => import('./safety-case-report/safety-case-report.module').then(m => m.SafetyCaseReportModule)),
   HseRoute.forLoadChildren(ApplicationCertificateModule.baseRoute, () => import('./application-certificate/application-certificate.module').then(m => m.ApplicationCertificateModule)),
-  HseRoute.protected(ApplicationCompletedComponent.route, ApplicationCompletedComponent, ApplicationCompletedComponent.title),
 ]);
 
 @NgModule({

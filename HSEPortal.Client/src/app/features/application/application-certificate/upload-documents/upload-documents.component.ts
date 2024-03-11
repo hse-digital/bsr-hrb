@@ -11,7 +11,7 @@ type error = { hasError: boolean, message?: string }
 @Component({
   templateUrl: './upload-documents.component.html'
 })
-export class UploadDocumentsComponent extends PageComponent<{ Filename: string, Uploaded: boolean }[]> {
+export class UploadDocumentsComponent extends PageComponent<{ Filename: string, Uploaded: boolean, SharepointModel?: any }[]> {
   static route: string = 'upload-documents';
   static title: string = 'Upload documents - building assessment certificate - Register a high-rise building - GOV.UK';
 
@@ -30,7 +30,8 @@ export class UploadDocumentsComponent extends PageComponent<{ Filename: string, 
     this.processing = true;
 
     await Promise.all(this.fileUploads.filter(x => x.status == 'uploaded' && !x.alreadyUploaded).map(async upload => {
-      await this.fileUploadService.uploadToSharepoint(this.applicationService.model.id!, upload.file.name);
+      var record = this.model?.find(x => x.Filename == upload.file.name);
+      record!.SharepointModel = await this.fileUploadService.uploadBacFileToSharepoint(this.applicationService.model.id!, upload.file.name);
     }));
 
     this.model?.forEach(mod => { mod.Uploaded = true; });
@@ -73,7 +74,7 @@ export class UploadDocumentsComponent extends PageComponent<{ Filename: string, 
   };
 
   progressMap = new Map<File, number>();
-  fileUploads: { status: string, file: File, alreadyUploaded: boolean }[] = [];
+  fileUploads: { status: string, file: File, alreadyUploaded: boolean, SharepointModel?: any }[] = [];
   async fileSelected(event: Event) {
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;

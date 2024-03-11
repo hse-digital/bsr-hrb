@@ -19,7 +19,10 @@ public record DynamicsPayment(string bsr_paymentid = null, double? bsr_amountpai
     [property: JsonPropertyName("bsr_invoicedcontactid@odata.bind")]
     string bsr_invoicedcontactid = null,
     string bsr_purchaseordernumberifsupplied = null,
-    string bsr_emailaddress = null);
+    string bsr_emailaddress = null,
+    [property: JsonPropertyName("bsr_bacapplicationid@odata.bind")]
+    string bacApplicationReferenceId = null,
+    string _bsr_bacapplicationid_value = null);
 
 public enum DynamicsPaymentCardType
 {

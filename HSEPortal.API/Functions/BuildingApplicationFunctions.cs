@@ -1,26 +1,22 @@
-using System.Diagnostics;
 using System.Net;
-using Azure.Core;
 using HSEPortal.API.Extensions;
 using HSEPortal.API.Model;
 using HSEPortal.API.Services;
 using HSEPortal.Domain.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.DurableTask;
-using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Options;
 
 namespace HSEPortal.API.Functions;
 
 public class BuildingApplicationFunctions
 {
-    private readonly IDynamicsService dynamicsService;
+    private readonly DynamicsService dynamicsService;
     private readonly OTPService otpService;
     private readonly FeatureOptions featureOptions;
     private readonly IntegrationsOptions integrationOptions;
 
-    public BuildingApplicationFunctions(IDynamicsService dynamicsService, OTPService otpService, IOptions<FeatureOptions> featureOptions, IOptions<IntegrationsOptions> integrationOptions)
+    public BuildingApplicationFunctions(DynamicsService dynamicsService, OTPService otpService, IOptions<FeatureOptions> featureOptions, IOptions<IntegrationsOptions> integrationOptions)
     {
         this.dynamicsService = dynamicsService;
         this.otpService = otpService;

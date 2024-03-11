@@ -1,10 +1,21 @@
-<i class="fa fa-spinner fa-spin loading" *ngIf="!shouldRender"></i>
-<govuk-formpage [hideSaveAndComeBack]=true [hideSaveAndContinue]=true *ngIf="shouldRender">
+<i class="fa fa-spinner fa-spin loading"
+  *ngIf="!shouldRender"></i>
+<govuk-formpage [hideSaveAndComeBack]=true
+  [hideSaveAndContinue]=true
+  *ngIf="shouldRender">
 
   <div class="structure-details govuk-!-margin-bottom-4">
     <div class="govuk-hint fs-24">{{applicationService.model.id}}</div>
     <h1 class="govuk-heading-m fs-36">{{applicationService.model.BuildingName}}</h1>
   </div>
+
+  <ng-container *ngIf="applicationStatus.bacInvitation">
+    <h2 class="govuk-heading-m">Building assessment certificate</h2>
+    <govuk-body>As the principal accountable person for Chester House, you were directed to apply for your building assessment certificate by the Building Safety Regulator (BSR). You must apply within 28 days of being directed.</govuk-body>
+
+    <govuk-button *ngIf="bacIsEmpty()" (onClick)="navigateToBac()">Apply for a building assessment certificate</govuk-button>
+    <govuk-button *ngIf="bacIsInProgress()" (onClick)="continueBac()">Continue building assessment certificate application</govuk-button>
+  </ng-container>
 
   <h2 class="govuk-heading-m">Registration</h2>
 
@@ -119,7 +130,9 @@
   </ng-container>
 
   <!-- application history -->
-  <govuk-details summaryText="Show application history" id="application_history" class="govuk-!-margin-bottom-6">
+  <govuk-details summaryText="Show application history"
+    id="application_history"
+    class="govuk-!-margin-bottom-6">
     <table class="govuk-table">
       <tbody class="govuk-table__body">
         <ng-container *ngIf="isViewOne()">
@@ -175,40 +188,57 @@
   </govuk-details>
 
   <!-- links -->
-  <div *ngIf="applicationStatus.showLinks" class="govuk-!-margin-bottom-6">
+  <div *ngIf="applicationStatus.showLinks"
+    class="govuk-!-margin-bottom-6">
     <govuk-body>If you need to, you can:</govuk-body>
     <ul class='govuk-list govuk-list--bullet'>
-      <li *ngIf="!applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration information, or manage who can use this service</a></li>
-      <li *ngIf="applicationStatus.kbiSubmitted"><a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration or structure and fire safety information, or manage who can use this service</a></li>
-      <li><a href="javascript:void(0);" [routerLink]="['../registration-amendments/deregister-are-you-sure']" class="govuk-link">ask to withdraw this application</a></li>
+      <li *ngIf="!applicationStatus.kbiSubmitted"><a href="javascript:void(0);"
+          [routerLink]="['../registration-amendments/change-task-list']"
+          class="govuk-link">view and update registration information, or manage who can use this service</a></li>
+      <li *ngIf="applicationStatus.kbiSubmitted"><a href="javascript:void(0);"
+          [routerLink]="['../registration-amendments/change-task-list']"
+          class="govuk-link">view and update registration or structure and fire safety information, or manage who can use this service</a></li>
+      <li><a href="javascript:void(0);"
+          [routerLink]="['../registration-amendments/deregister-are-you-sure']"
+          class="govuk-link">ask to withdraw this application</a></li>
     </ul>
   </div>
 
   <!-- registration accepted links -->
-  <div *ngIf="applicationStatus.registrationAccepted && !applicationStatus.removalSubmitted && !applicationStatus.removalAccepted" class="govuk-!-margin-bottom-6">
-    <govuk-body>You can <a href="javascript:void(0);" [routerLink]="['../registration-amendments/change-task-list']" class="govuk-link">view and update registration information, or manage who can use this service</a>.</govuk-body>
-    <govuk-body>If it is no longer a high-rise residential building, you can <a href="javascript:void(0);" [routerLink]="['../registration-amendments/deregister-are-you-sure']" class="govuk-link">ask to remove this building from the register</a>.</govuk-body>
+  <div *ngIf="applicationStatus.registrationAccepted && !applicationStatus.removalSubmitted && !applicationStatus.removalAccepted"
+    class="govuk-!-margin-bottom-6">
+    <govuk-body>You can <a href="javascript:void(0);"
+        [routerLink]="['../registration-amendments/change-task-list']"
+        class="govuk-link">view and update registration information, or manage who can use this service</a>.</govuk-body>
+    <govuk-body>If it is no longer a high-rise residential building, you can <a href="javascript:void(0);"
+        [routerLink]="['../registration-amendments/deregister-are-you-sure']"
+        class="govuk-link">ask to remove this building from the register</a>.</govuk-body>
   </div>
 
   <!-- kbi link -->
   <div *ngIf="!applicationStatus.kbiSubmitted && !applicationStatus.withdrawalSubmitted">
     <h2 class="govuk-heading-m">Structure and fire safety information</h2>
     <div class="govuk-warning-text govuk-!-margin-bottom-2">
-      <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+      <span class="govuk-warning-text__icon"
+        aria-hidden="true">!</span>
       <strong class="govuk-warning-text__text">
         <span class="govuk-warning-text__assistive">Warning</span>
         You must give us structure and fire safety information for {{applicationService.model.BuildingName}}<span *ngIf="submittionDate"> by {{get28DaysAfterSubmittionDate() | date: 'dd MMMM yyyy'}}</span>.
       </strong>
     </div>
-    <govuk-button classes="govuk-!-margin-bottom-6" [routerLink]="['../kbi']">
+    <govuk-button classes="govuk-!-margin-bottom-6"
+      [routerLink]="['../kbi']">
       Give structure and fire safety information
     </govuk-button>
   </div>
 
   <!-- safety case report -->
-  <div class="safety-case-report" *ngIf="!applicationService.model.SafetyCaseReport?.declaration">
+  <div class="safety-case-report"
+    *ngIf="!applicationService.model.SafetyCaseReport?.declaration">
     <h2 class="govuk-heading-m">Safety case report</h2>
-    <govuk-body>You must <a href="javascript:void(0);" [routerLink]="['../safety-case-report/date']" class="govuk-link">tell us when you have prepared a safety case report.</a></govuk-body>
+    <govuk-body>You must <a href="javascript:void(0);"
+        [routerLink]="['../safety-case-report/date']"
+        class="govuk-link">tell us when you have prepared a safety case report.</a></govuk-body>
   </div>
 
 </govuk-formpage>
@@ -221,21 +251,35 @@
 <!-- templates -->
 <ng-template #ApplicationHistoryChangesSubmitted>
   <tr class="govuk-table__row">
-    <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../registration-amendments/summary']" target="_blank" role="link" tabindex="0">Changes submitted</a></td>
+    <td class="govuk-table__cell"><a class="govuk-link"
+        [routerLink]="['../registration-amendments/summary']"
+        target="_blank"
+        role="link"
+        tabindex="0">Changes submitted</a></td>
     <td class="govuk-table__cell">{{applicationService.model.RegistrationAmendmentsModel?.Date | date: 'dd MMMM yyyy'}}</td>
   </tr>
 </ng-template>
 
 <ng-template #ApplicationHistoryRegistrationApplication>
   <tr class="govuk-table__row">
-    <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../summary']" href="" target="_blank" role="link" tabindex="0">Registration application</a></td>
+    <td class="govuk-table__cell"><a class="govuk-link"
+        [routerLink]="['../summary']"
+        href=""
+        target="_blank"
+        role="link"
+        tabindex="0">Registration application</a></td>
     <td class="govuk-table__cell">{{ registrationApplicationDate | date: 'dd MMMM yyyy'}}</td>
   </tr>
 </ng-template>
 
 <ng-template #ApplicationHistoryStructureFireSafetyInformation>
   <tr class="govuk-table__row">
-    <td class="govuk-table__cell"><a class="govuk-link" [routerLink]="['../kbi/summary']" href="" target="_blank" role="link" tabindex="0">Structure and fire safety information</a></td>
+    <td class="govuk-table__cell"><a class="govuk-link"
+        [routerLink]="['../kbi/summary']"
+        href=""
+        target="_blank"
+        role="link"
+        tabindex="0">Structure and fire safety information</a></td>
     <td class="govuk-table__cell">{{kbiSubmittionDate | date: 'dd MMMM yyyy'}}</td>
   </tr>
 </ng-template>
@@ -285,7 +329,7 @@
 </ng-template>
 
 <ng-template #ApplicationApproved>
-  <govuk-body>We have approved the application to register  {{applicationService.model.BuildingName}}.</govuk-body>
+  <govuk-body>We have approved the application to register {{applicationService.model.BuildingName}}.</govuk-body>
 </ng-template>
 
 <ng-template #RemovalSubmitted>
