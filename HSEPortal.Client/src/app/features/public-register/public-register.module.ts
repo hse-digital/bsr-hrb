@@ -9,12 +9,19 @@ import { Route, RouterModule } from "@angular/router";
 import { PublicRegisterResultsComponent } from "./results/results.component";
 import { StructureDetailsComponent } from "./structure-details/structure-details.component";
 import { PipesModule } from "../../pipes/pipes.module";
+import { ServiceUnavailableComponent } from "../service-unavailable/service-unavailable.component";
 
 const angRoutes: Route[] = [
-    { path: SearchPublicRegisterComponent.route, component: SearchPublicRegisterComponent, title: SearchPublicRegisterComponent.title },
-    { path: StructureNotFoundComponent.route, component: StructureNotFoundComponent, title: StructureNotFoundComponent.title },
-    { path: PublicRegisterResultsComponent.route, component: PublicRegisterResultsComponent, title: PublicRegisterResultsComponent.title },
-    { path: StructureDetailsComponent.route, component: StructureDetailsComponent, title: StructureDetailsComponent.title }
+    // { path: SearchPublicRegisterComponent.route, component: SearchPublicRegisterComponent, title: SearchPublicRegisterComponent.title },
+    // { path: StructureNotFoundComponent.route, component: StructureNotFoundComponent, title: StructureNotFoundComponent.title },
+    // { path: PublicRegisterResultsComponent.route, component: PublicRegisterResultsComponent, title: PublicRegisterResultsComponent.title },
+    // { path: StructureDetailsComponent.route, component: StructureDetailsComponent, title: StructureDetailsComponent.title }
+
+    // temp
+    { path: SearchPublicRegisterComponent.route, redirectTo: `/${ServiceUnavailableComponent.route}` },
+    { path: StructureNotFoundComponent.route, redirectTo: `/${ServiceUnavailableComponent.route}` },
+    { path: PublicRegisterResultsComponent.route, redirectTo: `/${ServiceUnavailableComponent.route}` },
+    { path: StructureDetailsComponent.route, redirectTo: `/${ServiceUnavailableComponent.route}` },
 ];
 
 @NgModule({
