@@ -88,7 +88,7 @@ public class BlobEndpoints
         var buildingApplication = await dynamicsService.GetBuildingApplicationUsingId(applicationId);
         var targetRecordId = buildingApplication.bsr_buildingapplicationid;
 
-        if (targetTable == "bac_application")
+        if (targetTable == "bsr_bacapplication")
         {
             var bacApplication = await dynamicsService.GetBacApplication(buildingApplication.bsr_buildingapplicationid);
             targetRecordId = bacApplication.bsr_bacapplicationid;
