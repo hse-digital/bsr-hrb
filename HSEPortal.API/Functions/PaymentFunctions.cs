@@ -90,7 +90,8 @@ public class PaymentFunctions
         BuildingApplicationModel applicationModel)
     {
         var invoiceRequest = await request.ReadAsJsonAsync<NewInvoicePaymentRequestModel>();
-        await dynamicsService.NewInvoicePayment(applicationModel, invoiceRequest, integrationOptions.CertificateApplicationCharge, bacPayment: true);
+        var serviceName = "Application Charge";
+        await dynamicsService.NewInvoicePayment(applicationModel, invoiceRequest, integrationOptions.CertificateApplicationCharge, serviceName: serviceName, invoiceTitle: serviceName, bacPayment: true);
 
         return request.CreateResponse();
     }
