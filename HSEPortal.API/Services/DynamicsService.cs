@@ -46,7 +46,7 @@ public class DynamicsService
 
     public async Task SendVerificationEmail(string emailAddress, string buildingName, string otpToken)
     {
-        await dynamicsOptions.EmailVerificationFlowUrl.PostJsonAsync(new { emailAddress = emailAddress.ToLower(), otp = otpToken, buildingName = buildingName, hrbRegUrl = swaOptions.Url });
+        await dynamicsOptions.EmailVerificationFlowUrl.PostJsonAsync(new { emailAddress = emailAddress.ToLower(), otp = otpToken, buildingName, hrbRegUrl = swaOptions.Url });
     }
 
     public Task<DynamicsOrganisationsSearchResponse> SearchLocalAuthorities(string authorityName)
@@ -90,8 +90,8 @@ public class DynamicsService
     public async Task CreateBuildingStructures(Structures structures)
     {
         var structureDefinition = dynamicsModelDefinitionFactory.GetDefinitionFor<Structure, DynamicsStructure>();
-        var InScopeStructures = structures.BuildingStructures.Where(x => x.Addresses != null && x.Addresses.Length > 0);
-        foreach (var section in InScopeStructures)
+        var inScopeStructures = structures.BuildingStructures.Where(x => x.Addresses != null && x.Addresses.Length > 0);
+        foreach (var section in inScopeStructures)
         {
             var dynamicsStructure = BuildDynamicsStructure(structures, section, structureDefinition);
             dynamicsStructure = await SetYearOfCompletion(section, dynamicsStructure);
@@ -519,22 +519,20 @@ public class DynamicsService
         }
     }
 
-    public async Task<DynamicsPayment> NewInvoicePayment(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, double paymentAmount, bool bacPayment = false)
+    public async Task NewInvoicePayment(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, double paymentAmount, string serviceName = "HRB Registration", string invoiceTitle = "Building Registration", bool bacPayment = false)
     {
         var invoiceContact = await GetOrCreateInvoiceContactAsync(invoicePaymentRequest);
         var dynamicsApplication = await GetBuildingApplicationUsingId(buildingApplicationModel.Id);
 
-        var dynamicsPayment = await CreateInvoicePayment(dynamicsApplication.bsr_buildingapplicationid, invoiceContact, invoicePaymentRequest, paymentAmount, bacPayment);
+        var dynamicsPayment = await CreateInvoicePayment(dynamicsApplication.bsr_buildingapplicationid, invoiceContact, invoicePaymentRequest, paymentAmount, serviceName, bacPayment);
         await UpdateBuildingApplication(dynamicsApplication, new DynamicsBuildingApplication { bsr_applicationstage = BuildingApplicationStage.InvoiceRaised });
-        var invoicePaymentResponse = await SendCreateInvoiceRequest(buildingApplicationModel, invoicePaymentRequest, dynamicsPayment, invoiceContact, paymentAmount);
+        var invoicePaymentResponse = await SendCreateInvoiceRequest(buildingApplicationModel, invoicePaymentRequest, dynamicsPayment, invoiceContact, paymentAmount, invoiceTitle);
 
         await UpdateInvoicePayment(dynamicsPayment.bsr_paymentid, invoicePaymentResponse);
-
-        return dynamicsPayment;
     }
 
     private async Task<InvoiceData> SendCreateInvoiceRequest(BuildingApplicationModel buildingApplicationModel, NewInvoicePaymentRequestModel invoicePaymentRequest, DynamicsPayment dynamicsPayment,
-        DynamicsContact invoiceContact, double paymentAmount)
+        DynamicsContact invoiceContact, double paymentAmount, string invoiceTitle)
     {
         return await integrationsOptions.CommonAPIEndpoint.AppendPathSegments("api", "CreateInvoice")
             .WithHeader("x-functions-key", integrationsOptions.CommonAPIKey)
@@ -551,7 +549,7 @@ public class DynamicsService
                 Postcode = invoicePaymentRequest.Postcode,
                 Application = "hrbportal",
                 Description = $"Building: {buildingApplicationModel.BuildingName}\nApplication: {buildingApplicationModel.Id}",
-                Title = "Building Registration",
+                Title = invoiceTitle,
                 OrderNumber = invoicePaymentRequest.OrderNumber,
                 CustomerId = invoiceContact.contactid.ToUpper(),
                 Environment = integrationsOptions.Environment
@@ -583,14 +581,14 @@ public class DynamicsService
         return invoiceContact;
     }
 
-    private async Task<DynamicsPayment> CreateInvoicePayment(string buildingApplicationId, DynamicsContact invoicedContact, NewInvoicePaymentRequestModel invoiceData, double paymentAmount, bool bacPayment = false)
+    private async Task<DynamicsPayment> CreateInvoicePayment(string buildingApplicationId, DynamicsContact invoicedContact, NewInvoicePaymentRequestModel invoiceData, double paymentAmount, string serviceName, bool bacPayment = false)
     {
         var dynamicsPayment = new DynamicsPayment
         {
             bsr_invoicedcontactid = $"/contacts({invoicedContact.contactid})",
             buildingApplicationReferenceId = $"/bsr_buildingapplications({buildingApplicationId})",
             bsr_paymenttypecode = 760_810_001, // Invoice
-            bsr_service = "HRB Registration",
+            bsr_service = serviceName,
             bsr_billingaddress = string.Join(", ", new[] { invoiceData.AddressLine1, invoiceData.AddressLine2, invoiceData.Postcode, invoiceData.Town }.Where(x => !string.IsNullOrWhiteSpace(x))),
             bsr_amountpaid = Math.Round(paymentAmount / 100, 2),
             bsr_purchaseordernumberifsupplied = invoiceData.OrderNumber,
