@@ -31,6 +31,7 @@ import { FileUploadService } from './services/file-upload.service';
 import { HttpInterceptorService } from './services/http-interceptor';
 import { BuildingSummaryNavigation } from './features/application/building-summary/building-summary.navigation';
 import { PublicRegisterModule } from './features/public-register/public-register.module';
+import { PasswordProtectionComponent } from './features/password-protection/password-protection.component';
 
 const routes = new HseRoutes([
   HseRoute.unsafe(ApplicationSelectorComponent.route, ApplicationSelectorComponent, undefined, ApplicationSelectorComponent.title),
@@ -44,6 +45,7 @@ const routes = new HseRoutes([
   HseRoute.forLoadChildren(HelpPagesModule.baseRoute, () => import('./components/footer/help-pages.module').then(m => m.HelpPagesModule)),
   HseRoute.forLoadChildren(ApplicationModule.baseRoute, () => import('./features/application/application.module').then(m => m.ApplicationModule)),
   HseRoute.forLoadChildren(PublicRegisterModule.baseRoute, () => import('./features/public-register/public-register.module').then(m => m.PublicRegisterModule)),
+  HseRoute.unsafe(PasswordProtectionComponent.route, PasswordProtectionComponent, undefined, PasswordProtectionComponent.title),
   HseRoute.unsafe('**', undefined, NotFoundComponent.route)
 ]);
 
@@ -61,6 +63,7 @@ const routes = new HseRoutes([
     NotFoundComponent,
     WhatWantToDoComponent,
     YesButNoReferenceComponent,
+    PasswordProtectionComponent
   ],
   imports: [
     RouterModule.forRoot(routes.getRoutes(), { initialNavigation: 'enabledBlocking', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload' }),

@@ -6,4 +6,6 @@ public class FeatureOptions
     
     public bool DisableOtpValidation { get; set; }
     public bool EnablePublicRegisterPasswordProtection { get; set; }
+    
+    public string BacPassword { get; set; }
 }

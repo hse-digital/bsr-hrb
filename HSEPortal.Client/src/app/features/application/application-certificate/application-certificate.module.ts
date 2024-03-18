@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { NgModule, inject } from '@angular/core';
+import { ActivatedRouteSnapshot, Router, RouterModule, RouterStateSnapshot } from '@angular/router';
 import { HseAngularModule } from 'hse-angular';
 import { HseRoute, HseRoutes } from 'src/app/services/hse.route';
 
@@ -20,20 +20,34 @@ import { DeclarationComponent } from './declaration/declaration.component';
 import { CheckAnswersComponent } from './check-answers/check-answers.component';
 import { InvoicingDetailsUpfrontPaymentComponent } from './invoicing-details-upfront-payment/invoicing-details-upfront-payment.component';
 import { SubmittedConfirmationComponent } from './submitted-confirmation/sumitted-confirmation.component';
+import { BacService } from './bac.service';
+import { PasswordProtectionComponent } from '../../password-protection/password-protection.component';
+
+const bacGuard = async (_: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  var service = inject(BacService);
+  var router = inject(Router);
+
+  var canAccess = await service.canAccess();
+  if (!canAccess) {
+    router.navigate([`/${PasswordProtectionComponent.route}`], { queryParams: { 'returnUrl': state.url }, state: { 'passwordFeature': "BAC_SERVICE" } });
+  }
+
+  return canAccess;
+};
 
 const routes = new HseRoutes([
-  HseRoute.protected(ConfirmInformationBsrHoldsComponent.route, ConfirmInformationBsrHoldsComponent, ConfirmInformationBsrHoldsComponent.title),
-  HseRoute.protected(ComplianceNoticeNumbersComponent.route, ComplianceNoticeNumbersComponent, ComplianceNoticeNumbersComponent.title),
-  HseRoute.protected(Section89DeclarationComponent.route, Section89DeclarationComponent, Section89DeclarationComponent.title),
-  HseRoute.protected(UploadDocumentsComponent.route, UploadDocumentsComponent, UploadDocumentsComponent.title),
-  HseRoute.protected(ChargesOverviewComponent.route, ChargesOverviewComponent, ChargesOverviewComponent.title),
-  HseRoute.protected(SameInvoiceDetailsComponent.route, SameInvoiceDetailsComponent, SameInvoiceDetailsComponent.title),
-  HseRoute.protected(ChoosePaymentComponent.route, ChoosePaymentComponent, ChoosePaymentComponent.title),
-  HseRoute.protected(InvoicingDetailsComponent.route, InvoicingDetailsComponent, InvoicingDetailsComponent.title),
-  HseRoute.protected(CheckAnswersComponent.route, CheckAnswersComponent, CheckAnswersComponent.title),
-  HseRoute.protected(DeclarationComponent.route, DeclarationComponent, DeclarationComponent.title),
-  HseRoute.protected(InvoicingDetailsUpfrontPaymentComponent.route, InvoicingDetailsUpfrontPaymentComponent, InvoicingDetailsUpfrontPaymentComponent.title),
-  HseRoute.protected(SubmittedConfirmationComponent.route, SubmittedConfirmationComponent, SubmittedConfirmationComponent.title),
+  HseRoute.protected(ConfirmInformationBsrHoldsComponent.route, ConfirmInformationBsrHoldsComponent, ConfirmInformationBsrHoldsComponent.title, [bacGuard]),
+  HseRoute.protected(ComplianceNoticeNumbersComponent.route, ComplianceNoticeNumbersComponent, ComplianceNoticeNumbersComponent.title, [bacGuard]),
+  HseRoute.protected(Section89DeclarationComponent.route, Section89DeclarationComponent, Section89DeclarationComponent.title, [bacGuard]),
+  HseRoute.protected(UploadDocumentsComponent.route, UploadDocumentsComponent, UploadDocumentsComponent.title, [bacGuard]),
+  HseRoute.protected(ChargesOverviewComponent.route, ChargesOverviewComponent, ChargesOverviewComponent.title, [bacGuard]),
+  HseRoute.protected(SameInvoiceDetailsComponent.route, SameInvoiceDetailsComponent, SameInvoiceDetailsComponent.title, [bacGuard]),
+  HseRoute.protected(ChoosePaymentComponent.route, ChoosePaymentComponent, ChoosePaymentComponent.title, [bacGuard]),
+  HseRoute.protected(InvoicingDetailsComponent.route, InvoicingDetailsComponent, InvoicingDetailsComponent.title, [bacGuard]),
+  HseRoute.protected(CheckAnswersComponent.route, CheckAnswersComponent, CheckAnswersComponent.title, [bacGuard]),
+  HseRoute.protected(DeclarationComponent.route, DeclarationComponent, DeclarationComponent.title, [bacGuard]),
+  HseRoute.protected(InvoicingDetailsUpfrontPaymentComponent.route, InvoicingDetailsUpfrontPaymentComponent, InvoicingDetailsUpfrontPaymentComponent.title, [bacGuard]),
+  HseRoute.protected(SubmittedConfirmationComponent.route, SubmittedConfirmationComponent, SubmittedConfirmationComponent.title, [bacGuard]),
 ]);
 
 @NgModule({
