@@ -1,5 +1,5 @@
 import { Type } from "@angular/core";
-import { LoadChildrenCallback, Route, Routes } from "@angular/router";
+import { CanActivateFn, LoadChildrenCallback, Route, Routes } from "@angular/router";
 
 export class HseRoute implements Route {
 
@@ -17,13 +17,12 @@ export class HseRoute implements Route {
     (<Route>hseRoute).pathMatch = 'full';
     
     return hseRoute;
-
   }
 
-  static protected(path: string, component: Type<any>, title?: string): HseRoute {
+  static protected(path: string, component: Type<any>, title?: string, canActivate?: Array<CanActivateFn | any>): HseRoute {
     var hseRoute = new HseRoute(path, component, undefined, undefined, title);
     hseRoute._isProtected = true;
-    (<Route>hseRoute).canActivate = [component];
+    (<Route>hseRoute).canActivate = canActivate ?? [component];
 
     return hseRoute;
   }
