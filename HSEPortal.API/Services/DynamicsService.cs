@@ -610,7 +610,8 @@ public class DynamicsService
         var bacApplication = await GetBacApplication(buildingApplicationId);
         await dynamicsApi.Update($"bsr_bacapplications({bacApplication.bsr_bacapplicationid})", bacApplication with
         {
-            bsr_bacstageid = applicationStatus
+            bsr_bacstageid = applicationStatus,
+            statuscode = 760_810_002
         });
 
         return dynamicsPayment with
@@ -1080,10 +1081,18 @@ public class DynamicsService
         var buildingApplication = await GetBuildingApplicationUsingId(applicationId);
         var buildingId = buildingApplication._bsr_building_value;
 
-        var bacApplicationDirection = await dynamicsApi.Get<DynamicsResponse<DynamicsBacApplicationDirection>>("bsr_bacapplicationdirections",
-            ("$filter", $"_bsr_buildingid_value eq '{buildingId}'"));
+        try
+        {
+            var bacApplicationDirection = await dynamicsApi.Get<DynamicsResponse<DynamicsBacApplicationDirection>>("bsr_bacapplicationdirections",
+                ("$filter", $"_bsr_buildingid_value eq '{buildingId}'"));
 
-        return bacApplicationDirection.value.FirstOrDefault();
+            return bacApplicationDirection.value.FirstOrDefault();
+        }
+        catch (Exception)
+        {
+            // bac not found in dynamics - pending deployment
+            return null;
+        }
     }
 
     public async Task UpdateBuildingBacInformation(BuildingApplicationModel applicationModel, DynamicsBuilding bsrBuilding)
@@ -1188,7 +1197,8 @@ public class DynamicsService
             {
                 bacApplication = bacApplication with
                 {
-                    bsr_bacstageid = 760810002
+                    bsr_bacstageid = 760_810_002,
+                    statuscode = 760_810_002
                 };
 
                 var direction = await GetBacApplicationDirection(buildingApplicationModel.Id);
