@@ -19,6 +19,7 @@ public record DynamicsBacApplication
 {
     public string bsr_bacapplicationid { get; set; }
     public int? bsr_bacstageid { get; set; }
+    public int? statuscode { get; set; }
     public int? bsr_validationoutcomecode { get; set; }
     
     [property:JsonPropertyName("bsr_buildingapplicationid@odata.bind")]
